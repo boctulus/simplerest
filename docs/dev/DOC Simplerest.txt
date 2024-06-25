@@ -9076,7 +9076,7 @@ Nota: solo es válido si en vez de llamar al helper view() desde el controlador 
 
 Ej:
 
-	class MaintenanceController extends MyController
+	class MaintenanceController extends Controller
 	{
 		function index()
 		{
@@ -9086,7 +9086,7 @@ Ej:
 
 De todas formas siempre es posible hacer algo como:
 
-	class MaintenanceController extends MyController
+	class MaintenanceController extends Controller
 	{
 		function index()
 		{
@@ -9169,7 +9169,7 @@ En vez de ....
 
 # Hookear la clase View
 
-La clase View es extendida convenientemente como MyView a fin de poder agregar funcionalidad sin tener que tocar la clase View directamente que es parte del Core y sería sobreescrita al actualizar SimpleRest.
+En teoria se puede extender la clase View como MyView por ejemplo a fin de poder agregar funcionalidad sin tener que tocar la clase View directamente que es parte del Core y sería sobreescrita al actualizar el framework.
 
 Ej:
 
@@ -9192,15 +9192,18 @@ Hooks
 	function onCacheExpired(string $view_path)
     function onCacheWritten(string $view_path)
 
-Los hooks están presentes en la clase View y su clase derivada MyView.
 
-<--- a futuro simplemente crear eventos y dejar de lado los hooks
+Nota:
+
+Para la siguiente version del framework, se dejaran de lado los hooks en favor de eventos.
 
 
-# Pages
+# Pages  
 
-El objetivo es tener el equivalente a distintos mini-controllers (llamados paginas) que conviran en la misma ruta de la url donde 
-a a su vez cada pagina podra tener su propio theme (template).
+<--------- depredicar
+
+El objetivo es tener el equivalente a distintos mini-controllers (llamados paginas) que convivan en la misma ruta de la url donde 
+a su vez cada pagina podra tener su propio theme (template).
 
 Esto mismo se podria lograr simplemente creando mas controladores y luego configurando el router aunque como el router actualmente
 no permite crear "grupos" seria algo mas verboso. Sin embargo, las "pages" no son escenciales y pueden estar aportando complejidad innecesaria.
@@ -9215,7 +9218,7 @@ Ej:
 	use simplerest\core\traits\PagesTrait;
 	use simplerest\controllers\MyController;
 
-	class AdminController extends MyController
+	class AdminController extends Controller
 	{    
 		use PagesTrait;
 
@@ -9237,7 +9240,7 @@ Entonces podran cargarse paginas como /controlador/{pagina} via FrontController 
 
 	/admin/tabulator?entity=colores
 
-En la pagina en cuestion se setea el template y los parametros que este recibira. 
+En la pagina en cuestion ...
 
 Ej:
 
@@ -9364,7 +9367,7 @@ Ej:
 	use simplerest\core\traits\PagesTrait;
 	use simplerest\controllers\MyController;
 
-	class AdminController extends MyController
+	class AdminController extends Controller
 	{    
 		use PagesTrait;
 
@@ -9409,7 +9412,7 @@ Como se pude observar dentro del shortcode se hace en enccolado de assets y se l
 
 Luego a fin de poder usar el shortcode se crearia un controller:
 
-	class PalletRackQuoterController extends MyController
+	class PalletRackQuoterController extends Controller
 	{
 		function index()
 		{  
