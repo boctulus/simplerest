@@ -438,30 +438,52 @@ class Strings
 		return $ret;
 	}	
 
-	// String antes de la N-ésima ocurrencia del substring
-	static function before(string $string, string $substr, $occurrence = 1){
-		$parts = explode($substr, $string, $occurrence +1);
-
-		return $parts[$occurrence -1];
-	}
-
-	// String antes de la primera ocurrencia del substring
-	static function first(string $string, string $substr){
-		$parts = explode($substr, $string, 2);
-
-		return $parts[0];
-	}
-
-	// String después de la N-esima ocurrencia del substring
-	static function after(string $string, string $substr, int $occurence = 1){
-		$parts = explode($substr, $string, $occurence+1);
-
-		if (!isset($parts[$occurence])){
-			return false;
+	// Devuelve la posición donde comionza la N-ésima ocurrencia del substring
+	// @return int|false
+	static function getNthOccurrence(string $string, string $substr, int $occurrence = 1) {
+		$pos = 0;
+		for ($i = 0; $i < $occurrence; $i++) {
+			$pos = strpos($string, $substr, $pos);
+			if ($pos === false) {
+				return false;
+			}
+			if ($i < $occurrence - 1) {
+				$pos += strlen($substr);
+			}
 		}
+		
+		return $pos;
+	}	
 
-		return implode($substr, array_slice($parts, $occurence));
-	}
+	// String antes de la N-ésima ocurrencia del substring
+    static function before(string $string, string $substr, int $occurrence = 1): string {
+        $pos = self::getNthOccurrence($string, $substr, $occurrence);
+        return $pos !== false ? substr($string, 0, $pos) : '';
+    }
+
+    // String después de la N-ésima ocurrencia del substring
+    static function after(string $string, string $substr, int $occurrence = 1): string {
+        $pos = self::getNthOccurrence($string, $substr, $occurrence);
+        if ($pos !== false) {
+            return substr($string, $pos + strlen($substr));
+        }
+        return '';
+    }
+
+	// String desde la N-ésima ocurrencia del substring, incluyendo el substring
+	static function since(string $string, string $substr, int $occurrence = 1): string {
+        $pos = self::getNthOccurrence($string, $substr, $occurrence);
+        if ($pos !== false) {
+            return substr($string, $pos);
+        }
+        return '';
+    }
+
+    // String antes de la primera ocurrencia del substring
+    static function first(string $string, string $substr): string {
+        $pos = strpos($string, $substr);
+        return $pos !== false ? substr($string, 0, $pos) : $string;
+    }
 
 	static function beforeIfContains(string $str, string $substr, int $occurence = 1){
 		if (!static::contains($substr, $str)){
@@ -1396,6 +1418,7 @@ class Strings
 		} else {
 			$subject = str_ireplace($search, $replace, $subject, $count);
 		}		
+
 	}
 
 	/**
