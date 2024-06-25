@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\pages;
+namespace simplerest\abstracts\pages;
 
 abstract class Page
 {
