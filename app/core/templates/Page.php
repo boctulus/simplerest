@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\pages\admin;
+namespace __NAMESPACE;
 
-use simplerest\pages\Page;
+use simplerest\abstracts\pages\Page;
 
 class __NAME__ extends Page
 {

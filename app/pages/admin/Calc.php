@@ -2,7 +2,7 @@
 
 namespace simplerest\pages\admin;
 
-use simplerest\pages\Page;
+use simplerest\abstracts\pages\Page;
 
 class Calc extends Page
 {
