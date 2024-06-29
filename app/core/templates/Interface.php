@@ -2,7 +2,7 @@
 
 namespace __NAMESPACE;
 
-interface I__NAME__ {
+interface __NAME__ {
     // methods
 
 }

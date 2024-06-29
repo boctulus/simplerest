@@ -1415,7 +1415,7 @@ class Files
 	/*
 		Escribe archivo o falla.
 	*/
-	static function writeOrFail(string $path, $data, int $flags = 0, $context)
+	static function writeOrFail(string $path, $data, int $flags = 0, $context = null)
 	{
 		if (is_dir($path)){
 			$path = realpath($path);

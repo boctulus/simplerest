@@ -351,5 +351,29 @@ class HTML extends XML
         return $html;
     }
 
+    /*
+        Devuelve ocurrencias de <article>
+
+        Ej:
+
+        $html = Files::getContent(ETC_PATH . 'page.html');        
+        $html = XML::getArticles($html) ?? $html;
+
+        dd($html);
+    */
+    static function getArticles(string $html, bool $as_string = true){
+        $arts = XML::extractNodes($html, '//article');
+
+        if (empty($arts)){
+            return;
+        }
+
+        if ($as_string){
+            $arts = implode("\r\n\r\n", $arts);
+        }   
+
+        return $arts;
+    }
+
 }
 
