@@ -418,7 +418,7 @@ class MakeCommand implements ICommand
         }
         
         $data = file_get_contents($template_path);
-        $data = str_replace('__NAME__', $this->camel_case , $data);
+        $data = str_replace('__NAME__', $prefix . $this->camel_case .  $subfix , $data);
 
         if (!is_null($namespace)){
             $data = str_replace('__NAMESPACE', $namespace, $data);

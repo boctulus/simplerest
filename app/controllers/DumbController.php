@@ -10636,6 +10636,113 @@ class DumbController extends Controller
     }
 
 
+    /*
+        Optimizaciones mas agresivas podrian incluir:
+
+        - Eliminar todos los <ul> y <ol>
+        - Eliminar todos los <img>   
+        - Eliminar formularios con id que contengan "login"
+        Etc
+    */
+    function getMinifiedHTML(string $url, int $level = 1)
+    {
+        $cli = new ApiClient($url);
+
+        $res = $cli
+        ->disableSSL()
+        ->cache(3600 * 24 * 30)
+        ->get()
+        ->getResponse();
+
+        if (!empty($cli->error()) || $cli->status() !== 200){
+            throw new \Exception("Error reading response for '$url'. HTTP status code: " .$cli->status(). ".Detail: ". $cli->error());
+        }
+
+        $html = $res['data']; 
+        dd(FileCache::getCachePath($url));
+        dd(Strings::getLengthInKB($html), "LEN");
+        // exit; //         
+
+        // Si hay <articles> ... me quedo con eso
+        $articles = HTMLTools::getArticles($html, false);
+
+        if (!empty($articles)){
+            $html = implode("\r\n\r\n", $articles);    
+            $html = XML::stripTag($html, 'svg'); 
+            $html = XML::stripTag($html, 'style');               
+        } else {
+            $html = XML::stripTag($html, 'head');
+            $html = XML::stripTag($html, 'footer');
+            $html = XML::stripTag($html, 'script'); // elimina tambien el valioso "JSON LD" => debe recuperarse primero 
+            $html = XML::stripTag($html, 'style');
+            $html = XML::stripTag($html, 'nav'); // custom?
+            $html = XML::stripTag($html, 'aside');   
+            $html = XML::stripTag($html, 'iframe');
+            $html = XML::stripTag($html, 'svg');
+
+            $html = HTMLTools::removeHTMLAttributes($html, [
+                'onclick',
+                'ondblclick',
+                'onmousedown',
+                'onmouseup',
+                'onmousemove',
+                'onmouseover',
+                'onmouseout',
+                'onkeydown',
+                'onkeyup',
+                'onkeypress',
+                'onfocus',
+                'onblur',
+                'onchange',
+                'onsubmit',
+                'onreset',
+                'onselect',
+                'oninput',
+                'onload',
+                'onunload',
+                'onerror',
+                'onresize',
+                'onscroll'
+            ]);
+    
+            $html = HTMLTools::removeHTMLAttributes($html, ['style', 'class', 'rel', 'target', 'type']);
+            $html = Strings::removeMultiLineComments($html);
+            $html = HTMLTools::removeComments($html);
+            $html = Strings::removeSpaceBetweenTags($html);
+		    $html = Strings::removeMultipleSpacesInLines($html);
+
+            // Puede no ser tan buena idea
+            $html = Strings::removeDataAttr($html); // bye data-*
+             
+            /*
+                Extra *custom* reductions
+            */
+
+            $html = XML::stripTag($html, 'ul'); 
+            $html = XML::stripTag($html, 'ol'); 
+            // $html = XML::stripTag    ($html, 'img');  
+            // $html = XML::stripTagById($html, 'allfooter');
+            // $html = XML::stripTagById($html, '_info');  
+        }    
+
+        $html = str_replace([ '&#xA0;', '&#x2013;', '&#xB0;', '&gt;', '&#x2019;' ], '', $html);
+
+        // dd($html, 'HTML'); exit;
+        dd(Strings::getLengthInKB($html), "LEN");
+        //exit;
+
+        Files::writeOrFail(ETC_PATH . 'page.html', $html);
+
+        return $html;
+    }
+
+    function get_reduced_html(){        
+        $url = "https://www.mateandoarg.com/materas/porta-mate-rutero-cuero";
+
+        $out = $this->getMinifiedHTML($url, 6);
+
+        dd($out);
+    }
     
 
 }   // end class
