@@ -101,7 +101,6 @@ function shortcode_asset($resource)
 {   
     $resource = Files::normalize($resource, '/');
     $resource = Strings::since($resource, '/app/shortcodes/'); 
-
     
     $url = Url::getBaseUrl() . str_replace('/views/', '/assets/', $resource);
     
