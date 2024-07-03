@@ -327,6 +327,7 @@ return [
 	'use_composer' => true,
 
 	'openai_api_key'         => Env::get('OPENAI_API_KEY'),
+	'claude_api_key'      	 => Env::get('CLAUDE_API_KEY'),
 	
 	'google_console_api_key' => Env::get('GOOGLE_CONSOLE_API_KEY'),
 	'google_maps_api_key'    => Env::get('GOOGLE_MAPS_API_KEY'),
