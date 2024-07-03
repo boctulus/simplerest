@@ -10795,6 +10795,8 @@ class DumbController extends Controller
 
     function test_claude_api()
     {   
+        $max_tokens = 1500;
+
         $content = <<<DATA
         Given the following HTML from web page, extract XPATH selectors (compatible with Javascript and Selenium) and complete the provided JSON. 
 
@@ -10832,8 +10834,8 @@ class DumbController extends Controller
         HTML: 
         DATA;
 
-        $max_tokens = 50;
-        $content    = 'Capital de Peru?';
+        // $max_tokens = 50;
+        // $content    = 'Capital de Peru?';
 
         $chat = new ClaudeAI();
 
@@ -10849,7 +10851,7 @@ class DumbController extends Controller
         }
 
         $data = $res['data']['data'];
-        
+
         dd($data['content'][0]['text'], "Respuesta de Claude:");
 
         if (isset($data['usage'])) {
@@ -10859,8 +10861,6 @@ class DumbController extends Controller
         } else {
             dd(null, "Información de tokens no disponible en la respuesta.");
         }
-
-
     
     }
 
