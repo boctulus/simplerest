@@ -3,9 +3,47 @@
 namespace simplerest\core\libs;
 
 use simplerest\core\libs\XML;
+use simplerest\core\libs\Url;
 
 class HTML extends XML
 {
+ /**
+     * Convert relative URLs in <img src=""> and <a href=""> to absolute URLs.
+     *
+     * @param string $html The HTML content.
+     * @param string $root The root URL to be prepended to relative URLs.
+     * @return string The updated HTML content with absolute URLs.
+     */
+    public static function relativeToAbsoluteURLs(string $html, string $root): string
+    {
+        $dom = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        $xpath = new \DOMXPath($dom);
+
+        // Update <img src="">
+        $imgNodes = $xpath->query('//img[@src]');
+        foreach ($imgNodes as $img) {
+            $src = $img->getAttribute('src');
+            if (Url::isRelativeURL($src)) {
+                $img->setAttribute('src', rtrim($root, '/') . '/' . ltrim($src, '/'));
+            }
+        }
+
+        // Update <a href="">
+        $aNodes = $xpath->query('//a[@href]');
+        foreach ($aNodes as $a) {
+            $href = $a->getAttribute('href');
+            if (Url::isRelativeURL($href)) {
+                $a->setAttribute('href', rtrim($root, '/') . '/' . ltrim($href, '/'));
+            }
+        }
+
+        return $dom->saveHTML();
+    }
+
 
     /*
         Devuelve un array con todos los IDs utilizados en el documento HTML

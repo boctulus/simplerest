@@ -10860,8 +10860,14 @@ class DumbController extends Controller
             dd(($data['usage']['input_tokens'] ?? 0) + ($data['usage']['output_tokens'] ?? 0), "Total tokens:");
         } else {
             dd(null, "Información de tokens no disponible en la respuesta.");
-        }
-    
+        }    
+    }
+
+
+    function test_update_descriptions(){
+        $str = '<span style="line-height: 39.2px; font-size: 28px;">2.<img style="width: 70px; height: 70px;" title="Alta resistencia al rayado" src="/WebRoot/StoreES2/Shops/63993920/MediaGallery/Platos_carga_mineral/alta_resistencia_al_rayado.png" alt="alta_resistencia_al_rayado" /></span><span style="line-height: 39.2px; font-size: 28px;">3.<img style="width: 70px; height: 70px;" title="Dureza escala barcol" src="/WebRoot/StoreES2/Shops/63993920/MediaGallery/Platos_carga_mineral/dureza_en_la_escala_de_barcol_de_45.png" alt="dureza_en_la_escala_de_barcol_de_45" /></span><span style="line-height: 39.2px; font-size: 28px;">4</span>.<img style="width: 70px; height: 70px;" title="Resistencia al cambio de temperatura" src="/WebRoot/StoreES2/Shops/63993920/MediaGallery/Platos_carga_mineral/resistencia_al_cambio_de_temperatura.png" alt="resistencia_al_cambio_de_temperatura" /><span style="line-height: 39.2px; font-size: 28px;">5.<img style="width: 70px; height: 70px;" title="Antideslizante" src="/WebRoot/StoreES2/Shops/63993920/MediaGallery/Platos_carga_mineral/antideslizante.png" alt="antideslizante" /></span>';
+
+        dd(HTMLTools::relativeToAbsoluteURLs($str, 'https://www.azulejosmadridonline.es/'));        
     }
 
 }   // end class
