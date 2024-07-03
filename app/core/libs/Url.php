@@ -155,7 +155,6 @@ class Url
         return "{$p['scheme']}://{$p['host']}{$p['path']}$query";
     }
 
-    
     /**
      * Check if a URL is absolute.
      *
