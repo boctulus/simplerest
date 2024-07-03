@@ -155,6 +155,29 @@ class Url
         return "{$p['scheme']}://{$p['host']}{$p['path']}$query";
     }
 
+    
+    /**
+     * Check if a URL is absolute.
+     *
+     * @param string $url The URL to check.
+     * @return bool True if the URL is absolute, false otherwise.
+     */
+    static function isAbsoluteURL(string $url): bool
+    {
+        return preg_match('/^(https?:)?\/\//', $url);
+    }
+
+    /**
+     * Check if a URL is relative.
+     *
+     * @param string $url The URL to check.
+     * @return bool True if the URL is relative, false otherwise.
+     */
+    static function isRelativeURL(string $url): bool
+    {
+        return !static::isAbsoluteURL($url);
+    }
+
     /*  
         Convierte una url o slug de relativo a absoluta
 
