@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\traits;
+namespace simplerest\core\libs\code_cleaner;
 
-trait BootstrapTrait
+class BootstrapCleaner
 {
-    static function removeBTClases($str){
+    static function remove($str){
         $classes = [
             0 => 'accordion-body',
             1 => 'accordion-button',
@@ -896,4 +896,6 @@ trait BootstrapTrait
         return $str;
     }
 
+
 }
+
