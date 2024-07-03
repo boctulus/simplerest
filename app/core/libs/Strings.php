@@ -2121,10 +2121,16 @@ class Strings
         $str = iconv($detected_encoding, $target . '//TRANSLIT', $str);
 
         $defaultReplaceMap = [
-            'â‚¬' => '€',
+			'â‚¬' => '€',
             'Ã³' => 'ó',
             'Ã' => 'Á',
             'Â' => '',
+            'Á­' => 'í',  // Añadido para manejar el caso de "quÁ­micos"
+            'Ã©' => 'é',
+            'Ã¡' => 'á',
+            'Ã±' => 'ñ',
+            'Ãº' => 'ú',
+            'Ã¼' => 'ü',
         ];
 
         $replaceMap = $replaceMap ?? $defaultReplaceMap;
