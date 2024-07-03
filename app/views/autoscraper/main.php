@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
         mode: "application/json",
         lineNumbers: true,
         theme: "dracula",
-        readOnly: true
+        readOnly: true //
     });
 
     // Set JSON content

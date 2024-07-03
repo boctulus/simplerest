@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace simplerest\core\libs\code_cleaner;
 
 use simplerest\core\libs\CSS;
-use simplerest\core\libs\XML;
+use simplerest\core\libs\HTML;
 use simplerest\core\libs\Files;
 
-class AngularCodeCleaner
+class AngularCleaner
 {
-    /*
+     /*
         Elimina vestigios de Angular / AngularJS
         de un HTML
     */
@@ -18,7 +18,7 @@ class AngularCodeCleaner
             $page = Files::getContent($page);
         }   
 
-        $page = XML::removeHTMLAttributes($page, [
+        $page = HTML::removeHTMLAttributes($page, [
             'data-ng-click',
             'data-ng-if',
             'data-ng-class',
@@ -46,11 +46,10 @@ class AngularCodeCleaner
             'ng-inactive'          
         ]);
 
-        $page = XML::removeEmptyAttributes($page);
+        $page = HTML::removeEmptyAttributes($page);
 
         return $page;
     }
-
 
 }
 
