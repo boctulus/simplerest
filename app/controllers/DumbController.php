@@ -60,29 +60,30 @@ use simplerest\core\libs\VarDump;
 
 use Spatie\ArrayToXml\ArrayToXml;
 
+use simplerest\core\libs\ClaudeAI;
 use simplerest\core\libs\CSSUtils;
-use simplerest\core\libs\Factory;;
 
+use simplerest\core\libs\Factory;;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
 use simplerest\core\libs\Parallex;
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
 use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\CookieJar;
 
+use simplerest\core\libs\CookieJar;
 use simplerest\core\libs\FileCache;
 use simplerest\core\libs\MediaType;
-use simplerest\core\libs\Paginator;
 
+use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
 use simplerest\core\libs\DomCrawler;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\Obfuscator;
-use simplerest\core\libs\SendinBlue;
 
+use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
 use simplerest\core\libs\GoogleDrive;
@@ -96,8 +97,8 @@ use simplerest\core\libs\EasyHTMLTable;
 use simplerest\core\libs\EmailTemplate;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\core\libs\InMemoryCache;
-use simplerest\core\libs\StratoScraper;
 
+use simplerest\core\libs\StratoScraper;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
 use simplerest\controllers\api\Products;
@@ -132,6 +133,8 @@ use simplerest\libs\scrapers\MaisonsScraper;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\WooCommerceApiClient;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
+use simplerest\core\libs\code_cleaner\AngularCleaner;
+use simplerest\core\libs\code_cleaner\BootstrapCleaner;
 use simplerest\shortcodes\countdown\CountDownShortcode;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use simplerest\shortcodes\csv_importer\ImporterShortcode;
@@ -10560,6 +10563,28 @@ class DumbController extends Controller
         $this->analyzeImage($imagePath);
     }
 
+
+    function test_claude_1()
+    {
+        $chat = new ClaudeAI();
+
+        $chat->setParams(['max_tokens' => 200]); 
+        $chat->addContent('Estados de oxidacion del Uranio?');
+        $res = $chat->exec();
+        dd($res);
+    }
+
+    function test_claude_2()
+    {
+        $chat = new ClaudeAI();
+
+        $chat->setParams(['max_tokens' => 30]);  
+        $chat->addContent('Hola, ¿cómo estás hoy?');
+        $res = $chat->exec('claude-instant-1.2');
+
+        dd($res);
+    }
+
     function test_case(){
         // Ejemplo de uso
         $stringExample = "HELLO WORLD";
@@ -10644,7 +10669,7 @@ class DumbController extends Controller
         - Eliminar formularios con id que contengan "login"
         Etc
     */
-    function getMinifiedHTML(string $url, int $level = 1)
+    function getMinifiedHTML(string $url, bool $remove_css_classes = false, bool $remove_frameworks = false, bool $remove_lists = false)
     {
         $cli = new ApiClient($url);
 
@@ -10704,8 +10729,14 @@ class DumbController extends Controller
                 'onresize',
                 'onscroll'
             ]);
+
+            $attr_to_remove = ['style', 'rel', 'target', 'type'];
     
-            $html = HTMLTools::removeHTMLAttributes($html, ['style', 'class', 'rel', 'target', 'type']);
+            if ($remove_css_classes){
+                $attr_to_remove[] = 'class';
+            }
+
+            $html = HTMLTools::removeHTMLAttributes($html, $attr_to_remove);
             $html = Strings::removeMultiLineComments($html);
             $html = HTMLTools::removeComments($html);
             $html = Strings::removeSpaceBetweenTags($html);
@@ -10715,18 +10746,36 @@ class DumbController extends Controller
             $html = Strings::removeDataAttr($html); // bye data-*
              
             /*
-                Extra *custom* reductions
+                Extra reductions
             */
 
-            $html = XML::stripTag($html, 'ul'); 
-            $html = XML::stripTag($html, 'ol'); 
-            // $html = XML::stripTag    ($html, 'img');  
-            // $html = XML::stripTagById($html, 'allfooter');
-            // $html = XML::stripTagById($html, '_info');  
+            if ($remove_lists){
+                $html = XML::stripTag($html, 'ul'); 
+                $html = XML::stripTag($html, 'ol'); 
+            }
+            
+            if ($remove_frameworks){
+                $cms  = CMSScanner::identify($url);
+
+                /*
+                    Remocion de CSS de frameworks
+                */
+
+                if (in_array('Bootstrap', $cms['frontend'])){
+                    $html = BootstrapCleaner::remove($html);
+                }
+
+                if (in_array('Angular (SSR)', $cms['frontend']) || in_array('Angular', $cms['frontend'])){
+                    $html = AngularCleaner::remove($html);
+                }
+            }           
         }    
 
         $html = str_replace([ '&#xA0;', '&#x2013;', '&#xB0;', '&gt;', '&#x2019;' ], '', $html);
 
+        // Fix para '<?xml version="1.0" ...
+        $html = str_replace('??????????>', ' ?>', $html);
+        
         // dd($html, 'HTML'); exit;
         dd(Strings::getLengthInKB($html), "LEN");
         //exit;
@@ -10739,10 +10788,113 @@ class DumbController extends Controller
     function get_reduced_html(){        
         $url = "https://www.mateandoarg.com/materas/porta-mate-rutero-cuero";
 
-        $out = $this->getMinifiedHTML($url, 6);
+        $out = $this->getMinifiedHTML($url, false, false, true);
 
         dd($out);
     }
-    
+
+    function test_claude_api()
+    {
+        $api_key = config()['claude_api_key'] ?? die('claude_api_key is required');
+        $url = 'https://api.anthropic.com/v1/messages';
+
+        dd($api_key); exit;
+
+        $content = <<<DATA
+        Given the following HTML from web page, extract XPATH selectors (compatible with Javascript and Selenium) and complete the provided JSON. 
+
+        JSON: 
+
+        {
+            "product_name": "{XPATH}",
+            "regular_price": "{XPATH}",
+            "sales_price": "{XPATH}", 
+            "discount_as_percentaje": "{XPATH}",
+            "interest_free_installments": {
+                "number_of_installments": "{XPATH}",
+                "fee_amount": "{XPATH}"
+            },
+            "colors:all": "{XPATH}",
+            "images:all[src]": "{XPATH}"
+        }
+
+        RECOMENDATIONS:
+
+
+        - Try simple solutions instead of overcomplicated XPATH selectors.
+
+        - To use relative XPATH is also an option.
+
+        - Do not asume anything about the HTML structure. Double-check.
+
+        - By default, you are asked to get texts but if you see something like [src] or [href] and so on between [ and ] then means get attribute or attributes.
+
+        - The answer MUST be ONLY the JSON and nothing else. No explanations. No questions. Nothing else.
+
+        - Please, feel free to use more tokens to process a verification process before deliver the solution.
+
+
+        HTML: 
+        DATA;
+
+        $content .= file_get_contents(ETC_PATH . 'page.html');
+
+        $data = [
+            'model' => 'claude-3-sonnet-20240229',
+            'max_tokens' => 1500,
+            'messages' => [
+                [
+                    'role' => 'user', 
+                    'content' => $content
+                ]
+            ]
+        ];
+
+        $headers = [
+            'Content-Type: application/json',
+            'x-api-key: ' . $api_key,
+            'anthropic-version: 2023-06-01'
+        ];
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        // Opción para ignorar la verificación del certificado SSL
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            echo 'Error cURL: ' . curl_error($ch);
+        } else {
+            dd($response);
+
+            $result = json_decode($response, true);
+
+            dd($result);
+
+            if (isset($result['content'][0]['text'])) {
+                echo "Respuesta de Claude: " . $result['content'][0]['text'] . "\n\n";
+                
+                // Mostrar información sobre los tokens
+                if (isset($result['usage'])) {
+                    echo "Tokens consumidos:\n";
+                    echo "Input tokens: " . $result['usage']['input_tokens'] ?? '' . "\n";
+                    echo "Output tokens: " . $result['usage']['output_tokens'] ?? ''  . "\n";
+                    echo "Total tokens: " . $result['usage']['total_tokens'] ?? '' . "\n";
+                } else {
+                    echo "Información de tokens no disponible en la respuesta.\n";
+                }
+            } else {
+                echo "Error en la respuesta: ";
+                dd($result);
+            }
+        }
+
+        curl_close($ch);
+    }
 
 }   // end class
