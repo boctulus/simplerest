@@ -2131,6 +2131,41 @@ class Strings
         return str_replace(array_keys($replaceMap), array_values($replaceMap), $str);
     }
 
+	/*
+		Corrige problemas de codificacion
+
+		Similar a fixEncoding() pero aplicable a HTML
+	*/
+	static function fixEncodingWithHtmlEntities($html, $final_encoding = 'UTF-8')
+    {
+        $dom = new \DOMDocument();
+        
+        // Preservar espacios en blanco
+        $dom->preserveWhiteSpace = true;
+        
+        // Cargar HTML, usando UTF-8 como codificación
+        @$dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', $final_encoding), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        $xpath = new \DOMXPath($dom);
+        $textNodes = $xpath->query('//text()');
+
+        foreach ($textNodes as $textNode) {
+            $fixed = self::fixEncoding($textNode->nodeValue);
+            $textNode->nodeValue = $fixed;
+        }
+
+        // Corregir atributos
+        $elements = $xpath->query('//*');
+        foreach ($elements as $element) {
+            foreach ($element->attributes as $attribute) {
+                $fixed = self::fixEncoding($attribute->value);
+                $attribute->value = $fixed;
+            }
+        }
+
+        return $dom->saveHTML();
+    }
+
 	/**
 	 * Converts accentuated characters (àéïöû etc.) 
 	 * to their ASCII equivalent (aeiou etc.)
