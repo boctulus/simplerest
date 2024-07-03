@@ -10794,12 +10794,7 @@ class DumbController extends Controller
     }
 
     function test_claude_api()
-    {
-        $api_key = config()['claude_api_key'] ?? die('claude_api_key is required');
-        $url = 'https://api.anthropic.com/v1/messages';
-
-        dd($api_key); exit;
-
+    {   
         $content = <<<DATA
         Given the following HTML from web page, extract XPATH selectors (compatible with Javascript and Selenium) and complete the provided JSON. 
 
@@ -10837,64 +10832,36 @@ class DumbController extends Controller
         HTML: 
         DATA;
 
-        $content .= file_get_contents(ETC_PATH . 'page.html');
+        $max_tokens = 50;
+        $content    = 'Capital de Peru?';
 
-        $data = [
-            'model' => 'claude-3-sonnet-20240229',
-            'max_tokens' => 1500,
-            'messages' => [
-                [
-                    'role' => 'user', 
-                    'content' => $content
-                ]
-            ]
-        ];
+        $chat = new ClaudeAI();
 
-        $headers = [
-            'Content-Type: application/json',
-            'x-api-key: ' . $api_key,
-            'anthropic-version: 2023-06-01'
-        ];
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        // Opción para ignorar la verificación del certificado SSL
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-        $response = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            echo 'Error cURL: ' . curl_error($ch);
-        } else {
-            dd($response);
-
-            $result = json_decode($response, true);
-
-            dd($result);
-
-            if (isset($result['content'][0]['text'])) {
-                echo "Respuesta de Claude: " . $result['content'][0]['text'] . "\n\n";
-                
-                // Mostrar información sobre los tokens
-                if (isset($result['usage'])) {
-                    echo "Tokens consumidos:\n";
-                    echo "Input tokens: " . $result['usage']['input_tokens'] ?? '' . "\n";
-                    echo "Output tokens: " . $result['usage']['output_tokens'] ?? ''  . "\n";
-                    echo "Total tokens: " . $result['usage']['total_tokens'] ?? '' . "\n";
-                } else {
-                    echo "Información de tokens no disponible en la respuesta.\n";
-                }
-            } else {
-                echo "Error en la respuesta: ";
-                dd($result);
-            }
+        $chat->setParams(['max_tokens' => $max_tokens]); 
+        $chat->addContent($content);
+        $chat->client->cache(3600); //        
+        $res = $chat->exec();
+        // dd($res);          
+        
+        if (!empty($res['error'])){
+            dd($res['error'], 'Error');
+            return; //
         }
 
-        curl_close($ch);
+        $data = $res['data']['data'];
+        
+        dd($data['content'][0]['text'], "Respuesta de Claude:");
+
+        if (isset($data['usage'])) {
+            dd($data['usage']['input_tokens'] ?? '', "Input tokens:");
+            dd($data['usage']['output_tokens'] ?? '', "Output tokens:");
+            dd(($data['usage']['input_tokens'] ?? 0) + ($data['usage']['output_tokens'] ?? 0), "Total tokens:");
+        } else {
+            dd(null, "Información de tokens no disponible en la respuesta.");
+        }
+
+
+    
     }
 
 }   // end class

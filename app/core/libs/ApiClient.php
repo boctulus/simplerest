@@ -1082,6 +1082,10 @@ class ApiClient
         $input = str_replace(['https://', 'http://'], '', $this->url);
 
         if ($this->cache_post_request && $this->verb == 'POST'){
+            if (is_array($this->req_body)){
+                $this->req_body = md5(json_encode($this->req_body));
+            }
+
             $input .= "+body={$this->req_body}";
         }
 
