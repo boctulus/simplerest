@@ -7,7 +7,7 @@ use simplerest\core\libs\Url;
 
 class HTML extends XML
 {
- /**
+    /**
      * Convert relative URLs in <img src=""> and <a href=""> to absolute URLs.
      *
      * @param string $html The HTML content.
@@ -16,11 +16,7 @@ class HTML extends XML
      */
     public static function relativeToAbsoluteURLs(string $html, string $root): string
     {
-        $dom = new \DOMDocument();
-        libxml_use_internal_errors(true);
-        $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        libxml_clear_errors();
-
+        $dom   = XML::getDocument($html);
         $xpath = new \DOMXPath($dom);
 
         // Update <img src="">
@@ -43,7 +39,6 @@ class HTML extends XML
 
         return $dom->saveHTML();
     }
-
 
     /*
         Devuelve un array con todos los IDs utilizados en el documento HTML
