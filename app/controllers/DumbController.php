@@ -10870,4 +10870,24 @@ class DumbController extends Controller
         dd(HTMLTools::relativeToAbsoluteURLs($str, 'https://www.azulejosmadridonline.es/'));        
     }
 
+    function test_fix_encoding(){
+        $str = 'Para pedidos inferiores a 60â‚¬ en nuestra secciÃ³n de construcciÃ³n de deben abonar 6â‚¬ por gastos de transporte. VÃLVULA INCLUIDA.Â ';
+
+        // Detectar la codificación actual
+        $detected_encoding = mb_detect_encoding($str, 'UTF-8, ISO-8859-1, ASCII', true);
+
+        // Convertir a UTF-8
+        $str = iconv($detected_encoding, 'UTF-8//TRANSLIT', $str);
+
+        // Reemplazar caracteres específicos
+        $str = str_replace(
+            ['â‚¬', 'Ã³', 'Ã', 'Â'],
+            ['€', 'ó', 'Á', ''],
+            $str
+        );
+
+        // Mostrar el resultado
+        dd($str);
+    }
+
 }   // end class
