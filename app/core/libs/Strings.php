@@ -2103,6 +2103,34 @@ class Strings
 		return chr($value + 97 + ($starting_by_zero == false ? -1 : 0));
 	}
 
+	/*
+		Corrige problemas de codificacion 
+
+		Ej:
+
+		$str = 'Para pedidos inferiores a 80â‚¬ en nuestra secciÃ³n de construcciÃ³n de deben abonar 6â‚¬ por gastos de transporte. VÃLVULA INCLUIDA.Â ';
+
+        $str = Strings::fixEncoding($str);
+        dd($str);
+	*/
+	static function fixEncoding($str, $targetEncoding = 'UTF-8, ISO-8859-1, ASCII', $replaceMap = null)
+    {
+		$target = trim(static::segment($targetEncoding, ',', 0));
+
+        $detected_encoding = mb_detect_encoding($str, $targetEncoding, true);
+        $str = iconv($detected_encoding, $target . '//TRANSLIT', $str);
+
+        $defaultReplaceMap = [
+            'â‚¬' => '€',
+            'Ã³' => 'ó',
+            'Ã' => 'Á',
+            'Â' => '',
+        ];
+
+        $replaceMap = $replaceMap ?? $defaultReplaceMap;
+        return str_replace(array_keys($replaceMap), array_values($replaceMap), $str);
+    }
+
 	/**
 	 * Converts accentuated characters (àéïöû etc.) 
 	 * to their ASCII equivalent (aeiou etc.)
