@@ -17654,6 +17654,59 @@ function analyzeImage($imagePath)
 }
 
 
+# Claude .ai
+
+Ej:
+
+    $chat = new ClaudeAI();
+
+    $chat->setParams(['max_tokens' => 200]); 
+    $chat->addContent('Estados de oxidacion del Uranio?');
+    $res = $chat->exec();
+    dd($res);
+
+    y se puede elgir el modelo.
+
+    Ej:
+
+    $chat = new ClaudeAI();
+
+    $chat->setParams(['max_tokens' => 30]);  
+    $chat->addContent('Hola, ¿cómo estás hoy?');
+    $res = $chat->exec('claude-instant-1.2');
+    dd($res);
+
+
+Captura de tokens consumidos
+
+Ej:
+
+	$chat = new ClaudeAI();
+
+	$chat->setParams(['max_tokens' => $max_tokens]); 
+	$chat->addContent($content);
+	$chat->client->cache(3600); //        
+	$res = $chat->exec();
+	// dd($res);          
+	
+	if (!empty($res['error'])){
+		dd($res['error'], 'Error');
+		return; //
+	}
+
+	$data = $res['data']['data'];
+
+	dd($data['content'][0]['text'], "Respuesta de Claude:");
+
+	if (isset($data['usage'])) {
+		dd($data['usage']['input_tokens'] ?? '', "Input tokens:");
+		dd($data['usage']['output_tokens'] ?? '', "Output tokens:");
+		dd(($data['usage']['input_tokens'] ?? 0) + ($data['usage']['output_tokens'] ?? 0), "Total tokens:");
+	} else {
+		dd(null, "Información de tokens no disponible en la respuesta.");
+	}
+
+
 # Redirecciones 301 | 302
 
 El framework tiene un mecanismo eficiente para manejar redirecciones 301 y 302. El script se ejecuta antes que cualquier otra parte del framework.
