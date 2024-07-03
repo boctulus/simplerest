@@ -27,7 +27,10 @@ namespace simplerest\core\libs;
 */
 class ClaudeAI
 {
+    const DEFAULT_API_VERSION = '2023-06-01';
+    
     protected $api_key;
+    protected $api_version;
     protected $messages = [];
     protected $response;
     protected $params;
@@ -37,15 +40,16 @@ class ClaudeAI
 
     const MESSAGES = 1;
 
-    function __construct($api_key = null) {
+    function __construct($api_key = null, $api_version = null) {
         $this->api_key = $api_key ?? config()['claude_api_key'] ?? die('claude_api_key is required');
+        $this->api_version = $api_version ?? self::DEFAULT_API_VERSION;
 
         $this->client = ApiClient::instance()
         ->setHeaders(
             [
                 "Content-type" => "application/json",
                 "x-api-key" => $this->api_key,
-                "anthropic-version" => "2023-06-01"
+                "anthropic-version" => $this->api_version
             ]
         )
         ->disableSSL()
