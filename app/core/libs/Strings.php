@@ -14,21 +14,21 @@ class Strings
 	const CAMELCASE_FILTER = 'cm';
 
 	// Mapa de reemplazo para caracteres problemáticos comunes
-	const REPLACE_CHARMAP  =  [
-		'Ã"' => 'Ó', 'Ã³' => 'ó',
-        'Ã‰' => 'É', 'Ã©' => 'é',
-        'Ã' => 'Á', 'Ã¡' => 'á',
-        'Ã•' => 'Õ', 'Ãµ' => 'õ',
-        'Ãš' => 'Ú', 'Ãº' => 'ú',
-        "Ã'" => 'Ñ', 'Ã±' => 'ñ',
-        'Ã„' => 'Ä', 'Ã¤' => 'ä',
-        'Ã–' => 'Ö', 'Ã¶' => 'ö',
-        'Ãœ' => 'Ü', 'Ã¼' => 'ü',
-        'ÃŸ' => 'ß',
-        'â‚¬' => '€',
-        'Â' => '', 'Â°' => '°', 'Âº' => 'º', 'Â²' => '²', 'Â³' => '³',
-        // 'Ã' => 'Í',  // Añadido para manejar casos como "ENVÍO"
-        'Ãƒ' => 'Ã', // Para manejar casos donde 'Ã' se ha codificado dos veces
+	const REPLACE_CHARMAP = [
+		'Ã³' => 'ó',
+		'Ã“' => 'Ó',
+		'Ã‰' => 'É', 'Ã©' => 'é',
+		'Ã' => 'Á', 'Ã¡' => 'á',
+		'Ã•' => 'Õ', 'Ãµ' => 'õ',
+		'Ãš' => 'Ú', 'Ãº' => 'ú',
+		"Ã'" => 'Ñ', 'Ã±' => 'ñ',
+		'Ã„' => 'Ä', 'Ã¤' => 'ä',
+		'Ã–' => 'Ö', 'Ã¶' => 'ö',
+		'Ãœ' => 'Ü', 'Ã¼' => 'ü',
+		'ÃŸ' => 'ß',
+		'â‚¬' => '€',
+		'Â' => '', 'Â°' => '°', 'Âº' => 'º', 'Â²' => '²', 'Â³' => '³',
+		'Ãƒ' => 'Ã',		
 	];
 
 	static $regex = [
@@ -2155,6 +2155,7 @@ class Strings
 
 		// Aplicar reemplazos
 		$fixed = strtr($str, self::REPLACE_CHARMAP);
+		
 
 		// Asegurarse de que el resultado esté en UTF-8
 		if (!mb_check_encoding($fixed, $target_encoding)) {
@@ -2188,7 +2189,7 @@ class Strings
 		if (!mb_check_encoding($fixed, $target)) {
 			$fixed = mb_convert_encoding($fixed, $target, $detected_encoding);
 		}
-		
+
 		return $fixed;
 	}
 
