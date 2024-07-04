@@ -10871,10 +10871,42 @@ class DumbController extends Controller
     }
 
     function test_fix_encoding(){
-        $str = 'Para pedidos inferiores a 80â‚¬ en nuestra secciÃ³n de construcciÃ³n de deben abonar 6â‚¬ por gastos de transporte. VÃLVULA INCLUIDA.Â ';
+        $str = '
+        COMPOSICIÃ“N NÂº24 100X60. 
+        
+        ColecciÃ³n compuesta por 5Â piezas distintas. 
+        
+        Cantidad en la composiciÃ³n: 0,60 m2.
+        
+        Para pedidos inferiores a 80â‚¬ en nuestra secciÃ³n de construcciÃ³n de deben abonar 6â‚¬ por gastos de transporte. VÃLVULA INCLUIDA.Â - ENVÃO GRATUITO';
 
-        $str = Strings::fixEncoding($str);
+        dd(Strings::fixEncoding($str), 'VER 1');
+        dd(Strings::fixEncodingWithAutodetection($str), 'VER 2');
+    }
+
+    function test_fix_encoding_2(){
+        $str = <<<STR
+        <h1><span style="font-size: 22px;"><em><strong><span style="color: red;">COMPOSICIÃ“N NÂº24 100X60</span></strong></em></span></h1>
+        <em><strong>ColecciÃ³n compuesta por 5Â piezas distintas</strong></em> que forma un mural de 100x60cms.
+
+        ComposiciÃ³n compuesta por piezas de 20x60
+
+        <em><strong>Pasta roja.</strong></em>
+
+        Cantidad en la composiciÃ³n: 0,60 m2.
+
+        <em style="color: red; font-size: 13px;"><strong>ENVÃO GRATUITO.</strong></em>
+
+        <span style="color: red;"><em><strong>VENTA POR CONJUNTO DE 5Â PIEZAS.</strong></em></span>
+
+        <span style="color: black;"><em><strong>CONSULTAD DESCUENTO A PARTIR DE 3Â JUEGOS DE COMPOSICIÃ“N.</strong></em></span>
+
+        Â
+        STR;
+
+        $str = Strings::fixEncodingWithHtmlEntities($str);
         dd($str);
     }
+
 
 }   // end class
