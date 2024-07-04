@@ -13,6 +13,24 @@ class Strings
 	const SNAKECASE_FILTER = 'sn';
 	const CAMELCASE_FILTER = 'cm';
 
+	// Mapa de reemplazo para caracteres problemáticos comunes
+	const REPLACE_CHARMAP  =  [
+		'Ã"' => 'Ó', 'Ã³' => 'ó',
+        'Ã‰' => 'É', 'Ã©' => 'é',
+        'Ã' => 'Á', 'Ã¡' => 'á',
+        'Ã•' => 'Õ', 'Ãµ' => 'õ',
+        'Ãš' => 'Ú', 'Ãº' => 'ú',
+        "Ã'" => 'Ñ', 'Ã±' => 'ñ',
+        'Ã„' => 'Ä', 'Ã¤' => 'ä',
+        'Ã–' => 'Ö', 'Ã¶' => 'ö',
+        'Ãœ' => 'Ü', 'Ã¼' => 'ü',
+        'ÃŸ' => 'ß',
+        'â‚¬' => '€',
+        'Â' => '', 'Â°' => '°', 'Âº' => 'º', 'Â²' => '²', 'Â³' => '³',
+        // 'Ã' => 'Í',  // Añadido para manejar casos como "ENVÍO"
+        'Ãƒ' => 'Ã', // Para manejar casos donde 'Ã' se ha codificado dos veces
+	];
+
 	static $regex = [
 		'URL'	=> "/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
 		// ...
@@ -2113,29 +2131,50 @@ class Strings
         $str = Strings::fixEncoding($str);
         dd($str);
 	*/
-	static function fixEncoding($str, $targetEncoding = 'UTF-8, ISO-8859-1, ASCII', $replaceMap = null)
-    {
-		$target = trim(static::segment($targetEncoding, ',', 0));
+	static function fixEncoding(string $str, string $from_encoding = 'ISO-8859-1', string $to_encoding = 'UTF-8'): string
+	{
+		// Convertir a UTF-8 solo si no está ya en UTF-8
+		if (!mb_check_encoding($str, $to_encoding)) {
+			$str = mb_convert_encoding($str, $to_encoding, $from_encoding);
+		}
 
-        $detected_encoding = mb_detect_encoding($str, $targetEncoding, true);
-        $str = iconv($detected_encoding, $target . '//TRANSLIT', $str);
+		// Aplicar reemplazos
+		$fixed = strtr($str, self::REPLACE_CHARMAP);
 
-        $defaultReplaceMap = [
-			'â‚¬' => '€',
-            'Ã³' => 'ó',
-            'Ã' => 'Á',
-            'Â' => '',
-            'Á­' => 'í',  // Añadido para manejar el caso de "quÁ­micos"
-            'Ã©' => 'é',
-            'Ã¡' => 'á',
-            'Ã±' => 'ñ',
-            'Ãº' => 'ú',
-            'Ã¼' => 'ü',
-        ];
+		// Asegurarse de que el resultado esté en UTF-8
+		if (!mb_check_encoding($fixed, $to_encoding)) {
+			$fixed = mb_convert_encoding($fixed, $to_encoding, $from_encoding);
+		}
 
-        $replaceMap = $replaceMap ?? $defaultReplaceMap;
-        return str_replace(array_keys($replaceMap), array_values($replaceMap), $str);
-    }
+		return $fixed;
+	}
+
+	static function fixEncodingWithAutodetection(string $str, string $targetEncoding = 'UTF-8, ISO-8859-1, ASCII', ?array $replaceMap = null): string
+	{
+		// Detección de codificación
+		$detected_encoding = mb_detect_encoding($str, $targetEncoding, true);
+		if ($detected_encoding === false) {
+			// Fallback a la codificación por defecto si no se detecta ninguna
+			$detected_encoding = 'ISO-8859-1';
+		}
+
+		// Convertir a UTF-8 si no está ya en UTF-8
+		if (!mb_check_encoding($str, 'UTF-8')) {
+			$str = iconv($detected_encoding, 'UTF-8//TRANSLIT', $str);
+		}
+
+		$replaceMap = $replaceMap ?? self::REPLACE_CHARMAP;
+
+		// Aplicar reemplazos
+		$fixed = str_replace(array_keys($replaceMap), array_values($replaceMap), $str);
+
+		// Asegurarse de que el resultado esté en UTF-8
+		if (!mb_check_encoding($fixed, 'UTF-8')) {
+			$fixed = mb_convert_encoding($fixed, 'UTF-8', $detected_encoding);
+		}
+
+		return $fixed;
+	}
 
 	/*
 		Corrige problemas de codificacion
