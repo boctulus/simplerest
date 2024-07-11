@@ -28,9 +28,11 @@ class Strings
 		'ÃŸ' => 'ß',
 		'â‚¬' => '€',
 		'Â' => '', 'Â°' => '°', 'Âº' => 'º', 'Â²' => '²', 'Â³' => '³',
-		'Ãƒ' => 'Ã',		
+		'Ãƒ' => 'Ã',
+		'ÃO' => 'ÍO',  // Añadido para manejar casos como "ENVÍO"	
+		'Á­' => 'í',  // Añadido para manejar el caso de "quÁ­micos"	
 	];
-
+	
 	static $regex = [
 		'URL'	=> "/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",
 		// ...
@@ -2212,7 +2214,7 @@ class Strings
         $textNodes = $xpath->query('//text()');
 
         foreach ($textNodes as $textNode) {
-            $fixed = self::fixEncoding($textNode->nodeValue);
+            $fixed = self::fixEncodingWithAutodetection($textNode->nodeValue);
             $textNode->nodeValue = $fixed;
         }
 
@@ -2220,13 +2222,28 @@ class Strings
         $elements = $xpath->query('//*');
         foreach ($elements as $element) {
             foreach ($element->attributes as $attribute) {
-                $fixed = self::fixEncoding($attribute->value);
+                $fixed = self::fixEncodingWithAutodetection($attribute->value);
                 $attribute->value = $fixed;
             }
         }
 
         return $dom->saveHTML();
     }
+
+	public static function unravelEncoding($str, $iterations = 100)
+    {
+        $previous = $str;
+        for ($i = 0; $i < $iterations; $i++) {
+            $decoded = utf8_decode($previous);
+			
+            if ($decoded === $previous) {
+                break;
+            }
+            $previous = $decoded;
+        }
+        return $previous;
+    }
+
 
 	/**
 	 * Converts accentuated characters (àéïöû etc.) 

@@ -7940,3 +7940,14 @@ Considera otros algoritmos: FIFO, LRU, RR
 
 https://redis.com/glossary/lru-cache/
 https://www.interviewcake.com/concept/java/lru-cache 
+
+- Desarrollar una *nueva cache* para ApiClient para que se puedan almacenar las respuestas que son HTML coomo archivos .html en una ubicacion especifica y que el nombre pueda ser determinado por una funcion callback como
+	
+	// podria ser que devuelva algo como "{sku.html}"
+	function($url, $body){
+		// ...
+
+		return $filename;
+	}
+
+<--- quizas sea poco necesario porque utilizo Python con Selenium
