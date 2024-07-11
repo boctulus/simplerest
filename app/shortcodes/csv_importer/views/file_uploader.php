@@ -53,7 +53,12 @@
     </div>
 </div>
 
-<script>
+<script>    
+    let completion;
+    let currentPage;
+    let startTime;
+    let debug = true;
+
     /*
         Manejar status: [ "ready", "active" (in progress), "paused", "completed" ]
 
@@ -72,6 +77,10 @@
         localStorage.setItem("bzz-importer-status", status);
     }
 
+    function getImportStatus() {
+        return localStorage.getItem('bzz-importer-status');
+    }
+
     function setStatusAsReady() {
         setImportStatus("ready");
     }
@@ -88,14 +97,17 @@
         setImportStatus("completed");
     }
 
+    function setStatusAsCancelled() {
+        setImportStatus("ready");    // <--- asi
+    }
+
     /**
      * Alternates visibility of the upload button based on a boolean flag.
      * @param {boolean} enabled - Indicates whether the button should be enabled (true) or disabled (false).
      */
     function toggleUploadButtonVisibility(enabled) {
         const uploadButton = document.getElementById('upload_btn');
-        uploadButton.disabled = !enabled;
-        uploadButton.classList.toggle('btn-secondary', !enabled);
+        uploadButton.classList.toggle('d-none', !enabled);
 
         if (enabled){
             toggleUploadButton(true);
@@ -108,8 +120,7 @@
      */
     function togglePauseButtonVisibility(enabled) {
         const pauseButton = document.getElementById('pause_btn');
-        pauseButton.disabled = !enabled;
-        pauseButton.classList.toggle('btn-secondary', !enabled);
+        pauseButton.classList.toggle('d-none', !enabled);
 
         if (enabled){
             togglePauseButton(true);
@@ -122,8 +133,7 @@
      */
     function toggleResumeButtonVisibility(enabled) {
         const resumeButton = document.getElementById('resume_btn');
-        resumeButton.disabled = !enabled;
-        resumeButton.classList.toggle('btn-secondary', !enabled);
+        resumeButton.classList.toggle('d-none', !enabled);
 
         if (enabled){
             toggleResumeButton(true);
@@ -136,8 +146,7 @@
      */
     function toggleCancelButtonVisibility(enabled) {
         const cancelButton = document.getElementById('cancel_btn');
-        cancelButton.disabled = !enabled;
-        cancelButton.classList.toggle('btn-secondary', !enabled);
+        cancelButton.classList.toggle('d-none', !enabled);
 
         if (enabled){
             toggleCancelButton(true);
@@ -178,6 +187,20 @@
      */
     function toggleResumeButton(enabled) {
         const button = document.getElementById('resume_btn');
+        button.disabled = !enabled;
+        if (enabled) {
+            button.classList.remove('disabled');
+        } else {
+            button.classList.add('disabled');
+        }
+    }
+
+    /**
+     * Alternates enabled/disabled state of the cancel button based on a boolean flag.
+     * @param {boolean} enabled - Indicates whether the button should be enabled (true) or disabled (false).
+     */
+    function toggleCancelButton(enabled) {
+        const button = document.getElementById('cancel_btn');
         button.disabled = !enabled;
         if (enabled) {
             button.classList.remove('disabled');
@@ -236,7 +259,9 @@
             .then(response => response.json()) // Convertir la respuesta a JSON
             .then(data => {
                 // Manejar la respuesta del servidor
-                console.log(data);
+                if (debug){
+                    console.log(data);
+                }               
 
                 // Limpiar el input file y mostrar barra
                 fileInput.value = '';
@@ -244,6 +269,10 @@
 
                 startTime = new Date().getTime();
                 get_until_completion_callback();
+
+                togglePauseButtonVisibility(true);
+                toggleUploadButtonVisibility(true);
+                toggleCancelButtonVisibility(true);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -251,18 +280,18 @@
     }
 
     // revisar
-    function resumeCSV() {        
-        toggleResumeButton(false);
-        togglePauseButton(false);        
-        get_until_completion_callback(currentPage);
-        setImportStatus('active');
+    function pauseCSV() {        
+        toggleResumeButtonVisibility(true);
+        togglePauseButtonVisibility(false);
+        setStatusAsPaused();
     }
 
     // revisar
-    function pauseCSV() {        
-        toggleResumeButton(false);
-        togglePauseButton(false);
-        setImportStatus('paused');
+    function resumeCSV() {        
+        toggleResumeButtonVisibility(false);
+        togglePauseButtonVisibility(true);        
+        checkCompletionStatus()
+        setStatusAsActive();
     }
 
     // ok
@@ -286,6 +315,8 @@
                 localStorage.removeItem('currentPage');
                 localStorage.removeItem('importCompleted');
                 console.log(data.message);
+
+                setStatusAsCancelled();
             })
             .catch(error => {
                 console.error('Error al cancelar:', error);
@@ -306,13 +337,16 @@
             throw `Progress bar only accept values from 0 to 100. Current value ='${value}'`
         }
 
-        console.log(`Setting value ='${value}'`);
+        if (debug){
+            console.log(`Setting value ='${value}'`);
+        }        
 
         $('progress#progress-bar').val(value)
     }
 
     // Función para mostrar la barra de progreso
     function showProgress() {
+        $('#progress-bar').val(completion);
         $('#progress-bar-container').show();
     }
 
@@ -328,9 +362,6 @@
         para evitar recursividad
     */
 
-    let completion = null;
-    let startTime;
-
     // aun no ha terminado?
     function isOver(startTime, max_polling_time) {
         let currentTime = new Date().getTime();
@@ -338,7 +369,19 @@
     }
 
     function get_until_completion_callback(page = 1, max_polling_time = 3600) {
+        let status = getImportStatus();
+
+        if (status != null && status.includes('paused', 'completed')) {  
+            return;
+        }
+
         function pollPage(page) {
+            status = getImportStatus();
+
+            if (status != null && status.includes('paused', 'completed')) {  
+                return;
+            }
+
             // Obtener los parámetros de página
             const data = {
                 "page": page.toString()
@@ -352,16 +395,21 @@
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (data) {
-                    console.log(data)
+                    if (debug){
+                        console.log(data);
+                    }     
 
                     // Actualizar la respuesta en la página
                     $("#response").text(JSON.stringify(data));
 
-                    console.log('%', data.data.completion);
+                    if (debug){
+                        console.log('%', data.data.completion);
+                    }        
 
                     // Verificar si la completitud es igual a 100
                     if (data.data.completion == 100) {
                         setProgress(100);
+                        setImportStatus('completed');
                         // ...
                     } else {
                         completion = data.data.completion;
@@ -396,14 +444,19 @@
         fetch('/csv_importer/get_completion')
             .then(response => response.json())
             .then(data => {
-                const completion = data.data.completion;
-                const currentPage = parseInt(data.data.current_page);
+                completion  = data.data.completion;
+                currentPage = parseInt(data.data.current_page);
 
                 if (completion !== null && completion < 100) {
                     showProgress();
-                    // Iniciar el bucle de llamadas para actualizar el progreso desde la página actual
-                    startTime = new Date().getTime();
-                    get_until_completion_callback(currentPage + 1);
+
+                    let status = getImportStatus();
+
+                    if (status != null && status.includes('active', 'ready')){
+                        // Iniciar el bucle de llamadas para actualizar el progreso desde la página actual
+                        startTime = new Date().getTime();
+                        get_until_completion_callback(currentPage + 1);
+                    }                    
                 }
             })
             .catch(error => {
@@ -412,7 +465,29 @@
     }
 
     // Verificar el estado de completitud al cargar la página
-    $(document).ready(function () {
+    $(document).ready(function () {      
+        console.log(getImportStatus());
+        
+        switch (getImportStatus()){
+            case 'completed':
+                setImportStatus('ready');
+                break;
+            case undefined:
+                setImportStatus('ready');
+                break;
+            case 'active':
+        }
+
+        $status = getImportStatus();
+
+        togglePauseButtonVisibility($status  == 'active');
+        toggleCancelButtonVisibility($status == 'active' || $status == 'paused');
+        toggleResumeButtonVisibility($status == 'paused');
+
+        if ($status == 'active' || $status == 'paused'){
+            showProgress();
+        }
+
         checkCompletionStatus();
     });
 
