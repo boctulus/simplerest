@@ -26,8 +26,8 @@ class BzzImportController extends Controller
             '{A}','{B}','{C}','{D}','{E}','{F}','{G}','{H}'
         ];
 
-        set_transient('bzz-import_completion', 0, 9999);
-        Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
+        set_transient('bzz-importer_completion', 0, 9999);
+        Logger::dd(get_transient('bzz-importer_completion', 0), 'COMPLETION %');
 
         $cnt = count($rows);
    
@@ -37,12 +37,12 @@ class BzzImportController extends Controller
 
                 // some heavy work
                 sleep(2);
-                set_transient('bzz-import_completion', round(($cur+1) * 100 / $cnt), 9999);
-                // Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
+                set_transient('bzz-importer_completion', round(($cur+1) * 100 / $cnt), 9999);
+                // Logger::dd(get_transient('bzz-importer_completion', 0), 'COMPLETION %');
             }     
 
-            set_transient('bzz-import_completion', 100, 9999);   
-            // Logger::dd(get_transient('bzz-import_completion', 0), 'COMPLETION %');
+            set_transient('bzz-importer_completion', 100, 9999);   
+            // Logger::dd(get_transient('bzz-importer_completion', 0), 'COMPLETION %');
         } catch (\Exception $e){
             Logger::logError($e->getMessage());
         }
@@ -51,7 +51,7 @@ class BzzImportController extends Controller
     function get_completion()
     {
        $data = [
-        'completion' => get_transient('bzz-import_completion', 0)
+        'completion' => get_transient('bzz-importer_completion', 0)
        ];
 
        response()->send($data);

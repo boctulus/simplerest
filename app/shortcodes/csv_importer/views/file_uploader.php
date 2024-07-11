@@ -1,7 +1,15 @@
 <style>
-    #upload_btn {
+    #upload_btn, #pause_btn, #resume_btn,#cancel_btn {
         width: 130px;
     }
+
+    .disabled {
+        opacity: 0.6;  /* Reduce la opacidad para indicar estado deshabilitado */
+        pointer-events: none;  /* Evita interacciones con el elemento */
+        filter: grayscale(100%);  /* Aplica escala de grises para efecto visual */
+        cursor: not-allowed;  /* Cambia el cursor a 'no permitido' */
+    }
+
 </style>
 
 <div class="container mt-5">
@@ -17,14 +25,23 @@
                             <label for="csvFile" class="form-label">Select CSV File</label>
                             <input class="form-control" type="file" id="csvFile" name="csvFile">
                         </div>
-                        <!-- Botón de importación con spinner -->
+                        <!-- Botones de acción -->
                         <button type="button" id="upload_btn" class="btn btn-primary" onclick="uploadCSV()">
                             <span id="spinner-container" class="spinner-container d-none">
-                                <span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span id="spinner" class="spinner-border spinner-border-sm" role="status"
+                                    aria-hidden="true"></span>
                             </span>
                             Import CSV
                         </button>
-
+                        <button type="button" id="pause_btn" class="btn btn-primary d-none" onclick="pauseCSV()">
+                            Pause
+                        </button>
+                        <button type="button" id="resume_btn" class="btn btn-primary d-none" onclick="resumeCSV()">
+                            Resume
+                        </button>
+                        <button type="button" id="cancel_btn" class="btn btn-secondary d-none" onclick="cancelCSV()">
+                            Cancel
+                        </button>
                     </form>
                     <!-- Barra de progreso -->
                     <div id="progress-bar-container" class="mt-3">
@@ -37,6 +54,138 @@
 </div>
 
 <script>
+    /*
+        Manejar status: [ "ready", "active" (in progress), "paused", "completed" ]
+
+        Comienza en "ready" 
+
+        Si bien al terminar queda en "completed" si la pagina es recargada en "completed" debe pasar a "ready"
+    */
+
+    function setImportStatus(status) {
+        const allowedStatus = ["ready", "active", "paused", "completed"];
+
+        if (!allowedStatus.includes(status)) {
+            throw new Error(`Error: El estado '${status}' no es válido.`);
+        }
+
+        localStorage.setItem("bzz-importer-status", status);
+    }
+
+    function setStatusAsReady() {
+        setImportStatus("ready");
+    }
+
+    function setStatusAsActive() {
+        setImportStatus("active");
+    }
+
+    function setStatusAsPaused() {
+        setImportStatus("paused");
+    }
+
+    function setStatusAsCompleted() {
+        setImportStatus("completed");
+    }
+
+    /**
+     * Alternates visibility of the upload button based on a boolean flag.
+     * @param {boolean} enabled - Indicates whether the button should be enabled (true) or disabled (false).
+     */
+    function toggleUploadButtonVisibility(enabled) {
+        const uploadButton = document.getElementById('upload_btn');
+        uploadButton.disabled = !enabled;
+        uploadButton.classList.toggle('btn-secondary', !enabled);
+
+        if (enabled){
+            toggleUploadButton(true);
+        }        
+    }
+
+    /**
+     * Alternates visibility of the pause button based on a boolean flag.
+     * @param {boolean} enabled - Indicates whether the button should be enabled (true) or disabled (false).
+     */
+    function togglePauseButtonVisibility(enabled) {
+        const pauseButton = document.getElementById('pause_btn');
+        pauseButton.disabled = !enabled;
+        pauseButton.classList.toggle('btn-secondary', !enabled);
+
+        if (enabled){
+            togglePauseButton(true);
+        }  
+    }
+
+    /**
+     * Alternates visibility of the resume button based on a boolean flag.
+     * @param {boolean} enabled - Indicates whether the button should be enabled (true) or disabled (false).
+     */
+    function toggleResumeButtonVisibility(enabled) {
+        const resumeButton = document.getElementById('resume_btn');
+        resumeButton.disabled = !enabled;
+        resumeButton.classList.toggle('btn-secondary', !enabled);
+
+        if (enabled){
+            toggleResumeButton(true);
+        }  
+    }
+
+    /**
+     * Alternates visibility of the cancel button based on a boolean flag.
+     * @param {boolean} enabled - Indicates whether the button should be enabled (true) or disabled (false).
+     */
+    function toggleCancelButtonVisibility(enabled) {
+        const cancelButton = document.getElementById('cancel_btn');
+        cancelButton.disabled = !enabled;
+        cancelButton.classList.toggle('btn-secondary', !enabled);
+
+        if (enabled){
+            toggleCancelButton(true);
+        }  
+    }
+
+    /**
+     * Alternates enabled/disabled state of the upload button based on a boolean flag.
+     * @param {boolean} enabled - Indicates whether the button should be enabled (true) or disabled (false).
+     */
+    function toggleUploadButton(enabled) {
+        const button = document.getElementById('upload_btn');
+        button.disabled = !enabled;
+        if (enabled) {
+            button.classList.remove('disabled');
+        } else {
+            button.classList.add('disabled');
+        }
+    }
+
+    /**
+     * Alternates enabled/disabled state of the pause button based on a boolean flag.
+     * @param {boolean} enabled - Indicates whether the button should be enabled (true) or disabled (false).
+     */
+    function togglePauseButton(enabled) {
+        const button = document.getElementById('pause_btn');
+        button.disabled = !enabled;
+        if (enabled) {
+            button.classList.remove('disabled');
+        } else {
+            button.classList.add('disabled');
+        }
+    }
+
+    /**
+     * Alternates enabled/disabled state of the resume button based on a boolean flag.
+     * @param {boolean} enabled - Indicates whether the button should be enabled (true) or disabled (false).
+     */
+    function toggleResumeButton(enabled) {
+        const button = document.getElementById('resume_btn');
+        button.disabled = !enabled;
+        if (enabled) {
+            button.classList.remove('disabled');
+        } else {
+            button.classList.add('disabled');
+        }
+    }
+
     function spinnerUp() {
         // Obtener el botón y el contenedor del spinner
         const button = document.querySelector('.btn-primary');
@@ -81,16 +230,16 @@
 
         // Realizar la solicitud Ajax
         fetch('/csv_importer/upload', {
-                method: 'POST',
-                body: formData
-            })
+            method: 'POST',
+            body: formData
+        })
             .then(response => response.json()) // Convertir la respuesta a JSON
             .then(data => {
                 // Manejar la respuesta del servidor
                 console.log(data);
 
                 // Limpiar el input file y mostrar barra
-                fileInput.value = ''; 
+                fileInput.value = '';
                 showProgress();
 
                 startTime = new Date().getTime();
@@ -98,6 +247,48 @@
             })
             .catch(error => {
                 console.error('Error:', error);
+            });
+    }
+
+    // revisar
+    function resumeCSV() {        
+        toggleResumeButton(false);
+        togglePauseButton(false);        
+        get_until_completion_callback(currentPage);
+        setImportStatus('active');
+    }
+
+    // revisar
+    function pauseCSV() {        
+        toggleResumeButton(false);
+        togglePauseButton(false);
+        setImportStatus('paused');
+    }
+
+    // ok
+    function cancelCSV() {
+        fetch('/csv_importer/cancel', {
+            method: 'POST'
+        })
+            .then(response => response.json())
+            .then(data => {
+                setImportStatus('ready');
+                hideProgress();
+                setProgress(0);
+                toggleUploadButtonVisibility(true);
+                toggleCancelButtonVisibility(false);
+                togglePauseButtonVisibility(false);
+                toggleResumeButtonVisibility(false);
+
+                localStorage.removeItem('importInProgress');
+                localStorage.removeItem('importPaused');
+                localStorage.removeItem('progress');
+                localStorage.removeItem('currentPage');
+                localStorage.removeItem('importCompleted');
+                console.log(data.message);
+            })
+            .catch(error => {
+                console.error('Error al cancelar:', error);
             });
     }
 
@@ -146,8 +337,7 @@
         return (currentTime - startTime > max_polling_time * 1000);
     }
 
-    function get_until_completion_callback(page = 1, max_polling_time = 3600) 
-    { 
+    function get_until_completion_callback(page = 1, max_polling_time = 3600) {
         function pollPage(page) {
             // Obtener los parámetros de página
             const data = {
@@ -161,7 +351,7 @@
                 dataType: "json",
                 contentType: "application/json",
                 data: JSON.stringify(data),
-                success: function(data) {
+                success: function (data) {
                     console.log(data)
 
                     // Actualizar la respuesta en la página
@@ -190,7 +380,7 @@
                         }
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("Error en la llamada Ajax: ", error);
                 }
             });
@@ -198,15 +388,15 @@
 
         // Comenzar a solicitar páginas
         pollPage(page);
-       
+
     }
 
-   // Función para obtener el estado de completitud y la página actual
+    // Función para obtener el estado de completitud y la página actual
     function checkCompletionStatus() {
         fetch('/csv_importer/get_completion')
             .then(response => response.json())
             .then(data => {
-                const completion  = data.data.completion;
+                const completion = data.data.completion;
                 const currentPage = parseInt(data.data.current_page);
 
                 if (completion !== null && completion < 100) {
@@ -222,7 +412,7 @@
     }
 
     // Verificar el estado de completitud al cargar la página
-    $(document).ready(function() {
+    $(document).ready(function () {
         checkCompletionStatus();
     });
 

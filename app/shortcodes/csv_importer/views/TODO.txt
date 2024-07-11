@@ -1,0 +1,25 @@
+Visibilidad de botones:
+
+Import CSV 
+Pause  | Cancel
+Resume | Cancel
+
+Se muestra "Import CSV" y al darle click se oculta ese boton y se hacen visible los botones "Pause" y "Cancel".
+
+Al darle click en "Pause", ese boton se hace invisible y en su lugar se ve el de "Resume".
+
+Cuando se recargue la pagina se debe pausar de forma automatica y mostrar los botones "Pause" y "Cancel".
+
+Al darle click en "Cancel" se cancela la importacion y se hace visible nuevamente el boton de "Import CSV" (ademas de que la progress bar vuelve a cero)
+
+
+Comportamiento de botones:
+
+El boton "Resume" debe reaunudar la importacion como esta sucediendo hasta ahora al recargar. Ya no debe reanudar de forma automatica. 
+
+El boton "Cancel" debe cancelar la importacion.
+
+Import CSV  --> [ Pause  | Cancel ]
+Pause --> Resume
+Resume -> [ Pause  | Cancel ]
+Cancel --> Import CSV
