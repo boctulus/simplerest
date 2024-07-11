@@ -16,10 +16,14 @@ use simplerest\core\libs\FileUploader;
 
     La clase del controlador CSVImporterController deberia *extenderse* 
     para reemplazar el row() por un codigo personalizado
+
+    # Vista "file_uploader.php"
+
+    https://chatgpt.com/c/613ec8b2-6803-4b77-97cf-d6f24eb6d564
 */
 class CsvImporterController
 {
-    protected $separator = ';';
+    protected $separator = ',';
 
     /*
         Aca va la logica del importador
@@ -53,10 +57,10 @@ class CsvImporterController
         $data = $_POST;
 
         try {
-            delete_transient('bzz-import_rows');
-            delete_transient('bzz-import_file');
-            delete_transient('bzz-import_completion');
-            delete_transient('bzz-import_current');
+            delete_transient('bzz-importer_rows');
+            delete_transient('bzz-importer_file');
+            delete_transient('bzz-importer_completion');
+            delete_transient('bzz-importer_current');
 
             $uploader = (new FileUploader())
             ->setFileHandler(function ($timestamp) {
@@ -94,10 +98,10 @@ class CsvImporterController
     
             $completion = 0;
     
-            set_transient('bzz-import_rows', $row_cnt,   9999);
-            set_transient('bzz-import_file', $as_stored, 9999);
-            set_transient('bzz-import_completion', $completion, 9999);
-            set_transient('bzz-import_current', $page, 9999);
+            set_transient('bzz-importer_rows', $row_cnt,   9999);
+            set_transient('bzz-importer_file', $as_stored, 9999);
+            set_transient('bzz-importer_completion', $completion, 9999);
+            set_transient('bzz-importer_current', $page, 9999);
                     
             response()->sendJson([
                 'upload'   => [
@@ -120,6 +124,28 @@ class CsvImporterController
             Logger::logError($e->getMessage());
         }      
     }
+
+    /*
+        /csv_importer/cancel
+    */
+    function cancel(){
+        delete_transient('bzz-importer_rows');
+        delete_transient('bzz-importer_file');
+        delete_transient('bzz-importer_completion');
+        delete_transient('bzz-importer_current');
+
+        response()->sendJson([
+            'paginator' => [
+                'current' => null,
+                'next'    => null,
+                'last'    => null, 
+                'count'   => null
+            ],
+            
+            'message'    => 'Aborted.',
+            'completion' => null
+        ]);
+    }
     
     // Ajax -- ok
     function process_page()
@@ -135,8 +161,8 @@ class CsvImporterController
         // Obtener los parámetros
         $page          = $data['page'] ?? null;
         $page_size     = $data['page_size'] ?? 10;
-        $row_cnt       = get_transient('bzz-import_rows');
-        $csv_filename  = get_transient('bzz-import_file');
+        $row_cnt       = get_transient('bzz-importer_rows');
+        $csv_filename  = get_transient('bzz-importer_file');
 
         if (empty($csv_filename) || empty($row_cnt)){
             response()->sendJson([
@@ -160,13 +186,13 @@ class CsvImporterController
         $this->__process($csv_filename, $offset, $page_size);
         
         $completion = intval($page * 100 / $last_page);
-        set_transient('bzz-import_completion', $completion, 9999);
-        set_transient('bzz-import_current',    $page, 9999);
+        set_transient('bzz-importer_completion', $completion, 9999);
+        set_transient('bzz-importer_current',    $page, 9999);
 
         // Verificar si es la última página procesada y limpiar transientes
         if ($completion == 100) {
-            delete_transient('bzz-import_rows');
-            delete_transient('bzz-import_file');
+            delete_transient('bzz-importer_rows');
+            delete_transient('bzz-importer_file');
         }
 
         // sleep(2);
@@ -188,8 +214,8 @@ class CsvImporterController
     function get_completion()
     {
        $data = [
-            'completion'   => get_transient('bzz-import_completion'),
-            'current_page' => get_transient('bzz-import_current')
+            'completion'   => get_transient('bzz-importer_completion'),
+            'current_page' => get_transient('bzz-importer_current')
        ];
 
        response()->sendJson($data);

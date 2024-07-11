@@ -7849,9 +7849,9 @@ class DumbController extends Controller
 
     function test_db_transient()
     {
-        set_transient('bzz-import_completion', 55);
+        set_transient('bzz-importer_completion', 55);
 
-        dd(get_transient('bzz-import_completion', 0));
+        dd(get_transient('bzz-importer_completion', 0));
     }
 
     function test_memorizacion()
@@ -10882,6 +10882,9 @@ class DumbController extends Controller
 
         dd(Strings::fixEncoding($str), 'VER 1');
         dd(Strings::fixEncodingWithAutodetection($str), 'VER 2');
+
+        dd(Strings::fixEncoding(Strings::fixEncoding($str)), 'VER 1 (RECURSIVO)');
+        dd(Strings::fixEncodingWithAutodetection(Strings::fixEncodingWithAutodetection($str)), 'VER 2 (RECURSIVO)');
     }
 
     function test_fix_encoding_2(){
@@ -10906,6 +10909,41 @@ class DumbController extends Controller
 
         $str = Strings::fixEncodingWithHtmlEntities($str);
         dd($str);
+    }
+
+    // recursivo
+    function test_fix_encoding_2r(){
+        $str = <<<STR
+        <h1><span style="font-size: 22px;"><em><strong><span style="color: red;">COMPOSICIÃ“N NÂº24 100X60</span></strong></em></span></h1>
+        <em><strong>ColecciÃ³n compuesta por 5Â piezas distintas</strong></em> que forma un mural de 100x60cms.
+
+        ComposiciÃ³n compuesta por piezas de 20x60
+
+        <em><strong>Pasta roja.</strong></em>
+
+        Cantidad en la composiciÃ³n: 0,60 m2.
+
+        <em style="color: red; font-size: 13px;"><strong>ENVÃO GRATUITO.</strong></em>
+
+        <span style="color: red;"><em><strong>VENTA POR CONJUNTO DE 5Â PIEZAS.</strong></em></span>
+
+        <span style="color: black;"><em><strong>CONSULTAD DESCUENTO A PARTIR DE 3Â JUEGOS DE COMPOSICIÃ“N.</strong></em></span>
+
+        Â
+        STR;
+
+        $str = Strings::fixEncodingWithHtmlEntities($str);
+        $str = Strings::fixEncodingWithHtmlEntities($str);
+
+        dd($str);
+    }
+
+    function test_fix_super_encoding_problem(){
+        $str = "DestonificaciÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ³n moderada.";
+        
+        $str = Strings::unravelEncoding($str);
+
+        dd($str, 'VER 1');
     }
 
 
