@@ -54,6 +54,7 @@
 </div>
 
 <script>    
+    let file;
     let completion;
     let currentPage;
     let startTime;
@@ -66,6 +67,11 @@
 
         Si bien al terminar queda en "completed" si la pagina es recargada en "completed" debe pasar a "ready"
     */
+
+    function clearInputFile(){
+        const fileInput = document.getElementById('csvFile');
+        fileInput.value = '';
+    }
 
     function setImportStatus(status) {
         const allowedStatus = ["ready", "active", "paused", "completed"];
@@ -245,7 +251,7 @@
         showProgress();
 
         // Obtener el archivo seleccionado
-        const file = fileInput.files[0];
+        file = fileInput.files[0];
 
         // Crear FormData y agregar el archivo seleccionado
         const formData = new FormData();
@@ -256,27 +262,25 @@
             method: 'POST',
             body: formData
         })
-            .then(response => response.json()) // Convertir la respuesta a JSON
-            .then(data => {
-                // Manejar la respuesta del servidor
-                if (debug){
-                    console.log(data);
-                }               
+        .then(response => response.json()) // Convertir la respuesta a JSON
+        .then(data => {
+            // Manejar la respuesta del servidor
+            if (debug){
+                console.log(data);
+            }               
 
-                // Limpiar el input file y mostrar barra
-                fileInput.value = '';
-                showProgress();
+            showProgress();
+            
+            startTime = new Date().getTime();
+            get_until_completion_callback();
 
-                startTime = new Date().getTime();
-                get_until_completion_callback();
-
-                togglePauseButtonVisibility(true);
-                toggleUploadButtonVisibility(true);
-                toggleCancelButtonVisibility(true);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            togglePauseButtonVisibility(true);
+            toggleUploadButtonVisibility(true);
+            toggleCancelButtonVisibility(true);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
     // revisar
@@ -341,6 +345,7 @@
             console.log(`Setting value ='${value}'`);
         }        
 
+        toggleUploadButton(false);
         $('progress#progress-bar').val(value)
     }
 
@@ -409,8 +414,8 @@
                     // Verificar si la completitud es igual a 100
                     if (data.data.completion == 100) {
                         setProgress(100);
-                        setImportStatus('completed');
-                        // ...
+                        setImportStatus('completed');                        
+                        clearInputFile();
                     } else {
                         completion = data.data.completion;
                         setProgress(completion);
@@ -447,17 +452,33 @@
                 completion  = data.data.completion;
                 currentPage = parseInt(data.data.current_page);
 
-                if (completion !== null && completion < 100) {
-                    showProgress();
-
-                    let status = getImportStatus();
-
-                    if (status != null && status.includes('active', 'ready')){
-                        // Iniciar el bucle de llamadas para actualizar el progreso desde la página actual
-                        startTime = new Date().getTime();
-                        get_until_completion_callback(currentPage + 1);
+                if (currentPage >0){
+                    if (getImportStatus() == 'paused'){
+                        toggleResumeButtonVisibility(true);                        
+                    } else {
+                        togglePauseButtonVisibility(true);
                     }                    
+                    
+                    toggleCancelButtonVisibility(true);
                 }
+
+                if (completion !== null){
+                    if (completion < 100) {
+                        showProgress();
+
+                        let status = getImportStatus();
+
+                        if (status != null && status.includes('active', 'ready')){
+                            // Iniciar el bucle de llamadas para actualizar el progreso desde la página actual
+                            startTime = new Date().getTime();
+                            get_until_completion_callback(currentPage + 1);
+                        }  
+                        
+                        toggleUploadButton(false);
+                    } else if (completion == 100){
+                        toggleUploadButton(true);
+                    }                
+                } 
             })
             .catch(error => {
                 console.error('Error al obtener el estado de completitud:', error);
@@ -477,18 +498,18 @@
                 break;
             case 'active':
         }
+        
+        checkCompletionStatus();
 
         $status = getImportStatus();
 
         togglePauseButtonVisibility($status  == 'active');
-        toggleCancelButtonVisibility($status == 'active' || $status == 'paused');
         toggleResumeButtonVisibility($status == 'paused');
+        toggleCancelButtonVisibility($status == 'active' || $status == 'paused');
 
         if ($status == 'active' || $status == 'paused'){
             showProgress();
         }
-
-        checkCompletionStatus();
     });
 
 
