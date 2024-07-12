@@ -525,9 +525,7 @@ checkCompletionStatus().then(() => {
 
 
     // Verificar el estado de completitud al cargar la página
-    $(document).ready(function () {      
-        console.log(getImportStatus());
-        
+    $(document).ready(function () {           
         switch (getImportStatus()){
             case 'completed':
                 setImportStatus('ready');
