@@ -12054,20 +12054,36 @@ Tambien es posible enviar un array asociativo con las columnas a refefinir:
 		'ParentSlug' => 'parent_slug',
 	])
 
-Nota: un punto importante es que Files::processCSV() ya hace un loop con lo cual no se debe envolver en un for() o while() para mover el offset ya que es incrementado internamente.  
+Para poder saber hasta cuando iterar se necesita de contar la cantidad de lineas del archivo lo cual se puede hacer asi:
 
-	$csv_path  = 'D:\www\woo8\wp-content\plugins\azulejosmadrid-import\etc\productos-csv\test.csv';
+	$lines = Files::countLines($csv_path);
+
+Dado que algunas lineas del tipo ",,,,,,," pueden no contener registros (entre otras razones) la cantidad de lineas puede no coincidir con la cantidad de invocaciones al callback de Files::processCSV() por lo que una forma de resolverlo es abortando si el offset no se mueve.
+
+Ej:
+
+ 	$csv_path  = 'D:\www\woo8\wp-content\plugins\azulejosmadrid-import\etc\productos.csv';
 	$separator = ',';
 	$limit     = 1;
 	$offset    = 0;
 
-	try {            
-		
-		// NO hace falta envolver con ningun bucle
-		Files::processCSV($csv_path , $separator, true, function($data) { 
-			dd($data, 'ROW');
-		}, null, $offset, $limit);     
-			
+	$row_count = Files::countLines($csv_path);
+	
+	try {
+		while ($offset < $row_count){
+			$prev_offset = $offset;
+
+			Files::processCSV($csv_path , $separator, true, function($data) use (&$offset){ 
+				// Procesamiento
+				dd($data, 'ROW');
+
+				$offset++;    
+			}, null, $offset, $limit);
+
+			if ($prev_offset == $offset){
+				break;
+			}
+		}          
 	} catch (\Exception $e){
 		Logger::logError($e->getMessage());
 	}
