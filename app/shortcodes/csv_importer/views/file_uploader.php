@@ -68,9 +68,21 @@
         Si bien al terminar queda en "completed" si la pagina es recargada en "completed" debe pasar a "ready"
     */
 
+    function fileSelected(){
+        const fileInput = document.getElementById('csvFile');
+
+        // Verificar si se ha seleccionado un archivo
+        return (fileInput.files.length > 0);
+    }
+
     function clearInputFile(){
         const fileInput = document.getElementById('csvFile');
         fileInput.value = '';
+    }
+
+    function toggleInputFile(enabled){
+        const fileInput = document.getElementById('csvFile');
+        fileInput.disabled = !enabled;
     }
 
     function setImportStatus(status) {
@@ -146,6 +158,14 @@
         }  
     }
 
+    function toggleButtons($status){
+        togglePauseButtonVisibility($status  == 'active');
+        toggleResumeButtonVisibility($status == 'paused');
+        toggleCancelButtonVisibility($status == 'active' || $status == 'paused');
+        toggleUploadButton(!fileSelected() && ($status == 'ready' || $status == 'completed'));
+    }
+
+
     /**
      * Alternates visibility of the cancel button based on a boolean flag.
      * @param {boolean} enabled - Indicates whether the button should be enabled (true) or disabled (false).
@@ -166,11 +186,14 @@
     function toggleUploadButton(enabled) {
         const button = document.getElementById('upload_btn');
         button.disabled = !enabled;
+
         if (enabled) {
             button.classList.remove('disabled');
         } else {
             button.classList.add('disabled');
         }
+
+        toggleInputFile(enabled);
     }
 
     /**
@@ -244,10 +267,11 @@
         // Verificar si se ha seleccionado un archivo
         if (fileInput.files.length === 0) {
             // Si no se ha seleccionado ningún archivo, mostrar un mensaje de error
-            console.error('No file selected');
+            // console.error('No file selected');
             return;
         }
 
+        toggleUploadButton(false);
         showProgress();
 
         // Obtener el archivo seleccionado
@@ -275,7 +299,6 @@
             get_until_completion_callback();
 
             togglePauseButtonVisibility(true);
-            toggleUploadButtonVisibility(true);
             toggleCancelButtonVisibility(true);
         })
         .catch(error => {
@@ -308,7 +331,6 @@
                 setImportStatus('ready');
                 hideProgress();
                 setProgress(0);
-                toggleUploadButtonVisibility(true);
                 toggleCancelButtonVisibility(false);
                 togglePauseButtonVisibility(false);
                 toggleResumeButtonVisibility(false);
@@ -321,6 +343,7 @@
                 console.log(data.message);
 
                 setStatusAsCancelled();
+                toggleUploadButton(true);
             })
             .catch(error => {
                 console.error('Error al cancelar:', error);
@@ -446,44 +469,60 @@
 
     // Función para obtener el estado de completitud y la página actual
     function checkCompletionStatus() {
+    return new Promise((resolve, reject) => {
         fetch('/csv_importer/get_completion')
-            .then(response => response.json())
-            .then(data => {
-                completion  = data.data.completion;
-                currentPage = parseInt(data.data.current_page);
+        .then(response => response.json())
+        .then(data => {
+            completion = data.data.completion;
+            currentPage = parseInt(data.data.current_page);
 
-                if (currentPage >0){
-                    if (getImportStatus() == 'paused'){
-                        toggleResumeButtonVisibility(true);                        
-                    } else {
-                        togglePauseButtonVisibility(true);
-                    }                    
+            if (completion !== null) {
+                if (completion < 100) {
+                    showProgress();
+
+                    status = getImportStatus();
+
+                    if (status != null && (status.includes('active') || status.includes('ready'))) {
+                        // Iniciar el bucle de llamadas para actualizar el progreso desde la página actual
+                        startTime = new Date().getTime();
+                        get_until_completion_callback(currentPage + 1);
+                    }  
                     
-                    toggleCancelButtonVisibility(true);
-                }
+                    toggleUploadButton(false);
+                } else if (completion == 100) {
+                    toggleUploadButton(true);
+                }                
+            } 
+            resolve(); // Resuelve la promesa cuando se completa la lógica
+        })
+        .catch(error => {
+            console.error('Error al obtener el estado de completitud:', error);
+            reject(error); // Rechaza la promesa si hay un error
+        });
+    });
+}
 
-                if (completion !== null){
-                    if (completion < 100) {
-                        showProgress();
+// Llama a checkCompletionStatus y luego ejecuta la lógica adicional
+checkCompletionStatus().then(() => {
+    let status = getImportStatus();
 
-                        let status = getImportStatus();
+    if (currentPage > 0) {
+        if (status == 'paused') {
+            toggleResumeButtonVisibility(true);                        
+        } else {
+            togglePauseButtonVisibility(true);
+        }                    
+        
+        toggleCancelButtonVisibility(true);
+    } else {
+        toggleButtons(status);
+    }           
 
-                        if (status != null && status.includes('active', 'ready')){
-                            // Iniciar el bucle de llamadas para actualizar el progreso desde la página actual
-                            startTime = new Date().getTime();
-                            get_until_completion_callback(currentPage + 1);
-                        }  
-                        
-                        toggleUploadButton(false);
-                    } else if (completion == 100){
-                        toggleUploadButton(true);
-                    }                
-                } 
-            })
-            .catch(error => {
-                console.error('Error al obtener el estado de completitud:', error);
-            });
+    if (status == 'active' || status == 'paused') {
+        showProgress();
     }
+});
+
 
     // Verificar el estado de completitud al cargar la página
     $(document).ready(function () {      
@@ -499,17 +538,17 @@
             case 'active':
         }
         
-        checkCompletionStatus();
+        checkCompletionStatus().then(()=>{
+            $status = getImportStatus();
 
-        $status = getImportStatus();
+            toggleButtons($status);
 
-        togglePauseButtonVisibility($status  == 'active');
-        toggleResumeButtonVisibility($status == 'paused');
-        toggleCancelButtonVisibility($status == 'active' || $status == 'paused');
+            if ($status == 'active' || $status == 'paused'){
+                showProgress();
+            }
+        })
 
-        if ($status == 'active' || $status == 'paused'){
-            showProgress();
-        }
+       
     });
 
 
