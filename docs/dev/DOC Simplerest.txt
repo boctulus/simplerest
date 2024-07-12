@@ -12054,6 +12054,24 @@ Tambien es posible enviar un array asociativo con las columnas a refefinir:
 		'ParentSlug' => 'parent_slug',
 	])
 
+Nota: un punto importante es que Files::processCSV() ya hace un loop con lo cual no se debe envolver en un for() o while() para mover el offset ya que es incrementado internamente.  
+
+	$csv_path  = 'D:\www\woo8\wp-content\plugins\azulejosmadrid-import\etc\productos-csv\test.csv';
+	$separator = ',';
+	$limit     = 1;
+	$offset    = 0;
+
+	try {            
+		
+		// NO hace falta envolver con ningun bucle
+		Files::processCSV($csv_path , $separator, true, function($data) { 
+			dd($data, 'ROW');
+		}, null, $offset, $limit);     
+			
+	} catch (\Exception $e){
+		Logger::logError($e->getMessage());
+	}
+
 
 ### Ofuscación de archivos
 
