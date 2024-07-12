@@ -206,6 +206,7 @@ class Files
 
 		return $line_count;
 	}
+	
 
 	static function arrayToFile(string $filename, array $array){
 		file_put_contents($filename, implode(PHP_EOL, $array));
