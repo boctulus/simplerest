@@ -11497,16 +11497,111 @@ Tiene dos implementaciones, una de ellas utilizando por debajo la funcion error_
 	'error_log'      =>  true,
 
 
+Truncado de archivos log
+
+Para vaciar un archivo de logs se puede utiliza Logger::truncate()
+
+Ej:
+
+	Logger::truncate(); // afecta a logs.txt
+
+	Logger::setLogFilename('precios.txt');
+	Logger::truncate(); // afecta a precios.txt
+
+
 Cambiar archivos a escribir por defecto
 
 	Logger::setLogFilename($name)
 	Logger::setErrFilename($name)
 	Logger::setSqlfilename($name)
 
+Ej:
+
+	Logger::setLogFilename('precios.txt');
+	VarDump::log();
+
+	System::setMaxExecutionTime(-1);
+	System::setMemoryLimit('4096M');
+
+	$pids = Products::getIDs();
+
+	foreach ($pids as $pid){  
+		$p = Products::getProductById($pid);
+		dd($p->get_name(), "PRODUCT");
+
+		$vids = Products::getAllVariationIDs($pid);
+
+		foreach ($vids as $vid){
+			$v       = Products::getProduct($vid);
+			$v_name  = Products::getTitle($vid);
+			$v_price = Products::getPrice($v);
+
+			dd($v_price, $v_name);
+		}
+	}
+
+En el ejemplo previo se define que los logs seran enviados al archivo "precios.txt" (como no se especifica la ruta completa dentro de la carpeta logs).
+
+Dado que se combina con VarDump::log() entonces la salida de cada dd() es enviada a la salida estandar y tambien a logs ("precios.txt").
+
+
+Logger > apendice
+
+En el siguiente ejemplo veremos como generar distinto tipo de archivos log, hacer un switch 
+al logger propio del framework, truncar logs y mas. 
+
+Ejemplo completo
+
+	// Native error logger es deshabilitado 
+	// porque el APPEND_MODE no se puede apagar con el error logger nativo
+	Config::set('error_log', false); 
+
+	Logger::truncate(); // afecta a logs.txt
+
+	Logger::setLogFilename('precios.txt');
+	Logger::truncate(); // afecta a precios.txt
+
+	VarDump::log();
+
+	System::setMaxExecutionTime(-1);
+	System::setMemoryLimit('4096M');
+
+	$pids = Products::getIDs();
+
+	$has_price    = 0;
+	$has_no_price = 0;
+	foreach ($pids as $pid){  
+		$p = Products::getProductById($pid);
+		dd($p->get_name(), "PRODUCT");
+
+		$vids = Products::getAllVariationIDs($pid);
+
+		foreach ($vids as $vid){
+			$v       = Products::getProduct($vid);
+			$v_name  = Products::getTitle($vid);
+			$v_price = Products::getPrice($v);
+
+			if (is_numeric($v_price) && $v_price > 0){
+				$has_price++;
+			} else {
+				$has_no_price++;
+			}
+
+			dd($v_price, $v_name);
+
+			Logger::log([
+				'has_price'    => $has_price,
+				'has_no_price' => $has_no_price
+			], 'log.txt', false); // <----------- el APPEND_MODE es deshabilitado
+		}
+	}
+
 
 Modo debug
 
-Se puede habilitar el modo de depuracion que renderiza lo mismo que envia archivo log
+Asi como la classe VarDump tiene un metodo log(), la clase Logger tiene un metodo debug()
+
+Para habilitar el modo de depuracion que renderiza lo mismo que envia archivo log es con Logger::debug()
 
 	Logger::debug($trace)
 
@@ -12054,11 +12149,20 @@ Tambien es posible enviar un array asociativo con las columnas a refefinir:
 		'ParentSlug' => 'parent_slug',
 	])
 
-Para poder saber hasta cuando iterar se necesita de contar la cantidad de lineas del archivo lo cual se puede hacer asi:
 
-	$lines = Files::countLines($csv_path);
+# Paginacion del CSV
 
-Dado que algunas lineas del tipo ",,,,,,," pueden no contener registros (entre otras razones) la cantidad de lineas puede no coincidir con la cantidad de invocaciones al callback de Files::processCSV() por lo que una forma de resolverlo es abortando si el offset no se mueve.
+Iterar todo el CSV es simple.
+
+Ej:
+
+	$archivo = 'D:\www\woo8\wp-content\plugins\azulejosmadrid-import\etc\productos-csv\test.csv';
+
+	Files::processCSV($archivo, ',', true, function ($p) {
+		dd($p, 'P (por procesar)');
+	}, null);
+
+Iterar de forma paginada requiere un minimo de trabajo adicional:
 
 Ej:
 
@@ -12673,7 +12777,6 @@ Para entender el funcionamiento o mejorar la solucion revisar:
 https://github.com/boctulus/adolf-csv
 D:\www\woo4\wp-content\plugins\adolf-csv
 
-
 En el servidor solo es necesario crear un cronJob que durara una fraccion de segundo en ejecutarse y debe dejar en cero (o cualquier valor no-negativo) el offset siguiendo una ruta.
 
 Ej:
@@ -12693,6 +12796,7 @@ Tiempos mínimos y máximos de bloqueo:
 
     MIN_T_LOCKED=120
     MAX_T_LOCKED=300
+
 
 # Funcionamiento
 
