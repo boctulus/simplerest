@@ -12488,11 +12488,48 @@ Para el caso particular en que se quiera correr en background un metodo de un co
 	sleep(1);
 	dd(System::isProcessAlive($pid), "Running (PID=$pid) ?");
 
+
+Es posible mas alla de cuestiones de seguridad (no es recomendable sin implementar algun tipo de mecanismo de autenticacion) en un controlador crear un metodo como:
+
+	/*
+        Ejecuta controlador/action en segundo plano
+    */
+    function bg(){
+        $ctrl    = $_GET['ctrl'] ?? null;
+        $fn      = $_GET['fn']   ?? null;
+
+        if (!empty($args)){
+            unset($_GET['ctrl']);
+            unset($_GET['fn']);
+            
+            $args = $_GET ?? null;
+            $args = http_build_query($args);
+            $args = str_replace('&', ' ', $args);
+        }
+
+        $cmd = "$ctrl $fn" . (!empty($args) ? " args=$args" : '');
+       
+        $proc_id = bg_com($cmd);
+
+        dd($proc_id, 'Process ID');
+        sleep(1);
+        dd(System::isProcessAlive($proc_id), "Running (PID=$proc_id) ?");
+    }
+
+Luego seria cuestion de llamar visitar /{ruta}/bg?ctrl={action}&fn={method}&param1=val1&....
+
+Ej:
+
+	https://my-website.com/admin_tasks/bg?ctrl=dumb&fn=csv_import
+	https://my-website.com/admin_tasks/bg?ctrl=dumb&fn=prices_every_variation&sku=trx-304
+
+
 Notas:
 
 Es importante notar que para que funcione en Windows se necesita que el framework conozca la ruta del ejecutable ya sea el interprete de PHP, Python, etc.
 
 Las rutas deben ser siempre absolutas.
+
 
 
 # CronJobs 
