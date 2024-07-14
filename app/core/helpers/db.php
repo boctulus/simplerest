@@ -1,18 +1,38 @@
 <?php
 
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
-use simplerest\models\MyModel;
+use MigrationsCommand;
+use simplerest\core\exceptions\SqlException;
 use simplerest\core\libs\Arrays;
+use simplerest\core\libs\DB;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
-use simplerest\core\exceptions\SqlException;
+use simplerest\core\Model;
+use simplerest\models\MyModel;
+
+function log_queries()
+{
+    $logFilePath = LOGS_PATH . 'mysql.txt';
+
+    try {
+        $conn = DB::getConnection();
+        
+        // Habilitar el registro general de consultas
+        $conn->exec("SET GLOBAL general_log = 1");
+        
+        // Establecer la ubicación del archivo de registro general de consultas
+        $conn->exec("SET GLOBAL general_log_file = '$logFilePath'");
+        
+        dd("General query log enabled successfully.");
+    } catch (\PDOException $e) {
+        dd("Error: " . $e->getMessage());
+    }
+}
 
 /*
     @param Array ...$args por ejemplo "--dir=$folder", "--to=$tenant"
 */
 function migrate(bool $show_response = true, ...$args){
-    $mgr = new MigrationsController();
+    $mgr = new MigrationsCommand();
 
     if (!$show_response){
         StdOut::hideResponse();
