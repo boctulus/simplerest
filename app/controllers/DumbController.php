@@ -1469,7 +1469,7 @@ class DumbController extends Controller
 
     function migrate()
     {
-        $mgr = new MigrationsController();
+        $mgr = new \MigrationsCommand();
 
         $folder = 'compania';
         $tenant = 'db_100';
@@ -10659,7 +10659,6 @@ class DumbController extends Controller
             '/app/shortcodes/')
         );
     }
-
 
     /*
         Optimizaciones mas agresivas podrian incluir:

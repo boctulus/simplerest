@@ -335,7 +335,7 @@ class Files
 		}, null ,36332,5); 
 
     */
-	static function processCSV(string $path, string $separator = ",", bool $header = true, callable $fn, $header_defs = null, $start_line = 0, $limit = false, bool $replace_spaces = true, bool $lowecase = false)
+	static function processCSV(string $path, string $separator, bool $header, callable $fn, $header_defs = null, $start_line = 0, $limit = false, bool $replace_spaces = true, bool $lowecase = false)
     {
         $handle = fopen($path, 'r');
 
