@@ -3,7 +3,9 @@ vendor/
 *.zip
 *.rar
 *.tar
-uploads/
+*.7z
+*.gz
+uploads/*
 logs/
 tmp/
 storage/security/

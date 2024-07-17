@@ -1,13 +1,12 @@
 <?php
 
-use MigrationsCommand;
-use simplerest\core\exceptions\SqlException;
-use simplerest\core\libs\Arrays;
+use simplerest\core\Model;
 use simplerest\core\libs\DB;
+use simplerest\models\MyModel;
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
-use simplerest\core\Model;
-use simplerest\models\MyModel;
+use simplerest\core\exceptions\SqlException;
 
 function log_queries()
 {
@@ -32,7 +31,7 @@ function log_queries()
     @param Array ...$args por ejemplo "--dir=$folder", "--to=$tenant"
 */
 function migrate(bool $show_response = true, ...$args){
-    $mgr = new MigrationsCommand();
+    $mgr = new \MigrationsCommand();
 
     if (!$show_response){
         StdOut::hideResponse();
