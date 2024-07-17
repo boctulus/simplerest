@@ -112,7 +112,7 @@ class Response
             if (empty($val))
                 continue;
             
-            header("${k}:$val");
+            header("$k:$val");
         }
     }
 
