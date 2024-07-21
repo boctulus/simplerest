@@ -5,6 +5,8 @@ vendor/
 *.tar
 *.7z
 *.gz
+*.txt
+*.csv
 uploads/*
 logs/
 tmp/
