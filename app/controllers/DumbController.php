@@ -10945,5 +10945,8 @@ class DumbController extends Controller
         dd($str, 'VER 1');
     }
 
+    function test_numeric_input(){
+        view('test_numeric_input');
+    }
 
 }   // end class
