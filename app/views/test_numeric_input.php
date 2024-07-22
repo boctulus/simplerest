@@ -8,6 +8,6 @@
 
 <br>
 
-<input id="qty" name="qty" type="number" min="50" step="0.05">
+<input id="numMeters" type="number" step="8.5" min="25.5">
 
 
