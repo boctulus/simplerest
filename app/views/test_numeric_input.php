@@ -1,6 +1,6 @@
 <?php
 
-    js_file('third_party/proper-input/min-max.js', null, true);
+    js_file('third_party/proper-input/proper-input.js', null, true);
 
 ?>
 
