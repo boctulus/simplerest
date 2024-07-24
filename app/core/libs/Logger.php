@@ -24,13 +24,22 @@ class Logger
 	static protected $debug       = false;
 	static protected $trace       = false; 
 
+	
+	static function debug(bool $debug = true){
+		static::$debug = $debug;
+	}
 
-	static function debug(bool $show_trace = false){
-		static::$debug = true;
+	static function trace(bool $show_trace = true){
+		static::$trace = $show_trace; 
+	}
 
-		if ($show_trace){
-			static::$trace = true;
-		}		
+	static public function traceMe(){
+		$trace = debug_backtrace();
+		
+		$file  = $trace[count($trace)-1]['file'];
+		$line  = $trace[count($trace)-1]['line'];
+
+		static::dd("{$file}:{$line}", "LOCATION", true);
 	}
 
 	static function setLogFilename($name){
