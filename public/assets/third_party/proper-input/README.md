@@ -1,7 +1,5 @@
 # ProperInput
 
-# ProperInput
-
 ProperInput is a lightweight and efficient JavaScript class designed to enhance the functionality of `<input type="number">` elements in web forms. It addresses common limitations of these inputs, especially regarding the application of `min`, `max`, and `step` attributes.
 
 In the native implementation of INPUT type="number", the min, max and step are not really forced. There is no validation!
@@ -37,19 +35,55 @@ These features ensure a reliable and efficient user experience, addressing commo
 
 ## Installation
 
-Simply include the ProperInput.js file in your project.
-Basic Usage
+Simply include the `proper-input.js` file in your project.
+
 
 ```html
+<script src="proper-input.js"></script>
+
 <input type="number" id="myInput" min="0" max="100" step="0.5">
 
-<script src="ProperInput.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const properInput = new ProperInput();
         properInput.init();
     });
 </script>
+```
+
+## Basic usage
+
+Create an instance, then set up if it's needed and init.
+
+```javascript
+// Create instance:
+const properInput = new ProperInput();
+
+// Change rounding funcion if you need it (i.e. to Math.round):
+properInput.setRoundFunction(Math.round);
+
+// Set a different CSS selector:
+const customProperInput = new ProperInput('input.custom-number-input');
+
+// Init
+properInput.init();
+```
+
+Important note
+
+Let's suppose you have two inputs:
+
+```html
+<input type="number" min="50" max="100" step="0.01">
+<input type="number" min="1" max="5" step="1">
+```
+
+You need to suscribe to the value change can ocurr because this library: 
+
+```javascript
+$('#numMeters, #numBoxes').on('input change', function() {
+    // do something with updated values
+});
 ```
 
 # API
