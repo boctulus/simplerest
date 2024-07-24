@@ -18,6 +18,15 @@ class VarDump
 	static function log(bool $value = true){
 		static::$log = $value;
 	}
+	
+	static public function traceMe(){
+		$trace = debug_backtrace();
+		
+		$file  = $trace[count($trace)-1]['file'];
+		$line  = $trace[count($trace)-1]['line'];
+
+		static::export("{$file}:{$line}", "LOCATION", true);
+	}
 
 	static function p(){
 		return (php_sapi_name() == 'cli' || Url::isPostmanOrInsomnia()) ? PHP_EOL . PHP_EOL : '<p/>';
