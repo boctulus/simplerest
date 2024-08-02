@@ -18,7 +18,8 @@ class VarDump
 	static function log(bool $value = true){
 		static::$log = $value;
 	}
-	
+
+	// Corregir porque a veces.... no es con count($trace)-1 por alguna razon
 	static public function traceMe(){
 		$trace = debug_backtrace();
 		
@@ -31,7 +32,6 @@ class VarDump
 	static function p(){
 		return (php_sapi_name() == 'cli' || Url::isPostmanOrInsomnia()) ? PHP_EOL . PHP_EOL : '<p/>';
 	}
-
 	static function br(){
 		return (php_sapi_name() == 'cli' || Url::isPostmanOrInsomnia())  ? PHP_EOL : '<br/>';;
 	}
