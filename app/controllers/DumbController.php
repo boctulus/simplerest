@@ -10949,4 +10949,10 @@ class DumbController extends Controller
         view('test_numeric_input');
     }
 
+    function invoice(){
+        css_file(Url::getBaseUrl() . '/app/views/bir/styles.css');
+        view('bir\invoice_layout.php');
+    }
+
+
 }   // end class
