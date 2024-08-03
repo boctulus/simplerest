@@ -8983,6 +8983,26 @@ Ej:
         <?php
     }
 
+Tanto js_file() como css_file() admiten rutas relativas a ASSETS_PATH, externas (http:// y https://) asi como absolutas pero dentro de VIEWS_PATH 
+
+Ej:
+
+	// Carga archivo styles.css dentro de ASSETS_PATH . 'css/styles.css'
+	css_file('css/styles.css');  
+
+Es posible cargar archivos .css desde cualquier ubicacion dentro de VIEWS_PATH
+
+Ej:
+
+	css_file(Url::getBaseUrl() . '/app/views/bir/css/styles.css');
+	view('bir\invoice_layout.php');
+
+Lo anterior equivale a:
+
+	css_file(VIEWS_PATH . 'bir/css/styles.css');
+    view('bir\invoice_layout.php');
+
+
 # Templates
 
 Por defecto se carga el template especificado en el config.php pero se pueden usar cuantos templates se desee y éste es especificado como tercer parámetro del método view()

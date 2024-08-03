@@ -1,6 +1,22 @@
 TODO SimpleRest
 ===============
 
+- Implementar "build" 
+
+"Algunos frameworks modernos permiten mantener los assets junto a los componentes o vistas relacionadas, y luego utilizan un proceso de build para moverlos a la carpeta pública."
+
+Un proceso de build típicamente incluye tareas como:
+
+Copiar archivos de un lugar a otro
+Minimizar y combinar CSS y JavaScript
+Compilar archivos de preprocesadores (Sass, Less, TypeScript, etc.)
+Optimizar imágenes
+Generar mapas de origen (source maps)
+
+<--- implementar "buid" simple con GULP
+
+https://claude.ai/chat/442c1c97-413c-4fe0-adb3-3f1af9f5d591
+
 -  Options > get_option() y set_option (update_uption):
 
   para el caso de multitenant, opcionalmente setear el valor en el scope de la base de datos seleccionada (tabla options para esa DB)

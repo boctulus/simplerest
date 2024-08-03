@@ -88,7 +88,7 @@
 <fieldset>
     <legend>Caso 10: Valores Grandes</legend>
     <div class="description">min: 1000000, max: 9999999, step: 111111</div>
-    <label for="input10">Número Muy Grande:</label>
+    <label for="input10">`INPUT`:</label>
     <input id="input10" type="number" min="1000000" max="9999999" step="111111">
 </fieldset>
 
@@ -96,21 +96,27 @@
 <fieldset>
     <legend>Caso 11: Min y Step con decimales</legend>
     <div class="description">min: 25.5, step: 8,5</div>
-    <label for="input11">Número Muy Grande:</label>
+    <label for="input11">INPUT:</label>
     <input id="input11" type="number" step="8.5" min="25.5">
+</fieldset>
+
+<fieldset>
+    <legend>Caso 12: Min y Step con decimales II</legend>
+    <div class="description">min: 2.28, step: 0.76</div>
+    <label for="input12">INPUT:</label>
+    <input id="input12" type="number" step="0.76" min="2.28">
 </fieldset>
 
 <script>
     // Uso:
     const properInput = new ProperInput();
 
-    // properInput.setSelector();
+    properInput.setSelector('input#input12');
 
     // Para cambiar la función de redondeo (por ejemplo, a Math.round):
     // properInput.setRoundFunction(Math.round);
 
-    // Para usar un selector diferente:
-    // const customProperInput = new ProperInput('input.custom-number-input');
+    properInput.enforceStep(false);
 
     // Arranque
     properInput.init();
