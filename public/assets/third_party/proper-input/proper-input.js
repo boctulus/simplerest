@@ -1,4 +1,6 @@
 /*
+    ProperInput ver 1.1
+
     Corrección de implementación trunca de <input type="number"> donde el max=""
     y min="" se restringen tanto con las flechas como al ingresar por teclado
 
