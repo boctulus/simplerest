@@ -111,12 +111,12 @@
     // Uso:
     const properInput = new ProperInput();
 
-    properInput.setSelector('input#input12');
+    // properInput.setSelector('input#input12');
 
     // Para cambiar la función de redondeo (por ejemplo, a Math.round):
     // properInput.setRoundFunction(Math.round);
 
-    properInput.enforceStep(false);
+    // properInput.enforceStep(false);
 
     // Arranque
     properInput.init();
