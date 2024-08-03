@@ -10950,7 +10950,7 @@ class DumbController extends Controller
     }
 
     function invoice(){
-        css_file(Url::getBaseUrl() . '/app/views/bir/styles.css');
+        css_file(VIEWS_PATH . 'bir/css/styles.css');
         view('bir\invoice_layout.php');
     }
 
