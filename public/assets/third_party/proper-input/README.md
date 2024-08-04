@@ -86,7 +86,7 @@ $('#numMeters, #numBoxes').on('input change', function() {
 });
 ```
 
-# API
+### API
 
 Constructor
 
@@ -108,7 +108,34 @@ setRoundFunction(fn): Sets a custom rounding function.
 init(): Initializes the functionality on all selected inputs.
 ```
 
-# Use Cases
+## Advanced Features
+
+### Controlling Step Enforcement
+
+ProperInput allows you to dynamically control whether the `step` attribute is enforced or not, using the `enforceStep()` method.
+
+```javascript
+enforceStep(value): Enables or disables step enforcement.
+```
+
+Usage:
+
+```javascript
+const properInput = new ProperInput();
+properInput.init();
+
+// Disable step enforcement
+properInput.enforceStep(false);
+
+// Re-enable step enforcement
+properInput.enforceStep(true);
+```
+
+When step enforcement is disabled, the input will still respect the min and max attributes, but will allow any value within that range, regardless of the step attribute.
+
+This feature is particularly useful in scenarios where you want to temporarily allow more flexible input, such as during initial data entry, while still maintaining the ability to enforce the step when needed.
+
+## Use Cases
 
 1. Input with Decimal Step
 
@@ -146,10 +173,10 @@ Perfect for percentages requiring two-decimal precision, like interest rates or 
 Useful for selecting years, ensuring only valid years within the specified range are entered.
 
 
-# Contributing
+## Contributing
 
 Everyone is welcome to contribute. Please open an issue to discuss major changes before submitting a pull request.
 
-# License
+## License
 
 MIT License
