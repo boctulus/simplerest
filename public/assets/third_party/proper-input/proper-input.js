@@ -26,11 +26,11 @@
 
 class ProperInput 
 {
-  constructor(roundFn = null) {
+  constructor(selector = null, roundFn = null) {
     this.roundFn = roundFn || Math.round;
     this.inputs = [];
     this.enforceStepEnabled = true;
-    this.setSelector();
+    this.setSelector(selector);        
   }
 
   setSelector(selector = 'input[type="number"][max], input[type="number"][min], input[type="number"][step]') {
