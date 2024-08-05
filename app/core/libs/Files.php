@@ -555,11 +555,13 @@ class Files
 		return $ret;
 	}
 
-	static function isAbsolutePath(string $path){
+	static function isAbsolutePath(string $path, bool $pseudo_abs_as_abs = true){
 		$path = static::convertSlashes($path);
 
-		if (Strings::contains('..', $path) || Strings::startsWith('.' . DIRECTORY_SEPARATOR , $path)|| Strings::startsWith('..' . DIRECTORY_SEPARATOR , $path)){
-			return false;
+		if ($pseudo_abs_as_abs === false){
+			if (Strings::contains('..', $path) || Strings::startsWith('.' . DIRECTORY_SEPARATOR , $path)|| Strings::startsWith('..' . DIRECTORY_SEPARATOR , $path)){
+				return false;
+			}
 		}
 
 		if (PHP_OS_FAMILY === "Windows") {
