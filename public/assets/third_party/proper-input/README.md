@@ -91,7 +91,7 @@ $('#numMeters, #numBoxes').on('input change', function() {
 Constructor
 
 ```javascript
-const properInput = new ProperInput(roundFn);
+const properInput = new ProperInput(selector = null, roundFn = null);
 ```
 
 Other methods
@@ -114,6 +114,8 @@ init(): Initializes the functionality on all selected inputs.
 
 ProperInput allows you to dynamically control whether the `step` attribute is enforced or not, using the `enforceStep()` method.
 
+This way it's possible to disable the step when a value is entered by the user in the <INPUT>, making it valid only when it gets increased/decreased. This prevents a 100 from being rounded to 99, for example, if the step is 33 with a min of zero.
+
 ```javascript
 enforceStep(value): Enables or disables step enforcement.
 ```
@@ -135,42 +137,28 @@ When step enforcement is disabled, the input will still respect the min and max 
 
 This feature is particularly useful in scenarios where you want to temporarily allow more flexible input, such as during initial data entry, while still maintaining the ability to enforce the step when needed.
 
-## Use Cases
-
-1. Input with Decimal Step
+## Full example
 
 ```html
-<input type="number" min="0" max="10" step="0.1">
-```
-ProperInput ensures that entered values adhere to the 0.1 step, rounding correctly (e.g., 3.14 will round to 3.1).
-
-
-2. Range with Negative Values
-```html
-<input type="number" min="-50" max="50" step="5">
-```
-Correctly handles ranges including both negative and positive values, ensuring values align with the step of 5.
-
-3. Large Values with Significant Step
-```html
-<input type="number" min="1000000" max="9999999" step="111111">
+<input type="number" id="numBoxes"   min="3"   step="1">
+<input type="number" id="numMeters"  min="2.1" step="0.7">
+<input type="number" name="quantity" max="50"  step="1">
 ```
 
-Ideal for scenarios requiring large increments within wide ranges, such as budget or population selection.
+```javascript
+const properInputNumMeters = new ProperInput('#numMeters');
+properInputNumMeters.setRoundFunction(Math.round);
+properInputNumMeters.enforceStep(false);
+properInputNumMeters.init();
 
-4. Precise Percentage Input
-```html
-<input type="number" min="0" max="100" step="0.01">
+const properInputNumBoxes = new ProperInput('#numBoxes');
+properInputNumBoxes.setRoundFunction(Math.round);
+properInputNumBoxes.init();
+
+const properInputWooQty = new ProperInput('input[name="quantity"]');
+properInputWooQty.setRoundFunction(Math.round);
+properInputWooQty.init();    
 ```
-
-Perfect for percentages requiring two-decimal precision, like interest rates or discounts.
-
-5. Year Selector
-```html
-<input type="number" min="1900" max="2100" step="1">
-```
-
-Useful for selecting years, ensuring only valid years within the specified range are entered.
 
 
 ## Contributing
