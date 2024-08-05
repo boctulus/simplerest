@@ -70,10 +70,30 @@ class ProperInput
     return newValue;
   }
 
+  // Not in use
+  initializeValue(input, delay) {
+    setTimeout(() => {
+      const currentValue = parseFloat(input.value);
+      const min          = parseFloat(input.getAttribute('min'));
+      const max          = parseFloat(input.getAttribute('max'));
+      const step         = parseFloat(input.getAttribute('step'));
+      const newValue     = this.processValue(currentValue, min, max, step);
+
+      if (!isNaN(newValue) && newValue !== currentValue) {
+        input.value = newValue.toFixed(this.countDecimals(step));
+      }
+    }, delay);
+  }
+
   init() {
     if (typeof document !== 'undefined') {
       this.inputs = document.querySelectorAll(this.inputSelector);
-      this.inputs.forEach(input => this.setupInput(input));
+      
+      this.inputs.forEach(input => {
+        this.setupInput(input);
+        // this.initializeValue(input, 500);
+      });
+
     }
   }
 
@@ -85,14 +105,18 @@ class ProperInput
         this.handleInput(input);
       }, 750);
     });
+
+    // Procesar el valor inicial
+    this.handleInput(input);
   }
 
   handleInput(input) {
     const currentValue = parseFloat(input.value);
-    const min = parseFloat(input.getAttribute('min'));
-    const max = parseFloat(input.getAttribute('max'));
-    const step = parseFloat(input.getAttribute('step'));
-    const newValue = this.processValue(currentValue, min, max, step);
+    const min          = parseFloat(input.getAttribute('min'));
+    const max          = parseFloat(input.getAttribute('max'));
+    const step         = parseFloat(input.getAttribute('step'));
+    const newValue     = this.processValue(currentValue, min, max, step);
+    
     if (!isNaN(newValue) && newValue !== currentValue) {
       input.value = newValue.toFixed(this.countDecimals(step));
       this.temporarilyDisableInput(input);
@@ -100,7 +124,9 @@ class ProperInput
   }
 
   countDecimals(value) {
-    if (Math.floor(value) === value) return 0;
+    if (Math.floor(value) === value) 
+      return 0;
+    
     return value.toString().split(".")[1].length || 0;
   }
 
