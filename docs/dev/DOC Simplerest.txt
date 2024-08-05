@@ -202,11 +202,11 @@ Ej:
 
 	Config::set('', include __DIR__ . '/config/config.php');
 
-
 Esto puede ser util dentro de un modulo como podria ser un shortcode o un package para incluir un archivo de configuracion como el config.php del modulo / paquete / shortcode dentro del config a nivel global.
 
-
 * Existe una clase analoga Env con los metodos Env::set() y Env::get()
+
+Para los shortcodes la carga del config/config.php del shortcode es resuelto extendiendo la clase Shortcode.
 
 
 # Simular valores de archivo de configuracion desde la linea de comandos
@@ -9464,12 +9464,45 @@ Ej:
 
 Nota:
 
-Lo ideal seria que la ruta a la carpeta que contiene el "shortcode" pudiera ser arbitraria con lo cual podria 
-usarse como un HMVC de CodeIgniter. Ademas podria contener el o los controladores con lo que quedaria complementado empaquetado
+Lo ideal seria que la ruta a la carpeta que contiene el "shortcode" pudiera ser arbitraria con lo cual podria usarse como un HMVC de CodeIgniter. Ademas podria contener el o los controladores con lo que quedaria complementado empaquetado
 no dejando nada suelto.
 
-Si se generalizara la ruta de los shortcodes entonces deberia depredicarse shortcode_asset() y buscar una funcion
-que pudiera reemplazarla quizassssss cargando assets con rutas relativas !!!
+Si se generalizara la ruta de los shortcodes entonces deberia depredicarse shortcode_asset() y buscar una funcion que pudiera reemplazarla quizassssss cargando assets con rutas relativas !!!
+
+
+## Incluision de archivo config en shortcodes
+
+Si la clase es llamada estaticamente seria necesario hacer algo asi:
+
+class RackQuoter {
+    public static function init() {
+        Config::set('', include __DIR__ . '/config/config.php');
+    }
+}
+
+Por el contrario si la clase es instanciada, se puede simplificar a:
+
+class RackQuoter extends Shortcode {
+	// ...
+}
+
+En este ultimo caso el archivo ./config/config.php es incluido automaticamente y quedara accesible con Config::get() bajo una key con el nombre de la clase del shortcode.
+
+Ej:
+
+[RackQuoter] => Array
+(
+    [add_by] => m2
+    [round_quantity] => ceil
+)
+
+y se pueden recuperar con notacion "dot"
+
+Ej:
+
+$add_by         = Config::get('M2CalculatorShortcode.add_by');
+$round_quantity = Config::get('M2CalculatorShortcode.round_quantity');
+
 
 
 # Cache de vistas
