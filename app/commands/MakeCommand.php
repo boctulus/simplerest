@@ -2389,6 +2389,12 @@ class MakeCommand implements ICommand
         echo implode(PHP_EOL, $lines);
     }
 
+    /*
+        TO-DO
+
+        - Crear funcion general makeScafolding()
+        - Usar makeScafolding() en widget(), shortcode(), package() y otras
+    */
     function widget(string $name, ...$opt) {
         $dir = WIDGETS_PATH . $name;
 
@@ -2425,15 +2431,19 @@ class MakeCommand implements ICommand
             }
         }
 
-        $exists = file_exists("$dir" . DIRECTORY_SEPARATOR ."$name.css");
+        $file_path = "$dir" . DIRECTORY_SEPARATOR ."styles.css";
+        $exists    = file_exists($file_path);
 
-        if (Files::touch("$dir/$name.css")){
-            dd("$dir" . DIRECTORY_SEPARATOR ."$name.css was " . (!$exists ? 'created' : 'touched'));
+        if (Files::touch($file_path)){
+            dd("$file_path was " . (!$exists ? 'created' : 'touched'));
         }
 
         if ($js){
-            if (Files::touch("$dir" . DIRECTORY_SEPARATOR ."$name.js")){
-                dd("$dir" . DIRECTORY_SEPARATOR ."$name.js was created");
+            $file_path = "$dir" . DIRECTORY_SEPARATOR ."$name.js";
+            $exists    = file_exists($file_path);
+
+            if (Files::touch($file_path)){
+                dd("$file_path was " . (!$exists ? 'created' : 'touched'));
             }
         }                
     }
