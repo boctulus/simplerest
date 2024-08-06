@@ -2148,7 +2148,7 @@ class Bt5Form extends Html
             unset($args['color']);
         }
 
-        $title = $title ?? $args['title'] ?? $attributes['title'] ?? null;
+        $title = $args['title'] ?? $attributes['title'] ?? null;
 
         if ($title !== null){
             $_title = "<h5>$title</h5>";
