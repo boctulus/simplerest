@@ -6,6 +6,31 @@ use simplerest\core\libs\Files;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Strings;
 
+/*
+    Una diferencia importante entre js_file() / css_file() con las de SW
+    es que en SR siempre son relativas a VIEW_PATH !!!
+
+    Ej: --en un shortcode--
+
+    // En SR
+    css_file('third_party/bootstrap/3.x/normalize.css');  // relativa a VIEW_PATH
+    css_file(__DIR__ . '/assets/css/racks.css'); 
+    css_file(__DIR__ . '/assets/css/styles.css');
+
+    equivaldria a:
+
+    // En SW
+    css_file(Constants::VIEW_PATH . 'third_party/bootstrap/3.x/normalize.css');  // debi agregar Constants::VIEW_PATH
+    css_file(__DIR__ . '/assets/css/racks.css');   // podria remover el __DIR__
+    css_file(__DIR__ . '/assets/css/styles.css');  // podria remover el __DIR__
+
+    Por tanto la forma "portable" (compatible) es usar siempre rutas absolutas:
+    
+    css_file(Constants::VIEW_PATH . 'third_party/bootstrap/3.x/normalize.css');  
+    css_file(__DIR__ . '/assets/css/racks.css');  
+    css_file(__DIR__ . '/assets/css/styles.css'); 
+*/
+
 function a_meta(string $name, string $content){
     return "<meta name=\"$name\" content=\"$content\">\r\n";
 }

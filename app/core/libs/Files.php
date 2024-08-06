@@ -1201,7 +1201,12 @@ class Files
 	/*
 		No es recursiva
 	*/
-	static function rmDirOrFail(string $dir){
+	static function rmDirOrFail(string $dir, bool $recursive = false)
+	{
+		if ($recursive){
+			static::delTree($dir, false, true);
+		}
+
 		if (!is_dir($dir)){
 			throw new \Exception("Directory '$dir' doesn't exist");
 		}
