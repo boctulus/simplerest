@@ -9003,6 +9003,38 @@ Lo anterior equivale a:
     view('bir\invoice_layout.php');
 
 
+## Diferencias entre SR y SW en manejo de assets
+
+Una diferencia importante entre js_file() / css_file() con las de SW
+es que en SR siempre son relativas a VIEW_PATH 
+
+    Ej: --en un shortcode--
+
+    // En SR (SimpleRest)
+    css_file('third_party/bootstrap/3.x/normalize.css');  // relativa a VIEW_PATH
+    css_file(__DIR__ . '/assets/css/racks.css'); 
+    css_file(__DIR__ . '/assets/css/styles.css');
+
+    equivaldria a:
+
+    // En SW
+    css_file(Constants::VIEW_PATH . 'third_party/bootstrap/3.x/normalize.css');  // debi agregar Constants::VIEW_PATH
+    css_file(__DIR__ . '/assets/css/racks.css');   // podria remover el __DIR__
+    css_file(__DIR__ . '/assets/css/styles.css');  // podria remover el __DIR__
+
+	y equivaldria a:
+
+	css_file(Constants::VIEW_PATH . 'third_party/bootstrap/3.x/normalize.css');  // debi agregar Constants::VIEW_PATH
+    css_file('/assets/css/racks.css');   
+    css_file('/assets/css/styles.css');  
+
+    Por tanto la forma "portable" (compatible) es usar siempre rutas absolutas:
+    
+    css_file(Constants::VIEW_PATH . 'third_party/bootstrap/3.x/normalize.css');  
+    css_file(__DIR__ . '/assets/css/racks.css');  
+    css_file(__DIR__ . '/assets/css/styles.css'); 
+
+
 # Templates
 
 Por defecto se carga el template especificado en el config.php pero se pueden usar cuantos templates se desee y éste es especificado como tercer parámetro del método view()

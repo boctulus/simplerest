@@ -2383,20 +2383,40 @@ class MakeCommand implements ICommand
                 $file = Strings::afterIfContains($file, "assets" . DIRECTORY_SEPARATOR . $dir);
             }
             
-            $lines[] = "css_file('$file');";           
+            $lines[] = "css_file('$file');";     
         }
 
-        return implode(PHP_EOL, $lines);
+        echo implode(PHP_EOL, $lines);
     }
 
     function widget(string $name, ...$opt) {
         $dir = WIDGETS_PATH . $name;
 
-        $js = false;
+        $name = Strings::toSnakeCase($name);
+
+        $js     = false;
+        $remove = false;
         foreach ($opt as $o){ 
+            if (preg_match('/^(--remove|--delete|--erase)$/', $o)){
+                $remove = true;
+                break;
+            }
+
             if (preg_match('/^(--js|--javascript|--include-js)$/', $o)){
                 $js = true;
             }
+        }
+
+        if ($remove){
+            $ok = Files::rmDirOrFail($dir, true);    
+
+            if (!$ok) {
+                throw new \Exception("Delete of $dir has failed");
+            } else {
+                StdOut::pprint("Directory `$dir` was deleted\r\n");
+            }
+
+            return;
         }
 
         if (!is_dir($dir)){
@@ -2405,15 +2425,15 @@ class MakeCommand implements ICommand
             }
         }
 
-        $exists = file_exists("$dir/$name.css");
+        $exists = file_exists("$dir" . DIRECTORY_SEPARATOR ."$name.css");
 
         if (Files::touch("$dir/$name.css")){
-            dd("$dir/$name.css was " . (!$exists ? 'created' : 'touched'));
+            dd("$dir" . DIRECTORY_SEPARATOR ."$name.css was " . (!$exists ? 'created' : 'touched'));
         }
 
         if ($js){
-            if (Files::touch("$dir/$name.js")){
-                dd("$dir/$name.js was created");
+            if (Files::touch("$dir" . DIRECTORY_SEPARATOR ."$name.js")){
+                dd("$dir" . DIRECTORY_SEPARATOR ."$name.js was created");
             }
         }                
     }
