@@ -3,8 +3,9 @@
 namespace simplerest\controllers;
 
 use stdClass;
-use simplerest\libs\Foo;
+use MakeCommand;
 
+use simplerest\libs\Foo;
 use simplerest\core\View;
 use simplerest\libs\Cake;
 use simplerest\libs\Foo2;
@@ -15,74 +16,74 @@ use simplerest\core\libs\DB;
 use simplerest\core\Request;
 use simplerest\libs\Reviews;
 use simplerest\core\libs\CSS;
-use simplerest\core\libs\Env;
 ;
-use simplerest\core\libs\Url;
+use simplerest\core\libs\Env;
 
-use simplerest\core\libs\XML;
+use simplerest\core\libs\Url;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
+use simplerest\core\libs\XML;
 use simplerest\core\Response;
 use simplerest\libs\RibiSOAP;
 use simplerest\core\Container;
-use simplerest\core\libs\Date;
 
+use simplerest\core\libs\Date;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\Task;
-use simplerest\core\libs\Time;
 
+use simplerest\core\libs\Time;
 use simplerest\core\libs\Cache;
+
 use simplerest\core\libs\Files;
 
 use simplerest\core\libs\Utils;
-
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Cookie;
 use simplerest\core\libs\GitHub;
-use simplerest\core\libs\Logger;
 
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\Schema;
+
 use simplerest\core\libs\StdOut;
 
 use simplerest\core\libs\System;
 
 use simplerest\core\libs\Update;
-
 use simplerest\libs\Ingredient1;
-use simplerest\libs\Ingredient2;
 
+use simplerest\libs\Ingredient2;
 use simplerest\core\libs\ChatGPT;
 use simplerest\core\libs\DBCache;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\VarDump;
+use simplerest\core\libs\Factory;
 
+use simplerest\core\libs\Strings;
+
+use simplerest\core\libs\VarDump;
 use Spatie\ArrayToXml\ArrayToXml;
 
 use simplerest\core\libs\ClaudeAI;
-use simplerest\core\libs\CSSUtils;
-
-use simplerest\core\libs\Factory;;
+use simplerest\core\libs\CSSUtils;;
 use simplerest\core\libs\Hardware;
 use simplerest\core\libs\JobQueue;
 use simplerest\core\libs\Parallex;
 use simplerest\models\az\BarModel;
 use Endroid\QrCode\Builder\Builder;
-use simplerest\core\libs\ApiClient;
 
+use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\CookieJar;
 use simplerest\core\libs\FileCache;
-use simplerest\core\libs\MediaType;
 
+use simplerest\core\libs\MediaType;
 use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Validator;
 use simplerest\libs\ItalianReviews;
 use simplerest\core\libs\DomCrawler;
 use simplerest\core\libs\GoogleMaps;
-use simplerest\core\libs\Obfuscator;
 
+use simplerest\core\libs\Obfuscator;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\ZipManager;
 use Endroid\QrCode\Encoding\Encoding;
@@ -95,9 +96,10 @@ use simplerest\core\libs\Messurements;
 use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\EasyHTMLTable;
 use simplerest\core\libs\EmailTemplate;
+use simplerest\core\libs\HTML as HTMLTools;
+
 use simplerest\core\libs\i18n\POParser;
 use simplerest\core\libs\InMemoryCache;
-
 use simplerest\core\libs\StratoScraper;
 use simplerest\libs\scrapers\Curiosite;
 use simplerest\models\az\ProductsModel;
@@ -124,7 +126,6 @@ use simplerest\core\libs\PostmanGenerator;
 use simplerest\models\az\AutomovilesModel;
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\FileMemoizationV2;
-use simplerest\core\libs\HTML as HTMLTools;
 use simplerest\libs\ItalianGrammarAnalyzer;
 use simplerest\libs\scrapers\AmazonScraper;
 use simplerest\shortcodes\eat_leaf\EatLeaf;
@@ -134,6 +135,7 @@ use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\WooCommerceApiClient;
 use simplerest\libs\scrapers\LeroyMerlinScraper;
 use simplerest\core\libs\code_cleaner\AngularCleaner;
+use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\code_cleaner\BootstrapCleaner;
 use simplerest\shortcodes\countdown\CountDownShortcode;
 use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
@@ -141,7 +143,6 @@ use simplerest\shortcodes\csv_importer\ImporterShortcode;
 use simplerest\shortcodes\progress_bar\ProgressShortcode;
 use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
-use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
@@ -1573,7 +1574,7 @@ class DumbController extends Controller
 
         StdOut::hideResponse();
 
-        $mk = new MakeControllerBase();
+        $mk = new MakeCommand();
         $mk->any("all", "-s", "-m", "--from:$tenant");
     }
 
@@ -3167,8 +3168,8 @@ class DumbController extends Controller
 
     function test_remove_unnecesary_slashes()
     {
-        dd(Strings::removeUnnecessarySlashes('/home/www/simplerest/docs//DOC Simplerest.txt'));
-        dd(Strings::removeUnnecessarySlashes('c:\windows\\system32'));
+        dd(Files::normalize('/home/www/simplerest/docs//DOC Simplerest.txt'));
+        dd(Files::normalize('c:\windows\\system32'));
     }
 
     function test_glob()
@@ -3219,7 +3220,7 @@ class DumbController extends Controller
 
     function test_slash_string_fns()
     {
-        dd(Strings::removeUnnecessarySlashes('c:\\windows'));
+        dd(Files::normalize('c:\\windows'));
         dd(Files::removeTrailingSlash('/home/www/simplerest/'));
         dd(Files::removeTrailingSlash('/home/www/simplerest'));
         dd(Files::addTrailingSlash('/home/www/simplerest'));
@@ -7657,8 +7658,8 @@ class DumbController extends Controller
         </li>';
 
 
-        $html = XML::removeCSS($html);
-        $html = XML::removeHTMLAttributes($html, ['rel', 'target']);
+        $html = CSS::removeCSS($html);
+        $html = HTML::removeHTMLAttributes($html, ['rel', 'target']);
 
 
         /* 
@@ -7691,7 +7692,7 @@ class DumbController extends Controller
         <a href="https://www.otra-red-social.com/mi-usuario">Enlace a otra red social</a>
         ';
 
-        $filteredHtml = XML::removeSocialLinks($html);
+        $filteredHtml = HTML::removeSocialLinks($html);
 
         dd($filteredHtml);
     }
