@@ -31,15 +31,15 @@ use simplerest\core\libs\Strings;
     css_file(__DIR__ . '/assets/css/styles.css'); 
 */
 
-function a_meta(string $name, string $content){
+function get_meta_tag(string $name, string $content){
     return "<meta name=\"$name\" content=\"$content\">\r\n";
 }
 
-function a_js($js_file){
+function get_js_tag($js_file){
     return "<script type=\"text/javascript\" src=\"$js_file\"></script>\r\n";
 }
 
-function a_css($css_file){
+function get_css_tag($css_file){
     return "<link href=\"$css_file\" rel=\"stylesheet\" />\r\n";
 }
 
@@ -158,70 +158,80 @@ function section($view, Array $vars = []){
     include VIEWS_PATH . $view;
 }
 
-function render_metas(){
+function get_metas(){
     $head = View::getHead();
 
     if (!isset($head['meta'])){
         return;
     }
 
+    $ret = '';
     foreach ($head['meta'] as $m){
-        echo a_meta($m['name'], $m['content']) . "\r\n";
+        $ret .= get_meta_tag($m['name'], $m['content']) . "\r\n";
     }
+
+    return $ret;
 }
 
-function render_js(bool $in_head = false){
+function get_js(bool $in_head = false){
     $arr = $in_head ? View::getHead() : View::getFooter();
 
     if (!isset($arr['js'])){
         return;
     }
 
+    $ret = '';
     foreach ($arr['js'] as $_js){
         if (isset($_js['file'])){
             $path = $_js['file'];
             
-            echo a_js($path);
+            $ret .= get_js_tag($path);
         } else {
             if (!is_string($_js)){
                 throw new \Exception("Expected string. Got " . gettype($_js));
             }
 
-            echo "<script>$_js</script>\r\n";
+            $ret .= "<script>$_js</script>\r\n";
         }
     }
+
+    return $ret;
 }
 
-function render_css(){
+function get_css(){
     $head = View::getHead();
 
     if (!isset($head['css'])){
         return;
     }
    
+    $ret = '';
     foreach ($head['css'] as $_css){
         if (is_array($_css)){
             if (isset($_css['file'])){
-                echo a_css($_css['file']) . "\r\n";
+                $ret .= get_css_tag($_css['file']) . "\r\n";
             }            
         } else {
             if (!is_string($_css)){
                 throw new \Exception("Expected string. Got " . gettype($_css));
             }
 
-            echo "<style>". $_css . "</style>\r\n";
+            $ret .= "<style>". $_css . "</style>\r\n";
         }
     }
+
+    return $ret;
 }
 
 function head(){
-    render_metas();
-    render_css();        
-    render_js(VIEW::HEAD);
+    return 
+    get_metas() .
+    get_css() .     
+    get_js(VIEW::HEAD);
 }
 
 function footer(){
-    render_js(VIEW::FOOTER);
+    return get_js(VIEW::FOOTER);
 }
 
 function js_file(string $file, ?Array $atts = null, bool $in_head = false){
