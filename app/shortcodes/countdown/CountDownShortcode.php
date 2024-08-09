@@ -2,9 +2,9 @@
 
 namespace simplerest\shortcodes\countdown;
 
-use simplerest\core\libs\Config;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Paginator;
 
 class CountDownShortcode
@@ -17,7 +17,7 @@ class CountDownShortcode
     {
         css_file(__DIR__ . '/assets/css/styles.css');
 
-        // js_file('https://raw.githack.com/epiksel/countdown/master/jquery.countdown.js');
+        //js_file('https://raw.githack.com/epiksel/countdown/master/jquery.countdown.js');
         // js_file('https://colaoled.it/js/countdown.js');
 
         // // Deberia poder usarse un identificador que prevenga de cargarlo dos veces
