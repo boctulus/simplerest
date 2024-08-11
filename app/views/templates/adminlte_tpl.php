@@ -29,7 +29,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link href="<?= asset('third_party/tabulator/dist/css/tabulator_midnight.min.css') ?>" rel="stylesheet">
 
     <?=
-        umodel();
+        umodel() .
         head();
     ?>
 
@@ -332,7 +332,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="<?= asset('third_party/adminlte/dist/js/adminlte.min.js') ?>"></script>
     <script src="<?= asset('third_party/adminlte/dist/js/darktheme.js') ?>"></script>
 
-    <?php
+    <?=
         footer();  
     ?>
 </body>

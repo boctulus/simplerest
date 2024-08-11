@@ -6,9 +6,9 @@
 
     <title><?= $title ?? '' ?></title>
 
-    <?php
-        echo base(); 
-        head(); 
+    <?=
+        base() . 
+        head() 
     ?>
 
 </head>
@@ -21,7 +21,7 @@
 
     <footer id="footer">
         <?= $footer_content ?? '' ?>
-        <?php footer(); ?>
+        <?=  footer(); ?>
     </footer>
 </body>
 </html>
