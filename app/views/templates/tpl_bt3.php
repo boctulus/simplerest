@@ -14,7 +14,7 @@
     <!-- jQuery -->
     <script src="<?= asset('third_party/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
 
-    <?php
+    <?=
         head();  
     ?>
 
@@ -32,7 +32,7 @@
         <!-- Bootstrap 3.x -->
         <script src="<?= asset('third_party/bootstrap/3.x/bootstrap.bundle.min.js') ?>"></script>
     
-        <?php
+        <?=
             footer();  
         ?>
     </footer>
