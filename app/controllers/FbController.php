@@ -127,7 +127,7 @@ class FbController extends Controller
         }
 
         css_file(VIEWS_PATH . 'fb_groups/css/styles.css');
-        view('fb_groups\fb_groups.php', ['sections' => $sections]);
+        view('fb_groups\fb_groups.php', ['sections' => $sections], 'templates/tpl_basic.php');
     }
 }
 

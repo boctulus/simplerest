@@ -150,7 +150,7 @@
     <footer id="footer">
         <?= $footer_content ?? '' ?>
     
-        <?php
+        <?=
             footer();  
         ?>
     </footer>
