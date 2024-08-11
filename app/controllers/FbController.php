@@ -10,6 +10,18 @@ class FbController extends Controller
 {    
     function index(){
         $grupos = <<<STR
+        WP - WOO | IT
+        https://www.facebook.com/groups/1380949515301271/
+        https://www.facebook.com/groups/wpitalyplus/
+
+        PHP | IT
+        https://www.facebook.com/groups/377041959088599
+        https://www.facebook.com/groups/59356989650/
+        https://www.facebook.com/groups/336426883084246/
+
+        Programación | IT
+        https://www.facebook.com/groups/353299598353917/
+        
         WEB dev | ES
         https://web.facebook.com/groups/2586263318303964/
         https://web.facebook.com/groups/275031689253437
@@ -75,18 +87,6 @@ class FbController extends Controller
 
         PHP | BR
         https://www.facebook.com/groups/142151625841770/
-
-        WP - WOO | IT
-        https://www.facebook.com/groups/1380949515301271/
-        https://www.facebook.com/groups/wpitalyplus/
-
-        PHP | IT
-        https://www.facebook.com/groups/377041959088599
-        https://www.facebook.com/groups/59356989650/
-        https://www.facebook.com/groups/336426883084246/
-
-        Programación | IT
-        https://www.facebook.com/groups/353299598353917/
 
         Programación | RO (Rumanía)
         https://www.facebook.com/groups/677877235598824/
