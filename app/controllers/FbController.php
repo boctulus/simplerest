@@ -10,6 +10,9 @@ class FbController extends Controller
 {    
     function index(){
         $grupos = <<<STR
+        WOO | MALASYA
+        https://web.facebook.com/groups/1666073346747016/
+
         WP - WOO | IT
         https://www.facebook.com/groups/1380949515301271/
         https://www.facebook.com/groups/wpitalyplus/
