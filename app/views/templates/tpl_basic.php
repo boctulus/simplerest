@@ -21,7 +21,7 @@
 
     <footer id="footer">
         <?= $footer_content ?? '' ?>
-        <?=  footer(); ?>
+        <?= footer(); ?>
     </footer>
 </body>
 </html>
