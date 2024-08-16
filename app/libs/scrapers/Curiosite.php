@@ -14,7 +14,7 @@ use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\ProductScraper;
 
-class Curiosite extends ProductScraper
+class Curiosite /* extends ProductScraper */
 {
     static function getProduct(string $ori){
         $is_url = false;

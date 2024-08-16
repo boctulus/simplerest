@@ -10955,6 +10955,11 @@ class DumbController extends Controller
         view('bir\invoice_layout.php');
     }
 
+    function bt5menu()
+    {
+        set_template('bt5panel/tpl.php');
+        render('Hello World');
+    }
 
 
 }   // end class
