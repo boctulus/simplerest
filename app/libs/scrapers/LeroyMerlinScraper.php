@@ -18,7 +18,7 @@ use simplerest\core\libs\ProductScraper;
     Response: "Please enable JS and disable any ad blocker"
 */
 
-class LeroyMerlinScraper extends ProductScraper
+class LeroyMerlinScraper /* extends ProductScraper */
 {    
     static function getProduct(string $ori){
         if (Strings::startsWith('http', $ori)){

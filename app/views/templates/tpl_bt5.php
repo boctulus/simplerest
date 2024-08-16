@@ -9,10 +9,10 @@
     <?= base() ?>
 
     <link rel="stylesheet" href="<?= asset('third_party/bootstrap/5.x/bootstrap.min.css') ?>">
-    <link rel="stylesheet" href="<?= asset('third_party/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
+    <link rel="stylesheet" href="<?= asset('third_party/fontawesome/5/all.min.css') ?>">
 
     <!-- jQuery -->
-    <script src="<?= asset('third_party/adminlte/plugins/jquery/jquery.min.js') ?>"></script>
+    <script src="<?= asset('third_party/jquery/3.3.1/jquery.min.js') ?>"></script>
 
     <?= head() ?>
 
