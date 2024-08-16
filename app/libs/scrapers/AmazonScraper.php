@@ -11,7 +11,7 @@ use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\ProductScraper;
 
-class AmazonScraper extends ProductScraper
+class AmazonScraper /* extends ProductScraper */
 {
     static function get_api_client(string $url, bool $using_proxy = true){
         if ($using_proxy){

@@ -10,7 +10,7 @@ use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\ProductScraper;
 
-class MaisonsScraper extends ProductScraper
+class MaisonsScraper /* extends ProductScraper */
 {    
     static function get_api_client(string $url){
         $proxy_url = "http://2.56.221.125/php-proxy/Proxy.php";
