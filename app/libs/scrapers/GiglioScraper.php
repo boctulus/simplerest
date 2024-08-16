@@ -8,7 +8,7 @@ use simplerest\core\libs\ApiClient;
 use simplerest\core\libs\ProductScraper;
 use simplerest\core\libs\Url;
 
-class GiglioScraper extends ProductScraper
+class GiglioScraper /* extends ProductScraper */
 {
     function __construct() { }
 

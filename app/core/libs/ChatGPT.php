@@ -50,8 +50,8 @@ class ChatGPT
     {
         $model_endpoints = [
             // Modelos GPT-4
-            'gpt-4o'                   => static::CHAT_COMPLETIONS, // Modelo con capacidades de visión (mas barato que 'gpt-4-vision-preview')
-            'gpt-4o-2024-05-13'        => static::CHAT_COMPLETIONS, // Modelo con capacidades de visión
+            'gpt-4o'                   => static::CHAT_COMPLETIONS, // Model with vision capabilities (cheaper than 'gpt-4-vision-preview')
+            'gpt-4o-2024-05-13'        => static::CHAT_COMPLETIONS, // Model with vision capabilities
             'gpt-4'                    => static::CHAT_COMPLETIONS, // ok
             'gpt-4-1106-preview'       => static::COMPLETIONS,
             'gpt-4-0613'               => static::COMPLETIONS,
@@ -60,16 +60,16 @@ class ChatGPT
         
             // Modelos GPT-3.5
             'gpt-3.5-turbo-1106'       => static::CHAT_COMPLETIONS, // ok
-            'gpt-3.5-turbo'            => static::COMPLETIONS, // Verificar compatibilidad con CHAT_COMPLETIONS
+            'gpt-3.5-turbo'            => static::COMPLETIONS, // Check compatibility with CHAT_COMPLETIONS
             'gpt-3.5-turbo-16k'        => static::COMPLETIONS,
             'gpt-3.5-turbo-instruct'   => static::COMPLETIONS,
         
             // Modelos DALL·E
-            'dall-e-3'                 => static::IMAGES, // Endpoint específico para imágenes
+            'dall-e-3'                 => static::IMAGES, // Image-specific endpoint
             'dall-e-2'                 => static::IMAGES,
         
             // Modelos TTS (Text-to-Speech)
-            'tts-1'                    => static::AUDIO, // Endpoint específico para audio
+            'tts-1'                    => static::AUDIO, // Audio-specific endpoint
             'tts-1-hd'                 => static::AUDIO,
         
             // Modelo Whisper (Reconocimiento de voz)
