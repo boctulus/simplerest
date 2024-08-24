@@ -144,18 +144,27 @@ class AuthController extends Controller implements IAuth
         try {              
             $u = DB::table(get_users_table());
 
-            $row = $u->assoc()->unhide([$this->__password])
-            ->where([$this->__email => $email, $this->__username => $username ], 'OR')
+            $row = $u
+            ->assoc()
+            ->unhide([$this->__password])
+            ->when(!empty($email), function($q) use($email){
+                $q->where([$this->__email => $email]);
+            })
+            ->when(!empty($username), function($q) use($username){
+                $q->where([$this->__username => $username ]);
+            })
             ->setValidator((new Validator())->setRequired(false))  
             ->first();
 
-            if (!$row)
-                error('Incorrect username / email or password', 401);
+            if (!$row){
+                error('Incorrect username or email or password', 401);
+            }
 
             $hash = $row[$this->__password];
 
-            if (!password_verify($password, $hash))
-                error('Incorrect username / email or password', 401);
+            if (!password_verify($password, $hash)){
+                error('Incorrect username or email or password', 401);
+            }
 
             $is_active = 1;    
             if ($u->inSchema([$this->__active])){

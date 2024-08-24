@@ -2,7 +2,7 @@
 
 namespace __NAMESPACE;
 
-use simplerest\abstracts\pages\Page;
+use simplerest\pages\Page;
 
 class __NAME__ extends Page
 {
