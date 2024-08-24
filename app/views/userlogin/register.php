@@ -2,18 +2,20 @@
 <!-- Sign up -->
     
 <?php	
-	css_file('css/login/login.css');
+
+use simplerest\core\libs\HtmlBuilder\Bt5Form;
+use simplerest\core\libs\HtmlBuilder\Tag;
+
+css_file('css/login/login.css');
+	
 ?>
 
 <div class="row vh-100 d-flex  align-items-center">
 	<div class="col-xs-12   col-sm-8 offset-sm-2    col-md-6 offset-md-3    col-lg-4 offset-lg-4">	
 
 		<?php
- 
-		use simplerest\core\libs\HtmlBuilder\Bt5Form;
-		use simplerest\core\libs\HtmlBuilder\Tag;
 
-		Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+		Tag::registerBuilder(Bt5Form::class);
 
 		Bt5Form::setIdAsName();
 
