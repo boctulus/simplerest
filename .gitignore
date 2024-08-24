@@ -3,11 +3,7 @@ vendor/
 *.zip
 *.rar
 *.tar
-*.7z
-*.gz
-*.txt
-*.csv
-uploads/*
+uploads/
 logs/
 tmp/
 storage/security/
