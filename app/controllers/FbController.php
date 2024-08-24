@@ -11,6 +11,7 @@ class FbController extends Controller
     function index(){
         $grupos = <<<STR
         BILINGUAL | PH
+        https://web.facebook.com/groups/302230533271805
         https://web.facebook.com/groups/390130634729808/
         https://web.facebook.com/groups/460001011521792/
         https://web.facebook.com/groups/368909364369813
