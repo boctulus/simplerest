@@ -2,6 +2,7 @@
 
 namespace simplerest\controllers;
 
+use simplerest\core\libs\CMS_Scanner\CMSs\WordPress;
 use stdClass;
 use MakeCommand;
 
@@ -10074,48 +10075,6 @@ class DumbController extends Controller
         dd($str); // Course
     }
 
-    /*
-        CMS scanner
-    */
-    function identity_cms_theme()
-    {
-        /*
-            Clasificar incluyendo los no identificados
-        */
-
-        $list = <<<LIST
-        lacuracaonline.com
-        mabeglobal.com
-        almacenestropigas.com
-        gollo.com
-        prado.com.sv
-        omnisport.com
-        ladylee.net
-        panafoto.com
-        elektra.com.gt
-        verdugotienda.com
-        tiendamonge.com
-        elektra.com.hn
-        mabeglobalpanama.com
-        elgallomasgallo.com.ni
-        ladylee.com
-        elgallomasgallo.com.gt
-        ektguatemala.myvtex.com
-        www.sonjavanduelmen.com
-        LIST;
-
-        // $urls = Strings::lines($list, true, true);
-
-        $urls = ['https://www.harvard.edu/'];
-
-        foreach ($urls as $url) {
-            dd(
-                CMSScanner::identify($url),
-                $url
-            );
-        }
-    }
-
     function test_easy_table_1()
     {
         $table = new EasyHTMLTable('table', 'style="background-color: silver"');
@@ -10961,5 +10920,64 @@ class DumbController extends Controller
         render('Hello World');
     }
 
+    /*
+        CMS scanner
+    */
+    function identity_cms_in_bulk()
+    {
+        /*
+            Clasificar incluyendo los no identificados
+        */
+
+        $list = <<<LIST
+        lacuracaonline.com
+        mabeglobal.com
+        almacenestropigas.com
+        gollo.com
+        prado.com.sv
+        omnisport.com
+        ladylee.net
+        panafoto.com
+        elektra.com.gt
+        verdugotienda.com
+        tiendamonge.com
+        elektra.com.hn
+        mabeglobalpanama.com
+        elgallomasgallo.com.ni
+        ladylee.com
+        elgallomasgallo.com.gt
+        ektguatemala.myvtex.com
+        www.sonjavanduelmen.com
+        LIST;
+
+        // $urls = Strings::lines($list, true, true);
+
+        $urls = ['https://www.harvard.edu/'];
+
+        foreach ($urls as $url) {
+            dd(
+                CMSScanner::identify($url),
+                $url
+            );
+        }
+    }
+
+    function identity_cms()
+    {
+        $url = 'https://importservice.casanova.cl/';
+
+        $str = Url::getUrlContent($url, 3600);
+
+        dd(
+            WordPress::getTheme($str),
+            'Theme'
+        );
+
+        // Revisar si realmente devuelve todos
+        dd(
+            WordPress::getPlugins($str),
+            'Plugins'
+        );
+    }
 
 }   // end class
