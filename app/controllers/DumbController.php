@@ -10966,7 +10966,9 @@ class DumbController extends Controller
     {
         $url = 'https://importservice.casanova.cl/';
 
-        $str = Url::getUrlContent($url, 3600);
+        $str = Url::getUrlContent($url, 360000);
+
+        dd($url);
 
         dd(
             WordPress::getTheme($str),
