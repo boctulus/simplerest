@@ -6,8 +6,8 @@ use simplerest\core\libs\Strings;
 
 class Magento
 {
-    static function isIt($site){
-        return Strings::containsAny(['x-magento-init', 'Magento_PageBuilder'], $site);
+    static function isIt($content){
+        return Strings::containsAny(['x-magento-init', 'Magento_PageBuilder'], $content);
     }
 
 

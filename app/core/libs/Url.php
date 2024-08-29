@@ -649,44 +649,10 @@ class Url
     }
 
     /*
-        Wrapper sobre curl y file_get_contents()
-
-        Le da prioridad a file_get_contents() ya que si el certificado no es valido es mejor usar ApiClient que bypasearlo
-
-        Se limito a casos donde la respuesta tiene http code igual a 200
+        Wrapper sobre ApiClient
     */
-    static function getUrlContent(string $url, bool $json_decode = false, bool $ignore_ssl_cert = false){
-        $allow_url_open = Files::isAllowUrlFopenEnabled();
-        $curl_available = Files::isCurlAvailable();
-
-        if (!$allow_url_open && !$curl_available){
-            throw new \Exception("No way to get url contents");
-        }
-
-        if ($allow_url_open){
-            $res = file_get_contents($url);
-
-            if ($json_decode){
-                return json_decode($res, true);
-            }
-        }        
-    
-        $client = new ApiClient($url);
-
-        $res = $client
-        ->setDecode($json_decode)
-        ->when($ignore_ssl_cert, function($c){
-            $c->disableSSL();
-        })
-        ->get();
-
-        $http_code = $res->getStatus();
-
-        if ($http_code != 200){
-            throw new \Exception("Http status code: $http_code. Expected: 200. Error: {$res->getError()}");
-        }
-
-       return $res->getResponse()['data'];
+    static function getUrlContent(string $url, $cache_exp = false){
+        return (new ApiClient($url))->cache($cache_exp)->disableSSL()->get()->getBody();
     }
 
     static function download(string $url, $dest_path = null, bool $disable_ssl = true, Array $options = []){

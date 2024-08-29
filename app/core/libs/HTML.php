@@ -242,6 +242,10 @@ class HTML extends XML
      * @param string|null $extension Extension to filter URLs (only for rel_type "stylesheet").
      * @param bool $include_query_params Include query parameters in URLs.
      * @return array An array of extracted links.
+     * 
+     * I.e.
+     * 
+     * $arr = HTML::extractLinksByRelType($html, "stylesheet", (!$include_fonts ? "css" : null), $include_query_params);
      */
     static function extractLinksByRelType(string $html, $rel_type, $extension = null, bool $include_query_params = true) {
         $urls = [];
