@@ -44,6 +44,24 @@ class WordPress
         el nombre del theme
     */
     static function getTheme($content){
+        $css_links = HTML::getCSSLinks($content); 
+
+        $theme = null;
+        foreach($css_links as $link){
+            $after = Strings::after($link, '/wp-content/themes/');
+            
+            if (empty($after)){
+                continue;
+            }
+
+            $theme = Strings::before($after, '/');
+            break;
+        }
+
+        if (!empty($theme)){
+            return $theme;
+        }
+
         $js_links = XML::extractNodes($content, '//script', 'src');
 
         $theme = null;
