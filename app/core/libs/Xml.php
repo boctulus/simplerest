@@ -2,8 +2,6 @@
 
 namespace simplerest\core\libs;
 
-use Composer\InstalledVersions;
-
 class XML
 {
     // antes isXML
@@ -89,6 +87,18 @@ class XML
     /*
         Devuelve array de los nodos (en XML/HTML) de los que coinciden con el selector
 
+        Ej:
+
+        // Extrae todo el codigo Javascript
+        $js = XML::extractNodes($content, '//script');
+
+        Si se especifica el atributo, obtiene solo el contenido de los atributos
+
+        Ej:
+        XML::extractNodes($content, '//script', 'src');
+
+        Ej:
+
         $html = '
         <html>
             <body>
@@ -110,20 +120,27 @@ class XML
             [1] => <div class="content">Content 2</div>
         )
     */
-    static function extractNodes(string $html, string $selector): array {
+    static function extractNodes(string $html, string $selector, string $attribute = null): array {
         $dom = static::getDocument($html);
-        
         $xpath = new \DOMXPath($dom);
         $nodes = $xpath->query($selector);
-
+    
         $result = array();
         foreach ($nodes as $node) {
-            $result[] = $dom->saveXML($node);
+            if ($attribute) {
+                // Extrae el valor del atributo si está presente
+                if ($node->hasAttribute($attribute)) {
+                    $result[] = $node->getAttribute($attribute);
+                }
+            } else {
+                // Extrae el contenido del nodo si no se proporciona atributo
+                $result[] = $dom->saveXML($node);
+            }
         }
-
+    
         return $result;
     }
-
+    
     // Recupera textos de nodos
     static function getTextFromNodes($html) {
         $dom   = static::getDocument($html);

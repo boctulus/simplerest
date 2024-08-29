@@ -1547,7 +1547,6 @@ class Files
 		return $content;
 	}
 
-	// alias
 	static function getContent(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
 		return static::read($path, $use_include_path, $context, $offset, $length);
 	}

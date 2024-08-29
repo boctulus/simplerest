@@ -10764,7 +10764,21 @@ Lo que hemos hecho fue borrar la cache antes de volver a generarla. Esto es dist
 
 # Uso de cache
 
-Para el uso de cache se utiliza el método setCache().
+Para el uso de cache se utiliza el método setCache() o su alias cache()
+
+Ej:
+
+$content = (new ApiClient($url))
+->cache(3600)
+->disableSSL()
+->get()
+->getBody();
+
+* Para el caso anterior se puede usar un helper:
+
+$content = Url::getUrlContent($url, 3600);
+
+Mas ejemplos,...
 
 Ej:
 
