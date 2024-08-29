@@ -6,8 +6,8 @@ use simplerest\core\libs\Strings;
 
 class PrestaShop
 {
-    static function isIt($site){
-        return Strings::containsAny(['var prestashop =', 'prestashop.on('], $site);
+    static function isIt($content){
+        return Strings::containsAny(['var prestashop =', 'prestashop.on('], $content);
     }
 
 
