@@ -377,7 +377,8 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     //     return isset(static::$params[$offset]) ? static::$params[$offset] : null;
     // }
 
-    function getRequestMethod(){
+    // Antes getRequestMethod()
+    function method(){
         $config = config();
 
         $asked_method = NULL;
