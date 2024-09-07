@@ -10576,9 +10576,92 @@ Ej:
 
 # El metodo data()
 
-El metodo getResponse() es util para debugging pero si solo se quiere recuperar el body de la respuesta se puede usar directamente el metodo data() o en combinacion con decode() para especificar que se quiere hacer un "decode del JSON" de la respuesta (asumiento sabemos es un JSON) 
+El metodo getResponse() retorna no solo el body de la respuesta sino tambien el (http) "status_code" y "error" por lo cual puede llevar a que se visualice un anidamiento de "data" con "data" (si "data" es definido en la respuesta enviada). 
 
-Nota: En el siguiente ejemplo creamos un metodo getClient() para evitarnos tener que repetir las parametrizaciones que son comunes a distintos requests de la misma API.
+Ej:
+
+--| STATUS
+200
+
+--| ERROR
+
+
+--| RES
+Array
+(
+    [data] => Array
+        (
+            [data] => Array
+                (
+                    [norma_price] => 98400
+                    [sale_price] =>
+                )
+
+            [status_code] => 200
+            [error] => Array
+                (
+                )
+
+        )
+
+    [http_code] => 200
+    [error] =>
+)
+
+Es por esto que es preferible usar data() en vez de getResponse()
+
+Ej:
+
+	$client = new ApiClient();
+
+	$client
+		->setHeaders([
+			"Content-type"  => "Application/json"
+		])
+		->disableSSL()
+		->get($url);
+
+	dd($client->status(), 'STATUS');
+
+	dd($client->error(), 'ERROR');
+
+	dd(
+		$client
+		->decode()
+		->data(),
+	'DATA');    
+
+En vez de hacer:
+
+	dd(
+		$client->getResponse(), 'RES'
+	);    
+
+En este caso obtendremos lo que esperamos:
+
+--| STATUS
+200
+
+--| ERROR
+
+
+--| RES
+Array
+(
+    [data] => Array
+        (
+            [norma_price] => 98400
+            [sale_price] =>
+        )
+
+    [status_code] => 200
+    [error] => Array
+        (
+        )
+
+Y ya no hay anidamiento de "data".
+
+En el siguiente ejemplo creamos un metodo getClient() para evitarnos tener que repetir las parametrizaciones que son comunes a distintos requests de la misma API.
 
 Ej:
 
