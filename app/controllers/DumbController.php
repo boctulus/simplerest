@@ -10962,9 +10962,9 @@ class DumbController extends Controller
         }
     }
 
-    function identity_cms()
+    function get_plugins()
     {
-        $url = 'https://importservice.casanova.cl/';
+        $url = 'https://tienda.relmotor.cl/';
 
         $str = Url::getUrlContent($url, 360000);
 

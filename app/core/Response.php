@@ -4,10 +4,6 @@ namespace simplerest\core;
 
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Url;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\System;
-use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
 
 class Response
