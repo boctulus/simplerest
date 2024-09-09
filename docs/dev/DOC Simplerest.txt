@@ -12049,7 +12049,9 @@ O directamente a /logs
 
 ### Perfilador del código
 
-Para el perfilado de tiempos de ejecución SimpleRest provee la librería Time.
+Para el perfilado de tiempos de ejecución SimpleRest proveen la librería Time y el trait TimeExecution.
+
+> Usando Time
 
 Lo primero es elegir el intervalo de medición (NANO, MICRO o MILI segundos). Se puede especificar cuántas intereaciones de van a realizar y suprimir la salida estándar con Time::noOutput().
 
@@ -12066,6 +12068,35 @@ Ej:
 	}, 1);  
 	
 	dd("Time: $t ms");  
+
+
+> Usando TimeExecutionTrait
+
+Con incluir el trait es suficiente. Ej:
+
+use boctulus\relmotor_central\core\libs\Products;
+use boctulus\relmotor_central\core\traits\TimeExecutionTrait;
+
+class TestFiltersController
+{   
+    use TimeExecutionTrait;
+    
+    function get_by_category_id()
+    {
+        $cat_id = 39; // ALTERNADOR
+
+        $pids = Products::getProductsByCategoryID([ $cat_id ]);
+        dd($pids);  
+    }
+
+    function get_by_skus()
+    {
+        $pids = Products::getProductIDsBySKU(['FST-MI1213', '10-1451-K', '12670N','A6390S', '8048002'], true, 'publish');
+        dd($pids);    
+    }
+}
+
+De estar en modo "cli" se imprime el tiempo de ejecucion y caso contrario se genera un log.
 
 
 ### La clase Files: utilidades de archivos

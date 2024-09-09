@@ -11,6 +11,8 @@ use simplerest\core\controllers\Controller;
 class RelmotorController extends Controller
 {
     /*
+        MUY lento por alguna razon
+
         Ej:
 
         GET http://relmotor.lan/dynamic_prices/get_price_native/106614/325
