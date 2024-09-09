@@ -10981,5 +10981,32 @@ class DumbController extends Controller
             'Plugins'
         );
     }
+    
+    function get_indexes(){
+        DB::getConnection();
+
+        dd(DB::select(
+           "SELECT 
+                TABLE_NAME, 
+                INDEX_NAME, 
+                COLUMN_NAME, 
+                SEQ_IN_INDEX, 
+                NON_UNIQUE, 
+                INDEX_TYPE, 
+                COLLATION, 
+                CARDINALITY, 
+                SUB_PART, 
+                PACKED, 
+                NULLABLE, 
+                INDEX_COMMENT
+            FROM 
+                information_schema.STATISTICS
+            WHERE 
+                TABLE_SCHEMA = 'woo8'
+            ORDER BY 
+                TABLE_NAME, INDEX_NAME, SEQ_IN_INDEX;
+            ")
+        );
+    }
 
 }   // end class
