@@ -49,10 +49,10 @@ class RelmotorController extends Controller
             "user_id": 325
         }
     */
-    function get_price_massive_native()
+    function get_price_massive()
     {
         $t = Time::exec(function(){
-            $url  = 'http://relmotor.lan/dynamic_prices/get_prices_native_in_bulk';
+            $url  = 'http://relmotor.lan/dynamic_prices/get_prices';
 
             $body = '{
                 "product_ids": [ 106614, 82249, 40793 ],
@@ -89,10 +89,10 @@ class RelmotorController extends Controller
             "user_id": 325
         }
     */
-    function get_price_massive()
+    function get_price_massive_native()
     {
         $t = Time::exec(function(){
-            $url  = 'http://relmotor.lan/dynamic_prices/get_prices';
+            $url  = 'http://relmotor.lan/dynamic_prices/get_prices_native_in_bulk';
 
             $body = '{
                 "product_ids": [ 106614, 82249, 40793 ],
@@ -118,5 +118,6 @@ class RelmotorController extends Controller
 
         dd($t);              
     }
+
 }
 
