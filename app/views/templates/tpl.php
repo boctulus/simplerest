@@ -26,7 +26,7 @@
     <script src="<?= asset('js/utilities.js') ?>"></script>
 
     <?= 
-        umodel();
+        umodel() .
         head();  
     ?>
 

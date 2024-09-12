@@ -41,7 +41,7 @@ class Route
                 $path = substr($path, strlen($config['base_url']));
             }   
     
-            if (Strings::contains('/api/', $path) || in_array(strtolower(request()->getRequestMethod()),['post', 'put', 'patch'] )){
+            if (Strings::contains('/api/', $path) || in_array(strtolower(request()->method()),['post', 'put', 'patch'] )){
                 $res->encode();
             }
 
