@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="search-form">
@@ -45,6 +45,9 @@
                     </div>
                 </form>
             </div>
+
+            <!-- pagina de resultados -->
+            <?= include __DIR__ . '/results.php' ?>
         </div>
     </div>
 </div>
