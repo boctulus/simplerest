@@ -15,21 +15,6 @@ class FbController extends Controller
         https://web.facebook.com/groups/390130634729808/
         https://web.facebook.com/groups/460001011521792/
         https://web.facebook.com/groups/368909364369813
-
-        WOO | MALASYA
-        https://web.facebook.com/groups/1666073346747016/
-
-        WP - WOO | IT
-        https://www.facebook.com/groups/1380949515301271/
-        https://www.facebook.com/groups/wpitalyplus/
-
-        PHP | IT
-        https://www.facebook.com/groups/377041959088599
-        https://www.facebook.com/groups/59356989650/
-        https://www.facebook.com/groups/336426883084246/
-
-        Programación | IT
-        https://www.facebook.com/groups/353299598353917/
         
         WEB dev | ES
         https://web.facebook.com/groups/2586263318303964/
@@ -40,6 +25,9 @@ class FbController extends Controller
         https://web.facebook.com/groups/1599766916772654
 
         WP | ES
+        https://web.facebook.com/groups/132694870238784/
+        https://web.facebook.com/groups/517068198735835/
+        https://web.facebook.com/groups/1605062309725626/
         https://web.facebook.com/groups/313520438797399/
         https://web.facebook.com/groups/1758845590845832/
         https://www.facebook.com/groups/wpcrc
@@ -67,10 +55,8 @@ class FbController extends Controller
         https://web.facebook.com/groups/780588969003381/
 
         PHP | ES
-        https://www.facebook.com/groups/455489051242688/
-        https://www.facebook.com/groups/DisenadoresYProgramadoresWeb
+        https://www.facebook.com/groups/455489051242688/        
         https://www.facebook.com/groups/1528487033849008/
-        https://www.facebook.com/groups/450005165750250/
         https://www.facebook.com/groups/706710869362657/
         https://www.facebook.com/groups/172707298378598/
         https://www.facebook.com/groups/1631769393748855/
@@ -87,6 +73,22 @@ class FbController extends Controller
 
         Testing y QA | ES
         https://www.facebook.com/groups/1616115831782049/
+
+        WOO | MALASYA
+        https://web.facebook.com/groups/1666073346747016/
+
+        WP - WOO | IT
+        https://www.facebook.com/groups/1380949515301271/
+        https://www.facebook.com/groups/wpitalyplus/
+
+        PHP | IT
+        https://www.facebook.com/groups/377041959088599
+        https://www.facebook.com/groups/59356989650/
+        https://www.facebook.com/groups/336426883084246/
+        https://www.facebook.com/groups/59356989650
+
+        Programación | IT
+        https://www.facebook.com/groups/353299598353917/
 
         WP | BR
         https://www.facebook.com/groups/348202828937333/

@@ -85,14 +85,14 @@ class SendinBlue extends MailBase implements IMail
             $args['params']['bodyMessage'] = $alt_body;
         }
 
-        $sendSmtpEmail = new SendSmtpEmail($args);
+        $sendSmtpEmail = (SendSmtpEmail::class) (new SendSmtpEmail($args));
 
         try {
             $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
 
             if (static::$debug_level >0){
                 if (static::$silent){
-                    Logger::dump(true, 'dump.txt', true);
+                    Files::dump(true, 'dump.txt', true);
                 } else {
                     dd($result);
                 }
@@ -102,7 +102,7 @@ class SendinBlue extends MailBase implements IMail
 
             if (static::$debug_level >0){
                 if (static::$silent){
-                    Logger::dump($e->getMessage(), null, true);
+                    Files::dump($e->getMessage(), null, true);
                 } else {
                     dd($e->getMessage());
                 }
