@@ -207,7 +207,7 @@ class View
             $included = [];
         } 
 
-        if (in_array($file_ori, $included)){
+        if (in_array($file_ori, $included)){           
             return;
         }
 

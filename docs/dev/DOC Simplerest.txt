@@ -12079,7 +12079,7 @@ use boctulus\relmotor_central\core\traits\TimeExecutionTrait;
 
 class TestFiltersController
 {   
-    use TimeExecutionTrait;
+    use TimeExecutionTrait;F
     
     function get_by_category_id()
     {

@@ -122,7 +122,7 @@ class FrontController
 
             $class_name = $namespace . ucfirst($controller); //
             
-            $method = strtolower($req->getRequestMethod());
+            $method = strtolower($req->method());
             $params = array_slice($_params,3 - $sub,2);  // *
             
 
