@@ -1,0 +1,63 @@
+.result_count {
+    color: #1a1a1a;
+    margin-left: 15px;
+}
+
+.results-container {
+    color: #e0e0e0;
+    border-radius: 10px; /* borde redondeado */
+    border: 2px solid #444 !important; /* Mismo borde que en .search-form */
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+    margin-bottom: 1rem;
+}
+
+.results-table th {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.results-table td {
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #e0e0e0; /* Fondo gris claro para filas impares */
+}
+
+.results-table tr {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombras ligeras entre las filas */
+}
+
+.results-image {
+    width: 80px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.results-button {
+    background-color: #68d391; /* Botón verde consistente */
+    color: #1a1a1a;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.results-button:hover {
+    background-color: #4a5568; /* Hover consistente con los botones secundarios */
+}
+
+.results-quantity {
+    background-color: transparent; /* Campo de entrada transparente */
+    border: 1px solid #ccc; /* Bordes suaves */
+    color: #333; /* Color del texto */
+    width: 50px;
+    text-align: center;
+}

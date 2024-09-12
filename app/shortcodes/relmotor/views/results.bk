@@ -1,0 +1,213 @@
+<div class="element element-c9fbadb widget widget-shortcode" data-id="c9fbadb" data-element_type="widget" data-widget_type="shortcode.default">
+ <div class="widget-container">
+  <div class="shortcode">
+   <p class="woocommerce-result-count"> Mostrando el único resultado</p>
+   <form class="woocommerce-ordering" method="get"> <select name="orderby" class="orderby" aria-label="Pedido de la tienda">
+     <option value="popularity">Ordenar por popularidad</option>
+     <option value="date">Ordenar por los últimos</option>
+     <option value="price">Ordenar por precio: bajo a alto</option>
+     <option value="price-desc">Ordenar por precio: alto a bajo</option>
+     <option value="title-asc">Ordenar por Titulo: A - Z</option>
+     <option value="title-desc">Ordenar por Titulo: Z - A</option>
+     <option value="sku-asc">Ordenar por Codigo: menor a mayor</option>
+     <option value="sku-desc">Ordenar por Codigo: mayor a menor</option>
+     <option value="stock_quantity-asc">Ordenar por Disponibilidad: Menor a Mayor</option>
+     <option value="stock_quantity-desc" selected="selected">Ordenar por Disponibilidad: Mayor a Menor</option>
+    </select> <input type="hidden" name="paged" value="1"> </form>
+   <div id="wcpt-27321" class="wcpt wcpt-27321 wcpt-sortable-headings-init wcpt-select-all-init wcpt-reset-permission-init" data-wcpt-table-id="27321" data-wcpt-query-string="?27321_device=laptop" data-wcpt-sc-attrs="{&quot;_archive&quot;:&quot;shop&quot;,&quot;_only_loop&quot;:&quot;true&quot;}" data-wcpt-encrypted-query-vars="WFd2eTlvMHRiOHZndTVmdWl3TmJKZFZ4VjVmRURpcUlDWDlVc3dOeXBoMTNndWxNYWtMWjNYckIremV2S093ZTlsM1JQY1A1RlNRUW9CbldidnRiaG9yb2tBczd3NXdGRWxkNlZOQTlZVDNldi9zL1pXVnhyQ0hTaWJSRmppVmt3SEl1NzlRSlA3eEMraVJsNTliL01YZTdPeG01NWprQnhWeHk5Z3BSWHVJREJQTk11aFF2ZmhXZmVGWUlSRjJOTUFKcGRpSUEyRW9pL2dsWHNPbmJLRXJnRFFZNFVnUlVINm5hZFVvdlpkamlXM0RmQlo5bUFOaDNqNm1BTENSRjhiRnpnZVlCZVlxTTNuSGl5bE40TFpCSWdTMXhNN0xCUW5RRjc0VVdpZmhkd1BmOHV2dHBuTmQvb3c0WVYwdC9KODJCUmxZaFgrSzJhOVdsQmdPaVo3UmRpOWFYMFdYUGNmWmlhZ08rc3Z2TlRrVnh4dWdtcDB4ZmFmWE4vU2VsOjpsyR9ba8BDdbDBuAZB7abZ" data-wcpt-encrypted-user-filters="U0VFYSt0SUEzSkhXTWFFMDNYenhLTkZkenRsWEhoTTUwWmJkb2VtTFNlVUFaWTNFVDYrRDMxa1FaUU8xdlVWbWxBWjJSL1dXK3JQTU5XVk1vdkd5Mm5zMTg5alFnbS9lRmhuUWdENGovaks1UVFaQ0dDclZSQ3BlTDF1OGxHclByRkxBZEtmSm9FRUxXdFZLcTRXblBnPT06OoCCKtAnzMCPYUyyTKdM/bQ=">
+    <style>
+     @media (max-width:1199px) and (min-width:749px){#wcpt-27321 .wcpt-device-tablet {display: block;}#wcpt-27321 .wcpt-device-laptop,#wcpt-27321 .wcpt-device-phone {display: none;}}@media (max-width:749px) {#wcpt-27321 .wcpt-device-phone {display: block;}#wcpt-27321 .wcpt-device-tablet,#wcpt-27321 .wcpt-device-laptop {display: none;}}@media(min-width:750px){}@media(max-width: 1199px) and (min-width:750px){ #wcpt-27321 tr.wcpt-even{background-color:rgb(246, 246, 246);} #wcpt-27321 tr.wcpt-odd{background-color:rgb(235, 235, 235);}}@media(max-width:749px){ #wcpt-27321 .wcpt-cell{min-width:150px;} #wcpt-27321 tr.wcpt-odd{background-color:rgb(235, 235, 235);} #wcpt-27321 tr.wcpt-even{background-color:rgb(246, 246, 246);}} #wcpt-27321 .wcpt-pagination > .page-numbers.next .wcpt-icon, #wcpt-27321 .wcpt-pagination > .page-numbers.prev .wcpt-icon{color:rgb(11, 108, 190);stroke-width:3px;font-size:36px;} @media(max-width:1199px){} @media(max-width:749px){}
+    </style>
+    <div class="wcpt-table-scroll-wrapper-outer wcpt-device-laptop frzTbl-force-parent-overlow-visible">
+     <div class="wcpt-table-scroll-wrapper">
+      <div class="frzTbl antiscroll-wrap frzTbl--scrolled-to-left-edge frzTbl--scrolled-to-top frzTbl--normal-overflow frzTbl--hide-antiscroll frzTbl--scrolled-to-right-edge frzTbl--init" data-freeze-table-namespace="54788" style="height: 230.993px;">
+       <div class="frzTbl-scroll-overlay antiscroll-inner" style="width: 1348.67px; height: 230.986px;">
+        <div class="frzTbl-scroll-overlay__inner" style="height: 230.993px; width: 1348.67px;"></div>
+       </div>
+       <div class="frzTbl-content-wrapper">
+        <!-- sticky outer heading -->
+        <div class="frzTbl-fixed-heading-wrapper-outer" style="height: 50.5486px; top: 0px; position: relative;">
+         <div class="frzTbl-fixed-heading-wrapper">
+          <div class="frzTbl-fixed-heading-wrapper__inner"> </div>
+         </div>
+        </div> <!-- column shadows -->
+        <div class="frzTbl-frozen-columns-wrapper">
+         <!-- left -->
+         <div class="frzTbl-frozen-columns-wrapper__columns frzTbl-frozen-columns-wrapper__columns--left frzTbl-frozen-columns-wrapper__columns--empty"></div> <!-- right -->
+         <div class="frzTbl-frozen-columns-wrapper__columns frzTbl-frozen-columns-wrapper__columns--right frzTbl-frozen-columns-wrapper__columns--empty"></div>
+        </div> <!-- table -->
+        <div class="frzTbl-table-wrapper">
+         <div class="frzTbl-table-wrapper__inner frzTbl-table-wrapper__inner--deflate">
+          <table class="wcpt-table wcpt-table-27321 frzTbl-table">
+           <thead>
+            <tr class="wcpt-heading-row ">
+             <th class="wcpt-heading wcpt-413685345" data-wcpt-column-index="0">
+              <div class="wcpt-item-row wcpt-8814477 "><span class="wcpt-text  wcpt-418614946">IMAGEN</span><span class="wcpt-icon wcpt-icon-image  wcpt-201497955 wcpt-feather-icon "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image">
+                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                 <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                 <polyline points="21 15 16 10 5 21"></polyline>
+                </svg></span></div>
+             </th>
+             <th class="wcpt-heading wcpt-956179077" data-wcpt-column-index="1">
+              <div class="wcpt-item-row wcpt-609267352 "><span class="wcpt-text  wcpt-45757289">CÓDIGO</span><span class="wcpt-icon wcpt-icon-cpu  wcpt-544544709 wcpt-feather-icon "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu">
+                 <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                 <rect x="9" y="9" width="6" height="6"></rect>
+                 <line x1="9" y1="1" x2="9" y2="4"></line>
+                 <line x1="15" y1="1" x2="15" y2="4"></line>
+                 <line x1="9" y1="20" x2="9" y2="23"></line>
+                 <line x1="15" y1="20" x2="15" y2="23"></line>
+                 <line x1="20" y1="9" x2="23" y2="9"></line>
+                 <line x1="20" y1="14" x2="23" y2="14"></line>
+                 <line x1="1" y1="9" x2="4" y2="9"></line>
+                 <line x1="1" y1="14" x2="4" y2="14"></line>
+                </svg></span></div>
+             </th>
+             <th class="wcpt-heading wcpt-1632992550" data-wcpt-column-index="2">
+              <div class="wcpt-item-row wcpt-1632992547 "><span class="wcpt-text  wcpt-1632992548">PRODUCTO</span><span class="wcpt-icon wcpt-icon-box  wcpt-1632992549 wcpt-feather-icon "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-box">
+                 <path d="M12.89 1.45l8 4A2 2 0 0 1 22 7.24v9.53a2 2 0 0 1-1.11 1.79l-8 4a2 2 0 0 1-1.79 0l-8-4a2 2 0 0 1-1.1-1.8V7.24a2 2 0 0 1 1.11-1.79l8-4a2 2 0 0 1 1.78 0z"></path>
+                 <polyline points="2.32 6.16 12 11 21.68 6.16"></polyline>
+                 <line x1="12" y1="22.76" x2="12" y2="11"></line>
+                </svg></span></div>
+             </th>
+             <th class="wcpt-heading wcpt-709918097" data-wcpt-column-index="3">
+              <div class="wcpt-item-row wcpt-426275150 "><span class="wcpt-text  wcpt-303169695">DESCRIPCIÓN</span><span class="wcpt-icon wcpt-icon-clipboard  wcpt-344687399 wcpt-feather-icon "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard">
+                 <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg></span></div>
+             </th>
+             <th class="wcpt-heading wcpt-1632992581" data-wcpt-column-index="4">
+              <div class="wcpt-item-row wcpt-1632992578 "><span class="wcpt-text  wcpt-1632992579">MARCA</span><span class="wcpt-icon wcpt-icon-settings  wcpt-1632992580 wcpt-feather-icon "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings">
+                 <circle cx="12" cy="12" r="3"></circle>
+                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg></span></div>
+             </th>
+             <th class="wcpt-heading wcpt-1632992715" data-wcpt-column-index="5">
+              <div class="wcpt-item-row wcpt-1632992711 "><span class="wcpt-text  wcpt-1664797894145">PRECIO </span><span class="wcpt-icon wcpt-icon-dollar-sign  wcpt-1632992713 wcpt-feather-icon "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign">
+                 <line x1="12" y1="1" x2="12" y2="23"></line>
+                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg></span></div>
+             </th>
+             <th class="wcpt-heading wcpt-928228183" data-wcpt-column-index="6">
+              <div class="wcpt-item-row wcpt-157797826 "><span class="wcpt-text  wcpt-600445354">COMPRAR</span></div>
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr data-wcpt-product-id="106830" data-wcpt-type="simple" data-wcpt-in-cart="0" data-wcpt-stock="43029" data-wcpt-price="100" class="wcpt-row wcpt-product-type-simple wcpt-odd wcpt-row--init">
+             <td class="wcpt-cell wcpt-65949637" data-wcpt-column-index="0">
+              <div class="wcpt-cell-val">
+               <div class="wcpt-item-row wcpt-861958805 ">
+                <div class="wcpt-product-image-wrapper  wcpt-419023498 wcpt-lightbox-enabled  wcpt-lightbox-icon-position-outside_right wcpt-product-image-wrapper--default-width-60px " data-wcpt-image-size="medium" data-wcpt-photoswipe-options="{&quot;shareEl&quot;:false,&quot;closeOnScroll&quot;:false,&quot;history&quot;:false,&quot;hideAnimationDuration&quot;:0,&quot;showAnimationDuration&quot;:0}" data-wcpt-photoswipe-items="[{&quot;src&quot;:&quot;https:\/\/tienda.relmotor.cl\/wp-content\/uploads\/2023\/05\/10a73191007.jpg&quot;,&quot;w&quot;:500,&quot;h&quot;:500,&quot;title&quot;:&quot;10a73191007.jpg&quot;}]" data-wcpt-lightbox-color-theme="black" data-wcpt-lightbox="https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007.jpg"><img loading="lazy" width="300" height="300" alt="" title="CUBRE TERMINAL CARGO - PARA TERMINAL HEMBRA" decoding="async" data-srcset="https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-300x300.jpg 300w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-150x150.jpg 150w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-350x350.jpg 350w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-100x100.jpg 100w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007.jpg 500w" data-src="https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-300x300.jpg" data-sizes="(max-width: 300px) 100vw, 300px" class="wcpt-419023498 wp-post-image ls-is-cached lazyloaded" src="https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-300x300.jpg" sizes="(max-width: 300px) 100vw, 300px" srcset="https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-300x300.jpg 300w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-150x150.jpg 150w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-350x350.jpg 350w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-100x100.jpg 100w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007.jpg 500w"><noscript><img loading="lazy" width="300" height="300" src="https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-300x300.jpg" class=" wcpt-419023498 wp-post-image" alt="" title="CUBRE TERMINAL CARGO - PARA TERMINAL HEMBRA" decoding="async" srcset="https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-300x300.jpg 300w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-150x150.jpg 150w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-350x350.jpg 350w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007-100x100.jpg 100w, https://tienda.relmotor.cl/wp-content/uploads/2023/05/10a73191007.jpg 500w" sizes="(max-width: 300px) 100vw, 300px" /></noscript></div>
+               </div>
+              </div>
+             </td>
+             <td class="wcpt-cell wcpt-656340643" data-wcpt-column-index="1">
+              <div class="wcpt-cell-val">
+               <div class="wcpt-item-row wcpt-676521757 "><a href="https://tienda.relmotor.cl/producto/varios-cargo/" target="_self" class="wcpt-sku  wcpt-352916481 wcpt-variable-switch " data-wcpt-sku="191007">191007</a></div>
+              </div>
+             </td>
+             <td class="wcpt-cell wcpt-1632992570" data-wcpt-column-index="2">
+              <div class="wcpt-cell-val">
+               <div class="wcpt-item-row wcpt-1632992551 ">
+                <div class="wcpt-categories  wcpt-1632992569" data-wcpt-taxonomy="product_cat">
+                 <div class="wcpt-category" data-wcpt-slug="varios" data-wcpt-filtering="false" data-wcpt-archive-url="https://tienda.relmotor.cl/categoria-producto/varios/">VARIOS</div>
+                </div>
+               </div>
+              </div>
+             </td>
+             <td class="wcpt-cell wcpt-441882624" data-wcpt-column-index="3">
+              <div class="wcpt-cell-val">
+               <div class="wcpt-item-row wcpt-107397910 ">
+                <div class="wcpt-content  wcpt-content--max-width  wcpt-711282608">FUNDA PLASTICA CUBRE TERMINAL LUCAS HEMBRA</div>
+               </div>
+               <div class="wcpt-item-row wcpt-388145140 "><span class="wcpt-text  wcpt-732391866">Referencia Cruzada ⋅</span></div>
+               <div class="wcpt-item-row wcpt-356662595 ">
+                <div class="wcpt-excerpt  wcpt-213631572">.</div>
+               </div>
+              </div>
+             </td>
+             <td class="wcpt-cell wcpt-1632992710" data-wcpt-column-index="4">
+              <div class="wcpt-cell-val">
+               <div class="wcpt-item-row wcpt-1632992582 ">
+                <div class="wcpt-attribute  wcpt-1650287101329" data-wcpt-taxonomy="pa_marca">
+                 <div class="wcpt-attribute-term wcpt-1650286677" data-wcpt-slug="cargo" data-wcpt-filtering="false" data-wcpt-archive-url="https://tienda.relmotor.cl/marca/cargo/">
+                  <div class="wcpt-item-row wcpt-1650286675 ">
+                   <div class="wcpt-media-image-wrapper  wcpt-1650288982733 wcpt-excuse-max-width "><img loading="lazy" width="150" height="150" alt="" decoding="async" data-srcset="https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-150x150.png 150w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-350x350.png 350w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-100x100.png 100w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-300x300.png 300w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-60x60.png 60w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-110x110.png 110w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo.png 400w" data-src="https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-150x150.png" data-sizes="(max-width: 150px) 100vw, 150px" class="attachment-thumbnail size-thumbnail ls-is-cached lazyloaded" src="https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-150x150.png" sizes="(max-width: 150px) 100vw, 150px" srcset="https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-150x150.png 150w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-350x350.png 350w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-100x100.png 100w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-300x300.png 300w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-60x60.png 60w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-110x110.png 110w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo.png 400w"><noscript><img loading="lazy" width="150" height="150" src="https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-150x150.png" class="attachment-thumbnail size-thumbnail" alt="" decoding="async" srcset="https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-150x150.png 150w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-350x350.png 350w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-100x100.png 100w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-300x300.png 300w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-60x60.png 60w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo-110x110.png 110w, https://tienda.relmotor.cl/wp-content/uploads/2022/04/logo-cargo.png 400w" sizes="(max-width: 150px) 100vw, 150px" /></noscript></div>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </td>
+             <td class="wcpt-cell wcpt-1632992727" data-wcpt-column-index="5">
+              <div class="wcpt-cell-val">
+               <div class="wcpt-item-row wcpt-57197999 "><span class="wcpt-text  wcpt-30880781">Precio lista:</span><span class="wcpt-price  wcpt-75749116  ">
+                 <div class="wcpt-item-row wcpt-84613347 "><span class="wcpt-regular-price  wcpt-65438193 "><span class="wcpt-currency">$</span><span class="wcpt-amount">100</span></span></div>
+                </span></div>
+               <div class="wcpt-item-row wcpt-1673985311567 "><span class="wcpt-text  wcpt-1673985317991">PRECIO CON DTO:</span><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">$</span>100</bdi></span> <small class="woocommerce-price-suffix">Neto</small></div>
+              </div>
+             </td>
+             <td class="wcpt-cell wcpt-774453738" data-wcpt-column-index="6">
+              <div class="wcpt-cell-val">
+               <div class="wcpt-item-row wcpt-934935824 ">
+                <div class="quantity wcpt-quantity wcpt-noselect wcpt-display-type-input wcpt-controls-on-edges wcpt-hide-browser-controls wcpt-179010060"> <span class="wcpt-minus wcpt-qty-controller wcpt-noselect wcpt-disabled"></span><input type="number" id="quantity_66e2e7e1af524" class="input-text qty text" step="1" min="0" data-wcpt-min="1" data-wcpt-return-to-initial="1" data-wcpt-reset-on-variation-change="" max="43029" name="quantity" value="0" title="Quantity" size="4" data-wcpt-initial-value="0" pattern="[0-9]*" inputmode="numeric" autocomplete="off"><span class="wcpt-plus wcpt-qty-controller wcpt-noselect"></span>
+                 <div class="wcpt-quantity-error-message wcpt-quantity-error-message--max">Max: <span class="wcpt-quantity-error-placeholder--max">43029</span></div>
+                 <div class="wcpt-quantity-error-message wcpt-quantity-error-message--min">Min: <span class="wcpt-quantity-error-placeholder--min">0</span></div>
+                 <div class="wcpt-quantity-error-message wcpt-quantity-error-message--step">Step: <span class="wcpt-quantity-error-placeholder--step">1</span></div>
+                </div><a class="wcpt-button wcpt-noselect wcpt-button-cart_ajax  wcpt-423601697" data-wcpt-link-code="cart_ajax" href="https://tienda.relmotor.cl/carrito/" target="_self"><span class="wcpt-button-label">
+                  <div class="wcpt-item-row wcpt-612981938 "><span class="wcpt-icon wcpt-icon-shopping-cart  wcpt-378111937 wcpt-feather-icon "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart">
+                     <circle cx="9" cy="21" r="1"></circle>
+                     <circle cx="20" cy="21" r="1"></circle>
+                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg></span><span class="wcpt-text  wcpt-103515613">Añadir</span></div>
+                 </span></a>
+               </div>
+               <div class="wcpt-item-row wcpt-184163142 "><span class="wcpt-text  wcpt-291745905">STOCK: </span><span class="wcpt-stock  wcpt-10839302 wcpt-variable-switch " data-wcpt-stock="43029">43029</span></div>
+              </div>
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+       </div>
+       <div class="frzTbl-antiscroll-control-wrap">
+        <div class="antiscroll-scrollbar antiscroll-scrollbar-horizontal" style="width: 1344.34px; left: 0px;"></div>
+       </div>
+       <div class="antiscroll-scrollbar antiscroll-scrollbar-vertical" style="height: 226.972px; top: 0px;"></div>
+      </div>
+     </div>
+    </div>
+    <div class="wcpt-loading-screen"></div>
+    <div class="wcpt-table-scroll-wrapper-outer wcpt-device-tablet">
+     <div class="wcpt-table-scroll-wrapper"><span class="wcpt-icon wcpt-icon-loader wcpt-device-view-loading-icon "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader">
+        <line x1="12" y1="2" x2="12" y2="6"></line>
+        <line x1="12" y1="18" x2="12" y2="22"></line>
+        <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+        <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+        <line x1="2" y1="12" x2="6" y2="12"></line>
+        <line x1="18" y1="12" x2="22" y2="12"></line>
+        <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+        <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+       </svg></span></div>
+    </div>
+    <div class="wcpt-table-scroll-wrapper-outer wcpt-device-phone">
+     <div class="wcpt-table-scroll-wrapper"><span class="wcpt-icon wcpt-icon-loader wcpt-device-view-loading-icon "><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-loader">
+        <line x1="12" y1="2" x2="12" y2="6"></line>
+        <line x1="12" y1="18" x2="12" y2="22"></line>
+        <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+        <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+        <line x1="2" y1="12" x2="6" y2="12"></line>
+        <line x1="18" y1="12" x2="22" y2="12"></line>
+        <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+        <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+       </svg></span></div>
+    </div>
+    <style>
+     #wcpt-27321  thead .wcpt-413685345{text-align:center;}  body  thead .wcpt-413685345{text-align:center;}  #wcpt-27321  .wcpt-418614946{text-align:left;}  body  .wcpt-418614946{text-align:left;}  #wcpt-27321  .wcpt-201497955{}  body  .wcpt-201497955{}  #wcpt-27321  thead .wcpt-956179077{text-align:center;}  body  thead .wcpt-956179077{text-align:center;}  #wcpt-27321  .wcpt-45757289{color:rgb(139, 19, 19);width:50px;}  body  .wcpt-45757289{color:rgb(139, 19, 19);width:50px;}  #wcpt-27321  .wcpt-544544709{color:rgb(139, 19, 19);}  body  .wcpt-544544709{color:rgb(139, 19, 19);}  #wcpt-27321  thead .wcpt-1632992550{text-align:center;}  body  thead .wcpt-1632992550{text-align:center;}  #wcpt-27321  .wcpt-1632992548{}  body  .wcpt-1632992548{}  #wcpt-27321  thead .wcpt-709918097{text-align:center;}  body  thead .wcpt-709918097{text-align:center;}  #wcpt-27321  .wcpt-303169695{}  body  .wcpt-303169695{}  #wcpt-27321  thead .wcpt-1632992581{text-align:center;}  body  thead .wcpt-1632992581{text-align:center;}  #wcpt-27321  thead .wcpt-1632992715{text-align:center;}  body  thead .wcpt-1632992715{text-align:center;}  #wcpt-27321  thead .wcpt-928228183{text-align:center;}  body  thead .wcpt-928228183{text-align:center;}  #wcpt-27321  .wcpt-65949637{text-align:center;width:80px;}  body  .wcpt-65949637{text-align:center;width:80px;}  #wcpt-27321  .wcpt-419023498 > .wcpt-lightbox-icon{}  body  .wcpt-419023498 > .wcpt-lightbox-icon{}  #wcpt-27321  .wcpt-419023498{border-radius:5px;max-width:150px;min-width:150px;}  body  .wcpt-419023498{border-radius:5px;max-width:150px;min-width:150px;}  #wcpt-27321  .wcpt-861958805{}  body  .wcpt-861958805{}  #wcpt-27321  .wcpt-861958805:hover{}  body  .wcpt-861958805:hover{}  #wcpt-27321  .wcpt-656340643{text-align:center;font-size:16px;font-weight:bold;width:130px;}  body  .wcpt-656340643{text-align:center;font-size:16px;font-weight:bold;width:130px;}  #wcpt-27321  .wcpt-352916481{color:rgb(139, 19, 19);vertical-align:middle;font-weight:bold;text-align:center;width:60px;font-size:16px;}  body  .wcpt-352916481{color:rgb(139, 19, 19);vertical-align:middle;font-weight:bold;text-align:center;width:60px;font-size:16px;}  #wcpt-27321  .wcpt-352916481:hover{}  body  .wcpt-352916481:hover{}  #wcpt-27321  .wcpt-1632992570{text-align:center;width:200px;}  body  .wcpt-1632992570{text-align:center;width:200px;}  #wcpt-27321  .wcpt-441882624{}  body  .wcpt-441882624{}  #wcpt-27321  .wcpt-711282608{}  body  .wcpt-711282608{}  #wcpt-27321  .wcpt-732391866{color:rgb(6, 46, 65);font-weight:bold;}  body  .wcpt-732391866{color:rgb(6, 46, 65);font-weight:bold;}  #wcpt-27321  .wcpt-213631572{}  body  .wcpt-213631572{}  #wcpt-27321  .wcpt-1632992710{text-align:center;width:100px;}  body  .wcpt-1632992710{text-align:center;width:100px;}  #wcpt-27321  .wcpt-1650288982733{width:80px;}  body  .wcpt-1650288982733{width:80px;}  #wcpt-27321  .wcpt-1632992727{width:165px;text-align:center;font-size:18px;color:rgb(16, 40, 104);font-weight:700;}  body  .wcpt-1632992727{width:165px;text-align:center;font-size:18px;color:rgb(16, 40, 104);font-weight:700;}  #wcpt-27321  .wcpt-30880781{font-weight:light;font-size:12px;color:rgb(147, 21, 21);}  body  .wcpt-30880781{font-weight:light;font-size:12px;color:rgb(147, 21, 21);}  #wcpt-27321  .wcpt-75749116{font-size:14px;color:rgb(147, 21, 21);}  body  .wcpt-75749116{font-size:14px;color:rgb(147, 21, 21);}  #wcpt-27321  .wcpt-product-on-sale .wcpt-65438193{}  body  .wcpt-product-on-sale .wcpt-65438193{}  #wcpt-27321  .wcpt-65438193{}  body  .wcpt-65438193{}  #wcpt-27321  .wcpt-57197999{}  body  .wcpt-57197999{}  #wcpt-27321  .wcpt-1673985317991{font-weight:bold;font-size:12px;}  body  .wcpt-1673985317991{font-weight:bold;font-size:12px;}  #wcpt-27321  .wcpt-774453738{width:200px;text-align:center;}  body  .wcpt-774453738{width:200px;text-align:center;}  #wcpt-27321  .wcpt-179010060.wcpt-display-type-input{width:50px;color:rgb(1, 7, 18);font-size:20px;}  body  .wcpt-179010060.wcpt-display-type-input{width:50px;color:rgb(1, 7, 18);font-size:20px;}  #wcpt-27321  .wcpt-423601697{font-size:9px;background-color:rgb(0, 145, 100);border-radius:5px;font-weight:bold;}  body  .wcpt-423601697{font-size:9px;background-color:rgb(0, 145, 100);border-radius:5px;font-weight:bold;}  #wcpt-27321  .wcpt-423601697:hover{background-color:rgb(211, 100, 100);}  body  .wcpt-423601697:hover{background-color:rgb(211, 100, 100);}  #wcpt-27321  .wcpt-378111937{color:rgb(255, 255, 255);font-size:16px;}  body  .wcpt-378111937{color:rgb(255, 255, 255);font-size:16px;}  #wcpt-27321  .wcpt-103515613{font-size:14px;}  body  .wcpt-103515613{font-size:14px;}  #wcpt-27321  .wcpt-291745905{color:rgb(10, 26, 75);font-weight:normal;}  body  .wcpt-291745905{color:rgb(10, 26, 75);font-weight:normal;}  #wcpt-27321  .wcpt-10839302{font-weight:normal;color:rgb(10, 26, 75);}  body  .wcpt-10839302{font-weight:normal;color:rgb(10, 26, 75);} 
+    </style>
+    <div class="wcpt-edit-wrapper"> <a class="wcpt-edit" target="_blank" href="https://tienda.relmotor.cl/wp-admin/post.php?post=27321&amp;action=edit">Edit table</a> </div>
+   </div>
+  </div>
+ </div>
+</div>
