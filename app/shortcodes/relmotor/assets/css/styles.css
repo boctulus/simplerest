@@ -1,14 +1,8 @@
-
-#progress-bar-container {
-  margin-top: 20px;
-}
-
 .rm_tooltip  {
   width: 20px !important;
 }
 
 body {
-  background-color: #1a1a1a;
   font-family: 'Roboto', sans-serif;
 }
 
