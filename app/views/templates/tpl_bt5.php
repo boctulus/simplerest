@@ -20,7 +20,7 @@
 <body>
     <div class="container">
         <main>
-           <?= $content ?? ''; ?>
+           <?= $content ?? '' ?>
         </main>
     </div>
 
