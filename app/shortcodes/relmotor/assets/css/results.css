@@ -1,63 +1,69 @@
-.result_count {
-    color: #1a1a1a;
-    margin-left: 15px;
-}
-
 .results-container {
-    color: #e0e0e0;
-    border-radius: 10px; /* borde redondeado */
-    border: 2px solid #444 !important; /* Mismo borde que en .search-form */
-}
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+  }
+  
+  .result-count {
+    color: #1a1a1a;
+    font-weight: 500;
+    margin-left: 15px;
+  }
 
-.results-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 15px;
-    margin-bottom: 1rem;
-}
-
-.results-table th {
-    background-color: #f8f9fa;
-    text-align: center;
-    padding: 10px;
-    font-weight: bold;
-    color: #333;
-}
-
-.results-table td {
-    padding: 10px;
-    text-align: center;
-    vertical-align: middle;
-    background-color: #e0e0e0; /* Fondo gris claro para filas impares */
-}
-
-.results-table tr {
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombras ligeras entre las filas */
-}
-
-.results-image {
-    width: 80px;
+  .results-select {
+    max-width: 300px;
+    border: 1px solid #1a1a1a;
+  }
+  
+  .results-image {
+    max-width: 80px;
     height: auto;
     border-radius: 5px;
-}
-
-.results-button {
-    background-color: #68d391; /* Botón verde consistente */
-    color: #1a1a1a;
-    border-radius: 5px;
-    padding: 5px 10px;
-    font-size: 14px;
+  }
+  
+  .results-code {
     font-weight: bold;
-}
-
-.results-button:hover {
-    background-color: #4a5568; /* Hover consistente con los botones secundarios */
-}
-
-.results-quantity {
-    background-color: transparent; /* Campo de entrada transparente */
-    border: 1px solid #ccc; /* Bordes suaves */
-    color: #333; /* Color del texto */
-    width: 50px;
+    color: #dc3545;
+  }
+  
+  .results-description {
+    color: #0056b3;
+  }
+  
+  .results-price-list {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  .results-price-discount {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #28a745;
+  }
+  
+  .results-price {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #0056b3;
+  }
+  
+  .results-quantity {
     text-align: center;
-}
+  }
+  
+  .stock-info {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #0056b3;
+  }
+  
+  @media (max-width: 767.98px) {
+    .d-flex {
+      flex-direction: column;
+    }
+    
+    .results-select {
+      max-width: 100%;
+      margin-top: 10px;
+      margin-left: 0 !important;
+    }
+  }

@@ -50,6 +50,7 @@ class ChatGPT
     {
         $model_endpoints = [
             // Modelos GPT-4
+            'gpt-4o-mini'              => static::CHAT_COMPLETIONS, // Model with vision capabilities
             'gpt-4o'                   => static::CHAT_COMPLETIONS, // Model with vision capabilities (cheaper than 'gpt-4-vision-preview')
             'gpt-4o-2024-05-13'        => static::CHAT_COMPLETIONS, // Model with vision capabilities
             'gpt-4'                    => static::CHAT_COMPLETIONS, // ok

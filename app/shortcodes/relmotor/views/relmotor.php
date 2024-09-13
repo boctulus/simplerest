@@ -1,6 +1,6 @@
 <div class="container-fluid mt-4">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
+        <div class="col-sm-6 col-md-8 col-lg-12 col-xl-12">
             <div class="search-form">
                 <h2 class="mb-4">CÓDIGO, APLICACIÓN O DESCRIPCIÓN</h2>
                 <form>
