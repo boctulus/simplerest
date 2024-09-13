@@ -19,7 +19,7 @@ h2 {
   color: #e0e0e0;
 }
 
-.form-control {
+.search-form .form-control {
   background-color: #333;
   border-color: #444;
   color: #e0e0e0;
@@ -29,7 +29,7 @@ h2 {
   color: #888;
 }
 
-.form-control:focus {
+.search-form .form-control:focus {
   background-color: #3a3a3a;
   border-color: #4a90e2;
   box-shadow: none;
