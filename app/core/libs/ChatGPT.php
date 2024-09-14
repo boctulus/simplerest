@@ -2,12 +2,18 @@
 
 namespace simplerest\core\libs;
 
+
+/*
+    En caso de error se recupera con el metodo error()
+*/
+
 class ChatGPT
 {
     protected $api_key;
     protected $messages = [];
-    protected $response;
     protected $params;
+    protected $response;
+    protected $error_msg;
 
     // API client
     public $client;
@@ -34,6 +40,11 @@ class ChatGPT
         ->decode();
     }
 
+    // Retorna instancia de API client (habilita poner la cache a funcionar, etc)
+    function getClient(){
+        return $this->client;
+    }
+
     function addContent($content, $role = 'user'){
         $this->messages[] = 
         [
@@ -44,6 +55,10 @@ class ChatGPT
 
     function setParams(Array $arr){
         $this->params = $arr;
+    }
+
+    function error(){
+        return $this->error_msg;
     }
 
     function exec($model = 'gpt-3.5-turbo-1106')
@@ -153,6 +168,7 @@ class ChatGPT
         }
 
         if (isset($this->response['data']['error'])){
+            $this->error_msg         = $this->response['data']['error'];
             $this->response['error'] = $this->response['data']['error'];
             unset($this->response['data']['error']);
         }
@@ -191,6 +207,7 @@ class ChatGPT
         }
 
         if (isset($this->response['data']['error'])){
+            $this->error_msg         = $this->response['data']['error'];
             $this->response['error'] = $this->response['data']['error'];
             unset($this->response['data']['error']);
         }
@@ -230,10 +247,74 @@ class ChatGPT
         }
 
         if (isset($this->response['data']['error'])){
+            $this->error_msg         = $this->response['data']['error'];
             $this->response['error'] = $this->response['data']['error'];
             unset($this->response['data']['error']);
         }
 
         return $this->response;
     }
+
+    /*
+        Genera error:
+
+        --| ERROR
+        Array
+        (
+            [message] => Invalid type for 'messages[0].content': expected one of a string or array of objects, but got an object instead.
+            [type] => invalid_request_error
+            [param] => messages[0].content
+            [code] => invalid_type
+        )
+        
+        https://community.openai.com/t/image-url-for-gpt-4o-api-giving-error-expected-an-object-but-got-a-string-instead/748188/2
+
+        Probar con cliente en Python
+    */
+    function analyzeImage($image_url) {
+        // Crear el mensaje con el contenido de texto y la imagen en formato base64
+        $messages = [
+            [
+                'role' => 'user',
+                'content' => [
+                    [
+                        'type' => 'text',
+                        'text' => 'Describe the image',
+                    ],
+                    [
+                        'type' => 'image_url',
+                        'image_url' => [
+                            'url' => 'data:image/jpeg;base64,' . $image_url,
+                            'detail' => 'high'
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    
+        // Añadir el mensaje a la instancia de ChatGPT
+        foreach ($messages as $message) {
+            $this->addContent($message, $message['role']);
+        }
+    
+        // Configurar parámetros adicionales si es necesario (opcional)
+        $params = [
+            'temperature' => 0.5,
+            'max_tokens' => 300
+        ];
+
+        $this->setParams($params);
+    
+        // Ejecutar el análisis de la imagen con el modelo de visión
+        $response = $this->exec('gpt-4o');
+    
+        // Manejar la respuesta
+        if ($response['status'] == 200) {
+            $analysis = $response['data']['choices'][0]['message']['content'];
+            return $analysis;
+        } else {
+            return false;
+        }
+    }
+    
 }
