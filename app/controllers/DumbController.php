@@ -10462,67 +10462,24 @@ class DumbController extends Controller
     }
 
     /*
+        Genera error!
+
         Probar ejemplos en Python y Node
 
         https://platform.openai.com/docs/guides/vision
     */
-    function analyzeImage($imagePath) {
-        // Crear instancia de la clase ChatGPT
-        $chat = new ChatGPT();
-    
-        // Leer el contenido de la imagen y convertirla a base64
-        $image_data = base64_encode(file_get_contents($imagePath));
-    
-        // Crear el mensaje con el contenido de texto y la imagen en formato base64
-        $messages = [
-            [
-                'role' => 'user',
-                'content' => [
-                    [
-                        'type' => 'text',
-                        'text' => 'El paciente tiene acne? Clasificar y estimar severidad (baja, media, alta)',
-                    ],
-                    [
-                        'type' => 'image_url',
-                        'image_url' => [
-                            'url' => 'data:image/jpeg;base64,' . $image_data,
-                        ],
-                    ],
-                ],
-            ],
-        ];
-    
-        // Añadir el mensaje a la instancia de ChatGPT
-        foreach ($messages as $message) {
-            $chat->addContent($message, $message['role']);
-        }
-    
-        // Configurar parámetros adicionales si es necesario (opcional)
-        $params = [
-            'temperature' => 0.5,
-            'max_tokens' => 300
-        ];
-        $chat->setParams($params);
-    
-        // Ejecutar el análisis de la imagen con el modelo de visión
-        $response = $chat->exec('gpt-4o');
-    
-        // Manejar la respuesta
-        if ($response['status'] == 200) {
-            $analysis = $response['data']['choices'][0]['message']['content'];
-            echo 'Análisis de la imagen: ' . $analysis;
-        } else {
-            echo 'Error: ' . $response['error']['message'];
-        }
-    }
-    
-
     function test_chatgpt_vision()
     {
-        $imagePath = 'D:\\Desktop\\GERARDO DERMA\\acne_imgs\\moderate\\100110101.jpg';
-        $this->analyzeImage($imagePath);
-    }
+        $chat = new ChatGPT();
+        $imagePath = 'D:\\www\\simplerest\\etc\\chatgpt-vision-test-gallery\\persona.jpg';
+        $res = $chat->analyzeImage($imagePath);
 
+        if ($res === false){
+            dd($chat->error(), 'ERROR');
+        } else {
+            dd($res, 'RES');
+        }        
+    }
 
     function test_claude_1()
     {
