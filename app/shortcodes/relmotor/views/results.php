@@ -21,7 +21,7 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>IMAGEN</th>
+                    <th>IMÁGEN</th>
                     <th>CÓDIGO</th>
                     <th class="d-none d-md-table-cell">PRODUCTO</th>
                     <th class="d-none d-lg-table-cell">DESCRIPCIÓN</th>
