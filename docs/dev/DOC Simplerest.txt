@@ -9965,9 +9965,32 @@ Helpers
 	setLang() 						...				Translate::setLang()
 
 
-# La clase Response
+# Clase Request
 
-La forma de utilizar la clase Response es obtener una instancia a traves de Factory
+Las clases Request y Response implementan el patron Singleton.
+
+Ej:
+
+	$req = Request::getInstance();
+	$res = Response::getInstance();
+
+	$limit  = $req->get('limit', 10);
+	$offset = $req->get('offset', 0);
+	$order  = $req->get('order', []);
+
+	$filters = [];
+
+	// Procesar filtros
+	if ($req->has('sku')) {
+		$skus = explode(',', $req->get('sku'));
+		$filters['sku'] = $skus;
+	}
+
+	// ...
+
+# Clase Response
+
+De Response se puede obtener una instancia a traves de Factory
 
 Ej:
 
@@ -11586,7 +11609,7 @@ Hay más clases relacionadas pero se mencionaron las principales.
 
 	Logger
 
-# Manejo de errores
+# Manejo de excepciones
 
 	ExceptionHandler 	Trait 
 
@@ -11607,6 +11630,112 @@ Hay más clases relacionadas pero se mencionaron las principales.
 	CSS					Librería
 	MakeControllerBase	Commando 
 
+
+# Manejo de excepciones
+
+La clase ExceptionHandler mejora las excepciones agrgeando un trace detallado y bien formateado.
+
+# Sin handler
+
+Fatal error: Uncaught Exception: Test exception in D:\www\simplerest\test.php:17
+Stack trace:
+#0 {main}
+  thrown in D:\www\simplerest\test.php on line 17
+
+# Con handler
+
+--| Test exception
+Array
+(
+    [0] => Array
+        (
+            [file] => D:\www\simplerest\test.php
+            [line] => 25
+            [function] => exception_handler
+            [class] => simplerest\core\libs\TemporaryExceptionHandler
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => Array
+                        (
+                            [message] => Test exception
+                            [prev] =>
+                            [code] => 0
+                            [file] => D:\www\simplerest\test.php
+                            [line] => 22
+                            [trace] => Array
+                                (
+                                    [0] => #0 {main}
+                                )
+
+                            [extra] => Array
+                                (
+                                    [db_connection] =>
+                                )
+                        )
+                )
+        )
+)
+
+Los controladores que extienden a Controller ya tienen en ExceptionHandler adecuado para trabajar en la terminal.
+
+En el caso (no recomendo) de querer ejecutar scripts por fuera de controladores y rutas anonimas del router es posible incluyendo el core via el archivo "app.php" y para el manejo de excepciones:
+
+	<?php declare(strict_types=1);
+
+	use simplerest\core\libs\TemporaryExceptionHandler;
+
+	ini_set('display_errors', '1');
+	ini_set('display_startup_errors', '1');
+	error_reporting(E_ALL);
+
+	if (php_sapi_name() != "cli"){
+		return; 
+	}
+
+	require_once __DIR__ . '/app.php';
+
+	// Instancia de la clase temporal
+	$handler = new class {
+		use ExceptionHandler;
+	};
+
+	try {
+		// Código que puede lanzar una excepción
+		throw new \Exception("Test exception");
+	} catch (\Exception $e) {
+		// Llama al método del trait
+		$handler->exception_handler($e);
+	}
+
+Otra posibilidad es instanciar TemporaryExceptionHandler:
+
+	<?php declare(strict_types=1);
+
+	use simplerest\core\libs\TemporaryExceptionHandler;
+
+	ini_set('display_errors', '1');
+	ini_set('display_startup_errors', '1');
+	error_reporting(E_ALL);
+
+	if (php_sapi_name() != "cli"){
+		return; 
+	}
+
+	require_once __DIR__ . '/app.php';
+
+////////////////////////////////////////////////
+
+// Instancia de la clase temporal
+$handler = new TemporaryExceptionHandler();
+
+try {
+    // Código que puede lanzar una excepción
+    throw new \Exception("Test exception");
+} catch (\Exception $e) {
+    // Llama al método del trait
+    $handler->exception_handler($e);
+}
 
 ### Herramientas para manejo de CSS
 
