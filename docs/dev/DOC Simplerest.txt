@@ -10121,14 +10121,30 @@ Versus...
         return $data;
     }
 
-Tanto FrontController como Router se encargan de enviar la respuesta y formatearla correctamente (por ejemplo para el caso de un array devolviendo un JSON) y si hace algo como Response::getInstance()->send($data); entonces no serà posible usar ese método desde otro del mismo controlador.
+Y existe una tercera posibilidad que no ofrece desventajas:
 
-Por tanto si el metodo va a recibir peticiones por GET es preferible recibir la data como parametros en la funcion:
+	public function get($pid = null, $user_id = null, $attributes = null, $order = null, $limit = null, $offset = null)
+    {  
+        if (empty($user_id)){
+            error('Parameter `user_id` is required', 400);
+        }
+
+		$data = [];
+
+		// ...
+
+        return Response::format($data);
+    }
+
+En este caso solo formateamos la respuesta con  Response::format($data) y la enviamos. Es posible llamar a ese metodo desde otros en el controller (o desde otro controller) y asi tener una solucion modularmente eficiente.
+
+Si el metodo va a recibir peticiones por GET es preferible recibir la data como parametros en la funcion:
 
 	public function get($pid = null, $user_id = null, ...){ }
 
 que...
 
+	// No esta'a parametrizada
 	public function get(){
 		$pid     = $_GET['pid'] ?? null;
 		$user_id = $_GET['user_id'] ?? null;
