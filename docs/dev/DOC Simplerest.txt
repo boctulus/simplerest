@@ -10072,9 +10072,16 @@ y si quisieramos que se redireccione de forma automática:
 
 Importante
 
-No es recomendable usar "directamente" la clase Response ya sea instanciándola directa o indirectamente o sea usando alguna factoria, contenedor de dependencias inversas, etc *excepto* como en los casos previos se necesite alguna funcionalidad en particular.
+No eslo mismo usar "directamente" la clase Response ya sea instanciándola directa o indirectamente (o sea usando alguna factoria, contenedor de dependencias inversas) que hacer un return $data;
 
-Si se construye una API en un controlador podríamos pensar que es buena idea hacer:
+	/*
+		Cons:
+		No setea HTTP STATUS CODE
+		No entrega la respuesta de forma estructurada y estandar
+
+		Pros:
+		Es reutilizable desde otros metodos
+	*/
 
 	public function get($pid = null, $user_id = null, $attributes = null, $order = null, $limit = null, $offset = null)
     {  
@@ -10090,7 +10097,16 @@ Si se construye una API en un controlador podríamos pensar que es buena idea ha
         ->send($data);
     }
 
-Pero es mejor hacer esto:
+Versus...
+
+	/*
+		Pros:
+		Setea HTTP STATUS CODE
+		Entrega la respuesta de forma estructurada y estandar
+
+		Cons:
+		Ya no es reutilizable desde otros metodos
+	*/
 
 	public function get($pid = null, $user_id = null, $attributes = null, $order = null, $limit = null, $offset = null)
     {  
@@ -10107,7 +10123,7 @@ Pero es mejor hacer esto:
 
 Tanto FrontController como Router se encargan de enviar la respuesta y formatearla correctamente (por ejemplo para el caso de un array devolviendo un JSON) y si hace algo como Response::getInstance()->send($data); entonces no serà posible usar ese método desde otro del mismo controlador.
 
-Por lo mismo es preferible hacer
+Por tanto si el metodo va a recibir peticiones por GET es preferible recibir la data como parametros en la funcion:
 
 	public function get($pid = null, $user_id = null, ...){ }
 
