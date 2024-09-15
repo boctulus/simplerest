@@ -10070,6 +10070,54 @@ y si quisieramos que se redireccione de forma automática:
 	dd($cli->getError(), 'ERRORS');
 	dd($res, 'RES');  
 
+Importante
+
+No es recomendable usar "directamente" la clase Response ya sea instanciándola directa o indirectamente o sea usando alguna factoria, contenedor de dependencias inversas, etc *excepto* como en los casos previos se necesite alguna funcionalidad en particular.
+
+Si se construye una API en un controlador podríamos pensar que es buena idea hacer:
+
+	public function get($pid = null, $user_id = null, $attributes = null, $order = null, $limit = null, $offset = null)
+    {  
+        if (empty($user_id)){
+            error('Parameter `user_id` is required', 400);
+        }
+
+		$data = [];
+
+		// ...
+
+        Response::getInstance()
+        ->send($data);
+    }
+
+Pero es mejor hacer esto:
+
+	public function get($pid = null, $user_id = null, $attributes = null, $order = null, $limit = null, $offset = null)
+    {  
+        if (empty($user_id)){
+            error('Parameter `user_id` is required', 400);
+        }
+
+		$data = [];
+
+		// ...
+
+        return $data;
+    }
+
+Tanto FrontController como Router se encargan de enviar la respuesta y formatearla correctamente (por ejemplo para el caso de un array devolviendo un JSON) y si hace algo como Response::getInstance()->send($data); entonces no serà posible usar ese método desde otro del mismo controlador.
+
+Por lo mismo es preferible hacer
+
+	public function get($pid = null, $user_id = null, ...){ }
+
+que...
+
+	public function get(){
+		$pid     = $_GET['pid'] ?? null;
+		$user_id = $_GET['user_id'] ?? null;
+		// ...
+	}
 
 # Cookies
 
