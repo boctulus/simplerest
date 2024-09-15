@@ -293,6 +293,14 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
 
         return $out;
     }
+    
+    function has($key){
+        return array_key_exists($key, static::$query_arr);
+    }
+
+    function get($key, $default_value = null){
+        return static::$query_arr[$key] ?? $default_value;
+    }
 
     function getParam($index){
         return static::$params[$index];
