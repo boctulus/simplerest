@@ -706,7 +706,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     break;
                                     case 'notBetween':
                                         throw new \Exception("Operator notBetween is not implemented");  
-                                    break;
                                     default:
                                         // 'eq', 'gt', ...
 
@@ -728,7 +727,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 }
                             }
                             
-                        }else{
+                        } else {
                             
                             /*
                                 null! tiene un funcionamiento muy limitado porque la validación hace que
