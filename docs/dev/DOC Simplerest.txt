@@ -10015,6 +10015,19 @@ Ej:
 
 	response("No encontrado", 404);
 
+Nota:
+
+Nunca devolver un objeto Response ya que genera un loop porque la respuesta es recibida nuevamente por Response:
+
+	// OK
+	Response::getInstance()
+	->send($data);
+
+pero...
+
+	// MAL
+	Response::getInstance()
+	->send($data);
 
 Respuesta condicional
 
