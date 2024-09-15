@@ -11,8 +11,8 @@
             <option value="title-desc">Ordenar por Título: Z - A</option>
             <option value="sku-asc">Ordenar por Código: menor a mayor</option>
             <option value="sku-desc">Ordenar por Código: mayor a menor</option>
-            <option value="stock_quantity-desc">Ordenar por Disponibilidad: Mayor a Menor</option>
-            <option value="stock_quantity-asc">Ordenar por Disponibilidad: Menor a Mayor</option>
+            <option value="stock_quantity-desc">Ordenar por Disponibilidad: mayor a menor</option>
+            <option value="stock_quantity-asc">Ordenar por Disponibilidad: menor a mayor</option>
             <option value="no-order" selected>Sin ordenar (la opción màs ràpida)</option>
         </select>
     </div>
