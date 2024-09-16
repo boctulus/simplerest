@@ -389,12 +389,12 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     function method(){
         $config = config();
 
-        $asked_method = NULL;
-        if ($config['method_override']['by_url']){
+        $asked_method = null;
+        if ($config['method_override']['by_url'] ?? null){
             $asked_method  =  $this->shiftQuery('_method');
         }
 
-        if ($asked_method == NULL && $config['method_override']['by_header']){
+        if ($asked_method == null && ($config['method_override']['by_header'] ?? null)){
             $asked_method  =  $this->header('X-HTTP-Method-Override'); 
         }
 
