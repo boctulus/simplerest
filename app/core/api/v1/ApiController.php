@@ -61,8 +61,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     
         parent::__construct($auth);
 
-        $res = response()
-        ->encoded();
+        $res = response();
 
         $this->tenantid = request()->getTenantId();
 
