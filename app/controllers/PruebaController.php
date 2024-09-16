@@ -54,8 +54,6 @@ class PruebaController extends Controller
                 'sale_price'   => $salep  
             ];
         }           
-
-        // dd($data);
        
         return Response::format($data, 200, $errors);
     }
