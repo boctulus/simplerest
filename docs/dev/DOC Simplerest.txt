@@ -10220,6 +10220,28 @@ Ej:
         return Response::format($data, 200, $errors);
     }
 
+Esto permite generar una respuesta estructurada para los errores:
+
+	{
+    "data": [
+        {
+            "normal_price": 131814,
+            "sale_price": ""
+        },
+        {
+            "normal_price": 121904,
+            "sale_price": ""
+        }
+    ],
+    "status_code": 200,
+    "error": [
+        {
+            "message": "Product with product_id=11111111 not found.",
+            "code": 404
+        }
+    ]
+}
+
 
 # Cookies
 
