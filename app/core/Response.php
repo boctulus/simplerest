@@ -177,11 +177,11 @@ class Response
                 $data = $data['data'];
             }
 
-            $data = array_merge($arr,[
+            $data = array_merge([
                     'data' => $data, 
                     'status_code' => $http_code,
                     'error' => []
-            ]);
+            ], $arr);
 
             static::$http_code = $http_code; //
 
@@ -380,9 +380,9 @@ class Response
             if (is_array($detail)){
                 $detail = json_encode($detail);
             }
-
+            
             if (is_array($detail) || !self::$to_be_encoded){
-                echo $this->do_encode(static::$data['error']);
+                echo $this->do_encode(static::$data);
             } else {
                 echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -| Location: $location -|Detail: $detail" .  PHP_EOL. PHP_EOL;
             }
@@ -410,4 +410,21 @@ class Response
         return $this;
     }
 
+    // Formatea la respuesta y solo envia el http status code
+    static function format($data, $http_code = 200, $error_msg = ''){
+        http_response_code($http_code);
+
+        return [
+            'data' => $data, 
+            'status_code' => $http_code,
+            'error' => $error_msg
+        ];
+    }
+
+    static function formatError($error_msg, $error_code = null){
+        return [
+            'message' => $error_msg,
+            'code'    => $error_code
+        ];
+    }
 }
