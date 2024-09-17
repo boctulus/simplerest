@@ -7,6 +7,12 @@ use simplerest\core\interfaces\Arrayable;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Arrays;
 
+/*
+    Correcciones necesarias !!
+
+    https://chatgpt.com/c/66e8fb29-9d10-800d-9a61-5d8284942006
+*/
+
 class Request  implements /*\ArrayAccess,*/ Arrayable
 {
     protected static $query_arr;
