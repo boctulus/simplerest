@@ -1,6 +1,12 @@
 TODO SimpleRest
 ===============
 
+- [ Critico ] Tanto Request como Response deben implementar metodos de clase o va a fallar en entornos con concurrencia.
+
+  https://chatgpt.com/c/66e8fb29-9d10-800d-9a61-5d8284942006
+
+- [ Critico ] Revisar todos los problemas de dependencias con problemas de seguridad en el composer.json
+
 - Implementar "build" 
 
 "Algunos frameworks modernos permiten mantener los assets junto a los componentes o vistas relacionadas, y luego utilizan un proceso de build para moverlos a la carpeta pública."
@@ -1112,6 +1118,25 @@ Completar comandos para manejar colas
 
 Hay mas detalle en otra parte del documento.
 
+- Considerar habilitar nuevamente el objeto Request como parametro en controladores que deriven de clase ApiController o un trait especializado.
+
+El "problema" es que implica hacer uso de tecnicas de Reflection ya necesito mantener la recepcion de parametros de forma "desempaquetada". 
+
+https://chatgpt.com/c/66e7e1ea-4d88-800d-bad2-b7729f7d0c6f
+
+Ej:
+
+function products_by_category(Request $request) {
+    $cat_id     = $request->get('cat_id');
+    $user_id    = $request->get('user_id');
+    $attributes = $request->get('attributes');
+    $in_stock   = $request->get('in_stock', false); // valor por defecto
+    $limit      = $request->get('limit', 10);
+    $offset     = $request->get('offset');
+    $order_by   = $request->get('order');
+
+    // Resto de la lógica...
+}
 
 - Considerar el uso de templates como "vuexy-vuejs-admin-dashboard" como alternativa a AdminLTE !
 
