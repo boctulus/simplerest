@@ -33,6 +33,21 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         return $this;
     }
 
+    static function getHeaders() {
+        if (function_exists('apache_request_headers')) {
+            return apache_request_headers();
+        }
+        // alternativa para obtener los encabezados en otros servidores
+        $headers = [];
+        foreach ($_SERVER as $key => $value) {
+            if (strpos($key, 'HTTP_') === 0) {
+                $header = str_replace('_', '-', strtolower(substr($key, 5)));
+                $headers[$header] = $value;
+            }
+        }
+        return $headers;
+    }
+
     static function getInstance() : Request {
         if(static::$instance == NULL){
             if (php_sapi_name() != 'cli'){
@@ -53,7 +68,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
                     https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
                 */
 
-                $headers = apache_request_headers();
+                $headers = static::getHeaders();
 
                 $accept_encoding_header = $headers['Accept-Encoding'] ?? null;
                 
