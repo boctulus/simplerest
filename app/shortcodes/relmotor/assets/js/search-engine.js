@@ -1,5 +1,5 @@
 
-function populateSelect2(selector, options, default_option) {
+function populateSelect2(selector, options, default_option, exclude_options = []) {
     selector.empty(); // Limpiar el select por si hay datos previos
 
     // Si se pasa un default_option, agrégalo al principio
@@ -7,15 +7,17 @@ function populateSelect2(selector, options, default_option) {
         selector.append(new Option(default_option.text, default_option.id));
     }
 
-    // Agregar cada categoría al select
+    // Agregar cada categoría al select, excepto las que están en exclude_options
     $.each(options, function(key, value) {
-        selector.append(new Option(value, key));
+        if (!exclude_options.includes(key)) {
+            selector.append(new Option(value, key));
+        }
     });
 
     // Inicializar Select2 (si aún no está inicializado)
     if (!selector.hasClass('select2-hidden-accessible')) {
         selector.select2({
-            placeholder: 'Selecciona',
+            placeholder: default_option ? default_option.text : 'Seleccionar',
             allowClear: true
         });
     }
@@ -83,7 +85,7 @@ function fetchAttributes() {
 
 function populateCategories(options) {
     const selector = $('#producto');
-    populateSelect2(selector, options, { 'id': 'NULL', 'text': 'Categoría' });    
+    populateSelect2(selector, options, { 'id': 'NULL', 'text': 'Categoría'.toUpperCase() }, ['Sin categorizar']);    
 }
 
 function populateAttributes(options) {
@@ -98,7 +100,7 @@ function populateAttributes(options) {
         const selector = $(`#${id}`);
         const name      = names[id];
 
-        populateSelect2(selector, options[name], { 'id': 'NULL', 'text': name }); 
+        populateSelect2(selector, options[name], { 'id': 'NULL', 'text': name.toUpperCase() }); 
     });
 }
 
