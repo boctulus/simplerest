@@ -1,9 +1,11 @@
 
-function populateSelect2(selector, options) {
+function populateSelect2(selector, options, default_option) {
     selector.empty(); // Limpiar el select por si hay datos previos
 
-    // $(selector).val(null).trigger('change')
-    // $(selector).val('').trigger('change')
+    // Si se pasa un default_option, agrégalo al principio
+    if (default_option) {
+        selector.append(new Option(default_option.text, default_option.id));
+    }
 
     // Agregar cada categoría al select
     $.each(options, function(key, value) {
@@ -81,7 +83,7 @@ function fetchAttributes() {
 
 function populateCategories(options) {
     const selector = $('#producto');
-    populateSelect2(selector, options);    
+    populateSelect2(selector, options, { 'id': 'NULL', 'text': 'Categoría' });    
 }
 
 function populateAttributes(options) {
@@ -95,8 +97,8 @@ function populateAttributes(options) {
     ['marca', 'sistema_electrico'].forEach(id => {
         const selector = $(`#${id}`);
         const name      = names[id];
-        
-        populateSelect2(selector, options[name]); 
+
+        populateSelect2(selector, options[name], { 'id': 'NULL', 'text': name }); 
     });
 }
 
