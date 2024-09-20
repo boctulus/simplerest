@@ -1,10 +1,4 @@
 
-// Atributos que se quieren incluir en los filtros (no tienen porque ser todos)
-const att_names = [
-    "Sistema Eléctrico",
-    "Marca"
-];
-
 /*
     Ej:
         const selector = $('#producto');
