@@ -33,6 +33,9 @@ class RelmotorShortcode
         css_file(__DIR__ . '/assets/css/styles.css');
         css_file(__DIR__ . '/assets/css/results.css');     
 
+        /*
+            Atributos que se quieren incluir en los filtros (no tienen porque ser todos)
+        */
         $atts = [
             "Sistema Eléctrico",
             "Marca"
