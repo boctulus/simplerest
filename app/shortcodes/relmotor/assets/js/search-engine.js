@@ -1,8 +1,12 @@
 
+// Atributos que se quieren incluir en los filtros (no tienen porque ser todos)
+const att_names = [
+    "Sistema Eléctrico",
+    "Marca"
+];
+
 /*
     Ej:
-
-        // Populate product categories
         const selector = $('#producto');
         populateSelect2(selector, options, { 'id': 'NULL', 'text': 'Categoría' }, ['Sin categorizar']);    
     }
@@ -69,8 +73,11 @@ function fetchAttributes() {
         console.log('Usando datos en caché');
         populateAttributes(atts);
     } else {
-        // No hardocodear URL
-        fetch('http://relmotor.lan/woo_commerce_filters/attributes/Sistema%20Eléctrico,Marca', {
+        // No hardocodear URL base !!
+        
+        const attributes = att_names.map((att) => {return att.replace(' ', '%20')}).join(',');
+        
+        fetch(`http://relmotor.lan/woo_commerce_filters/attributes/${attributes}`, {
             method: 'GET', 
             headers: {
                 'Content-Type': 'application/json',
@@ -119,12 +126,10 @@ jQuery(document).ready(function() {
     // Los atributos los selecciono por el valor de su data-id
     // (no uso id)
 
-    $('[data-id="Sistema Eléctrico"]').select2({
-        theme: 'bootstrap-5'
-    });
-
-    $('[data-id="Marca"]').select2({
-        theme: 'bootstrap-5'
+    att_names.forEach((name) => {
+        $(`[data-id="${name}"]`).select2({
+            theme: 'bootstrap-5'
+        });
     });
 
     fetchCategories();

@@ -33,6 +33,13 @@ class RelmotorShortcode
         css_file(__DIR__ . '/assets/css/styles.css');
         css_file(__DIR__ . '/assets/css/results.css');     
 
-        view(__DIR__ . '/views/relmotor.php');        
+        $atts = [
+            "Sistema Eléctrico",
+            "Marca"
+        ];
+
+        view(__DIR__ . '/views/relmotor.php', [
+            'atts' => $atts
+        ]);        
     }
 }
