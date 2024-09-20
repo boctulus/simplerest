@@ -12,6 +12,8 @@ namespace simplerest\shortcodes\ciudades_cl;
 class CiudadesCLShortcode
 {
     function __construct(){
+        // Evitar incluir jQuery aqui o podria incluirse dos veces
+
         js_file ('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js');    
         css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
 

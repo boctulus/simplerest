@@ -20,10 +20,11 @@ class RelmotorShortcode
         css_file(__DIR__ . '/assets/third_party/select2/select2-bootstrap-5-theme.min.css'); 
         js_file(__DIR__ . '/assets/third_party/select2/select2.min.js');
 
-
+        // CACHE con local y session Storage
         js_file(JS_PATH .'transients.js');
 
         js_file(__DIR__ . '/assets/js/search-engine.js');
+        js_file(__DIR__ . '/assets/js/populte-dropdowns.js');        
 
         $this->index();
     }
