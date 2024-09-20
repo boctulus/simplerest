@@ -1900,7 +1900,7 @@ El framework ofrece varios metodos de paginacion:
 	take / skip  -- similar al anterior
 	paginate
 
-Con pagiante() es directamente pasando la cantidad de paginas y el tamano de pagina.
+Con paginate() es directamente pasando la cantidad de paginas y el tamano de pagina.
 
 Ej:
 
