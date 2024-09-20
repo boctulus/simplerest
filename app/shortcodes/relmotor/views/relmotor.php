@@ -8,24 +8,27 @@
                         <input type="text" class="form-control" id="codigo" placeholder="ALT9010104">
                     </div>
                     <div class="row">
+                        <!-- Category -->
                         <div class="col-md-4 mb-3">
                             <label for="producto" class="form-label">Producto <span class="info-icon">i</span></label>
                             <select name="producto[]" id="producto" placeholder="Categoría" class="form-control">
                                 <option value="">--</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="sistema" class="form-label">Sistema Eléctrico <span class="info-icon">i</span></label>
-                            <select name="sistema_electrico[]" data-id="Sistema Eléctrico" placeholder="Sistema Eléctrico" class="form-control">
-                                <option value="">--</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="marca" class="form-label">Marca <span class="info-icon">i</span></label>
-                            <select name="marca[]" data-id="Marca" placeholder="Marca" class="form-control">
-                                <option value="">--</option>
-                            </select>
-                        </div>
+
+                        <!-- Attributes -->
+                        <?php foreach ($atts as $att): ?>
+                            <?php 
+                                // Convert attribute to snake_case for the select name and id
+                                $name = strtolower(str_replace(' ', '_', $att)); 
+                            ?>
+                            <div class="col-md-4 mb-3">
+                                <label for="<?= $name ?>" class="form-label"><?= $att ?> <span class="info-icon">i</span></label>
+                                <select name="<?= $name ?>[]" data-id="<?= $att ?>" placeholder="<?= $att ?>" class="form-control">
+                                    <option value="">--</option>
+                                </select>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                     <div class="mb-3">
                         <input type="text" class="form-control" id="buscar-codigo" placeholder="BUSCAR POR CODIGO">
