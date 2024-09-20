@@ -16,7 +16,10 @@ function parsePriceFromWooCommerceSettings(price){
     return parsePrice(price, woocommerce_currency_settings.decimalSeparator, woocommerce_currency_settings.thousandSeparator);
 }
 
-function formatPrice(price, decimalSeparator = ',', thousandSeparator = '.', currency_symbol = '€', decimals = 2) {
+function formatPrice(price, decimalSeparator = ',', thousandSeparator = '.', currency_symbol = '€', decimals = 2) 
+{
+    // console.log(price, decimalSeparator, thousandSeparator,  currency_symbol, decimals);
+
     try {
         // Asegurarse de que price sea un número
         let numPrice = Number(price);
@@ -40,7 +43,7 @@ function formatPrice(price, decimalSeparator = ',', thousandSeparator = '.', cur
         // Añadir el símbolo de la moneda y devolver el resultado
         return formattedPrice + ' ' + currency_symbol;
     } catch (error) {
-        console.error('Error al formatear el precio:', error.message);
+        console.error('Error al formatear el precio: ', price, error.message);
         return 'Error: Precio inválido';
     }
 }
