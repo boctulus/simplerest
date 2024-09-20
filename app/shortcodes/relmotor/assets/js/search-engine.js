@@ -1,4 +1,13 @@
 
+/*
+    Ej:
+
+        // Populate product categories
+        const selector = $('#producto');
+        populateSelect2(selector, options, { 'id': 'NULL', 'text': 'Categoría' }, ['Sin categorizar']);    
+    }
+
+*/
 function populateSelect2(selector, options, default_option, exclude_options = []) {
     selector.empty(); // Limpiar el select por si hay datos previos
 
@@ -9,7 +18,7 @@ function populateSelect2(selector, options, default_option, exclude_options = []
 
     // Agregar cada categoría al select, excepto las que están en exclude_options
     $.each(options, function(key, value) {
-        if (!exclude_options.includes(key)) {
+        if (!exclude_options.includes(value)) {
             selector.append(new Option(value, key));
         }
     });
@@ -89,20 +98,17 @@ function populateCategories(options) {
 }
 
 function populateAttributes(options) {
-    console.log(options);
+    ['Marca', 'Sistema Eléctrico'].forEach(name => {
+        const selector = $(`[data-id='${name}']`);
 
-    const names = {
-        "marca": "Marca",
-        "sistema_electrico": "Sistema Eléctrico"
-    };
-
-    ['marca', 'sistema_electrico'].forEach(id => {
-        const selector = $(`#${id}`);
-        const name      = names[id];
-
-        populateSelect2(selector, options[name], { 'id': 'NULL', 'text': name.toUpperCase() }); 
+        if (selector.length > 0) {
+            populateSelect2(selector, options[name], { 'id': 'NULL', 'text': name.toUpperCase() });
+        } else {
+            console.warn(`No se encontró el selector con data-id='${name}'`);
+        }
     });
 }
+
 
 // Llamar a la función al cargar la página
 jQuery(document).ready(function() {
