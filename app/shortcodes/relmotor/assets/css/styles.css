@@ -70,3 +70,12 @@ h2 {
   background-color: #68d391;
   border-color: #68d391;
 }
+
+/*
+  SELECT 2
+*/
+
+/* Ensure select2 dropdown adapts to the full width of the container */
+.select2-container {
+  width: 100% !important;
+}

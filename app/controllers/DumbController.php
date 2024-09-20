@@ -10909,7 +10909,7 @@ class DumbController extends Controller
 
         // $urls = Strings::lines($list, true, true);
 
-        $urls = ['https://www.harvard.edu/'];
+        $urls = ['https://preparaciones4x4.es/'];
 
         foreach ($urls as $url) {
             dd(
@@ -10921,7 +10921,7 @@ class DumbController extends Controller
 
     function get_plugins()
     {
-        $url = 'https://tienda.relmotor.cl/';
+        $url = 'https://shoppingparts.cl/';
 
         $str = Url::getUrlContent($url, 360000);
 

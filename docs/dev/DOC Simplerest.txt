@@ -8871,8 +8871,6 @@ o,..
 	render();  // renderizaria solo el template por defecto
 
 
-Nota: actualmente cuando se usa render() no se carga ningún css o js en el template !
-
 La funcion render() puede ser util para probar algo sin necesidad de generar un archivo para la vista.
 
 Ej:
@@ -8887,6 +8885,112 @@ Ej:
 
 	$content = ob_get_clean();
 	render($content);
+
+
+IMPORTANTE: 
+
+Si se llama a render() entonces se debe hacer un "return get_view()" y no usar "view()" ya que view() también llama a render() duplicandose el HTML renderizado y generando errores.
+
+Ej:
+
+	# Bien
+
+	class SomeController extends Controller
+	{
+		function __construct()
+		{
+			parent::__construct();        
+		}
+
+		function index()
+		{
+			$pr = new RelmotorShortcode();
+			render($pr->index(), 'templates/tpl_bt5.php');                  
+		}
+	}
+
+	Entonces 
+
+	class RelmotorShortcode
+	{
+		function index()
+		{
+			css_file(__DIR__ . '/assets/css/styles.css');
+			css_file(__DIR__ . '/assets/css/results.css');     
+			
+			$json  = file_get_contents(ETC_PATH . 'countries_states.json');
+			$json  = json_encode($data);
+
+			// OK
+			return get_view(__DIR__ . '/views/relmotor.php', [
+				'json' =>  $json
+			]);        
+		}
+	}
+
+Sin embargo lo siguiente esta mal:
+
+	# MAL
+
+	class SomeController extends Controller
+	{
+		function __construct()
+		{
+			parent::__construct();        
+		}
+
+		function index()
+		{
+			$pr = new RelmotorShortcode();
+			render($pr->index(), 'templates/tpl_bt5.php');                  
+		}
+	}
+
+	Entonces 
+
+	class RelmotorShortcode
+	{
+		function __construct(){
+			// ...
+		
+			$this->index();
+		}
+
+		function index()
+		{
+			css_file(__DIR__ . '/assets/css/styles.css');
+			css_file(__DIR__ . '/assets/css/results.css');     
+			
+			$json  = file_get_contents(ETC_PATH . 'countries_states.json');
+			$json  = json_encode($data);
+
+			// ERROR 
+			view(__DIR__ . '/views/relmotor.php', [
+				'json' =>  $json
+			]);        
+		}
+	}
+
+En este caso estamos invocando a render() dos veces al llamar a view: 
+
+	// ERROR
+	view(__DIR__ . '/views/relmotor.php', [
+		'json' =>  $json
+	]);  
+
+Lo que SÍ podría haberse hecho si lo que deseamos es cambiar el template es esto:
+
+	// OK
+	set_template('templates/tpl_bt5.php');
+    new RelmotorShortcode();
+
+en vez de
+
+	// INCOMPATIBLE con el uso de view()
+	$pr = new RelmotorShortcode();
+	render($pr->index(), 'templates/tpl_bt5.php'); 
+
+Entonces sí podemos usar view() dentro de RelmotorShortcode() y el HTML se renderizará una sola vez como se espera.
 
 
 # Assets
