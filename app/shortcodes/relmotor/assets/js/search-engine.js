@@ -116,11 +116,14 @@ jQuery(document).ready(function() {
         theme: 'bootstrap-5'
     });
 
-    $('#sistema_electrico').select2({
+    // Los atributos los selecciono por el valor de su data-id
+    // (no uso id)
+
+    $('[data-id="Sistema Eléctrico"]').select2({
         theme: 'bootstrap-5'
     });
 
-    $('#marca').select2({
+    $('[data-id="Marca"]').select2({
         theme: 'bootstrap-5'
     });
 

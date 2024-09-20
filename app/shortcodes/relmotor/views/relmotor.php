@@ -16,13 +16,13 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="sistema" class="form-label">Sistema Eléctrico <span class="info-icon">i</span></label>
-                            <select name="sistema_electrico[]" id="sistema_electrico" data-id="Sistema Eléctrico" placeholder="Sistema Eléctrico" class="form-control">
+                            <select name="sistema_electrico[]" data-id="Sistema Eléctrico" placeholder="Sistema Eléctrico" class="form-control">
                                 <option value="">--</option>
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="marca" class="form-label">Marca <span class="info-icon">i</span></label>
-                            <select name="marca[]" id="marca" data-id="Marca" placeholder="Marca" class="form-control">
+                            <select name="marca[]" data-id="Marca" placeholder="Marca" class="form-control">
                                 <option value="">--</option>
                             </select>
                         </div>
