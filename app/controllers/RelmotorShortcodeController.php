@@ -16,8 +16,8 @@ class RelmotorShortcodeController extends Controller
 
     function index()
     {
-        $pr = new RelmotorShortcode();
-        render($pr->index(), 'templates/tpl_bt5.php');                  
+        set_template('templates/tpl_bt5.php');
+        new RelmotorShortcode();
     }
 }
 

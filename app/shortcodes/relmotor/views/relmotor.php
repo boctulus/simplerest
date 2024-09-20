@@ -10,15 +10,21 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="producto" class="form-label">Producto <span class="info-icon">i</span></label>
-                            <input type="text" class="form-control" id="producto" placeholder="Producto">
+                            <select class="select2-producto" name="producto[]" id="producto" placeholder="Categoría" class="form-control">
+                                <option value="">--</option>
+                            </select>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="sistema" class="form-label">Sistema Eléctrico <span class="info-icon">i</span></label>
-                            <input type="text" class="form-control" id="sistema" placeholder="Sistema Eléctrico">
+                            <select class="select2-sistema_electrico" name="sistema_electrico[]" id="sistema_electrico" placeholder="Sistema Eléctrico" class="form-control">
+                                <option value="">--</option>
+                            </select>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="marca" class="form-label">Marca <span class="info-icon">i</span></label>
-                            <input type="text" class="form-control" id="marca" placeholder="Marca">
+                            <select class="select2-marca" name="marca[]" id="marca" placeholder="Marca" class="form-control">
+                                <option value="">--</option>
+                            </select>
                         </div>
                     </div>
                     <div class="mb-3">
