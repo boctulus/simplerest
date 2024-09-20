@@ -410,15 +410,39 @@ class Response
         return $this;
     }
 
-    // Formatea la respuesta y solo envia el http status code
-    static function format($data, $http_code = 200, $error_msg = ''){
+    /*
+        Formatea la respuesta y solo envia el http status code
+
+        $extra esta disponible para adiciones a la respuesta
+        
+        Ej:
+
+        return Response::format($products, 200, '', [
+            'paginator' => [
+                'total' => $total_rows
+            ]
+        ]);
+
+        Respuesta (ejemplo)
+
+        {
+           ...
+            "status_code": 200,
+            "error": "",
+            "paginator": {
+                "total": "218"
+            }
+        }
+    */
+    static function format($data, $http_code = 200, $error_msg = '', $extra = []){
         http_response_code($http_code);
 
-        return [
+        // Combina los arrays manteniendo las claves asociativas
+        return array_merge([
             'data' => $data, 
             'status_code' => $http_code,
             'error' => $error_msg
-        ];
+        ], $extra);
     }
 
     static function formatError($error_msg, $error_code = null){
