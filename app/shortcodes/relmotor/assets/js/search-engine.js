@@ -25,7 +25,7 @@ function searchProducts() {
         params.attributes['Marca'] = marca;
     }
 
-    if (categoryId && categoryId !== 'NULL') params.cat_id = categoryId;
+    if (categoryId && categoryId !== 'NULL') params.category_id = categoryId;
     if (codigo) params.wp_attributes = { '_sku': codigo };
 
     console.log('Parámetros de búsqueda:', params);
@@ -46,41 +46,67 @@ function searchProducts() {
     });
 }
 
+function getCategoryName(categoryId) {
+    let categories = sessionStorageCache.getItem('se-categories');
+    
+    if (!categories) {
+        // Si no hay categorías en caché, las obtenemos
+        fetchCategories().then(() => {
+            categories = sessionStorageCache.getItem('se-categories');
+            return categories[categoryId] || categoryId.toString();
+        });
+    } else {
+        return categories[categoryId] || categoryId.toString();
+    }
+}
+
 // Función para mostrar los resultados
 function displayResults(products) {
     const resultsContainer = $('.results-container tbody');
     resultsContainer.empty();
 
     products.forEach(product => {
-        const categories = product.categories ? product.categories.join(', ') : '';
-        const row = `
-            <tr>
-                <td><img src="${product.featured_image || ''}" alt="${product.name}" class="img-fluid results-image"></td>
-                <td class="results-code">${product.sku || ''}</td>
-                <td class="d-none d-md-table-cell">${categories}</td>
-                <td class="d-none d-lg-table-cell results-description">
-                    ${product.name || ''}
-                    <br>
-                    <strong>Referencia Cruzada ·</strong>
-                </td>
-                <td class="d-none d-xl-table-cell"><img src="${product.brand_image || ''}" alt="${product.attributes && product.attributes['Marca'] || ''}" width="80"></td>
-                <td>
-                    <div class="results-price-list">Precio lista: $${product.regular_price || ''}</div>
-                    <div class="results-price-discount">PRECIO CON DTO:</div>
-                    <div class="results-price">$${product.price || ''} <small>Neto</small></div>
-                </td>
-                <td>
-                    <div class="input-group mb-2">
-                        <button class="btn btn-outline-secondary results-quantity-btn" type="button">-</button>
-                        <input type="number" class="form-control results-quantity" value="0" min="0" max="99999">
-                        <button class="btn btn-outline-secondary results-quantity-btn" type="button">+</button>
-                    </div>
-                    <button class="btn btn-success w-100 mb-2"><i class="fas fa-cart-plus"></i> Añadir</button>
-                    <div class="stock-info">STOCK: ${product.stock_quantity || 'N/A'}</div>
-                </td>
-            </tr>
-        `;
-        resultsContainer.append(row);
+        // Obtener las categorías y convertirlas a string
+        const categoriesPromises = product.category_ids 
+            ? product.category_ids.map(id => getCategoryName(id))
+            : Promise.resolve([]);
+        
+        Promise.all(categoriesPromises).then(categories => {
+            const categoriesString = categories.join(', ');
+            
+            // Obtener la marca del producto
+            const marca = product.attributes.find(attr => attr.name === "Marca");
+            const marcaValue = marca ? marca.value : '';
+
+            const row = `
+                <tr>
+                    <td><img src="${product.featured_image || ''}" alt="${product.name}" class="img-fluid results-image"></td>
+                    <td class="results-code">${product.sku || ''}</td>
+                    <td class="d-none d-md-table-cell">${categoriesString}</td>
+                    <td class="d-none d-lg-table-cell results-description">
+                        ${product.name || ''}
+                        <br>
+                        <strong>Referencia Cruzada ·</strong>
+                    </td>
+                    <td class="d-none d-xl-table-cell">${marcaValue}</td>
+                    <td>
+                        <div class="results-price-list">Precio lista: $${product.regular_price || ''}</div>
+                        <div class="results-price-discount">PRECIO CON DTO:</div>
+                        <div class="results-price">$${product.price || ''} <small>Neto</small></div>
+                    </td>
+                    <td>
+                        <div class="input-group mb-2">
+                            <button class="btn btn-outline-secondary results-quantity-btn" type="button">-</button>
+                            <input type="number" class="form-control results-quantity" value="0" min="0" max="99999">
+                            <button class="btn btn-outline-secondary results-quantity-btn" type="button">+</button>
+                        </div>
+                        <button class="btn btn-success w-100 mb-2"><i class="fas fa-cart-plus"></i> Añadir</button>
+                        <div class="stock-info">STOCK: ${product.stock_quantity || 'N/A'}</div>
+                    </td>
+                </tr>
+            `;
+            resultsContainer.append(row);
+        });
     });
 
     updateResultCount(products.length);
