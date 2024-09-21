@@ -14,6 +14,7 @@ function searchProducts() {
 
     if (keywords) params.keywords = keywords;
     if (enStock) params.in_stock = true;
+    if (enOferta) params.on_sale = true;
 
     // Solo agregar atributos si tienen un valor válido
     if (systemElectrico && systemElectrico !== 'NULL') {
@@ -37,7 +38,7 @@ function searchProducts() {
         data: params,
         success: function(response) {
             console.log('Respuesta de la API:', response);
-            displayResults(response.data);
+            displayResults(response.data, enStock);
         },
         error: function(xhr, status, error) {
             console.error("Error en la búsqueda:", error);
@@ -46,26 +47,19 @@ function searchProducts() {
     });
 }
 
-function getCategoryName(categoryId) {
-    let categories = sessionStorageCache.getItem('se-categories');
-    
-    if (!categories) {
-        // Si no hay categorías en caché, las obtenemos
-        fetchCategories().then(() => {
-            categories = sessionStorageCache.getItem('se-categories');
-            return categories[categoryId] || categoryId.toString();
-        });
-    } else {
-        return categories[categoryId] || categoryId.toString();
-    }
-}
-
 // Función para mostrar los resultados
-function displayResults(products) {
+function displayResults(products, enStock) {
     const resultsContainer = $('.results-container tbody');
     resultsContainer.empty();
 
+    let displayedCount = 0;
+
     products.forEach(product => {
+        // Verificar si el producto tiene stock cuando el filtro está activado
+        if (enStock && (!product.stock_quantity || product.stock_quantity <= 0)) {
+            return; // Saltar este producto si no tiene stock
+        }
+
         // Obtener las categorías y convertirlas a string
         const categoriesPromises = product.category_ids 
             ? product.category_ids.map(id => getCategoryName(id))
@@ -106,11 +100,27 @@ function displayResults(products) {
                 </tr>
             `;
             resultsContainer.append(row);
+            displayedCount++;
         });
     });
 
-    updateResultCount(products.length);
+    updateResultCount(displayedCount);
 }
+
+function getCategoryName(categoryId) {
+    let categories = sessionStorageCache.getItem('se-categories');
+    
+    if (!categories) {
+        // Si no hay categorías en caché, las obtenemos
+        fetchCategories().then(() => {
+            categories = sessionStorageCache.getItem('se-categories');
+            return categories[categoryId] || categoryId.toString();
+        });
+    } else {
+        return categories[categoryId] || categoryId.toString();
+    }
+}
+
 
 // Función para actualizar el contador de resultados
 function updateResultCount(count) {
@@ -130,7 +140,7 @@ $(document).ready(function() {
     // Evento de búsqueda solo en submit del formulario
     $('form').on('submit', function(e) {
         e.preventDefault();
-        console.log('Formulario enviado - Iniciando búsqueda'); // Logging para debugging
+        console.log('Formulario enviado - Iniciando búsqueda');
         searchProducts();
     });
 
@@ -139,7 +149,11 @@ $(document).ready(function() {
         $('form')[0].reset();
         $('.results-container tbody').empty();
         updateResultCount(0);
-        console.log('Formulario limpiado'); // Logging para debugging
+        
+        // Deseleccionar todos los SELECT2
+        $('select').val(null).trigger('change');
+        
+        console.log('Formulario limpiado');
     });
 
     // Inicializar Select2 para los dropdowns
