@@ -435,8 +435,6 @@ class Response
         }
     */
     static function format($data, $http_code = 200, $error_msg = '', $extra = []){
-        http_response_code($http_code);
-
         // Combina los arrays manteniendo las claves asociativas
         return array_merge([
             'data' => $data, 
