@@ -30,34 +30,41 @@ function populateSelect2(selector, options, default_option, exclude_options = []
     }
 }
 
+// Modificamos fetchCategories para que devuelva una promesa
 function fetchCategories() {
-    const cachedCategories = sessionStorageCache.getItem('se-categories');
+    return new Promise((resolve, reject) => {
+        const cachedCategories = sessionStorageCache.getItem('se-categories');
 
-    if (cachedCategories) {
-        console.log('Usando datos en caché');
-        populateCategories(cachedCategories);
-    } else {
-        // No hardocodear URL
-        fetch('http://relmotor.lan/woo_commerce_filters/categories', {
-            method: 'GET', // o 'POST' si es necesario
-            headers: {
-                'Content-Type': 'application/json',
-                'User-Agent': 'PostmanRuntime/7.34.0' 
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const categories = data.data;
-            sessionStorageCache.setItem('se-categories', categories, 3600); // Guardar en caché por 1 hora
-            populateCategories(categories);
-        })
-        .catch(error => console.error('Error al obtener categorías:', error));
-    }
+        if (cachedCategories) {
+            console.log('Usando datos en caché');
+            populateCategories(cachedCategories);
+            resolve(cachedCategories);
+        } else {
+            fetch('http://relmotor.lan/woo_commerce_filters/categories', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'PostmanRuntime/7.34.0' 
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const categories = data.data;
+                sessionStorageCache.setItem('se-categories', categories, 3600); // Guardar en caché por 1 hora
+                populateCategories(categories);
+                resolve(categories);
+            })
+            .catch(error => {
+                console.error('Error al obtener categorías:', error);
+                reject(error);
+            });
+        }
+    });
 }
 
 function fetchAttributes() {
