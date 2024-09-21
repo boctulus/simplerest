@@ -2,11 +2,6 @@
 
 namespace simplerest\shortcodes\relmotor;
 
-use simplerest\core\libs\Config;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Paginator;
-
 class RelmotorShortcode
 {
     function __construct(){
@@ -42,8 +37,11 @@ class RelmotorShortcode
             "Marca"
         ];
 
+        $user_id = 60; // <--- en WordPress es obtenido 
+
         view(__DIR__ . '/views/relmotor.php', [
-            'atts' => $atts
+            'atts'    => $atts,
+            'user_id' => $user_id  // usuario logueado
         ]);        
     }
 }
