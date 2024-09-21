@@ -1,5 +1,6 @@
 <script>
     const att_names = <?= json_encode($atts) ?>;
+    const user_id   = <?= $user_id ?? null ?>;
 </script>
 
 <div class="container-fluid mt-4">
@@ -9,7 +10,7 @@
                 <h2 class="mb-4">CÓDIGO, APLICACIÓN O DESCRIPCIÓN</h2>
                 <form>
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="codigo" placeholder="ALT9010104">
+                        <input type="text" class="form-control" id="anything" placeholder="ALT9010104">
                     </div>
                     <div class="row">
                         <!-- Category -->

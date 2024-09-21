@@ -1,0 +1,151 @@
+// Función principal de búsqueda
+function searchProducts() {
+    const keywords = $('#anything').val().trim();
+    const categoryId = $('#producto').val();
+    const systemElectrico = $('[data-id="Sistema Eléctrico"]').val();
+    const marca = $('[data-id="Marca"]').val();
+    const codigo = $('#buscar-codigo').val().trim();
+    const enOferta = $('#oferta').is(':checked');
+    const enStock = $('#stock').is(':checked');
+
+    const params = {
+        user_id: user_id
+    };
+
+    if (keywords) params.keywords = keywords;
+    if (enStock) params.in_stock = true;
+
+    // Solo agregar atributos si tienen un valor válido
+    if (systemElectrico && systemElectrico !== 'NULL') {
+        params.attributes = params.attributes || {};
+        params.attributes['Sistema Eléctrico'] = systemElectrico;
+    }
+    if (marca && marca !== 'NULL') {
+        params.attributes = params.attributes || {};
+        params.attributes['Marca'] = marca;
+    }
+
+    if (categoryId && categoryId !== 'NULL') params.cat_id = categoryId;
+    if (codigo) params.wp_attributes = { '_sku': codigo };
+
+    console.log('Parámetros de búsqueda:', params);
+
+    // Realizar la búsqueda
+    $.ajax({
+        url: 'http://relmotor.lan/woo_commerce_filters/product_search',
+        method: 'GET',
+        data: params,
+        success: function(response) {
+            console.log('Respuesta de la API:', response);
+            displayResults(response.data);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error en la búsqueda:", error);
+            console.log('Detalles del error:', xhr.responseText);
+        }
+    });
+}
+
+// Función para mostrar los resultados
+function displayResults(products) {
+    const resultsContainer = $('.results-container tbody');
+    resultsContainer.empty();
+
+    products.forEach(product => {
+        const categories = product.categories ? product.categories.join(', ') : '';
+        const row = `
+            <tr>
+                <td><img src="${product.featured_image || ''}" alt="${product.name}" class="img-fluid results-image"></td>
+                <td class="results-code">${product.sku || ''}</td>
+                <td class="d-none d-md-table-cell">${categories}</td>
+                <td class="d-none d-lg-table-cell results-description">
+                    ${product.name || ''}
+                    <br>
+                    <strong>Referencia Cruzada ·</strong>
+                </td>
+                <td class="d-none d-xl-table-cell"><img src="${product.brand_image || ''}" alt="${product.attributes && product.attributes['Marca'] || ''}" width="80"></td>
+                <td>
+                    <div class="results-price-list">Precio lista: $${product.regular_price || ''}</div>
+                    <div class="results-price-discount">PRECIO CON DTO:</div>
+                    <div class="results-price">$${product.price || ''} <small>Neto</small></div>
+                </td>
+                <td>
+                    <div class="input-group mb-2">
+                        <button class="btn btn-outline-secondary results-quantity-btn" type="button">-</button>
+                        <input type="number" class="form-control results-quantity" value="0" min="0" max="99999">
+                        <button class="btn btn-outline-secondary results-quantity-btn" type="button">+</button>
+                    </div>
+                    <button class="btn btn-success w-100 mb-2"><i class="fas fa-cart-plus"></i> Añadir</button>
+                    <div class="stock-info">STOCK: ${product.stock_quantity || 'N/A'}</div>
+                </td>
+            </tr>
+        `;
+        resultsContainer.append(row);
+    });
+
+    updateResultCount(products.length);
+}
+
+// Función para actualizar el contador de resultados
+function updateResultCount(count) {
+    let message;
+    if (count === 0) {
+        message = "No se encontraron resultados";
+    } else if (count === 1) {
+        message = "Mostrando el único resultado";
+    } else {
+        message = `Mostrando ${count} resultados`;
+    }
+    $('.result-count').text(message);
+}
+
+// Event listeners
+$(document).ready(function() {
+    // Evento de búsqueda solo en submit del formulario
+    $('form').on('submit', function(e) {
+        e.preventDefault();
+        console.log('Formulario enviado - Iniciando búsqueda'); // Logging para debugging
+        searchProducts();
+    });
+
+    // Evento de limpieza
+    $('button:contains("Limpiar")').on('click', function() {
+        $('form')[0].reset();
+        $('.results-container tbody').empty();
+        updateResultCount(0);
+        console.log('Formulario limpiado'); // Logging para debugging
+    });
+
+    // Inicializar Select2 para los dropdowns
+    $('select').select2({
+        theme: 'bootstrap-5'
+    });
+
+    // Ya no necesitamos estos event listeners para búsqueda automática
+    // $('select').on('change', function() {
+    //     searchProducts();
+    // });
+    // $('input[type="checkbox"]').on('change', function() {
+    //     searchProducts();
+    // });
+    // $('#anything').on('input', debounce(function() {
+    //     searchProducts();
+    // }, 300));
+    // $('#buscar-codigo').on('input', debounce(function() {
+    //     searchProducts();
+    // }, 300));
+});
+
+
+// Función de debounce para evitar muchas llamadas seguidas
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
