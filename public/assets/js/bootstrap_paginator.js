@@ -18,7 +18,7 @@ class BootstrapPaginator {
             }
         };
 
-        BootstrapPaginator.render(data, '.pagination-container', 5, true);
+        BootstrapPaginator.render(data, '#pagination-container', 5, true);
      */
     static render(data, container_selector, shortAfter = 5, showLast = false) {
         console.log('Datos recibidos por BootstrapPaginator.render:',
@@ -84,6 +84,20 @@ class BootstrapPaginator {
         a.className = 'page-link';
         a.href = this.addQueryParam(currentUrl, pageKey, page);
         a.innerText = text || page;
+    
+        // Interceptamos el click para usar la History API
+        a.addEventListener('click', (e) => {
+            e.preventDefault(); // Evitar que el enlace recargue la página
+            const newUrl = this.addQueryParam(currentUrl, pageKey, page);
+            
+            // Actualizamos la URL sin recargar la página usando History API
+            history.pushState(null, '', newUrl);
+    
+            // Aquí puedes agregar el código para recargar o actualizar el contenido
+            // basado en la nueva página seleccionada.
+            console.log(`Página cambiada a: ${page}`);
+        });
+    
         li.appendChild(a);
         return li;
     }
@@ -99,9 +113,14 @@ class BootstrapPaginator {
     }
 
     static addQueryParam(url, key, value) {
+        // Extraer la parte antes del fragmento (si existe)
         const urlObj = new URL(url);
-        urlObj.searchParams.set(key, value);
-        return urlObj.toString();
+        const baseUrl = urlObj.origin + urlObj.pathname; // Parte base de la URL sin el fragmento
+        const hash = `paginator:${key}=${value}`; // Usamos : en lugar de ?
+        
+        // Actualizamos la URL con el nuevo fragmento
+        return `${baseUrl}#${hash}`;
     }
+    
 }
 

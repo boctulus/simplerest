@@ -35,7 +35,7 @@ function searchProducts(page = 1) {
     }
     if (marca && marca !== 'NULL') {
         params.attributes = params.attributes || {};
-        params.attributes['Marca'] = marca;
+        params.attributes['Marca'] = getAttributesByName('Marca')[marca];
     }
 
     if (categoryId && categoryId !== 'NULL') params.category_id = categoryId;
@@ -184,6 +184,21 @@ function getCategoryName(categoryId) {
         });
     } else {
         return categories[categoryId] || categoryId.toString();
+    }
+}
+
+// Ej: getAttributesByName('Marca')
+function getAttributesByName(att_name) {
+    let atts = sessionStorageCache.getItem('se-attributtes');
+    
+    if (!atts) {
+        // Si no hay categorías en caché, las obtenemos
+        fetchAttributes().then(() => {
+            atts = sessionStorageCache.getItem('se-attributtes');
+            return atts[att_name] || false;
+        });
+    } else {
+        return atts[att_name] ?? false;
     }
 }
 
