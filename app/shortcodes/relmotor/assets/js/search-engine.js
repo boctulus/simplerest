@@ -189,6 +189,10 @@ function getCategoryName(categoryId) {
 
 // Ej: getAttributesByName('Marca')
 function getAttributesByName(att_name) {
+    if (typeof att_name == 'undefined'){
+        throw ("Param att_name is required");
+    }
+
     let atts = sessionStorageCache.getItem('se-attributtes');
     
     if (!atts) {
@@ -198,7 +202,7 @@ function getAttributesByName(att_name) {
             return atts[att_name] || false;
         });
     } else {
-        return atts[att_name] ?? false;
+        return atts[att_name] || false;
     }
 }
 
