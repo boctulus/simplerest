@@ -15,10 +15,13 @@ function searchProducts(page = 1) {
     const enOferta = $('#oferta').is(':checked');
     const enStock = $('#stock').is(':checked');
 
+    /*
+        Usar Paginator.calcOffset(currentPage, pageSize)
+    */
     const params = {
         user_id: user_id,
-        page: page,
-        per_page: pageSize
+        offset: Paginator.calcOffset(currentPage, pageSize),
+        limit: pageSize
     };
 
     if (keywords) params.keywords = keywords;
@@ -29,14 +32,15 @@ function searchProducts(page = 1) {
         params.attributes['Precio Especial'] = 'Oferta';
     }
 
+    // Generalizar para atributos 
     if (systemElectrico && systemElectrico !== 'NULL') {
         params.attributes = params.attributes || {};
-        params.attributes['Sistema Eléctrico'] = systemElectrico;
+        params.attributes['Sistema Eléctrico'] = getAttributesByName('Sistema Eléctrico')[systemElectrico];
     }
     if (marca && marca !== 'NULL') {
         params.attributes = params.attributes || {};
         params.attributes['Marca'] = getAttributesByName('Marca')[marca];
-    }
+    }    
 
     if (categoryId && categoryId !== 'NULL') params.category_id = categoryId;
     if (codigo) params.wp_attributes = { '_sku': codigo };
