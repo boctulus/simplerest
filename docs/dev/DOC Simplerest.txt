@@ -16152,6 +16152,11 @@ Podría incluirse más lógica como que:
 - Que si se recibe como parámetro del número total de páginas y está activa la última, entonces se desabilite Next.
 
 
+NOTA:
+
+Veanse tambien las clases BootstrapPaginator de PHP y JavaScript
+
+
 Paginador de meses
 
 Debe aplicarse la clase de css "pagination-month" al paginator e incluir en principio cierto html para cada mes-año.
@@ -17717,7 +17722,7 @@ Más
 https://select2.github.io/
 
 
-# Bootsrap Duallistbox
+# Bootstrap Duallistbox
 
 Plugin que debe instalarse e inicializarse:
 
@@ -17883,6 +17888,84 @@ También es posible cambiar de lugar el botón con el ícono de calendario cambi
 		tag('button')->info()->icon('calendar')
 	)->class('mb-3 date')->id("reservationdatetime");
 
+
+# Clase BootstrapPaginator
+
+Para renderizar un paginator de Bootstrap 5 se dispone de sendas clases para PHP y JavaScript según se desee renderizar server o client side. Ambas se usan de forma analoga.
+
+Para Javascript
+
+BootstrapPaginator.render(data, containerId, shortAfter = 5, showLast = false)
+
+Ej:
+
+	<div class="results-container rounded border mt-3">
+
+		<div class="table-responsive">
+			<table class="table table-hover">
+				<!-- contenido de la tabla -->            
+			</table>
+			<div id="pagination-container" style="display: none;"></div>
+		</div>
+	</div>
+
+	<script>
+		// Uso del paginador
+		const data = {
+			paginator: {
+				current_page: 40,
+				last_page: 60
+			}
+		};
+		
+		$(document).ready(function() {
+			BootstrapPaginator.render(data, 'pagination-container', 5, true);
+		});
+	</script>
+
+Para PHP
+
+Ej:
+
+	<?php
+
+	use simplerest\core\libs\BootstrapPaginator;
+
+	?>
+
+	<div class="container mt-5">
+		<!-- <h2>Reviews</h2> -->
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Commento</th>
+					<th scope="col" style="width: 110px;">Punteggio</th>
+					<th scope="col">Cliente</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($data['rows'] as $row) : ?>
+					<tr>
+						<td><?= $row['comment']; ?></td>
+						<td><?= str_repeat('⭐', $row['score']) ?></td>
+						<td><?= $row['author']; ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+
+		<?= BootstrapPaginator::render($data, 5, true) ?>
+	</div>
+
+
+# Logica de paginacion
+
+Para calculo de offset y paginas se dispone de la clase Paginator tanto para PHP como JavaScript segun se desee hacer los calculos del lado del servidor o del cliente.
+
+	Paginator.calcOffset(currentPage, pageSize)
+	Paginator.human2SQL(page, pageSize)
+	Paginator.calc(currentPage, pageSize, rowCount)
 
 
 ### Manipulacion de imagenes
