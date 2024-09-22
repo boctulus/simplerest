@@ -61,5 +61,20 @@
                 </tr>
             </tbody>
         </table>
+        <div id="pagination-container"></div>
     </div>
 </div>
+
+<script>
+    // Uso del paginador
+    const data = {
+        paginator: {
+            current_page: 40,
+            last_page: 60
+        }
+    };
+    
+    $(document).ready(function() {
+        BootstrapPaginator.render(data, 'pagination-container', 5, true);
+    });
+</script>

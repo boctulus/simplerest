@@ -12,10 +12,6 @@ function parsePrice(price, decimalSeparator, thousandSeparator) {
     return parseFloat(cleanPrice);
 }
 
-function parsePriceFromWooCommerceSettings(price){
-    return parsePrice(price, woocommerce_currency_settings.decimalSeparator, woocommerce_currency_settings.thousandSeparator);
-}
-
 function formatPrice(price, decimalSeparator = ',', thousandSeparator = '.', currency_symbol = '€', decimals = 2) 
 {
     // console.log(price, decimalSeparator, thousandSeparator,  currency_symbol, decimals);
@@ -46,6 +42,14 @@ function formatPrice(price, decimalSeparator = ',', thousandSeparator = '.', cur
         console.error('Error al formatear el precio: ', price, error.message);
         return 'Error: Precio inválido';
     }
+}
+
+/*
+    Especificas de WooCommerce
+*/
+
+function parsePriceFromWooCommerceSettings(price){
+    return parsePrice(price, woocommerce_currency_settings.decimalSeparator, woocommerce_currency_settings.thousandSeparator);
 }
 
 function formatPriceFromWooCommerceSettings(price){
