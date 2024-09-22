@@ -42,7 +42,7 @@
                     <div class="row mb-3">
                         <div class="col-6">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="oferta" checked>
+                                <input class="form-check-input" type="checkbox" id="oferta">
                                 <label class="form-check-label" for="oferta">En oferta</label>
                             </div>
                         </div>
