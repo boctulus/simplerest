@@ -21,6 +21,11 @@ class BootstrapPaginator {
         BootstrapPaginator.render(data, 'pagination-container', 5, true);
      */
     static render(data, containerId, shortAfter = 5, showLast = false) {
+        console.log('Datos recibidos por BootstrapPaginator.render:',
+        {
+            data:data, containerId:containerId, shortAfter:shortAfter, showLast:showLast
+        } ); // debug
+
         const currentPage = data.paginator.current_page;
         const lastPage = data.paginator.last_page;
         const pageKey = 'page'; // Puedes ajustar esto según tus necesidades

@@ -1,5 +1,12 @@
+// Variables globales para la paginación
+let currentPage = 1;
+let pageSize = 10; // 
+let totalResults = 0;
+let allProducts = []; // Almacenará todos los productos recibidos de la API
+let currentPaginator = null;
+
 // Función principal de búsqueda
-function searchProducts() {
+function searchProducts(page = 1) {
     const keywords = $('#anything').val().trim();
     const categoryId = $('#producto').val();
     const systemElectrico = $('[data-id="Sistema Eléctrico"]').val();
@@ -9,19 +16,19 @@ function searchProducts() {
     const enStock = $('#stock').is(':checked');
 
     const params = {
-        user_id: user_id
+        user_id: user_id,
+        page: page,
+        per_page: pageSize
     };
 
     if (keywords) params.keywords = keywords;
     if (enStock) params.in_stock = true;
 
-    // Modificamos la lógica para el filtro de oferta
     if (enOferta) {
         params.attributes = params.attributes || {};
         params.attributes['Precio Especial'] = 'Oferta';
     }
 
-    // Solo agregar atributos si tienen un valor válido
     if (systemElectrico && systemElectrico !== 'NULL') {
         params.attributes = params.attributes || {};
         params.attributes['Sistema Eléctrico'] = systemElectrico;
@@ -43,7 +50,9 @@ function searchProducts() {
         data: params,
         success: function(response) {
             console.log('Respuesta de la API:', response);
-            displayResults(response.data, enStock, enOferta);
+            currentPaginator = response.paginator;
+            displayResults(response.data);
+            updatePagination(currentPaginator);
         },
         error: function(xhr, status, error) {
             console.error("Error en la búsqueda:", error);
@@ -52,8 +61,18 @@ function searchProducts() {
     });
 }
 
+// Función para mostrar los resultados de una página específica
+function displayResultsPage(page) {
+    if (currentPaginator) {
+        searchProducts(page);
+    } else {
+        console.error("No hay información de paginación disponible");
+    }
+    updatePagination();
+}
+
 // Función para mostrar los resultados
-function displayResults(products, enStock, enOferta) {
+function displayResults(products) {
     const resultsContainer = $('.results-container tbody');
     resultsContainer.empty();
 
@@ -61,12 +80,12 @@ function displayResults(products, enStock, enOferta) {
 
     products.forEach(product => {
         // Verificar si el producto tiene stock cuando el filtro está activado
-        if (enStock && (!product.stock_quantity || product.stock_quantity <= 0)) {
+        if ($('#stock').is(':checked') && (!product.stock_quantity || product.stock_quantity <= 0)) {
             return; // Saltar este producto si no tiene stock
         }
 
         // Verificar si el producto está en oferta cuando el filtro está activado
-        if (enOferta) {
+        if ($('#oferta').is(':checked')) {
             const precioEspecial = product.attributes.find(attr => attr.name === "Precio Especial");
             if (!precioEspecial || precioEspecial.value !== "Oferta") {
                 return; // Saltar este producto si no está en oferta
@@ -117,9 +136,42 @@ function displayResults(products, enStock, enOferta) {
         });
     });
 
-    updateResultCount(displayedCount);
+    updateResultCount(products.length, currentPaginator);
 }
 
+// Función para actualizar la paginación
+function updatePagination(paginator) {
+    if (paginator.total > 0) {
+        const data = {
+            paginator: {
+                current_page: paginator.current_page ?? 1,
+                last_page: Math.ceil(paginator.total / pageSize),
+                total: paginator.total
+            }
+        };
+        BootstrapPaginator.render(data, 'pagination-container', 5, true);
+        $('#pagination-container').show();
+    } else {
+        // $('#pagination-container').hide();
+    }
+}
+
+// Función para actualizar el contador de resultados
+function updateResultCount(count, paginator = null) {
+    let message;
+    if (count === 0) {
+        message = "No se encontraron resultados";
+    } else if (count === 1) {
+        message = "Mostrando el único resultado";
+    } else if (paginator) {
+        const start = (paginator.current_page - 1) * pageSize + 1;
+        const end = Math.min(paginator.current_page * pageSize, paginator.total);
+        message = `Mostrando ${start}-${end} de ${paginator.total} resultados`;
+    } else {
+        message = `Mostrando ${count} resultados`;
+    }
+    $('.result-count').text(message);
+}
 
 function getCategoryName(categoryId) {
     let categories = sessionStorageCache.getItem('se-categories');
@@ -135,23 +187,9 @@ function getCategoryName(categoryId) {
     }
 }
 
-
-// Función para actualizar el contador de resultados
-function updateResultCount(count) {
-    let message;
-    if (count === 0) {
-        message = "No se encontraron resultados";
-    } else if (count === 1) {
-        message = "Mostrando el único resultado";
-    } else {
-        message = `Mostrando ${count} resultados`;
-    }
-    $('.result-count').text(message);
-}
-
 // Event listeners
 $(document).ready(function() {
-    // Evento de búsqueda solo en submit del formulario
+    // Evento de búsqueda
     $('form').on('submit', function(e) {
         e.preventDefault();
         console.log('Formulario enviado - Iniciando búsqueda');
@@ -161,13 +199,21 @@ $(document).ready(function() {
     // Evento de limpieza
     $('button:contains("Limpiar")').on('click', function() {
         $('form')[0].reset();
-        $('.results-container tbody').empty();
-        updateResultCount(0);
-        
-        // Deseleccionar todos los SELECT2
         $('select').val(null).trigger('change');
-        
+        $('.results-container tbody').empty();
+        // $('#pagination-container').hide();
+        updateResultCount(0);
+        currentPaginator = null;
         console.log('Formulario limpiado');
+    });
+
+    // Evento de cambio de página
+    $(document).on('click', '.page-link', function(e) {
+        e.preventDefault();
+        const page = $(this).data('page');
+        if (page) {
+            searchProducts(page);
+        }
     });
 
     // Inicializar Select2 para los dropdowns
