@@ -31,6 +31,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- row de demostracion que se mantiene de momento -->
                 <tr>
                     <td><img src="<?= shortcode_asset(__DIR__ . '/img/demo/ae18610-1467.jpg') ?>" alt="Producto"
                             class="img-fluid results-image"></td>
@@ -61,20 +62,6 @@
                 </tr>
             </tbody>
         </table>
-        <div id="pagination-container"></div>
+        <div id="pagination-container" style="display: none;"></div>
     </div>
 </div>
-
-<script>
-    // Uso del paginador
-    const data = {
-        paginator: {
-            current_page: 40,
-            last_page: 60
-        }
-    };
-    
-    $(document).ready(function() {
-        BootstrapPaginator.render(data, 'pagination-container', 5, true);
-    });
-</script>
