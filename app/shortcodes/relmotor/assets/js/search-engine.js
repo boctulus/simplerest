@@ -149,10 +149,10 @@ function updatePagination(paginator) {
                 total: paginator.total
             }
         };
-        BootstrapPaginator.render(data, 'pagination-container', 5, true);
+        BootstrapPaginator.render(data, '#pagination-container', 5, true);
         $('#pagination-container').show();
     } else {
-        // $('#pagination-container').hide();
+        $('#pagination-container').hide();
     }
 }
 
@@ -201,7 +201,7 @@ $(document).ready(function() {
         $('form')[0].reset();
         $('select').val(null).trigger('change');
         $('.results-container tbody').empty();
-        // $('#pagination-container').hide();
+        $('#pagination-container').hide();
         updateResultCount(0);
         currentPaginator = null;
         console.log('Formulario limpiado');
