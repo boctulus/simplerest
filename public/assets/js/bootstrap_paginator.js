@@ -4,7 +4,7 @@ class BootstrapPaginator {
      * @param {Object} data - Datos de la paginación
      * @param {number} shortAfter - Número de páginas antes de acortar
      * @param {boolean} showLast - Muestra la última página
-     * @param {string} containerId - ID del contenedor donde se renderizará el paginador
+     * @param {string} container_selector - Selector CSS de contenedor donde se renderizará el paginador
      * 
      * @author Pablo Bozzolo
      * 
@@ -18,12 +18,12 @@ class BootstrapPaginator {
             }
         };
 
-        BootstrapPaginator.render(data, 'pagination-container', 5, true);
+        BootstrapPaginator.render(data, '.pagination-container', 5, true);
      */
-    static render(data, containerId, shortAfter = 5, showLast = false) {
+    static render(data, container_selector, shortAfter = 5, showLast = false) {
         console.log('Datos recibidos por BootstrapPaginator.render:',
         {
-            data:data, containerId:containerId, shortAfter:shortAfter, showLast:showLast
+            data:data, container_selector:container_selector, shortAfter:shortAfter, showLast:showLast
         } ); // debug
 
         const currentPage = data.paginator.current_page;
@@ -31,7 +31,7 @@ class BootstrapPaginator {
         const pageKey = 'page'; // Puedes ajustar esto según tus necesidades
         const currentUrl = window.location.href;
 
-        const paginationContainer = document.getElementById(containerId);
+        const paginationContainer = document.querySelector(container_selector);
         paginationContainer.innerHTML = '';
 
         const nav = document.createElement('nav');
