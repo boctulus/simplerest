@@ -14,7 +14,12 @@ function searchProducts() {
 
     if (keywords) params.keywords = keywords;
     if (enStock) params.in_stock = true;
-    if (enOferta) params.on_sale = true;
+
+    // Modificamos la lógica para el filtro de oferta
+    if (enOferta) {
+        params.attributes = params.attributes || {};
+        params.attributes['Precio Especial'] = 'Oferta';
+    }
 
     // Solo agregar atributos si tienen un valor válido
     if (systemElectrico && systemElectrico !== 'NULL') {
@@ -38,7 +43,7 @@ function searchProducts() {
         data: params,
         success: function(response) {
             console.log('Respuesta de la API:', response);
-            displayResults(response.data, enStock);
+            displayResults(response.data, enStock, enOferta);
         },
         error: function(xhr, status, error) {
             console.error("Error en la búsqueda:", error);
@@ -48,7 +53,7 @@ function searchProducts() {
 }
 
 // Función para mostrar los resultados
-function displayResults(products, enStock) {
+function displayResults(products, enStock, enOferta) {
     const resultsContainer = $('.results-container tbody');
     resultsContainer.empty();
 
@@ -58,6 +63,14 @@ function displayResults(products, enStock) {
         // Verificar si el producto tiene stock cuando el filtro está activado
         if (enStock && (!product.stock_quantity || product.stock_quantity <= 0)) {
             return; // Saltar este producto si no tiene stock
+        }
+
+        // Verificar si el producto está en oferta cuando el filtro está activado
+        if (enOferta) {
+            const precioEspecial = product.attributes.find(attr => attr.name === "Precio Especial");
+            if (!precioEspecial || precioEspecial.value !== "Oferta") {
+                return; // Saltar este producto si no está en oferta
+            }
         }
 
         // Obtener las categorías y convertirlas a string
@@ -106,6 +119,7 @@ function displayResults(products, enStock) {
 
     updateResultCount(displayedCount);
 }
+
 
 function getCategoryName(categoryId) {
     let categories = sessionStorageCache.getItem('se-categories');

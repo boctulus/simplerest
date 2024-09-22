@@ -18,11 +18,11 @@ const toStorage = (data, storage = 'local', merge = true) => {
     }
 
     if (merge){
-        let prev_data = JSON.parse(st_obj.getItem('wp_sw'))
+        let prev_data = JSON.parse(st_obj.getItem('srsw'))
             data      = { ...prev_data, ...data }
     }
 
-    st_obj.setItem('wp_sw', JSON.stringify(data)) 
+    st_obj.setItem('srsw', JSON.stringify(data)) 
     
     // dado es util en algunos casos,
     // recuperar el objeto cuando fue mergeado
@@ -41,7 +41,7 @@ const fromStorage = (storage = 'local') => {
             throw "Invalid Storage"        
     }
 
-    return JSON.parse(st_obj.getItem('wp_sw'));    
+    return JSON.parse(st_obj.getItem('srsw'));    
 }
 
 const clearStorage = (storage) => {

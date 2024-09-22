@@ -18,8 +18,13 @@ class RelmotorShortcode
         // CACHE con local y session Storage
         js_file(JS_PATH .'transients.js');
 
+        // Paginacion
+        js_file(JS_PATH .'paginator.js');  
+        js_file(JS_PATH .'bootstrap_paginator.js'); 
+
         js_file(__DIR__ . '/assets/js/search-engine.js');
-        js_file(__DIR__ . '/assets/js/populte-dropdowns.js');        
+        js_file(__DIR__ . '/assets/js/populte-dropdowns.js');       
+
 
         $this->index();
     }
