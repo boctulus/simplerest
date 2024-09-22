@@ -18,6 +18,7 @@
     </div>
 
     <div class="table-responsive">
+        <div id="pagination-container" style="display: none;"></div>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -62,6 +63,5 @@
                 </tr>
             </tbody>
         </table>
-        <div id="pagination-container" style="display: none;"></div>
     </div>
 </div>
