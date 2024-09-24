@@ -2,7 +2,7 @@
     max-width: 800px;
     padding: 30px;
     margin: auto;
-    color: #ccc; /* Texto claro */
+    color: #ccc;
     font-size: 14px;
     line-height: 24px;
 }
@@ -36,4 +36,11 @@ h2, h3, p {
 
 table, th, td {
     border: 1px solid black !important;
-  }
+}
+
+/* Custom styles for thicker borders and no vertical borders */
+.no-vertical-borders {
+    border-left: none !important;
+    border-right: none !important;
+}
+
