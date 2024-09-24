@@ -1,88 +1,110 @@
 <div class="invoice-box">
-        <div class="row">
-            <div class="col-md-6">
-                <p>Ms</p>
-                <p>Current Name</p>
-                <p>Street Name. 1</p>
-                <p>70000 City Name</p>
-            </div>
-            <div class="col-md-6 text-end">
-                <p>Street Name. 1</p>
-                <p>70000 City Name</p>
-                <p>Tel: 0000 5555555</p>
-                <p>E-Mail: emailname@server.com</p>
-            </div>
+    <div class="text-center" style="line-height: 1;">
+        <h2 class="fw-bold">ADOON COMPUTER PROGRAMMING SERVICES</h2>
+        <p style="margin-top: 20px;">PUROK 7, POB. 1, SANTA TERESITA, BATANGAS</p>
+        <p><strong>REVELYN R. PADUA</strong> - Prop.</p>
+        <p>NON-VAT Reg. TIN 322-610-092-000</p>
+        
+        <h3 class="fw-bold" style="margin-top: 20px;">SALES INVOICE</h3>
+    </div>
+
+    <!-- Cabecera alineada -->
+    <!-- TODO: achicar interlineado -->
+    <div class="d-flex justify-content-between mt-4" >
+        <div>
+            <p><strong>Sold to:</strong> ___________________________________________________</p>
+            <p><strong>Business Style:</strong> ____________________________________________</p>
+            <p><strong>TIN/SC-TIN:</strong> _______________________________________________</p>
+            <p><strong>Address:</strong> ___________________________________________________</p>
         </div>
-
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            <h1 class="flex-grow-1">Service Invoice</h1>
-            <div class="invoice-details">
-                <div class="detail">
-                    <p>Invoice-Nr.</p>
-                    <p>2011042401</p>
-                </div>
-                <div class="detail">
-                    <p>Date</p>
-                    <p>24.04.2011</p>
-                </div>
-                <div class="detail">
-                    <p>Clerk name/-in:</p>
-                    <p>Your Name</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-4">
-            <p>Dear Ms Current Name,</p>
-            <p>I authorize myself to make following Invoice:</p>
-        </div>
-
-        <table class="table table-bordered mt-4">
-            <thead class="table-light">
-                <tr>
-                    <th>Num.</th>
-                    <th>Qty</th>
-                    <th>Units</th>
-                    <th>Article Nr.</th>
-                    <th>Goods, Service</th>
-                    <th>Unit Price</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>pcs</td>
-                    <td></td>
-                    <td>Food photography for summer menu. Menu design and printing on glossy cardboard DIN A5 double sided 50 pieces</td>
-                    <td>273.11 €</td>
-                    <td>273.11 €</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>33</td>
-                    <td>pcs</td>
-                    <td></td>
-                    <td>Single product photo on white background</td>
-                    <td>2.52 €</td>
-                    <td>83.16 €</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>pcs</td>
-                    <td></td>
-                    <td>Photo Licenses for Certificates</td>
-                    <td>16.80 €</td>
-                    <td>16.80 €</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="totals text-end mt-4">
-            <p>Total: 373.07 €</p>
-            <p>VAT 19%: 51.89 €</p>
-            <p>Total Amount Payable: 325.00 €</p>
+        <div class="text-end">
+            <p><strong>Date:</strong> _____________________________</p>
+            <p><strong>Terms:</strong> ____________________________</p>
+            <p><strong>OSCA/PWD ID No:</strong> ____________________</p>
         </div>
     </div>
+
+    <!-- Tabla de artículos -->
+    <table class="table table-bordered mt-4" id="articles">
+        <thead class="table-light text-center">
+            <tr>
+                <th width="10%">QTY</th>
+                <th width="15%">UNIT</th>
+                <th>ARTICLES</th>
+                <th width="15%">UNIT PRICE</th>
+                <th width="15%">AMOUNT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- TODO: deben tener bordes -->
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Totales con líneas -->
+    <table class="table table-bordered" style="margin-top:-17px;">
+        <tbody>
+            <tr>
+                <td><strong>TOTAL AMOUNT DUE:</strong></td>
+                <td width="15%"></td>
+            </tr>
+        </tbody>
+    </table>
+
+   
+</div>

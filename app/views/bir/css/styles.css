@@ -2,24 +2,38 @@
     max-width: 800px;
     padding: 30px;
     margin: auto;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    font-size: 16px;
+    color: #ccc; /* Texto claro */
+    font-size: 14px;
     line-height: 24px;
-    color: #555;
 }
-.invoice-box h1 {
-    font-size: 4em;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-}
-.invoice-details .detail p {
+
+h2, h3, p {
     margin: 0;
+    color: #000;
 }
-.invoice-details .detail p:first-child {
-    font-weight: bold;
+
+.table {
+    border-color: #000;
+    color: #000;
 }
-.totals p {
-    margin: 0;
+
+.table-bordered th, .table-bordered td {
+    border: 1px solid #000;
 }
+
+.text-end {
+    text-align: right;
+}
+
+.d-flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.d-flex div p {
+    margin-bottom: 1rem;
+}
+
+table, th, td {
+    border: 1px solid black !important;
+  }
