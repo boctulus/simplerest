@@ -54,6 +54,10 @@
     font-weight: 500;
     color: #0056b3;
   }
+
+  #pagination-container {
+    width: 260px;
+  }
   
   @media (max-width: 767.98px) {
     .d-flex {
