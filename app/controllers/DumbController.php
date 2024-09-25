@@ -10868,7 +10868,17 @@ class DumbController extends Controller
 
     function invoice(){
         css_file(VIEWS_PATH . 'bir/css/styles.css');
-        view('bir\invoice_layout.php');
+        view('bir/invoice_layout.php');
+    }
+
+    function invoice_half_reduced(){
+        css_file(VIEWS_PATH . 'bir_half_reduced/css/styles.css');
+        view('bir_half_reduced/invoice_layout.php');
+    }
+
+    function invoice_half_size(){
+        css_file(VIEWS_PATH . 'bir_half_size/css/styles.css');
+        view('bir_half_size/invoice_layout.php');
     }
 
     function bt5menu()
