@@ -7235,6 +7235,16 @@ y
 
 son equivalentes
 
+Si el archivo de migracion esta en una carpeta, es necesario usar --dir= aunque parezca redudante.
+
+Ej:
+
+	$ php com migrations redo --file=D:\www\simplerest\app\migrations\prompt_generator\2024_09_25_123512006_prompts.php --to=main --dir=prompt_generator
+
+En el ejemplo a pesar de que claramente la ruta en --file incluye a el subdirectorio "prompt_generator", se necesita incluir --dir=prompt_generator
+
+El parametro --to para especificar la conexion de base de datos tambien es requerido
+
 
 # Tenancy a nivel de API Rest
 

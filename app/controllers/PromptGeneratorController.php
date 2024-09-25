@@ -20,9 +20,12 @@ class PromptGeneratorController extends Controller
 
     function index()
     {
+        css_file(VIEWS_PATH . 'prompt_generator/css/index.css');
+
         view('prompt_generator/index.php', [
             'title' => 'Generador de Prompt'
         ], 'templates/tpl_bt5.php');                  
     }
+
 }
 
