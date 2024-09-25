@@ -22,6 +22,10 @@ class PromptGeneratorController extends Controller
     {
         css_file(VIEWS_PATH . 'prompt_generator/css/index.css');
 
+        # Sweet Alert 
+        css_file('third_party/sweetalert2/sweetalert2.min.css');
+        js_file('third_party/sweetalert2/sweetalert.js');
+
         view('prompt_generator/index.php', [
             'title' => 'Generador de Prompt'
         ], 'templates/tpl_bt5.php');                  
