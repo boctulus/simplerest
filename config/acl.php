@@ -20,94 +20,26 @@ if (!$acl_cache || is_file($acl_file) !== true) {
 
     $acl
     ->addRole('guest', -1)
-    ->addResourcePermissions('products', ['read'])
-    ->addResourcePermissions('testx', ['read', 'write'])
-    ->addResourcePermissions('facturas', ['read', 'write'])
-    ->addResourcePermissions('factura_detalle', ['read', 'write'])
-    ->addResourcePermissions('tbl_estado_civil', ['read', 'write'])
-    ->addResourcePermissions('tbl_factura_detalle', ['read', 'write'])
-    ->addResourcePermissions('baz', ['read', 'write'])
-    ->addResourcePermissions('telefonos', ['read', 'write'])
-    ->addResourcePermissions('files', ['read', 'write'])
-    ->addResourcePermissions('empleado', ['read_all'])
-    ->addResourcePermissions('barrios', ['read'])
-    ->addResourcePermissions('part_numbers', ['read', 'write'])
-    ->addResourcePermissions('automoviles', ['read', 'write'])
-    ->addResourcePermissions('users', ['read', 'write'])
-    //
-    ->addResourcePermissions('webhooks', ['read', 'write'])
-
-
-    // Medellin Participa: Organizaciones
-    
-    ->addResourcePermissions('certificaciones_que_emite_org_comunal', ['read_all', 'write'])
-    ->addResourcePermissions('entidad_registrante', ['read_all', 'write'])
-    ->addResourcePermissions('escala_territorial', ['read_all', 'write'])
-    ->addResourcePermissions('estado_civil', ['read_all', 'write'])
-    ->addResourcePermissions('estado_laboral', ['read_all', 'write'])
-    ->addResourcePermissions('estado_seguimiento', ['read_all', 'write'])
-    ->addResourcePermissions('genero', ['read_all', 'write'])
-    ->addResourcePermissions('grupos_poblacionales', ['read_all', 'write'])
-    ->addResourcePermissions('instrumento_planeacion', ['read_all', 'write'])
-    ->addResourcePermissions('migrations', ['read_all', 'write'])
-    ->addResourcePermissions('nivel_escolaridad', ['read_all', 'write'])
-    ->addResourcePermissions('org_comunal', ['read_all', 'write'])
-    ->addResourcePermissions('org_vincul_personal_entidad', ['read_all', 'write'])
-    ->addResourcePermissions('password_resets', ['read_all', 'write'])
-    ->addResourcePermissions('personal_access_tokens', ['read_all', 'write'])
-    ->addResourcePermissions('proyectos_de_coop', ['read_all', 'write'])
-    ->addResourcePermissions('proyectos_recur_propios', ['read_all', 'write'])
-    ->addResourcePermissions('representate_legal', ['read_all', 'write'])
-    ->addResourcePermissions('sector_actividad_org_comunal', ['read_all', 'write'])
-    ->addResourcePermissions('tipo_organismo_org_comunal', ['read_all', 'write'])
-    ->addResourcePermissions('tipo_organizacion', ['read_all', 'write'])
-    
-
     // ...
+    ->addResourcePermissions('prompts', ['read', 'write'])
     //->setAsGuest('guest')
 
     ->addRole('registered', 1)
     ->setAsRegistered('registered')
     ->addInherit('guest') 
-    ->addResourcePermissions('bar', ['read', 'write'])
-    ->addResourcePermissions('products', ['read'])
-    ->addResourcePermissions('tbl_persona', ['read', 'write'])
-    ->addResourcePermissions('u', ['read'])
-    ->addResourcePermissions('tbl_scritp_tablas', ['read'])
-    ->addResourcePermissions('products', ['read_all'])
-    ->addSpecialPermissions([
-        'read_all', 
-        'write_all',
-        'write_all_collections'
-    ])
+    // ->addResourcePermissions('bar', ['read', 'write'])
+    // ->addResourcePermissions('products', ['read'])
+    // ->addResourcePermissions('tbl_persona', ['read', 'write'])
+    // ->addResourcePermissions('u', ['read'])
+    // ->addResourcePermissions('tbl_scritp_tablas', ['read'])
+    // ->addResourcePermissions('products', ['read_all'])
+    // ->addSpecialPermissions([
+    //     'read_all', 
+    //     'write_all',
+    //     'write_all_collections'
+    // ])
     //->addResourcePermissions('tbl_usuario_empresa', ['read'])
-    ->addResourcePermissions('tbl_estado_civil', ['read'])
-    ->addResourcePermissions('tbl_categoria_persona', ['read'])
-    ->addResourcePermissions('tbl_estado', ['read', 'write'])
-    ->addResourcePermissions('tbl_genero', ['read', 'write'])
-    ->addResourcePermissions('tbl_empresa', ['read'])
-    ->addResourcePermissions('tbl_cuenta_contable', ['read'])
-    ->addResourcePermissions('files', ['read', 'write'])
-    ->addResourcePermissions('tbl_categoria_persona_persona', ['read'])
-    ->addResourcePermissions('tbl_tipo_documento', ['read_all'])
-    ->addResourcePermissions('sp_permissions', ['read'])
-    ->addResourcePermissions('user_sp_permissions', ['read', 'write'])
-    ->addResourcePermissions('updates', ['read_all'])  // *
-    ->addResourcePermissions('tbl_sub_cuenta_contable', ['read', 'write'])
-    
-    
-    ->addRole('usuario', 10) 
-    ->addInherit('registered')
-    ->addResourcePermissions('tbl_descuento', ['read'])
-    // ...
-
-    
-    ->addRole('usuario_plus', 11) 
-    ->addInherit('usuario')
-
-    ->addRole('moderador', 13) 
-    ->addInherit('usuario_plus')
-    
+      
 
     ->addRole('admin', 50) 
     ->addInherit('registered')
