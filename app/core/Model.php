@@ -3219,6 +3219,13 @@ class Model {
 			} 
 		}
 
+		// Convert array values (like 'files') to JSON before mapping
+		foreach ($vals as $ix => $val) {
+			if (is_array($val)) {
+				$vals[$ix] = json_encode($val);
+			}
+		}
+
 		$symbols  = array_map(function(?string $e = null){
 			if ($e === null){
 				$e = '';

@@ -1,17 +1,3 @@
-<style>
-    /* Posicionar el botón de copiar en el margen superior derecho del textarea */
-    #copyPrompt {
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin: 32px 0 0 0;
-        z-index: 10;
-    }
-    .position-relative {
-        position: relative;
-    }
-</style>
-
 <div class="container mt-4">
         <h2 class="mb-3">Generador de Prompt</h2>
         
