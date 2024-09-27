@@ -28,15 +28,15 @@ class SendinBlue extends MailBase implements IMail
             throw new \Exception("Body or alt_body is required");
         }
 
-        if (Arrays::isAssocc($to)){
+        if (Arrays::isAssoc($to)){
             $to = [ $to ];
         }
 
-        if (Arrays::isAssocc($cc)){
+        if (Arrays::isAssoc($cc)){
             $cc = [ $cc ];
         }
 
-        if (Arrays::isAssocc($bcc)){
+        if (Arrays::isAssoc($bcc)){
             $bcc = [ $bcc ];
         }
 
