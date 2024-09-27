@@ -2352,7 +2352,7 @@ class Model {
 			return;
 		}
 
-		if (Arrays::isAssocc($conditions)){
+		if (Arrays::isAssoc($conditions)){
 			$conditions = Arrays::nonAssoc($conditions);
 		}
 
@@ -2621,7 +2621,7 @@ class Model {
 	
 	function _having(array $conditions = null, $group_op = 'AND', $conjunction = null)
 	{	
-		if (Arrays::isAssocc($conditions)){
+		if (Arrays::isAssoc($conditions)){
             $conditions = Arrays::nonAssoc($conditions);
         }
 
@@ -2633,7 +2633,7 @@ class Model {
 		$_having = [];
 		foreach ((array) $conditions as $cond)
 		{	
-			if (Arrays::isAssocc($cond)){
+			if (Arrays::isAssoc($cond)){
 				$cond[0] = Arrays::arrayKeyFirst($cond);
 				$cond[1] = $cond[$cond[0]];
 			}
@@ -2695,7 +2695,7 @@ class Model {
 
 	function having(array $conditions, $conjunction = 'AND')
 	{	
-		if (Arrays::isAssocc($conditions)){
+		if (Arrays::isAssoc($conditions)){
             $conditions = Arrays::nonAssoc($conditions);
         }
 
@@ -2761,7 +2761,7 @@ class Model {
 			throw new SqlException('There is no data to update');
 		}
 
-		if (!Arrays::isAssocc($data)){
+		if (!Arrays::isAssoc($data)){
 			throw new SqlException('Array of data should be associative');
 		}
 
@@ -3167,7 +3167,7 @@ class Model {
 		if ($this->conn == null)
 			throw new SqlException('No connection');
 
-		if (!Arrays::isAssocc($data)){
+		if (!Arrays::isAssoc($data)){
 			foreach ($data as $dato){
 				if (is_array($dato)){					
 					$last_id = $this->create($dato, $ignore_duplicates);
@@ -3361,7 +3361,7 @@ class Model {
 	}
 
 	function insert(array $data, bool $ignore_duplicates = false){
-		if (!Arrays::isAssocc($data)){
+		if (!Arrays::isAssoc($data)){
 			if (is_array($data[0]))
 			{	
 				DB::beginTransaction();
