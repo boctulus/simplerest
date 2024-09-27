@@ -223,8 +223,30 @@ class Arrays
     /*
         Un array es asociativo con que al menos una key sea un string
     */
-    static function isAssocc(array $arr){
+    static function isAssoc(array $arr){
         return !static::isNonAssoc($arr);
+    }
+
+    /**
+     * Converts recursivly all numeric keys in an array to associative keys, ensuring that each node and leaf of the array is associative.
+     * If a numeric key is found and the associated value is not an array, it will convert the key to the value and set an empty array as its value.
+     * The function processes the array recursively, so nested arrays will also be transformed.
+     *
+     * @param array $arr The input array to be transformed.
+     * 
+     * @return array The modified array where all numeric keys are replaced by associative keys if necessary.
+     */
+    static function toAssoc($arr) {
+        foreach ($arr as $ix => $value) {
+            if (is_int($ix) && !is_array($value)) {
+                $arr[$value] = [];
+                unset($arr[$ix]);
+            } elseif (is_array($value)) {
+                // Ricorsivamente convertiamo i sotto-array
+                $arr[$ix] = static::toAssoc($value);
+            }
+        }
+        return $arr;
     }
 
     /**
@@ -313,7 +335,7 @@ class Arrays
                 return false;
             }
 
-            if (static::isAssocc($sub)){
+            if (static::isAssoc($sub)){
                 return false;
             }
         }

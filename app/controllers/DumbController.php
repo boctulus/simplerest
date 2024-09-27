@@ -10924,7 +10924,7 @@ class DumbController extends Controller
 
         // $urls = Strings::lines($list, true, true);
 
-        $urls = ['https://preparaciones4x4.es/'];
+        $urls = ['https://tuprimerpaso.duoc.cl'];
 
         foreach ($urls as $url) {
             dd(
