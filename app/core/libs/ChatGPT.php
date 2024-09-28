@@ -17,10 +17,17 @@ class ChatGPT implements AIChat
     protected $params;
     protected $response;
     protected $error_msg;
+    protected $dynamic_token_usage = false;
+
+    /*
+        La idea es limitar la cantidad de "mensajes" enviados en caso de que se sobrepase el limite de tokens
+
+        Para COMPLETIONS es $this->messages mientras que para CHAT_COMPLETIONS es $this->messages[0]['content'] 
+    */
+    protected $dynamic_res_lenght  = false;
 
     // API client
     public $client;
-    
 
     const COMPLETIONS = 1;
     const CHAT_COMPLETIONS = 2;
@@ -56,6 +63,14 @@ class ChatGPT implements AIChat
 
     function getModel(){
         return $this->model;
+    }
+
+    function dynamicTokenUsage(){
+        $this->dynamic_token_usage = true;
+    }
+
+    function dynamicResponseLenght(){
+        $this->dynamic_res_lenght = true;
     }
 
     function addContent($content, $role = 'user'){
@@ -262,6 +277,10 @@ class ChatGPT implements AIChat
         return ($this->getFinishReason() != 'length');
     }
 
+    function getMaxTokens(){
+        return $this->params['max_tokens'] ?? null;
+    }
+
     /*
         stop: La generación se detuvo porque el modelo completó la respuesta de manera natural, alcanzando un punto donde decidió que no era necesario generar más texto.
 
@@ -275,6 +294,10 @@ class ChatGPT implements AIChat
         return ($this->getFinishReason() == 'stop');
     }
 
+    /*
+        Podria extraer cualquier cosa y no solo JSON entre ```json y ```
+        sino Javascript entre ```javascript y ```, etc.
+    */
     function getContent($decode = true){
         if (!empty($this->error_msg)) {
             return false;
