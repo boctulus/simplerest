@@ -1,6 +1,8 @@
 <?php
 
 namespace simplerest\core\libs;
+use simplerest\core\interfaces\AIChat;
+use simplerest\core\exceptions\NotImplementedException;
 
 
 /*
@@ -25,7 +27,7 @@ namespace simplerest\core\libs;
     dd($res);
 
 */
-class ClaudeAI
+class ClaudeAI implements AIChat
 {
     const DEFAULT_API_VERSION = '2023-06-01';
     
@@ -34,6 +36,8 @@ class ClaudeAI
     protected $messages = [];
     protected $response;
     protected $params;
+
+    protected $model = 'claude-3-sonnet-20240229';
 
     // API client
     public $client;
@@ -57,6 +61,20 @@ class ClaudeAI
         ->decode();
     }
 
+    // Retorna instancia de API client (habilita poner la cache a funcionar, etc)
+    function getClient(){
+        return $this->client;
+    }
+
+    // podria verificar el modelo este soportado via in_array()
+    function setModel($name){
+        $this->model = $name;
+    }
+
+    function getModel(){
+        return $this->model;
+    }
+
     function addContent($content, $role = 'user'){
         $this->messages[] = 
         [
@@ -69,7 +87,7 @@ class ClaudeAI
         $this->params = $arr;
     }
 
-    function exec($model = 'claude-3-sonnet-20240229')
+    function exec($model = null)
     {
         $model_endpoints = [
             'claude-3-opus-20240229'   => static::MESSAGES,
@@ -80,6 +98,10 @@ class ClaudeAI
             'claude-instant-1.2'       => static::MESSAGES,
         ];
 
+        if ($model === null){
+            $model = $this->$model;
+        }
+
         if (!array_key_exists($model, $model_endpoints)){
             throw new \Exception("Claude AI model not found for '$model'");
         }    
@@ -87,7 +109,7 @@ class ClaudeAI
         return $this->exec_messages($model);
     }
 
-    function exec_messages($model)
+    protected function exec_messages($model)
     {
         $endpoint = 'https://api.anthropic.com/v1/messages';
     
@@ -124,5 +146,25 @@ class ClaudeAI
         }
     
         return $this->response;
+    }
+
+    function exec_chat_completion($model = null){
+        throw new NotImplementedException();
+    }
+
+    function getTokenUsage(){        
+        throw new NotImplementedException();
+    }
+
+    function getFinishReason(){
+        throw new NotImplementedException();;
+    }
+
+    function isComplete(){
+        throw new NotImplementedException();
+    }
+
+    function getContent($decode = true){
+        throw new NotImplementedException();
     }
 }
