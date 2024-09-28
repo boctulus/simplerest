@@ -10449,16 +10449,28 @@ class DumbController extends Controller
     function test_openai_3()
     {
         $chat = new ChatGPT();
+        $chat->setModel('gpt-4o-mini');
+
+        // Testing
+        $chat->getClient()
+        ->enablePostRequestCache()
+        ->setCache(3600);
 
         $chat->addContent('Todos los elementos de la tabla periodica con sus estados de oxidacion');
 
         $chat->setParams([
-            "max_tokens"      => 200,
+            "max_tokens"      => 150,
             "temperature"     => 0.5
         ]);
 
-        $res = $chat->exec();
-        dd($res);
+        $chat->exec();
+
+        if (!$chat->isComplete()){
+            dd($chat->getFinishReason(), 'Finish reason');
+            // die;
+        }
+
+        dd($chat->getContent(), 'Content');
     }
 
     /*

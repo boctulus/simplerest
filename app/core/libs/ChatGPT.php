@@ -2,14 +2,17 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\interfaces\AIChat;
+
 
 /*
     En caso de error se recupera con el metodo error()
 */
 
-class ChatGPT
+class ChatGPT implements AIChat
 {
-    protected $api_key;
+    protected $api_key;    
+    protected $model = 'gpt-4o-mini';
     protected $messages = [];
     protected $params;
     protected $response;
@@ -17,6 +20,7 @@ class ChatGPT
 
     // API client
     public $client;
+    
 
     const COMPLETIONS = 1;
     const CHAT_COMPLETIONS = 2;
@@ -45,6 +49,15 @@ class ChatGPT
         return $this->client;
     }
 
+    // podria verificar el modelo este soportado via in_array()
+    function setModel($name){
+        $this->model = $name;
+    }
+
+    function getModel(){
+        return $this->model;
+    }
+
     function addContent($content, $role = 'user'){
         $this->messages[] = 
         [
@@ -61,20 +74,26 @@ class ChatGPT
         return $this->error_msg;
     }
 
-    function exec($model = 'gpt-3.5-turbo-1106')
+    function exec($model = null)
     {
-        $model_endpoints = [
+        $model_endpoints = [   
+            // Modelos O1         
+            'o1-preview'               => static::CHAT_COMPLETIONS, // CHAT_COMPLETIONS ??  -- $ algo caro
+            'o1-preview-2024-09-12'    => static::CHAT_COMPLETIONS, // CHAT_COMPLETIONS ??
+            'o1-mini'                  => static::CHAT_COMPLETIONS, // CHAT_COMPLETIONS ??  -- $ accesible
+            'o1-mini-2024-09-12'       => static::CHAT_COMPLETIONS, // CHAT_COMPLETIONS ??
+
             // Modelos GPT-4
             'gpt-4o-mini'              => static::CHAT_COMPLETIONS, // Model with vision capabilities
             'gpt-4o'                   => static::CHAT_COMPLETIONS, // Model with vision capabilities (cheaper than 'gpt-4-vision-preview')
-            'gpt-4o-2024-05-13'        => static::CHAT_COMPLETIONS, // Model with vision capabilities
+            'gpt-4o-2024-08-06'        => static::CHAT_COMPLETIONS, // Model with vision capabilities
             'gpt-4'                    => static::CHAT_COMPLETIONS, // ok
             'gpt-4-1106-preview'       => static::COMPLETIONS,
             'gpt-4-0613'               => static::COMPLETIONS,
             'gpt-4-32k'                => static::COMPLETIONS,
             'gpt-4-32k-0613'           => static::COMPLETIONS,
         
-            // Modelos GPT-3.5
+            // Modelos GPT-3.5  <------ ahora son mas caros que 'gpt-4o-mini'  !!!!! 
             'gpt-3.5-turbo-1106'       => static::CHAT_COMPLETIONS, // ok
             'gpt-3.5-turbo'            => static::COMPLETIONS, // Check compatibility with CHAT_COMPLETIONS
             'gpt-3.5-turbo-16k'        => static::COMPLETIONS,
@@ -113,6 +132,18 @@ class ChatGPT
             // ... otros modelos según la documentación de ChatGPT
         ];
 
+        if ($model === null){
+            $model = $this->model;
+        }
+
+        if (!isset($model_endpoints[$model])){
+            throw new \InvalidArgumentException("Model not supported");
+        }
+
+        if (!$model_endpoints[$model] == static::COMPLETIONS){
+            return $this->exec_chat_completion($model);
+        }
+
         if (!array_key_exists($model, $model_endpoints)){
             throw new \Exception("ChatGPT model not found for '$model'");
         }    
@@ -139,6 +170,10 @@ class ChatGPT
     function exec_chat_completion($model)
     {
         $endpoint = 'https://api.openai.com/v1/chat/completions';
+
+        if ($model === null){
+            $model = $this->model;
+        }
     
         $data = [
             'model'    => $model, 
@@ -215,9 +250,58 @@ class ChatGPT
         return $this->response;
     }
 
-    function exec_image_generation($model)
+    function getTokenUsage(){        
+        return $this->response['data']['usage'];
+    }
+
+    function getFinishReason(){
+        return $this->response['data']['choices'][0]['finish_reason'] ?? null;
+    }
+
+    function wereTokenEnough(){
+        return ($this->getFinishReason() != 'length');
+    }
+
+    /*
+        stop: La generación se detuvo porque el modelo completó la respuesta de manera natural, alcanzando un punto donde decidió que no era necesario generar más texto.
+
+        length: La generación se detuvo porque se alcanzó el límite máximo de tokens permitidos por el parámetro max_tokens o el límite de tokens total del modelo (ej. 4096 tokens en GPT-4). Es una señal de que la respuesta fue truncada antes de que el modelo completara su generación.
+
+        content_filter: La generación fue detenida debido a una política de filtrado de contenido, lo cual ocurre si el contenido generado es inapropiado según los filtros del modelo.
+
+        null o no presente: Si finish_reason es null o no está presente, podría indicar que hubo un error en la generación o que no se completó la solicitud correctamente.
+    */
+    function isComplete(){
+        return ($this->getFinishReason() == 'stop');
+    }
+
+    function getContent($decode = true){
+        if (!empty($this->error_msg)) {
+            return false;
+        }
+
+        $content = $this->response['data']['choices'][0]['message']['content'];
+
+        if ($decode){
+            if (preg_match('/```json\s*(.+?)\s*```/s', $content, $matches)) {
+                // Extraemos el contenido del JSON capturado
+                $json_string = $matches[1];
+                
+                // Decodificamos el JSON para manipularlo como un array o un objeto
+                $content = json_decode($json_string, true);
+            }
+        }
+
+        return $content;
+    }
+
+    function exec_image_generation($model = null)
     {
         $endpoint = 'https://api.openai.com/v1/images/generations';
+
+        if ($model === null){
+            $model = $this->model;
+        }
 
         $data = [
             'model'  => $model,
