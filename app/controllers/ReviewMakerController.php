@@ -26,6 +26,11 @@ class ReviewMakerController extends Controller
         ->setCache(3600);
         
         $chat->setModel('gpt-4o-mini'); /* Opcional */
+        
+        /*
+            Implementar
+        */
+        $chat->dynamicTokenUsage();
 
         $rev = new ReviewMaker($chat, $params);
 
