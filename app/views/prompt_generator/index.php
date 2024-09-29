@@ -43,7 +43,7 @@
             </div>
 
             <!-- Sección donde se muestra el prompt generado con el botón de copiar -->
-            <div class="position-relative mt-4">
+            <div class="position-relative mt-4 mb-5">
                 <label for="generatedPrompt" class="form-label">PROMPT GENERADO</label>
                 <button class="btn btn-light border" id="copyPrompt" title="Copiar al portapapeles">
                     <img src="<?= asset('img/copy-icon.svg') ?>" alt="Copiar" width="30" height="30">
@@ -105,11 +105,11 @@
                     const errorMessage = xhr.responseJSON.error.message;
                     const errorPath = errorMessage.match(/Path '(.+)' does not exist/)[1];
                     
-                    // Marcar el input correspondiente a la ruta problemática
+                    // Actualizar el input correspondiente a la ruta problemática
                     $('.file-input').each(function () {
                         if ($(this).val() === errorPath) {
-                            $(this).addClass('is-invalid');
-                            $(this).after(`<div class="invalid-feedback">La ruta '${errorPath}' no existe</div>`);
+                            let $group = $(this).closest('.file-path-group');
+                            $group.replaceWith(addFilePathInput(errorPath, true));
                         }
                     });
                     
@@ -153,15 +153,29 @@
         }
     }
 
+    function handleServerResponse(response) {
+        if (response.error) {
+            // Manejar errores de ruta
+            $('.file-input').each(function(index) {
+                let $input = $(this);
+                let value = $input.val();
+                let hasError = response.error.invalidPaths.includes(value);
+                
+                // Reemplazar el input actual con uno nuevo basado en si tiene error o no
+                let $newInput = $(addFilePathInput(value, hasError));
+                $input.closest('.file-path-group').replaceWith($newInput);
+            });
+        } else {
+            // Limpiar errores si la respuesta es exitosa
+            clearValidationErrors();
+        }
+    }
+    
     // Función para agregar un input dinámico
-    function addFilePathInput(value = '') {
-        let inputValue = '';
-        
-        if (typeof value === 'string') {
-            inputValue = value;
-        } else if (typeof value === 'object' && value !== null) {
+    function addFilePathInput(value = '', hasError = false) {
+       if (typeof value === 'object' && value !== null) {
             // Si es un objeto, intentamos obtener una propiedad que pueda contener la ruta
-            inputValue = value.path || value.route || value.url || '';
+            value = '';
         }
 
         let inputHtml = `
@@ -169,24 +183,41 @@
                 <div class="input-group-text">
                     <input type="checkbox" class="form-check-input mt-0 file-path-checkbox">
                 </div>
-                <input type="text" class="form-control file-input" placeholder="Ingresa la ruta del archivo..." value="${inputValue}">
+                <input type="text" class="form-control file-input ${hasError ? 'is-invalid' : ''}" 
+                    placeholder="Ingresa la ruta del archivo..." value="${value}">
                 <button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>
+                ${hasError ? `<div class="invalid-feedback">La ruta '${value}' no existe</div>` : ''}
             </div>
         `;
         $('#filePathsContainer').append(inputHtml);
     }
 
+    function restoreDeleteButtons() {
+        $('.file-path-group.has-error').each(function() {
+            let $group = $(this);
+            $group.removeClass('has-error');
+            $group.find('.is-invalid').removeClass('is-invalid');
+            $group.find('.invalid-feedback').remove();
+            $group.append('<button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>');
+        });
+    }
+
     // Función para limpiar los errores de validación anteriores
     function clearValidationErrors() {
-        // Limpiar las clases y feedbacks anteriores
         $('.is-invalid').removeClass('is-invalid');
         $('.invalid-feedback').remove();
+        $('.file-path-group').each(function() {
+            let $group = $(this);
+            let value = $group.find('.file-input').val();
+            $group.replaceWith(addFilePathInput(value, false));
+        });
     }
 
     function clearForm() {
         $('#prompt-description').val('');
         $('#promptFinal').val('');
         $('#generatedPrompt').val('');
+        
         // Vaciar el contenedor de rutas pero mantener un solo campo vacío
         $('#filePathsContainer').html(`
             <div class="input-group mb-2 file-path-group">
@@ -197,6 +228,8 @@
                 <button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>
             </div>
         `);
+
+        restoreDeleteButtons();
 
         localStorage.removeItem('currentForm');
     }
@@ -324,6 +357,7 @@
             $('#deleteSelectedPaths').click(deleteSelectedPaths);
             $('#generatePrompt').click(generatePrompt);
             $('#copyPrompt').click(copyToClipboard);
+            $('#clearFormButton').click(clearForm);
             // Asignar eventos a los botones del dropdown
             $('#executeWithChatGPT').click(executeWithChatGPT);
             $('#executeWithClaude').click(executeWithClaude);
