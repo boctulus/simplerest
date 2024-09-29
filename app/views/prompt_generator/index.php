@@ -25,7 +25,7 @@
             <!-- Sección de notas finales -->
             <div class="mb-3">
                 <label for="promptFinal" class="form-label">PROMPT (Notas finales)</label>
-                <input type="text" class="form-control" id="promptFinal" placeholder="Escribe las notas finales...">
+                <textarea class="form-control" id="promptFinal" rows="4" placeholder="Escribe las notas finales..."></textarea>
             </div>
 
             <!-- Botón para generar el prompt -->
@@ -46,106 +46,124 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-$(document).ready(function(){
-    function addFilePathInput() {
-        let inputHtml = `
-            <div class="input-group mb-2 file-path-group">
-                <div class="input-group-text">
-                    <input type="checkbox" class="form-check-input mt-0 file-path-checkbox">
-                </div>
-                <input type="text" class="form-control file-path-input" placeholder="Ingresa la ruta del archivo...">
-                <button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>
-            </div>
-        `;
-        $('#filePathsContainer').append(inputHtml);
-    }
+    $(document).ready(function(){
+        // Inicializar eventos
+        initializeEvents();
 
-    addFilePathInput();
+        // Función para inicializar los eventos
+        function initializeEvents() {
+            $('#addFilePath').click(addFilePathInput);
+            $('#deleteSelectedPaths').click(deleteSelectedPaths);
+            $('#generatePrompt').click(generatePrompt);
+            $('#copyPrompt').click(copyToClipboard);
 
-    $('#addFilePath').click(function() {
-        addFilePathInput();
-    });
-
-    $(document).on('click', '.delete-file-path', function() {
-        let $filePathGroup = $(this).closest('.file-path-group');
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¿Quieres eliminar esta ruta de archivo?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $filePathGroup.remove();
-                Swal.fire(
-                    'Eliminado',
-                    'La ruta ha sido eliminada.',
-                    'success'
-                )
-            }
-        })
-    });
-
-    $('#deleteSelectedPaths').click(function() {
-        let $selectedPaths = $('.file-path-checkbox:checked').closest('.file-path-group');
-        if ($selectedPaths.length === 0) {
-            Swal.fire('Advertencia', 'No hay rutas seleccionadas para eliminar', 'warning');
-            return;
+            // Eventos para los botones de eliminar en inputs dinámicos
+            $(document).on('click', '.delete-file-path', function() {
+                let $filePathGroup = $(this).closest('.file-path-group');
+                deleteFilePath($filePathGroup);
+            });
         }
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: `¿Quieres eliminar ${$selectedPaths.length} ruta(s) seleccionada(s)?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $selectedPaths.remove();
-                Swal.fire(
-                    'Eliminado',
-                    'Las rutas seleccionadas han sido eliminadas.',
-                    'success'
-                )
+
+        // Función para agregar un input dinámico
+        function addFilePathInput() {
+            let inputHtml = `
+                <div class="input-group mb-2 file-path-group">
+                    <div class="input-group-text">
+                        <input type="checkbox" class="form-check-input mt-0 file-path-checkbox">
+                    </div>
+                    <input type="text" class="form-control file-path-input" placeholder="Ingresa la ruta del archivo...">
+                    <button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>
+                </div>
+            `;
+            $('#filePathsContainer').append(inputHtml);
+        }
+
+        // Función para eliminar rutas seleccionadas
+        function deleteSelectedPaths() {
+            let $selectedPaths = $('.file-path-checkbox:checked').closest('.file-path-group');
+            if ($selectedPaths.length === 0) {
+                Swal.fire('Advertencia', 'No hay rutas seleccionadas para eliminar', 'warning');
+                return;
             }
-        })
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: `¿Quieres eliminar ${$selectedPaths.length} ruta(s) seleccionada(s)?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $selectedPaths.remove();
+                    Swal.fire(
+                        'Eliminado',
+                        'Las rutas seleccionadas han sido eliminadas.',
+                        'success'
+                    );
+                }
+            });
+        }
+
+        // Función para eliminar una ruta específica
+        function deleteFilePath($filePathGroup) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¿Quieres eliminar esta ruta de archivo?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $filePathGroup.remove();
+                    Swal.fire(
+                        'Eliminado',
+                        'La ruta ha sido eliminada.',
+                        'success'
+                    );
+                }
+            });
+        }
+
+        // Función para generar el prompt
+        function generatePrompt() {
+            // Obtener valores de los campos
+            let intro = $('#promptIntro').val();
+            let finalNotes = $('#promptFinal').val();
+
+            // Obtener las rutas de los inputs dinámicos
+            let filePaths = [];
+            $('.file-path-input').each(function() {
+                let path = $(this).val().trim();
+                if (path) {
+                    filePaths.push(path);
+                }
+            });
+
+            // Generar el prompt concatenado
+            let generatedPrompt = intro + '\n\n';
+
+            // Agregar archivos con cabeceras
+            filePaths.forEach(function(path) {
+                generatedPrompt += `### Archivo: ${path} ###\n/* Contenido del archivo ${path} */\n\n`;
+            });
+
+            // Agregar notas finales
+            generatedPrompt += finalNotes;
+
+            // Mostrar en el textarea
+            $('#generatedPrompt').val(generatedPrompt);
+        }
+
+        // Función para copiar el prompt generado al portapapeles
+        function copyToClipboard() {
+            let generatedPrompt = $('#generatedPrompt');
+            generatedPrompt.select();
+            document.execCommand('copy');
+        }
     });
-
-
-    $('#generatePrompt').click(function(){
-        // Obtener valores de los campos
-        let intro = $('#promptIntro').val();
-        let filePaths = $('#filePaths').val().split('\n');
-        let finalNotes = $('#promptFinal').val();
-        
-        // Generar el prompt concatenado
-        let generatedPrompt = intro + '\n\n';
-        
-        // Agregar archivos con cabeceras
-        filePaths.forEach(function(path) {
-            if(path.trim() !== '') {
-                generatedPrompt += `### Archivo: ${path.trim()} ###\n` + `/* Contenido del archivo ${path.trim()} */\n\n`;
-            }
-        });
-        
-        // Agregar notas finales
-        generatedPrompt += finalNotes;
-        
-        // Mostrar en el textarea
-        $('#generatedPrompt').val(generatedPrompt);
-    });
-
-    // Copiar al portapapeles
-    $('#copyPrompt').click(function(){
-        let generatedPrompt = $('#generatedPrompt');
-        generatedPrompt.select();
-        document.execCommand('copy');
-    });
-
-});
 </script>
