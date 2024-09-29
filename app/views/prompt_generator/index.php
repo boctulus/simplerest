@@ -28,13 +28,14 @@
                 <textarea class="form-control" id="promptFinal" rows="4" placeholder="Escribe las notas finales..."></textarea>
             </div>
 
-            <!-- Botón para generar el prompt -->
-            <div class="d-flex">
-                <button class="btn btn-primary me-2" id="generatePrompt">Generar Prompt</button>
+            <!-- Botones para generar el prompt y ejecutar con opciones -->
+            <div class="d-flex justify-content-between">
+                <!-- Botón para generar el prompt -->
+                <button class="btn btn-primary" id="generatePrompt">Generar Prompt</button>
 
                 <!-- Botón dropdown para ejecutar con ChatGPT o Claude -->
                 <div class="btn-group">
-                    <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="executeButton">
                         Ejecutar con
                     </button>
                     <ul class="dropdown-menu">
@@ -44,14 +45,13 @@
                 </div>
             </div>
 
-
             <!-- Sección donde se muestra el prompt generado con el botón de copiar -->
             <div class="position-relative mt-4">
                 <label for="generatedPrompt" class="form-label">PROMPT GENERADO</label>
                 <button class="btn btn-light border" id="copyPrompt" title="Copiar al portapapeles">
                     <img src="<?= asset('img/copy-icon.svg') ?>" alt="Copiar" width="30" height="30">
                 </button>
-                <textarea class="form-control" id="generatedPrompt" rows="6" readonly></textarea>
+                <textarea class="form-control" id="generatedPrompt" rows="6"></textarea>
             </div>
         </div>
     </div>
@@ -63,6 +63,7 @@
     $(document).ready(function(){
         // Inicializar eventos
         initializeEvents();
+        addFilePathInput(); // que haya al menos una ruta
 
         // Función para inicializar los eventos
         function initializeEvents() {
@@ -183,10 +184,16 @@
             document.execCommand('copy');
         }
 
+        // Función para actualizar el texto del botón con la opción seleccionada
+        function updateExecuteButtonText(optionText) {
+            $('#executeButton').text('Ejecutar con ' + optionText);
+        }
+
         // Función para ejecutar con ChatGPT
         function executeWithChatGPT() {
             let generatedPrompt = $('#generatedPrompt').val();
             console.log("Ejecutar con ChatGPT:", generatedPrompt);
+            updateExecuteButtonText("ChatGPT");
             // Aquí puedes añadir la lógica para enviar el prompt a ChatGPT
         }
 
@@ -194,10 +201,9 @@
         function executeWithClaude() {
             let generatedPrompt = $('#generatedPrompt').val();
             console.log("Ejecutar con Claude:", generatedPrompt);
+            updateExecuteButtonText("Claude");
             // Aquí puedes añadir la lógica para enviar el prompt a Claude
         }
-
-
 
     });
 </script>
