@@ -59,18 +59,35 @@ class ChatGPT implements AIChat
     // podria verificar el modelo este soportado via in_array()
     function setModel($name){
         $this->model = $name;
+        return $this;
     }
 
     function getModel(){
         return $this->model;
     }
+    
+    function setMaxTokens(int $val){
+        $this->params['max_tokens'] = $val;
+        return $this;
+    }
+
+    function getMaxTokens(){
+        return $this->params['max_tokens'] ?? null;
+    }
+
+    function setTemperature($val = 0.5){
+        $this->params['temperature'] = $val;
+        return $this;
+    }
 
     function dynamicTokenUsage(){
         $this->dynamic_token_usage = true;
+        return $this;
     }
 
     function dynamicResponseLenght(){
         $this->dynamic_res_lenght = true;
+        return $this;
     }
 
     function addContent($content, $role = 'user'){
@@ -83,6 +100,7 @@ class ChatGPT implements AIChat
 
     function setParams(Array $arr){
         $this->params = $arr;
+        return $this;
     }
 
     function error(){
@@ -275,10 +293,6 @@ class ChatGPT implements AIChat
 
     function wereTokenEnough(){
         return ($this->getFinishReason() != 'length');
-    }
-
-    function getMaxTokens(){
-        return $this->params['max_tokens'] ?? null;
     }
 
     /*

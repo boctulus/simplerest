@@ -116,12 +116,36 @@ $(document).ready(function(){
         })
     });
 
+
     $('#generatePrompt').click(function(){
-        // ... (código de generación de prompt, sin cambios)
+        // Obtener valores de los campos
+        let intro = $('#promptIntro').val();
+        let filePaths = $('#filePaths').val().split('\n');
+        let finalNotes = $('#promptFinal').val();
+        
+        // Generar el prompt concatenado
+        let generatedPrompt = intro + '\n\n';
+        
+        // Agregar archivos con cabeceras
+        filePaths.forEach(function(path) {
+            if(path.trim() !== '') {
+                generatedPrompt += `### Archivo: ${path.trim()} ###\n` + `/* Contenido del archivo ${path.trim()} */\n\n`;
+            }
+        });
+        
+        // Agregar notas finales
+        generatedPrompt += finalNotes;
+        
+        // Mostrar en el textarea
+        $('#generatedPrompt').val(generatedPrompt);
     });
 
+    // Copiar al portapapeles
     $('#copyPrompt').click(function(){
-        // ... (código de copia al portapapeles, sin cambios)
+        let generatedPrompt = $('#generatedPrompt');
+        generatedPrompt.select();
+        document.execCommand('copy');
     });
+
 });
 </script>

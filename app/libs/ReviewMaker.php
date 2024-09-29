@@ -65,7 +65,13 @@ class ReviewMaker
             return false;
         }
 
-        return $this->client->getContent(true)['review'];
+        $res = $this->client->getContent(true); 
+        
+        if (isset($res['review'])){
+            return $res['review'];
+        } else {
+            return array_column($res, 'review');
+        }
     }
 
     /*
@@ -104,7 +110,7 @@ class ReviewMaker
             return false;
         }
 
-        return $this->client->getContent();
+        return $this->client->getContent(true);         
     }
 
 }
