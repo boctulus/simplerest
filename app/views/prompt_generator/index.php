@@ -6,8 +6,8 @@
 
             <!-- Sección de introducción -->
             <div class="mb-3">
-                <label for="promptIntro" class="form-label">PROMPT Introducción</label>
-                <textarea class="form-control" id="promptIntro" rows="4"
+                <label for="prompt-description" class="form-label">PROMPT Introducción</label>
+                <textarea class="form-control" id="prompt-description" rows="4"
                     placeholder="Escribe el texto de introducción..."></textarea>
             </div>
 
@@ -31,7 +31,7 @@
             <!-- Botones para generar el prompt y ejecutar con opciones -->
             <div class="d-flex justify-content-between">
                 <!-- Botón para generar el prompt -->
-                <button class="btn btn-primary" id="generatePrompt">Generar Prompt</button>
+                <button id="generate-prompt" class="btn btn-primary" onclick="getPromptContent()">Generar Prompt</button>
 
                 <!-- Botón dropdown para ejecutar con ChatGPT o Claude -->
                 <div class="btn-group">
@@ -55,11 +55,77 @@
             </div>
         </div>
     </div>
-
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Función para obtener el contenido desde la API
+    function getPromptContent() {
+        const title = $('#prompt-title').val();
+        const description = $('#prompt-description').val();
+        const files = [];
+
+        // Obtener todas las rutas de archivos
+        $('.file-input').each(function () {
+            const filePath = $(this).val();
+            if (filePath) {
+                files.push(filePath);
+            }
+        });
+
+        const notes = $('#prompt-notes').val();
+
+        const data = {
+            title: title,
+            description: description,
+            files: files,
+            notes: notes
+        };
+
+        // Hacer la solicitud POST
+        $.ajax({
+            url: 'http://simplerest.lan/api/v1/prompts',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                // Procesar y mostrar el contenido recibido
+                displayFileContents(response.data.prompts.content, files);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error al obtener el contenido del prompt:', error);
+            }
+        });
+    }
+
+    /*
+        Mostrar resultado en #generatedPrompt
+    */
+    function displayFileContents(contents, files) {
+        files.forEach(function (filePath, index) {
+            let content = contents[index];
+            let extension = filePath.split('.').pop();
+            
+            console.log(filePath, content);
+
+            // Formatear según la extensión del archivo
+            let formattedContent;
+            if (extension === 'css') {
+                formattedContent = `<pre><code class="language-css">/* CSS File */\n${content}</code></pre>`;
+            } else if (extension === 'js') {
+                formattedContent = `<pre><code class="language-javascript">// JavaScript File\n${content}</code></pre>`;
+            } else if (extension === 'php') {
+                formattedContent = `<pre><code class="language-php">/* PHP File */\n${content}</code></pre>`;
+            } else if (extension === 'json' || extension === 'jsonl') {
+                formattedContent = `<pre><code class="language-json">/* JSON File */\n${content}</code></pre>`;
+            } else {
+                formattedContent = `<pre><code>/* Other File */\n${content}</code></pre>`;
+            }
+
+            // Mostrar el contenido debajo del input del archivo
+            $('#generatedPrompt').append(`<div class="file-content">${formattedContent}</div>`);
+        });
+    }
+
     $(document).ready(function(){
         // Inicializar eventos
         initializeEvents();
@@ -89,7 +155,7 @@
                     <div class="input-group-text">
                         <input type="checkbox" class="form-check-input mt-0 file-path-checkbox">
                     </div>
-                    <input type="text" class="form-control file-path-input" placeholder="Ingresa la ruta del archivo...">
+                    <input type="text" class="form-control file-input" placeholder="Ingresa la ruta del archivo...">
                     <button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>
                 </div>
             `;
@@ -150,7 +216,7 @@
         // Función para generar el prompt
         function generatePrompt() {
             // Obtener valores de los campos
-            let intro = $('#promptIntro').val();
+            let intro = $('#prompt-description').val();
             let finalNotes = $('#promptFinal').val();
 
             // Obtener las rutas de los inputs dinámicos
@@ -204,6 +270,9 @@
             updateExecuteButtonText("Claude");
             // Aquí puedes añadir la lógica para enviar el prompt a Claude
         }
+
+        
+
 
     });
 </script>
