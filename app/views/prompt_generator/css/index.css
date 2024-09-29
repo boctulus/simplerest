@@ -5,19 +5,40 @@
     margin: 32px 0 0 0;
     z-index: 10;
 }
+
 .position-relative {
     position: relative;
 }
+
 .delete-file-path {
     color: #dc3545;
 }
+
 .delete-file-path:hover {
     color: #fff;
     background-color: #dc3545;
 }
+
 .input-group-text {
     padding: 0.375rem 0.75rem;
 }
+
 .form-check-input {
     margin-top: 0 !important;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+#promptOptionsDropdown {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 32px 0 0 0;
+    z-index: 10;
+}
+
+.bi-three-dots-vertical {
+    font-size: 1.2rem;
 }
