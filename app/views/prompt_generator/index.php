@@ -5,21 +5,19 @@
             <h1 class="mb-3">Generador de Prompt</h1>
 
             <!-- Sección de introducción -->
-            <div class="mb-3">
+            <div class="mb-5 position-relative">
                 <label for="prompt-description" class="form-label">PROMPT Introducción</label>
                 <textarea class="form-control" id="prompt-description" rows="4"
                     placeholder="Escribe el texto de introducción..."></textarea>
+                <button class="btn btn-danger position-absolute end-0 mt-3" id="clearFormButton">Borrar Form</button>
             </div>
 
             <!-- Sección para las rutas de los archivos -->
             <div class="mb-3">
                 <label class="form-label">RUTAS A ARCHIVOS A INCLUIR</label>
-                <div id="filePathsContainer">
-                    <!-- Los inputs de rutas se agregarán aquí dinámicamente -->
-                </div>
+                <div id="filePathsContainer"></div>
                 <button class="btn btn-success mt-2" id="addFilePath">Agregar ruta</button>
-                <button class="btn btn-danger mt-2 float-end" id="deleteSelectedPaths">Borrar rutas
-                    seleccionadas</button>
+                <button class="btn btn-danger mt-2 float-end" id="deleteSelectedPaths">Borrar rutas seleccionadas</button>
             </div>
 
             <!-- Sección de notas finales -->
@@ -30,12 +28,11 @@
 
             <!-- Botones para generar el prompt y ejecutar con opciones -->
             <div class="d-flex justify-content-between">
-                <!-- Botón para generar el prompt -->
                 <button id="generate-prompt" class="btn btn-primary" onclick="getPromptContent()">Generar Prompt</button>
 
                 <!-- Botón dropdown para ejecutar con ChatGPT o Claude -->
                 <div class="btn-group">
-                    <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="executeButton">
+                    <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Ejecutar con
                     </button>
                     <ul class="dropdown-menu">
@@ -58,122 +55,262 @@
 </div>
 
 <script>
-// Función para obtener el contenido desde la API
-function getPromptContent() {
-    const description = $('#prompt-description').val();  // Introducción
-    const files = [];
+    // Función para obtener el contenido desde la API
+    function getPromptContent() {
+        const description = $('#prompt-description').val();  // Introducción
+        const files = [];
 
-    // Obtener todas las rutas de archivos
-    $('.file-input').each(function () {
-        const filePath = $(this).val();
-        if (filePath) {
-            files.push(filePath);
-        }
-    });
-
-    const notes = $('#promptFinal').val();  // Notas finales
-
-    const data = {
-        description: description,
-        files: files,
-        notes: notes
-    };
-
-    // Hacer la solicitud POST
-    $.ajax({
-        url: 'http://simplerest.lan/api/v1/prompts',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function (response) {
-            // Procesar y mostrar el contenido recibido si es exitoso
-            clearValidationErrors();  // Limpiar cualquier error anterior
-            displayFileContents(description, response.data.prompts.content, files, notes);
-        },
-        error: function (xhr, status, error) {
-            if (xhr.status === 400) {
-                // Si el error es de validación, mostrarlo en el formulario
-                const validationErrors = xhr.responseJSON.error.detail;
-                showValidationErrors(validationErrors);
-            } else {
-                console.error('Error al obtener el contenido del prompt:', error);
+        // Obtener todas las rutas de archivos
+        $('.file-input').each(function () {
+            const filePath = $(this).val();
+            if (filePath) {
+                files.push(filePath);
             }
-        }
-    });
-}
+        });
 
-// Función para mostrar errores de validación
-function showValidationErrors(errors) {
-    clearValidationErrors(); // Limpiar los errores anteriores
+        const notes = $('#promptFinal').val();  // Notas finales
 
-    // Iterar sobre los errores y asignarlos a los campos
-    if (errors.description) {
-        $('#prompt-description').addClass('is-invalid');
-        $('#prompt-description').after(`<div class="invalid-feedback">${errors.description[0].error_detail}</div>`);
-    }
+        const data = {
+            description: description,
+            files: files,
+            notes: notes
+        };
 
-    if (errors.files) {
-        // Aquí podrías iterar sobre las rutas de archivos si es necesario
-        $('.file-input').each(function (index) {
-            if (errors.files[index]) {
-                $(this).addClass('is-invalid');
-                $(this).after(`<div class="invalid-feedback">${errors.files[index].error_detail}</div>`);
+        // Hacer la solicitud POST
+        $.ajax({
+            url: 'http://simplerest.lan/api/v1/prompts',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                // Procesar y mostrar el contenido recibido si es exitoso
+                clearValidationErrors();  // Limpiar cualquier error anterior
+                displayFileContents(description, response.data.prompts.content, files, notes);
+
+                const id = response.data.id;
+                const newUrl = `${window.location.pathname}#chat-${id}`;
+                history.pushState({id: id}, '', newUrl);
+                saveFormVersion(id, description, files, notes);
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 400) {
+                    // Si el error es de validación, mostrarlo en el formulario
+                    const validationErrors = xhr.responseJSON.error.detail;
+                    showValidationErrors(validationErrors);
+                } else {
+                    console.error('Error al obtener el contenido del prompt:', error);
+                }
+
+                if (xhr.status === 500) {
+                    const errorMessage = xhr.responseJSON.error.message;
+                    const errorPath = errorMessage.match(/Path '(.+)' does not exist/)[1];
+                    
+                    // Marcar el input correspondiente a la ruta problemática
+                    $('.file-input').each(function () {
+                        if ($(this).val() === errorPath) {
+                            $(this).addClass('is-invalid');
+                            $(this).after(`<div class="invalid-feedback">La ruta '${errorPath}' no existe</div>`);
+                        }
+                    });
+                    
+                    // Mostrar el mensaje de error con SweetAlert
+                    Swal.fire({
+                        title: 'Error',
+                        text: errorMessage,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    console.error('Error al obtener el contenido del prompt:', error);
+                }
             }
         });
     }
 
-    if (errors.notes) {
-        $('#promptFinal').addClass('is-invalid');
-        $('#promptFinal').after(`<div class="invalid-feedback">${errors.notes[0].error_detail}</div>`);
-    }
-}
+    // Función para mostrar errores de validación
+    function showValidationErrors(errors) {
+        clearValidationErrors(); // Limpiar los errores anteriores
 
-// Función para limpiar los errores de validación anteriores
-function clearValidationErrors() {
-    // Limpiar las clases y feedbacks anteriores
-    $('.is-invalid').removeClass('is-invalid');
-    $('.invalid-feedback').remove();
-}
-
-
-/*
-    Mostrar resultado en #generatedPrompt
-*/
-function displayFileContents(description, contents, files, notes) {
-    let generatedPrompt = '';
-
-    // Incluir el contenido de la introducción
-    generatedPrompt += `${description}\n\n`;
-
-    // Iterar sobre los archivos y sus contenidos
-    files.forEach(function (filePath, index) {
-        let content = contents[index];
-        let extension = filePath.split('.').pop();
-
-        // Formatear según la extensión del archivo
-        let formattedContent;
-        if (extension === 'css') {
-            formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`css\n${content}\n\`\`\`\n`;
-        } else if (extension === 'js') {
-            formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`javascript\n${content}\n\`\`\`\n`;
-        } else if (extension === 'php') {
-            formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`php\n${content}\n\`\`\`\n`;
-        } else if (extension === 'json' || extension === 'jsonl') {
-            formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`json\n${content}\n\`\`\`\n`;
-        } else {
-            formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`\n${content}\n\`\`\`\n`;
+        // Iterar sobre los errores y asignarlos a los campos
+        if (errors.description) {
+            $('#prompt-description').addClass('is-invalid');
+            $('#prompt-description').after(`<div class="invalid-feedback">${errors.description[0].error_detail}</div>`);
         }
 
-        // Agregar el contenido formateado al prompt
-        generatedPrompt += formattedContent;
+        if (errors.files) {
+            // Aquí podrías iterar sobre las rutas de archivos si es necesario
+            $('.file-input').each(function (index) {
+                if (errors.files[index]) {
+                    $(this).addClass('is-invalid');
+                    $(this).after(`<div class="invalid-feedback">${errors.files[index].error_detail}</div>`);
+                }
+            });
+        }
+
+        if (errors.notes) {
+            $('#promptFinal').addClass('is-invalid');
+            $('#promptFinal').after(`<div class="invalid-feedback">${errors.notes[0].error_detail}</div>`);
+        }
+    }
+
+    // Función para agregar un input dinámico
+    function addFilePathInput(value = '') {
+        let inputValue = '';
+        
+        if (typeof value === 'string') {
+            inputValue = value;
+        } else if (typeof value === 'object' && value !== null) {
+            // Si es un objeto, intentamos obtener una propiedad que pueda contener la ruta
+            inputValue = value.path || value.route || value.url || '';
+        }
+
+        let inputHtml = `
+            <div class="input-group mb-2 file-path-group">
+                <div class="input-group-text">
+                    <input type="checkbox" class="form-check-input mt-0 file-path-checkbox">
+                </div>
+                <input type="text" class="form-control file-input" placeholder="Ingresa la ruta del archivo..." value="${inputValue}">
+                <button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>
+            </div>
+        `;
+        $('#filePathsContainer').append(inputHtml);
+    }
+
+    // Función para limpiar los errores de validación anteriores
+    function clearValidationErrors() {
+        // Limpiar las clases y feedbacks anteriores
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').remove();
+    }
+
+    function clearForm() {
+        $('#prompt-description').val('');
+        $('#promptFinal').val('');
+        $('#generatedPrompt').val('');
+        // Vaciar el contenedor de rutas pero mantener un solo campo vacío
+        $('#filePathsContainer').html(`
+            <div class="input-group mb-2 file-path-group">
+                <div class="input-group-text">
+                    <input type="checkbox" class="form-check-input mt-0 file-path-checkbox">
+                </div>
+                <input type="text" class="form-control file-input" placeholder="Ingresa la ruta del archivo...">
+                <button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>
+            </div>
+        `);
+
+        localStorage.removeItem('currentForm');
+    }
+
+    function saveFormVersion(id, description, files, notes) {
+        const formVersion = {
+            id: id,
+            description: description,
+            files: files,
+            notes: notes,
+            timestamp: new Date().toISOString()
+        };
+        localStorage.setItem(`chat-${id}`, JSON.stringify(formVersion));
+    }
+
+    function saveFormToLocalStorage() {
+        const formState = {
+            description: $('#prompt-description').val(),
+            files: $('.file-input').map((_, input) => $(input).val()).get(),
+            notes: $('#promptFinal').val()
+        };
+        localStorage.setItem('currentForm', JSON.stringify(formState));
+    }
+
+    function loadFormStateFromLocalStorage() {
+        const currentHash = window.location.hash;
+        if (currentHash.startsWith('#chat-')) {
+            const formId = currentHash.split('-')[1];
+            const savedForm = JSON.parse(localStorage.getItem(`chat-${formId}`));
+
+            if (savedForm) {
+                $('#prompt-description').val(savedForm.description);
+                $('#promptFinal').val(savedForm.notes);
+                $('#filePathsContainer').empty(); // Limpiar contenedor existente
+                savedForm.files.forEach(file => addFilePathInput(file));
+            }
+        } else {
+            const currentForm = JSON.parse(localStorage.getItem('currentForm'));
+            if (currentForm) {
+                $('#prompt-description').val(currentForm.description);
+                $('#promptFinal').val(currentForm.notes);
+                $('#filePathsContainer').empty(); // Limpiar contenedor existente
+                currentForm.files.forEach(file => addFilePathInput(file));
+            }
+        }
+    }
+
+    /*
+        Mostrar resultado en #generatedPrompt
+    */
+    function displayFileContents(description, contents, files, notes) {
+        let generatedPrompt = '';
+
+        // Incluir el contenido de la introducción
+        generatedPrompt += `${description}\n\n`;
+
+        // Iterar sobre los archivos y sus contenidos
+        files.forEach(function (filePath, index) {
+            let content = contents[index];
+            let extension = filePath.split('.').pop();
+
+            // Formatear según la extensión del archivo
+            let formattedContent;
+            if (extension === 'css') {
+                formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`css\n${content}\n\`\`\`\n`;
+            } else if (extension === 'js') {
+                formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`javascript\n${content}\n\`\`\`\n`;
+            } else if (extension === 'php') {
+                formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`php\n${content}\n\`\`\`\n`;
+            } else if (extension === 'json' || extension === 'jsonl') {
+                formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`json\n${content}\n\`\`\`\n`;
+            } else {
+                formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`\n${content}\n\`\`\`\n`;
+            }
+
+            // Agregar el contenido formateado al prompt
+            generatedPrompt += formattedContent;
+        });
+
+        // Incluir las notas finales
+        generatedPrompt += `\n${notes}\n`;
+
+        // Mostrar el contenido en el textarea #generatedPrompt
+        $('#generatedPrompt').val(generatedPrompt);
+    }
+
+    function handleHashChange() {
+        const hash = window.location.hash;
+        if (hash.startsWith('#chat-')) {
+            loadFormStateFromLocalStorage();
+        }
+    }
+
+    // Manejar el evento de carga de la página
+    window.onload = function() {
+        // Si la página carga con un hash en la URL
+        if (window.location.hash) {
+            handleHashChange();
+        }
+    };
+
+    // Manejar el evento 'hashchange' para detectar cambios en el hash de la URL
+    window.addEventListener('hashchange', handleHashChange);
+
+    window.addEventListener('popstate', function(event) {
+        if (event.state && event.state.id) {
+            loadFormStateFromLocalStorage();
+        }
     });
 
-    // Incluir las notas finales
-    generatedPrompt += `\n${notes}\n`;
-
-    // Mostrar el contenido en el textarea #generatedPrompt
-    $('#generatedPrompt').val(generatedPrompt);
-}
+    // Manejar el estado del historial para cuando se navega hacia atrás o adelante
+    window.onpopstate = function() {
+        handleHashChange();
+    };
 
 
     $(document).ready(function(){
@@ -196,20 +333,6 @@ function displayFileContents(description, contents, files, notes) {
                 let $filePathGroup = $(this).closest('.file-path-group');
                 deleteFilePath($filePathGroup);
             });
-        }
-
-        // Función para agregar un input dinámico
-        function addFilePathInput() {
-            let inputHtml = `
-                <div class="input-group mb-2 file-path-group">
-                    <div class="input-group-text">
-                        <input type="checkbox" class="form-check-input mt-0 file-path-checkbox">
-                    </div>
-                    <input type="text" class="form-control file-input" placeholder="Ingresa la ruta del archivo...">
-                    <button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>
-                </div>
-            `;
-            $('#filePathsContainer').append(inputHtml);
         }
 
         // Función para eliminar rutas seleccionadas
@@ -353,6 +476,21 @@ function displayFileContents(description, contents, files, notes) {
         }
 
         
+        // Función para cargar el formulario basado en el ID
+        function loadFormFromLocalStorage(id) {
+            // Recuperar el contenido del formulario del localStorage
+            const formContent = localStorage.getItem(id);
+            
+            if (formContent) {
+                // Mostrar el formulario en el contenedor
+                document.getElementById('form-container').innerHTML = formContent;
+            } else {
+                // Si no hay formulario en localStorage para ese ID
+                document.getElementById('form-container').innerHTML = `<p>No form found for ID: ${id}</p>`;
+            }
+        }
+
+       
 
 
     });
