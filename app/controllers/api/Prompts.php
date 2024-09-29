@@ -23,13 +23,26 @@ class Prompts extends MyApiController
         parent::__construct();
     }     
     
-    protected function onPostingAfterCheck($id, array &$data){ 
-        $base_path = Files::addTrailingSlash($data['base_path']);
-        
+    protected function onPostingAfterCheck($id, array &$data)
+    { 
         $data['content'] = [];
-        foreach ($data['files'] as $file_path){
-            $file_path         = Files::removeFirstSlash($file_path);
-            $data['content'][] = Files::getContentOrFail($base_path . DIRECTORY_SEPARATOR . $file_path);
+
+        if (isset($data['base_path'])){
+            $base_path = Files::addTrailingSlash($data['base_path']);
+        
+            foreach ($data['files'] as $file_path){
+                if (!Files::isAbsolutePath($file_path)){
+                    $file_path         = Files::removeFirstSlash($file_path);
+                    $data['content'][] = Files::getContentOrFail($base_path . DIRECTORY_SEPARATOR . $file_path);
+                } else {
+                    $data['content'][] = Files::getContentOrFail($file_path);
+                }                
+            }
+        } else {
+            foreach ($data['files'] as $file_path){
+                $data['content'][] = Files::getContentOrFail($file_path);
+            }
         }
+        
     }
 } 

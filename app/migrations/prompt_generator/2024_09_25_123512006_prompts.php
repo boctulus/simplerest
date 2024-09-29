@@ -24,10 +24,10 @@ class Prompts implements IMigration
 
         $sc
         ->integer('id')->auto()->pri()
-        ->varchar('title', 100)
-        ->integer('project')->nullable()  /* la idea es que los prompts pertenezcan a un proyecto */
+        ->varchar('title', 100)->nullable()
+        ->integer('project')->nullable()  
         ->text('description')
-        ->varchar('base_path', 100)
+        ->varchar('base_path', 100)->nullable()
         ->json('files')
         ->text('notes')->nullable()
 		// ...
