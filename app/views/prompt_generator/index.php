@@ -58,9 +58,8 @@
 </div>
 
 <script>
-    // Función para obtener el contenido desde la API
+// Función para obtener el contenido desde la API
 function getPromptContent() {
-    const title = $('#prompt-title').val();  // Esto se puede quitar si no es necesario
     const description = $('#prompt-description').val();  // Introducción
     const files = [];
 
@@ -75,7 +74,6 @@ function getPromptContent() {
     const notes = $('#promptFinal').val();  // Notas finales
 
     const data = {
-        title: title,
         description: description,
         files: files,
         notes: notes
@@ -88,14 +86,55 @@ function getPromptContent() {
         contentType: 'application/json',
         data: JSON.stringify(data),
         success: function (response) {
-            // Procesar y mostrar el contenido recibido
+            // Procesar y mostrar el contenido recibido si es exitoso
+            clearValidationErrors();  // Limpiar cualquier error anterior
             displayFileContents(description, response.data.prompts.content, files, notes);
         },
         error: function (xhr, status, error) {
-            console.error('Error al obtener el contenido del prompt:', error);
+            if (xhr.status === 400) {
+                // Si el error es de validación, mostrarlo en el formulario
+                const validationErrors = xhr.responseJSON.error.detail;
+                showValidationErrors(validationErrors);
+            } else {
+                console.error('Error al obtener el contenido del prompt:', error);
+            }
         }
     });
 }
+
+// Función para mostrar errores de validación
+function showValidationErrors(errors) {
+    clearValidationErrors(); // Limpiar los errores anteriores
+
+    // Iterar sobre los errores y asignarlos a los campos
+    if (errors.description) {
+        $('#prompt-description').addClass('is-invalid');
+        $('#prompt-description').after(`<div class="invalid-feedback">${errors.description[0].error_detail}</div>`);
+    }
+
+    if (errors.files) {
+        // Aquí podrías iterar sobre las rutas de archivos si es necesario
+        $('.file-input').each(function (index) {
+            if (errors.files[index]) {
+                $(this).addClass('is-invalid');
+                $(this).after(`<div class="invalid-feedback">${errors.files[index].error_detail}</div>`);
+            }
+        });
+    }
+
+    if (errors.notes) {
+        $('#promptFinal').addClass('is-invalid');
+        $('#promptFinal').after(`<div class="invalid-feedback">${errors.notes[0].error_detail}</div>`);
+    }
+}
+
+// Función para limpiar los errores de validación anteriores
+function clearValidationErrors() {
+    // Limpiar las clases y feedbacks anteriores
+    $('.is-invalid').removeClass('is-invalid');
+    $('.invalid-feedback').remove();
+}
+
 
 /*
     Mostrar resultado en #generatedPrompt
@@ -254,12 +293,43 @@ function displayFileContents(description, contents, files, notes) {
             $('#generatedPrompt').val(generatedPrompt);
         }
 
-        // Función para copiar el prompt generado al portapapeles
+        // Función para copiar el prompt generado al portapapeles sin seleccionar el texto
         function copyToClipboard() {
-            let generatedPrompt = $('#generatedPrompt');
-            generatedPrompt.select();
-            document.execCommand('copy');
+            let generatedPrompt = $('#generatedPrompt').val();
+
+            // Verificar si la API del portapapeles está disponible
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                // Usamos el API del portapapeles si está disponible
+                navigator.clipboard.writeText(generatedPrompt).then(function() {
+                    // Si se copia correctamente, mostramos un mensaje de éxito
+                    Swal.fire('Éxito', 'El prompt ha sido copiado al portapapeles', 'success');
+                }).catch(function(error) {
+                    // Si ocurre algún error, mostramos un mensaje de error
+                    Swal.fire('Error', 'Hubo un problema al copiar el prompt', 'error');
+                    console.error('Error al copiar al portapapeles:', error);
+                });
+            } else {
+                // Fallback manual si la API del portapapeles no está disponible
+                let tempTextArea = document.createElement("textarea");
+                tempTextArea.value = generatedPrompt;
+                document.body.appendChild(tempTextArea);
+
+                // Seleccionamos el contenido del textarea temporal y lo copiamos
+                tempTextArea.select();
+                try {
+                    document.execCommand("copy");  // Copiamos el texto seleccionado
+                    Swal.fire('Éxito', 'El prompt ha sido copiado al portapapeles', 'success');
+                } catch (error) {
+                    Swal.fire('Error', 'Hubo un problema al copiar el prompt', 'error');
+                    console.error('Error al copiar manualmente:', error);
+                }
+
+                // Limpiar el textarea temporal
+                document.body.removeChild(tempTextArea);
+            }
         }
+
+
 
         // Función para actualizar el texto del botón con la opción seleccionada
         function updateExecuteButtonText(optionText) {
