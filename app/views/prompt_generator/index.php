@@ -403,8 +403,15 @@
             });
 
             // Asignar eventos a los botones del dropdown
-            $('#executeWithChatGPT').click(executeWithChatGPT);
-            $('#executeWithClaude').click(executeWithClaude);
+            $('#executeWithChatGPT').click(function(e) {
+                e.preventDefault();
+                executeWithChatGPT();
+            });
+
+            $('#executeWithClaude').click(function(e) {
+                e.preventDefault();
+                executeWithClaude();
+            });
 
             // Eventos para los botones de eliminar en inputs dinámicos
             $(document).on('click', '.delete-file-path', function() {
