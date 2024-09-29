@@ -59,72 +59,83 @@
 
 <script>
     // Función para obtener el contenido desde la API
-    function getPromptContent() {
-        const title = $('#prompt-title').val();
-        const description = $('#prompt-description').val();
-        const files = [];
+function getPromptContent() {
+    const title = $('#prompt-title').val();  // Esto se puede quitar si no es necesario
+    const description = $('#prompt-description').val();  // Introducción
+    const files = [];
 
-        // Obtener todas las rutas de archivos
-        $('.file-input').each(function () {
-            const filePath = $(this).val();
-            if (filePath) {
-                files.push(filePath);
-            }
-        });
+    // Obtener todas las rutas de archivos
+    $('.file-input').each(function () {
+        const filePath = $(this).val();
+        if (filePath) {
+            files.push(filePath);
+        }
+    });
 
-        const notes = $('#prompt-notes').val();
+    const notes = $('#promptFinal').val();  // Notas finales
 
-        const data = {
-            title: title,
-            description: description,
-            files: files,
-            notes: notes
-        };
+    const data = {
+        title: title,
+        description: description,
+        files: files,
+        notes: notes
+    };
 
-        // Hacer la solicitud POST
-        $.ajax({
-            url: 'http://simplerest.lan/api/v1/prompts',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function (response) {
-                // Procesar y mostrar el contenido recibido
-                displayFileContents(response.data.prompts.content, files);
-            },
-            error: function (xhr, status, error) {
-                console.error('Error al obtener el contenido del prompt:', error);
-            }
-        });
-    }
+    // Hacer la solicitud POST
+    $.ajax({
+        url: 'http://simplerest.lan/api/v1/prompts',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (response) {
+            // Procesar y mostrar el contenido recibido
+            displayFileContents(description, response.data.prompts.content, files, notes);
+        },
+        error: function (xhr, status, error) {
+            console.error('Error al obtener el contenido del prompt:', error);
+        }
+    });
+}
 
-    /*
-        Mostrar resultado en #generatedPrompt
-    */
-    function displayFileContents(contents, files) {
-        files.forEach(function (filePath, index) {
-            let content = contents[index];
-            let extension = filePath.split('.').pop();
-            
-            console.log(filePath, content);
+/*
+    Mostrar resultado en #generatedPrompt
+*/
+function displayFileContents(description, contents, files, notes) {
+    let generatedPrompt = '';
 
-            // Formatear según la extensión del archivo
-            let formattedContent;
-            if (extension === 'css') {
-                formattedContent = `<pre><code class="language-css">/* CSS File */\n${content}</code></pre>`;
-            } else if (extension === 'js') {
-                formattedContent = `<pre><code class="language-javascript">// JavaScript File\n${content}</code></pre>`;
-            } else if (extension === 'php') {
-                formattedContent = `<pre><code class="language-php">/* PHP File */\n${content}</code></pre>`;
-            } else if (extension === 'json' || extension === 'jsonl') {
-                formattedContent = `<pre><code class="language-json">/* JSON File */\n${content}</code></pre>`;
-            } else {
-                formattedContent = `<pre><code>/* Other File */\n${content}</code></pre>`;
-            }
+    // Incluir el contenido de la introducción
+    generatedPrompt += `${description}\n\n`;
 
-            // Mostrar el contenido debajo del input del archivo
-            $('#generatedPrompt').append(`<div class="file-content">${formattedContent}</div>`);
-        });
-    }
+    // Iterar sobre los archivos y sus contenidos
+    files.forEach(function (filePath, index) {
+        let content = contents[index];
+        let extension = filePath.split('.').pop();
+
+        // Formatear según la extensión del archivo
+        let formattedContent;
+        if (extension === 'css') {
+            formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`css\n${content}\n\`\`\`\n`;
+        } else if (extension === 'js') {
+            formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`javascript\n${content}\n\`\`\`\n`;
+        } else if (extension === 'php') {
+            formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`php\n${content}\n\`\`\`\n`;
+        } else if (extension === 'json' || extension === 'jsonl') {
+            formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`json\n${content}\n\`\`\`\n`;
+        } else {
+            formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`\n${content}\n\`\`\`\n`;
+        }
+
+        // Agregar el contenido formateado al prompt
+        generatedPrompt += formattedContent;
+    });
+
+    // Incluir las notas finales
+    generatedPrompt += `\n${notes}\n`;
+
+    // Mostrar el contenido en el textarea #generatedPrompt
+    $('#generatedPrompt').val(generatedPrompt);
+}
+
 
     $(document).ready(function(){
         // Inicializar eventos
