@@ -35,19 +35,25 @@
                     <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Ejecutar con
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="#" id="executeWithChatGPT">ChatGPT</a></li>
                         <li><a class="dropdown-item" href="#" id="executeWithClaude">Claude</a></li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Sección donde se muestra el prompt generado con el botón de copiar -->
+            <!-- Sección donde se muestra el prompt generado con el botón de copiar y el menú de opciones -->
             <div class="position-relative mt-4 mb-5">
                 <label for="generatedPrompt" class="form-label">PROMPT GENERADO</label>
-                <button class="btn btn-light border" id="copyPrompt" title="Copiar al portapapeles">
-                    <img src="<?= asset('img/copy-icon.svg') ?>" alt="Copiar" width="30" height="30">
-                </button>
+                <div class="dropdown float-end">
+                    <button class="btn btn-light border dropdown-toggle" type="button" id="promptOptionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="promptOptionsDropdown">
+                        <li><a class="dropdown-item" href="#" id="fullscreenPrompt">Pantalla completa</a></li>
+                        <li><a class="dropdown-item" href="#" id="copyPrompt">Copiar a portapapeles</a></li>
+                    </ul>
+                </div>
                 <textarea class="form-control" id="generatedPrompt" rows="6"></textarea>
             </div>
         </div>
@@ -323,6 +329,31 @@
         }
     }
 
+     // Función para alternar pantalla completa
+     function toggleFullscreen(element) {
+        if (!document.fullscreenElement) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) { // Firefox
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) { // IE/Edge
+                element.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { // Firefox
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { // IE/Edge
+                document.msExitFullscreen();
+            }
+        }
+    }
+
     // Manejar el evento de carga de la página
     window.onload = function() {
         // Si la página carga con un hash en la URL
@@ -356,8 +387,21 @@
             $('#addFilePath').click(addFilePathInput);
             $('#deleteSelectedPaths').click(deleteSelectedPaths);
             $('#generatePrompt').click(generatePrompt);
-            $('#copyPrompt').click(copyToClipboard);
+
+            // Función para copiar al portapapeles
+            $('#copyPrompt').click(function(e) {
+                e.preventDefault();
+                copyToClipboard();
+            });
+
             $('#clearFormButton').click(clearForm);
+
+            // Función para mostrar en pantalla completa
+            $('#fullscreenPrompt').click(function(e) {
+                e.preventDefault();
+                toggleFullscreen($('#generatedPrompt')[0]);
+            });
+
             // Asignar eventos a los botones del dropdown
             $('#executeWithChatGPT').click(executeWithChatGPT);
             $('#executeWithClaude').click(executeWithClaude);
@@ -366,7 +410,7 @@
             $(document).on('click', '.delete-file-path', function() {
                 let $filePathGroup = $(this).closest('.file-path-group');
                 deleteFilePath($filePathGroup);
-            });
+            });            
         }
 
         // Función para eliminar rutas seleccionadas
