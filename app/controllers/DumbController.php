@@ -10436,10 +10436,6 @@ class DumbController extends Controller
     function test_openai_2()
     {
         $chat = new ChatGPT();
-
-        $chat->client
-            ->cache(120);
-
         $chat->addContent('Hola, ¿cómo estás hoy?');
         $res = $chat->exec('gpt-4');
 
