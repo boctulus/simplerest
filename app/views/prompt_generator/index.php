@@ -29,7 +29,21 @@
             </div>
 
             <!-- Botón para generar el prompt -->
-            <button class="btn btn-primary" id="generatePrompt">Generar Prompt</button>
+            <div class="d-flex">
+                <button class="btn btn-primary me-2" id="generatePrompt">Generar Prompt</button>
+
+                <!-- Botón dropdown para ejecutar con ChatGPT o Claude -->
+                <div class="btn-group">
+                    <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Ejecutar con
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" id="executeWithChatGPT">ChatGPT</a></li>
+                        <li><a class="dropdown-item" href="#" id="executeWithClaude">Claude</a></li>
+                    </ul>
+                </div>
+            </div>
+
 
             <!-- Sección donde se muestra el prompt generado con el botón de copiar -->
             <div class="position-relative mt-4">
@@ -56,6 +70,9 @@
             $('#deleteSelectedPaths').click(deleteSelectedPaths);
             $('#generatePrompt').click(generatePrompt);
             $('#copyPrompt').click(copyToClipboard);
+            // Asignar eventos a los botones del dropdown
+            $('#executeWithChatGPT').click(executeWithChatGPT);
+            $('#executeWithClaude').click(executeWithClaude);
 
             // Eventos para los botones de eliminar en inputs dinámicos
             $(document).on('click', '.delete-file-path', function() {
@@ -165,5 +182,22 @@
             generatedPrompt.select();
             document.execCommand('copy');
         }
+
+        // Función para ejecutar con ChatGPT
+        function executeWithChatGPT() {
+            let generatedPrompt = $('#generatedPrompt').val();
+            console.log("Ejecutar con ChatGPT:", generatedPrompt);
+            // Aquí puedes añadir la lógica para enviar el prompt a ChatGPT
+        }
+
+        // Función para ejecutar con Claude
+        function executeWithClaude() {
+            let generatedPrompt = $('#generatedPrompt').val();
+            console.log("Ejecutar con Claude:", generatedPrompt);
+            // Aquí puedes añadir la lógica para enviar el prompt a Claude
+        }
+
+
+
     });
 </script>
