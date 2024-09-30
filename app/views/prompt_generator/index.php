@@ -17,9 +17,10 @@
                 <label class="form-label">RUTAS A ARCHIVOS A INCLUIR</label>
                 <div id="filePathsContainer"></div>
                 <button class="btn btn-success mt-2" id="addFilePath">Agregar ruta</button>
-                
+
                 <div class="btn-group mt-2 float-end">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="bulkActionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="bulkActionDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         Acción masiva
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="bulkActionDropdown">
@@ -33,7 +34,8 @@
             <!-- Sección de notas finales -->
             <div class="mb-3">
                 <label for="promptFinal" class="form-label">PROMPT (Notas finales)</label>
-                <textarea class="form-control" id="promptFinal" rows="4" placeholder="Escribe las notas finales..."></textarea>
+                <textarea class="form-control" id="promptFinal" rows="4"
+                    placeholder="Escribe las notas finales..."></textarea>
             </div>
 
             <!-- Botones para generar el prompt y ejecutar con opciones -->
@@ -42,7 +44,8 @@
 
                 <!-- Botón dropdown para ejecutar con ChatGPT o Claude -->
                 <div class="btn-group">
-                    <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
                         Ejecutar con
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -56,7 +59,8 @@
             <div class="position-relative mt-4 mb-5">
                 <label for="generatedPrompt" class="form-label">PROMPT GENERADO</label>
                 <div class="dropdown float-end">
-                    <button class="btn btn-light border dropdown-toggle" type="button" id="promptOptionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-light border dropdown-toggle" type="button" id="promptOptionsDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-three-dots-vertical"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="promptOptionsDropdown">
@@ -74,13 +78,17 @@
     // Función para obtener el contenido desde la API
     function getPromptContent() {
         const description = $('#prompt-description').val();  // Introducción
-        const files = $('.file-input').filter(function() {
-            return !$(this).closest('.file-path-group').attr('data-disabled');
-        }).map(function() {
-            return $(this).val();
+        const files = $('.file-input').filter(function () {
+            // Solo incluir rutas no vacías y no deshabilitadas
+            return !$(this).closest('.file-path-group').attr('data-disabled') && $(this).val().trim() !== '';
+        }).map(function () {
+            return $(this).val().trim();
         }).get();
 
-        const notes = $('#promptFinal').val();
+        // Preseguir y hacer la solicitud POST solo si hay archivos para procesar
+        if (files.length > 0) {
+
+            const notes = $('#promptFinal').val();
             // Obtener todas las rutas de archivos
             $('.file-input').not(':disabled').each(function () {
                 const filePath = $(this).val();
@@ -89,61 +97,66 @@
                 }
             });
 
-        const data = {
-            description: description,
-            files: files,
-            notes: notes
-        };
+            const data = {
+                description: description,
+                files: files,
+                notes: notes
+            };
 
-        // Hacer la solicitud POST
-        $.ajax({
-            url: 'http://simplerest.lan/api/v1/prompts',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function (response) {
-                // Procesar y mostrar el contenido recibido si es exitoso
-                clearValidationErrors();  // Limpiar cualquier error anterior
-                displayFileContents(description, response.data.prompts.content, files, notes);
+            // Hacer la solicitud POST
+            $.ajax({
+                url: 'http://simplerest.lan/api/v1/prompts',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    // Procesar y mostrar el contenido recibido si es exitoso
+                    clearValidationErrors();  // Limpiar cualquier error anterior
+                    displayFileContents(description, response.data.prompts.content, files, notes);
 
-                const id = response.data.id;
-                const newUrl = `${window.location.pathname}#chat-${id}`;
-                history.pushState({id: id}, '', newUrl);
-                saveFormVersion(id, description, files, notes);
-            },
-            error: function (xhr, status, error) {
-                if (xhr.status === 400) {
-                    // Si el error es de validación, mostrarlo en el formulario
-                    const validationErrors = xhr.responseJSON.error.detail;
-                    showValidationErrors(validationErrors);
-                } else {
-                    console.error('Error al obtener el contenido del prompt:', error);
+                    const id = response.data.id;
+                    const newUrl = `${window.location.pathname}#chat-${id}`;
+                    history.pushState({ id: id }, '', newUrl);
+                    saveFormVersion(id, description, files, notes);
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 400) {
+                        // Si el error es de validación, mostrarlo en el formulario
+                        const validationErrors = xhr.responseJSON.error.detail;
+                        showValidationErrors(validationErrors);
+                    } else {
+                        console.error('Error al obtener el contenido del prompt:', error);
+                    }
+
+                    if (xhr.status === 500) {
+                        const errorMessage = xhr.responseJSON.error.message;
+                        const errorPath = errorMessage.match(/Path '(.+)' does not exist/)[1];
+
+                        // Actualizar el input correspondiente a la ruta problemática
+                        $('.file-input').each(function () {
+                            if ($(this).val() === errorPath) {
+                                let $group = $(this).closest('.file-path-group');
+                                $group.replaceWith(addFilePathInput(errorPath, true));
+                            }
+                        });
+
+                        // Mostrar el mensaje de error con SweetAlert
+                        Swal.fire({
+                            title: 'Error',
+                            text: errorMessage,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        console.error('Error al obtener el contenido del prompt:', error);
+                    }
                 }
+            });
 
-                if (xhr.status === 500) {
-                    const errorMessage = xhr.responseJSON.error.message;
-                    const errorPath = errorMessage.match(/Path '(.+)' does not exist/)[1];
-                    
-                    // Actualizar el input correspondiente a la ruta problemática
-                    $('.file-input').each(function () {
-                        if ($(this).val() === errorPath) {
-                            let $group = $(this).closest('.file-path-group');
-                            $group.replaceWith(addFilePathInput(errorPath, true));
-                        }
-                    });
-                    
-                    // Mostrar el mensaje de error con SweetAlert
-                    Swal.fire({
-                        title: 'Error',
-                        text: errorMessage,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                } else {
-                    console.error('Error al obtener el contenido del prompt:', error);
-                }
-            }
-        });
+        } else {
+            Swal.fire('Advertencia', 'No hay rutas de archivos válidas para procesar.', 'warning');
+        }
+
     }
 
     // Función para mostrar errores de validación
@@ -175,11 +188,11 @@
     function handleServerResponse(response) {
         if (response.error) {
             // Manejar errores de ruta
-            $('.file-input').each(function(index) {
+            $('.file-input').each(function (index) {
                 let $input = $(this);
                 let value = $input.val();
                 let hasError = response.error.invalidPaths.includes(value);
-                
+
                 // Reemplazar el input actual con uno nuevo basado en si tiene error o no
                 let $newInput = $(addFilePathInput(value, hasError));
                 $input.closest('.file-path-group').replaceWith($newInput);
@@ -189,10 +202,10 @@
             clearValidationErrors();
         }
     }
-    
+
     // Función para agregar un input dinámico
     function addFilePathInput(value = '', hasError = false, isDisabled = false) {
-       if (typeof value === 'object' && value !== null) {
+        if (typeof value === 'object' && value !== null) {
             // Si es un objeto, intentamos obtener una propiedad que pueda contener la ruta
             value = '';
         }
@@ -200,7 +213,7 @@
         let inputHtml = `
             <div class="input-group mb-2 file-path-group" ${isDisabled ? 'data-disabled="true"' : ''}>
                 <div class="input-group-text">
-                    <input type="checkbox" class="form-check-input mt-0 file-path-checkbox">
+                    <input type="checkbox" class="form-check-input mt-0 file-path-checkbox" ${isDisabled ? 'checked' : ''}>
                 </div>
                 <input type="text" class="form-control file-input ${hasError ? 'is-invalid' : ''} ${isDisabled ? 'text-muted' : ''}" 
                     placeholder="Ingresa la ruta del archivo..." value="${value}" ${isDisabled ? 'disabled' : ''}>
@@ -212,7 +225,7 @@
     }
 
     function restoreDeleteButtons() {
-        $('.file-path-group.has-error').each(function() {
+        $('.file-path-group.has-error').each(function () {
             let $group = $(this);
             $group.removeClass('has-error');
             $group.find('.is-invalid').removeClass('is-invalid');
@@ -225,10 +238,12 @@
     function clearValidationErrors() {
         $('.is-invalid').removeClass('is-invalid');
         $('.invalid-feedback').remove();
-        $('.file-path-group').each(function() {
+        
+        $('.file-path-group').each(function () {
             let $group = $(this);
             let value = $group.find('.file-input').val();
-            $group.replaceWith(addFilePathInput(value, false));
+            let isDisabled = $group.attr('data-disabled') === 'true';
+            $group.replaceWith(addFilePathInput(value, false, isDisabled));
         });
     }
 
@@ -236,7 +251,7 @@
         $('#prompt-description').val('');
         $('#promptFinal').val('');
         $('#generatedPrompt').val('');
-        
+
         // Vaciar el contenedor de rutas pero mantener un solo campo vacío
         $('#filePathsContainer').html(`
             <div class="input-group mb-2 file-path-group">
@@ -305,18 +320,24 @@
             $('#filePathsContainer').empty(); // Limpiar contenedor existente
 
             if (Array.isArray(savedForm.files)) {
+                // Usar un Set para evitar duplicados
+                const uniquePaths = new Set();
+                
                 savedForm.files.forEach(file => {
                     let filePath, isDisabled;
                     if (typeof file === 'string') {
-                        // Formato antiguo
                         filePath = file;
                         isDisabled = false;
                     } else {
-                        // Nuevo formato con estado de deshabilitación
                         filePath = file.path;
                         isDisabled = file.disabled;
                     }
-                    addFilePathInput(filePath, false, isDisabled);
+                    
+                    // Solo agregar si la ruta no existe ya
+                    if (!uniquePaths.has(filePath)) {
+                        uniquePaths.add(filePath);
+                        addFilePathInput(filePath, false, isDisabled);
+                    }
                 });
             }
         }
@@ -340,6 +361,8 @@
         files.forEach(function (filePath, index) {
             let content = contents[index];
             let extension = filePath.split('.').pop();
+            let $existingInput = $(`.file-input[value="${filePath}"]`);
+            let isDisabled = $existingInput.closest('.file-path-group').attr('data-disabled') === 'true';
 
             // Formatear según la extensión del archivo
             let formattedContent;
@@ -373,8 +396,8 @@
         }
     }
 
-     // Función para alternar pantalla completa
-     function toggleFullscreen(element) {
+    // Función para alternar pantalla completa
+    function toggleFullscreen(element) {
         if (!document.fullscreenElement) {
             if (element.requestFullscreen) {
                 element.requestFullscreen();
@@ -399,7 +422,7 @@
     }
 
     function togglePathStatus(enable) {
-        $('.file-path-checkbox:checked').each(function() {
+        $('.file-path-checkbox:checked').each(function () {
             let $group = $(this).closest('.file-path-group');
             let $input = $group.find('.file-input');
             $group.attr('data-disabled', !enable);
@@ -424,12 +447,12 @@
         $('#disableSelectedPaths').toggle(!allDisabled);
     }
 
-    $('#enableSelectedPaths').click(function(e) {
+    $('#enableSelectedPaths').click(function (e) {
         e.preventDefault();
         togglePathStatus(true);
     });
 
-    $('#disableSelectedPaths').click(function(e) {
+    $('#disableSelectedPaths').click(function (e) {
         e.preventDefault();
         togglePathStatus(false);
     });
@@ -438,7 +461,7 @@
     $(document).on('change', '.file-path-checkbox', updateBulkActionOptions);
 
     // Manejar el evento de carga de la página
-    window.onload = function() {
+    window.onload = function () {
         // Si la página carga con un hash en la URL
         if (window.location.hash) {
             handleHashChange();
@@ -448,55 +471,55 @@
     // Manejar el evento 'hashchange' para detectar cambios en el hash de la URL
     window.addEventListener('hashchange', handleHashChange);
 
-    window.addEventListener('popstate', function(event) {
+    window.addEventListener('popstate', function (event) {
         if (event.state && event.state.id) {
             loadFormStateFromLocalStorage();
         }
     });
 
     // Manejar el estado del historial para cuando se navega hacia atrás o adelante
-    window.onpopstate = function() {
+    window.onpopstate = function () {
         handleHashChange();
     };
 
 
-    $(document).ready(function(){
+    $(document).ready(function () {
         // Inicializar eventos
         initializeEvents();
         addFilePathInput(); // que haya al menos una ruta
 
         // Función para inicializar los eventos
         function initializeEvents() {
-            $('#addFilePath').click(function(e) {
+            $('#addFilePath').click(function (e) {
                 e.preventDefault();
                 addFilePathInput();
             });
-            
-            $('#generatePrompt').click(function(e) {
+
+            $('#generatePrompt').click(function (e) {
                 e.preventDefault();
                 generatePrompt();
             });
 
-            $('#deleteSelectedPaths').click(function(e) {
+            $('#deleteSelectedPaths').click(function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 deleteSelectedPaths();
             });
 
-            $('#deleteSelectedPaths').click(function(e) {
+            $('#deleteSelectedPaths').click(function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 deleteSelectedPaths();
             });
 
-            $('#enableSelectedPaths').click(function(e) {
+            $('#enableSelectedPaths').click(function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 togglePathStatus(true);
             });
 
             // Función para copiar al portapapeles
-            $('#copyPrompt').click(function(e) {
+            $('#copyPrompt').click(function (e) {
                 e.preventDefault();
                 copyToClipboard();
             });
@@ -504,35 +527,35 @@
             $('#clearFormButton').click(clearForm);
 
             // Función para mostrar en pantalla completa
-            $('#fullscreenPrompt').click(function(e) {
+            $('#fullscreenPrompt').click(function (e) {
                 e.preventDefault();
                 toggleFullscreen($('#generatedPrompt')[0]);
             });
 
             // Asignar eventos a los botones del dropdown
-            $('#executeWithChatGPT').click(function(e) {
+            $('#executeWithChatGPT').click(function (e) {
                 e.preventDefault();
                 executeWithChatGPT();
             });
 
-            $('#executeWithClaude').click(function(e) {
+            $('#executeWithClaude').click(function (e) {
                 e.preventDefault();
                 executeWithClaude();
             });
 
             // Registrar el evento para generar el prompt
-            $('#generate-prompt').on('click', function(e) {
+            $('#generate-prompt').on('click', function (e) {
                 e.preventDefault();
                 getPromptContent();
             });
 
             // Eventos para los botones de eliminar en inputs dinámicos
-            $(document).on('click', '.delete-file-path', function() {
+            $(document).on('click', '.delete-file-path', function () {
                 let $filePathGroup = $(this).closest('.file-path-group');
                 deleteFilePath($filePathGroup);
-            });       
-            
-            $('form').on('submit', function(e) {
+            });
+
+            $('form').on('submit', function (e) {
                 e.preventDefault();
             });
         }
@@ -597,19 +620,20 @@
             let finalNotes = $('#promptFinal').val();
 
             // Obtener las rutas de los inputs dinámicos
-            let filePaths = [];
-            $('.file-path-input').each(function() {
-                let path = $(this).val().trim();
-                if (path) {
-                    filePaths.push(path);
-                }
-            });
+            let filePaths = $('.file-input').map(function() {
+                let $input = $(this);
+                let $group = $input.closest('.file-path-group');
+                return {
+                    path: $input.val().trim(),
+                    disabled: $group.attr('data-disabled') === 'true'
+                };
+            }).get().filter(file => file.path !== '');
 
             // Generar el prompt concatenado
             let generatedPrompt = intro + '\n\n';
 
             // Agregar archivos con cabeceras
-            filePaths.forEach(function(path) {
+            filePaths.forEach(function (path) {
                 generatedPrompt += `### Archivo: ${path} ###\n/* Contenido del archivo ${path} */\n\n`;
             });
 
@@ -627,10 +651,10 @@
             // Verificar si la API del portapapeles está disponible
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 // Usamos el API del portapapeles si está disponible
-                navigator.clipboard.writeText(generatedPrompt).then(function() {
+                navigator.clipboard.writeText(generatedPrompt).then(function () {
                     // Si se copia correctamente, mostramos un mensaje de éxito
                     Swal.fire('Éxito', 'El prompt ha sido copiado al portapapeles', 'success');
-                }).catch(function(error) {
+                }).catch(function (error) {
                     // Si ocurre algún error, mostramos un mensaje de error
                     Swal.fire('Error', 'Hubo un problema al copiar el prompt', 'error');
                     console.error('Error al copiar al portapapeles:', error);
@@ -679,12 +703,12 @@
             // Aquí puedes añadir la lógica para enviar el prompt a Claude
         }
 
-        
+
         // Función para cargar el formulario basado en el ID
         function loadFormFromLocalStorage(id) {
             // Recuperar el contenido del formulario del localStorage
             const formContent = localStorage.getItem(id);
-            
+
             if (formContent) {
                 // Mostrar el formulario en el contenedor
                 document.getElementById('form-container').innerHTML = formContent;
@@ -694,7 +718,7 @@
             }
         }
 
-       
+
 
 
     });
