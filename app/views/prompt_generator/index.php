@@ -74,17 +74,20 @@
     // Función para obtener el contenido desde la API
     function getPromptContent() {
         const description = $('#prompt-description').val();  // Introducción
-        const files = [];
+        const files = $('.file-input').filter(function() {
+            return !$(this).closest('.file-path-group').attr('data-disabled');
+        }).map(function() {
+            return $(this).val();
+        }).get();
 
-        // Obtener todas las rutas de archivos
-        $('.file-input').not(':disabled').each(function () {
-            const filePath = $(this).val();
-            if (filePath) {
-                files.push(filePath);
-            }
-        });
-
-        const notes = $('#promptFinal').val();  // Notas finales
+        const notes = $('#promptFinal').val();
+            // Obtener todas las rutas de archivos
+            $('.file-input').not(':disabled').each(function () {
+                const filePath = $(this).val();
+                if (filePath) {
+                    files.push(filePath);
+                }
+            });
 
         const data = {
             description: description,
@@ -195,7 +198,7 @@
         }
 
         let inputHtml = `
-            <div class="input-group mb-2 file-path-group ${isDisabled ? 'disabled' : ''}">
+            <div class="input-group mb-2 file-path-group" ${isDisabled ? 'data-disabled="true"' : ''}>
                 <div class="input-group-text">
                     <input type="checkbox" class="form-check-input mt-0 file-path-checkbox">
                 </div>
@@ -254,7 +257,15 @@
         const formVersion = {
             id: id,
             description: description,
-            files: files,
+            files: files.map(file => {
+                if (typeof file === 'string') {
+                    return {
+                        path: file,
+                        disabled: $('.file-input[value="' + file + '"]').closest('.file-path-group').attr('data-disabled') === 'true'
+                    };
+                }
+                return file;
+            }),
             notes: notes,
             timestamp: new Date().toISOString()
         };
@@ -264,7 +275,14 @@
     function saveFormToLocalStorage() {
         const formState = {
             description: $('#prompt-description').val(),
-            files: $('.file-input').map((_, input) => $(input).val()).get(),
+            files: $('.file-input').map((_, input) => {
+                const $input = $(input);
+                const $group = $input.closest('.file-path-group');
+                return {
+                    path: $input.val(),
+                    disabled: $group.attr('data-disabled') === 'true'
+                };
+            }).get(),
             notes: $('#promptFinal').val()
         };
         localStorage.setItem('currentForm', JSON.stringify(formState));
@@ -272,24 +290,40 @@
 
     function loadFormStateFromLocalStorage() {
         const currentHash = window.location.hash;
+        let savedForm;
+
         if (currentHash.startsWith('#chat-')) {
             const formId = currentHash.split('-')[1];
-            const savedForm = JSON.parse(localStorage.getItem(`chat-${formId}`));
-
-            if (savedForm) {
-                $('#prompt-description').val(savedForm.description);
-                $('#promptFinal').val(savedForm.notes);
-                $('#filePathsContainer').empty(); // Limpiar contenedor existente
-                savedForm.files.forEach(file => addFilePathInput(file));
-            }
+            savedForm = JSON.parse(localStorage.getItem(`chat-${formId}`));
         } else {
-            const currentForm = JSON.parse(localStorage.getItem('currentForm'));
-            if (currentForm) {
-                $('#prompt-description').val(currentForm.description);
-                $('#promptFinal').val(currentForm.notes);
-                $('#filePathsContainer').empty(); // Limpiar contenedor existente
-                currentForm.files.forEach(file => addFilePathInput(file));
+            savedForm = JSON.parse(localStorage.getItem('currentForm'));
+        }
+
+        if (savedForm) {
+            $('#prompt-description').val(savedForm.description || '');
+            $('#promptFinal').val(savedForm.notes || '');
+            $('#filePathsContainer').empty(); // Limpiar contenedor existente
+
+            if (Array.isArray(savedForm.files)) {
+                savedForm.files.forEach(file => {
+                    let filePath, isDisabled;
+                    if (typeof file === 'string') {
+                        // Formato antiguo
+                        filePath = file;
+                        isDisabled = false;
+                    } else {
+                        // Nuevo formato con estado de deshabilitación
+                        filePath = file.path;
+                        isDisabled = file.disabled;
+                    }
+                    addFilePathInput(filePath, false, isDisabled);
+                });
             }
+        }
+
+        // Asegurarse de que siempre haya al menos una ruta
+        if ($('.file-path-group').length === 0) {
+            addFilePathInput();
         }
     }
 
@@ -368,14 +402,17 @@
         $('.file-path-checkbox:checked').each(function() {
             let $group = $(this).closest('.file-path-group');
             let $input = $group.find('.file-input');
+            $group.attr('data-disabled', !enable);
+            $input.prop('disabled', !enable);
             if (enable) {
                 $group.removeClass('disabled');
-                $input.removeClass('text-muted').prop('disabled', false);
+                $input.removeClass('text-muted');
             } else {
                 $group.addClass('disabled');
-                $input.addClass('text-muted').prop('disabled', true);
+                $input.addClass('text-muted');
             }
         });
+        updateBulkActionOptions();
     }
 
     function updateBulkActionOptions() {
