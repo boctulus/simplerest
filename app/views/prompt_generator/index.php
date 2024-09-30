@@ -44,8 +44,7 @@
 
                 <!-- Botón dropdown para ejecutar con ChatGPT o Claude -->
                 <div class="btn-group">
-                    <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="executeButton">
                         Ejecutar con
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -68,6 +67,9 @@
                         <li><a class="dropdown-item" href="#" id="copyPrompt">Copiar a portapapeles</a></li>
                     </ul>
                 </div>
+                <!--button class="btn btn-light border" id="copyPrompt" title="Copiar al portapapeles">
+                    <img src="< ?= asset('img/copy-icon.svg') ? >" alt="Copiar" width="30" height="30">
+                </button-->
                 <textarea class="form-control" id="generatedPrompt" rows="6"></textarea>
             </div>
         </div>
