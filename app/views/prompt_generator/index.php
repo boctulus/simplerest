@@ -17,7 +17,17 @@
                 <label class="form-label">RUTAS A ARCHIVOS A INCLUIR</label>
                 <div id="filePathsContainer"></div>
                 <button class="btn btn-success mt-2" id="addFilePath">Agregar ruta</button>
-                <button class="btn btn-danger mt-2 float-end" id="deleteSelectedPaths">Borrar rutas seleccionadas</button>
+                
+                <div class="btn-group mt-2 float-end">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="bulkActionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Acción masiva
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="bulkActionDropdown">
+                        <li><a class="dropdown-item" href="#" id="deleteSelectedPaths">Borrar rutas</a></li>
+                        <li><a class="dropdown-item" href="#" id="enableSelectedPaths">Habilitar</a></li>
+                        <li><a class="dropdown-item" href="#" id="disableSelectedPaths">Deshabilitar</a></li>
+                    </ul>
+                </div>
             </div>
 
             <!-- Sección de notas finales -->
@@ -28,7 +38,7 @@
 
             <!-- Botones para generar el prompt y ejecutar con opciones -->
             <div class="d-flex justify-content-between">
-                <button id="generate-prompt" class="btn btn-primary" onclick="getPromptContent()">Generar Prompt</button>
+                <button id="generate-prompt" class="btn btn-primary">Generar Prompt</button>
 
                 <!-- Botón dropdown para ejecutar con ChatGPT o Claude -->
                 <div class="btn-group">
@@ -67,7 +77,7 @@
         const files = [];
 
         // Obtener todas las rutas de archivos
-        $('.file-input').each(function () {
+        $('.file-input').not(':disabled').each(function () {
             const filePath = $(this).val();
             if (filePath) {
                 files.push(filePath);
@@ -178,19 +188,19 @@
     }
     
     // Función para agregar un input dinámico
-    function addFilePathInput(value = '', hasError = false) {
+    function addFilePathInput(value = '', hasError = false, isDisabled = false) {
        if (typeof value === 'object' && value !== null) {
             // Si es un objeto, intentamos obtener una propiedad que pueda contener la ruta
             value = '';
         }
 
         let inputHtml = `
-            <div class="input-group mb-2 file-path-group">
+            <div class="input-group mb-2 file-path-group ${isDisabled ? 'disabled' : ''}">
                 <div class="input-group-text">
                     <input type="checkbox" class="form-check-input mt-0 file-path-checkbox">
                 </div>
-                <input type="text" class="form-control file-input ${hasError ? 'is-invalid' : ''}" 
-                    placeholder="Ingresa la ruta del archivo..." value="${value}">
+                <input type="text" class="form-control file-input ${hasError ? 'is-invalid' : ''} ${isDisabled ? 'text-muted' : ''}" 
+                    placeholder="Ingresa la ruta del archivo..." value="${value}" ${isDisabled ? 'disabled' : ''}>
                 <button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>
                 ${hasError ? `<div class="invalid-feedback">La ruta '${value}' no existe</div>` : ''}
             </div>
@@ -354,6 +364,42 @@
         }
     }
 
+    function togglePathStatus(enable) {
+        $('.file-path-checkbox:checked').each(function() {
+            let $group = $(this).closest('.file-path-group');
+            let $input = $group.find('.file-input');
+            if (enable) {
+                $group.removeClass('disabled');
+                $input.removeClass('text-muted').prop('disabled', false);
+            } else {
+                $group.addClass('disabled');
+                $input.addClass('text-muted').prop('disabled', true);
+            }
+        });
+    }
+
+    function updateBulkActionOptions() {
+        let $selectedPaths = $('.file-path-checkbox:checked');
+        let allEnabled = $selectedPaths.closest('.file-path-group').not('.disabled').length === $selectedPaths.length;
+        let allDisabled = $selectedPaths.closest('.file-path-group.disabled').length === $selectedPaths.length;
+
+        $('#enableSelectedPaths').toggle(!allEnabled);
+        $('#disableSelectedPaths').toggle(!allDisabled);
+    }
+
+    $('#enableSelectedPaths').click(function(e) {
+        e.preventDefault();
+        togglePathStatus(true);
+    });
+
+    $('#disableSelectedPaths').click(function(e) {
+        e.preventDefault();
+        togglePathStatus(false);
+    });
+
+    // Llamar a esta función cuando se seleccionen/deseleccionen rutas
+    $(document).on('change', '.file-path-checkbox', updateBulkActionOptions);
+
     // Manejar el evento de carga de la página
     window.onload = function() {
         // Si la página carga con un hash en la URL
@@ -384,9 +430,33 @@
 
         // Función para inicializar los eventos
         function initializeEvents() {
-            $('#addFilePath').click(addFilePathInput);
-            $('#deleteSelectedPaths').click(deleteSelectedPaths);
-            $('#generatePrompt').click(generatePrompt);
+            $('#addFilePath').click(function(e) {
+                e.preventDefault();
+                addFilePathInput();
+            });
+            
+            $('#generatePrompt').click(function(e) {
+                e.preventDefault();
+                generatePrompt();
+            });
+
+            $('#deleteSelectedPaths').click(function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                deleteSelectedPaths();
+            });
+
+            $('#deleteSelectedPaths').click(function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                deleteSelectedPaths();
+            });
+
+            $('#enableSelectedPaths').click(function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                togglePathStatus(true);
+            });
 
             // Función para copiar al portapapeles
             $('#copyPrompt').click(function(e) {
@@ -413,20 +483,32 @@
                 executeWithClaude();
             });
 
+            // Registrar el evento para generar el prompt
+            $('#generate-prompt').on('click', function(e) {
+                e.preventDefault();
+                getPromptContent();
+            });
+
             // Eventos para los botones de eliminar en inputs dinámicos
             $(document).on('click', '.delete-file-path', function() {
                 let $filePathGroup = $(this).closest('.file-path-group');
                 deleteFilePath($filePathGroup);
-            });            
+            });       
+            
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+            });
         }
 
         // Función para eliminar rutas seleccionadas
         function deleteSelectedPaths() {
-            let $selectedPaths = $('.file-path-checkbox:checked').closest('.file-path-group');
+            let $selectedPaths = $('.file-path-checkbox:checked').closest('.file-path-group').not('.disabled');
+
             if ($selectedPaths.length === 0) {
                 Swal.fire('Advertencia', 'No hay rutas seleccionadas para eliminar', 'warning');
                 return;
             }
+
             Swal.fire({
                 title: '¿Estás seguro?',
                 text: `¿Quieres eliminar ${$selectedPaths.length} ruta(s) seleccionada(s)?`,
