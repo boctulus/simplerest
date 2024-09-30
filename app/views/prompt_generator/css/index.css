@@ -2,7 +2,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    margin: 32px 0 0 0;
+    margin: 38px 0 0 0;
     z-index: 10;
 }
 .position-relative {
@@ -24,9 +24,9 @@
 
 .dropdown-menu {
     margin-top: 2px; /* Un pequeño espacio entre el botón y el menú */
-    min-width: 200px; /* Ancho mínimo para el menú */
-    max-width: 250px; /* Ancho máximo para evitar que sea demasiado ancho */
-    max-height: 150px; /* Altura máxima antes de que aparezca scroll */
+    min-width: 146px; /* Reducimos el ancho mínimo */
+    max-width: 200px; /* Reducimos el ancho máximo */
+    max-height: 200px; /* Altura máxima antes de que aparezca scroll */
     padding-bottom: 30px;
     overflow-y: auto; /* Permite scroll si el contenido es muy largo */
     z-index: 1000; /* Asegura que esté por encima de otros elementos */
