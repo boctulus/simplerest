@@ -284,7 +284,7 @@ class ChatGPT implements AIChat
     }
 
     function getTokenUsage(){        
-        return $this->response['data']['usage'];
+        return $this->response['data']['usage'] ?? null;
     }
 
     function getFinishReason(){

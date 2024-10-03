@@ -10989,4 +10989,30 @@ class DumbController extends Controller
         );
     }
 
+    function test_code_gen()
+    {
+        $chat = new ChatGPT();
+        $chat->setModel('o1-preview');  
+
+        // Testing - cache
+        $chat->getClient()
+        ->enablePostRequestCache()
+        ->setCache(3600);
+
+        $prompt = Files::getContentOrFail(ETC_PATH . 'prompt-generator\generated\001.txt');
+
+        $chat->addContent($prompt);
+
+        $res = $chat->exec();
+
+        if (!$chat->isComplete()){
+            dd($chat->getFinishReason(), 'Finish reason');
+            // die;
+        }
+
+        dd($res, 'Content');
+
+        dd($chat->getTokenUsage(), 'TOKEN USAGE');
+    }
+
 }   // end class

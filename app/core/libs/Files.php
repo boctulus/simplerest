@@ -87,7 +87,7 @@ class Files
 			return $path;
 		}
 
-		$path = Files::realPathNoCoercive($path);
+		$path = static::realPathNoCoercive($path);
 
 		if (Strings::endsWith('\\', $path) || Strings::endsWith('/', $path)){
 			return substr($path, 0, strlen($path)-1);
@@ -289,14 +289,14 @@ class Files
 
         Ej:
 
-        Files::processCSV($path, ',', true, function($row){
+        static::processCSV($path, ',', true, function($row){
             // Procesamiento del row
             dd($row, 'ROW');
         });
 
 		o si el archivo no tiene cabecera se la puede especificar:
 
-		Files::processCSV($archivo, ';', false, function($p) { 
+		static::processCSV($archivo, ';', false, function($p) { 
 			dd($p, 'P (por procesar)');
 		}, [
 			'sku',
@@ -307,7 +307,7 @@ class Files
 
 		y aun si la tiene se pueden redefinir algunos campos:
 
-		Files::processCSV($archivo, ';', true, function($p) { 
+		static::processCSV($archivo, ';', true, function($p) { 
 			dd($p, 'P (por procesar)');
 		}, [
 			'SKU'            => 'sku',
@@ -319,7 +319,7 @@ class Files
 
 		Ej:
 		
-		Files::processCSV($archivo, ';', false, function($p) { 
+		static::processCSV($archivo, ';', false, function($p) { 
 			dd($p, 'P (por procesar)');
 		}, [
 			'sku',
@@ -330,7 +330,7 @@ class Files
 
 		o si el archivo tiene ya cabecera entonces asi:
 
-		Files::processCSV($archivo, ';', true, function($p) { 
+		static::processCSV($archivo, ';', true, function($p) { 
 			dd($p, 'P (por procesar)');
 		}, null ,36332,5); 
 
@@ -476,7 +476,7 @@ class Files
 			$clean_paths = static::removePath([ $path1, $path2, $path_n ], static::PLUGINDIR);
 	*/
 	static function removePath($to_clean, string $path) {
-		$path_non_trailing_slash = Files::removeTrailingSlash($path);
+		$path_non_trailing_slash = static::removeTrailingSlash($path);
 
 		$len = strlen($path_non_trailing_slash) + 1;
 
@@ -610,7 +610,7 @@ class Files
 	static function getAbsolutePath(string $path, string $relative_to =  null){
 		// sin chequear si tiene uso actualmente.
 		if ($relative_to !== null){
-			return Files::removeTrailingSlash($relative_to) . DIRECTORY_SEPARATOR . ltrim(ltrim($path, '/'), '\\');
+			return static::removeTrailingSlash($relative_to) . DIRECTORY_SEPARATOR . ltrim(ltrim($path, '/'), '\\');
 		}
 
 		if (static::isAbsolutePath($path)){
@@ -639,9 +639,9 @@ class Files
 	/*
 		Ej:
 
-		$zips      = Files::glob($ori, '*.zip');
-		$com_files = Files::glob(COMMANDS_PATH, '*Command.php')
-		$entries   = Files::glob($content_dir, '*', GLOB_ONLYDIR, '__MACOSX');
+		$zips      = static::glob($ori, '*.zip');
+		$com_files = static::glob(COMMANDS_PATH, '*Command.php')
+		$entries   = static::glob($content_dir, '*', GLOB_ONLYDIR, '__MACOSX');
 	*/
 	static function glob(string $path, string $pattern, $flags = 0, $exclude = null){
 		$last_char = Strings::lastChar($path);
@@ -681,7 +681,7 @@ class Files
 		}
 
 		foreach ($files as $ix => $f){
-			$files[$ix] = Files::removeUnnecessarySlashes($f);
+			$files[$ix] = static::removeUnnecessarySlashes($f);
 		}	
 
 		return $files;
@@ -867,10 +867,10 @@ class Files
 		$to_cp  = [];
 		$copied = [];
 
-		$dst = Files::removeTrailingSlash($dst);
+		$dst = static::removeTrailingSlash($dst);
 
 		$ori_with_trailing_slash = static::addTrailingSlash($ori);
-		$ori = Files::removeTrailingSlash(trim($ori));
+		$ori = static::removeTrailingSlash(trim($ori));
         $dst = trim($dst);
 
 		if (empty($files)){
@@ -977,7 +977,7 @@ class Files
 				$is_file = is_file($ori_path);
 			}
 
-			$ori_path = Files::removeUnnecessarySlashes($ori_path);
+			$ori_path = static::removeUnnecessarySlashes($ori_path);
 
 			if ($is_file){	
 				$_dir = static::getDir($ori_path);
@@ -1592,7 +1592,7 @@ class Files
 
 		Ej:
 
-		Files::move($ori, $dst, ['license.txt']);
+		static::move($ori, $dst, ['license.txt']);
 
 		Si el directorio destino no existe, se crea.
 
@@ -1600,13 +1600,13 @@ class Files
 
 		Ej:
 
-		Files::move("some-path/plugins", "someother-path/plugins", [ "__MACOSX" ])
+		static::move("some-path/plugins", "someother-path/plugins", [ "__MACOSX" ])
 	*/
 	static function move(string $from, string $to, ?array $exclude = null) {
 		if (!is_dir($to)){
-			Files::mkDirOrFail($to);
+			static::mkDirOrFail($to);
 		} else {
-			Files::isDirectoryWritableOrFail($to);
+			static::isDirectoryWritableOrFail($to);
 		}
 
 		if (is_dir($from)) {
@@ -1669,13 +1669,13 @@ class Files
 
 	static function varExport($data, string $path, $variable = null){
 		if ($variable === null){
-			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . 'return ' . var_export($data, true). ';');
+			$bytes = static::writeOrFail($path, '<?php '. "\r\n\r\n" . 'return ' . var_export($data, true). ';');
 		} else {
 			if (!Strings::startsWith('$', $variable)){
 				$variable = '$'. $variable;
 			}
 			
-			$bytes = Files::writeOrFail($path, '<?php '. "\r\n\r\n" . $variable . ' = ' . var_export($data, true). ';');
+			$bytes = static::writeOrFail($path, '<?php '. "\r\n\r\n" . $variable . ' = ' . var_export($data, true). ';');
 		}
 
 		return ($bytes > 0);
@@ -1683,7 +1683,7 @@ class Files
 
 	static function JSONExport($data, string $path, bool $pretty = false){
 		if (is_dir($path)){
-			$path = Files::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'export.json';
+			$path = static::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'export.json';
 		}
 
 		$flags = JSON_UNESCAPED_SLASHES;
@@ -1692,13 +1692,13 @@ class Files
 			$flags = $flags|JSON_PRETTY_PRINT;
 		}
 
-		$bytes = Files::writeOrFail($path, json_encode($data, $flags));
+		$bytes = static::writeOrFail($path, json_encode($data, $flags));
 		return ($bytes > 0);
 	}
 
 	static function dump($object, string $path = null, $append = false){
 		if (is_dir($path)){
-			$path = Files::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'dump.txt';
+			$path = static::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'dump.txt';
 		} else {
 			if (!static::isAbsolutePath($path)){
 				$path = ETC_PATH . $path;
@@ -1706,10 +1706,51 @@ class Files
 		}
 
 		if ($append){
-			Files::writeOrFail($path, var_export($object,  true) . "\n", FILE_APPEND);
+			static::writeOrFail($path, var_export($object,  true) . "\n", FILE_APPEND);
 		} else {
-			Files::writeOrFail($path, var_export($object,  true) . "\n");
+			static::writeOrFail($path, var_export($object,  true) . "\n");
 		}		
+	}
+
+	/*
+		Ej:
+
+		$array = [
+			['name' => 'John', 'age' => 32],
+			['name' => 'Jane', 'age' => 25],
+			['name' => 'Doe', 'age' => 40]
+		];
+		
+		$success = Files::dumpArrayToJSONL($array, 'output.jsonl');
+	*/
+	static function dumpArrayToJSONL(array $data, string $path, $append = true): bool {
+		if (is_dir($path)){
+			$path = static::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'dump.json';
+		} else {
+			if (!static::isAbsolutePath($path)){
+				$path = ETC_PATH . $path;
+			}	
+		}
+
+		static::writableOrFail($path);
+
+		// Open file in append mode, or create if not exists
+		$file = fopen($path, $append ? 'a' : 'w');
+		
+		if (!$file) {
+			return false; // Return false if file can't be opened
+		}
+	
+		// Iterate through each array element and encode it to JSON
+		foreach ($data as $item) {
+			$jsonLine = json_encode($item) . PHP_EOL; // Encode to JSON and add newline
+			fwrite($file, $jsonLine); // Write JSON line to file
+		}
+	
+		// Close file after writing
+		fclose($file);
+		
+		return true;
 	}
 
 	/*
@@ -1718,7 +1759,7 @@ class Files
 		$search  = 'simplerest\\';
 		$replace = 'boctulus\\SW\\';
 
-		Files::searchAndReplaceInFiles(APP_PATH, '*.php', $search, $replace);
+		static::searchAndReplaceInFiles(APP_PATH, '*.php', $search, $replace);
 	*/
 	static function searchAndReplaceInFiles($directory, $filePattern, $searchString, $replaceString) {
 		$files = static::recursiveGlob("$directory/$filePattern", GLOB_BRACE);

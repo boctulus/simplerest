@@ -156,10 +156,6 @@ class View
     static function js_file(string $file, ?Array $atts = null, bool $in_head = false){
         static $included;
 
-        // if (!Strings::endsWith('.js', $file)){
-        //     Logger::logError("Possible invalid file extension for '$file'. Expecting .js");
-        // }
-
         $file_ori = $file;
 
         if (!isset($included) || $included == null){
