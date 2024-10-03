@@ -1,6 +1,14 @@
 TODO SimpleRest
 ===============
 
+- Generar archivo Constants para las rutas de archivo compatible con la implemetación de SW.
+
+- Renombrar "shortcodes" como "modules", tambien en ./app/
+
+- Permitir que "assets" se accedan directamente dentro de  modulos o packages y que ejecutando un "buid script" se desplieguen en ./public/assets y modifiquen dinamicamente las referencias.
+
+https://chatgpt.com/c/66fb5fee-dc08-800d-9d47-bd337cf0c0b6
+
 - [ Critico ] Tanto Request como Response deben implementar metodos de clase o va a fallar en entornos con concurrencia.
 
   https://chatgpt.com/c/66e8fb29-9d10-800d-9a61-5d8284942006
