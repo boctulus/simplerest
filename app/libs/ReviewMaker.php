@@ -32,6 +32,8 @@ class ReviewMaker
 {
     protected AIChat $client;
 
+    protected $notes = [];
+
     /*
         En el constructor deberia poder inyectar la IA a usar
         como ChatGPT o Claude
@@ -42,6 +44,10 @@ class ReviewMaker
         if (!empty($params)){
             $this->client->setParams($params);
         }
+    }
+
+    function addPromptNote($text){
+        $this->notes[] = $text;
     }
 
     function getFromOne($product, int $qty = 1)
@@ -55,7 +61,12 @@ class ReviewMaker
             \"review\": \"{contenido}\"
         }
 
-        Producto: $product";        
+        Producto: $product";  
+        
+        if (!empty($this->notes)){
+            $extra   = 'Notas: ' . implode("\r\n", $this->notes);
+            $prompt .= "\r\n" . $extra;
+        }
 
         $this->client->addContent($prompt);
         
@@ -70,6 +81,10 @@ class ReviewMaker
         if (isset($res['review'])){
             return $res['review'];
         } else {
+            if (is_string($res)){
+                return $res;
+            }
+            
             return array_column($res, 'review');
         }
     }
@@ -101,6 +116,11 @@ class ReviewMaker
         }
 
         Productos: $json_products";     
+
+        if (!empty($this->notes)){
+            $extra   = 'Notas: ' . implode("\r\n", $this->notes);
+            $prompt .= "\r\n" . $extra;
+        }
         
         $this->client->addContent($prompt);
         
