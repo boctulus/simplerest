@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\Files;
 use simplerest\core\libs\TemporaryExceptionHandler;
 
 ini_set('display_errors', '1');
@@ -19,21 +20,35 @@ require_once __DIR__ . '/app.php';
 $handler = new TemporaryExceptionHandler();
 
 try {
-    
-    $content = '```json { "review": "El paragolpes delantero para el Nissan Patrol GR Y61 es simplemente excepcional. Su diseño robusto y la calidad de los materiales aseguran una gran durabilidad. Además, el hecho de que esté listo para soldar facilita su instalación. ¡Una compra altamente recomendada para quienes buscan mejorar la protección de su vehículo!" } ```';
 
-    if (preg_match('/```json\s*(.+?)\s*```/s', $content, $matches)) {
-        // Extraemos el contenido del JSON capturado
-        $json_string = $matches[1];
-        
-        // Decodificamos el JSON para manipularlo como un array o un objeto
-        $json_data = json_decode($json_string, true);
+    $array = [
+        ['name' => 'John', 'age' => 32],
+        ['name' => 'Jane', 'age' => 25],
+        ['name' => 'Doe', 'age' => 40]
+    ];
     
-        // Mostramos el JSON decodificado
-        print_r($json_data);
+    $success = Files::dumpArrayToJSONL($array, 'D:\www\4x4\wp-content\plugins\4x4-central\etc\reviews.jsonl');
+    
+    if ($success) {
+        echo "Array has been successfully written to the JSONL file.";
     } else {
-        echo "No se encontró ningún contenido JSON.";
+        echo "Failed to write to the JSONL file.";
     }
+    
+    // $content = '```json { "review": "El paragolpes delantero para el Nissan Patrol GR Y61 es simplemente excepcional. Su diseño robusto y la calidad de los materiales aseguran una gran durabilidad. Además, el hecho de que esté listo para soldar facilita su instalación. ¡Una compra altamente recomendada para quienes buscan mejorar la protección de su vehículo!" } ```';
+
+    // if (preg_match('/```json\s*(.+?)\s*```/s', $content, $matches)) {
+    //     // Extraemos el contenido del JSON capturado
+    //     $json_string = $matches[1];
+        
+    //     // Decodificamos el JSON para manipularlo como un array o un objeto
+    //     $json_data = json_decode($json_string, true);
+    
+    //     // Mostramos el JSON decodificado
+    //     print_r($json_data);
+    // } else {
+    //     echo "No se encontró ningún contenido JSON.";
+    // }
 
 } catch (\Exception $e) {
     // Llama al método del trait

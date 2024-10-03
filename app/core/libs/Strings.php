@@ -600,20 +600,35 @@ class Strings
 
 	/*
 		Auto-detecta retorno de carro en un string
+
+		Devuelve opcionalmente,
+		la cantidad de ocurrencias
 	*/
-	static function carriageReturn(string $str){
+	static function carriageReturn(string $str, &$count = null){
 		$qty_rn = substr_count($str, "\r\n");
 		$qty_r  = substr_count($str, "\r");
 		$qty_n  = substr_count($str, "\n");
 
 		// Priorizar \r\n sobre \r y \n
 		if ($qty_rn > $qty_r && $qty_rn > $qty_n) {
+			if ($count != null){
+				$count = $qty_rn;
+			}	
+
 			return "\r\n";
 		}
 
 		// En caso de empate, priorizar \r sobre \n
 		if ($qty_r > $qty_n) {
+			if ($count != null){
+				$count = $qty_r;
+			}
+
 			return "\r";
+		}
+
+		if ($count != null){
+			$count = $qty_n;
 		}
 
 		// Si no hay \r ni \r\n, devolver \n
@@ -2320,7 +2335,6 @@ class Strings
 		return trim($str, '-');
 	}
 
-
 	/*
 		Extrae emails de un string
 
@@ -2332,6 +2346,41 @@ class Strings
 	static function getEmails($str){
         return Strings::matchAll($str, '/([a-z0-9_\.]+@[a-z0-9_\.]+)/i');
     }
+
+	static function p(){
+		return (php_sapi_name() == 'cli' || Url::isPostmanOrInsomnia()) ? PHP_EOL . PHP_EOL : '<p/>';
+	}
+
+	static function br(){
+		return (php_sapi_name() == 'cli' || Url::isPostmanOrInsomnia())  ? PHP_EOL : '<br/>';;
+	}
+
+	/*
+		Recibe un string y lo separa en parrafos de HTML con <p></p>
+
+		Examinando si contiene saltos de linea
+		y en tal caso, convierter los saltos de linea en parrafos
+		
+		Sino,... usa los "." como indicador de separador de parrafo.
+	*/
+	static function convertIntoParagraphs($text) {
+		$cr = static::carriageReturn($text, $count);
+		
+		if ($count > 1){
+			return str_replace($cr, '<p>', $text);
+		}
+
+		// Split the text by period followed by a space or end of line
+		$sentences = preg_split('/(?<=\.)\s+/', trim($text));
+	
+		// Wrap each sentence in <p> tags
+		$paragraphs = array_map(function($sentence) {
+			return '<p>' . trim($sentence) . '</p>';
+		}, $sentences);
+	
+		// Return the joined paragraphs
+		return implode("\n", $paragraphs);
+	}
 }
 
 

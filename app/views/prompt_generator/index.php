@@ -88,76 +88,74 @@
         }).get();
 
         // Preseguir y hacer la solicitud POST solo si hay archivos para procesar
-        if (files.length > 0) {
-
-            const notes = $('#promptFinal').val();
-            // Obtener todas las rutas de archivos
-            $('.file-input').not(':disabled').each(function () {
-                const filePath = $(this).val();
-                if (filePath) {
-                    files.push(filePath);
-                }
-            });
-
-            const data = {
-                description: description,
-                files: files,
-                notes: notes
-            };
-
-            // Hacer la solicitud POST
-            $.ajax({
-                url: 'http://simplerest.lan/api/v1/prompts',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function (response) {
-                    // Procesar y mostrar el contenido recibido si es exitoso
-                    clearValidationErrors();  // Limpiar cualquier error anterior
-                    displayFileContents(description, response.data.prompts.content, files, notes);
-
-                    const id = response.data.id;
-                    const newUrl = `${window.location.pathname}#chat-${id}`;
-                    history.pushState({ id: id }, '', newUrl);
-                    saveFormVersion(id, description, files, notes);
-                },
-                error: function (xhr, status, error) {
-                    if (xhr.status === 400) {
-                        // Si el error es de validación, mostrarlo en el formulario
-                        const validationErrors = xhr.responseJSON.error.detail;
-                        showValidationErrors(validationErrors);
-                    } else {
-                        console.error('Error al obtener el contenido del prompt:', error);
-                    }
-
-                    if (xhr.status === 500) {
-                        const errorMessage = xhr.responseJSON.error.message;
-                        const errorPath = errorMessage.match(/Path '(.+)' does not exist/)[1];
-
-                        // Actualizar el input correspondiente a la ruta problemática
-                        $('.file-input').each(function () {
-                            if ($(this).val() === errorPath) {
-                                let $group = $(this).closest('.file-path-group');
-                                $group.replaceWith(addFilePathInput(errorPath, true));
-                            }
-                        });
-
-                        // Mostrar el mensaje de error con SweetAlert
-                        Swal.fire({
-                            title: 'Error',
-                            text: errorMessage,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    } else {
-                        console.error('Error al obtener el contenido del prompt:', error);
-                    }
-                }
-            });
-
-        } else {
-            Swal.fire('Advertencia', 'No hay rutas de archivos válidas para procesar.', 'warning');
+        if (files.length == 0) {
+            Swal.fire('Advertencia', 'Generando.... pero no hay rutas de archivos para procesar.', 'warning');
         }
+
+        const notes = $('#promptFinal').val();
+        // Obtener todas las rutas de archivos
+        $('.file-input').not(':disabled').each(function () {
+            const filePath = $(this).val();
+            if (filePath) {
+                files.push(filePath);
+            }
+        });
+
+        const data = {
+            description: description,
+            files: files,
+            notes: notes
+        };
+
+        // Hacer la solicitud POST
+        $.ajax({
+            url: 'http://simplerest.lan/api/v1/prompts',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                // Procesar y mostrar el contenido recibido si es exitoso
+                clearValidationErrors();  // Limpiar cualquier error anterior
+                displayFileContents(description, response.data.prompts.content, files, notes);
+
+                const id = response.data.id;
+                const newUrl = `${window.location.pathname}#chat-${id}`;
+                history.pushState({ id: id }, '', newUrl);
+                saveFormVersion(id, description, files, notes);
+            },
+            error: function (xhr, status, error) {
+                if (xhr.status === 400) {
+                    // Si el error es de validación, mostrarlo en el formulario
+                    const validationErrors = xhr.responseJSON.error.detail;
+                    showValidationErrors(validationErrors);
+                } else {
+                    console.error('Error al obtener el contenido del prompt:', error);
+                }
+
+                if (xhr.status === 500) {
+                    const errorMessage = xhr.responseJSON.error.message;
+                    const errorPath = errorMessage.match(/Path '(.+)' does not exist/)[1];
+
+                    // Actualizar el input correspondiente a la ruta problemática
+                    $('.file-input').each(function () {
+                        if ($(this).val() === errorPath) {
+                            let $group = $(this).closest('.file-path-group');
+                            $group.replaceWith(addFilePathInput(errorPath, true));
+                        }
+                    });
+
+                    // Mostrar el mensaje de error con SweetAlert
+                    Swal.fire({
+                        title: 'Error',
+                        text: errorMessage,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    console.error('Error al obtener el contenido del prompt:', error);
+                }
+            }
+        });
 
     }
 

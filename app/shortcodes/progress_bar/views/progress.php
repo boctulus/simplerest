@@ -9,7 +9,7 @@
 
             <div>
                <!-- Coloca la imagen aquí -->
-               <img src="<?= shortcode_asset(__DIR__ . '/img/loading-2.gif') ?>" id="loading-image" width="60px">
+               <img src="<?= shortcode_asset(__DIR__ . '/img/loading-4.gif') ?>" id="loading-image" width="60px">
                <img src="<?= shortcode_asset(__DIR__ . '/img/time_over.png') ?>" id="timeover" height="60px" style="display:none">
 
                <div id="progress-bar-container">   
