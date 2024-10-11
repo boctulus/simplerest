@@ -1366,33 +1366,55 @@ class Strings
 		preg_match_all('/([a-zA-Z]|\xC3[\x80-\x96\x98-\xB6\xB8-\xBF]|\xC5[\x92\x93\xA0\xA1\xB8\xBD\xBE]){'.$min_chars.',}/', $str, $match_arr);
 		return $match_arr[0];
 	}
-
-	static function getWords(string $str){
-		// Reemplazar múltiples espacios, tabuladores y signos de puntuación con un espacio
-		$str = preg_replace('/\s+|[\p{P}]+/u', ' ', $str);
-
-		// Convertir el texto a minúsculas
-		$str = strtolower($str);
 	
-		// Dividir el texto en palabras
+	static function getWords(string $str, bool $tolower_case = true, bool $break_where_signs = false){
+		// Replace tabs and newlines with spaces
+		$str = str_replace(["\t", "\n", "\r"], ' ', $str);
+
+		$symbs = ['_', '.', ',', ';', ':', '!', '?', '-', '(', ')', '[', ']', '{', '}', '/', '\\', '|'];
+	
+		// Replace punctuation characters with spaces if needed
+		if ($break_where_signs) {
+			$str = str_replace($symbs, ' ', $str);
+		}
+	
+		// Convert to lowercase if the flag is set
+		if ($tolower_case) {
+			$str = strtolower($str);
+		}
+	
+		// Split the string into words
 		$words = explode(' ', $str);
+
+		if (!$break_where_signs) {
+			// Sino rompo por simbolos, al menos los remuevo luego
+			$words = array_filter($words, function($substr) use ($symbs) {
+				$substr = str_replace($symbs, '', $substr);
+				return trim($substr) !== '';
+			});
+		} else {
+			// Remove empty words or words with only spaces
+			$words = array_filter($words, function($substr) {
+				return trim($substr) !== '';
+			});
+		}
 	
-		// Eliminar palabras vacías o que solo contengan espacios
-		$words = array_filter($words, function($palabra) {
-			return trim($palabra) !== '';
-		});
-	
-		// Devolver el array de palabras
+		// Return the array of words
 		return $words;
-	}
+	}	
 
 	// alias
-	static function words(string $str){
-		return static::getWords($str);
+	static function words(string $str, bool $tolower_case = true, bool $break_where_signs = false){
+		return static::getWords($str, $tolower_case, $break_where_signs);
 	}
 
-	static function wordsCount(string $str, bool $unique = false){
-		$words = static::getWords($str);
+	static function uniqueWords(string $str, bool $tolower_case = true, bool $break_where_signs = false){
+		$words = static::getWords($str, $tolower_case, $break_where_signs);
+		return array_unique($words);
+	}
+
+	static function wordsCount(string $str, bool $tolower_case = true, bool $break_where_signs = false, bool $unique = false){
+		$words = static::getWords($str, $tolower_case, $break_where_signs);
 		
 		if ($unique){
 			$words = array_unique($words);
