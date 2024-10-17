@@ -10,42 +10,33 @@ class Select2Controller extends Controller
     function __construct()
     {
         parent::__construct(); 
+
+        css_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css');
+        css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
+
+        js_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js');
+    }
+
+    function index()
+    { 
+        $this->test1();
     }
 
     /*
         Countries & states
     */
-    function index()
+    function test1()
     {   
-        $json  = file_get_contents(ETC_PATH . 'countries_states.json');
-
-        css_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css');
-        css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
-
-        js_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js');
-
-        view('select2/test.php', [
-            'json' => $json
-        ], 'templates/tpl.php');              
+        view('select2/test1.php',[], 'templates/tpl.php');              
     }
     
-    /*
-        Se requiere form original => acceso al servidor
-
-        https://diagnosticojournal.us8.list-manage.com/subscribe?u=a981b45880eea70b899f8ed96&id=363f983b38
-    */
-    function custom()
+    function test2()
     {   
         $json  = file_get_contents(ETC_PATH . 'countries_states.json');
 
-        css_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/css/select2.min.css');
-        css_file('https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.2.0/dist/select2-bootstrap-5-theme.min.css');
-
-        js_file('https://cdn.jsdelivr.net/npm/select2@4.0.3/dist/js/select2.min.js');
-
-        view('select2/diagnosticojournal.php', [
+        view('select2/test2.php', [
             'json' => $json
-        ], 'templates/tpl_basic.php');              
+        ], 'templates/tpl.php');              
     }
 }
 

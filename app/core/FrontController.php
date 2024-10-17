@@ -229,21 +229,28 @@ class FrontController
 
         //dd($class_name, 'Controller');
 
-        foreach($middlewares as $injectable => $mid){
+        foreach($middlewares as $injectable => $mids){
             $_i = explode('@', $injectable);
 
             $_class_name  = $_i[0];
-            $_method      = $_i[1] ??  'index';
 
-            if ($class_name == $_class_name && $method == $_method){
-                //dd(['class' => $_class_name, 'method' => $_method], "MID $mid");
+            if (!is_array($mids)){
+                $mids = [ $mids ];
+            }
 
-                if (!class_exists($mid)){
-                    $res->error(trans("Middleware '$mid' not found"), 404, "Internal error - controller class $class_name not found");                     
-                }                    
+            foreach ($mids as $mid){
+                $_method = $_i[1] ??  'index';
 
-                $mid_obj = new $mid();
-                $mid_obj->handle();
+                if ($class_name == $_class_name && ($_method == '__all__'|| $method == $_method)){
+                    // dd(['class' => $_class_name, 'method' => $_method], "MID $mid");
+
+                    if (!class_exists($mid)){
+                        $res->error(trans("Middleware '$mid' not found"), 404, "Internal error - controller class $class_name not found");                     
+                    }                    
+
+                    $mid_obj = new $mid();
+                    $mid_obj->handle();
+                }
             }
         }
 

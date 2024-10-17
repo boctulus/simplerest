@@ -1064,14 +1064,21 @@ Ej:
 
 	class InyectarSaludo extends Middleware
 	{   
+		function __construct()
+		{
+			parent::__construct();
+		}
+
 		function handle(?callable $next = null){
-			$data = $this->res;
+			$data = $this->res->get();
 
 			if (is_string($data)){
 				if (Strings::startsWith('Hello ', $data)){
 					$this->res->set(preg_replace('/Hello (.*)/', "Hello happy $1", $data,1));
 				}
 			}
+
+			//$next($this->req, $this->res);
 		}
 	}
 
@@ -1085,6 +1092,29 @@ Ej:
 
 Ahora la respuesta del método mid() de TestController será interceptada y modificada.
 
+Para registrar todos los metodos de un controlador use @__all__
+
+Ej:
+	/*
+    	Middleware registration
+	*/
+
+	return [
+		'simplerest\controllers\FiltersController@__all__' => RestrictContentRoleBased::class,
+
+
+Registrar varios Middleware(s) para el mismo controller
+
+Es cuestion de pasar un array de Middlewares
+
+Ej:
+
+	return [
+		'boctulus\relmotor_central\controllers\WooCommerceFiltersController@__all__' => [
+			RestrictContentRoleBased::class,
+			ProcessShortcodesInDescription::class
+		]
+	]
 
 # El Schema
 
