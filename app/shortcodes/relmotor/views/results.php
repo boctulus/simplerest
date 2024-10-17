@@ -57,7 +57,13 @@
                             <input type="number" class="form-control results-quantity" value="0" min="0" max="99999">
                             <button class="btn btn-outline-secondary results-quantity-btn" type="button">+</button>
                         </div>
-                        <button class="btn btn-success w-100 mb-2"><i class="fas fa-cart-plus"></i> Añadir</button>
+                        <button class="btn btn-success w-100 mb-2">
+                            <i class="fas fa-cart-plus"></i> Añadir
+                            <!-- badge -->
+                            <span class="badge badge-light incart_counter">9</span>  
+                            <span class="sr-only">cant. en carrito</span>
+                        </button>
+
                         <div class="stock-info">STOCK: 43029</div>
                     </td>
                 </tr>

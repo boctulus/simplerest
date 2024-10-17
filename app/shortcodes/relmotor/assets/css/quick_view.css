@@ -1,0 +1,31 @@
+#productQuickView * {
+    font-family: "Titillium Web", Sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+#productQuickView * .bold {
+    font-weight: 700;
+}
+
+#productQuickView * .bold {
+    font-weight: 700 !important;
+}
+
+#modal-sku:link, 
+#modal-sku:visited, 
+#modal-sku:hover, 
+#modal-sku:active {
+    text-decoration: none !important;
+}
+
+
+.table-horizontal-lines tr {
+border-bottom: 1px solid #dee2e6;
+}
+.table-horizontal-lines tr:first-child {
+border-bottom: 3px solid #dee2e6 !important;
+}
+.table-horizontal-lines tr:last-child {
+border-bottom: none;
+}
