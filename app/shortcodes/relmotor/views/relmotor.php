@@ -68,4 +68,17 @@
 </div>
 
 <!-- MODAL DEMO -->
-<?php include __DIR__ . '/quickview_modal_demo.php'; ?>
+<?php 
+
+$rol = $_GET['rol'] ?? 'comprador';
+
+if ($rol == 'comprador'){
+    include __DIR__ . '/quickview_modal_demo.php'; 
+} else {
+    // vendedor
+    include __DIR__ . '/quickview_modal_demo_v.php'; 
+}
+
+
+
+?>

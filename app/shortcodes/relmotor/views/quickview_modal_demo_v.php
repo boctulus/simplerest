@@ -15,7 +15,7 @@
                                 class="img-fluid w-100" id="modalImage" alt="ALTERNADOR WAI - 24V SCANIA 24V"></a>
                     </div>
                     <div class="col-md-6 p-3">
-                        <h2 class="bold" id="modal-title">ALTERNADOR WAI - 24V SCANIA 24V</h2>
+                        <h2 class="bold" id="modal-title">ALTERNADOR WAI - 24V SCANIA 24V BLA BLA</h2>
                         <table class="table table-borderless table-horizontal-lines" style="margin-left:-10px">
                             <tbody>
                                 <tr>
@@ -38,8 +38,16 @@
                                 </tr>
                             </tbody>
                         </table>
+
                         <p class="featured-color"><span id="modal-price">$144.990</span> Neto</p>
-                        <p id="modal-stock" class="qv-display_outofstock">Sin existencias</p>
+
+                        <!--p id="modal-stock" class="qv-display_outofstock">Sin existencias</p-->
+
+                        <!--button type="button" class="btn btn-warning position-absolute bottom-0 end-0 m-3" onclick="jQuery('#productQuickView').printThis()">
+                            <i class="fas fa-print"></i> Imprimir
+                        </button-->
+                        
+
                     </div>
                 </div>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -48,7 +56,8 @@
                             data-bs-target="#description" type="button" role="tab" aria-controls="description"
                             aria-selected="true">Descripción</button>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    <!-- Oculto el botón del tab "Información adicional" -->
+                    <li class="nav-item" role="presentation" style="display: none;">
                         <button class="nav-link" id="additional-info-tab" data-bs-toggle="tab"
                             data-bs-target="#additional-info" type="button" role="tab" aria-controls="additional-info"
                             aria-selected="false">Información adicional</button>
@@ -72,3 +81,30 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.key === 'i') {
+        event.preventDefault(); // Previene el comportamiento predeterminado de Ctrl+i
+        
+        var additionalInfoTab = document.querySelector('#myTab .nav-item:nth-child(2)');
+        var additionalInfoContent = document.getElementById('additional-info');
+        
+        if (additionalInfoTab.style.display === 'none') {
+            additionalInfoTab.style.display = '';
+            additionalInfoContent.classList.add('active', 'show');
+            document.getElementById('additional-info-tab').classList.add('active');
+            
+            document.getElementById('description').classList.remove('active', 'show');
+            document.getElementById('description-tab').classList.remove('active');
+        } else {
+            additionalInfoTab.style.display = 'none';
+            additionalInfoContent.classList.remove('active', 'show');
+            document.getElementById('additional-info-tab').classList.remove('active');
+            
+            document.getElementById('description').classList.add('active', 'show');
+            document.getElementById('description-tab').classList.add('active');
+        }
+    }
+});
+</script>
