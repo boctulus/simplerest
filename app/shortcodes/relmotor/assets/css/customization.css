@@ -1,0 +1,60 @@
+
+/* 
+    Ocultar botones - y +
+*/
+
+input.results-quantity {
+    width: 100% !important; /* Mismo ancho que .add-to-cart-btn */
+    margin-left: 0px; /* Mismos márgenes que .add-to-cart-btn */
+    margin-right: 0px;
+}
+
+.results-quantity-btn {
+    display: none !important;
+}
+  
+button.add-to-cart-btn {
+    width: 100% !important;
+}
+
+.quantity-control {
+    justify-content: center !important; /* Centra los elementos restantes */
+    width: 100%;
+}
+
+.stock-info {
+    margin-left: 5px; 
+    margin-right: 5px;
+}
+
+/*
+    Out of stock
+*/
+
+.display_outofstock {
+    font-weight: 700;
+    color: #dc3545;
+}
+
+@media (max-width: 767px) {
+    /* Ocultar contador de resultados en moviles */
+    .result-count {
+        display: none !important;
+    }
+}
+
+/*
+  Precio neto tachado en resultados del buscador
+*/
+.results-price-value {
+    text-decoration: line-through;
+}
+
+
+/*
+  Paleta RelMotor
+*/
+
+.featured-color, .featured-color * {  
+  color: #C8262C;
+}

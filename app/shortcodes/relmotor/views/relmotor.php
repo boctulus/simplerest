@@ -66,3 +66,6 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL DEMO -->
+<?php include __DIR__ . '/quickview_modal_demo.php'; ?>
