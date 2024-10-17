@@ -9,7 +9,6 @@
     <?= base() ?>
 
     <link rel="stylesheet" href="<?= asset('third_party/bootstrap/5.x/bootstrap.min.css') ?>">
-    <link rel="stylesheet" href="<?= asset('third_party/fontawesome/5/all.min.css') ?>">
     <link rel="stylesheet" href="<?= asset('./css/main.css') ?>">
 
     <!-- jQuery -->

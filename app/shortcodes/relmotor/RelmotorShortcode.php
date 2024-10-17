@@ -7,8 +7,9 @@ class RelmotorShortcode
     function __construct(){
         // No incluir jQuery aqui o podria incluirse dos veces
 
-        # FontAwesome 5
-        js_file('third_party/fontawesome/5/fontawesome_kit.js');
+        # FontAwesome 6
+        js_file('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css');
+        css_file('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js');
         
         # Select 2
         css_file(__DIR__ . '/assets/third_party/select2/select2.min.css');
@@ -23,7 +24,10 @@ class RelmotorShortcode
         js_file(JS_PATH .'bootstrap_paginator.js'); 
 
         js_file(__DIR__ . '/assets/js/search-engine.js');
-        js_file(__DIR__ . '/assets/js/populte-dropdowns.js');       
+        js_file(__DIR__ . '/assets/js/populte-dropdowns.js');    
+        
+        // Printing
+        js_file("third_party/printThis/printThis.js");
 
 
         $this->index();
