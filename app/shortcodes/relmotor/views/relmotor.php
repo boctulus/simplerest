@@ -6,7 +6,7 @@
 <div class="container-fluid mt-4">
     <div class="row justify-content-center">
         <div class="col-lg-12 col-xl-10">
-            <div class="search-form">
+            <div class="search-form" style="display:none;">
                 <h2 class="mb-4">CÓDIGO, APLICACIÓN O DESCRIPCIÓN</h2>
                 <form>
                     <div class="mb-3">
@@ -72,13 +72,17 @@
 
 $rol = $_GET['rol'] ?? 'comprador';
 
-if ($rol == 'comprador'){
-    include __DIR__ . '/quickview_modal_demo.php'; 
-} else {
-    // vendedor
-    include __DIR__ . '/quickview_modal_demo_v.php'; 
-}
+// if ($rol == 'comprador'){
+//     include 'D:\www\relmotor\wp-content\plugins\relmotor-central\app\shortcodes\relmotor\views\quickview_customer.php'; 
+// } else {
+//     // vendedor
+//     include 'D:\www\relmotor\wp-content\plugins\relmotor-central\app\shortcodes\relmotor\views\quickview_seller.php'; 
 
-
-
+// }
 ?>
+
+<script>
+    // $(document).ready(function () {
+    //     $('#productQuickView').modal('show');
+    // });
+</script>
