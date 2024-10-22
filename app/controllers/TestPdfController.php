@@ -46,7 +46,7 @@ class TestPdfController extends Controller
 
             // Datos del producto
             $product = json_decode($json, true);
-            
+
             // Agregar imagen
             $extension = strtoupper(pathinfo($product['featured_image'], PATHINFO_EXTENSION));
             $pdf->Image($product['featured_image'], 10, 40, 90, $extension);
