@@ -1,9 +1,14 @@
+<style>
+  #countries .select2-default {
+    color: #f00 !important;
+  }
+</style>
+
 <h1 style="margin-bottom: 20px;">SELECT2 ejemplo minimo</h1>
 
 <select class="select2-countries" id="countries" style="width:300px">
   <option value="">País</option>
 </select>
-
 
 <script>
   $(document).ready(function() {

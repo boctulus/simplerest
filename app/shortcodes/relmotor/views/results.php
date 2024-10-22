@@ -121,22 +121,3 @@
 </div>
 
 
-<script>
-$(document).on('click', '.toggle-text', function() {
-    var $this = $(this);
-    var $truncatedText = $this.siblings('.truncated-text');
-    var $fullText = $this.siblings('.collapse');
-
-    $truncatedText.toggleClass('show d-none');
-    $fullText.toggleClass('show d-none');
-
-    // Verificar el estado de aria-expanded para cambiar el texto
-    var isExpanded = $this.attr('aria-expanded') === 'true';
-
-    if (isExpanded) {
-        $this.text('Mostrar menos');
-    } else {
-        $this.text('Mostrar más');
-    }
-});
-</script>
