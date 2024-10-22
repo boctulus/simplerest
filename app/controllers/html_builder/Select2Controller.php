@@ -30,6 +30,12 @@ class Select2Controller extends Controller
         view('select2/test1.php',[], 'templates/tpl.php');              
     }
     
+    function test_colorchange(){
+        view('select2/test_color-change.php', [
+            []
+        ], 'templates/tpl.php');        
+    }
+
     function test2()
     {   
         $json  = file_get_contents(ETC_PATH . 'countries_states.json');
