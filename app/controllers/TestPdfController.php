@@ -39,44 +39,27 @@ class TestPdfController extends Controller
         ';
 
         try {
+            $product = json_decode($json, true);
+
 
             // Crear nuevo PDF
             $pdf = new ProductPDF();
-            $pdf->AddPage();
+            $pdf->setData($product);
+            $pdf->render();            
 
-            // Datos del producto
-            $product = json_decode($json, true);
+            // $pdf->Output();
 
-            // Agregar imagen
-            $extension = strtoupper(pathinfo($product['featured_image'], PATHINFO_EXTENSION));
-            $pdf->Image($product['featured_image'], 10, 40, 90, $extension);
+            $filename = 'pdfs/temp.pdf';
+            $filepath = ETC_PATH . $filename;
 
-            // Información del producto
-            $pdf->SetFont('Arial', 'B', 12);
-            $pdf->SetTextColor(0, 32, 96); // Azul oscuro para SKU
-            $pdf->SetXY(10, 140);
-            $pdf->Cell(0, 10, 'SKU: ' . $product['sku']);
+            // ... todo tu código de generación del PDF ...
+            $pdf->Output('F', $filepath); // 'F' significa guardar a archivo
 
-            // Descripción
-            $pdf->SetFont('Arial', '', 11);
-            $pdf->SetTextColor(0);
-            $pdf->SetXY(10, 150);
-            $pdf->MultiCell(0, 5, $product['description']);
+            $this->show();
 
-            // Marca
-            $pdf->SetXY(10, 170);
-            $pdf->SetFont('Arial', 'B', 11);
-            $pdf->Cell(30, 10, 'Marca');
-            $pdf->SetFont('Arial', '', 11);
-            $pdf->Cell(0, 10, $product['attributes'][0]['value']);
-
-            // Precio
-            $pdf->SetXY(10, 180);
-            $pdf->SetFont('Arial', 'B', 14);
-            $pdf->SetTextColor(255, 0, 0); // Rojo para el precio
-            $pdf->Cell(0, 10, 'Precio: $' . number_format($product['price'], 0, ',', '.') . ' Neto');
-
-            $pdf->Output();
+            // Limpiamos el archivo temporal
+            unlink($filepath);
+            exit;
 
         } catch (\Exception $e) {
             // Llama al método del trait
@@ -84,6 +67,27 @@ class TestPdfController extends Controller
         }
     }
 
+    function show(){
+        $filename = 'pdfs/temp.pdf';
+        $filepath = ETC_PATH . $filename;
+
+        // Ahora enviamos el archivo al navegador
+        if (!file_exists($filepath)) {
+            throw new \Exception("El PDF no se pudo generar o guardar");
+        }
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: inline; filename="' . $filename . '"');
+        header('Cache-Control: public, max-age=0');
+        header('Content-Length: ' . filesize($filepath));
+        header('Content-Transfer-Encoding: binary');
+        
+        // Limpiamos cualquier salida previa
+        ob_clean();
+        flush();
+        
+        readfile($filepath);
+    }
 }
 
 
