@@ -46,6 +46,11 @@
       
   /* Selected option */
   .select2-results__option[aria-selected=true] {  }
+
+  /* Placeholder */
+  .select2-selection__placeholder {
+      color: red !important;
+  }
 </style>
 
 <h1 style="margin-bottom: 20px;">SELECT2 cambio de colores</h1>
