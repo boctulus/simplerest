@@ -12,6 +12,12 @@ class TestPdfController extends Controller
 {
     // use TimeExecutionTrait;
 
+    function page(){
+        return "
+        <a href=\"/test_pdf\" target=\"_blank\">Descargar PDF</a>
+        ";
+    }
+
     function index()
     {
         /*
@@ -77,7 +83,13 @@ class TestPdfController extends Controller
         }
 
         header('Content-Type: application/pdf');
-        header('Content-Disposition: inline; filename="' . $filename . '"');
+        
+        // Para descarga:
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        // O para abrir en nueva pestaña:
+        // header('Content-Disposition: inline; filename="' . $filename . '"');
+
         header('Cache-Control: public, max-age=0');
         header('Content-Length: ' . filesize($filepath));
         header('Content-Transfer-Encoding: binary');

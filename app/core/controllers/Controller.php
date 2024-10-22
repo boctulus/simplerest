@@ -21,6 +21,10 @@ abstract class Controller
         if ($this->config['error_handling']) {
             set_exception_handler([$this, 'exception_handler']);
         }
+
+        if (!is_cli()){
+            http_response_code(200);
+        }
     }
 
     protected function getConnection() {
