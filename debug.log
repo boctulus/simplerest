@@ -5,3 +5,5 @@
 [0925/224655.930:ERROR:registration_protocol_win.cc(108)] CreateFile: El sistema no puede encontrar el archivo especificado. (0x2)
 [0925/224658.970:ERROR:registration_protocol_win.cc(108)] CreateFile: El sistema no puede encontrar el archivo especificado. (0x2)
 [0925/224843.967:ERROR:registration_protocol_win.cc(108)] CreateFile: El sistema no puede encontrar el archivo especificado. (0x2)
+[1022/125241.351:ERROR:registration_protocol_win.cc(108)] CreateFile: El sistema no puede encontrar el archivo especificado. (0x2)
+[1022/125242.144:ERROR:registration_protocol_win.cc(108)] CreateFile: El sistema no puede encontrar el archivo especificado. (0x2)
