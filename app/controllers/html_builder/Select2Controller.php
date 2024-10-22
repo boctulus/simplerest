@@ -36,6 +36,13 @@ class Select2Controller extends Controller
         ], 'templates/tpl.php');        
     }
 
+    // Ejemplo practico
+    function test_colorchange2(){
+        view('select2/test_color-change-2.php', [
+            []
+        ], 'templates/tpl.php');        
+    }
+
     function test2()
     {   
         $json  = file_get_contents(ETC_PATH . 'countries_states.json');
