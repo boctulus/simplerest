@@ -1298,22 +1298,14 @@ class Strings
 	}
 
 	/*
-		Extrae las primeras $count palabras de un texto
-		
-		https://stackoverflow.com/a/5956635/980631
-	*/
-	static function getUpToNWords($sentence, $count = 10) {
-		preg_match("/(?:\w+(?:\W+|$)){0,$count}/", $sentence, $matches);
-		return $matches[0];
-	}
+		Corta un texto hasta cantidad maxima de palabras y/o de caracteres 
 
-	/*
-		Filtra por cantidad maxima de palabras y/o de caracteres
+		Si $add_dots es true y el texto es recortado, agrega '...'
 
         En caso de que ambos parametros sean no-nulos, se entrega un string que tenga como maximo 
 		esa cantidad de caracteres y como maximo esa cantidad de palabras (doble restriccion)
 	*/
-	static function getUpTo(string $sentence, $max_word_count = null, $max_char_len = null) {
+	static function getUpTo(string $sentence, $max_word_count = null, $max_char_len = null, bool $add_dots = false) {
 		if ($max_word_count === null) {
             $max_word_count = PHP_INT_MAX;
         }
@@ -1353,6 +1345,10 @@ class Strings
             // Ningún parámetro proporcionado, devuelve la cadena original
             $trimmedSentence = $sentence;
         }
+
+		if ($add_dots && (strlen($sentence) - strlen($trimmedSentence) > 1)){
+			return trim($trimmedSentence) . ' ...';
+		}
 
         return trim($trimmedSentence);
     }
