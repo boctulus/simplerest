@@ -31,6 +31,27 @@ class Arrays
         }
     }
 
+    /*
+        Para aplicar el filtro al primer nivel del array
+    */
+    static function filterKeys(array $arr, array $keys) {
+        return array_intersect_key($arr, array_flip($keys));
+    }
+    
+    /*
+        Para un conjunto de rows
+
+        Por eficiencia se recibe $rows referencia 
+    */
+    static function filterKeysRows(array &$rows, array $keys){
+        foreach ($rows as $ix => $row){
+            $rows[$ix] = static::filterKeys($row, $keys);
+        }
+    }
+
+    /*
+        Implementacion alternativa a filterKeysRows()
+    */
     static function getColumns(array $rows, array $keys) {
         $filtered = array();
 
