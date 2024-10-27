@@ -334,7 +334,7 @@ class Url
         return $is_ssl ? 'https' : 'http';
     }
 
-    static function getProtocol(?string $url = null){
+    static function getProtocol( $url = null){
         if (empty($url)){
             return static::httpProtocol();
         }
@@ -350,7 +350,7 @@ class Url
         return null;
     }
 
-    static function getProtocolOrFail(?string $url = null){
+    static function getProtocolOrFail( $url = null){
         $protocol = static::getProtocol($url);
 
         if (empty($protocol)){
@@ -449,7 +449,7 @@ class Url
     /*
         Usar antes de parseStrQuery()
     */
-    static function hasQueryParam(string $url, ?string $param = null){
+    static function hasQueryParam(string $url,  $param = null){
         if ($param === null){
             return !empty(Strings::after($url, '?'));
         }
@@ -560,11 +560,11 @@ class Url
         return $newUrl;
     }
 
-    static function encodeParams(array $data, string $numeric_prefix = "", ?string $arg_separator = '&', int $encoding_type = PHP_QUERY_RFC1738){
+    static function encodeParams(array $data, string $numeric_prefix = "",  $arg_separator = '&', int $encoding_type = PHP_QUERY_RFC1738){
         return http_build_query($data, $numeric_prefix, $arg_separator, $encoding_type);
     }
 
-    static function buildUrl(string $base_url, array $data, string $numeric_prefix = "", ?string $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
+    static function buildUrl(string $base_url, array $data, string $numeric_prefix = "",  $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
         return Files::removeTrailingSlash($base_url) . '?'. static::encodeParams($data);
     }
     
@@ -635,7 +635,7 @@ class Url
 
         https://practicatest.cl
     */
-    static function getBaseUrl(?string $url = null){
+    static function getBaseUrl($url = null){
         return static::getHostname($url, true);
     }
 
@@ -644,7 +644,7 @@ class Url
 
         practicatest.cl
     */
-    static function getDomain(?string $url = null){
+    static function getDomain( $url = null){
         return static::getHostname($url, false);
     }
 
