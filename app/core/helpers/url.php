@@ -9,6 +9,7 @@ use simplerest\core\libs\Url;
 /*
     Returns BASE_URL to be used in the FrontEnd
 */
+
 function base_url(){
     static $base_url;
 
@@ -19,6 +20,13 @@ function base_url(){
     $base_url = Url::getBaseUrl();
 
     return $base_url;
+}
+
+// Alias de base_url()
+if (!function_exists('site_url')){
+    function site_url(){
+        return base_url();
+    }    
 }
 
 function consume_api(string $url, string $http_verb = 'GET', $body = null, $headers = null, $options = null, $decode = true, $encode_body = true, $cache_time = null){
