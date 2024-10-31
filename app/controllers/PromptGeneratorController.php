@@ -27,7 +27,7 @@ class PromptGeneratorController extends Controller
         js_file('third_party/sweetalert2/sweetalert.js');
 
         # Toastr  ---> usar para avisar cuando un Prompt fue generado con exito
-        js_file(VIEWS_PATH . '/third_party/third_party/toastr/toastr.min.js');
+        js_file(ASSETS_PATH . 'third_party/toastr/toastr.min.js');
 
         view('prompt_generator/index.php', [
             'title' => 'Generador de Prompt'
