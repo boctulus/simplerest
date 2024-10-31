@@ -2,9 +2,7 @@
 
 namespace simplerest\libs;
 
-use simplerest\core\libs\Strings;
-
-use Fpdf\Fpdf;
+use simplerest\core\libs\PdfBase;
 
 /*
     Ej de uso:
@@ -14,46 +12,107 @@ use Fpdf\Fpdf;
     $pdf->render();            
 
     $pdf->Output();
+
+    O... para descargarlo:
+
+    // Crear nuevo PDF
+    $pdf = new ProductPDF();
+    $pdf->setData($product['data']);
+    $pdf->render();            
+
+    // $pdf->Output();
+
+    $filename = $product['data']['name'] . '.pdf';
+    $pdf->prepareDownload($filename);
 */
-class ProductPDF extends Fpdf {
-    protected $data;
+class ProductPDF extends PdfBase 
+{
+    protected $margin = 20;
 
     public function __construct(
         $orientation = 'P',
-        $unit = 'mm',
-        $size = 'letter'
+        $unit = '',
+        $size = []
     ) {
-        parent::__construct( $orientation, $unit, $size );
-        // ...
+        parent::__construct($orientation, $unit, $size);
+
+        // Añadir la fuente personalizada Roboto
+        // $this->AddFont('Roboto', '', 'Roboto-Regular.ttf');
+        // $this->AddFont('Roboto', 'B', 'Roboto-Bold.ttf');
     }
 
-    function setData(array $product){
-        $this->data = $product;
-        return $this;
+    protected function fixDescription($description, $max_word_count = 50, $max_char_len = 200, bool $add_dots = true){
+        $description = utf8_decode($description);        
+        $description = str_replace('&nbsp;', '', $description);
+        $description = strip_shortcodes($description); // remuevo [audio mp3=""][/audio], etxc
+        $description = Strings::removeMultipleSpaces($description);
+        $description = Strings::getUpTo($description, $max_word_count, $max_char_len, $add_dots);
+
+        return $description;
     }
 
     // Cabecera de página
     function Header() {
-        $this->SetFont('Arial', 'B', 16);
-        $this->SetTextColor(255, 255, 255);
-        $this->SetFillColor(0, 32, 96); // Color azul oscuro como en la imagen
-        $this->Cell(0, 20, 'Pagina: ' . $this->PageNo() . ' Distribuidora Relmotor', 0, 1, 'L', true);
-    }
+        $this->SetY(0); // Posicionar el header en la parte superior de la página
+        $this->SetX(0); // Posicionar el contenido al borde izquierdo
+        $this->SetRightMargin(0); 
 
-    // Pie de página
+        $this->SetFont('Arial', 'B', 10); // Reducido 
+        $this->SetTextColor(255, 255, 255);
+        $this->SetFillColor(5,41,94); // Color azul oscuro
+        
+        // Reducida la altura de 20 a 15 y agregado padding left de 10
+        $this->Cell(0, 15, '   Pagina: ' . $this->PageNo() . ' Distribuidora Relmotor', 0, 1, 'L', true);
+
+        $this->SetRightMargin($this->margin);
+        $this->SetAutoPageBreak(true, 25);
+    }
+    
     function Footer() {
-        $this->SetY(-50);
+        $this->SetY(-25);
         $this->SetFont('Arial', '', 10);
         $this->SetTextColor(0);
+        
+        // Primera línea
         $this->MultiCell(0, 5, 
-            "Amplia variedad de repuestos eléctricos como Alternadores, Motores de Partida, Despiece y otros.\n\n" .
-            "Nuestras oficinas se encuentran en Santa Petronila 955, Quinta Normal, Santiago\n" .
-            "contacto@tienda.relmotor.cl | www.relmotor.cl",
+            utf8_decode("Amplia variedad de repuestos eléctricos como Alternadores, Motores de Partida, Despiece y otros."),
+            0, 'C');
+        $this->Ln(2);
+        
+        // Dirección con enlace
+        $texto_direccion = "Nuestras oficinas se encuentran en Santa Petronila 955, Quinta Normal, Santiago";
+        $texto_inicio = "Nuestras oficinas se encuentran en ";
+        $texto_enlace = "Santa Petronila 955, Quinta Normal, Santiago";
+        
+        // Calcular posición X para centrar
+        $ancho_total = $this->GetStringWidth(utf8_decode($texto_direccion));
+        $x_inicio = ($this->GetPageWidth() - $ancho_total) / 2;
+        
+        $this->SetX($x_inicio);
+        $this->Write(5, utf8_decode($texto_inicio));
+        
+        // Agregar el enlace
+        $this->SetTextColor(6,36,59); // Color azul para el enlace
+        $x_enlace = $this->GetX();
+        $y_enlace = $this->GetY();
+        $ancho_enlace = $this->GetStringWidth(utf8_decode($texto_enlace));
+        $this->Write(5, utf8_decode($texto_enlace), 'https://g.page/relmotor');
+        
+        // Restaurar color
+        $this->SetTextColor(5, 41, 94);
+        $this->Ln(5);
+
+        $this->SetTextColor(165,74,90); /// Rojo enlaces aqui       
+        $this->MultiCell(0, 5,
+            utf8_decode("contacto@tienda.relmotor.cl | www.relmotor.cl"),
             0, 'C');
     }
 
     function render(){
         $this->AddPage();
+
+        // Convertir strings con caracteres especiales, ..., acortar
+        $description = $this->fixDescription($this->data['description'], 50, 200);
 
         // Datos del producto
         
@@ -61,31 +120,45 @@ class ProductPDF extends Fpdf {
         $extension = strtoupper(pathinfo($this->data['featured_image'], PATHINFO_EXTENSION));
         $this->Image($this->data['featured_image'], 10, 40, 90, $extension);
 
-        // Información del producto
-        $this->SetFont('Arial', 'B', 12);
-        $this->SetTextColor(0, 32, 96); // Azul oscuro para SKU
-        $this->SetXY(10, 140);
+        // SKU
+        $this->SetFont('Arial', 'B', 14);
+        $this->SetTextColor(5,41,94); // Azul oscuro para SKU
+        $this->SetXY($this->margin, 140);
         $this->Cell(0, 10, 'SKU: ' . $this->data['sku']);
 
         // Descripción
         $this->SetFont('Arial', '', 11);
         $this->SetTextColor(0);
-        $this->SetXY(10, 150);
-        $this->MultiCell(0, 5, $this->data['description']);
+        $this->SetXY($this->margin, 150);
+        $this->MultiCell(0, 5, $description);
 
         // Marca
-        $this->SetXY(10, 170);
+        $this->SetXY($this->margin, 172);
         $this->SetFont('Arial', 'B', 11);
-        $this->Cell(30, 10, 'Marca');
+        $this->Cell(30, 10, 'MARCA');
         $this->SetFont('Arial', '', 11);
         $this->Cell(0, 10, $this->data['attributes'][0]['value']);
 
-        // Precio
-        $this->SetXY(10, 180);
-        $this->SetFont('Arial', 'B', 14);
-        $this->SetTextColor(255, 0, 0); // Rojo para el precio
-        $this->Cell(0, 10, 'Precio: $' . number_format($this->data['price'], 0, ',', '.') . ' Neto');
+        // // Precio
+        // $this->SetXY($this->margin, 180);
+        // $this->SetFont('Arial', 'B', 14);
+        // $this->SetTextColor(255, 0, 0); // Rojo para el precio
+        // $this->Cell(0, 10, 'Precio: ' . Money::getFormatted($this->data['price']) . ' Neto');
+
+        // Stock de se_resultset[0].stock_status
+
+        $instock = ($this->data['stock_status'] == 'instock');
+
+        $this->SetFont('Arial', 'B', 12);
+
+        if ($instock){
+            $this->SetTextColor(25,135,84); 
+        } else {
+            $this->SetTextColor(220,53,69);
+        }
+
+        $this->SetXY($this->margin, 180);
+        $this->Cell(0, 10, $instock ? 'EN STOCK' : 'Sin stock');
     }
 }
-
 
