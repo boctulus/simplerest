@@ -1337,7 +1337,7 @@ class Strings
             $trimmedSentence = trim($trimmedSentence);
         } elseif ($max_word_count !== null) {
             // Solo se proporciona la cantidad máxima de palabras
-            $trimmedSentence = self::getUpToNWords($sentence, $max_word_count);
+            $trimmedSentence = self::getUpTo($sentence, $max_word_count);
         } elseif ($max_char_len !== null) {
             // Solo se proporciona la cantidad máxima de caracteres
             $trimmedSentence = mb_substr($sentence, 0, $max_char_len);
