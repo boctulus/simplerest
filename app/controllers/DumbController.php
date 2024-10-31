@@ -11015,4 +11015,11 @@ class DumbController extends Controller
         dd($chat->getTokenUsage(), 'TOKEN USAGE');
     }
 
+    function test_datatable(){
+        set_template('templates\tpl_bt5.php');
+
+        view('my_datatable');
+    }
+
+
 }   // end class
