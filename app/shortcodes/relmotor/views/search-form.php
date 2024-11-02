@@ -21,7 +21,7 @@
         
         <div class="col-lg-12 col-xl-10">
             <div class="search-form">
-                <h2 class="mb-4">BÚSQUEDA AVANZADA</h2>
+                <h2 class="mb-4">BÚSQUEDA GENERAL</h2>
                 <form>
                     <!-- Barra de búsqueda principal -->
                     <div class="mb-3">                        
@@ -33,7 +33,7 @@
                         </div>
                         <!-- Switch para búsqueda avanzada -->
                         <div class="d-flex justify-content-end align-items-center mt-2">
-                            <label class="form-check-label" style="margin-right: 50px" for="advancedSearchToggle">Avanzado</label>
+                            <label class="form-check-label" style="margin-right: 50px" for="advancedSearchToggle">Avanzada</label>
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" id="advancedSearchToggle" role="switch">
                             </div>
@@ -139,6 +139,35 @@ $rol = $_GET['rol'] ?? 'comprador';
                 bsCollapse.hide();
             }
         });
+
+        // Recuperar el estado guardado
+    const savedState = localStorage.getItem('advancedSearchState');
+    
+    // Si existe un estado guardado, aplicarlo
+    if (savedState === 'true') {
+        toggle.checked = true;
+        // Mostrar la sección avanzada inmediatamente
+        new bootstrap.Collapse(advancedSection, {
+            toggle: false
+        }).show();
+    }
+    
+    // Escuchar cambios en el switch
+    toggle.addEventListener('change', function() {
+        const bsCollapse = new bootstrap.Collapse(advancedSection, {
+            toggle: false
+        });
+        
+        if (this.checked) {
+            bsCollapse.show();
+            // Guardar estado expandido
+            localStorage.setItem('advancedSearchState', 'true');
+        } else {
+            bsCollapse.hide();
+            // Guardar estado colapsado
+            localStorage.setItem('advancedSearchState', 'false');
+        }
+    });
     });
 
     // $(document).ready(function () {
