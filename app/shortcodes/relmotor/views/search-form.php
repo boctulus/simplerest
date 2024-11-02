@@ -87,9 +87,16 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between">
+                    <!-- <div class="d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary clearSearchForm">Limpiar</button>
                         <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div> -->
+
+                    <div class="d-flex justify-content-center">
+                        <div class="btn-group btn-group-pill" role="group" aria-label="Acciones de búsqueda">
+                            <button type="button" class="btn btn-dark-custom">LIMPIAR</button>
+                            <button type="submit" class="btn btn-success-custom">BUSCAR</button>
+                        </div>
                     </div>
                 </form>
             </div>
