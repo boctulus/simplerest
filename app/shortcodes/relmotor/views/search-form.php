@@ -71,13 +71,12 @@
                             </div>
                             
                             <div class="row mb-3">
-                                <div class="col-6">
-                                    <div class="form-check">
+                                <!-- Checkboxes en columna -->
+                                <div class="checkbox-column mb-3">
+                                    <div class="form-check mb-2">
                                         <input class="form-check-input" type="checkbox" id="oferta">
                                         <label class="form-check-label" for="oferta">En oferta</label>
                                     </div>
-                                </div>
-                                <div class="col-6">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="stock">
                                         <label class="form-check-label" for="stock">En stock</label>
