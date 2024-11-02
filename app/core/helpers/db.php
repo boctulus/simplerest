@@ -136,6 +136,11 @@ function get_model_defs(string $table_name, $tenant_id = null, bool $include_hid
         Obtengo las "related tables"
     */
     $rels        = get_relations($tenant_id);
+   
+    if (!isset($rels['related_tables'])){
+        throw new \Exception("Please run \"php com make relation_scan --from:$tenant_id\" or re-build All schemas!");
+    }
+
     $_related    = $rels['related_tables'];
     $rel_tables  = $_related[$table_name] ?? [];
 
