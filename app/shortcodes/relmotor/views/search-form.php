@@ -93,7 +93,7 @@
 
                     <div class="d-flex justify-content-center">
                         <div class="btn-group btn-group-pill" role="group" aria-label="Acciones de búsqueda">
-                            <button type="button" class="btn btn-dark-custom">LIMPIAR</button>
+                            <button type="button" class="btn btn-dark-custom clearSearchForm">LIMPIAR</button>
                             <button type="submit" class="btn btn-success-custom">BUSCAR</button>
                         </div>
                     </div>
