@@ -35,7 +35,7 @@ class RelmotorShortcode
 
     function index()
     {
-        css_file(__DIR__ . '/assets/css/styles.css');
+        css_file(__DIR__ . '/assets/css/search-form.css');
         css_file(__DIR__ . '/assets/css/results.css');     
         css_file(__DIR__ . '/assets/css/quick_view.css');
         css_file(__DIR__ . '/assets/css/customization.css');
@@ -44,13 +44,19 @@ class RelmotorShortcode
             Atributos que se quieren incluir en los filtros (no tienen porque ser todos)
         */
         $atts = [
-            "Sistema Eléctrico",
-            "Marca"
+            [
+                "key"  => "pa_sistema-electrico",
+                "name" => "Sistema Eléctrico"
+            ],
+            [
+                "key"  => "pa_marca",
+                "name" => "Marca"
+            ],            
         ];
 
         $user_id = 60; // <--- en WordPress es obtenido 
 
-        view(__DIR__ . '/views/relmotor.php', [
+        view(__DIR__ . '/views/search-form.php', [
             'atts'    => $atts,
             'user_id' => $user_id  // usuario logueado
         ]);        
