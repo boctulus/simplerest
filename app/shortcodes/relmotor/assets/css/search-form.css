@@ -292,14 +292,28 @@ span.select2-selection__placeholder {
   border-color: #68d391;
 }
 
-.form-check.form-switch {
-  margin: 0;
-  padding-left: 0;
-}
-
 .form-check-input {
   margin-left: 0;
   cursor: pointer;
+}
+
+/*
+  Switch de busqueda avanzqda
+*/
+
+.switch-container {
+  width: 100%;  /* Asegura que el contenedor tome todo el ancho */
+  padding-right: 15px;  /* Agrega un poco de padding para que no quede pegado al borde */
+}
+
+.switch-label {
+  color: #6c757d;  /* Color gris para el texto */
+  font-size: 0.9rem;  /* Tamaño de texto ligeramente más pequeño */
+}
+
+.form-check.form-switch {
+  margin: 0;
+  padding-left: 0;
 }
 
 /* Opcional: para hacer el switch un poco más grande */
@@ -307,4 +321,66 @@ span.select2-selection__placeholder {
   width: 3em;
   height: 1.5em;
   margin-top: 0;
+}
+
+/* Ajustes específicos para móviles */
+@media (max-width: 576px) {
+  .switch-container {
+      padding-right: 10px;  /* Reduce el padding en móviles */
+  }
+  
+  .switch-label {
+      font-size: 0.85rem;  /* Reduce un poco más el tamaño del texto en móviles */
+  }
+}
+
+
+/*
+  Botonera en pildora
+*/
+
+.btn-group {
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.btn-group .btn {
+  padding: 0.5rem 1.5rem;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.btn-group-pill {
+  border-radius: 50px;
+  overflow: hidden;
+  border: 1px solid #4a5568;  /* Agregamos un borde sutil */
+}
+
+.btn-group-pill .btn {
+  padding: 0.4rem 1.2rem;  /* Reducimos el padding */
+  text-transform: uppercase;
+  font-size: 0.85rem;      /* Reducimos el tamaño de fuente */
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.btn-dark-custom {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border: none;
+}
+
+.btn-dark-custom:hover {
+  background-color: #1a202c;
+}
+
+.btn-success-custom {
+  background-color: #68d391;
+  border: none;
+  color: #1a1a1a;
+}
+
+.btn-success-custom:hover {
+  background-color: #48bb71;
 }
