@@ -1,0 +1,279 @@
+.rm_tooltip  {
+  width: 20px !important;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.search-form {
+  background-color: #252525;
+  padding: 2rem;
+  border-radius: 10px;
+  color: #e0e0e0;
+}
+
+.search-form h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* .search-form .form-control {
+  background-color: #333;
+  border-color: #444;
+  color: #e0e0e0;
+} */
+
+.form-control::placeholder {
+  color: #888;
+}
+
+.search-form .form-control:focus {
+  border-color: #4a90e2;
+  box-shadow: none;
+}
+
+.onmisearch-input {
+  text-transform: uppercase !important;
+}
+
+.info-icon {
+  display: none ; /* inline-block */
+  width: 14px;
+  height: 14  px;
+  background-color: #4a90e2;
+  color: white;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 12px;
+  line-height: 16px;
+  margin-left: 5px;
+  margin-bottom: 4px;
+}
+
+.help-text {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.25rem;
+}
+
+.btn-primary {
+  background-color: #68d391;
+  border-color: #68d391;
+  color: #1a1a1a;
+}
+
+.btn-secondary {
+  background-color: #4a5568;
+  border-color: #4a5568;
+}
+
+.form-check-input:checked {
+  background-color: #68d391;
+  border-color: #68d391;
+}
+
+.form-check-label {
+  color: #4a5568;
+}
+
+/*
+  SELECT 2
+*/
+
+/* Ensure select2 dropdown adapts to the full width of the container */
+.select2-container {
+  width: 100% !important;
+}
+
+/* Ajustar la altura del select2 para MARCA y SISTEMA ELECTRICO */
+.select2-container--default .select2-selection--single {
+  height: 40px; /* Ajusta este valor según la altura que deseas */
+  line-height: 40px; /* Asegúrate de que el texto esté alineado verticalmente */
+}
+
+/* Opcionalmente, puedes ajustar el padding y bordes si es necesario */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  padding-top: 5px; /* Ajusta este valor según sea necesario */
+}
+
+span.select2-selection__placeholder {
+  text-transform: uppercase;
+}
+
+/*
+  Mostrar(+) / Ocultar(-)
+*/
+
+.product-description {
+    position: relative;
+}
+
+.toggle-text {
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline !important;
+    margin-left: 5px;
+}
+
+.toggle-text:hover {
+    color: #0056b3;
+}
+
+/*
+  Sugestions
+*/
+
+.suggestions-wrapper {
+  position: relative; /* Esto asegura que el contenedor de sugerencias se posicione correctamente */
+}
+
+#suggestions-container {
+  position: absolute;
+  width: 100%; /* Se ajusta al ancho del contenedor padre (que debe ser el input) */
+  max-width: none; /* Elimina cualquier límite de ancho */
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+#suggestions {
+    background-color: white;
+    max-height: 500px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.suggestion-item {
+    display: flex;
+    align-items: start;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+.suggestion-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+.suggestion-item .content {
+    flex-grow: 1;
+}
+.suggestion-item .name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.suggestion-item .description {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.search-spinner {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+/*
+  Ajustes de color para cada campo
+
+  Afecta a los INPUT y SELECT
+  pero *no* a los SELECT2
+
+  Usando ::placeholder afecta los placeholders
+*/
+
+#anything, #buscar-codigo, #orderBy,
+#anything::placeholder, #buscar-codigo::placeholder, #orderBy::placeholder {
+  color: black !important; ;
+  font-weight: normal;
+  text-transform: uppercase !important;
+}
+
+/* 
+  SELECT2 ver 4.0.x
+*/
+
+/* Placeholder */
+.select2-selection__placeholder {
+  color: black !important; 
+  font-weight: normal;
+  text-transform: uppercase !important;
+}
+
+/* Cambia colores de las options excepto de la que tiene foco y de la selccionada */
+ .select2-results, .select2-selection__rendered { 
+  color: #404041 !important; 
+  font-weight: normal;
+  text-transform: uppercase !important;
+}
+
+/* Option que esta recibiendo el foco al navegar entre opciones */
+.select2-results__option--highlighted { 
+  color:  black !important; 
+  font-weight: bold;
+  text-transform: uppercase !important;
+}
+
+/* Option selected */
+.select2-selection__rendered { 
+  color: #404041 !important; 
+  font-weight: normal;
+  text-transform: uppercase !important;
+}
+
+/* Border */
+/* .select2-container {
+  border: 1px solid #666;
+}    */
+
+/*
+  Lucecita
+*/
+
+.label-container {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-light {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  margin-left: 5px;
+  background-color: white;
+}
+
+.status-light.red {
+  background-color: #dc3545;
+}
+
+.status-light.green {
+  background-color: #28a745;
+}
+
+.status-light.yellow {
+  background-color: #ffc107;
+}
+
+/*
+  Utilities
+*/
+
+.invisible {
+  visibility: hidden !important;
+}
+
+
+/*
+    Formulario: cambio de apariencia en moviles
+*/
+
+@media (max-width: 576px) {
+  .search-form h2 {
+    color: #363b3f;
+  }  
+}
