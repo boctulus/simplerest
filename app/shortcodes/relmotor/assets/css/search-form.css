@@ -277,3 +277,34 @@ span.select2-selection__placeholder {
     color: #363b3f;
   }  
 }
+
+
+/*
+    Form Expansion
+*/
+
+#advancedSearchSection {
+  transition: all 0.3s ease-in-out;
+}
+
+.form-check-input:checked {
+  background-color: #68d391;
+  border-color: #68d391;
+}
+
+.form-check.form-switch {
+  margin: 0;
+  padding-left: 0;
+}
+
+.form-check-input {
+  margin-left: 0;
+  cursor: pointer;
+}
+
+/* Opcional: para hacer el switch un poco más grande */
+.form-switch .form-check-input {
+  width: 3em;
+  height: 1.5em;
+  margin-top: 0;
+}
