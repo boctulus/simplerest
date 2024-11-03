@@ -57,12 +57,6 @@ body {
   margin-top: 0.25rem;
 }
 
-.btn-primary {
-  background-color: #68d391;
-  border-color: #68d391;
-  color: #1a1a1a;
-}
-
 .btn-secondary {
   background-color: #4a5568;
   border-color: #4a5568;
@@ -273,7 +267,7 @@ span.select2-selection__placeholder {
 */
 
 @media (max-width: 576px) {
-  .search-form h2 {
+  .search-form h2, label.switch-label {
     color: #363b3f;
   }  
 }
@@ -297,6 +291,11 @@ span.select2-selection__placeholder {
   cursor: pointer;
 }
 
+#advancedSearchToggle:checked {
+  background-color: #0D6EFD;
+  border-color: #0D6EFD;
+}
+
 /*
   Switch de busqueda avanzqda
 */
@@ -308,7 +307,6 @@ span.select2-selection__placeholder {
 
 .switch-label {
   color: #6c757d;  /* Color gris para el texto */
-  font-size: 0.9rem;  /* Tamaño de texto ligeramente más pequeño */
 }
 
 .form-check.form-switch {
@@ -323,16 +321,6 @@ span.select2-selection__placeholder {
   margin-top: 0;
 }
 
-/* Ajustes específicos para móviles */
-@media (max-width: 576px) {
-  .switch-container {
-      padding-right: 10px;  /* Reduce el padding en móviles */
-  }
-  
-  .switch-label {
-      font-size: 0.85rem;  /* Reduce un poco más el tamaño del texto en móviles */
-  }
-}
 
 
 /*
@@ -365,14 +353,15 @@ span.select2-selection__placeholder {
   letter-spacing: 0.5px;
 }
 
-.btn-dark-custom {
+.clearSearchForm {
   background-color: #2d3748;
   color: #e2e8f0;
   border: none;
 }
 
-.btn-dark-custom:hover {
+.clearSearchForm:hover {
   background-color: #1a202c;
+  color: #fff;
 }
 
 .btn-success-custom {
@@ -407,4 +396,74 @@ span.select2-selection__placeholder {
 .form-check-input:checked {
   background-color: #68d391;
   border-color: #68d391;
+}
+
+/*
+  New
+*/
+
+/* Contenedor principal */
+.search-header {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+/* Contenedor del input */
+.search-input-container {
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+/* Wrapper del switch */
+.switch-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    padding: 0.5rem 0;
+    position: relative;
+}
+
+/* Label del switch */
+.switch-label {
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor del switch */
+.form-check.form-switch {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* El switch en sí */
+.form-check-input {
+    margin-top: 2px;
+    width: 2.5em;
+    height: 1.25em;
+    cursor: pointer;
+}
+
+/* Media queries para asegurar consistencia en móviles */
+@media (max-width: 768px) {
+    .switch-wrapper {
+        justify-content: flex-end; /* Forzar alineación derecha */
+    }
+    
+    .form-check.form-switch {
+        position: relative;
+        right: 0;
+    }
+}
+
+/* Asegurar que el switch no se rompa en pantallas muy pequeñas */
+@media (max-width: 320px) {
+    .form-check-input {
+        width: 2em;
+        height: 1em;
+    }
 }
