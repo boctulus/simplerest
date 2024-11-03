@@ -24,18 +24,24 @@
                 <h2 class="mb-4">BÚSQUEDA GENERAL</h2>
                 <form>
                     <!-- Barra de búsqueda principal -->
-                    <div class="mb-3">                        
-                        <div class="suggestions-wrapper">
-                            <input type="search" class="form-control onmisearch-input" id="anything" placeholder="Código, aplicación o descripción" autocomplete="off">
-                            <div id="suggestions-container" class="list-group">
-                                <!-- Aquí van las sugerencias -->
-                            </div>
+                    <div class="search-header mb-3">
+                        <!-- Input de búsqueda -->
+                        <div class="search-input-container">
+                            <input type="search" 
+                                class="form-control onmisearch-input" 
+                                id="anything" 
+                                placeholder="Código, aplicación o descripción" 
+                                autocomplete="off">
                         </div>
-                        <!-- Switch para búsqueda avanzada -->
-                        <div class="d-flex justify-content-end align-items-center mt-2">
-                            <label class="form-check-label" style="margin-right: 50px" for="advancedSearchToggle">Avanzada</label>
+                        
+                        <!-- Contenedor del switch -->
+                        <div class="switch-wrapper">
+                            <label class="switch-label" style="margin-right:45px">Avanzada</label>
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="advancedSearchToggle" role="switch">
+                                <input class="form-check-input" 
+                                    type="checkbox" 
+                                    id="advancedSearchToggle" 
+                                    role="switch">
                             </div>
                         </div>
                     </div>
@@ -75,7 +81,7 @@
                                 <div class="checkbox-column mb-3">
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="checkbox" id="oferta">
-                                        <label class="form-check-label" for="oferta">En oferta</label>
+                                        <label class="form-check-label" for="oferta">Oferta Especial</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="stock">
@@ -93,8 +99,8 @@
 
                     <div class="d-flex justify-content-center">
                         <div class="btn-group btn-group-pill" role="group" aria-label="Acciones de búsqueda">
-                            <button type="button" class="btn btn-dark-custom clearSearchForm">LIMPIAR</button>
-                            <button type="submit" class="btn btn-success-custom">BUSCAR</button>
+                            <button type="button" class="btn clearSearchForm">LIMPIAR</button>
+                            <button type="submit" class="btn btn-primary">BUSCAR</button>
                         </div>
                     </div>
                 </form>
@@ -105,6 +111,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- MODAL DEMO -->
 <?php 
@@ -121,6 +128,39 @@ $rol = $_GET['rol'] ?? 'comprador';
 ?>
 
 <script>
+    $(document).ready(function() {
+        // Inicializa Select2 en el select
+        $('#woo_cat_prd').select2({
+        placeholder: "Seleccionar",
+        allowClear: true,
+        data: [
+            { id: 'al', text: 'Alternador' },
+            { id: 're', text: 'Regulador' },
+            { id: 'bc', text: 'Bocina' }
+        ]
+        });
+
+        $('select[data-id="pa_sistema-electrico"]').select2({
+        placeholder: "Seleccionar",
+        allowClear: true,
+        data: [
+            { id: 'de', text: 'DENSO' },
+            { id: 'iv', text: 'IVECO' },
+            { id: 'fd', text: 'FORD' }
+        ]
+        });
+
+        $('select[data-id="pa_marca"]').select2({
+        placeholder: "Seleccionar",
+        allowClear: true,
+        data: [
+            { id: 'dn', text: 'DNI' },
+            { id: 'gs', text: 'GAUSS' },
+            { id: 'ap', text: 'AS PARTS' }
+        ]
+        });
+    });
+
     /*
         Form Expansion
     */
