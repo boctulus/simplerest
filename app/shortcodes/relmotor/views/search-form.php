@@ -107,7 +107,7 @@
             </div>
 
             <!-- pagina de resultados -->
-            <?php include __DIR__ . '/results.php'; ?>
+            <?php // include __DIR__ . '/results.php'; ?>
         </div>
     </div>
 </div>
@@ -127,90 +127,86 @@ $rol = $_GET['rol'] ?? 'comprador';
 // }
 ?>
 
-<script>
-    $(document).ready(function() {
-        // Inicializa Select2 en el select
-        $('#woo_cat_prd').select2({
-        placeholder: "Seleccionar",
-        allowClear: true,
-        data: [
-            { id: 'al', text: 'Alternador' },
-            { id: 're', text: 'Regulador' },
-            { id: 'bc', text: 'Bocina' }
-        ]
-        });
+<script>    
+    // $(document).ready(function () {
+    //     $('#productQuickView').modal('show');
+    // });
 
-        $('select[data-id="pa_sistema-electrico"]').select2({
-        placeholder: "Seleccionar",
-        allowClear: true,
-        data: [
-            { id: 'de', text: 'DENSO' },
-            { id: 'iv', text: 'IVECO' },
-            { id: 'fd', text: 'FORD' }
-        ]
-        });
-
-        $('select[data-id="pa_marca"]').select2({
-        placeholder: "Seleccionar",
-        allowClear: true,
-        data: [
-            { id: 'dn', text: 'DNI' },
-            { id: 'gs', text: 'GAUSS' },
-            { id: 'ap', text: 'AS PARTS' }
-        ]
-        });
-    });
-
-    /*
-        Form Expansion
-    */
     document.addEventListener('DOMContentLoaded', function() {
-        const toggle = document.getElementById('advancedSearchToggle');
-        const advancedSection = document.getElementById('advancedSearchSection');
-        
-        toggle.addEventListener('change', function() {
-            const bsCollapse = new bootstrap.Collapse(advancedSection, {
-                toggle: false
-            });
-            
-            if (this.checked) {
-                bsCollapse.show();
-            } else {
-                bsCollapse.hide();
+    const toggle = document.getElementById('advancedSearchToggle');
+    const advancedSection = document.getElementById('advancedSearchSection');
+    
+    function checkFormValues() {
+        let hasValues = false;
+        let filledElements = [];
+
+        // Revisar input de búsqueda por código
+        const codigoInput = document.getElementById('buscar-codigo');
+        if (codigoInput.value.trim()) {
+            hasValues = true;
+            filledElements.push('Código: ' + codigoInput.value);
+        }
+
+        // Revisar todos los select2
+        const select2Elements = document.querySelectorAll('select');
+        select2Elements.forEach(select => {
+            const value = $(select).val();
+            if (value && value.length) {
+                hasValues = true;
+                // Manejar tanto valores únicos como múltiples
+                const selectedValue = Array.isArray(value) ? value.join(', ') : value;
+                const placeholder = $(select).data('placeholder') || select.id;
+                filledElements.push(placeholder + ': ' + selectedValue);
             }
         });
 
-        // Recuperar el estado guardado
-    const savedState = localStorage.getItem('advancedSearchState');
-    
-    // Si existe un estado guardado, aplicarlo
-    if (savedState === 'true') {
-        toggle.checked = true;
-        // Mostrar la sección avanzada inmediatamente
-        new bootstrap.Collapse(advancedSection, {
-            toggle: false
-        }).show();
+        // Revisar checkboxes
+        const checkboxes = ['oferta', 'stock'];
+        checkboxes.forEach(id => {
+            const checkbox = document.getElementById(id);
+            if (checkbox && checkbox.checked) {
+                hasValues = true;
+                filledElements.push('Checkbox: ' + checkbox.nextElementSibling.textContent.trim());
+            }
+        });
+
+        return { hasValues, filledElements };
     }
-    
-    // Escuchar cambios en el switch
+
     toggle.addEventListener('change', function() {
+        if (!this.checked) {  // Si está intentando colapsar
+            const { hasValues, filledElements } = checkFormValues();
+            
+            if (hasValues) {
+                console.log('No se puede colapsar. Los siguientes campos tienen valores:');
+                filledElements.forEach(element => console.log(element));
+                
+                // Prevenir el colapso
+                this.checked = true;
+                return;
+            }
+        }
+
         const bsCollapse = new bootstrap.Collapse(advancedSection, {
             toggle: false
         });
         
         if (this.checked) {
             bsCollapse.show();
-            // Guardar estado expandido
             localStorage.setItem('advancedSearchState', 'true');
         } else {
             bsCollapse.hide();
-            // Guardar estado colapsado
             localStorage.setItem('advancedSearchState', 'false');
         }
     });
-    });
 
-    // $(document).ready(function () {
-    //     $('#productQuickView').modal('show');
-    // });
+    // Recuperar estado guardado al cargar
+    const savedState = localStorage.getItem('advancedSearchState');
+    if (savedState === 'true') {
+        toggle.checked = true;
+        new bootstrap.Collapse(advancedSection, {
+            toggle: false
+        }).show();
+    }
+});
 </script>
