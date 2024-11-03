@@ -24,7 +24,9 @@ class RelmotorShortcode
         js_file(JS_PATH .'bootstrap_paginator.js'); 
 
         js_file(__DIR__ . '/assets/js/search-engine.js');
-        js_file(__DIR__ . '/assets/js/populte-dropdowns.js');    
+        js_file(__DIR__ . '/assets/js/populte-dropdowns.js');   
+        js_file(__DIR__ . '/assets/js/search-form.js'); 
+        
         
         // Printing
         js_file("third_party/printThis/printThis.js");
