@@ -16,6 +16,11 @@ class RelmotorShortcode
         css_file(__DIR__ . '/assets/third_party/select2/select2-bootstrap-5-theme.min.css'); 
         js_file(__DIR__ . '/assets/third_party/select2/select2.min.js');
 
+        # Toastr
+
+        css_file(ASSETS_PATH. '/third_party/toastr/toastr.min.css');        
+        js_file(ASSETS_PATH . '/third_party/toastr/toastr.min.js');
+
         // CACHE con local y session Storage
         js_file(JS_PATH .'transients.js');
 
@@ -29,7 +34,7 @@ class RelmotorShortcode
         
         
         // Printing
-        js_file("third_party/printThis/printThis.js");
+        // js_file("third_party/printThis/printThis.js");
 
 
         $this->index();
