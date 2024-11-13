@@ -107,7 +107,7 @@ $att_keys = array_column($atts, 'key');
             </div>
 
             <!-- pagina de resultados -->
-            <?php // include __DIR__ . '/results.php'; ?>
+            <?php include __DIR__ . '/results.php'; ?>
         </div>
     </div>
 </div>
@@ -132,16 +132,73 @@ $rol = $_GET['rol'] ?? 'comprador';
     //     $('#productQuickView').modal('show');
     // });
 
-    // Agregar al inicio del archivo
     function highlightField($element) {
-        $element.css('transition', 'background-color 0.5s');
-        $element.css('background-color', '#fff3cd');
-        setTimeout(() => {
-            $element.css('background-color', '');
+        // Identificar el tipo de elemento
+        if ($element.is('span.select2')) {
+            // Es un SELECT2
+            let isOn = true;
+            const interval = setInterval(() => {
+                if (isOn) {
+                    $element.css('border', '2px solid #ffa500');
+                } else {
+                    $element.css('border', '');
+                }
+                isOn = !isOn;
+            }, 100);
+
             setTimeout(() => {
-                $element.css('transition', '');
+                clearInterval(interval);
+                $element.css('border', '');
             }, 500);
-        }, 500);
+        } 
+        else if ($element.is('div.form-check')) {
+            // Es un CHECKBOX
+            // const $checkbox = $element.find('input[type="checkbox"]');
+            // const originalBorderColor = $checkbox.css('border-color');
+            // const originalBgColor = $checkbox.css('background-color');
+            // const originalCheckedState = $checkbox.prop('checked');
+
+            // // Cambiar a naranja
+            // $checkbox.css({
+            //     'border-color': '#ffa500',
+            //     'background-color': '#ffa500'
+            // });
+
+            // // Parpadear el estado del checkbox
+            // const flashTimes = 5;
+            // let count = 0;
+            // const interval = setInterval(() => {
+            //     $checkbox.prop('checked', !$checkbox.prop('checked'));
+            //     count++;
+            //     if (count >= flashTimes * 2) {
+            //         clearInterval(interval);
+            //         // Restaurar colores originales
+            //         $checkbox.css({
+            //             'border-color': originalBorderColor,
+            //             'background-color': originalBgColor
+            //         });
+            //         // Dejar el checkbox encendido
+            //         $checkbox.prop('checked', true);
+            //     }
+            // }, 50);
+        } 
+        else {
+            // Es un INPUT u otro elemento
+            let isOn = true;
+            const interval = setInterval(() => {
+                if (isOn) {
+                    $element.css('border', '2px solid #ffa500');
+                } else {
+                    $element.css('border', '');
+                }
+                isOn = !isOn;
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                $element.css('border', '');
+            }, 500);
+        }
     }
 
     function showToast(message) {
