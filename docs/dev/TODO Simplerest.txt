@@ -539,6 +539,20 @@ https://code-boxx.com/move-files-php/
 
 - En Migrations:
 
+  . No esta funcionado addUnique() sobre varios campos dentro de una migracion
+
+  $table = new Schema('downloadable_product_permissions_new');
+
+    $table->increments('permission_id'); // Primary key
+    $table->string('download_id', 64);
+    $table->ubig('product_id');
+    $table->ubig('user_id');
+    $table->ubig('download_count')->default(0);
+    $table->timestamp('access_granted')/*->useCurrent()*/;
+
+    // Índice único para evitar duplicados (no esta funcionando)
+    $table->addUnique(['download_id', 'product_id', 'user_id']);
+
   . Guardar el nombre la tabla como propiedad para evitar tener que repetirla entre los comandos up() y down()
 
     protected static $tb_name;
