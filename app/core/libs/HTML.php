@@ -74,9 +74,17 @@ class HTML extends XML
 
         return $ids;
     }
-
     
+    /*
+        Convierte HTML a texto
+
+        Esta función está diseñada para capturar la semántica del HTML de manera fiel, 
+        resultando en una conversión de mayor calidad y mejor organizada, 
+        especialmente útil para textos largos o estructurados.
+    */
     public static function HTML2Text(string $page): string {
+        $page = htmlspecialchars_decode($page);
+
         $dom = new \DOMDocument();
         libxml_use_internal_errors(true); 
         $dom->loadHTML($page);
@@ -92,6 +100,8 @@ class HTML extends XML
             $script->parentNode->removeChild($script);
         }
 
+        // En teoria podria reemplazar este bloque por strip_tags()
+        // habria que chequear que pasaria con los saltos de linea
         $text = '';
         $nodes = $xpath->query('//text()');
         foreach ($nodes as $node) {
@@ -106,6 +116,11 @@ class HTML extends XML
         $text = Strings::trimMultiline($text);
 
         return $text;
+    }
+
+    // Alternativa simplista a HTML::HTML2Text(), posiblemente mas veloz
+    public static function toText($html){
+        return strip_tags(htmlspecialchars_decode($html));
     }
 
     /*
