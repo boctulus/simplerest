@@ -1,6 +1,29 @@
 TODO SimpleRest
 ===============
 
+- Resolver problemas con COMPOSER JSON !!!
+
+Class simplerest\controllers\Angular2JqueryController located in D:/www/simplerest/app\controllers\Angular2jqueryController.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\controllers\demos\ImaginatorTest located in D:/www/simplerest/app\controllers\demos\ImaginatorTestController.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\controllers\OneSignalTesterController located in D:/www/simplerest/app\controllers\demos\OneSignalTesterController.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\controllers\TestImportCsvController located in D:/www/simplerest/app\controllers\ImportCsvController.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\abstracts\pages\Page located in D:/www/simplerest/app\core\abstracts\Page.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\controllers\api\__NAME__ located in D:/www/simplerest/app\core\templates\ApiRestfulController.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\middlewares\__NAME__ located in D:/www/simplerest/app\core\templates\Middleware.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\models\__NAME__ located in D:/www/simplerest/app\core\templates\Model-no-schema.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\models\__NAME__ located in D:/www/simplerest/app\core\templates\Model.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\schemas\__NAME__ located in D:/www/simplerest/app\core\templates\Schema.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\providers\__NAME__ located in D:/www/simplerest/app\core\templates\ServiceProvider.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\core\libs\SystemConstants located in D:/www/simplerest/app\core\templates\SystemConstants.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\background\tasks\__NAME__ located in D:/www/simplerest/app\core\templates\Task.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\models\legion\TblCotizacionDetalleModel located in D:/www/simplerest/app\models\legion\TblCotizacionDetalleModel[1].php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\models\legion\TblUnidadMedidaModel located in D:/www/simplerest/app\models\legion\TblUnidadMedidaModel[1].php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\models\mpp\BarriosModel located in D:/www/simplerest/app\models\mpo\BarriosModel.php does not comply with psr-4 autoloading standard. Skipping.
+Class simplerest\pages\admin\xxx\yyy\SomePage located in D:/www/simplerest/app\pages\admin\some_folder\yyy\SomePage.php does not comply with psr-4 autoloading standard. Skipping.
+Class PHPTAL_Php_Attribute_PHPTAL_ID located in D:/www/simplerest/vendor/phptal/phptal/classes\PHPTAL\Php\Attribute\PHPTAL\Id.php does not comply with psr-0 autoloading standard. Skipping.
+Class PHPTAL_Php_Attribute_PHPTAL_TALES located in D:/www/simplerest/vendor/phptal/phptal/classes\PHPTAL\Php\Attribute\PHPTAL\Tales.php does not comply with psr-0 auto
+
+
 - Generar archivo Constants para las rutas de archivo compatible con la implemetación de SW.
 
 - Renombrar "shortcodes" como "modules", tambien en ./app/

@@ -10,7 +10,7 @@
             "email": "boctulus@gmail.com"
         }
     ],
-    "version": "0.8.1",
+    "version": "0.8.7",
     "require": {
         "php": ">=7.4",
         "byjg/jwt-session": "2.0.*",
@@ -67,3 +67,20 @@
     "minimum-stability": "stable",
     "prefer-stable": true
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
