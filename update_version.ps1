@@ -1,11 +1,13 @@
 function get_current_version {
     param (
-        [string]$file = "composer.test"
+        [string]$file = "composer.json"
     )
     
-    $utf8NoBOM = New-Object System.Text.UTF8Encoding $false
-    $content = [System.IO.File]::ReadAllText($file, $utf8NoBOM)
+    if (!(Test-Path $file)) {
+        return $null
+    }
     
+    $content = Get-Content $file -Raw
     $versionMatch = Select-String -InputObject $content -Pattern '"version":\s*"(\d+\.\d+\.\d+)"' -AllMatches
     
     if ($versionMatch.Matches.Count -gt 0) {
@@ -37,9 +39,9 @@ if ($args.Count -gt 0) {
             if ($version) {
                 Write-Output $version
             } else {
-                Write-Output "No se encontró una versión válida"
+                Write-Output "No se encontró una version válida"
             }
-            exit
+            return
         }
         "--get_next_version" {
             $current = get_current_version
@@ -47,38 +49,42 @@ if ($args.Count -gt 0) {
                 $next = get_next_version $current
                 Write-Output $next
             } else {
-                Write-Output "No se encontró una versión válida"
+                Write-Output "No se encontró una version válida"
             }
-            exit
+            return
         }
     }
 }
 
 # Script principal de actualización
-$file = "composer.test"
-$utf8NoBOM = New-Object System.Text.UTF8Encoding $false
-$content = [System.IO.File]::ReadAllText($file, $utf8NoBOM)
+$file = "composer.json"
 
+# Verificar si el archivo existe
+if (!(Test-Path $file)) {
+    Write-Output "El archivo $file no existe."
+    exit 1
+}
+
+$content = Get-Content $file -Raw
 $current_version = get_current_version
+
 if ($current_version) {
     $new_version = get_next_version $current_version
     
     # Crear un archivo temporal con el contenido actualizado
     $tempFile = "$file.tmp"
-    $newContent = $content -replace [regex]::Escape("""version"": ""$current_version"""), """version"": ""$new_version"""
-    
-    # Guardar con UTF8 sin BOM
-    [System.IO.File]::WriteAllText($tempFile, $newContent, $utf8NoBOM)
+    $content -replace [regex]::Escape("""version"": ""$current_version"""), """version"": ""$new_version""" | 
+        Out-File -FilePath $tempFile -NoNewline
     
     # Verificar que el reemplazo fue exitoso
-    $verificationContent = [System.IO.File]::ReadAllText($tempFile, $utf8NoBOM)
-    if ($verificationContent -match [regex]::Escape("""version"": ""$new_version""")) {
+    $newContent = Get-Content $tempFile -Raw
+    if ($newContent -match [regex]::Escape("""version"": ""$new_version""")) {
         Move-Item -Path $tempFile -Destination $file -Force
-        Write-Output "Versión actualizada de $current_version a $new_version"
+        Write-Output "Version actualizada de $current_version a $new_version"
     } else {
         Remove-Item $tempFile
-        Write-Output "Error: No se pudo actualizar la versión."
+        Write-Output "Error: No se pudo actualizar la version."
     }
 } else {
-    Write-Output "No se encontró una versión válida en el archivo."
+    Write-Output "No se encontró una version válida en el archivo."
 }
