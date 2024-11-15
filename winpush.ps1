@@ -14,7 +14,7 @@ if ($args.Count -eq 0) {
 $datetime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
 # Crear la línea del changelog
-$changelog_line = "$datetime`t$last_version`t$msg"
+$changelog_line = "[$datetime]`t$last_version`t$msg"
 
 # Agregar la línea al archivo CHANGELOG.txt
 Add-Content -Path "CHANGELOG.txt" -Value $changelog_line
