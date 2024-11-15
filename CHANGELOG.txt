@@ -1,0 +1,1 @@
+2024-11-15 10:19:49	0.8.4	Nuevo winpush.ps1 ahora generaria CHANGELOG.txt --sin probar
