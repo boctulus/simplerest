@@ -1,4 +1,4 @@
-{
+﻿{
     "name": "boctulus/simplerest",
     "type": "project",
     "description": "API Rest framework for PHP",
@@ -10,6 +10,7 @@
             "email": "boctulus@gmail.com"
         }
     ],
+    "version": "0.8.1",
     "require": {
         "php": ">=7.4",
         "byjg/jwt-session": "2.0.*",
@@ -25,9 +26,17 @@
         "sendgrid/sendgrid": "~7",
         "datatables.net/editor-php": "2.*",
         "phptal/phptal": "^1.6",
-        "boctulus/hello_world": "^1.0",
         "sabberworm/php-css-parser": "8.4",
-        "nicolab/php-ftp-client": "^1.4"
+        "nicolab/php-ftp-client": "^1.4",
+        "spatie/array-to-xml": "^2.17",
+        "symfony/http-client": "^5.4",
+        "phpunit/phpunit-selenium": "*",
+        "php-webdriver/webdriver":"*",
+        "symfony/dom-crawler": "^5.4",
+        "symfony/css-selector": "^5.4",
+        "php-http/message-factory": "^1.1",
+        "fpdf/fpdf": "^1.86",
+        "mpdf/mpdf": "^8.2"
     },
     "scripts": {
         "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
@@ -50,6 +59,9 @@
         "optimize-autoloader": true,
         "allow-plugins": {
             "php-http/discovery": true
+        },
+        "platform": {
+            "php": "7.4"
         }
     },
     "minimum-stability": "stable",
