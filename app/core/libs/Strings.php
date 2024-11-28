@@ -2360,8 +2360,10 @@ class Strings
 		@return array
 
 		No los valida, es una funcion sencilla
+
+		Antes llamada getEmails()
 	*/
-	static function getEmails($str){
+	static function extractEmails($str){
         return Strings::matchAll($str, '/([a-z0-9_\.]+@[a-z0-9_\.]+)/i');
     }
 
@@ -2398,6 +2400,82 @@ class Strings
 	
 		// Return the joined paragraphs
 		return implode("\n", $paragraphs);
+	}
+
+	/**
+	 * Parses an input into a boolean or a default value.
+	 *
+	 * @param mixed $input Input to parse.
+	 * @param mixed $default_value Default value if parsing fails.
+	 * @return mixed Parsed value or default.
+	 */
+	static function parseOption($input, $default_value = null) {
+		if ($input === null){
+			return $default_value;
+		}
+
+		if (is_bool($input)) {
+			return $input;
+		}
+
+		if (is_numeric($input)) {
+			if ($input == 1) return true;
+			if ($input == 0) return false;
+		}
+
+		if (is_string($input)) {
+			$input = strtolower($input);
+
+			if (in_array($input, ['on', 'true', 'yes'], true)) {
+				return true;
+			}
+			
+			if (in_array($input, ['off', 'false', 'no'], true)) {
+				return false;
+			}
+		}
+
+		return $default_value;
+	}
+
+	/**
+	 * Parses an input into a boolean. Defaults to false if parsing fails.
+	 *
+	 * @param mixed $input Input to parse.
+	 * @return bool Parsed boolean value.
+	 */
+	static function parseOptionToBool($input) : bool {
+		return (bool) static::parseOption($input, false);
+	}
+
+	/**
+	 * Parses an input into a boolean. Throws an exception if invalid.
+	 *
+	 * @param mixed $input Input to parse.
+	 * @return bool Parsed boolean value.
+	 * @throws \InvalidArgumentException If the input cannot be parsed.
+	 */
+	static function parseOptionOrFail($input) : bool {
+		if (is_bool($input)) {
+			return $input;
+		}
+
+		if (is_numeric($input)) {
+			if ($input == 1) return true;
+			if ($input == 0) return false;
+		}
+
+		if (is_string($input)) {
+			$input = strtolower($input);
+			if (in_array($input, ['on', 'true', 'yes'], true)) {
+				return true;
+			}
+			if (in_array($input, ['off', 'false', 'no'], true)) {
+				return false;
+			}
+		}
+
+		throw new \InvalidArgumentException("Invalid format for input");
 	}
 }
 

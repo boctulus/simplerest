@@ -18,7 +18,7 @@ class InvoiceController extends Controller
             DATA
         */
 
-        $hour_rate     = 20;
+        $hour_rate     = 20 * 1.15;
         $is_fully_paid = true;
 
         $header = [
@@ -33,17 +33,17 @@ class InvoiceController extends Controller
         
         $rows = [
             [
-                'qty'  => 185,
+                'qty'  => 2,
                 'unit' => 'hours',
-                'articles' => 'Custom Advanced Ultra-fast Advanced Search Engine',
+                'articles' => 'Adjustment to Advanced Search Engine (badage and band in modals). Hour rate includes PayPal fees',
                 'unit_price' => $hour_rate
             ],
-            [
-                'qty'  => 26.5,
-                'unit' => 'hours',
-                'articles' => 'PDF Catalog Exporter',
-                'unit_price' => $hour_rate
-            ],
+            // [
+            //     'qty'  => 26.5,
+            //     'unit' => 'hours',
+            //     'articles' => 'PDF Catalog Exporter',
+            //     'unit_price' => $hour_rate
+            // ],
         ];
 
         /*
