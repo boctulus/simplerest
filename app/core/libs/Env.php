@@ -34,6 +34,14 @@ class Env
 
     }
 
+    static function set(string $key = null, $value){
+        if (static::$data === null){
+            static::setup();
+        }
+        
+        static::$data[$key] = $value;
+    }
+
     static function get(?string $key = null, $default_value = null){
         if (static::$data === null){
             static::setup();
@@ -46,12 +54,22 @@ class Env
         return static::$data[$key] ?? $default_value;
     }
 
-    static function set(string $key = null, $value){
-        if (static::$data === null){
+    /**
+     * Retrieves a boolean value from the environment configuration.
+     *
+     * @param string $key The environment key to fetch.
+     * @param bool $default_value Default value to return if the key is not found or invalid.
+     * @return bool Parsed boolean value.
+     */
+    static function getBool(string $key, bool $default_value = false): bool {
+        if (static::$data === null) {
             static::setup();
         }
-        
-        static::$data[$key] = $value;
+
+        $value = static::$data[$key] ?? $default_value;
+
+        // Use Strings::parseOption to convert to boolean
+        return Strings::parseOption($value, $default_value);
     }
 }
 
