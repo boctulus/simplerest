@@ -24,7 +24,3 @@ if (config()['front_controller']){
 
 //throw new Exception('There is no Router or FrontController enabled!');
 
-
-
-
-

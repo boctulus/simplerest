@@ -65,25 +65,37 @@ if (!(Test-Path $file)) {
     exit 1
 }
 
-$content = Get-Content $file -Raw
 $current_version = get_current_version
-
 if ($current_version) {
     $new_version = get_next_version $current_version
     
     # Crear un archivo temporal con el contenido actualizado
-    $tempFile = "$file.tmp"
-    $content -replace [regex]::Escape("""version"": ""$current_version"""), """version"": ""$new_version""" | 
-        Out-File -FilePath $tempFile -NoNewline
+    $tempFile = Join-Path (Get-Location).Path "composer.json.tmp"
+    Write-Output "Intentando crear archivo temporal en: $tempFile"
     
-    # Verificar que el reemplazo fue exitoso
-    $newContent = Get-Content $tempFile -Raw
-    if ($newContent -match [regex]::Escape("""version"": ""$new_version""")) {
-        Move-Item -Path $tempFile -Destination $file -Force
-        Write-Output "Version actualizada de $current_version a $new_version"
-    } else {
-        Remove-Item $tempFile
-        Write-Output "Error: No se pudo actualizar la version."
+    $newContent = (Get-Content $file -Raw) -replace [regex]::Escape("""version"": ""$current_version"""), """version"": ""$new_version"""
+    
+    try {
+        # Intentar crear el archivo temporal primero
+        "" | Set-Content -Path $tempFile
+        if (Test-Path $tempFile) {
+            [System.IO.File]::WriteAllText($tempFile, $newContent)
+            
+            $verificationContent = Get-Content $tempFile -Raw
+            if ($verificationContent -match [regex]::Escape("""version"": ""$new_version""")) {
+                Move-Item -Path $tempFile -Destination $file -Force
+                Write-Output "Version actualizada de $current_version a $new_version"
+            } else {
+                Write-Output "Error: El contenido del archivo temporal no es correcto"
+                if (Test-Path $tempFile) { Remove-Item $tempFile }
+            }
+        } else {
+            Write-Output "Error: No se tienen permisos para crear archivos en este directorio"
+        }
+    }
+    catch {
+        Write-Output "Error durante la operación: $_"
+        if (Test-Path $tempFile) { Remove-Item $tempFile }
     }
 } else {
     Write-Output "No se encontró una version válida en el archivo."
