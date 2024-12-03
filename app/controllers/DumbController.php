@@ -10945,6 +10945,7 @@ class DumbController extends Controller
     function get_plugins()
     {
         $url = 'https://shoppingparts.cl/';
+        // $url = 'https://portalmotolatino.com.ar/';
 
         $str = Url::getUrlContent($url, 360000);
 
