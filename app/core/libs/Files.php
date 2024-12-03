@@ -153,19 +153,41 @@ class Files
 	/*
 		Fuerza la descarga del archivo
 	*/
-	static function forceDownload($file){
-		if (!file_exists($file)) {
-			throw new \InvalidArgumentException("File not found for '$file'");
+	static function forceDownload($filePath){
+		if (!file_exists($filePath) || !is_readable($filePath)) {
+			header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+			echo 'Error: File not found or inaccessible.';
+			exit;
 		}
 
+		// Determinar el tipo MIME del archivo de manera básica
+		$mime_types = [
+			'pdf' => 'application/pdf',
+			'jpg' => 'image/jpeg',
+			'jpeg' => 'image/jpeg',
+			'png' => 'image/png',
+			'gif' => 'image/gif',
+			'txt' => 'text/plain',
+			'html' => 'text/html',
+			'css' => 'text/css',
+			'js' => 'application/javascript',
+			'json' => 'application/json',
+			'xml' => 'application/xml',
+			'zip' => 'application/zip',
+			'rar' => 'application/x-rar-compressed',
+		];
+	
+		$extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+		$mime_type = $mime_types[$extension] ?? 'application/octet-stream';
+
+		header('Content-Type: ' . $mime_type);
 		header('Content-Description: File Transfer');
-		header('Content-Type: application/octet-stream');
-		header('Content-Disposition: attachment; filename="'.basename($file).'"');
+		header('Content-Disposition: attachment; filename="'.basename($filePath).'"');
+		header('Cache-Control: no-cache, must-revalidate');
+		header('Pragma: no-cache');
 		header('Expires: 0');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Pragma: public');
-		header('Content-Length: ' . filesize($file));
-		@readfile($file);
+		header('Content-Length: ' . filesize($filePath));
+		@readfile($filePath);
 		exit;
 	}
 
