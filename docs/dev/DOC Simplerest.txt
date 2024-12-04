@@ -10430,72 +10430,103 @@ Esto permite generar una respuesta estructurada para los errores:
 
 # Cookies
 
-Si se desea hacer un "bot" que navegue un sitio web y el sitio maneja cookies deberá entonces también manejar coookies a fin de poder moverse entre páginas sin perder la "sesión".
+Guardar cookies y "navegar"
+
+Si hacemos un request "manual" y recuperamos las cookies podemos enviarlas via Header.
+
+	try {
+		$url  = 'http://relmotor.lan/woo_commerce_filters/product_search?offset=60&limit=20&attributes%5Bpa_marca%5D=163&order%5Bstock%5D=DESC';
+		
+		$cookie_file = Constants::ETC_PATH . 'cookies.txt';
+
+		$cookieString = Files::getContentOrFail($cookie_file);
+
+		$cli = new ApiClient($url);
+		
+		$json = $cli
+		->setUserAgent(ApiClient::USER_AG_FIREFOX)
+		->followLocations()
+		->withoutStrictSSL()
+		->addHeader('Cookie', $cookieString) // Aquí envías las cookies
+		->get()
+		->decode()
+		->getBody(); 
+		
+		dd($json);
+		
+	} catch (\Exception $e) {
+		// Llama al método del trait
+		$handler->exception_handler($e);
+	}
+
+Caso "bot"
+
+Si se desea hacer un "bot" que navegue un sitio web y el sitio maneja cookies deberán entonces guardarse automaticamente las cookies a fin de poder ser utilizadas en los subsiguientes requests.
 
 Ej:
-		// Para un sitio en WordPress
+	// Para un sitio en WordPress
 
-		$login_data = [
-            'site_url'   => 'http://woo5.lan',
-            'login_page' => 'wp-login.php',
-            'log' => 'boctulus',
-            'pwd' => '123456',
-            'rememberme' => 'forever',
-            'redirect_to' => 'http://woo5.lan/my-account/',
-            'redirect_to_automatic' => '1'
-        ];
+	$login_data = [
+		'site_url'   => 'http://woo5.lan',
+		'login_page' => 'wp-login.php',
+		'log' => 'boctulus',
+		'pwd' => '123456',
+		'rememberme' => 'forever',
+		'redirect_to' => 'http://woo5.lan/my-account/',
+		'redirect_to_automatic' => '1'
+	];
 
-        $jar = new CookieJar('woo5.lan-cookies.txt');
-        
-        // Crea una instancia de la clase ApiClient
-        $cli = ApiClient::instance()
-        ->setUserAgent(ApiClient::USER_AG_FIREFOX);
+	$jar = new CookieJar('woo5.lan-cookies.txt');
+	
+	// Crea una instancia de la clase ApiClient
+	$cli = ApiClient::instance()
+	->setUserAgent(ApiClient::USER_AG_FIREFOX);
 
-        $cli->useCookieJar($jar);
+	$cli->useCookieJar($jar);
 
-        $cli
-        ->followLocations()
-        ->withoutStrictSSL();
+	$cli
+	->followLocations()
+	->withoutStrictSSL();
 
-        // Realiza la solicitud POST para iniciar sesión
-        $cli->post("{$login_data['site_url']}/{$login_data['login_page']}", $login_data);
+	// Realiza la solicitud POST para iniciar sesión
+	$cli->post("{$login_data['site_url']}/{$login_data['login_page']}", $login_data);
 
-        $res = $cli->getResponse(false);
+	$res = $cli->getResponse(false);
 
-        dd($jar->getCookies(), 'COOKIES');
+	dd($jar->getCookies(), 'COOKIES');
 
-        ////////////// SIGUENTE SOLICITUD HTTP >>>>
+	////////////// SIGUENTE SOLICITUD HTTP >>>>
 
-        // Verifica si la solicitud fue exitosa (código de estado 200)
-        if ($res['http_code'] === 200 || $res['http_code'] === 301 || $res['http_code'] === 302) {
-            dd("Inicio de sesión exitoso.");
-        } else {
-            dd("Error al iniciar sesión: ");
+	// Verifica si la solicitud fue exitosa (código de estado 200)
+	if ($res['http_code'] === 200 || $res['http_code'] === 301 || $res['http_code'] === 302) {
+		dd("Inicio de sesión exitoso.");
+	} else {
+		dd("Error al iniciar sesión: ");
 
-            dd($cli->getStatus(), 'STATUS');
-            dd($cli->getError(), 'ERROR');
-            dd($cli->getResponse(), 'RES');
-            dd($cli->getHeaders(), 'HEADERS');
-       
-            exit;
-        }
+		dd($cli->getStatus(), 'STATUS');
+		dd($cli->getError(), 'ERROR');
+		dd($cli->getResponse(), 'RES');
+		dd($cli->getHeaders(), 'HEADERS');
+	
+		exit;
+	}
 
-        // Sigo navegando,....
+	// Sigo navegando,....
 
-        $cli->setUrl("{$login_data['site_url']}/my-account/edit-address/");
+	$cli->setUrl("{$login_data['site_url']}/my-account/edit-address/");
 
-        $page_login = $cli
-        ->get()
-        ->getResponse(false);
+	$page_login = $cli
+	->get()
+	->getResponse(false);
 
-        // Verifica si la solicitud de la página de la cuenta fue exitosa
-        if ($page_login['http_code'] === 200) {
-            dd($page_login['data'], 'PAGINA DETRAS DEL LOGIN'); // vuelve a mostrar el form del login !!
+	// Verifica si la solicitud de la página de la cuenta fue exitosa
+	if ($page_login['http_code'] === 200) {
+		dd($page_login['data'], 'PAGINA DETRAS DEL LOGIN'); // vuelve a mostrar el form del login !!
 
-            // Seguir procesando .....
-        } else {
-            dd("Error al acceder a la página de la cuenta: " . $page_login['error']);
-        }
+		// Seguir procesando .....
+	} else {
+		dd("Error al acceder a la página de la cuenta: " . $page_login['error']);
+	}
 
 
 # Compresión la respuesta
