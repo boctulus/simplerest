@@ -26,16 +26,17 @@ class InvoiceController extends Controller
             'business_style' => 'Distributor',
             'tin' => '77234743-K (RUT CHILE)',
             'address' => 'Santiago. Chile',
-            'date' => '2024-11-14',
+            'date' => date('Y-m-d'),
             'terms' => null, // Ej: "Net 30"
             'osca_pwd_id' => null
         ];
         
         $rows = [
             [
-                'qty'  => 2,
+                'qty'  => 23.5,
                 'unit' => 'hours',
-                'articles' => 'Adjustment to Advanced Search Engine (badage and band in modals). Hour rate includes PayPal fees',
+                'articles' => 'Improvements to Advanced Search Engine: posibility to add set columns and `attributes` to be shown.
+                Hour rate includes PayPal fees',
                 'unit_price' => $hour_rate
             ],
             // [
