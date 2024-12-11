@@ -564,6 +564,25 @@ class Url
         return http_build_query($data, $numeric_prefix, $arg_separator, $encoding_type);
     }
 
+    /*
+        Ej:
+
+        $offset = 0;
+        $limit  = 99999;
+        $order  = [
+            "stock" => "DESC"
+        ];
+
+        $url  = Url::buildUrl("http://relmotor.lan/woo_commerce_filters/product_search", [
+            "offset" => $offset,
+            "limit"  => $limit,
+            "order"  => $order
+        ]);
+
+        Resultado:
+
+        http://relmotor.lan/woo_commerce_filters/product_search?offset=0&limit=99999&order%5Bstock%5D=DESC
+    */
     static function buildUrl(string $base_url, array $data, string $numeric_prefix = "",  $arg_separator = null, int $encoding_type = PHP_QUERY_RFC1738){
         return Files::removeTrailingSlash($base_url) . '?'. static::encodeParams($data);
     }
