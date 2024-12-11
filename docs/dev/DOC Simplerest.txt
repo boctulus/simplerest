@@ -10461,7 +10461,7 @@ Si hacemos un request "manual" y recuperamos las cookies podemos enviarlas via H
 
 Caso "bot"
 
-Si se desea hacer un "bot" que navegue un sitio web y el sitio maneja cookies deberán entonces guardarse automaticamente las cookies a fin de poder ser utilizadas en los subsiguientes requests.
+Si se desea hacer un "bot" que navegue un sitio web y el sitio maneja cookies deberán entonces *guardarse automaticamente* las cookies a fin de poder ser utilizadas en los subsiguientes requests.
 
 Ej:
 	// Para un sitio en WordPress
