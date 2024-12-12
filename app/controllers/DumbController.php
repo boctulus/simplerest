@@ -6950,15 +6950,21 @@ class DumbController extends Controller
         error("No encontrado", 404, "El recurso no existe");
     }
 
+    /*
+        Mas facil que...
+
+        $d1 = new \DateTime('08 Dec 2024');
+        $d2 = $d1->modify("+$expires_in days")->format('Y-m-d H:i:s');
+    */
     function test_add_sub_dates()
     {
-        $date = '27 Feb 2023';
+        $date = '08 Dec 2024';
 
-        $d    = 25;
+        $d = 90;
 
         dd(
             Date::addDays($date, $d),
-            "+ $d dias"
+            " $date + $d dias",
         );
     }
 
