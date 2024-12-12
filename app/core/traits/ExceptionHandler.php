@@ -71,7 +71,7 @@ trait ExceptionHandler
 
         // O.... si se solicita salida como JSON en header "Accept"
         if (Url::isPostmanOrInsomnia()){
-            error($error_msg, 500, $backtrace);
+            response()->error($error_msg, 500, $backtrace);
             exit(1);
         }
         
@@ -94,7 +94,7 @@ trait ExceptionHandler
 	 */
 	public static function shutdown() {
 		if ( ( $error = error_get_last() ) ) {
-			error( "Script has sthuted down with error", 500, $error);
+			response()->error( "Script has sthuted down with error", 500, $error);
 		}
 	}
 }

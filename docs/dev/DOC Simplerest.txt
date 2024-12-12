@@ -211,9 +211,22 @@ Para los shortcodes la carga del config/config.php del shortcode es resuelto ext
 
 # Simular valores de archivo de configuracion desde la linea de comandos
 
-Ej:
+Si ExampleController contiene:
 
-php com my_controller cfg:my_config_variable=3
+	/*
+        php com example_controller cfg:my_config_variable=3
+    */
+    function get_cfg_var(){
+        dd(
+            Config::get()
+        );
+    }
+
+Entonces
+
+	php com example_controller cfg:my_config_variable=3
+
+va a mostrar el valor pasado como parametro
 
 
 ### Archivo databases.php
