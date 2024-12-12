@@ -8058,6 +8058,15 @@ class DumbController extends Controller
         );
     }
 
+    /*
+        php com my_controller cfg:my_config_variable=3
+    */
+    function get_cfg_var(){
+        dd(
+            Config::get()
+        );
+    }
+
     function opt()
     {
         dd(
