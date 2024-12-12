@@ -6,3 +6,4 @@
 [2024-12-05 00:14:13]	0.8.15	Automatic update
 [2024-12-11 19:32:51]	0.8.16	DOC para funcion en lib Url
 [2024-12-12 02:35:19]	0.8.17	Automatic update
+[2024-12-12 11:53:23]	0.8.18	Automatic update
