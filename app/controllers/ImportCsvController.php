@@ -8,7 +8,7 @@ use simplerest\core\Response;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
 
-class TestImportCsvController extends Controller
+class ImportCsvController extends Controller
 {
     function index()
     {

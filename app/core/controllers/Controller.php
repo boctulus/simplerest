@@ -14,7 +14,6 @@ abstract class Controller
     protected $_title;
     protected $config;
     protected $output_format = 'auto'; // Valores posibles: 'auto', 'json', 'pretty_json', 'dd'
-    protected static $default_template = 'templates/tpl_basic.php';
     
     function __construct() {
         $this->config = config();
@@ -52,26 +51,5 @@ abstract class Controller
     public function getOutputFormat(): string 
     {
         return $this->output_format;
-    }
-
-    function __view(string $view_path, array $vars_to_be_passed = null, ?string $layout = null, int $expiration_time = 0){
-        global $ctrl;
-
-        $_ctrl  = explode('\\',get_class($this));
-        $ctrl   = $_ctrl[count($_ctrl)-1];
-        $_title = substr($ctrl,0,strlen($ctrl)-10);     
-        
-        if(!isset($vars_to_be_passed['title'])){
-            $vars_to_be_passed['title'] = $_title;
-        }
-
-        $ctrl  = strtolower(substr($ctrl, 0, -strlen('Controller')));
-        $vars_to_be_passed['ctrl'] = $ctrl; //
-
-        if (empty($layout)){
-            $layout = self::$default_template;
-        }
-
-        view($view_path, $vars_to_be_passed, $layout, $expiration_time);
     }
 }
