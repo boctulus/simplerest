@@ -2,13 +2,13 @@
 
 namespace simplerest\controllers\demos;
 
-use simplerest\core\controllers\Controller;
+use simplerest\core\controllers\WebController;
 use simplerest\core\Request;
 use simplerest\core\Response;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
 
-class JsPrinterController extends Controller
+class JsPrinterController extends WebController
 {
     function __construct()
     {
@@ -18,12 +18,12 @@ class JsPrinterController extends Controller
     function index()
     {
        js_file("third_party/printThis/printThis.js");
-       view('js_print-this.php');                
+       $this->__view('js_print-this.php');                
     }
 
     function basic()
     {
-       view('js_printer-2.php');                
+        $this->__view('js_printer-2.php');                
     }
 }
 

@@ -9322,11 +9322,11 @@ Dentro de una vista:
 
 	<?= $ctrl // mostrará la el controlar que la llamó ?>
 
-Nota: solo es válido si en vez de llamar al helper view() desde el controlador se llama al método __view()
+Nota: solo es válido si en vez de llamar al helper view(), desde el controlador que extienda a WebController, se llama al método __view()
 
 Ej:
 
-	class MaintenanceController extends Controller
+	class MaintenanceController extends WebController
 	{
 		function index()
 		{
