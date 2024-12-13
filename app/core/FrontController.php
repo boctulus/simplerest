@@ -2,6 +2,7 @@
 
 namespace simplerest\core;
 
+use simplerest\core\libs\Cli;
 use simplerest\core\libs\Msg;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Files;
@@ -254,7 +255,12 @@ class FrontController
                     break;
                     
                 case 'dd':
-                    $data = Strings::formatArrayOutput($data);
+                    if (php_sapi_name() === 'cli') {
+                        $data = Cli::formatArrayOutput($data, 0, true);
+                    } else {
+                        // Para no-CLI, mantener un formato limpio sin colores
+                        $data = Strings::formatArrayOutput($data);
+                    }
                     break;
             }
 
