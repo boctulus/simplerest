@@ -2,15 +2,20 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\controllers\Controller;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
-use simplerest\core\traits\TimeExecutionTrait;
 use simplerest\libs\PowerConsumption;
+use simplerest\core\controllers\Controller;
+use simplerest\core\traits\TimeExecutionTrait;
+use simplerest\core\controllers\ConsoleController;
 
 class PowerController extends Controller
 {
-    function __construct() { parent::__construct(); }
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setOutputFormat('auto');
+    }
 
     function calc($currentReading = null)
     {

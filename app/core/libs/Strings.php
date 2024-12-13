@@ -2477,6 +2477,48 @@ class Strings
 
 		throw new \InvalidArgumentException("Invalid format for input");
 	}
+
+	static function formatArrayOutput($data, $indent = 0) 
+    {
+        if (!is_array($data)) {
+            return var_export($data, true);
+        }
+
+        $output = "[\n";
+        $indentStr = str_repeat('    ', $indent + 1);
+        
+        foreach ($data as $key => $value) {
+            $output .= $indentStr;
+            
+            // Format key
+            if (is_string($key)) {
+                $output .= "'" . addslashes($key) . "'";
+            } else {
+                $output .= $key;
+            }
+            
+            $output .= " => ";
+            
+            // Format value
+            if (is_array($value)) {
+                $output .= self::formatArrayOutput($value, $indent + 1);
+            } elseif (is_string($value)) {
+                $output .= "'" . addslashes($value) . "'";
+            } elseif (is_null($value)) {
+                $output .= "null";
+            } elseif (is_bool($value)) {
+                $output .= $value ? "true" : "false";
+            } else {
+                $output .= $value;
+            }
+            
+            $output .= ",\n";
+        }
+        
+        $output .= str_repeat('    ', $indent) . "]";
+        return $output;
+    }
+
 }
 
 
