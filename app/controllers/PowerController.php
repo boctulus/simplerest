@@ -31,6 +31,10 @@ class PowerController extends Controller
         return $result;
     }
 
+    function report(){
+        return PowerConsumption::report();
+    }
+
     function save($currentReading){
         $_GET['save'] = true;
         return $this->calc($currentReading);
