@@ -15,7 +15,7 @@ class Cli
     const ANSI_MAGENTA    = "\033[35m";
     const ANSI_CYAN       = "\033[36m";
     
-    public static function is_cli(){
+    public static function isCli(){
         return (php_sapi_name() == 'cli');
     }
 
