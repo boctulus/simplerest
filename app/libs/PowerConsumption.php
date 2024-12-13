@@ -3,6 +3,7 @@
 namespace simplerest\libs;
 
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Cli;
 use simplerest\core\libs\Date;
 use simplerest\core\libs\Strings;
 
@@ -69,9 +70,9 @@ class PowerConsumption {
 
         $message = 'OK. Dentro de los limites';
         if ($excess >= 0) {
-            $message = self::ANSI_RED . 'Excedido!!!' . self::ANSI_RESET;
+            $message = Cli::ANSI_RED . 'Excedido!!!' . Cli::ANSI_RESET;
         } elseif ($remainingDays <= 7 && $currentPercentage >= 95) {
-            $message = self::ANSI_YELLOW . 'Advertencia: Cerca del límite!' . self::ANSI_RESET;
+            $message = Cli::ANSI_YELLOW . 'Advertencia: Cerca del límite!' . Cli::ANSI_RESET;
         }
 
         return [
