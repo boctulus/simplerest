@@ -11,7 +11,7 @@ function report(){
   return PowerConsumption::report();
 }
 
-No deberia tener que cambiar el return por un dd()
+No deberia tener que cambiar el return por un dd() o VarDump::dd()
 
 - Resolver problemas con COMPOSER JSON !!!
 
@@ -8048,3 +8048,8 @@ https://www.interviewcake.com/concept/java/lru-cache
 	}
 
 <--- quizas sea poco necesario porque utilizo Python con Selenium
+
+
+- Analizar si es posible SIMPLIFICAR las clases VarDump, StdOut y Logger
+
+https://claude.ai/chat/4c74a808-e4e6-4412-8c1d-2d109b96afea
