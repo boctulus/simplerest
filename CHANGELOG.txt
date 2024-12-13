@@ -16,3 +16,4 @@
 [2024-12-13 10:49:25]	0.8.25	Mas DOC sobre StdOut
 [2024-12-13 11:15:01]	0.8.26	Logica necesaria mejorada en PowerConsumption
 [2024-12-13 11:19:27]	0.8.27	PowerConsumption refactorizada
+[2024-12-13 11:20:55]	0.8.28	PowerConsumption mejorada
