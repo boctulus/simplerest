@@ -48,6 +48,22 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         return $headers;
     }
 
+    static function isBrowser(): bool 
+    {
+        if (!isset($_SERVER['HTTP_USER_AGENT']) || empty($_SERVER['HTTP_USER_AGENT'])) {
+            return false;
+        }
+        
+        $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        return (
+            stripos($user_agent, 'Mozilla') !== false || 
+            stripos($user_agent, 'Chrome') !== false ||
+            stripos($user_agent, 'Safari') !== false ||
+            stripos($user_agent, 'Edge') !== false ||
+            stripos($user_agent, 'Firefox') !== false
+        );
+    }
+
     static function getInstance() : Request {
         if(static::$instance == NULL){
             if (php_sapi_name() != 'cli'){
