@@ -12545,7 +12545,9 @@ Y la salida sería:
 
 	HERE
 
-La clase StdOut ofrecer algo muy similar al helper d() pero no admite un ¨título¨ o descriptor por lo que su uso es más sencillo. Fue pensada para su uso en consola.
+Clase StdOut
+
+La clase StdOut ofrecer algo muy similar al helper dd() pero no admite un ¨título¨ o descriptor por lo que su uso es más sencillo. Fue pensada originalmente para su uso en consola.
 
 	static function hideResponse()
 	static function showResponse()
@@ -12565,7 +12567,6 @@ Y para apagar / encender la respuesta,...
 
 	StdOut::showResponse();
 
-
 También es posible re-dirigir la salida de pprint() a un archivo.
 
 	StdOut::toFile($path);
@@ -12576,6 +12577,27 @@ O directamente a /logs
 	StdOut::toLog();
 	StdOut::pprint($data);
 
+
+Ejemplo practico:
+
+En un controlador podria tener algo como:
+
+	function migrate()
+	{
+		$mgr = new \MigrationsCommand();
+
+		$folder = 'compania';
+		$tenant = 'db_100';
+
+		StdOut::hideResponse();
+
+		$mgr->migrate("--dir=$folder", "--to=$tenant");
+	}
+
+y en algun lugar dentro de MigrationsCommand:
+
+	StdOut::pprint("Error trying to ignore file '$filename'd");
+	
 
 # Formateo de salida
 
