@@ -13,3 +13,4 @@
 [2024-12-13 10:14:39]	0.8.22	Metodo de formateo de strings. Similar a var_dump()
 [2024-12-13 10:22:48]	0.8.23	Clase Cli con formateador de salida usando colores ANSI de forma opcional
 [2024-12-13 10:45:54]	0.8.24	Clase StdOut corregida y documentada
+[2024-12-13 10:49:25]	0.8.25	Mas DOC sobre StdOut
