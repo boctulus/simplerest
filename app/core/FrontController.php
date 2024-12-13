@@ -221,59 +221,58 @@ class FrontController
         
         $data = call_user_func_array([$controller_obj, $method], $params);
 
-        if (!empty($data)) {
-            // Determinar formato de salida
-            $output_format = $controller_obj->getOutputFormat();
-           
-            if ($output_format === 'test' && Request::isBrowser()) {
-                $output_format = 'dd';
-            } else {
-                $output_format = 'auto';
-            }
-
-            if ($output_format === 'auto') {
-                // Lógica automática
-                if ($controller_obj instanceof ApiController) {
-                    $output_format = 'json';
-                } elseif ($controller_obj instanceof ConsoleController) {
-                    $output_format = 'dd';
-                } elseif (Url::isPostmanOrInsomnia()) {
-                    $output_format = 'pretty_json';
-                } else {
-                    $output_format = 'dd';
-                }
-            }
-
-            // Aplicar formato
-            switch ($output_format) {
-                case 'json':
-                    $res->setHeader('Content-Type', 'application/json');
-                    if (!Strings::isJSON($data)){
-                        $data = json_encode($data);
-                    }                   
-                    break;
-                    
-                case 'pretty_json':
-                    $res->setHeader('Content-Type', 'application/json');
-                    if (!Strings::isJSON($data)){
-                        $data = json_encode($data, JSON_PRETTY_PRINT);
-                    }  
-                    break;
-                    
-                case 'dd':
-                    if (php_sapi_name() === 'cli') {
-                        $data = Cli::formatArrayOutput($data, 0, true);
-                    } else {
-                        // Para no-CLI, mantener un formato limpio sin colores
-                        $data = Strings::formatArrayOutput($data);
-                    }
-                    break;
-            }
-
-            // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
-            $res->set($data);     
-        }
+        // Determinar formato de salida
+        $output_format = $controller_obj->getOutputFormat();
         
+        if ($output_format === 'test' && Request::isBrowser()) {
+            $output_format = 'dd';
+        } else {
+            $output_format = 'auto';
+        }
+
+        if ($output_format === 'auto') {
+            // Lógica automática
+            if ($controller_obj instanceof ApiController) {
+                $output_format = 'json';
+            } elseif ($controller_obj instanceof ConsoleController) {
+                $output_format = 'dd';
+            } elseif (Url::isPostmanOrInsomnia()) {
+                $output_format = 'pretty_json';
+            } else {
+                $output_format = 'dd';
+            }
+        }
+
+        // Aplicar formato
+        switch ($output_format) {
+            case 'json':
+                $res->setHeader('Content-Type', 'application/json');
+                if (!Strings::isJSON($data)){
+                    $data = json_encode($data);
+                }                   
+                break;
+                
+            case 'pretty_json':
+                $res->setHeader('Content-Type', 'application/json');
+                if (!Strings::isJSON($data)){
+                    $data = json_encode($data, JSON_PRETTY_PRINT);
+                }  
+                break;
+                
+            case 'dd':
+                if (php_sapi_name() === 'cli') {
+                    $data = Cli::formatArrayOutput($data, 0, true);
+                } else {
+                    // Para no-CLI, mantener un formato limpio sin colores
+                    $data = Strings::formatArrayOutput($data);
+                }
+                break;
+        }
+
+        // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
+        $res->set($data);     
+        
+
         /*
             Middlewares
         */
