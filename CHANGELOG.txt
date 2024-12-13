@@ -22,3 +22,4 @@
 [2024-12-13 12:22:16]	0.8.31	Fix sobre FrontController. Ahora imprime bools en consola!
 [2024-12-13 12:24:37]	0.8.32	DOC actualizada
 [2024-12-13 18:19:16]	0.8.33	Fix en FrontController y nueva clase WebController
+[2024-12-13 18:31:58]	0.8.34	Automatic update
