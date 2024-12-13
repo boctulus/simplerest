@@ -11040,7 +11040,9 @@ class DumbController extends Controller
     }
 
     function test_is_browser(){
-        dd(Request::isBrowser());
+        $val = false;
+        return $val;
+        // dd(Request::isBrowser());
     }
 
 
