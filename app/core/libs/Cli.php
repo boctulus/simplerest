@@ -23,15 +23,15 @@ class Cli
         Ejemplos de uso:
         
         // Uso automático (colores en CLI, sin colores en otros contextos)
-        echo Strings::formatArrayOutput($data);
+        echo Strings::formatOutput($data);
 
         // Forzar colores
-        echo Strings::formatArrayOutput($data, 0, true);
+        echo Strings::formatOutput($data, 0, true);
 
         // Forzar sin colores
-        echo Strings::formatArrayOutput($data, 0, false);
+        echo Strings::formatOutput($data, 0, false);
     */
-    public static function formatArrayOutput($data, $indent = 0, $useColors = null) 
+    public static function formatOutput($data, $indent = 0, $useColors = null) 
     {
         // Si no se especifica useColors, detectar si estamos en CLI
         if ($useColors === null) {
@@ -60,7 +60,7 @@ class Cli
             
             // Format value recursivamente
             if (is_array($value)) {
-                $output .= self::formatArrayOutput($value, $indent + 1, $useColors);
+                $output .= self::formatOutput($value, $indent + 1, $useColors);
             } else {
                 $output .= self::formatValue($value, $useColors);
             }
