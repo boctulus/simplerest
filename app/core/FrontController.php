@@ -6,6 +6,8 @@ use simplerest\core\libs\Msg;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\VarDump;
+use simplerest\core\api\v1\ApiController;
 
 class FrontController
 {
@@ -218,9 +220,46 @@ class FrontController
         
         $data = call_user_func_array([$controller_obj, $method], $params);
 
-        // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
-        if (!empty($data)){
-            $res->set($data);  
+        if (!empty($data)) {
+            // Determinar formato de salida
+            $output_format = $controller_obj->getOutputFormat();
+            
+            if ($output_format === 'auto') {
+                // Lógica automática
+                if ($controller_obj instanceof ApiController) {
+                    $output_format = 'json';
+                } elseif ($controller_obj instanceof ConsoleController) {
+                    $output_format = 'dd';
+                } elseif (Url::isPostmanOrInsomnia()) {
+                    $output_format = 'pretty_json';
+                } else {
+                    $output_format = 'dd';
+                }
+            }
+
+            // Aplicar formato
+            switch ($output_format) {
+                case 'json':
+                    $res->setHeader('Content-Type', 'application/json');
+                    if (!Strings::isJSON($data)){
+                        $data = json_encode($data);
+                    }                   
+                    break;
+                    
+                case 'pretty_json':
+                    $res->setHeader('Content-Type', 'application/json');
+                    if (!Strings::isJSON($data)){
+                        $data = json_encode($data, JSON_PRETTY_PRINT);
+                    }  
+                    break;
+                    
+                case 'dd':
+                    $data = var_export($data, true);
+                    break;
+            }
+
+            // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
+            $res->set($data);     
         }
         
         /*
