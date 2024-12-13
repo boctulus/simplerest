@@ -2,6 +2,7 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\Request;
 use simplerest\core\libs\XML;
 
 class Strings 
@@ -2482,8 +2483,17 @@ class Strings
 		Formatea de forma similar a var_dump() con la diferenciq que *devuelve* el resultado
 		en vez de enviarlo a salida estandar
 	*/
-	static function formatArrayOutput($data, $indent = 0) 
+	static function formatArrayOutput($data, $indent = 0, $additional_carriage_return = false) 
     {
+		if (Request::isBrowser()){
+			ob_start();
+            dd($data, null, $additional_carriage_return);
+            $content = ob_get_contents();
+            ob_end_clean();
+
+			return $content;
+		}
+
         if (!is_array($data)) {
             return var_export($data, true);
         }
@@ -2518,7 +2528,7 @@ class Strings
             
             $output .= ",\n";
         }
-        
+
         $output .= str_repeat('    ', $indent) . "]";
         return $output;
     }

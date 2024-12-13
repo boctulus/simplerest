@@ -42,7 +42,7 @@ abstract class Controller
 
     public function setOutputFormat(string $format)
     {
-        $valid_formats = ['auto', 'json', 'pretty_json', 'dd'];
+        $valid_formats = ['auto', 'test', 'json', 'pretty_json', 'dd'];
         if (!in_array($format, $valid_formats)) {
             throw new \InvalidArgumentException("Invalid output format: $format");
         }

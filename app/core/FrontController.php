@@ -224,7 +224,13 @@ class FrontController
         if (!empty($data)) {
             // Determinar formato de salida
             $output_format = $controller_obj->getOutputFormat();
-            
+           
+            if ($output_format === 'test' && Request::isBrowser()) {
+                $output_format = 'dd';
+            } else {
+                $output_format = 'auto';
+            }
+
             if ($output_format === 'auto') {
                 // Lógica automática
                 if ($controller_obj instanceof ApiController) {
