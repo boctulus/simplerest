@@ -9,7 +9,7 @@ use simplerest\core\libs\Factory;
 /*
     PostmanGenerator API Collection Generator ver 1.00
 
-    TODO:
+    TO-DO:
 
     - Usar opcionalmente los schemas de SimpleRest para poder tener datos con que rellenar el body
     de POST y PATCH
