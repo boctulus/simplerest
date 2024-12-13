@@ -12612,10 +12612,12 @@ $this->setOutputFormat($format);
 ```
 
 Formatos disponibles:
+
 - 'auto': Detecta automáticamente el formato más apropiado según el contexto
 - 'json': Salida en formato JSON compacto
 - 'pretty_json': JSON con formato indentado
 - 'dd': Dump detallado, optimizado para CLI
+- 'test': Similar a 'auto' pero usa dump detallado (dd) en navegadores web, útil para desarrollo y debugging
 
 ## Comportamiento automático
 
@@ -12624,6 +12626,10 @@ Cuando se usa el formato 'auto' (por defecto), el sistema selecciona:
 - Dump detallado para controladores de consola
 - Pretty JSON para llamadas desde Postman/Insomnia
 - Dump detallado para otros contextos
+
+Nota:
+
+El formato 'test' funciona igual que 'auto' excepto que usa dump detallado (dd) cuando detecta una petición desde un navegador web, lo que facilita el debugging durante el desarrollo.
 
 ## Ejemplo de uso
 
