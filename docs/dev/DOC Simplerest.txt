@@ -12577,6 +12577,103 @@ O directamente a /logs
 	StdOut::pprint($data);
 
 
+# Formateo de salida
+
+SimpleRest permite controlar y personalizar el formato de salida de los datos retornados por los controladores. Esta funcionalidad se configura a nivel de controlador y admite diferentes formatos según el contexto de ejecución.
+
+## Configuración del formato
+
+El formato de salida se puede establecer en cualquier controlador mediante el método:
+
+```php
+$this->setOutputFormat($format);
+```
+
+Formatos disponibles:
+- 'auto': Detecta automáticamente el formato más apropiado según el contexto
+- 'json': Salida en formato JSON compacto
+- 'pretty_json': JSON con formato indentado
+- 'dd': Dump detallado, optimizado para CLI
+
+## Comportamiento automático
+
+Cuando se usa el formato 'auto' (por defecto), el sistema selecciona:
+- JSON para controladores API
+- Dump detallado para controladores de consola
+- Pretty JSON para llamadas desde Postman/Insomnia
+- Dump detallado para otros contextos
+
+## Ejemplo de uso
+
+```php
+class PowerController extends Controller 
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setOutputFormat('dd'); // Forzar salida como dump detallado
+    }
+    
+    public function report()
+    {
+        return [
+            'date' => '2024-12-13',
+            'consumption' => 10,
+            'average' => 4.07
+        ];
+    }
+}
+```
+
+## Formateo personalizado
+
+### Clase Strings
+
+Proporciona el método `formatArrayOutput()` para formatear arrays y valores en una estructura legible:
+
+```php
+$data = ['name' => 'Test', 'value' => 42];
+echo Strings::formatArrayOutput($data);
+
+// Salida:
+[
+    'name' => 'Test',
+    'value' => 42,
+]
+```
+
+### Clase Cli
+
+Extiende la funcionalidad de formateo para CLI con colores ANSI:
+- Corchetes y flechas en amarillo
+- Claves string en verde
+- Claves numéricas en azul
+- Valores string en verde
+- Valores numéricos en cyan
+- Valores null en rojo
+- Valores booleanos en magenta
+
+```php
+$data = ['status' => true, 'count' => 0];
+echo Cli::formatArrayOutput($data);
+
+// Salida (con colores ANSI):
+[
+    'status' => true,
+    'count' => 0,
+]
+```
+
+La coloración ANSI se aplica automáticamente en contextos CLI y se omite en otros entornos.
+
+## Notas
+
+- Los formatos JSON verifican automáticamente si los datos ya están en formato JSON antes de codificarlos
+- El formateo detallado maneja recursivamente arrays anidados
+- La salida coloreada solo se aplica en entornos CLI que soporten ANSI
+- Todos los formatos mantienen la integridad de los tipos de datos originales
+
+
 ### Perfilador del código
 
 Para el perfilado de tiempos de ejecución SimpleRest proveen la librería Time y el trait TimeExecution.

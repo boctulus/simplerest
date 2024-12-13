@@ -19,6 +19,18 @@ class Cli
         return (php_sapi_name() == 'cli');
     }
 
+    /*
+        Ejemplos de uso:
+        
+        // Uso automático (colores en CLI, sin colores en otros contextos)
+        echo Strings::formatArrayOutput($data);
+
+        // Forzar colores
+        echo Strings::formatArrayOutput($data, 0, true);
+
+        // Forzar sin colores
+        echo Strings::formatArrayOutput($data, 0, false);
+    */
     public static function formatArrayOutput($data, $indent = 0, $useColors = null) 
     {
         // Si no se especifica useColors, detectar si estamos en CLI
