@@ -92,6 +92,11 @@ class Response
         return static::getInstance();
     }
 
+    // Alias de addHeader()
+    function setHeader(string $header){
+        return static::addHeader($header);
+    }
+
     /**
      * sendHeaders
      *
