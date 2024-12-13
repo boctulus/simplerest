@@ -22,9 +22,30 @@ class PowerConsumption {
         ->value('reading');
     }
 
+    static function getInitialReading() {
+        $today = date('Y-m-d');
+        $thirtyDaysAgo = Date::subDays($today, 30);
+        
+        // Primero intentamos obtener la lectura más antigua dentro de los últimos 30 días
+        $reading = table('consumption')
+            ->where(['created_at', $thirtyDaysAgo, '>='])
+            ->orderBy(['created_at' => 'asc'])
+            ->first();
+            
+        // Si no hay lecturas en los últimos 30 días, tomamos la primera lectura disponible
+        if (!$reading) {
+            $reading = table('consumption')
+                ->orderBy(['created_at' => 'asc'])
+                ->first();
+        }
+        
+        return $reading;
+    }
+
     static function report(){
         $today     = date('Y-m-d');
-        $first     = table('consumption')->first();
+        $first     = static::getInitialReading();
+
         $first_day = $first['created_at'];
 
         $daysElapsed = Date::diffInDays($today, $first_day);
@@ -38,12 +59,13 @@ class PowerConsumption {
             'consumption' => $dailyConsumption,
             'average_consumption' => round($averageConsumption, 2),
             'excess' => $excess,
+            'message' => ($excess < 0) ? 'OK. Dentro de los limites' : 'Excedido!!!'
         ];
     }
 
     static function calculate(int $currentReading, bool $save = false): array {
         $today     = date('Y-m-d'); 
-        $first     = table('consumption')->first();
+        $first     = static::getInitialReading();
         $first_day = $first['created_at'];
 
         $daysElapsed = Date::diffInDays($today, $first_day);
@@ -57,6 +79,7 @@ class PowerConsumption {
             'daily_consumption' => $dailyConsumption,
             'average_consumption' => round($averageConsumption, 2),
             'excess' => $excess,
+            'message' => ($excess < 0) ? 'OK. Dentro de los limites' : 'Excedido!!!'
         ];
 
         if ($save) {
