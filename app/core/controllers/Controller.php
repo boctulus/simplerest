@@ -13,6 +13,7 @@ abstract class Controller
     protected $callable = [];
     protected $_title;
     protected $config;
+    protected $output_format = 'auto'; // Valores posibles: 'auto', 'json', 'pretty_json', 'dd'
     protected static $default_template = 'templates/tpl_basic.php';
     
     function __construct() {
@@ -37,6 +38,20 @@ abstract class Controller
 
     function addCallable(string $method){
         $this->callable = array_unique(array_merge($this->callable, [$method]));
+    }
+
+    public function setOutputFormat(string $format)
+    {
+        $valid_formats = ['auto', 'json', 'pretty_json', 'dd'];
+        if (!in_array($format, $valid_formats)) {
+            throw new \InvalidArgumentException("Invalid output format: $format");
+        }
+        $this->output_format = $format;
+    }
+    
+    public function getOutputFormat(): string 
+    {
+        return $this->output_format;
     }
 
     function __view(string $view_path, array $vars_to_be_passed = null, ?string $layout = null, int $expiration_time = 0){
