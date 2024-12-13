@@ -1,17 +1,9 @@
 TODO SimpleRest
 ===============
 
-- Mediante alguna propiedad de los controladores heredados poder definir si la salida de un array debe devolvere como JSON, JSON con pretty format o el resultado formateado de un dd().
+- Investigar porque table('{db_table}')->get() devuleve todos los campos pero DB::table('{db_table}')->get() por defecto al menos parece suprimir campos en salida como created_at, updated_at, etc.
 
-No tiene sentido devuelva por default un JSON sino es una API o sea si no deriva de ApiController, si es una ConsoleController o si en caso de estar definido $_REQUEST si no esta recibiendo los headers de POSTMAN o INSOMNIA.
-
-Caso: PowerController
-
-function report(){
-  return PowerConsumption::report();
-}
-
-No deberia tener que cambiar el return por un dd() o VarDump::dd()
+Puede que lo haya hecho por seguridad pero quizas no tenga tanto sentido en la consola!
 
 - Resolver problemas con COMPOSER JSON !!!
 
@@ -3638,6 +3630,12 @@ https://laravel.com/docs/8.x/session?fbclid=IwAR032HI1Zt5vNo6fG0ikE4hq-kYb2Z_QCc
 
 - Documentar correctamente toda función con @param y @return (ver PHPdoc)
 
+- GENERAR DOCUMENTACION COMPLETA de SR y SW usando alguna herramienta y complementar con la DOC que tengo ya creada.
+
+Ver la DOC de otros frameworks y como podrian estar generandolas:
+
+https://codeigniter.com/user_guide/cli/cli_library.html
+https://laravel.com/docs/9.x/validation#rule-string
 
 - Habilitar WebSockets para APIs => crear una   WebSocket API
 

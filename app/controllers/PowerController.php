@@ -14,7 +14,7 @@ class PowerController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->setOutputFormat('auto');
+        $this->setOutputFormat('test');
     }
 
     function calc($currentReading = null)

@@ -11039,5 +11039,9 @@ class DumbController extends Controller
         view('my_datatable');
     }
 
+    function test_is_browser(){
+        dd(Request::isBrowser());
+    }
+
 
 }   // end class
