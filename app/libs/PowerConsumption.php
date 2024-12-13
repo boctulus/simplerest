@@ -42,17 +42,17 @@ class PowerConsumption {
         return $reading;
     }
 
-    static function report(){
-        $today     = date('Y-m-d');
-        $first     = static::getInitialReading();
-
+    static function getConsumptionData($currentReading = null): array {
+        $today = date('Y-m-d');
+        $first = static::getInitialReading();
         $first_day = $first['created_at'];
-
+        
         $daysElapsed = Date::diffInDays($today, $first_day);
-
-        $dailyConsumption   = self::last() - $first['reading'];
+        $finalReading = $currentReading ?? self::last();
+        
+        $dailyConsumption = $finalReading - $first['reading'];
         $averageConsumption = $dailyConsumption / $daysElapsed;
-        $excess             = $dailyConsumption - self::MAX_CONSUMPTION;
+        $excess = $dailyConsumption - self::MAX_CONSUMPTION;
 
         return [
             'date' => $today,
@@ -63,25 +63,13 @@ class PowerConsumption {
         ];
     }
 
+    static function report(): array {
+        return self::getConsumptionData();
+    }
+
     static function calculate(int $currentReading, bool $save = false): array {
-        $today     = date('Y-m-d'); 
-        $first     = static::getInitialReading();
-        $first_day = $first['created_at'];
-
-        $daysElapsed = Date::diffInDays($today, $first_day);
-
-        $dailyConsumption   = $currentReading - self::first();
-        $averageConsumption = $dailyConsumption / $daysElapsed;
-        $excess             = $dailyConsumption - self::MAX_CONSUMPTION;
-
-        $result = [
-            'date' => $today,
-            'daily_consumption' => $dailyConsumption,
-            'average_consumption' => round($averageConsumption, 2),
-            'excess' => $excess,
-            'message' => ($excess < 0) ? 'OK. Dentro de los limites' : 'Excedido!!!'
-        ];
-
+        $result = self::getConsumptionData($currentReading);
+        
         if ($save) {
             self::save($currentReading);
         }
@@ -92,7 +80,7 @@ class PowerConsumption {
     static function save(int $reading): void {
         $data = [
             'reading' => $reading,
-            'created_at' => date('Y-m-d H:i:s'), // Use created_at for timestamp
+            'created_at' => date('Y-m-d H:i:s')
         ];
 
         DB::getConnection();
