@@ -2,9 +2,9 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\controllers\Controller;
+use simplerest\core\controllers\WebController;
 
-class HomeController extends Controller
+class HomeController extends WebController
 {
 	# /home/
 	function index(){

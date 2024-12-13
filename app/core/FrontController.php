@@ -261,10 +261,11 @@ class FrontController
                 
             case 'dd':
                 if (php_sapi_name() === 'cli') {
-                    $data = Cli::formatArrayOutput($data, 0, true);
+                    $data = Cli::formatOutput($data, 0, true);
                 } else {
-                    // Para no-CLI, mantener un formato limpio sin colores
-                    $data = Strings::formatArrayOutput($data);
+                    if ($data !== null){
+                        $data = Strings::formatOutput($data);
+                    }
                 }
                 break;
         }

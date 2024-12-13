@@ -2,15 +2,12 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\Request;
-use simplerest\core\libs\CSS;
-use simplerest\core\libs\XML;
-use simplerest\core\Response;
-use simplerest\core\libs\Files;
 use simplerest\core\controllers\Controller;
-use simplerest\core\Angular;
+use simplerest\core\libs\code_cleaner\AngularCleaner;
+use simplerest\core\libs\CSS;
+use simplerest\core\libs\Files;
 
-class Angular2JqueryController extends Controller
+class Angular2jqueryController extends Controller
 {
     function run()
     {
@@ -18,7 +15,7 @@ class Angular2JqueryController extends Controller
 
         $page = Files::getContent($path);
 
-        $page = Angular::remove($path);
+        $page = AngularCleaner::remove($path);
         $page = str_replace(" -mark ", '', $page);  // <--- debo quitar esas clases de CSS como sea de los radio
     
         file_put_contents('D:\www\simplerest\app\shortcodes\rack_quoter\views\racks.php', $page);

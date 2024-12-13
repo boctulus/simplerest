@@ -2483,7 +2483,7 @@ class Strings
 		Formatea de forma similar a var_dump() con la diferenciq que *devuelve* el resultado
 		en vez de enviarlo a salida estandar
 	*/
-	static function formatArrayOutput($data, $indent = 0, $additional_carriage_return = false) 
+	static function formatOutput($data, $indent = 0, $additional_carriage_return = false) 
     {
 		if (Request::isBrowser()){
 			ob_start();
@@ -2515,7 +2515,7 @@ class Strings
             
             // Format value
             if (is_array($value)) {
-                $output .= self::formatArrayOutput($value, $indent + 1);
+                $output .= self::formatOutput($value, $indent + 1);
             } elseif (is_string($value)) {
                 $output .= "'" . addslashes($value) . "'";
             } elseif (is_null($value)) {

@@ -3,9 +3,9 @@
 namespace simplerest\controllers;
 
 use simplerest\core\traits\PagesTrait;
-use simplerest\core\controllers\Controller;
+use simplerest\core\controllers\WebController;
 
-class AdminController extends Controller
+class AdminController extends WebController
 {    
 	use PagesTrait;
 
