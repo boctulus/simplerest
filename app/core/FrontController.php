@@ -254,7 +254,7 @@ class FrontController
                     break;
                     
                 case 'dd':
-                    $data = var_export($data, true);
+                    $data = Strings::formatArrayOutput($data);
                     break;
             }
 

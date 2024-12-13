@@ -2478,6 +2478,10 @@ class Strings
 		throw new \InvalidArgumentException("Invalid format for input");
 	}
 
+	/*
+		Formatea de forma similar a var_dump() con la diferenciq que *devuelve* el resultado
+		en vez de enviarlo a salida estandar
+	*/
 	static function formatArrayOutput($data, $indent = 0) 
     {
         if (!is_array($data)) {
