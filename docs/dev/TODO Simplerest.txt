@@ -1,6 +1,18 @@
 TODO SimpleRest
 ===============
 
+- Mediante alguna propiedad de los controladores heredados poder definir si la salida de un array debe devolvere como JSON, JSON con pretty format o el resultado formateado de un dd().
+
+No tiene sentido devuelva por default un JSON sino es una API o sea si no deriva de ApiController, si es una ConsoleController o si en caso de estar definido $_REQUEST si no esta recibiendo los headers de POSTMAN o INSOMNIA.
+
+Caso: PowerController
+
+function report(){
+  return PowerConsumption::report();
+}
+
+No deberia tener que cambiar el return por un dd()
+
 - Resolver problemas con COMPOSER JSON !!!
 
 Class simplerest\controllers\Angular2JqueryController located in D:/www/simplerest/app\controllers\Angular2jqueryController.php does not comply with psr-4 autoloading standard. Skipping.
@@ -22,7 +34,6 @@ Class simplerest\models\mpp\BarriosModel located in D:/www/simplerest/app\models
 Class simplerest\pages\admin\xxx\yyy\SomePage located in D:/www/simplerest/app\pages\admin\some_folder\yyy\SomePage.php does not comply with psr-4 autoloading standard. Skipping.
 Class PHPTAL_Php_Attribute_PHPTAL_ID located in D:/www/simplerest/vendor/phptal/phptal/classes\PHPTAL\Php\Attribute\PHPTAL\Id.php does not comply with psr-0 autoloading standard. Skipping.
 Class PHPTAL_Php_Attribute_PHPTAL_TALES located in D:/www/simplerest/vendor/phptal/phptal/classes\PHPTAL\Php\Attribute\PHPTAL\Tales.php does not comply with psr-0 auto
-
 
 - Generar archivo Constants para las rutas de archivo compatible con la implemetación de SW.
 
