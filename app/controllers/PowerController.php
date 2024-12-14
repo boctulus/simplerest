@@ -17,6 +17,10 @@ class PowerController extends Controller
         $this->setOutputFormat('test');
     }
 
+    function index(){
+        return $this->list();
+    }
+
     function calc($currentReading = null)
     {
         if ($currentReading === null){
