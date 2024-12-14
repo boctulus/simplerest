@@ -46,6 +46,17 @@ class PowerConsumption {
         return $reading;
     }
 
+    static function listReadings(int $days){
+        return DB::table('consumption')
+        ->orderBy(['id' => 'desc'])
+        ->limit($days)
+        ->select([
+            'created_at',
+            'reading',
+        ])
+        ->get();
+    }
+
     static function getConsumptionData($currentReading = null): array {
         $today = date('Y-m-d');
         $first = static::getInitialReading();
