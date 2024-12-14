@@ -42,7 +42,7 @@ class PowerConsumption {
                 ->orderBy(['created_at' => 'asc'])
                 ->first();
         }
-        
+
         return $reading;
     }
 
@@ -58,14 +58,15 @@ class PowerConsumption {
     }
 
     static function getConsumptionData($currentReading = null): array {
-        $today = date('Y-m-d');
+        $today = date('Y-m-d H:i:s');
         $first = static::getInitialReading();
         $first_day = $first['created_at'];
+        $first_reading = $first['reading'];
         
         $daysElapsed = Date::diffInDays($today, $first_day);
         $finalReading = $currentReading ?? self::last();
         
-        $dailyConsumption = $finalReading - $first['reading'];
+        $dailyConsumption = $finalReading - $first_reading;
         $averageConsumption = $dailyConsumption / $daysElapsed;
         $excess = $dailyConsumption - self::MAX_CONSUMPTION;
 
