@@ -221,57 +221,57 @@ class FrontController
         
         $data = call_user_func_array([$controller_obj, $method], $params);
 
-        // Determinar formato de salida
-        $output_format = $controller_obj->getOutputFormat();
-        
-        if ($output_format === 'test' && Request::isBrowser()) {
-            $output_format = 'dd';
-        } else {
-            $output_format = 'auto';
-        }
-
-        if ($output_format === 'auto') {
-            // Lógica automática
-            if ($controller_obj instanceof ApiController) {
-                $output_format = 'json';
-            } elseif ($controller_obj instanceof ConsoleController) {
+        if ($data !== null){
+            // Determinar formato de salida
+            $output_format = $controller_obj->getOutputFormat();
+            
+            if ($output_format === 'test' && Request::isBrowser()) {
                 $output_format = 'dd';
-            } elseif (Url::isPostmanOrInsomnia()) {
-                $output_format = 'pretty_json';
             } else {
-                $output_format = 'dd';
+                $output_format = 'auto';
             }
-        }
 
-        // Aplicar formato
-        switch ($output_format) {
-            case 'json':
-                $res->setHeader('Content-Type', 'application/json');
-                if (!Strings::isJSON($data)){
-                    $data = json_encode($data);
-                }                   
-                break;
-                
-            case 'pretty_json':
-                $res->setHeader('Content-Type', 'application/json');
-                if (!Strings::isJSON($data)){
-                    $data = json_encode($data, JSON_PRETTY_PRINT);
-                }  
-                break;
-                
-            case 'dd':
-                if (php_sapi_name() === 'cli') {
-                    $data = Cli::formatOutput($data, 0, true);
+            if ($output_format === 'auto') {
+                // Lógica automática
+                if ($controller_obj instanceof ApiController) {
+                    $output_format = 'json';
+                } elseif ($controller_obj instanceof ConsoleController) {
+                    $output_format = 'dd';
+                } elseif (Url::isPostmanOrInsomnia()) {
+                    $output_format = 'pretty_json';
                 } else {
-                    if ($data !== null){
-                        $data = Strings::formatOutput($data);
-                    }
+                    $output_format = 'dd';
                 }
-                break;
-        }
+            }
 
-        // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
-        $res->set($data);     
+            // Aplicar formato
+            switch ($output_format) {
+                case 'json':
+                    $res->setHeader('Content-Type', 'application/json');
+                    if (!Strings::isJSON($data)){
+                        $data = json_encode($data);
+                    }                   
+                    break;
+                    
+                case 'pretty_json':
+                    $res->setHeader('Content-Type', 'application/json');
+                    if (!Strings::isJSON($data)){
+                        $data = json_encode($data, JSON_PRETTY_PRINT);
+                    }  
+                    break;
+                    
+                case 'dd':
+                    if (php_sapi_name() === 'cli') {
+                        $data = Cli::formatOutput($data, 0, true);
+                    } else {                    
+                        $data = Strings::formatOutput($data);                    
+                    }
+                    break;
+            }
+
+            // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
+            $res->set($data);     
+        }
         
 
         /*

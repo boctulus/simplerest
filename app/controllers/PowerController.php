@@ -44,5 +44,16 @@ class PowerController extends Controller
         $_GET['save'] = true;
         return $this->calc($currentReading);
     }
+
+    function list($days = 5){
+        $res  = [];
+        $rows = PowerConsumption::listReadings($days);
+
+        foreach ($rows as $row){
+            $res[$row['created_at']] = $row['reading'];
+        }
+
+        return $res;
+    }
 }
 
