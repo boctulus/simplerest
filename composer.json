@@ -1,69 +1,73 @@
 {
-    "name": "boctulus/simplerest",
-    "type": "project",
-    "description": "API Rest framework for PHP",
-    "keywords": ["simplerest", "framework", "boctulus"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Pablo Gabriel Bozzolo <boctulus>",
-            "email": "boctulus@gmail.com"
-        }
-    ],
-    "version": "0.8.37",
-    "require": {
-        "php": ">=7.4",
-        "byjg/jwt-session": "2.0.*",
-        "google/apiclient": "^2.0.0",
-        "phpmailer/phpmailer": "^6.1",
-        "symfony/polyfill-uuid": "^1.18",
-        "vlucas/phpdotenv": "^5.2",
-        "jdorn/sql-formatter": "^1.2",
-        "php-http/curl-client": "^2.2",
-        "nyholm/psr7": "^1.4",
-        "florianv/swap": "^4.3",
-        "league/oauth2-google": "^4.0",
-        "sendgrid/sendgrid": "~7",
-        "datatables.net/editor-php": "2.*",
-        "phptal/phptal": "^1.6",
-        "sabberworm/php-css-parser": "8.4",
-        "nicolab/php-ftp-client": "^1.4",
-        "spatie/array-to-xml": "^2.17",
-        "symfony/http-client": "^5.4",
-        "phpunit/phpunit-selenium": "*",
-        "php-webdriver/webdriver":"*",
-        "symfony/dom-crawler": "^5.4",
-        "symfony/css-selector": "^5.4",
-        "php-http/message-factory": "^1.1",
-        "fpdf/fpdf": "^1.86",
-        "mpdf/mpdf": "^8.2"
-    },
-    "scripts": {
-        "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
-    },
-    "extra": {
-        "google/apiclient-services": [
-            "Drive"
-        ]
-    },
-    "autoload": {
-        "psr-4": {
-            "simplerest\\": "app/",
-            "devdojo\\calculator\\": "packages/devdojo/calculator/src",
-            "boctulus\\grained_acl\\": "packages/boctulus/grained_acl/src",
-            "boctulus\\basic_acl\\": "packages/boctulus/basic_acl/src",
-            "boctulus\\hello_world\\": "vendor/boctulus/hello_world/src"
-        }
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "allow-plugins": {
-            "php-http/discovery": true
-        },
-        "platform": {
-            "php": "7.4"
-        }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+	"name":"boctulus/simplerest",
+   "type":"project",
+   "description":"API Rest framework for PHP",
+   "keywords":[
+      "simplerest",
+      "framework",
+      "boctulus"
+   ],
+   "license":"MIT",
+   "authors":[
+      {
+         "name":"Pablo Gabriel Bozzolo",
+         "email":"boctulus@gmail.com"
+      }
+   ],
+   "version":"0.8.12",
+   "require":{
+      "php":">=7.4",
+      "firebase/php-jwt": "^6.0",
+      "google/apiclient":"^2.15",
+      "phpmailer/phpmailer":"^6.1",
+      "symfony/polyfill-uuid":"^1.18",
+      "vlucas/phpdotenv":"^5.2",
+      "jdorn/sql-formatter":"^1.2",
+      "php-http/curl-client":"^2.2",
+      "nyholm/psr7":"^1.4",
+      "florianv/swap":"^4.3",
+      "league/oauth2-google":"^4.0",
+      "sendgrid/sendgrid":"~7",
+      "datatables.net/editor-php":"2.*",
+      "phptal/phptal":"^1.6",
+      "sabberworm/php-css-parser":"^8.4",
+      "nicolab/php-ftp-client":"^1.4",
+      "spatie/array-to-xml":"^2.17",
+      "symfony/http-client":"^5.4",
+      "phpunit/phpunit-selenium":"*",
+      "php-webdriver/webdriver":"*",
+      "symfony/dom-crawler":"^5.4",
+      "symfony/css-selector":"^5.4",
+      "php-http/message-factory":"^1.1",
+      "fpdf/fpdf":"^1.86",
+      "mpdf/mpdf":"^8.2"
+   },
+   "scripts":{
+      "pre-autoload-dump":"Google\\Task\\Composer::cleanup"
+   },
+   "extra":{
+      "google/apiclient-services":[
+         "Drive"
+      ]
+   },
+   "autoload":{
+      "psr-4":{
+         "simplerest\\":"app/",
+         "devdojo\\calculator\\":"packages/devdojo/calculator/src",
+         "boctulus\\grained_acl\\":"packages/boctulus/grained_acl/src",
+         "boctulus\\basic_acl\\":"packages/boctulus/basic_acl/src",
+         "boctulus\\hello_world\\":"vendor/boctulus/hello_world/src"
+      }
+   },
+   "config":{
+      "optimize-autoloader":true,
+      "allow-plugins":{
+         "php-http/discovery":true
+      },
+      "platform":{
+         "php":"7.4"
+      }
+   },
+   "minimum-stability":"stable",
+   "prefer-stable":true
 }
