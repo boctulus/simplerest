@@ -50,13 +50,23 @@ class PowerController extends Controller
     }
 
     function list($days = 5){
-        $res  = [];
+        $res = [];
         $rows = PowerConsumption::listReadings($days);
-
+        $rows = array_reverse($rows); // Invertimos primero para procesar cronológicamente
+        $prevReading = null;
+    
         foreach ($rows as $row){
-            $res[$row['created_at']] = $row['reading'];
+            $increment = null;
+            if ($prevReading !== null) {
+                $increment = $row['reading'] - $prevReading; // Lectura actual - anterior
+            }
+            $res[$row['created_at']] = [
+                'reading' => $row['reading'],
+                'increment' => $increment
+            ];
+            $prevReading = $row['reading'];
         }
-
+    
         return $res;
     }
 }
