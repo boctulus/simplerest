@@ -14,11 +14,11 @@ class MyModel extends Model
     function __construct(bool $connect = false, $schema = null, bool $load_config = true){
         parent::__construct($connect, $schema, $load_config);
 
-        $this->hide([
-            'created_at',
-            'updated_at',
-            'deleted_at'
-        ]);
+        // $this->hide([
+        //     'created_at',
+        //     'updated_at',
+        //     'deleted_at'
+        // ]);
 
         $this->field_names = [
             'created_at' => 'Created At',
