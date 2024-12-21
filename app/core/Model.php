@@ -2477,6 +2477,22 @@ class Model {
 		return $this;
 	}
 
+	/*
+		Sin ensayar
+
+		Ej:
+
+		DB::table('contacts')
+		->whereLike('full_name', "%$search%")
+		->orWhereLike('company', "%$search%")
+		->orWhereLike('email', "%$search%")
+		->get();
+	*/
+	function orWhereLike(string $field, $val){
+		$this->_where([[$this->getFullyQualifiedField($field), $val, 'LIKE']], 'OR');
+		return $this;
+	}
+
 	function whereOr($conditions){
 		$this->_where($conditions, 'AND', 'OR');
 		return $this;
