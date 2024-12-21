@@ -496,6 +496,21 @@ class Model {
 		return $this;
 	}
 
+	/*
+		Ej:
+		
+		$contact = DB::table('contacts')                    
+        ->where('id', $id)
+        ->asObject()   // devuelve objeto
+        ->first();
+        
+        $newStatus = !$contact->favorite;
+	*/
+	function asObject() {
+		$this->setFetchMode('OBJ');
+		return $this;
+	 }
+
 	function column(){
 		$this->fetch_mode = \PDO::FETCH_COLUMN;
 		return $this;
