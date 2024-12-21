@@ -2450,25 +2450,60 @@ class Model {
 		return $this;
 	}
 
-	function where($conditions, $conjunction = 'AND')
-	{
-		// Si se hace where(1) lo convierte en WHERE 1=1
-		if ($conditions == 1){
-			$conditions = [1, 1];
-		}
+	// function where($conditions, $conjunction = 'AND')
+	// {
+	// 	// Si se hace where(1) lo convierte en WHERE 1=1
+	// 	if ($conditions == 1){
+	// 		$conditions = [1, 1];
+	// 	}
 
-		/*
-			Laravel compatibility
+	// 	/*
+	// 		Laravel compatibility
 			
-			In "Laravel mode", $conditions es la key y $conjunction el valor
-		*/
-		if (is_string($conditions)){
-			$key              = $conditions;
-			$conditions       = [];
-			$conditions[$key] = $conjunction;
+	// 		In "Laravel mode", $conditions es la key y $conjunction el valor
+	// 	*/
+	// 	if (is_string($conditions)){
+	// 		$key              = $conditions;
+	// 		$conditions       = [];
+	// 		$conditions[$key] = $conjunction;
+	// 	}
+
+	// 	$this->_where($conditions, 'AND', $conjunction);
+	// 	return $this;
+	// }
+
+	/*
+		Refactoring por Claude para compatibilidad con Laravel
+
+		https://claude.ai/chat/3331ae1f-5190-4789-b27a-8faa347b1973
+	*/
+	function where(...$args)
+	{
+		// Caso actual: where($conditions, $conjunction = 'AND')
+		if (is_array($args[0])) {
+			$conditions = $args[0];
+			$conjunction = $args[1] ?? 'AND';
+			$this->_where($conditions, 'AND', $conjunction);
+			return $this;
 		}
 
-		$this->_where($conditions, 'AND', $conjunction);
+		// Caso Laravel: where($field, $operator, $value) o where($field, $value)
+		if (count($args) == 2) {
+			// where('field', 'value')
+			$field = $args[0];
+			$value = $args[1];
+			$operator = '=';
+		} else if (count($args) == 3) {
+			// where('field', '>', 'value')
+			$field = $args[0];
+			$operator = $args[1];
+			$value = $args[2];
+		} else {
+			throw new \InvalidArgumentException("Invalid number of arguments for where()");
+		}
+
+		// Convertimos al formato actual
+		$this->_where([[$this->getFullyQualifiedField($field), $value, $operator]], 'AND', 'AND');
 		return $this;
 	}
 
@@ -2681,52 +2716,115 @@ class Model {
 		return $this;
 	}
 
+	/*
+		Implementacion completada por Claude --sin probar
+
+		Ej:
+
+		DB::table('orders')
+		->havingRaw('COUNT(id) > ?', [5])
+		->havingRaw('SUM(amount) > ?', [1000], 'OR')
+		->get();
+
+		// Generaría algo como:
+		// ... HAVING (COUNT(id) > ?) OR (SUM(amount) > ?)
+	*/
 	function havingRaw(string $q, array $vals = null, $conjunction = 'AND'){
 		if (substr_count($q, '?') != count($vals))
-			throw new \InvalidArgumentException("Number of ? are not consitent with the number of passed values");
+			throw new \InvalidArgumentException("Number of ? are not consistent with the number of passed values");
 		
-		$this->having_raw_q = $q;
-
-		if ($vals != null)
-			$this->having_raw_vals = $vals;
-
-
-		////////////////////////////////////////////
-		// group
-
-		// No está implementado
-		////////////////////////////////////////////
-
-		// dd($this->having, 'HAVING:');
-		// dd($this->h_vars, 'VARS');
-		// dd($this->h_vals, 'VALUES');
-			
+		if (empty($this->having_raw_q)){
+			$this->having_raw_q = $q;
+		} else {
+			$this->having_raw_q = "({$this->having_raw_q}) $conjunction ($q)";
+		}
+	
+		if ($vals != null){
+			if (empty($this->having_raw_vals)){
+				$this->having_raw_vals = $vals;
+			} else {
+				$this->having_raw_vals = array_merge($this->having_raw_vals, $vals);
+			}
+		}
+				
 		return $this;
 	}
 
-	function having(array $conditions, $conjunction = 'AND')
-	{	
-		if (Arrays::isAssoc($conditions)){
-            $conditions = Arrays::nonAssoc($conditions);
-        }
+	// function having(array $conditions, $conjunction = 'AND')
+	// {	
+	// 	if (Arrays::isAssoc($conditions)){
+    //         $conditions = Arrays::nonAssoc($conditions);
+    //     }
 
-		if (!is_array($conditions[0])){
-			if (Strings::contains('(', $conditions[0])){
-				$op = $conditions[2] ?? '=';
+	// 	if (!is_array($conditions[0])){
+	// 		if (Strings::contains('(', $conditions[0])){
+	// 			$op = $conditions[2] ?? '=';
 
-				$q = "{$conditions[0]} {$op} ?";
-				$v = $conditions[1];
+	// 			$q = "{$conditions[0]} {$op} ?";
+	// 			$v = $conditions[1];
 
-				if ($this->strict_mode_having){
-					throw new \Exception("Use havingRaw() instead for {$q}");
-				}
+	// 			if ($this->strict_mode_having){
+	// 				throw new \Exception("Use havingRaw() instead for {$q}");
+	// 			}
 
-				$this->havingRaw($q, [$v]);
-				return $this;
-			}
-		} 
+	// 			$this->havingRaw($q, [$v]);
+	// 			return $this;
+	// 		}
+	// 	} 
 	
-		$this->_having($conditions, 'AND', $conjunction);
+	// 	$this->_having($conditions, 'AND', $conjunction);
+	// 	return $this;
+	// }
+
+	/*
+		Refactoring por Claude para compatibilidad con Laravel
+
+		https://claude.ai/chat/3331ae1f-5190-4789-b27a-8faa347b1973
+	*/
+	function having(...$args)
+	{
+		// Caso actual: having(array $conditions, $conjunction = 'AND')
+		if (is_array($args[0])) {
+			$conditions = $args[0];
+			$conjunction = $args[1] ?? 'AND';
+
+			// Mantener el comportamiento actual para expresiones tipo COUNT, SUM, etc
+			if (!is_array($conditions[0])) {
+				if (Strings::contains('(', $conditions[0])) {
+					$op = $conditions[2] ?? '=';
+					$q = "{$conditions[0]} {$op} ?";
+					$v = $conditions[1];
+
+					if ($this->strict_mode_having) {
+						throw new \Exception("Use havingRaw() instead for {$q}");
+					}
+
+					$this->havingRaw($q, [$v]);
+					return $this;
+				}
+			}
+
+			$this->_having($conditions, 'AND', $conjunction);
+			return $this;
+		}
+
+		// Caso Laravel: having($field, $operator, $value) o having($field, $value)
+		if (count($args) == 2) {
+			// having('field', 'value')
+			$field = $args[0];
+			$value = $args[1];
+			$operator = '=';
+		} else if (count($args) == 3) {
+			// having('field', '>', 'value')
+			$field = $args[0];
+			$operator = $args[1];
+			$value = $args[2];
+		} else {
+			throw new \InvalidArgumentException("Invalid number of arguments for having()");
+		}
+
+		// Convertimos al formato actual
+		$this->_having([[$this->getFullyQualifiedField($field), $value, $operator]], 'AND', 'AND');
 		return $this;
 	}
 

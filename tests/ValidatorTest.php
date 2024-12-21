@@ -5,7 +5,7 @@ namespace simplerest\tests;
 require_once __DIR__ . '../../vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
-use simplerest\libs\Validator;
+use simplerest\core\libs\Validator;
 use simplerest\core\exceptions\InvalidValidationException;
 
 include 'config/constants.php';
