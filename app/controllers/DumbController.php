@@ -554,6 +554,19 @@ class DumbController extends Controller
         dd($res);
     }
 
+    function test_having_raw(){
+        $res = table('orders')
+        ->dontExec()        
+		->havingRaw('COUNT(id) > ?', [5])
+		->havingRaw('SUM(amount) > ?', [1000], 'OR')
+		->dd();
+
+		// Generaría algo como:
+		// ... HAVING (COUNT(id) > ?) OR (SUM(amount) > ?)
+
+        dd($res);
+    }
+
 
     /*
         Falla en POSTGRES:
@@ -2764,7 +2777,25 @@ class DumbController extends Controller
 
         $sql = $m->toSql();
 
-        dd(DB::select($sql, [50, 100]));
+        // dd(DB::select($sql, [50, 100]));
+        dd($sql, 'pre-compiled SQL');
+        dd(DB::getLog(), 'excecuted SQL');
+    }
+
+    function ex2_laravel_format()
+    {
+        $m = DB::table('products')
+            ->dontBind()   // <--- here 
+            ->dontExec()   // <--- here 
+            ->select(['size'])
+            ->selectRaw('AVG(cost)')
+            ->where('cost', '>', null)
+            ->groupBy(['size'])
+            ->having('AVG(cost)', '<', null);
+
+        $sql = $m->toSql();
+
+        // dd(DB::select($sql, [50, 100]));
         dd($sql, 'pre-compiled SQL');
         dd(DB::getLog(), 'excecuted SQL');
     }
