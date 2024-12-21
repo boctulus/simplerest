@@ -31,3 +31,4 @@
 [2024-12-21 14:27:45]	0.8.12	Automatic update
 [2024-12-21 15:25:53]	0.8.12	Removido hidden de campos en MyModel
 [2024-12-21 15:33:18]	0.8.12	Eliminanda cache rota o mal-implementada dentro de SubResourcesV2 (trait)
+[2024-12-21 15:44:38]	0.8.12	Re-implementadas caches dentro de SubResourcesV2 y V1 (traits)
