@@ -33,3 +33,4 @@
 [2024-12-21 15:33:18]	0.8.12	Eliminanda cache rota o mal-implementada dentro de SubResourcesV2 (trait)
 [2024-12-21 15:44:38]	0.8.12	Re-implementadas caches dentro de SubResourcesV2 y V1 (traits)
 [2024-12-21 23:23:14]	0.8.12	Restauradas pruebas unitarias perdidas y nuevo metodo orWhereLike() sin probar
+[2024-12-21 23:46:31]	0.8.12	Implementacion de havingRaw() por Claude
