@@ -170,7 +170,7 @@ class PowerConsumption {
             'created_at' => date('Y-m-d H:i:s')
         ];
 
-        getConnection();
+        DB::getConnection();
 
         dd('Saving ...');
         $res = table('consumption')->create($data);
