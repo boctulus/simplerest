@@ -12,13 +12,17 @@ trait SubResourcesV1
     static function getSubResources(string $table, Array $connect_to, ?Object &$instance = null, ?string $tenant_id = null)
     {
         static $ret;
-        
-        if (isset($ret[$table][$connect_to][$tenant_id])){
-            return $ret[$table][$connect_to][$tenant_id];
-        }
 
         if ($tenant_id != null){
             DB::getConnection($tenant_id);
+        }        
+
+        // Genero una clave única usando el nombre de la tabla y un hash de los subrecursos
+        $connect_to_key = implode(':', $connect_to);
+        $cache_key      = "{$table}|{$connect_to_key}|{$tenant_id}";
+    
+        if ($ret !== null && isset($ret[$cache_key])){
+            return $ret[$cache_key];
         }
         
         $tenantid = Factory::request()->getTenantId();
@@ -139,22 +143,8 @@ trait SubResourcesV1
         //     $res = $res[$table];
         // }
 
-
-        $connect_str = implode(',', $connect_to);
-
-        if (!isset($ret[$table])){
-            $ret[$table] = [];
-        }
-
-        if (!isset($ret[$table])){
-            $ret[$table][$connect_str] = [];
-        }
-
-        if (!isset($ret[$table])){
-            $ret[$table][$connect_str][$tenant_id] = [];
-        }        
-
-        $ret[$table][$connect_str][$tenant_id] = $res;
+        // Al final de todo el procesamiento, guardo en caché
+        $ret[$cache_key] = $res;
 
         return $res;
     }
