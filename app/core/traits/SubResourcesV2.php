@@ -16,15 +16,7 @@ use simplerest\core\libs\Strings;
 trait SubResourcesV2
 {
     static function getSubResources(string $table, Array $connect_to, ?Object &$instance = null, ?string $tenant_id = null)
-    {
-        static $ret;
-
-        $connect_str = implode(',', $connect_to);
-        
-        if (isset($ret[$table][$connect_str][$tenant_id])){
-            return $ret[$table][$connect_str][$tenant_id];
-        }
-
+    {   
         if ($tenant_id != null){
             DB::getConnection($tenant_id);
         }
