@@ -632,7 +632,7 @@ class Model {
 	 *
 	 * @return void
 	 */
-	function unhide(array $unhidden_fields){
+	function unhide(array $unhidden_fields) : Model {
 		if (!empty($this->hidden) && !empty($unhidden_fields)){			
 			foreach ($unhidden_fields as $uf){
 				$k = array_search($uf, $this->hidden);
@@ -642,7 +642,7 @@ class Model {
 		return $this;
 	}
 
-	function unhideAll(){
+	function unhideAll() : Model {
 		$this->hidden = [];
 		return $this;
 	}
@@ -655,7 +655,7 @@ class Model {
 	 *
 	 * @return void
 	 */
-	function hide(array $fields){
+	function hide(array $fields) : Model {
 		foreach ($fields as $f){
 			if (!in_array($f, $this->hidden)){
 				$this->hidden[] = $f;
@@ -1118,7 +1118,6 @@ class Model {
 			switch ($this->schema['rules'][$field]['type']){
 				case 'date':
 					return $this->where([$field, $value, $operator]);
-					break;
 				case 'datetime':
 					switch ($operator){
 						case '=':
@@ -1142,7 +1141,6 @@ class Model {
 			switch ($this->schema['rules'][$field]['type']){
 				case 'date':
 					throw new \InvalidArgumentException("Presition can not exced yyyy-mm-dd");
-					break;
 				case 'datetime':
 					switch ($operator){
 						case '=':
@@ -1233,8 +1231,6 @@ class Model {
 					$remove[] = $this->deletedAt;
 
 				if (!empty($fields)){
-					//dd($fields, '$fields +');
-					//dd($aggregate_func, '$aggregate_func');
 					if (!empty($aggregate_func)){
 					 	$fields = array_diff($this->getAttr(), $remove);
 					} else {
@@ -1242,7 +1238,6 @@ class Model {
 					}
 				}
 			} 		
-
 
 			if ($this->paginator){
 				$order  = (!empty($order) && !$this->randomize) ? array_merge($this->order, $order) : $this->order;
@@ -1841,7 +1836,7 @@ class Model {
 	function first(array $fields = null, $pristine = false){
 		$this->onReading();
 
-		$q = $this->toSql($fields, NULL);
+		$q  = $this->toSql($fields, NULL);
 		$st = $this->bind($q);
 
 		$count = null;
