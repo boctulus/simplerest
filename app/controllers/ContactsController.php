@@ -21,9 +21,9 @@ class ContactsController extends Controller
         return DB::table('contacts')->get();
     }
 
-    public function create()
+    public function create($fullName = null)
     {
-        $fullName = $_GET['full_name'] ?? null;
+        $fullName = $fullName ?? $_GET['full_name'] ?? null;
         
         if (!$fullName) {
             die('Full name is required.');
@@ -34,7 +34,7 @@ class ContactsController extends Controller
             'company' => $_GET['company'] ?? null,
             'website' => $_GET['website'] ?? null,
             'job_title' => $_GET['job_title'] ?? null,
-            'phone_number_1' => $_GET['phone1'] ?? null,
+            'phone_number_1' => $_GET['phone1'] ?? $_GET['phone'] ?? null,
             'phone_number_2' => $_GET['phone2'] ?? null,
             'notes' => $_GET['notes'] ?? null
         ];
@@ -84,15 +84,16 @@ class ContactsController extends Controller
                 ->delete();
     }
 
-    public function toggleFavorite($id)
+    public function toggle_favorite($id)
     {
         if (!$id) {
             die('Contact ID is required.');
         }
 
-        $contact = DB::table('contacts')
-                    ->where('id', $id)
-                    ->first();
+        $contact = DB::table('contacts')                    
+        ->where('id', $id)
+        ->asObject()   // devuelve objeto
+        ->first();
         
         $newStatus = !$contact->favorite;
 
