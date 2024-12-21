@@ -17,8 +17,18 @@ trait SubResourcesV2
 {
     static function getSubResources(string $table, Array $connect_to, ?Object &$instance = null, ?string $tenant_id = null)
     {   
+        static $ret;
+
         if ($tenant_id != null){
             DB::getConnection($tenant_id);
+        }        
+
+        // Genero una clave única usando el nombre de la tabla y un hash de los subrecursos
+        $connect_to_key = implode(':', $connect_to);
+        $cache_key      = "{$table}|{$connect_to_key}|{$tenant_id}";
+    
+        if ($ret !== null && isset($ret[$cache_key])){
+            return $ret[$cache_key];
         }
 
         if ($instance == null){
@@ -307,6 +317,9 @@ trait SubResourcesV2
                 }
             }
         }
+
+        // Al final de todo el procesamiento, guardo en caché
+        $ret[$cache_key] = $rows;       
 
         //dd(sql_formatter($sql)); exit;//
         return $rows;
