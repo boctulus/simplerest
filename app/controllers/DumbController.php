@@ -11045,5 +11045,20 @@ class DumbController extends Controller
         // dd(Request::isBrowser());
     }
 
+    function test_model_field_retrieval(){
+        DB::getConnection();
+
+        $model = DB::table('consumption');
+
+        $model->dontExec()->first();
+        dd($model->dd());
+
+        $model = DB::table('consumption');
+        dd($model->getHidden()); // Ver qué campos están ocultos
+        $model->unhideAll(); //
+        dd($model->dd());
+        
+    }
+
 
 }   // end class
