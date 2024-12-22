@@ -2666,7 +2666,7 @@ class Model {
 	}
 
 	function oldest(){
-		$this->orderBy([$this->getFullyQualifiedField($this->createdAt) => 'ASC']);
+		$this->orderBy([$this->getFullyQualifiedField($this->createdAt) => 'DESC']);
 		return $this;
 	}
 
@@ -2676,7 +2676,7 @@ class Model {
 	}
 
 	function newest(){
-		$this->orderBy([$this->getFullyQualifiedField($this->createdAt) => 'DESC']);
+		$this->orderBy([$this->getFullyQualifiedField($this->createdAt) => 'ASC']);
 		return $this;
 	}
 	
