@@ -128,9 +128,30 @@ class Model {
 
 	static protected $sql_formatter_callback;
 	protected        $sql_formatter_status;
+	protected 		$decimal_as_string = null; 
 	
 	static protected $current_sql;
 
+	// Constantes
+    const DECIMAL_AS_STRING = false; // false = sin comillas (default), true = con comillas
+
+
+	protected function isDecimalField(string $field): bool {
+		if (empty($this->schema) || empty($this->schema['rules'])) {
+			return false;
+		}
+		
+		return isset($this->schema['rules'][$field]) && 
+			   isset($this->schema['rules'][$field]['type']) &&
+			   Strings::startsWith('decimal', strtolower($this->schema['rules'][$field]['type']));
+	}
+
+    protected function shouldQuoteDecimals(): bool {
+        if ($this->decimal_as_string !== null) {
+            return $this->decimal_as_string;
+        }
+        return self::DECIMAL_AS_STRING;
+    }
 
 	function getFieldNames(){
 		return $this->field_names;
@@ -2379,31 +2400,46 @@ class Model {
 				foreach ($conditions as $ix => $cond) {
 					$unqualified_field = $this->unqualifyField($cond[0]);
 					$field = $this->getFullyQualifiedField($cond[0]);
-
+				
 					if ($field == null)
 						throw new SqlException("Field can not be NULL");
+				
+					if(is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN'])))
+					{   
+						// Determinar si se deben comillar los valores
+						$should_quote = true;
 
-					if(is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN']) ))
-					{	
-						if ((!isset($this->schema['attr_types']) || 
-							(isset($this->schema['attr_types'][$unqualified_field]) && $this->schema['attr_types'][$unqualified_field] == 'STR')
-						)){
-							$cond[1] = array_map(function($e){ return "'$e'";}, $cond[1]);  
+						dd(
+							[
+								'isDecimalField?' => $this->isDecimalField($unqualified_field),
+								'shouldQuoteDecimals?' => $this->shouldQuoteDecimals()
+							], $unqualified_field
+						);
+						
+						if ($this->isDecimalField($unqualified_field) && !$this->shouldQuoteDecimals()) {
+							$should_quote = false;
+						} else if (isset($this->schema['attr_types'][$unqualified_field])) {
+							$should_quote = $this->schema['attr_types'][$unqualified_field] == 'STR';
+						}
+				
+						// Aplicar comillas si corresponde
+						if ($should_quote) {
+							$cond[1] = array_map(function($e){ return "'$e'";}, $cond[1]);
 						}
 						
 						$in_val = implode(', ', $cond[1]);
 						
 						$op = isset($cond[2]) ? $cond[2] : 'IN';
-						$_where[] = "$field $op ($in_val) ";	
-					}else{
-						$vars[]   = $field;
+						$_where[] = "$field $op ($in_val) ";    
+					} else {
+						$vars[] = $field;
 						$this->w_vals[] = $cond[1];
-
+				
 						if ($cond[1] === NULL && (empty($cond[2]) || $cond[2]=='='))
 							$ops[] = 'IS';
-						else	
+						else    
 							$ops[] = $cond[2] ?? '=';
-					}	
+					}    
 				}
 
 			}else{
