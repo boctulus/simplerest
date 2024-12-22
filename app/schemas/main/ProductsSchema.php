@@ -14,7 +14,7 @@ class ProductsSchema implements ISchema
 
 			'id_name'			=> 'id',
 
-			'fields'			=> ['id', 'name', 'type', 'regular_price', 'sale_price', 'description', 'short_description', 'slug', 'images', 'categories', 'tags', 'dimensions', 'attributes', 'sku', 'status', 'stock', 'stock_status', 'url_ori', 'posted', 'comment', 'created_at', 'updated_at'],
+			'fields'			=> ['id', 'name', 'type', 'regular_price', 'sale_price', 'description', 'short_description', 'slug', 'images', 'categories', 'tags', 'dimensions', 'attributes', 'sku', 'status', 'stock', 'stock_status', 'url_ori', 'posted', 'comment', 'created_at', 'updated_at', 'cost', 'size', 'belongs_to', 'active', 'locked', 'workspace', 'deleted_at'],
 
 			'attr_types'		=> [
 				'id' => 'INT',
@@ -38,7 +38,14 @@ class ProductsSchema implements ISchema
 				'posted' => 'INT',
 				'comment' => 'STR',
 				'created_at' => 'STR',
-				'updated_at' => 'STR'
+				'updated_at' => 'STR',
+				'cost' => 'STR',
+				'size' => 'STR',
+				'belongs_to' => 'INT',
+				'active' => 'INT',
+				'locked' => 'INT',
+				'workspace' => 'STR',
+				'deleted_at' => 'STR'
 			],
 
 			'attr_type_detail'	=> [
@@ -51,7 +58,7 @@ class ProductsSchema implements ISchema
 
 			'autoincrement' 	=> 'id',
 
-			'nullable'			=> ['id', 'type', 'regular_price', 'sale_price', 'short_description', 'categories', 'tags', 'dimensions', 'attributes', 'sku', 'status', 'stock', 'stock_status', 'url_ori', 'posted', 'comment', 'updated_at'],
+			'nullable'			=> ['id', 'type', 'regular_price', 'sale_price', 'short_description', 'categories', 'tags', 'dimensions', 'attributes', 'sku', 'status', 'stock', 'stock_status', 'url_ori', 'posted', 'comment', 'updated_at', 'cost', 'size', 'belongs_to', 'active', 'locked', 'workspace', 'deleted_at'],
 
 			'required'			=> ['name', 'description', 'slug', 'images', 'created_at'],
 
@@ -79,7 +86,14 @@ class ProductsSchema implements ISchema
 				'posted' => ['type' => 'bool'],
 				'comment' => ['type' => 'str', 'max' => 200],
 				'created_at' => ['type' => 'datetime', 'required' => true],
-				'updated_at' => ['type' => 'datetime']
+				'updated_at' => ['type' => 'datetime'],
+				'cost' => ['type' => 'decimal(10,2)'],
+				'size' => ['type' => 'str', 'max' => 20],
+				'belongs_to' => ['type' => 'int'],
+				'active' => ['type' => 'bool'],
+				'locked' => ['type' => 'bool'],
+				'workspace' => ['type' => 'str', 'max' => 50],
+				'deleted_at' => ['type' => 'timestamp']
 			],
 
 			'fks' 				=> [],

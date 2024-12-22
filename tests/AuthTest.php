@@ -328,13 +328,13 @@ class AuthTest extends TestCase
 			isset($rt_payload->uid) && isset($rt_payload->roles)
 		);
 
-		$uid = DB::table($this->users_table)
+		$uid = DB::table(get_users_table())
 		->where(['email' => $email])->value('id');
 
 		DB::table('user_roles')
 		->where(['user_id' => $uid])->delete(false);
 
-		DB::table($this->users_table)
+		DB::table(get_users_table())
 		->where(['id' => $uid])->delete(false);
 	}
 

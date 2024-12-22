@@ -35,3 +35,4 @@
 [2024-12-21 23:23:14]	0.8.12	Restauradas pruebas unitarias perdidas y nuevo metodo orWhereLike() sin probar
 [2024-12-21 23:46:31]	0.8.12	Implementacion de havingRaw() por Claude
 [2024-12-22 00:09:17]	0.8.12	asObject() en el Model
+[2024-12-22 01:32:51]	0.8.12	Mejoras en ModelTest ... ahora CASI pasa
