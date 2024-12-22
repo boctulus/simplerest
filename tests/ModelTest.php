@@ -2,12 +2,17 @@
 
 namespace simplerest\tests;
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
 require_once __DIR__ . '../../vendor/autoload.php';
-require_once __DIR__ . '/../public/app.php';
+
+if (php_sapi_name() != "cli"){
+	return; 
+}
+
+require_once __DIR__ . '/../app.php';
 
 use PHPUnit\Framework\TestCase;
 use simplerest\core\libs\Strings;
@@ -15,10 +20,36 @@ use simplerest\core\libs\DB;
 use simplerest\core\Model;
 use simplerest\libs\Validator;
 
-include 'config/constants.php';
-
 class ModelTest extends TestCase
-{   		
+{
+  function normalizeSQL($sql) {
+      // Eliminar punto y coma final
+      $sql = rtrim($sql, ';');
+      
+      // Eliminar backticks y comillas dobles en nombres de tablas/campos
+      $sql = str_replace(['`', '"'], '', $sql);
+      
+      // Normalizar espacios después de comas
+      $sql = preg_replace('/\s*,\s*/', ',', $sql);
+      
+      // Normalizar espacios múltiples a uno solo
+      $sql = preg_replace('/\s+/', ' ', $sql);
+      
+      // Eliminar espacios antes y después
+      $sql = trim($sql);
+      
+      return $sql;
+  }
+
+  protected function assertSQLEquals($expected, $actual, string $message = '')
+  {
+      $this->assertEquals(
+          $this->normalizeSQL($expected),
+          $this->normalizeSQL($actual),
+          $message
+      );
+  }
+
   function limit($limit, $offset = 0){
     $ol = [$limit !== null, !empty($offset)]; 
 
@@ -67,114 +98,114 @@ class ModelTest extends TestCase
   {
     //
     $query = DB::table('products');
-    $this->assertEquals($query->dd(), 'SELECT * FROM products WHERE deleted_at IS NULL;');
+    $this->assertSQLEquals($query->dd(), 'SELECT * FROM products WHERE deleted_at IS NULL;');
 
     //
     $query = DB::table('products')->deleted();
-    $this->assertEquals($query->dd(), 'SELECT * FROM products;');
+    $this->assertSQLEquals($query->dd(), 'SELECT * FROM products;');
 
     //  
     $query = DB::table('products')->select(['size'])->distinct();
-    $this->assertEquals($query->dd(), 'SELECT DISTINCT size FROM products WHERE deleted_at IS NULL;');
+    $this->assertSQLEquals($query->dd(), 'SELECT DISTINCT size FROM products WHERE deleted_at IS NULL;');
 
     // 
     $query = DB::table('products')->select(['size', 'cost'])->distinct();
-    $this->assertEquals($query->dd(), 'SELECT DISTINCT size, cost FROM products WHERE deleted_at IS NULL;');
+    $this->assertSQLEquals($query->dd(), 'SELECT DISTINCT size, cost FROM products WHERE deleted_at IS NULL;');
 
     // 
     $query = DB::table('products')->oldest();
-    $this->assertEquals($query->dd(), 'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY created_at DESC;');
+    $this->assertSQLEquals($query->dd(), 'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY created_at DESC;');
 
     // 
     $query = DB::table('products')->newest();
-    $this->assertEquals($query->dd(), 'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY created_at ASC;');
+    $this->assertSQLEquals($query->dd(), 'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY created_at ASC;');
 
     //  
     $query = DB::table('products')->random()->select(['id', 'name'])->get();
     $rand = $this->rand_fn();
-    $this->assertEquals(DB::getLog(), "SELECT id, name FROM products WHERE deleted_at IS NULL ORDER BY $rand;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, name FROM products WHERE deleted_at IS NULL ORDER BY $rand;");
 
     $query = DB::table('products')->random()->select(['id', 'name'])->limit(5)->get();
     $limit = $this->limit(5);
-    $this->assertEquals(DB::getLog(), "SELECT id, name FROM products WHERE deleted_at IS NULL ORDER BY $rand $limit;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, name FROM products WHERE deleted_at IS NULL ORDER BY $rand $limit;");
 
     DB::table('products')->deleted()
     ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
     ->where(['size', '1L'])
     ->orderBy(['size' => 'desc', 'cost' => 'asc'])
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE size = '1L' ORDER BY size DESC, cost ASC;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE size = '1L' ORDER BY size DESC, cost ASC;");
 
     // 
-    $query = DB::table($this->users_table)
+    $query = DB::table(get_users_table())
     ->where([ 'id'=> 160] )
     ->count();
-    $this->assertEquals(DB::getLog(), 'SELECT COUNT(*) FROM users WHERE (id = 160) AND deleted_at IS NULL;');
+    $this->assertSQLEquals(DB::getLog(), 'SELECT COUNT(*) FROM users WHERE (id = 160) AND deleted_at IS NULL;');
 
     //  
     DB::table('products')->deleted()
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->count('updated_at');
-    $this->assertEquals(DB::getLog(), "SELECT COUNT(updated_at) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90);");
+    $this->assertSQLEquals(DB::getLog(), "SELECT COUNT(updated_at) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90);");
 
     //  
     DB::table('products')->deleted()
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->distinct()
     ->count('description');
-    $this->assertEquals(DB::getLog(), "SELECT COUNT(DISTINCT description) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90);");
+    $this->assertSQLEquals(DB::getLog(), "SELECT COUNT(DISTINCT description) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90);");
 
     //  
     $query = DB::table('products')
     ->where([ [ 'cost', 200, '>='], [ 'size', '2L'] ], 'OR')
     ->count();
-    $this->assertEquals(DB::getLog(), "SELECT COUNT(*) FROM products WHERE (cost >= 200 OR size = '2L') AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT COUNT(*) FROM products WHERE (cost >= 200 OR size = '2L') AND deleted_at IS NULL;");
 
     //  
     $query = DB::table('products')->deleted()
     ->where([ [ 'cost', 200, '>='], [ 'size', '2L'] ], 'OR')
     ->count();
-    $this->assertEquals(DB::getLog(), "SELECT COUNT(*) FROM products WHERE (cost >= 200 OR size = '2L');");
+    $this->assertSQLEquals(DB::getLog(), "SELECT COUNT(*) FROM products WHERE (cost >= 200 OR size = '2L');");
 
     //  
     DB::table('products')
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->distinct()
     ->count('description');
-    $this->assertEquals(DB::getLog(), "SELECT COUNT(DISTINCT description) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT COUNT(DISTINCT description) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->avg('cost');
-    $this->assertEquals(DB::getLog(), "SELECT AVG(cost) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT AVG(cost) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->sum('cost');
-    $this->assertEquals(DB::getLog(), "SELECT SUM(cost) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT SUM(cost) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->min('cost');
-    $this->assertEquals(DB::getLog(), "SELECT MIN(cost) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT MIN(cost) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->max('cost');
-    $this->assertEquals(DB::getLog(), "SELECT MAX(cost) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT MAX(cost) FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')->orderBy(['cost' => 'DESC'])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost DESC;");        
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost DESC;");        
 
     // 
     DB::table('products')->limit(10)->offset(20)->get();
     $limit = $this->limit(10, 20);
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL $limit;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL $limit;");
 
     // 
     DB::table('products')
@@ -184,39 +215,39 @@ class ModelTest extends TestCase
     ->get(['cost']);
 
     $limit = $this->limit(10, 20);
-    $this->assertEquals(DB::getLog(), "SELECT cost FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL $limit;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT cost FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL $limit;");
 
     // 
     DB::table('products')->random()->select(['id', 'name'])->addSelect('cost')->first();
     $rand = $this->rand_fn();
-    $this->assertEquals(DB::getLog(), "SELECT id, name, cost FROM products WHERE deleted_at IS NULL ORDER BY $rand;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, name, cost FROM products WHERE deleted_at IS NULL ORDER BY $rand;");
 
     //
     DB::table('products')->setFetchMode('COLUMN')
     ->selectRaw('cost * ? as cost_after_inc', [1.05])->get();
 
-    $this->assertEquals(DB::getLog(), "SELECT cost * 1.05 as cost_after_inc FROM products WHERE deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT cost * 1.05 as cost_after_inc FROM products WHERE deleted_at IS NULL;");
 
     // 
     DB::table('products')
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->selectRaw('cost * ? as cost_after_inc', [1.05])->get();
 
-    $this->assertEquals(DB::getLog(), "SELECT cost * 1.05 as cost_after_inc FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT cost * 1.05 as cost_after_inc FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->selectRaw('cost * ? as cost_after_inc', [1.05])->distinct()->get();
 
-    $this->assertEquals(DB::getLog(), "SELECT DISTINCT cost * 1.05 as cost_after_inc, name, description, size, cost, created_by, updated_by, deleted_by, active, locked, workspace, belongs_to FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT DISTINCT cost * 1.05 as cost_after_inc, name, description, size, cost, created_by, updated_by, deleted_by, active, locked, workspace, belongs_to FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->select(['name', 'size'])
     ->selectRaw('cost * ? as cost_after_inc', [1.05])->distinct()->get();
-    $this->assertEquals(DB::getLog(), "SELECT DISTINCT cost * 1.05 as cost_after_inc, name, size FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT DISTINCT cost * 1.05 as cost_after_inc, name, size FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')
@@ -225,7 +256,7 @@ class ModelTest extends TestCase
     ->addSelect('name')
     ->addSelect('size')
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT DISTINCT cost * 1.05 as cost_after_inc, name, size FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT DISTINCT cost * 1.05 as cost_after_inc, name, size FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     //   
     DB::table('products')
@@ -234,36 +265,36 @@ class ModelTest extends TestCase
     ->addSelect('name')
     ->addSelect('cost')
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT cost * 1.05 as cost_after_inc, name, cost FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT cost * 1.05 as cost_after_inc, name, cost FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')->deleted()
     ->groupBy(['size'])->select(['size'])->count();
-    $this->assertEquals(DB::getLog(), "SELECT size, COUNT(*) FROM products GROUP BY size;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT size, COUNT(*) FROM products GROUP BY size;");
 
     // 
     DB::table('products')->deleted()
     ->groupBy(['size'])->select(['size'])
     ->avg('cost');
-    $this->assertEquals(DB::getLog(), "SELECT size, AVG(cost) FROM products GROUP BY size;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT size, AVG(cost) FROM products GROUP BY size;");
 
     // 
     DB::table('products')->deleted()->where([ 
       ['size', '2L']
     ])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE size = '2L';");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE size = '2L';");
 
     // 
     DB::table('products')->deleted()->where([ 
       'size', '2L'
     ])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE size = '2L';");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE size = '2L';");
 
     //  
     DB::table('products')->deleted()->where( 
       ['size' => '2L']
     )->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE size = '2L';");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE size = '2L';");
 
     // 
     DB::table('products')
@@ -274,7 +305,7 @@ class ModelTest extends TestCase
     ])
     ->whereNotNull('description')
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE ((name IN ('Vodka', 'Wisky', 'Tekila', 'CocaCola') AND locked = 0 AND belongs_to = 90) AND description IS NOT NULL) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE ((name IN ('Vodka', 'Wisky', 'Tekila', 'CocaCola') AND locked = 0 AND belongs_to = 90) AND description IS NOT NULL) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')->where([ 
@@ -282,81 +313,81 @@ class ModelTest extends TestCase
       ['cost', 550, '>='],
       ['cost', [100, 200]]
     ], 'OR')->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (name IN ('CocaCola', 'PesiLoca') OR cost IN (100, 200) OR cost >= 550) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (name IN ('CocaCola', 'PesiLoca') OR cost IN (100, 200) OR cost >= 550) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')->where([ 
       ['name', ['CocaCola', 'PesiLoca', 'Wisky', 'Vodka'], 'NOT IN']
     ])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (name NOT IN ('CocaCola', 'PesiLoca', 'Wisky', 'Vodka')) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (name NOT IN ('CocaCola', 'PesiLoca', 'Wisky', 'Vodka')) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')->where([ 
         ['cost', 200, '<'],
         ['name', 'CocaCola'] 
     ])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (cost < 200 AND name = 'CocaCola') AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (cost < 200 AND name = 'CocaCola') AND deleted_at IS NULL;");
 
     //  
     DB::table('products')->where([ 
         ['cost', 200, '>='],
         ['cost', 270, '<=']
     ])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (cost >= 200 AND cost <= 270) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (cost >= 200 AND cost <= 270) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')->where(['size', ['0.5L', '3L'], 'IN'])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (size IN ('0.5L', '3L')) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (size IN ('0.5L', '3L')) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')->where(['size', ['0.5L', '3L']])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (size IN ('0.5L', '3L')) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (size IN ('0.5L', '3L')) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')->whereIn('size', ['0.5L', '3L'])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (size IN ('0.5L', '3L')) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (size IN ('0.5L', '3L')) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')->where(['size', ['0.5L', '3L'], 'NOT IN'])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (size NOT IN ('0.5L', '3L')) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (size NOT IN ('0.5L', '3L')) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')->whereNotIn('size', ['0.5L', '3L'])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (size NOT IN ('0.5L', '3L')) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (size NOT IN ('0.5L', '3L')) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')->where(['workspace', null])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NULL) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NULL) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')->whereNull('workspace')->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NULL) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NULL) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')->where(['workspace', null, 'IS NOT'])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NOT NULL) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NOT NULL) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')->whereNotNull('workspace')->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NOT NULL) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NOT NULL) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')
     ->select(['name', 'cost'])
     ->whereBetween('cost', [100, 250])->get();
-    $this->assertEquals(DB::getLog(), "SELECT name, cost FROM products WHERE (cost >= 100 AND cost <= 250) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT name, cost FROM products WHERE (cost >= 100 AND cost <= 250) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')
     ->select(['name', 'cost'])
     ->whereNotBetween('cost', [100, 250])->get();
-    $this->assertEquals(DB::getLog(), "SELECT name, cost FROM products WHERE (cost < 100 OR cost > 250) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT name, cost FROM products WHERE (cost < 100 OR cost > 250) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')
     ->find(103)
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (id = 103) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (id = 103) AND deleted_at IS NULL;");
 
     // 
     DB::table('products')
@@ -364,7 +395,7 @@ class ModelTest extends TestCase
     ->value('name');
 
     $limit = $this->limit(1);
-    $this->assertEquals(DB::getLog(), "SELECT name FROM products WHERE (cost = 150) AND deleted_at IS NULL $limit;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT name FROM products WHERE (cost = 150) AND deleted_at IS NULL $limit;");
 
     //  
     DB::table('products')->deleted()
@@ -376,7 +407,7 @@ class ModelTest extends TestCase
     ])
     ->whereNotNull('description')
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT name, cost, id FROM products WHERE belongs_to = 90 AND (cost >= 100 AND cost < 500) AND description IS NOT NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT name, cost, id FROM products WHERE belongs_to = 90 AND (cost >= 100 AND cost < 500) AND description IS NOT NULL;");
 
       //   
     DB::table('products')->deleted()
@@ -389,7 +420,7 @@ class ModelTest extends TestCase
     ], 'OR')
     ->whereNotNull('description')
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT name, cost, id FROM products WHERE belongs_to = 90 AND (name IN ('CocaCola', 'PesiLoca') OR cost >= 550 OR cost < 100) AND description IS NOT NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT name, cost, id FROM products WHERE belongs_to = 90 AND (name IN ('CocaCola', 'PesiLoca') OR cost >= 550 OR cost < 100) AND description IS NOT NULL;");
 
     // 
     DB::table('products')->deleted()
@@ -401,7 +432,7 @@ class ModelTest extends TestCase
         ['cost', 100, '>=']
     ])
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT name, cost, id FROM products WHERE belongs_to = 90 OR name IN ('CocaCola', 'PesiLoca') OR (cost <= 550 AND cost >= 100);");
+    $this->assertSQLEquals(DB::getLog(), "SELECT name, cost, id FROM products WHERE belongs_to = 90 OR name IN ('CocaCola', 'PesiLoca') OR (cost <= 550 AND cost >= 100);");
 
     //  
     DB::table('products')->deleted()
@@ -412,7 +443,7 @@ class ModelTest extends TestCase
                 ['cost', 500, '<']
     ])        
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT name, cost, id, description FROM products WHERE description IS NOT NULL OR (cost >= 100 AND cost < 500);");
+    $this->assertSQLEquals(DB::getLog(), "SELECT name, cost, id, description FROM products WHERE description IS NOT NULL OR (cost >= 100 AND cost < 500);");
 
     // 
     DB::table('products')
@@ -425,37 +456,37 @@ class ModelTest extends TestCase
     ], 'OR')
     ->whereNotNull('description')
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT id, name, cost, description FROM products WHERE (belongs_to = 90 AND (name IN ('CocaCola', 'PesiLoca') OR cost >= 550 OR cost < 100) AND description IS NOT NULL) AND deleted_at IS NULL;");   
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, name, cost, description FROM products WHERE (belongs_to = 90 AND (name IN ('CocaCola', 'PesiLoca') OR cost >= 550 OR cost < 100) AND description IS NOT NULL) AND deleted_at IS NULL;");   
 
       //  
-    DB::table($this->users_table)->unhide(['password'])
+    DB::table(get_users_table())->unhide(['password'])
       ->where([ 'email'=> 'nano@g.c', 
                 'username' => 'nano' 
       ], 'OR') 
       ->setValidator((new Validator())->setRequired(false))  
       ->get();
 
-    $this->assertEquals(DB::getLog(), "SELECT * FROM users WHERE (email = 'nano@g.c' OR username = 'nano') AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM users WHERE (email = 'nano@g.c' OR username = 'nano') AND deleted_at IS NULL;");
 
     //  
-    $rows = DB::table($this->users_table)
+    $rows = DB::table(get_users_table())
         ->where([ 'email'=> 'nano@g.c' ]) 
         ->orWhere(['username' => 'nano' ])
         ->deleted()
         ->get();
 
     // Debería chequear solo la parte del WHERE
-    $this->assertEquals(DB::getLog(), "SELECT id, username, active, locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE email = 'nano@g.c' OR username = 'nano';");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, username, active, locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE email = 'nano@g.c' OR username = 'nano';");
 
     //  
-    $rows = DB::table($this->users_table)
+    $rows = DB::table(get_users_table())
         ->where([ 'email'=> 'nano@g.c' ]) 
         ->orWhere(['username' => 'nano' ])
         //->deleted()
         ->get();
 
     // Debería chequear solo la parte del WHERE
-    $this->assertEquals(DB::getLog(), "SELECT id, username, active, locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE (email = 'nano@g.c' OR username = 'nano') AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, username, active, locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE (email = 'nano@g.c' OR username = 'nano') AND deleted_at IS NULL;");
   
     /*
 
@@ -466,7 +497,7 @@ class ModelTest extends TestCase
     ->orderBy(['cost' => 'ASC'])
     ->get();
 
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE ((cost < IF(size = \"1L\", 300, 100) AND size = '1L') AND belongs_to = 90) AND deleted_at IS NULL ORDER BY cost ASC;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE ((cost < IF(size = \"1L\", 300, 100) AND size = '1L') AND belongs_to = 90) AND deleted_at IS NULL ORDER BY cost ASC;");
 
     */
 
@@ -474,47 +505,47 @@ class ModelTest extends TestCase
     DB::table('products')->deleted()
     ->whereRaw('EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = ?  )', ['AB'])
     ->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = 'AB' );");   
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = 'AB' );");   
 
     // 
     DB::table('products')->deleted()
       ->whereExists('(SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = ?)', ['AB'])
       ->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = 'AB');");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE EXISTS (SELECT 1 FROM users WHERE products.belongs_to = users.id AND users.lastname = 'AB');");
 
     // 
     DB::table('products')->orderBy(['cost'=>'ASC', 'id'=>'DESC'])->take(4)->offset(1)->get();
 
     $limit = $this->limit(4, 1);  
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
 
     // 
     DB::table('products')->orderBy(['cost'=>'ASC'])->orderBy(['id'=>'DESC'])->take(4)->offset(1)->get();
     
     $limit = $this->limit(4, 1);
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
 
     // S
     DB::table('products')->orderBy(['cost'=>'ASC'])->take(4)->offset(1)->get(null, ['id'=>'DESC']);
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
 
     // 
     DB::table('products')->orderBy(['cost'=>'ASC'])->orderBy(['id'=>'DESC'])->take(4)->offset(1)->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
 
     // 
     DB::table('products')->take(4)->offset(1)->get(null, ['cost'=>'ASC', 'id'=>'DESC']);
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY cost ASC, id DESC $limit;");
 
     // 
     DB::table('products')->orderByRaw('locked * active DESC')->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY locked * active DESC;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE deleted_at IS NULL ORDER BY locked * active DESC;");
 
     // 
     DB::table('products')->where([ 
       ['cost', 100, '>=']
     ])->orderBy(['size' => 'DESC'])->groupBy(['size'])->select(['size'])->avg('cost');
-    $this->assertEquals(DB::getLog(), "SELECT size, AVG(cost) FROM products WHERE (cost >= 100) AND deleted_at IS NULL GROUP BY size ORDER BY size DESC;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT size, AVG(cost) FROM products WHERE (cost >= 100) AND deleted_at IS NULL GROUP BY size ORDER BY size DESC;");
 
     //  
     DB::table('products')->where([ 
@@ -522,7 +553,7 @@ class ModelTest extends TestCase
       ['cost', 270, '<='],
       ['belongs_to',  90]
     ])->get(); 
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (cost >= 200 AND cost <= 270 AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (cost >= 200 AND cost <= 270 AND belongs_to = 90) AND deleted_at IS NULL;");
 
     //  
     DB::table('products')
@@ -531,22 +562,22 @@ class ModelTest extends TestCase
           ['cost', 270, '<=']            
       ])
     ->where(['belongs_to' =>  90])->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE ((cost >= 150 AND cost <= 270) AND belongs_to = 90) AND deleted_at IS NULL;");		
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE ((cost >= 150 AND cost <= 270) AND belongs_to = 90) AND deleted_at IS NULL;");		
 
     //  
     DB::table('products')->where(['workspace', null])->get();  
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NULL) AND deleted_at IS NULL;");	
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NULL) AND deleted_at IS NULL;");	
 
     //  
     DB::table('products')->whereNull('workspace')->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NULL) AND deleted_at IS NULL;");     
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM products WHERE (workspace IS NULL) AND deleted_at IS NULL;");     
 
     //  
     DB::table('products')->deleted()
       ->select(['id', 'name', 'size', 'cost', 'belongs_to'])
       ->whereRaw('belongs_to IN (SELECT id FROM users WHERE password IS NULL)')
       ->get();
-    $this->assertEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE belongs_to IN (SELECT id FROM users WHERE password IS NULL);");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE belongs_to IN (SELECT id FROM users WHERE password IS NULL);");
     
     }	
 
@@ -560,7 +591,7 @@ class ModelTest extends TestCase
           ->selectRaw('COUNT(*) as c')
           ->get();
 
-          $this->assertEquals(DB::getLog(), "SELECT COUNT(*) as c, name FROM products GROUP BY name HAVING c > 3;");  
+          $this->assertSQLEquals(DB::getLog(), "SELECT COUNT(*) as c, name FROM products GROUP BY name HAVING c > 3;");  
 
 
           DB::table('products')
@@ -570,7 +601,7 @@ class ModelTest extends TestCase
           ->selectRaw('COUNT(name) as c')
           ->get();
                     
-          $this->assertEquals(DB::getLog(), "SELECT COUNT(name) as c, name FROM products WHERE deleted_at IS NULL GROUP BY name HAVING c >= 3;");     
+          $this->assertSQLEquals(DB::getLog(), "SELECT COUNT(name) as c, name FROM products WHERE deleted_at IS NULL GROUP BY name HAVING c >= 3;");     
         }        
             
         // 
@@ -579,7 +610,7 @@ class ModelTest extends TestCase
         ->having(['cost', 100])
         ->get(['cost', 'size']);
 
-        $this->assertEquals(DB::getLog(), "SELECT cost, size FROM products WHERE deleted_at IS NULL GROUP BY cost,size HAVING cost = 100;");
+        $this->assertSQLEquals(DB::getLog(), "SELECT cost, size FROM products WHERE deleted_at IS NULL GROUP BY cost,size HAVING cost = 100;");
 
         // 
         DB::table('products')->deleted()
@@ -587,7 +618,7 @@ class ModelTest extends TestCase
         ->having(['cost', 100])
         ->get(['cost', 'size']);
 
-        $this->assertEquals(DB::getLog(), "SELECT cost, size FROM products GROUP BY cost,size HAVING cost = 100;");
+        $this->assertSQLEquals(DB::getLog(), "SELECT cost, size FROM products GROUP BY cost,size HAVING cost = 100;");
         
         // 
         DB::table('products')->deleted()
@@ -600,7 +631,7 @@ class ModelTest extends TestCase
         ->orderBy(['size' => 'DESC'])
         ->get(['cost', 'size', 'belongs_to']); 
 
-        $this->assertEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING belongs_to = 90 AND (cost >= 100 OR size = '1L') ORDER BY size DESC;");
+        $this->assertSQLEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING belongs_to = 90 AND (cost >= 100 OR size = '1L') ORDER BY size DESC;");
     }
 
     function test_orHaving(){
@@ -613,7 +644,7 @@ class ModelTest extends TestCase
         ->orderBy(['size' => 'DESC'])
         ->get(['cost', 'size', 'belongs_to']); 
 
-        $this->assertEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING belongs_to = 90 OR cost >= 100 OR size = '1L' ORDER BY size DESC;");
+        $this->assertSQLEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING belongs_to = 90 OR cost >= 100 OR size = '1L' ORDER BY size DESC;");
 
         // 
         DB::table('products')->deleted()
@@ -626,7 +657,7 @@ class ModelTest extends TestCase
         ->orderBy(['size' => 'DESC'])
         ->get(['cost', 'size', 'belongs_to']); 
 
-        $this->assertEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING belongs_to = 90 OR (cost >= 100 AND size = '1L') ORDER BY size DESC;");
+        $this->assertSQLEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING belongs_to = 90 OR (cost >= 100 AND size = '1L') ORDER BY size DESC;");
 
         // 
         DB::table('products')->deleted()
@@ -640,7 +671,7 @@ class ModelTest extends TestCase
         ->dontExec()
         ->get(['cost', 'size', 'belongs_to']); 
 
-        $this->assertEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING belongs_to = 90 OR (cost >= 100 AND size = '1L') ORDER BY size DESC;");
+        $this->assertSQLEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING belongs_to = 90 OR (cost >= 100 AND size = '1L') ORDER BY size DESC;");
     }
 
     function test_havingRaw()
@@ -655,7 +686,7 @@ class ModelTest extends TestCase
         ->get();
 
         $limit = $this->limit(3, 1);  
-        $this->assertEquals(DB::getLog(), "SELECT SUM(cost) as total_cost FROM products WHERE (size = '1L') AND deleted_at IS NULL GROUP BY belongs_to HAVING SUM(cost) > 500 $limit;");
+        $this->assertSQLEquals(DB::getLog(), "SELECT SUM(cost) as total_cost FROM products WHERE (size = '1L') AND deleted_at IS NULL GROUP BY belongs_to HAVING SUM(cost) > 500 $limit;");
 
         // 
         DB::table('products')->deleted()
@@ -669,7 +700,7 @@ class ModelTest extends TestCase
         ->dontExec()
         ->get(['cost', 'size', 'belongs_to']); 
 
-        $this->assertEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING (SUM(cost) > 500) OR (cost >= 100 AND size = '1L') ORDER BY size DESC;");
+        $this->assertSQLEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING (SUM(cost) > 500) OR (cost >= 100 AND size = '1L') ORDER BY size DESC;");
 
         // 
         DB::table('products')->deleted()
@@ -683,7 +714,7 @@ class ModelTest extends TestCase
         ->dontExec()
         ->get(['cost', 'size', 'belongs_to']); 
 
-        $this->assertEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING cost >= 100 OR ((SUM(cost) > 500) AND size = '1L') ORDER BY size DESC;");
+        $this->assertSQLEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING cost >= 100 OR ((SUM(cost) > 500) AND size = '1L') ORDER BY size DESC;");
     } 
 
     function test_inner_join(){
@@ -700,7 +731,7 @@ class ModelTest extends TestCase
         ->orderByRaw('users.id DESC')
         ->dontExec();
 
-        $this->assertEquals($m->dd(), "SELECT * FROM other_permissions as op INNER JOIN folders ON op.folder_id=folders.id INNER JOIN users ON folders.belongs_to=users.id INNER JOIN user_roles ON users.id=user_roles.user_id WHERE (guest = 1 AND table = 'products' AND r = 1) ORDER BY users.id DESC;");
+        $this->assertSQLEquals($m->dd(), "SELECT * FROM other_permissions as op INNER JOIN folders ON op.folder_id=folders.id INNER JOIN users ON folders.belongs_to=users.id INNER JOIN user_roles ON users.id=user_roles.user_id WHERE (guest = 1 AND table = 'products' AND r = 1) ORDER BY users.id DESC;");
     }
 
     /* 
@@ -720,12 +751,12 @@ class ModelTest extends TestCase
 
         switch($dr){
           case [true, true]:
-            $this->assertEquals(true, true);
+            $this->assertSQLEquals(true, true);
             return;
           case [true,  false]:
           case [false, false]:
           case [false, true ]:      
-            $users = DB::table($this->users_table)->select([
+            $users = DB::table(get_users_table())->select([
               "users.id",
               "users.name",
               "users.email",
@@ -735,43 +766,43 @@ class ModelTest extends TestCase
             ->dontExec()
             ->get();
   
-            $this->assertEquals(DB::getLog(), 'SELECT users.id, users.name, users.email, countries.name as country_name FROM users LEFT JOIN countries ON countries.id=users.country_id WHERE deleted_at IS NULL;');
+            $this->assertSQLEquals(DB::getLog(), 'SELECT users.id, users.name, users.email, countries.name as country_name FROM users LEFT JOIN countries ON countries.id=users.country_id WHERE deleted_at IS NULL;');
             break;
         }
     }
 
     function test_crossjoin(){
-         DB::table($this->users_table)
+         DB::table(get_users_table())
         ->crossJoin('products')
         ->where(['users.id', 90])
         ->unhideAll()
         ->deleted()
         ->dontExec()->get();
 
-        $this->assertEquals(DB::getLog(), 'SELECT * FROM users CROSS JOIN products WHERE users.id = 90;');
+        $this->assertSQLEquals(DB::getLog(), 'SELECT * FROM users CROSS JOIN products WHERE users.id = 90;');
 
-        DB::table($this->users_table)->crossJoin('products')->crossJoin('roles')
+        DB::table(get_users_table())->crossJoin('products')->crossJoin('roles')
         ->unhideAll()
         ->deleted()
         ->dontExec()->count();
 
-        $this->assertEquals(DB::getLog(), 'SELECT COUNT(*) FROM users CROSS JOIN products CROSS JOIN roles;');
+        $this->assertSQLEquals(DB::getLog(), 'SELECT COUNT(*) FROM users CROSS JOIN products CROSS JOIN roles;');
 
-         DB::table($this->users_table)->crossJoin('products')->crossJoin('roles')
+         DB::table(get_users_table())->crossJoin('products')->crossJoin('roles')
         ->where(['users.id', 90])
         ->unhideAll()
         ->deleted()
         ->dontExec()->get();
 
-        $this->assertEquals(DB::getLog(), 'SELECT * FROM users CROSS JOIN products CROSS JOIN roles WHERE users.id = 90;');
+        $this->assertSQLEquals(DB::getLog(), 'SELECT * FROM users CROSS JOIN products CROSS JOIN roles WHERE users.id = 90;');
 
-        DB::table($this->users_table)->crossJoin('products')->crossJoin('roles')
+        DB::table(get_users_table())->crossJoin('products')->crossJoin('roles')
         ->join('user_sp_permissions', 'users.id', '=', 'user_sp_permissions.user_id')
         ->unhideAll()
         ->deleted()
         ->dontExec()->count();
 
-        $this->assertEquals(DB::getLog(), 'SELECT COUNT(*) FROM users CROSS JOIN products CROSS JOIN roles INNER JOIN user_sp_permissions ON users.id=user_sp_permissions.user_id;');
+        $this->assertSQLEquals(DB::getLog(), 'SELECT COUNT(*) FROM users CROSS JOIN products CROSS JOIN roles INNER JOIN user_sp_permissions ON users.id=user_sp_permissions.user_id;');
     }
 
 
@@ -794,13 +825,13 @@ class ModelTest extends TestCase
         ->deleted()
         ->dontExec()->get();
 
-    $this->assertEquals(DB::getLog(), "SELECT id, name, cost, size, description, belongs_to FROM products WHERE (cost > 50 AND id <= 190) AND (active = 1 OR (name LIKE '%a%')) AND belongs_to > 1;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, name, cost, size, description, belongs_to FROM products WHERE (cost > 50 AND id <= 190) AND (active = 1 OR (name LIKE '%a%')) AND belongs_to > 1;");
 
   }  
   
   function test_subqueries(){
     //  
-    $sub = DB::table($this->users_table)
+    $sub = DB::table(get_users_table())
     ->select(['id'])
     ->whereRaw('password IS NULL');
 
@@ -809,10 +840,10 @@ class ModelTest extends TestCase
     ->whereRaw("belongs_to IN ({$sub->toSql()})")
     ->get();
 
-    $this->assertEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE belongs_to IN (SELECT id FROM users WHERE (password IS NULL) AND deleted_at IS NULL);");   
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE belongs_to IN (SELECT id FROM users WHERE (password IS NULL) AND deleted_at IS NULL);");   
 
     //  
-    $sub = DB::table($this->users_table)->deleted()
+    $sub = DB::table(get_users_table())->deleted()
     ->select(['id'])
     ->whereRaw('confirmed_email = 1')
     ->where(['password', 100, '<']);
@@ -824,10 +855,10 @@ class ModelTest extends TestCase
     ->whereRaw("belongs_to IN ({$sub->toSql()})")
     ->get();
 
-    $this->assertEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE (belongs_to IN (SELECT id FROM users WHERE (confirmed_email = 1) AND password < 100)) AND size = '1L';");  
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE (belongs_to IN (SELECT id FROM users WHERE (confirmed_email = 1) AND password < 100)) AND size = '1L';");  
 
     // 
-    $sub = DB::table($this->users_table)->deleted()
+    $sub = DB::table(get_users_table())->deleted()
     ->selectRaw('users.id')
     ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
     ->whereRaw('confirmed_email = 1')
@@ -842,10 +873,10 @@ class ModelTest extends TestCase
     ->orderBy(['id' => 'desc'])
     ->get();
 
-    $this->assertEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE (belongs_to IN (SELECT users.id FROM users INNER JOIN user_roles ON users.id=user_roles.user_id WHERE (confirmed_email = 1) AND password < 100 AND role_id = 2)) AND size = '1L' ORDER BY id DESC;");    
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, name, size, cost, belongs_to FROM products WHERE (belongs_to IN (SELECT users.id FROM users INNER JOIN user_roles ON users.id=user_roles.user_id WHERE (confirmed_email = 1) AND password < 100 AND role_id = 2)) AND size = '1L' ORDER BY id DESC;");    
     
     //  
-    $sub = DB::table($this->users_table)->deleted()
+    $sub = DB::table(get_users_table())->deleted()
     ->selectRaw('users.id')
     ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
     ->whereRaw('confirmed_email = 1')
@@ -859,7 +890,7 @@ class ModelTest extends TestCase
     ->groupBy(['size'])
     ->avg('cost');
 
-    $this->assertEquals(DB::getLog(), "SELECT size, AVG(cost) FROM products WHERE belongs_to IN (SELECT users.id FROM users INNER JOIN user_roles ON users.id=user_roles.user_id WHERE (confirmed_email = 1) AND password < 100 AND role_id = 3) GROUP BY size;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT size, AVG(cost) FROM products WHERE belongs_to IN (SELECT users.id FROM users INNER JOIN user_roles ON users.id=user_roles.user_id WHERE (confirmed_email = 1) AND password < 100 AND role_id = 3) GROUP BY size;");
 
     //
     $sub = DB::table('products')->deleted()
@@ -869,7 +900,7 @@ class ModelTest extends TestCase
     $m = new Model(true);
     $res = $m->fromRaw("({$sub->toSql()}) as sub")->count();
 
-    $this->assertEquals(trim(preg_replace('!\s+!', ' ',$m->getLastPrecompiledQuery())), "SELECT COUNT(*) FROM (SELECT size FROM products GROUP BY size) as sub");
+    $this->assertSQLEquals(trim(preg_replace('!\s+!', ' ',$m->getLastPrecompiledQuery())), "SELECT COUNT(*) FROM (SELECT size FROM products GROUP BY size) as sub");
     
     //
     $sub = DB::table('products')->deleted()
@@ -881,7 +912,7 @@ class ModelTest extends TestCase
     ->mergeBindings($sub)
     ->count();
 
-    $this->assertEquals(trim(preg_replace('!\s+!', ' ',DB::getLog())), "SELECT COUNT(*) FROM (SELECT size FROM products WHERE belongs_to = 90 GROUP BY size) as sub;");
+    $this->assertSQLEquals(trim(preg_replace('!\s+!', ' ',DB::getLog())), "SELECT COUNT(*) FROM (SELECT size FROM products WHERE belongs_to = 90 GROUP BY size) as sub;");
   }
 
 
@@ -900,13 +931,13 @@ class ModelTest extends TestCase
     ->orderBy(['id' => 'ASC'])
     ->get();
 
-    $this->assertEquals(preg_replace('!\s+!', ' ',$m2->getLastPrecompiledQuery()), "SELECT id, name, description, belongs_to FROM products WHERE belongs_to = ? AND cost >= ? UNION SELECT id, name, description, belongs_to FROM products WHERE belongs_to = ? ORDER BY id ASC");
+    $this->assertSQLEquals(preg_replace('!\s+!', ' ',$m2->getLastPrecompiledQuery()), "SELECT id, name, description, belongs_to FROM products WHERE belongs_to = ? AND cost >= ? UNION SELECT id, name, description, belongs_to FROM products WHERE belongs_to = ? ORDER BY id ASC");
   }
 
   function test_delete(){
-    $u = DB::table($this->users_table);
+    $u = DB::table(get_users_table());
     $u->where(['id' => 100000])->dontExec()->setSoftDelete(false)->delete();
-    $this->assertEquals(DB::getLog(), "DELETE FROM users WHERE id = 100000;");
+    $this->assertSQLEquals(DB::getLog(), "DELETE FROM users WHERE id = 100000;");
   }
 
   /*
@@ -914,7 +945,7 @@ class ModelTest extends TestCase
     DB::table('baz')->where(['name'=> 'asdf ff', 'cost' => '99.99'])->setSoftDelete(false)->delete();
 
     $id = DB::table('baz')->create(['name'=> 'asdf ff', 'cost' => '99.99']);
-    $this->assertEquals(DB::getLog(), "INSERT INTO baz (name, cost) VALUES ('asdf ff', '99.99');");
+    $this->assertSQLEquals(DB::getLog(), "INSERT INTO baz (name, cost) VALUES ('asdf ff', '99.99');");
     
     $ok = (bool) DB::table('baz')->where(['id_baz' => $id])->setSoftDelete(false)->delete();        
     $this->assertTrue($ok);
@@ -922,19 +953,19 @@ class ModelTest extends TestCase
   */
   
   function test_update(){
-    $u = DB::table($this->users_table);
+    $u = DB::table(get_users_table());
     $u->where(['id' => 100000])
     ->update(['firstname' => 'Nico', 'lastname' => 'Buzzi']);    
-    $this->assertEquals(DB::getLog(), "UPDATE users SET firstname = 'Nico', lastname = 'Buzzi' WHERE id = 100000;");
+    $this->assertSQLEquals(DB::getLog(), "UPDATE users SET firstname = 'Nico', lastname = 'Buzzi' WHERE id = 100000;");
 
     $u->where([ ['lastname', ['AAA', 'Buzzi']] ])
     ->update(['firstname' => 'Nicolay']);
-    $this->assertEquals(DB::getLog(), "UPDATE users SET firstname = 'Nicolay' WHERE id = 100000 AND lastname IN ('AAA', 'Buzzi');");
+    $this->assertSQLEquals(DB::getLog(), "UPDATE users SET firstname = 'Nicolay' WHERE id = 100000 AND lastname IN ('AAA', 'Buzzi');");
 
-    $u = DB::table($this->users_table);
+    $u = DB::table(get_users_table());
     $u->where(['id' => 100000])
     ->update(['firstname' => NULL]);
-    $this->assertEquals(DB::getLog(), "UPDATE users SET firstname = NULL WHERE id = 100000;");
+    $this->assertSQLEquals(DB::getLog(), "UPDATE users SET firstname = NULL WHERE id = 100000;");
     
   }
 
@@ -943,25 +974,25 @@ class ModelTest extends TestCase
     $unhide = ['password'];
     $hide   = ['username', 'confirmed_email', 'firstname','lastname', 'deleted_at', 'belongs_to'];
 
-    $u = DB::table($this->users_table);
+    $u = DB::table(get_users_table());
     $u->unhide($unhide);
     $u->hide($hide);
     $u->where(['id'=> 100000])->get();
 
     $sql = DB::getLog();
-    $this->assertEquals(Strings::contains('password',$sql), true);
-    $this->assertEquals(!Strings::contains('firstname',$sql), true);
+    $this->assertSQLEquals(Strings::contains('password',$sql), true);
+    $this->assertSQLEquals(!Strings::contains('firstname',$sql), true);
   }
 
   function test_fill1(){ 
     $this->expectException(\InvalidArgumentException::class);
-    $u = DB::table($this->users_table);
+    $u = DB::table(get_users_table());
     $id = $u->create(['email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe', 'confirmed_email' => 1]);
   }
 
   function test_fill2(){
     $this->expectException(\InvalidArgumentException::class);
-    $u = DB::table($this->users_table);
+    $u = DB::table(get_users_table());
     $u->unfill(['password']);
     $id = $u->create(['email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe']);
   }
@@ -969,7 +1000,7 @@ class ModelTest extends TestCase
 
   function test_when(){    
     $fn = function($lastname){
-        DB::table($this->users_table)
+        DB::table(get_users_table())
         ->when($lastname, function ($q) use ($lastname) {
             $q->where(['lastname', $lastname]);
         })
@@ -980,15 +1011,15 @@ class ModelTest extends TestCase
     
     $fn('Bozzo');
     // debe contener lastname
-    $this->assertEquals(DB::getLog(), 'SELECT * FROM users WHERE (lastname = \'Bozzo\') AND deleted_at IS NULL;');
+    $this->assertSQLEquals(DB::getLog(), 'SELECT * FROM users WHERE (lastname = \'Bozzo\') AND deleted_at IS NULL;');
 
     $fn(NULL);
     // *no* debe contener lastname
-    $this->assertEquals(DB::getLog(), 'SELECT * FROM users WHERE deleted_at IS NULL;');
+    $this->assertSQLEquals(DB::getLog(), 'SELECT * FROM users WHERE deleted_at IS NULL;');
 
     $fn('');
     // *no* debe contener lastname
-    $this->assertEquals(DB::getLog(), 'SELECT * FROM users WHERE deleted_at IS NULL;');
+    $this->assertSQLEquals(DB::getLog(), 'SELECT * FROM users WHERE deleted_at IS NULL;');
 
 
     $fn = function($sortBy){
@@ -1002,29 +1033,29 @@ class ModelTest extends TestCase
     };
 
     $fn(['name' => 'ASC']);
-    $this->assertEquals(DB::getLog(),'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY name ASC;');
+    $this->assertSQLEquals(DB::getLog(),'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY name ASC;');
 
     $fn(NULL);
-    $this->assertEquals(DB::getLog(),'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY id DESC;');
+    $this->assertSQLEquals(DB::getLog(),'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY id DESC;');
 
     $fn([]);
-    $this->assertEquals(DB::getLog(),'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY id DESC;');
+    $this->assertSQLEquals(DB::getLog(),'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY id DESC;');
   }
 
   function test_wherecol(){
-    DB::table($this->users_table)
+    DB::table(get_users_table())
     ->whereColumn('firstname', 'lastname', '=')
     ->unhideAll()
     ->deleted()
     ->dontExec()->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM users WHERE firstname=lastname;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM `users` WHERE firstname=lastname");
 
-    DB::table($this->users_table)
+    DB::table(get_users_table())
     ->whereColumn('firstname', 'lastname', '!=')
     ->unhideAll()
     ->deleted()
     ->dontExec()->get();
-    $this->assertEquals(DB::getLog(), "SELECT * FROM users WHERE firstname!=lastname;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM `users` WHERE firstname!=lastname");
   }
 
 
@@ -1052,7 +1083,7 @@ class ModelTest extends TestCase
     ->where(['belongs_to', 150, '>'])
     ->select(['id', 'cost', 'size', 'description', 'belongs_to']);
 
-    $this->assertEquals($m->dontExec()->dd(), "SELECT id, cost, size, description, belongs_to FROM products WHERE (name LIKE '%a') AND (cost > 100 AND id < 50) AND (active = 1 OR (cost <= 100 AND description IS NOT NULL)) AND belongs_to > 150;");
+    $this->assertSQLEquals($m->dontExec()->dd(), "SELECT id, cost, size, description, belongs_to FROM products WHERE (name LIKE '%a') AND (cost > 100 AND id < 50) AND (active = 1 OR (cost <= 100 AND description IS NOT NULL)) AND belongs_to > 150;");
 
     // or
     $m = (new Model())
@@ -1076,7 +1107,7 @@ class ModelTest extends TestCase
     
     ->select(['id', 'cost', 'size', 'description', 'belongs_to']);
 
-    $this->assertEquals($m->dontExec()->dd(), "SELECT id, cost, size, description, belongs_to FROM products WHERE (cost > 100 AND id < 50) OR ((name LIKE '%a') AND (cost <= 100 AND description IS NOT NULL)) AND belongs_to > 150;");    
+    $this->assertSQLEquals($m->dontExec()->dd(), "SELECT id, cost, size, description, belongs_to FROM products WHERE (cost > 100 AND id < 50) OR ((name LIKE '%a') AND (cost <= 100 AND description IS NOT NULL)) AND belongs_to > 150;");    
 
 
     // not
@@ -1098,7 +1129,7 @@ class ModelTest extends TestCase
     ->select(['id', 'cost', 'size', 'description', 'belongs_to'])
     ->dontExec()->get();
  
-    $this->assertEquals(DB::getLog(), "SELECT id, cost, size, description, belongs_to FROM products WHERE (NOT ((cost > 100 AND id < 50) OR (cost <= 100 AND description IS NOT NULL)) AND belongs_to > 150) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, cost, size, description, belongs_to FROM products WHERE (NOT ((cost > 100 AND id < 50) OR (cost <= 100 AND description IS NOT NULL)) AND belongs_to > 150) AND deleted_at IS NULL;");
 
 
     // not or
@@ -1118,7 +1149,7 @@ class ModelTest extends TestCase
     ->where(['size', '1L', '>='])
     ->dontExec()->get();
 
-    $this->assertEquals(DB::getLog(), 'SELECT * FROM products WHERE (belongs_to > 150 AND NOT (name = \'a$\' OR ((cost <= 100 AND description IS NOT NULL))) AND size >= \'1L\') AND deleted_at IS NULL;');
+    $this->assertSQLEquals(DB::getLog(), 'SELECT * FROM products WHERE (belongs_to > 150 AND NOT (name = \'a$\' OR ((cost <= 100 AND description IS NOT NULL))) AND size >= \'1L\') AND deleted_at IS NULL;');
 
     // not or
     $m = DB::table('products')
@@ -1153,7 +1184,7 @@ class ModelTest extends TestCase
     ->where(['size', '1L', '>='])
     ->dontExec()->get();
 
-    $this->assertEquals(DB::getLog(), 'SELECT * FROM products WHERE (belongs_to > 150 AND NOT ((cost <= 100 AND description IS NOT NULL) OR (name REGEXP \'a$\')) AND size >= \'1L\') AND deleted_at IS NULL;');
+    $this->assertSQLEquals(DB::getLog(), 'SELECT * FROM products WHERE (belongs_to > 150 AND NOT ((cost <= 100 AND description IS NOT NULL) OR (name REGEXP \'a$\')) AND size >= \'1L\') AND deleted_at IS NULL;');
 
 
     DB::table('products')
@@ -1171,7 +1202,7 @@ class ModelTest extends TestCase
     ->where(['size', '1L', '>='])
     ->dontExec()->get();
 
-    $this->assertEquals(DB::getLog(), 'SELECT * FROM products WHERE (belongs_to > 150 AND NOT ((name REGEXP \'a$\') OR ((cost <= 100 AND description IS NOT NULL))) AND size >= \'1L\') AND deleted_at IS NULL;');
+    $this->assertSQLEquals(DB::getLog(), 'SELECT * FROM products WHERE (belongs_to > 150 AND NOT ((name REGEXP \'a$\') OR ((cost <= 100 AND description IS NOT NULL))) AND size >= \'1L\') AND deleted_at IS NULL;');
 
 
     $m = DB::table('products')
@@ -1183,7 +1214,7 @@ class ModelTest extends TestCase
     ->deleted()        
     ->dontExec();
 
-    $this->assertEquals($m->dd(), 'SELECT * FROM products WHERE (name REGEXP \'a$\') OR (cost <= 100);');
+    $this->assertSQLEquals($m->dd(), 'SELECT * FROM products WHERE (name REGEXP \'a$\') OR (cost <= 100);');
 
 
   }
