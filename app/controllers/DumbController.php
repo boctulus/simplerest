@@ -11076,16 +11076,47 @@ class DumbController extends Controller
         // dd(Request::isBrowser());
     }
 
-    function test_model(){
+    function test_orHaving(){
         DB::getConnection();
 
-        $res = DB::table(get_users_table())
-        ->where([ 'email'=> 'nano@g.c' ]) 
-        ->orWhere(['username' => 'nano' ])
-        ->deleted()
-        ->get();
+        DB::table('products')->deleted()
+        ->groupBy(['cost', 'size', 'belongs_to'])
+        ->havingRaw('SUM(cost) > ?', [500])
+        ->orHaving([
+            ['cost', 100, '>='],
+            ['size', '1L']
+        ])
+        ->orderBy(['size' => 'DESC'])
+        ->dontExec()
+        ->get(['cost', 'size', 'belongs_to']); 
         
         dd(DB::getLog());
+    }
+    
+    function test_or_operator(){
+        DB::getConnection();
+
+        DB::table('products')->deleted()
+        ->groupBy(['cost', 'size', 'belongs_to'])
+        ->havingRaw('SUM(cost) > ?', [500])
+        ->or(function($q){
+              $q->having(['cost', 100, '>='])
+              ->having(['size' => '1L']);
+        })
+        ->orderBy(['size' => 'DESC'])
+        ->dontExec()
+        ->get(['cost', 'size', 'belongs_to']); 
+        
+        dd(DB::getLog());
+    }
+
+    function test_model(){
+        $u = DB::table(get_users_table());
+        $u->unfill(  ['password']);
+        $id = $u->create(['email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe']);
+
+        $res = DB::table(get_users_table())->unhide(['password'])->latest()->first();
+        dd($res['password']);
     }
 
 
