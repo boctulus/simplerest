@@ -323,6 +323,7 @@ class ModelTest extends TestCase
     // 
     DB::table('products')
     ->where(['cost', 150])
+    ->limit(1)
     ->value('name');
 
     $limit = $this->limit(1);

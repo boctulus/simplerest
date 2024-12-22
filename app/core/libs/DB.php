@@ -1084,10 +1084,20 @@ class DB
 
 		$str = Strings::removeMultipleSpaces(trim($str));
 
-		if (Strings::contains(' as ', $str)){
+		// Si es una subconsulta (comienza con paréntesis)
+		if (Strings::startsWith('(', $str)) {
+			if (Strings::contains(' as ', $str)) {
+				$s1 = Strings::before($str, ' as ');
+				$s2 = Strings::after($str, ' as ');
+				return "$s1 as {$d1}$s2{$d2}";
+			}
+			return $str;
+		}
+
+		// Para el resto de los casos
+		if (Strings::contains(' as ', $str)) {
 			$s1 = Strings::before($str, ' as ');
 			$s2 = Strings::after($str, ' as ');
-			
 			return "{$d1}$s1{$d2} as {$d1}$s2{$d2}";
 		}
 
