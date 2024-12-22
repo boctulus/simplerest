@@ -2828,11 +2828,11 @@ class Model {
 	{
 		// Caso actual: having(array $conditions, $conjunction = 'AND')
 		if (is_array($args[0])) {
-			$conditions = $args[0];
+			$conditions  = $args[0];
 			$conjunction = $args[1] ?? 'AND';
 
 			// Mantener el comportamiento actual para expresiones tipo COUNT, SUM, etc
-			if (!is_array($conditions[0])) {
+			if (isset($conditions[0]) && !is_array($conditions[0])) {
 				if (Strings::contains('(', $conditions[0])) {
 					$op = $conditions[2] ?? '=';
 					$q = "{$conditions[0]} {$op} ?";
