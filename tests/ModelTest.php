@@ -19,7 +19,7 @@ use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 use simplerest\core\Model;
 use simplerest\core\traits\UnitTestCaseSQLTrait;
-use simplerest\libs\Validator;
+use simplerest\core\libs\Validator;
 
 class ModelTest extends TestCase
 {
@@ -401,24 +401,26 @@ class ModelTest extends TestCase
     $this->assertSQLEquals(DB::getLog(), "SELECT * FROM users WHERE (email = 'nano@g.c' OR username = 'nano') AND deleted_at IS NULL;");
 
     //  
-    $rows = DB::table(get_users_table())
+    $res = DB::table(get_users_table())
+        ->select(['id', 'username'])
         ->where([ 'email'=> 'nano@g.c' ]) 
         ->orWhere(['username' => 'nano' ])
         ->deleted()
         ->get();
 
     // Debería chequear solo la parte del WHERE
-    $this->assertSQLEquals(DB::getLog(), "SELECT id, username, active, locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE email = 'nano@g.c' OR username = 'nano';");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, username FROM users WHERE email = 'nano@g.c' OR username = 'nano';");
 
     //  
     $rows = DB::table(get_users_table())
+        ->select(['id', 'username'])
         ->where([ 'email'=> 'nano@g.c' ]) 
         ->orWhere(['username' => 'nano' ])
         //->deleted()
         ->get();
 
     // Debería chequear solo la parte del WHERE
-    $this->assertSQLEquals(DB::getLog(), "SELECT id, username, active, locked, email, confirmed_email, firstname, lastname, deleted_at FROM users WHERE (email = 'nano@g.c' OR username = 'nano') AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT id, username FROM users WHERE (email = 'nano@g.c' OR username = 'nano') AND deleted_at IS NULL;");
   
     /*
 
