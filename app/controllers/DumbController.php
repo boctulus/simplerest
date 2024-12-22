@@ -11079,15 +11079,13 @@ class DumbController extends Controller
     function test_model(){
         DB::getConnection();
 
-        $sub = DB::table('products')->deleted()
-        ->select(['size'])
-        ->groupBy(['size']);
-
-        $m = new Model(true);
-        $res = $m->fromRaw("({$sub->toSql()}) as sub")        
-        ->dd();
+        $res = DB::table(get_users_table())
+        ->where([ 'email'=> 'nano@g.c' ]) 
+        ->orWhere(['username' => 'nano' ])
+        ->deleted()
+        ->get();
         
-        dd($res);
+        dd(DB::getLog());
     }
 
 

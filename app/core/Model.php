@@ -2082,11 +2082,11 @@ class Model {
 		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
-	function getWhereVals(){
+	function getWhereVals(): array {
 		return $this->w_vals;
 	}
 
-	function getWhereVars(){
+	function getWhereVars(): array {
 		return $this->w_vars;
 	}
 
@@ -2094,15 +2094,15 @@ class Model {
 		return $this->where_raw_vals;
 	}
 
-	function getHavingVals(){
+	function getHavingVals(): array{
 		return $this->h_vals;
 	}
 
-	function getHavingVars(){
+	function getHavingVars(): array{
 		return $this->h_vars;
 	}
 
-	function getHavingRawVals(){
+	function getHavingRawVals(): array{
 		return $this->having_raw_vals;
 	}
 
@@ -2407,13 +2407,6 @@ class Model {
 					{   
 						// Determinar si se deben comillar los valores
 						$should_quote = true;
-
-						dd(
-							[
-								'isDecimalField?' => $this->isDecimalField($unqualified_field),
-								'shouldQuoteDecimals?' => $this->shouldQuoteDecimals()
-							], $unqualified_field
-						);
 						
 						if ($this->isDecimalField($unqualified_field) && !$this->shouldQuoteDecimals()) {
 							$should_quote = false;
