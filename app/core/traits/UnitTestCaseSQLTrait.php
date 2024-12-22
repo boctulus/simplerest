@@ -7,7 +7,7 @@ use simplerest\core\libs\DB;
 trait UnitTestCaseSQLTrait
 {
     // Normaliza SQL para que las comparaciones (asserts) no fallen por tonterias
-    function normalizeSQL($sql) {
+    function normalizeSQL($sql, $default_datetime = '2000-01-01 12:00:00') {
         // Eliminar punto y coma final
         $sql = rtrim($sql, ';');
         
@@ -19,7 +19,17 @@ trait UnitTestCaseSQLTrait
         
         // Normalizar espacios múltiples a uno solo
         $sql = preg_replace('/\s+/', ' ', $sql);
-        
+
+        // Normaliza fechas
+        if ($default_datetime !== false) {
+            // Reemplazar fechas en campos conocidos
+            $sql = preg_replace(
+                "/(created_at|updated_at|deleted_at)\s*=\s*'[\d\-\s\:]+'/" ,
+                "$1 = '$default_datetime'",
+                $sql
+            );
+        }    
+
         // Eliminar espacios antes y después
         $sql = trim($sql);
         

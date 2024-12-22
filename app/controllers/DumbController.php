@@ -11076,19 +11076,14 @@ class DumbController extends Controller
         // dd(Request::isBrowser());
     }
 
-    function test_model_field_retrieval(){
+    function test_model(){
         DB::getConnection();
 
-        $model = DB::table('consumption');
-
-        $model->dontExec()->first();
-        dd($model->dd());
-
-        $model = DB::table('consumption');
-        dd($model->getHidden()); // Ver qué campos están ocultos
-        $model->unhideAll(); //
-        dd($model->dd());
+        $u = DB::table(get_users_table());
+        $u->where(['id' => 100000])
+        ->update(['firstname' => 'Nico', 'lastname' => 'Buzzi']);    
         
+        dd(DB::getLog());
     }
 
 
