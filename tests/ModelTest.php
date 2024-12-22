@@ -916,17 +916,37 @@ class ModelTest extends TestCase
     $this->assertSQLEquals(!Strings::contains('firstname',$sql), true);
   }
 
-  function test_fill1(){ 
-    $this->expectException(\InvalidArgumentException::class);
-    $u = DB::table(get_users_table());
+  function test_fill1(){     
+    $u  = DB::table(get_users_table());
+
+    // Clean-up
+    $u
+    ->where(['email'=> 'testing@g.com'])
+    ->delete(true);
+
     $id = $u->create(['email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe', 'confirmed_email' => 1]);
+    $res = DB::table(get_users_table())->unhide(['password'])->latest()->first();
+
+    $this->assertNotNull($res['password']);
+
+    // Clean-up
+    $u
+    ->where(['email'=> 'testing@g.com'])
+    ->delete(true);
   }
 
   function test_fill2(){
-    $this->expectException(\InvalidArgumentException::class);
     $u = DB::table(get_users_table());
     $u->unfill(['password']);
     $id = $u->create(['email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe']);
+    $res = DB::table(get_users_table())->unhide(['password'])->latest()->first();
+    
+    $this->assertNull($res['password']);
+
+    // Clean-up
+    $u
+    ->where(['email'=> 'testing@g.com'])
+    ->delete(true);
   }
 
 
