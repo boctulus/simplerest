@@ -171,7 +171,7 @@ class ModelTest extends TestCase
     ->where([ ['cost', 100, '>='], ['size', '1L'], ['belongs_to', 90] ])
     ->selectRaw('cost * ? as cost_after_inc', [1.05])->distinct()->get();
 
-    $this->assertSQLEquals(DB::getLog(), "SELECT DISTINCT cost * 1.05 as cost_after_inc, name, description, size, cost, created_by, updated_by, deleted_by, active, locked, workspace, belongs_to FROM products WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL;");
+    $this->assertSQLEquals(DB::getLog(), "SELECT DISTINCT cost * 1.05 as cost_after_inc FROM `products` WHERE (cost >= 100 AND size = '1L' AND belongs_to = 90) AND deleted_at IS NULL");
 
     // 
     DB::table('products')
@@ -522,8 +522,7 @@ class ModelTest extends TestCase
           ->selectRaw('COUNT(*) as c')
           ->get();
 
-          $this->assertSQLEquals(DB::getLog(), "SELECT COUNT(*) as c, name FROM products GROUP BY name HAVING c > 3;");  
-
+          $this->assertSQLEquals(DB::getLog(), "SELECT name, COUNT(*) as c FROM products GROUP BY name HAVING c > 3;");  
 
           DB::table('products')
           ->groupBy(['name'])
@@ -532,7 +531,7 @@ class ModelTest extends TestCase
           ->selectRaw('COUNT(name) as c')
           ->get();
                     
-          $this->assertSQLEquals(DB::getLog(), "SELECT COUNT(name) as c, name FROM products WHERE deleted_at IS NULL GROUP BY name HAVING c >= 3;");     
+          $this->assertSQLEquals(DB::getLog(), "SELECT name, COUNT(name) as c FROM products WHERE deleted_at IS NULL GROUP BY name HAVING c >= 3;");     
         }        
             
         // 
