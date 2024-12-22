@@ -41,3 +41,4 @@
 [2024-12-22 09:33:04]	0.8.12	Mejora sobre UnitTestCaseSQLTrait
 [2024-12-22 09:57:09]	0.8.12	Correcciones
 [2024-12-22 10:14:17]	0.8.12	Mejora en manejo de tipo DECIMAL para Model
+[2024-12-22 11:22:47]	0.8.12	Corregido DB::quote()
