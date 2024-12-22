@@ -11079,9 +11079,11 @@ class DumbController extends Controller
     function test_model(){
         DB::getConnection();
 
-        $u = DB::table(get_users_table());
-        $u->where(['id' => 100000])
-        ->update(['firstname' => 'Nico', 'lastname' => 'Buzzi']);    
+        DB::table('products')->where([ 
+            ['name', ['CocaCola', 'PesiLoca']], 
+            ['cost', 550, '>='],
+            ['cost', [100, 200]]
+          ], 'OR')->get();
         
         dd(DB::getLog());
     }
