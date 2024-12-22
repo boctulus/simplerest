@@ -18974,44 +18974,178 @@ Ej:
 	} 
 	
 
-# Clase ReviewMaker
+# Clase ReviewMaker  <--- sacar como package fuera del framework 
 
-Esta clase genera reviews usando distintos clientes de AI
+	Esta clase genera reviews usando distintos clientes de AI
 
-Ej:
+	Ej:
 
-	// Parametros de entrada
+		// Parametros de entrada
 
-	$data = '{
-		"id": 182,
-		"name": "PARAGOLPES delantero patrol gr y61",
-		"sku": "",
-		"description": "Paragolpes delantero para soldar para Nissan patrol gr y61. Cortado y plegado a falta de soldar.",
-		"short_description": "Paragolpes delantero para soldar para Nissan patrol gr y61. Cortado y plegado a falta de soldar."
-	}';
+		$data = '{
+			"id": 182,
+			"name": "PARAGOLPES delantero patrol gr y61",
+			"sku": "",
+			"description": "Paragolpes delantero para soldar para Nissan patrol gr y61. Cortado y plegado a falta de soldar.",
+			"short_description": "Paragolpes delantero para soldar para Nissan patrol gr y61. Cortado y plegado a falta de soldar."
+		}';
 
-	$qty = 5;
-	
-	$tokens_per_row = 64;
+		$qty = 5;
+		
+		$tokens_per_row = 64;
 
-	// Uso:
+		// Uso:
 
-	$chat = new ChatGPT();
+		$chat = new ChatGPT();
 
-	// Testing
-	$chat->getClient()
-	->enablePostRequestCache()
-	->setCache(3600 * 12); // <--- 12 HORAS
-	
-	$chat->setModel('gpt-4o-mini'); /* Opcional */
-	
-	// Cantidad maxima de tokens de salida ("completion tokens")
-	$chat->setMaxTokens($tokens_per_row * $qty);
+		// Testing
+		$chat->getClient()
+		->enablePostRequestCache()
+		->setCache(3600 * 12); // <--- 12 HORAS
+		
+		$chat->setModel('gpt-4o-mini'); /* Opcional */
+		
+		// Cantidad maxima de tokens de salida ("completion tokens")
+		$chat->setMaxTokens($tokens_per_row * $qty);
 
-	$rev = new ReviewMaker($chat);
+		$rev = new ReviewMaker($chat);
 
-	$res = $rev->getFromOne($data, $qty);
+		$res = $rev->getFromOne($data, $qty);
 
-	dd($res, 'ANSWER');
+		dd($res, 'ANSWER');
 
-	dd($chat->getTokenUsage(), 'TOKEN USAGE');
+		dd($chat->getTokenUsage(), 'TOKEN USAGE');
+
+
+Utilidades para Unit Tests
+
+# UnitTestCaseSQLTrait
+
+## Overview
+`UnitTestCaseSQLTrait` provides utility methods for SQL normalization and testing in PHP unit tests. It simplifies SQL assertion comparisons and generates SQL query clauses compatible with different database drivers.
+
+---
+
+## Methods
+
+### 1. `normalizeSQL($sql)`
+**Description:**
+Normalizes an SQL query string to ensure consistency for comparisons, avoiding assertion failures due to minor formatting differences.
+
+**Parameters:**
+- `$sql` *(string)*: The SQL query string to normalize.
+
+**Returns:**
+- *(string)*: The normalized SQL query string.
+
+**Usage Example:**
+```php
+$sql = 'SELECT * FROM `users`;';
+$normalized = $this->normalizeSQL($sql);
+```
+
+---
+
+### 2. `assertSQLEquals($expected, $actual, string $message = '')`
+**Description:**
+Asserts that two SQL query strings are equivalent after normalization.
+
+**Parameters:**
+- `$expected` *(string)*: The expected SQL query string.
+- `$actual` *(string)*: The actual SQL query string.
+- `$message` *(string, optional)*: Optional assertion failure message.
+
+**Returns:**
+- *(void)*
+
+**Usage Example:**
+```php
+$this->assertSQLEquals('SELECT id FROM users', 'SELECT id  FROM `users`;');
+```
+
+---
+
+### 3. `limit($limit, $offset = 0, $driver = null)`
+**Description:**
+Generates an SQL `LIMIT` or `OFFSET` clause compatible with the specified database driver.
+
+**Parameters:**
+- `$limit` *(int|null)*: Maximum number of records to return.
+- `$offset` *(int, optional)*: Number of records to skip. Default is 0.
+- `$driver` *(string|null)*: Database driver (e.g., 'mysql', 'pgsql'). Default is the driver from `DB::driver()`.
+
+**Returns:**
+- *(string)*: The SQL clause for limiting or offsetting results.
+
+**Usage Example:**
+```php
+$limitClause = $this->limit(10, 5, 'mysql');
+```
+
+---
+
+### 4. `rand_fn($driver = null)`
+**Description:**
+Generates a random function compatible with the specified database driver.
+
+**Parameters:**
+- `$driver` *(string|null)*: Database driver (e.g., 'mysql', 'pgsql'). Default is the driver from `DB::driver()`.
+
+**Returns:**
+- *(string)*: The SQL random function for the specified driver.
+
+**Usage Example:**
+```php
+$randFunc = $this->rand_fn('pgsql');
+```
+
+---
+
+## Notes
+- Designed for use with PHPUnit tests.
+- Ensure compatibility with supported database drivers (MySQL, SQLite, PostgreSQL).
+- Handles common SQL syntax variations across databases for consistency in tests.
+
+---
+
+# UnitTestCaseRunAllTrait
+
+## Overview
+`UnitTestCaseRunAllTrait` allows PHPUnit tests to be executed programmatically via HTTP controllers or routes, making it easier to integrate testing within applications.
+
+---
+
+## Methods
+
+### 1. `runAllTests()`
+**Description:**
+Executes all public methods prefixed with `test_` within the class, simulating PHPUnit test execution.
+
+**Returns:**
+- *(void)*: Outputs the test results directly.
+
+**Usage Example:**
+```php
+$tc = new MyExampleTestCase();
+$tc->runAllTests();
+```
+
+**Details:**
+- Scans all public methods in the class for names starting with `test_`.
+- Executes each test method and records the result as 'Passed' or 'Failed'.
+- Outputs a summary report to indicate whether all tests passed or if any failed.
+
+**Notes:**
+- Designed for integration with HTTP routes or API endpoints.
+- Can also be executed via CLI using PHPUnit commands:
+```bash
+./vendor/bin/phpunit --bootstrap ./vendor/autoload.php ./tests/MyExampleTest.php
+```
+- Useful for debugging test cases during development.
+
+---
+
+## Notes
+- Suitable for rapid testing during development.
+- Complements standard PHPUnit workflows without replacing CLI usage.
+- Use cautiously in production environments to avoid exposing test execution endpoints.
