@@ -6,34 +6,56 @@ use simplerest\core\libs\DB;
 
 trait UnitTestCaseSQLTrait
 {
-    // Normaliza SQL para que las comparaciones (asserts) no fallen por tonterias
     function normalizeSQL($sql, $default_datetime = '2000-01-01 12:00:00') {
         // Eliminar punto y coma final
         $sql = rtrim($sql, ';');
         
-        // Eliminar backticks y comillas dobles en nombres de tablas/campos
+        // Ordenar campos en SELECT
+        if (preg_match('/^SELECT\s+(.+?)\s+FROM/i', $sql, $matches)) {
+            $select_part = $matches[1];
+            
+            // Si es DISTINCT, preservarlo
+            $distinct = '';
+            if (stripos($select_part, 'DISTINCT') === 0) {
+                $distinct = 'DISTINCT ';
+                $select_part = preg_replace('/^DISTINCT\s+/i', '', $select_part);
+            }
+            
+            // Separar campos
+            $fields = array_map('trim', explode(',', $select_part));
+            
+            // Ordenar preservando aliases y expresiones
+            usort($fields, function($a, $b) {
+                // Extraer nombre base del campo (antes de AS si existe)
+                $a_base = trim(preg_replace('/\s+as\s+.+$/i', '', $a));
+                $b_base = trim(preg_replace('/\s+as\s+.+$/i', '', $b));
+                return strcasecmp($a_base, $b_base);
+            });
+            
+            // Reconstruir la parte SELECT
+            $new_select = "SELECT $distinct" . implode(',', $fields);
+            $sql = preg_replace('/^SELECT\s+.+?\s+FROM/i', "$new_select FROM", $sql);
+        }
+        
+        // Eliminar backticks y comillas dobles
         $sql = str_replace(['`', '"'], '', $sql);
         
         // Normalizar espacios después de comas
         $sql = preg_replace('/\s*,\s*/', ',', $sql);
         
-        // Normalizar espacios múltiples a uno solo
+        // Normalizar espacios múltiples
         $sql = preg_replace('/\s+/', ' ', $sql);
-
-        // Normaliza fechas
+    
+        // Normalizar fechas
         if ($default_datetime !== false) {
-            // Reemplazar fechas en campos conocidos
             $sql = preg_replace(
                 "/(created_at|updated_at|deleted_at)\s*=\s*'[\d\-\s\:]+'/" ,
                 "$1 = '$default_datetime'",
                 $sql
             );
         }    
-
-        // Eliminar espacios antes y después
-        $sql = trim($sql);
-        
-        return $sql;
+    
+        return trim($sql);
     }
 
     // Esta funcion *reemplaza* a la nativa assertEquals() para evaluar SQL (y podria ir a clase derivada de TestCase)

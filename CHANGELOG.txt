@@ -39,3 +39,4 @@
 [2024-12-22 09:11:48]	0.8.12	Dos traits que complementan a TestCase
 [2024-12-22 09:15:31]	0.8.12	Correccion de metodos de ordenamiento en el modelo
 [2024-12-22 09:33:04]	0.8.12	Mejora sobre UnitTestCaseSQLTrait
+[2024-12-22 09:57:09]	0.8.12	Correcciones
