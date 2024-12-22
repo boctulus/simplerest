@@ -659,6 +659,10 @@ class Model {
 		return trim($from);
 	}
 
+	function fromRaw(string $q){
+		$this->table_raw_q = $q;
+		return $this;
+	}
 		
 	/**
 	 * unhide
@@ -1200,11 +1204,6 @@ class Model {
 			$this->fields = $fields;
 		
 		$this->distinct = true;
-		return $this;
-	}
-
-	function fromRaw(string $q){
-		$this->table_raw_q = $q;
 		return $this;
 	}
 
