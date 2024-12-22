@@ -15,84 +15,15 @@ if (php_sapi_name() != "cli"){
 require_once __DIR__ . '/../app.php';
 
 use PHPUnit\Framework\TestCase;
-use simplerest\core\libs\Strings;
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Strings;
 use simplerest\core\Model;
+use simplerest\core\traits\UnitTestCaseSQLTrait;
 use simplerest\libs\Validator;
 
 class ModelTest extends TestCase
 {
-  function normalizeSQL($sql) {
-      // Eliminar punto y coma final
-      $sql = rtrim($sql, ';');
-      
-      // Eliminar backticks y comillas dobles en nombres de tablas/campos
-      $sql = str_replace(['`', '"'], '', $sql);
-      
-      // Normalizar espacios después de comas
-      $sql = preg_replace('/\s*,\s*/', ',', $sql);
-      
-      // Normalizar espacios múltiples a uno solo
-      $sql = preg_replace('/\s+/', ' ', $sql);
-      
-      // Eliminar espacios antes y después
-      $sql = trim($sql);
-      
-      return $sql;
-  }
-
-  protected function assertSQLEquals($expected, $actual, string $message = '')
-  {
-      $this->assertEquals(
-          $this->normalizeSQL($expected),
-          $this->normalizeSQL($actual),
-          $message
-      );
-  }
-
-  function limit($limit, $offset = 0){
-    $ol = [$limit !== null, !empty($offset)]; 
-
-    if ($ol[0] || $ol[1]){
-      switch (DB::driver()){
-          case 'mysql':
-          case 'sqlite':
-              switch($ol){
-                  case [true, true]:
-                      return "LIMIT $offset, $limit";
-                  case [true, false]:
-                      return "LIMIT $limit";
-                  case [false, true]:
-                      return "LIMIT $offset, 18446744073709551615";
-              } 
-              break;    
-          case 'pgsql': 
-              switch($ol){
-                  case [true, true]:
-                      return "OFFSET $offset LIMIT $limit";
-                  case [true, false]:
-                      return "LIMIT $limit";
-                  case [false, true]:
-                      return "OFFSET $offset";
-              } 
-              break;            
-      }
-    }
-  }
-
-  function rand_fn(){
-    $driver = DB::driver();
-
-    switch ($driver){
-      case 'mysql':
-      case 'sqlite':
-        return 'RAND()';
-      case 'pgsql':
-        return 'RANDOM()';
-      default: 
-        throw new \Exception("Invalid driver");	
-    }
-  }
+  use UnitTestCaseSQLTrait;
 
   function test_get()
   {
