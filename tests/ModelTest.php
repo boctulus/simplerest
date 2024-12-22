@@ -886,18 +886,17 @@ class ModelTest extends TestCase
   function test_update(){
     $u = DB::table(get_users_table());
     $u->where(['id' => 100000])
-    ->update(['firstname' => 'Nico', 'lastname' => 'Buzzi']);    
-    $this->assertSQLEquals(DB::getLog(), "UPDATE users SET firstname = 'Nico', lastname = 'Buzzi' WHERE id = 100000;");
+    ->update(['firstname' => 'Nico', 'lastname' => 'Buzzi']);   
+    $this->assertSQLEquals(DB::getLog(), "UPDATE `users` SET firstname = 'Nico', lastname = 'Buzzi', updated_at = '2024-12-22 16:20:27' WHERE id = 100000");
 
     $u->where([ ['lastname', ['AAA', 'Buzzi']] ])
     ->update(['firstname' => 'Nicolay']);
-    $this->assertSQLEquals(DB::getLog(), "UPDATE users SET firstname = 'Nicolay' WHERE id = 100000 AND lastname IN ('AAA', 'Buzzi');");
+    $this->assertSQLEquals(DB::getLog(), "UPDATE users SET firstname = 'Nicolay', updated_at = '2024-12-22 16:20:27'  WHERE id = 100000 AND lastname IN ('AAA', 'Buzzi');");
 
     $u = DB::table(get_users_table());
     $u->where(['id' => 100000])
     ->update(['firstname' => NULL]);
-    $this->assertSQLEquals(DB::getLog(), "UPDATE users SET firstname = NULL WHERE id = 100000;");
-    
+    $this->assertSQLEquals(DB::getLog(), "UPDATE users SET firstname = NULL, updated_at = '2024-12-22 16:20:27' WHERE id = 100000;");
   }
 
 
