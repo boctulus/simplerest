@@ -60,6 +60,10 @@ class Validator implements IValidator
 				$value = trim($value);
 				return ctype_digit($value) || is_numeric($value);
 			},
+			'not_numeric' => function($value) {
+				$value = trim($value);
+				return preg_match('/^[^0-9]+$/', $value) === 1;  // Solo pasa si NO contiene números
+			},
 			'string' => function($value) {
 				return is_string($value);
 			},
@@ -117,15 +121,16 @@ class Validator implements IValidator
 			Alias
 		*/
 
-		static::$rules['int']           =  static::$rules['integer'];
-		static::$rules['num']           =  static::$rules['number'];
-		static::$rules['numeric']       =  static::$rules['number'];
-		static::$rules['not-number']    = !static::$rules['number'];
-		static::$rules['not-num']       = !static::$rules['number'];
-		static::$rules['not-numeric']   = !static::$rules['number'];
-		static::$rules['bool']          =  static::$rules['boolean'];
-		static::$rules['str']           =  static::$rules['string'];
-		static::$rules['timestamp']     =  static::$rules['datetime'];
+		static::$rules['int']           = static::$rules['integer'];
+		static::$rules['num']           = static::$rules['number'];
+		static::$rules['numeric']       = static::$rules['number'];
+		static::$rules['not-number']    = static::$rules['not_numeric'];
+		static::$rules['not-num']       = static::$rules['not_numeric'];
+		static::$rules['notnum'] 	    = static::$rules['not_numeric'];
+		static::$rules['not-numeric']   = static::$rules['not_numeric'];
+		static::$rules['bool']          = static::$rules['boolean'];
+		static::$rules['str']           = static::$rules['string'];
+		static::$rules['timestamp']     = static::$rules['datetime'];
 		
 		static::$rule_types = array_keys(static::$rules);
 	}
@@ -187,8 +192,9 @@ class Validator implements IValidator
 			static::loadDefinitions();
 		}
 
+		// La única modificación real es aquí:
 		if (!in_array($expected_type, static::$rule_types)){
-			return false;
+			throw new \InvalidArgumentException('Invalid data type: ' . $expected_type);
 		}
 
 		return static::$rules[$expected_type]($value);
@@ -418,25 +424,24 @@ class Validator implements IValidator
 				}
 						
 				if(isset($rule['type'])){	
-					if (in_array($rule['type'],['str','not_num','email']) || strpos($rule['type'], 'regex:') === 0 ){
+					if (in_array($rule['type'],['str','string','not_num','email']) || strpos($rule['type'], 'regex:') === 0 ){
+            
+						if(isset($rule['min'])){ 
+							$rule['min'] = (int) $rule['min'];
+							if(strlen(trim($value)) < $rule['min']){
+								$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] : "The minimum length is %d characters";
+								$push_error($field,['data'=>$value, 'error'=>'min', 'error_detail' => sprintf(trans($err),$rule['min'])],$errors);
+							}                                    
+						}
 							
-							if(isset($rule['min'])){ 
-								$rule['min'] = (int) $rule['min'];
-								if(strlen($value)<$rule['min']){
-									$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] :  "The minimum length is %d characters";
-									$push_error($field,['data'=>$value, 'error'=>'min', 'error_detail' => sprintf(trans($err),$rule['min'])],$errors);
-								}									
-							}
-							
-							if(isset($rule['max'])){ 
-								$rule['max'] = (int) $rule['max'];
-								if(strlen($value)>$rule['max']){
-									$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] :  'The maximum length is %d characters';
-									$push_error($field,['data'=>$value, 'error'=>'max', 'error_detail' => sprintf(trans($err), $rule['max'])],$errors);
-								}
-									
-							}
-					}	
+						if(isset($rule['max'])){ 
+							$rule['max'] = (int) $rule['max'];
+							if(strlen(trim($value)) > $rule['max']){
+								$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] : 'The maximum length is %d characters';
+								$push_error($field,['data'=>$value, 'error'=>'max', 'error_detail' => sprintf(trans($err), $rule['max'])],$errors);
+							}                                
+						}
+					}    
 					
 					if(in_array($rule['type'],['number','int','float','double'])){
 							

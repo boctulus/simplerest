@@ -2,15 +2,25 @@
 
 namespace simplerest\tests;
 
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
 require_once __DIR__ . '../../vendor/autoload.php';
-require_once __DIR__ . '../../public/app.php';
+
+if (php_sapi_name() != "cli"){
+	return; 
+}
+
+require_once __DIR__ . '/../app.php';
 
 use PHPUnit\Framework\TestCase;
 use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Debug;
+use simplerest\core\libs\Strings;
+use simplerest\core\Model;
+use simplerest\core\traits\UnitTestCaseSQLTrait;
+use simplerest\core\libs\Validator;
 
-$config = include __DIR__ . '../../config/config.php';
 
 define('HOST', $config['APP_URL']);
 define('BASE_URL', HOST .'/');
