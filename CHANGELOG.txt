@@ -44,3 +44,4 @@
 [2024-12-22 11:22:47]	0.8.12	Corregido DB::quote()
 [2024-12-22 11:34:22]	0.8.12	Automatic update
 [2024-12-22 12:03:53]	0.8.12	ModelTest vuelve a pasar las pruebas
+[2024-12-24 01:06:50]	0.8.12	(En progreso) revisando Validator y sus pruebas unitarias
