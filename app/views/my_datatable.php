@@ -1,5 +1,59 @@
 <h3 class="mt-3 text-primary">MY DATATABLE</h3>
 
+
+<div style="min-width: 150px; padding: 1rem; position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 40px, 0px); background-color: rgba(1,1,1,0.5);" data-popper-placement="bottom-end">                
+    <!-- Los checkboxes se generarán dinámicamente desde tableConfig -->
+                
+    <div class="form-check mb-2">
+        <input class="form-check-input column-toggle" type="checkbox" id="col-image" data-column="image" checked="">
+        <label class="form-check-label" for="col-image" style="color: rgb(51, 51, 51); font-weight: 500; text-transform: uppercase; font-size: 0.8rem;">
+            IMÁGEN
+        </label>
+    </div>
+
+    <div class="form-check mb-2">
+        <input class="form-check-input column-toggle" type="checkbox" id="col-code" data-column="code" checked="">
+        <label class="form-check-label" for="col-code" style="color: rgb(51, 51, 51); font-weight: 500; text-transform: uppercase; font-size: 0.8rem;">
+            CÓDIGO
+        </label>
+    </div>
+
+    <div class="form-check mb-2">
+        <input class="form-check-input column-toggle" type="checkbox" id="col-product" data-column="product" checked="">
+        <label class="form-check-label" for="col-product" style="color: rgb(51, 51, 51); font-weight: 500; text-transform: uppercase; font-size: 0.8rem;">
+            PRODUCTO
+        </label>
+    </div>
+
+    <div class="form-check mb-2">
+        <input class="form-check-input column-toggle" type="checkbox" id="col-description" data-column="description" checked="">
+        <label class="form-check-label" for="col-description" style="color: rgb(51, 51, 51); font-weight: 500; text-transform: uppercase; font-size: 0.8rem;">
+            DESCRIPCIÓN
+        </label>
+    </div>
+
+    <div class="form-check mb-2">
+        <input class="form-check-input column-toggle" type="checkbox" id="col-brand" data-column="brand" checked="">
+        <label class="form-check-label" for="col-brand" style="color: rgb(51, 51, 51); font-weight: 500; text-transform: uppercase; font-size: 0.8rem;">
+            MARCA
+        </label>
+    </div>
+
+    <div class="form-check mb-2">
+        <input class="form-check-input column-toggle" type="checkbox" id="col-price" data-column="price" checked="">
+        <label class="form-check-label" for="col-price" style="color: rgb(51, 51, 51); font-weight: 500; text-transform: uppercase; font-size: 0.8rem;">
+            PRECIO
+        </label>
+    </div>
+
+    <div class="form-check mb-2">
+        <input class="form-check-input column-toggle" type="checkbox" id="col-addToCart" data-column="addToCart" checked="">
+        <label class="form-check-label" for="col-addToCart" style="color: rgb(51, 51, 51); font-weight: 500; text-transform: uppercase; font-size: 0.8rem;">
+            COMPRAR
+        </label>
+    </div>
+</div>
+
 <!-- 
     Datatabla dinamica 
 -->
@@ -8,41 +62,49 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", (event) => {
-
-    // Configuración de la tabla con cabeceras y clases Bootstrap 5
+     // Configuración de la tabla con cabeceras y clases Bootstrap 5
     const datatable = new CustomDataTable('exampleTable', 'id', [
         { 
-            htmlContent: '<div class="th-content">IMÁGEN <img src="/path/to/imagen.svg" class="table-head-icon"></div>', 
+            htmlContent: '<div class="th-content">IMÁGEN</div>', 
             key: 'image', 
-            cssClasses: ['image-cell'] },
+            cssClasses: ['image-cell']
+        },
         { 
-            htmlContent: '<div class="th-content">CÓDIGO <img src="/path/to/codigo.svg" class="table-head-icon"></div>', 
+            htmlContent: '<div class="th-content">CÓDIGO</div>', 
             key: 'code', 
-            cssClasses: ['d-none', 'd-lg-table-cell', 'results-code'] },
+            cssClasses: ['results-code'],
+            hideBreakpoints: ['sm', 'md'] // Visible desde lg
+        },
         { 
-            htmlContent: '<div class="th-content">PRODUCTO <img src="/path/to/producto.svg" class="table-head-icon"></div>', 
+            htmlContent: '<div class="th-content">PRODUCTO</div>', 
             key: 'product', 
-            cssClasses: ['d-none', 'd-xl-table-cell', 'product-cate'] },
+            cssClasses: ['product-cate'],
+            hideBreakpoints: ['sm', 'md', 'lg'] // Visible desde xl
+        },
         { 
-            htmlContent: '<div class="th-content">DESCRIPCIÓN <img src="/path/to/descripcion.svg" class="table-head-icon"></div>', 
+            htmlContent: '<div class="th-content">DESCRIPCIÓN</div>', 
             key: 'description', 
-            cssClasses: ['d-none', 'd-lg-table-cell', 'results-description'] },
+            cssClasses: ['results-description'],
+            hideBreakpoints: ['sm', 'md'] // Visible desde lg
+        },
         { 
-            htmlContent: '<div class="th-content">MARCA <img src="/path/to/marca.svg" class="table-head-icon"></div>', 
+            htmlContent: '<div class="th-content">MARCA</div>', 
             key: 'brand', 
-            cssClasses: ['d-none', 'd-xl-table-cell', 'brand-cell'] },
+            cssClasses: ['brand-cell'],
+            hideBreakpoints: ['sm', 'md', 'lg'] // Visible desde xl
+        },
         { 
-            htmlContent: '<div class="th-content">PRECIO <img src="/path/to/precio.svg" class="table-head-icon"></div>', 
+            htmlContent: '<div class="th-content">PRECIO</div>', 
             key: 'price', 
-            cssClasses: ['price_list'] 
+            cssClasses: ['price_list']
         },
         { 
             htmlContent: 'COMPRAR', 
             key: 'addToCart', 
-            cssClasses: ['add2cart'] 
+            cssClasses: ['add2cart']
         }
     ]);
-
+    
     // Agregar una fila de datos con contenido HTML dinámico
     datatable.set({
         id: 88045,
@@ -125,6 +187,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
             });
         }, 1500);
 
+
+        // Manejar eventos de los checkboxes
+        $(document).on('change', '.column-toggle', function() {
+            const columnKey = $(this).data('column');
+            const isVisible = $(this).prop('checked');
+            
+            datatable.toggleColumnVisibility(columnKey, isVisible);
+        });
 
     });
 </script>
