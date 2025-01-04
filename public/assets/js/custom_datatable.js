@@ -19,9 +19,6 @@
     // Para una tabla con ID en el campo 'ID'
     const table2 = new CustomDataTable('otraTabla', 'ID', headers);
     
-*/
-
-/*
     CustomDataTable permite crear una tabla HTML dinámica, controlando la configuración 
     de cabeceras (<th>), las filas de datos, y el "partial rendering" de filas sin 
     volver a renderizar toda la tabla.
@@ -79,22 +76,47 @@ class CustomDataTable {
     }
 
     // Mostrar/ocultar una columna
-    toggleColumnVisibility(columnKey, visible) {
+    toggleColumnVisibility(columnKey, visible, saveState = false) {
         const columnIndex = this.headers.findIndex(h => h.key === columnKey);
-        if (columnIndex === -1) {
-            console.error(`Columna '${columnKey}' no encontrada`);
-            return;
+        if (columnIndex === -1) return;
+    
+        if (saveState) {
+            const columnStates = this.getColumnVisibilityStates() || {};
+            columnStates[columnKey] = visible;
+            localStorage.setItem('columnStates', JSON.stringify(columnStates));
         }
-
-        // Actualizar estado interno
+    
+        // Seleccionar TODOS los elementos de la columna incluyendo th y td
+        const table = this.table;
+        const cells = table.querySelectorAll(`th:nth-child(${columnIndex + 1}), td:nth-child(${columnIndex + 1})`);
+    
+        cells.forEach(cell => {
+            if (visible) {
+                cell.classList.remove('d-none');
+            } else {
+                cell.classList.add('d-none');
+                cell.classList.remove('d-lg-table-cell', 'd-xl-table-cell', 'd-xxl-table-cell');
+            }
+        });
+    
+        // Actualizar el estado interno
         const visibility = this.columnVisibility.get(columnKey);
-        if (!visibility) {
-            console.error(`Estado de visibilidad no encontrado para columna '${columnKey}'`);
-            return;
+        if (visibility) {
+            visibility.visible = visible;
         }
+    }
 
-        visibility.visible = visible;
-        this.applyColumnVisibility(columnKey);
+    getColumnVisibilityStates() {
+        const storedStates = localStorage.getItem('columnStates');
+        if (!storedStates) {
+            return null;
+        }
+        try {
+            return JSON.parse(storedStates);
+        } catch (e) {
+            console.error('Error parsing column states from localStorage:', e);
+            return null;
+        }
     }
 
     // Aplicar visibilidad y reglas responsive a una columna
@@ -161,16 +183,22 @@ class CustomDataTable {
         const tbody = this.table.tBodies[0];
         const newRow = tbody.insertRow();
         newRow.dataset.rowId = rowData[this.rowIdField];
-
-        this.headers.forEach(header => {
+    
+        this.headers.forEach((header, index) => {
             const cell = newRow.insertCell();
             cell.classList.add(...(header.cssClasses || []));
+            
+            // Aplicar el estado de visibilidad actual de la columna
+            const visibility = this.columnVisibility.get(header.key);
+            if (visibility && !visibility.visible) {
+                cell.classList.add('d-none');
+            }
             
             if (rowData[header.key] !== undefined) {
                 cell.innerHTML = rowData[header.key];
             }
         });
-
+    
         this.rows.set(rowData[this.rowIdField], newRow);
     }
 

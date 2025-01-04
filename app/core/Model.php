@@ -88,6 +88,7 @@ class Model {
 	protected $data = []; 
 
 	protected $having_group_op;
+	protected $wrap_fields = false;
 	protected $config;
 
 	protected $createdAt = 'created_at';
@@ -135,6 +136,17 @@ class Model {
 	// Constantes
     const DECIMAL_AS_STRING = false; // false = sin comillas (default), true = con comillas
 
+	public function wrap(bool $flag = true) {
+		$this->wrap_fields = $flag;
+		return $this;
+	}
+
+	protected function getWrapFieldName($field) {
+		if ($this->wrap_fields) {
+			return DB::quote($field); 
+		}
+		return $field;
+	}
 
 	protected function isDecimalField(string $field): bool {
 		if (empty($this->schema) || empty($this->schema['rules'])) {
@@ -1232,6 +1244,12 @@ class Model {
 		else
 			$fields = $this->fields;	
 
+		if (!empty($fields)) {
+			$fields = array_map(function($field) {
+				return $this->getWrapFieldName($field);
+			}, $fields);
+		}
+
 		$paginator = null;
 
 		if (!$existance)
@@ -1985,7 +2003,7 @@ class Model {
 	}
 
 	function exists(){
-		$q = $this->toSql(null, null, null, null, true);
+		$q  = $this->toSql(null, null, null, null, true);
 		$st = $this->bind($q);
 
 		if ($this->exec && $st->execute()){
@@ -2398,7 +2416,8 @@ class Model {
 
 				foreach ($conditions as $ix => $cond) {
 					$unqualified_field = $this->unqualifyField($cond[0]);
-					$field = $this->getFullyQualifiedField($cond[0]);
+					$field             = $this->getFullyQualifiedField($cond[0]);
+					$field     	       = $this->getWrapFieldName($field); // <--- wrap
 				
 					if ($field == null)
 						throw new SqlException("Field can not be NULL");
@@ -2435,7 +2454,7 @@ class Model {
 				}
 
 			}else{
-				$vars[]   = $conditions[0];
+				$vars[]        = $conditions[0];
 				$this->w_vals[] = $conditions[1];
 		
 				if ($conditions[1] === NULL && (empty($conditions[2]) || $conditions[2]== '='))
@@ -3431,7 +3450,7 @@ class Model {
 		foreach($vals as $ix => $val){	
 			if(is_array($val)){
 				if (isset($this->schema['attr_types'][$vars[$ix]]) && !$this->schema['attr_types'][$vars[$ix]] == 'STR'){
-					throw new \InvalidArgumentException("Param '{[$vars[$ix]}' is not expected to be an string. Given '$val'");
+					throw new \InvalidArgumentException("Param '{[$vars[$ix]}' is not expected to be an string. Given array");
 				} else {
 					$vals[$ix] = json_encode($val);
 					$type = \PDO::PARAM_STR;
@@ -3474,9 +3493,19 @@ class Model {
 		} catch (\PDOException $e){
 			$this->logSQL();
 			
+			$debug = config()['debug'];
+
 			if (!$ignore_duplicates && !Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())){
-				throw new \PDOException(config()['debug'] ? $e->getMessage() : "Integrity constraint violation");
-			} 
+				throw new \PDOException($debug ? $e->getMessage() : "Integrity constraint violation");
+			} else {
+				if ($debug){
+					$msg = "Error inserting data from ". $this->from() . ' - ' .$e->getMessage();
+				} else {
+					$msg = 'Error inserting data';
+				}
+
+				throw new \PDOException($msg);
+			} 			
 		}
 	
 		$this->current_operation = null;
