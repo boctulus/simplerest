@@ -3,21 +3,22 @@
 namespace simplerest\core\libs;
 
 use simplerest\core\interfaces\ICache;
+use simplerest\core\libs\Cache;
 use simplerest\core\libs\DB;
 
-class DBCache implements ICache
+class DBCache extends Cache
 {
      /**
      * Store data in the cache.
      *
      * @param string $key
      * @param mixed $value
-     * @param int $exp_time
+     * @param int $ttl
      * @return bool
      */
-    static function put(string $key, $value, $exp_time = -1): bool
+    static function put(string $key, $value, $ttl = -1): bool
     {
-        $expires_at = time() + $exp_time;
+        $expires_at = time() + $ttl;
 
         $data = [
             '_key_'      => $key,
@@ -50,6 +51,7 @@ class DBCache implements ICache
         ->first();
 
         if ($cache) {
+            // Not expired
             if ($cache['expires_at'] >= time()) {
                 return unserialize($cache['value']);
             }
@@ -72,8 +74,9 @@ class DBCache implements ICache
         return DB::table('cache')->where('_key_', $key)->delete();
     }
 
-    static function expired($cached_at, int $exp_time) : bool {
-        return $cached_at < time();
+    static function clear(): bool
+    {
+        return DB::table('cache')->delete();
     }
 }
 

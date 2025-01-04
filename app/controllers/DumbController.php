@@ -2,151 +2,152 @@
 
 namespace simplerest\controllers;
 
-use simplerest\core\libs\CMS_Scanner\CMSs\WordPress;
-use stdClass;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+
+use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use MakeCommand;
-
-use simplerest\libs\Foo;
-use simplerest\core\View;
-use simplerest\libs\Cake;
-use simplerest\libs\Foo2;
-use simplerest\libs\Sync;
-use simplerest\core\Model;
-use simplerest\core\Route;
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use simplerest\libs\Reviews;
-use simplerest\core\libs\CSS;
+use PhpParser\Node\Scalar\MagicConst\File;
+use simplerest\controllers\api\Products;
+use simplerest\controllers\api\TblPersona;
+use simplerest\core\api\v1\ApiController;
+use simplerest\core\Container;
+use simplerest\core\controllers\Controller;
+use simplerest\core\libs\ApacheWebServer;
 ;
-use simplerest\core\libs\Env;
+use simplerest\core\libs\ApiClient;
 
-use simplerest\core\libs\Url;
+use simplerest\core\libs\Arrays;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
-use simplerest\core\libs\XML;
-use simplerest\core\Response;
-use simplerest\libs\RibiSOAP;
-use simplerest\core\Container;
+use simplerest\core\libs\Base64Uploader;
+use simplerest\core\libs\Cache;
+use simplerest\core\libs\ChatGPT;
+use simplerest\core\libs\ClaudeAI;
+
+use simplerest\core\libs\CMS_Scanner\CMSs\WordPress;
+use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
+use simplerest\core\libs\code_cleaner\AngularCleaner;
+
+use simplerest\core\libs\code_cleaner\BootstrapCleaner;
+use simplerest\core\libs\Config;
+
+use simplerest\core\libs\Cookie;
+
+use simplerest\core\libs\CookieJar;
+use simplerest\core\libs\CronJobMananger;
+use simplerest\core\libs\CSS;
+use simplerest\core\libs\CSSUtils;;
+use simplerest\core\libs\DatabaseBackup;
 
 use simplerest\core\libs\Date;
-use simplerest\core\libs\Mail;
-use simplerest\core\libs\Task;
+use simplerest\core\libs\DB;
 
-use simplerest\core\libs\Time;
-use simplerest\core\libs\Cache;
-
-use simplerest\core\libs\Files;
-
-use simplerest\core\libs\Utils;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Cookie;
-use simplerest\core\libs\GitHub;
-
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Schema;
-
-use simplerest\core\libs\StdOut;
-
-use simplerest\core\libs\System;
-
-use simplerest\core\libs\Update;
-use simplerest\libs\Ingredient1;
-
-use simplerest\libs\Ingredient2;
-use simplerest\core\libs\ChatGPT;
 use simplerest\core\libs\DBCache;
-use simplerest\core\libs\Factory;
 
-use simplerest\core\libs\Strings;
-
-use simplerest\core\libs\VarDump;
-use Spatie\ArrayToXml\ArrayToXml;
-
-use simplerest\core\libs\ClaudeAI;
-use simplerest\core\libs\CSSUtils;;
-use simplerest\core\libs\Hardware;
-use simplerest\core\libs\JobQueue;
-use simplerest\core\libs\Parallex;
-use simplerest\models\az\BarModel;
-use Endroid\QrCode\Builder\Builder;
-
-use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\CookieJar;
-use simplerest\core\libs\FileCache;
-
-use simplerest\core\libs\MediaType;
-use simplerest\core\libs\Paginator;
-use simplerest\core\libs\Reflector;
-use simplerest\core\libs\Validator;
-use simplerest\libs\ItalianReviews;
 use simplerest\core\libs\DomCrawler;
-use simplerest\core\libs\GoogleMaps;
 
-use simplerest\core\libs\Obfuscator;
-use simplerest\core\libs\SendinBlue;
-use simplerest\core\libs\ZipManager;
-use Endroid\QrCode\Encoding\Encoding;
-use simplerest\core\libs\GoogleDrive;
-use simplerest\core\libs\Memoization;
-use simplerest\core\libs\SimpleCrypt;
-use simplerest\core\libs\FileUploader;
-use simplerest\core\libs\LangDetector;
-use simplerest\core\libs\Messurements;
-use Endroid\QrCode\Label\Font\NotoSans;
 use simplerest\core\libs\EasyHTMLTable;
 use simplerest\core\libs\EmailTemplate;
-use simplerest\core\libs\HTML as HTMLTools;
 
-use simplerest\core\libs\i18n\POParser;
-use simplerest\core\libs\InMemoryCache;
-use simplerest\core\libs\StratoScraper;
-use simplerest\libs\scrapers\Curiosite;
-use simplerest\models\az\ProductsModel;
-use simplerest\controllers\api\Products;
-use simplerest\core\libs\Base64Uploader;
-use simplerest\core\libs\DatabaseBackup;
-use simplerest\core\libs\i18n\Translate;
-use simplerest\libs\LaravelApiGenerator;
-use simplerest\core\api\v1\ApiController;
-use simplerest\core\libs\ApacheWebServer;
-use simplerest\core\libs\CronJobMananger;
+use simplerest\core\libs\Env;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\FileCache;
 use simplerest\core\libs\FileMemoization;
-use simplerest\core\libs\HtmlBuilder\Tag;
-use simplerest\core\libs\RandomGenerator;
-use simplerest\core\libs\ValidationRules;
-use simplerest\libs\NITColombiaValidator;
-use Symfony\Component\DomCrawler\Crawler;
-use PhpParser\Node\Scalar\MagicConst\File;
-use simplerest\controllers\api\TblPersona;
+
+use simplerest\core\libs\FileMemoizationV2;
+
+use simplerest\core\libs\Files;
+use simplerest\core\libs\FileUploader;
+
+use simplerest\core\libs\GitHub;
+use simplerest\core\libs\GoogleDrive;
+use simplerest\core\libs\GoogleMaps;
+use simplerest\core\libs\GrokAI;
+use simplerest\core\libs\Hardware;
+use simplerest\core\libs\HTML as HTMLTools;
+use simplerest\core\libs\HtmlBuilder\Bt5Form;
+
 use simplerest\core\libs\HtmlBuilder\Form;
 use simplerest\core\libs\HtmlBuilder\Html;
-use simplerest\core\libs\MailFromRemoteWP;
-use simplerest\core\libs\PostmanGenerator;
-use simplerest\models\az\AutomovilesModel;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\FileMemoizationV2;
-use simplerest\libs\ItalianGrammarAnalyzer;
-use simplerest\libs\scrapers\AmazonScraper;
-use simplerest\shortcodes\eat_leaf\EatLeaf;
-use simplerest\core\libs\PHPLexicalAnalyzer;
-use simplerest\libs\scrapers\MaisonsScraper;
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
-use simplerest\core\libs\WooCommerceApiClient;
-use simplerest\libs\scrapers\LeroyMerlinScraper;
-use simplerest\core\libs\code_cleaner\AngularCleaner;
-use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
-use simplerest\core\libs\code_cleaner\BootstrapCleaner;
-use simplerest\shortcodes\countdown\CountDownShortcode;
-use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
-use simplerest\shortcodes\csv_importer\ImporterShortcode;
-use simplerest\shortcodes\progress_bar\ProgressShortcode;
-use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
-use simplerest\shortcodes\star_rating\StarRatingShortcode;
+use simplerest\core\libs\HtmlBuilder\Tag;
+
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
-use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
-use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\core\libs\i18n\POParser;
+use simplerest\core\libs\i18n\Translate;
+use simplerest\core\libs\InMemoryCache;
+use simplerest\core\libs\JobQueue;
+use simplerest\core\libs\LangDetector;
+use simplerest\core\libs\Logger;
+
+use simplerest\core\libs\Mail;
+use simplerest\core\libs\MailFromRemoteWP;
+use simplerest\core\libs\MediaType;
+use simplerest\core\libs\Memoization;
+use simplerest\core\libs\Messurements;
+use simplerest\core\libs\Obfuscator;
+use simplerest\core\libs\Paginator;
+use simplerest\core\libs\Parallex;
+use simplerest\core\libs\PHPLexicalAnalyzer;
+use simplerest\core\libs\PostmanGenerator;
+use simplerest\core\libs\RandomGenerator;
+use simplerest\core\libs\Reflector;
+use simplerest\core\libs\Schema;
+use simplerest\core\libs\SendinBlue;
+
+use simplerest\core\libs\SimpleCrypt;
+use simplerest\core\libs\StdOut;
+use simplerest\core\libs\StratoScraper;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\System;
+use simplerest\core\libs\Task;
+use simplerest\core\libs\Time;
+use simplerest\core\libs\Update;
+use simplerest\core\libs\Url;
+use simplerest\core\libs\Utils;
+use simplerest\core\libs\ValidationRules;
+use simplerest\core\libs\Validator;
+use simplerest\core\libs\VarDump;
+use simplerest\core\libs\WooCommerceApiClient;
+use simplerest\core\libs\XML;
+use simplerest\core\libs\ZipManager;
+use simplerest\core\Model;
+use simplerest\core\Request;
+use simplerest\core\Response;
+use simplerest\core\Route;
+use simplerest\core\View;
+use simplerest\libs\Cake;
+use simplerest\libs\Foo2;
+use simplerest\libs\Foo;
+use simplerest\libs\Ingredient1;
+use simplerest\libs\Ingredient2;
+use simplerest\libs\ItalianGrammarAnalyzer;
+use simplerest\libs\ItalianReviews;
+use simplerest\libs\LaravelApiGenerator;
+use simplerest\libs\NITColombiaValidator;
+use simplerest\libs\Reviews;
+use simplerest\libs\RibiSOAP;
+use simplerest\libs\scrapers\AmazonScraper;
+use simplerest\libs\scrapers\Curiosite;
+use simplerest\libs\scrapers\LeroyMerlinScraper;
+use simplerest\libs\scrapers\MaisonsScraper;
+use simplerest\libs\Sync;
+use simplerest\models\az\AutomovilesModel;
+use simplerest\models\az\BarModel;
+use simplerest\models\az\ProductsModel;
+use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
+use simplerest\shortcodes\countdown\CountDownShortcode;
+use simplerest\shortcodes\csv_importer\ImporterShortcode;
+use simplerest\shortcodes\eat_leaf\EatLeaf;
+use simplerest\shortcodes\progress_bar\ProgressShortcode;
+use simplerest\shortcodes\star_rating\StarRatingShortcode;
+use Spatie\ArrayToXml\ArrayToXml;
+use stdClass;
+use Symfony\Component\DomCrawler\Crawler;
 
 class DumbController extends Controller
 {
@@ -11110,14 +11111,55 @@ class DumbController extends Controller
         dd(DB::getLog());
     }
 
-    function test_model(){
-        $u = DB::table(get_users_table());
-        $u->unfill(  ['password']);
-        $id = $u->create(['email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe']);
+    function test_grok(){
+        $api_key = 'xai-7M7kvoRLd0KCiltMxTSUZC11XOJnUlfWC3NlUK7uaxFNIsvt7cqfqdbmsUjZ095KISt4R7NFkhowM2JX';
 
-        $res = DB::table(get_users_table())->unhide(['password'])->latest()->first();
-        dd($res['password']);
+            // Instanciar GrokAI con tu API key
+        $grok = new GrokAI($api_key);
+        $grok->client->cache(3600);
+
+        // Ejemplo con rol de sistema y temperatura
+        $grok->addContent("You are a helpful assistant.", "system");
+        $grok->setTemperature(0.7);
+        $grok->addContent("Explícame qué es la inteligencia artificial");
+        
+        // Ejemplo con parámetros personalizados
+        // $grok->setParams([
+        //     'temperature' => 0.5,
+        //     'max_tokens' => 1000
+        // ]);
+
+        $response = $grok->exec();
+
+        // dd($response);
+
+        if ($error = $grok->error()) {
+           dd($error, 'Error');
+        } else {
+            dd($grok->getContent(), 'Content');
+        }        
     }
 
+    function test_exists(){
+        DB::getConnection();
+
+        $is = table('migrations')
+        ->where('filename', '2021_09_14_27910163_options.php')
+        ->dd();
+
+        dd($is, 'Exist?');
+    }
+
+    function test_exists_2(){
+        DB::getConnection('relmotor');    
+
+        $res = table('managed_cache')
+        // ->wrap()
+        ->select(['key', 'created_at'])
+        ->where('key', 'test_key')
+        ->dd();
+
+        dd($res);
+    }
 
 }   // end class
