@@ -18,9 +18,9 @@ abstract class Cache implements ICache
         Logica para saber si un recurso ha expirado
 
         @param int|false $cached_at
-        @param int       expiration_time es el delta en segundos
+        @param int       TTL (tiempo de vida del recurso)
     */
-    static function expired($cached_at, int $expiration_time) : bool {
+    static function expired($cached_at, int $ttl) : bool {
         if (!is_int($cached_at) && $cached_at !== false){
             throw new \InvalidArgumentException("cached_at should be int|false but ". gettype($cached_at) . " was received");
         }
@@ -29,15 +29,15 @@ abstract class Cache implements ICache
             return false;
         }
 
-        if ($expiration_time === 0){
+        if ($ttl === 0){
             return true;
         }
 
-        if ($expiration_time == static::NEVER){
+        if ($ttl == static::NEVER){
             return false;
         }
 
-        return time() > $cached_at + $expiration_time;
+        return time() > $cached_at + $ttl;
     }
 
    
