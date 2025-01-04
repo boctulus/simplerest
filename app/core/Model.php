@@ -2454,7 +2454,7 @@ class Model {
 				}
 
 			}else{
-				$vars[]        = $conditions[0];
+				$vars[]         = $conditions[0];
 				$this->w_vals[] = $conditions[1];
 		
 				if ($conditions[1] === NULL && (empty($conditions[2]) || $conditions[2]== '='))
@@ -2994,6 +2994,14 @@ class Model {
 			$where = implode(' AND ', $this->where);
 		} else {
 			$where = '';
+		}
+
+		if (!empty($this->where_raw_q)){
+			if (!empty($where)){
+				$where = $this->where_raw_q . " AND $where";
+			} else {
+				$where = $this->where_raw_q;
+			}			
 		}
 
 		if (trim($where) == ''){
