@@ -2677,7 +2677,40 @@ Produce:
 	HAVING 
 	products.cost = 100
 
-Para cambiar el flag en sentido contrario se puede utilizar el método doQualify()
+Para cambiar el flag se hace con el método doQualify()
+
+
+# Wrapping de campos con comillas / apostrofes 
+
+Por defecto no se envuelven entre comillas a los campos y esto puede ser critico para campos que son palabras reservadas como es el caso de "KEY" para MYSQL.
+
+Para cambiar el flag se hace con el método wrap()
+
+Ej:
+
+	$res = table('managed_cache')        
+	->select(['key', 'created_at'])
+	->where('key', 'test_key')
+	->dd();
+
+	dd($res);
+
+Imprime:
+
+	SELECT key,created_at FROM `wp_managed_cache` WHERE key = 'test_key'
+
+Mientras que,...
+
+	$res = table('managed_cache')        
+	->select(['key', 'created_at'])
+	->where('key', 'test_key')
+	->dd();
+
+	dd($res);
+
+Imprime:
+
+	SELECT `key`,`created_at` FROM `wp_managed_cache` WHERE `key` = 'test_key'
 
 
 # Update
