@@ -1343,116 +1343,89 @@ Ej:
 SimpleRest viene con un constructor de consultas ("queries") y sentencias ("statements") basado en métodos encadenados. 
 
 
-# Inserción de registros
+## Inserción de registros
 
-El método create() acepta un array asociativo de campos con sus valores y hace el INSERT
+SimpleREST ofrece varios métodos para insertar registros en la base de datos. Los principales son create() e insert(), cada uno con sus características particulares.
 
-	$last_id = DB::table('super_cool_table'
-	->create([
-		'name' => 'SUPER',
+Método create()
+
+El método básico para insertar un único registro. Acepta un array asociativo de campos y valores:
+
+    $last_id = DB::table('users')->create([
+		'name' => 'John',
 		'age' => 22,
 	]);
 
-Con createOrIgnore() se puede ignorar el error de intentar crear un nuevo registro cuando se está repitiendo un campo unique.
+También puede manejar inserciones múltiples, pero las procesa una por una:
 
-
-# Insert múltiple
-
-Se puede enviar a insertar varios registros de una vez (no necesariamente todos juntos al motor de base de datos) y se devolverá también el ID del último registro insertando si se hace de la siguiente forma.
-
-La diferencia con create() es que si recibe un array de registros a insertar crea una transacción y si falla un INSERT, hay un rollback con lo cual el efecto es cero inserciones. Los inserts si bien se envian de uno en uno al motor de DB, se ejecutan como bloque en el sentido de la transacción. ****
-
-Ej:
-
-	// En caso de haber varias DB(s), selecciono la conexión donde está
-	DB::getConnection('az');
-
-	$data = [
-		array (
-			'name' => 'N1',
-			'comment' => 'P1',
-			'product_id' => 100
-		),
-
-		array (
-			'name' => 'N2',
-			'comment' => 'P2',
-			'product_id' => 103
-		),
-
-		array (
-			'name' => 'N3',
-			'comment' => 'P3',
-			'product_id' => 105
-		)
+    $data = [
+		['name' => 'John', 'age' => 22],
+		['name' => 'Jane', 'age' => 25]
 	];
 
-	$last_id = DB::table('product_tags')
-	->create($data);
+$last_id = DB::table('users')->create($data);
 
-Cabe aclarar que el con el método create() se hace un INSERT INTO detrás de otro y no se envian juntas las rows la base de datos.  
+Características de create():
 
-Si se desea enviar todas las rows de una vez a la DB se puede hacer con insert()
+-	No usa transacciones automáticamente
+-	Retorna el ID del último registro insertado
+-	Si falla una inserción en una serie, las anteriores permanecen
+-	Ejecuta los hooks onCreating() y onCreated()
 
-Ej:
+Método insert()
+
+Diseñado especialmente para inserciones múltiples seguras:
 
 	$data = [
-		array (
-			'name' => 'N1',
-			'comment' => 'P1',
-			'product_id' => 100
-		),
-
-		array (
-			'name' => 'N2',
-			'comment' => 'P2',
-			'product_id' => 103
-		),
-
-		array (
-			'name' => 'N3',
-			'comment' => 'P3',
-			'product_id' => 105
-		),
-
-		array (
-			'name' => 'N4',
-			'comment' => '',
-			'product_id' => 105
-		)
+		['name' => 'John', 'age' => 22],
+		['name' => 'Jane', 'age' => 25]
 	];
 
-	/*
-		id del primer registro insertado en bloque
-	*/
+	$last_id = DB::table('users')->insert($data);
 
-	$id = DB::table('product_tags')
-	->insert($data);
+Características de insert():
 
+-	Maneja transacciones automáticamente
+-	Si falla cualquier inserción, hace rollback de todas
+-	Mejor manejo de errores
+-	Retorna el ID del último registro insertado
+-	Construido sobre create(), añadiendo capa de seguridad
 
-Para insertar con un campo tipo JSON solo envíelo como array.
+Manejo de campos unique
 
-Ej:
+Para ignorar errores al intentar insertar registros que violan restricciones unique:
 
-	$m = DB::table('medicamentos');
-        
-	$ok = $m->create([
-		'name' => 'Medicamento Z',
-		'price' => 100,
+	// Con create()
+	$model->createOrIgnore($data);
 
-		// JSON
-		'attr' => [
-			'precio_fraccion' => '4608',
-			'principio_activo' => 'Alcanfor, Benzocaina, Mentol, Triclosán',
-			'laboratorio' => 'Prater',
-			'codigo_isp' => 'F-7345/16',
-			'forma_farmaceutica' => 'Solución',
-			'req_receta' => false,
+	// Con insert()
+	$model->insertOrIgnore($data);
+
+La diferencia es que insertOrIgnore() opera dentro de una transacción.
+
+Campos JSON
+
+Para campos JSON, simplemente pase un array:
+
+    $model->create([
+		'name' => 'Product X',
+		'attributes' => [
+			'color' => 'red',
+			'size' => 'large',
+			'features' => ['waterproof', 'durable']
 		]
 	]);
-	
 
-El método insertOrIgnore() se puede ignorar los errores de intentar crear nuevos registro cuando se está repitiendo un campo unique. Es similar a createOrIgnore() excepto porque el primero está dentro de una transacción.
+El array será automáticamente convertido a JSON antes de la inserción.
+
+Recomendaciones de uso
+
+-	Use create() para inserciones simples donde no necesite transacciones
+-	Use insert() para inserciones múltiples donde necesite garantía transaccional
+-	Use *OrIgnore() cuando necesite silenciar errores de campos unique
+-	Para campos JSON, siempre use arrays PHP nativos
+
+Esta documentación mejorada proporciona una visión más clara de las diferencias entre los métodos y cuándo usar cada uno. 
 
 
 # Obtención de registros
