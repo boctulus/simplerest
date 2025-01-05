@@ -3543,10 +3543,45 @@ class Model {
 
 		return $this->last_inserted_id;
 	}
-	
 
 	function createOrIgnore(array $data){
 		$this->create($data, true);
+	}
+
+	/**
+	 * Create or update a record based on unique fields
+	 * 
+	 * @param array $data Data to create/update
+	 * @param array|null $uniqueFields Fields to check for existing record. If null, uses schema unique fields
+	 * @return mixed Last inserted ID or number of updated records
+	 */
+	function createOrUpdate(array $data, ?array $uniqueFields = null) 
+	{
+		// If no unique fields specified, get from schema
+		if ($uniqueFields === null) {
+			if (empty($this->schema) || empty($this->schema['uniques'])) {
+				throw new \InvalidArgumentException("No unique fields specified and none found in schema");
+			}
+			$uniqueFields = $this->schema['uniques'];
+		}
+
+		// Build where conditions for unique fields
+		$conditions = [];
+		foreach ($uniqueFields as $field) {
+			if (!isset($data[$field])) {
+				throw new \InvalidArgumentException("Required unique field '$field' not found in data");
+			}
+			$conditions[] = [$field, $data[$field]];
+		}
+
+		// Check if record exists
+		$exists = $this->where($conditions)->exists();
+
+		if ($exists) {
+			return $this->where($conditions)->update($data);
+		} else {
+			return $this->create($data);
+		}
 	}
 
 	function insert(array $data, bool $ignore_duplicates = false){
@@ -3606,179 +3641,201 @@ class Model {
 		$this->insert($data, true);
 	}
 
-	/*
-		Insert múltiple en un solo STATEMENT - Por corregir ***
+	/**
+	 * Insert or update multiple records based on unique fields
+	 * Wraps operations in a transaction
+	 * 
+	 * @param array $data Array of records to create/update
+	 * @param array|null $uniqueFields Fields to check for existing records
+	 * @return mixed Last inserted ID or false on failure
+	 */
+	function insertOrUpdate(array $data, ?array $uniqueFields = null)
+	{
+		if (!Arrays::isAssoc($data)) {
+			if (is_array($data[0])) {
+				DB::beginTransaction();
+			
+				try {
+					$ret = null;
+					foreach ($data as $record) {
+						$ret = $this->createOrUpdate($record, $uniqueFields);
+					}
+					DB::commit();
+					return $ret;
+				} catch (\Exception $e) {
+					DB::rollback();
+
+					if (config()['debug']) {
+						$msg = "Error inserting/updating data in " . $this->from() . 
+							' - ' . $e->getMessage() . 
+							' - SQL: ' . $this->getLog();
+					} else {
+						$msg = 'Error inserting/updating data';
+					}
+
+					throw new \Exception($msg);
+				}
+			} else {
+				throw new \InvalidArgumentException('Array of data should be associative');
+			}
+		} else {
+			DB::beginTransaction();
+
+			try {
+				$ret = $this->createOrUpdate($data, $uniqueFields);
+				DB::commit();
+				return $ret;
+			} catch (\Exception $e) {
+				DB::rollback();
+
+				if (config()['debug']) {
+					$msg = "Error inserting/updating data in " . $this->from() . 
+						' - ' . $e->getMessage() . 
+						' - SQL: ' . $this->getLog();
+				} else {
+					$msg = 'Error inserting/updating data';
+				}
+
+				throw new \Exception($msg);
+			}
+		}
+	}
+
+	/**
+	 * Insert multiple records in a single statement
+	 * 
+	 * @param array $data_arr Array of records to insert
+	 * @param bool $hooks Whether to execute hooks
+	 * @param bool $mutators Whether to apply mutators
+	 * @return mixed Last inserted ID or false on failure
+	 */
+	function bulkInsert(array $data_arr, bool $hooks = true, bool $mutators = true)
+	{
+		if ($this->conn == null) {
+			throw new SqlException('No connection');
+		}
+
+		if (empty($data_arr)) {
+			throw new \InvalidArgumentException("No data provided for insert");
+		}
+
+		// Get fields from first record
+		$first_record = reset($data_arr);
+		if (!is_array($first_record)) {
+			throw new \InvalidArgumentException("Data must be array of arrays");
+		}
+
+		// Get all field names
+		$fields = array_keys($first_record);
+
+		// Add created_at if needed
+		$has_created_at = $this->inSchema([$this->createdAt]) && !isset($first_record[$this->createdAt]);
+		if ($has_created_at) {
+			$fields[] = $this->createdAt;
+			$at = datetime();
+		}
+
+		// Prepare values and do validation
+		$all_values = [];
+		$placeholders = [];
 		
-		Quizas pueda re-hacerse teniendo como premisa la sintaxis:
+		foreach ($data_arr as $index => $data) {
+			if ($hooks) {
+				$this->onCreating($data);
+			}
+			
+			if ($mutators) {
+				$data = $this->applyInputMutator($data, 'CREATE');
+			}
 
-        INSERT INTO tbl_name VALUES (1,2,3), (4,5,6), (7,8,9)
+			// Validate data
+			if (!empty($this->validator)) {
+				$validado = $this->validator->validate($data, $this->getRules());
+				if ($validado !== true) {
+					throw new InvalidValidationException(json_encode(
+						$this->validator->getErrors()
+					));
+				}
+			}
 
-		En cualquier caso los comodines deberian estar siempre en las mismas posiciones:
+			// Prepare values for this record
+			$record_values = [];
+			foreach ($fields as $field) {
+				if ($field === $this->createdAt && $has_created_at) {
+					$record_values[] = $at;
+				} else {
+					$record_values[] = $data[$field] ?? null;
+				}
+			}
+			
+			$all_values = array_merge($all_values, $record_values);
+			
+			// Create placeholders for this record
+			$placeholders[] = '(' . implode(',', array_fill(0, count($fields), '?')) . ')';
+		}
 
-		Ej:
-
-        INSERT INTO tbl_name VALUES (1,?,?), (4,?,?), (7,?,?)
-
-	*/
-	// function insertMultiple(array $data_arr, bool $hooks = true, bool $mutators = true)
-	// {
-	// 	if ($this->conn == null)
-	// 		throw new SqlException('No connection');
-
-	// 	$vals = [];		
-	// 	$vars = array_keys($data_arr[0]);
-
-	// 	$has_created_at =  $this->inSchema([$this->createdAt]) && !isset($vars[$this->createdAt]);
-	// 	if ($has_created_at){
-	// 		$at = datetime();
-	// 	}
+		// Build query
+		$fields_str = implode(',', $fields);
+		$values_str = implode(',', $placeholders);
 		
-	// 	foreach ($data_arr as $ix => $data){
-	// 		$this->data = $data;	
+		$q = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES $values_str";
+
+		if ($this->semicolon_ending) {
+			$q .= ';';
+		}
+
+		// Prepare and execute
+		$st = $this->conn->prepare($q);
+
+		// Bind all values
+		foreach ($all_values as $index => $value) {
+			if (is_null($value)) {
+				$type = \PDO::PARAM_NULL;
+			} elseif (is_int($value)) {
+				$type = \PDO::PARAM_INT;
+			} elseif (is_bool($value)) {
+				$type = \PDO::PARAM_BOOL;
+			} elseif (is_array($value)) {
+				$value = json_encode($value);
+				$type = \PDO::PARAM_STR;
+			} else {
+				$type = \PDO::PARAM_STR;
+			}
 			
-	// 		$data_arr[$ix] = $mutators ? $this->applyInputMutator($data, 'CREATE') : $data;
+			$st->bindValue($index + 1, $value, $type);
+		}
+
+		$this->last_bindings = $all_values;
+		$this->last_pre_compiled_query = $q;
+		$this->last_operation = 'create';
+
+		if (!$this->exec) {
+			if ($hooks) {
+				$this->onCreated($data_arr, null);
+			}
+			return null;
+		}
+
+		$result = $st->execute();
+
+		if (!isset($result)) {
+			return null;
+		}
+
+		if ($result) {
+			$last_id = $this->conn->lastInsertId();
 			
-	// 		if (empty($vars)){
-	// 			$vars = array_keys($data);
-	// 		} else {
-	// 			$vars = array_unique(array_merge($vars, array_keys($data)));
-	// 		}
-
-	// 		$vals[$ix] = array_values($data_arr[$ix]);
-
-	// 		// Validación
-	// 		if (!empty($this->validator)){
-	// 			if(!empty($this->fillable) && is_array($this->fillable)){
-	// 				foreach($vars as $var){
-	// 					if (!in_array($var,$this->fillable))
-	// 						throw new \InvalidArgumentException("`{$this->table_name}`.`$var` is no fillable");
-	// 				}
-	// 			}
-
-	// 			$validado = $this->validator->validate($data, $this->getRules());
-	// 			if ($validado !== true){
-	// 				throw new InvalidValidationException(json_encode(
-					// 	$this->validator->getErrors()
-					// ));
-	// 			} 
-	// 		}
-
-	// 		// Event hook
-	// 		if ($hooks){
-	// 			$this->onCreating($data);
-
-	// 			// Hook onCreating() can change $data
-	// 			$vars = array_keys($data);
-	// 			$vals = array_values($data);
-	// 		}
-
-	// 		if ($has_created_at){
-	// 			$vals[$ix][] = $at;
-	// 		}
-	// 	}		
-	
-	// 	if ($has_created_at){
-	// 		$vars[] = $this->createdAt;
-	// 	}
-
-	// 	$cnt = count($data_arr);
-	// 	for ($i=0; $i<$cnt; $i++){
-	// 		$sr = [];
-	// 		foreach ($vars as $ix => $var){
-	// 			$key = ":{$var}_{$i}_k_{$ix}";
-	// 			$symbols[] = $key;
-	// 			$sr[] = $key;
-	// 		}
-	// 		$str_vals[] = '('. implode(', ',$sr) . ')';
-	// 	}
-
-	// 	if (!isset($str_vars)){
-	// 		$str_vars = implode(',', $vars);
-	// 	}
-
-	// 	/*
-	// 		INSERT INTO `product_tags` (`id_tag`, `name`, `comment`, `product_id`) 
+			if ($hooks) {
+				foreach ($data_arr as $data) {
+					$this->onCreated($data, $last_id);
+				}
+			}
 			
-	// 		VALUES 
-	// 		(NULL, 'N99', 'C99', '137'), 
-	// 		(NULL, 'N100', 'C100', '138')
-	// 	*/	
+			return $last_id;
+		}
 
-	// 	$q = "INSERT INTO " . $this->from() . " ($str_vars) VALUES ". implode(',', $str_vals);
-	// 	$st = $this->conn->prepare($q);
-		
-	// 	for ($i=0; $i<$cnt; $i++){
-	// 		$cnt_vals = count($vals[$i]);
-	// 		for ($ix=0; $ix<$cnt_vals; $ix++){	
-	// 			$val = $vals[$i][$ix];	
-
-	// 			if(is_null($val)){
-	// 				$type = \PDO::PARAM_NULL;
-	// 			}elseif(isset($vars[$ix]) && $this->schema != NULL && isset($this->schema['attr_types'][$vars[$ix]])){
-	// 				$const = $this->schema['attr_types'][$vars[$ix]];
-	// 				$type = constant("PDO::PARAM_{$const}");
-	// 			}elseif(is_int($val))
-	// 				$type = \PDO::PARAM_INT;
-	// 			elseif(is_bool($val))
-	// 				$type = \PDO::PARAM_BOOL;
-	// 			elseif(is_string($val))
-	// 				$type = \PDO::PARAM_STR;	
-
-	// 			$param = ":{$vars[$ix]}_{$i}_k_{$ix}";
-	// 			$variable =  $val;
-			
-	// 			dd([$param,  $variable, $type]);
-	// 			$st->bindParam($param, $variable, $type);
-	// 		}
-	// 	}
-
-	// 	//dd($q);
-
-	// 	$this->last_bindings = $vals;
-	// 	$this->last_pre_compiled_query = $q;
-	// 	$this->last_operation = 'create';
-
-	// 	if (!$this->exec){
-	// 		// Ejecuto igual el hook a fines de poder ver la query con dd()
-
-	// 		if ($hooks){
-	// 			$this->onCreated($data, null);
-	// 		}
-			
-	// 		return NULL;
-	// 	}	
-
-	// 	$result = $st->execute();
-		
-	// 	if (!isset($result)){
-	// 		return;
-	// 	}
-
-	// 	/*
-	// 		If you insert multiple rows using a single INSERT statement, LAST_INSERT_ID() returns the value generated 
-	// 		for the first inserted row only. 
-	// 		The reason for this is to make it possible to reproduce easily the same INSERT statement against some other server.
-	// 	*/
-
-	// 	if ($result){
-	// 		// sin schema no hay forma de saber la PRI Key. Intento con 'id' 
-	// 		$id_name = ($this->schema != NULL) ? $this->schema['id_name'] : 'id';		
-
-	// 		if (isset($data[$id_name])){
-	// 			$this->last_inserted_id =	$data[$id_name];
-	// 		} else {
-	// 			$this->last_inserted_id = $this->conn->lastInsertId();
-	// 		}
-
-	// 		if ($hooks){
-	// 			$this->onCreated($data, $this->last_inserted_id);
-	// 		}
-	// 	}else {
-	// 		$this->last_inserted_id = false;	
-	// 	}
-
-	// 	return $this->last_inserted_id;		
-	// }
+		return false;
+	}
 		
 
 	function getInsertVals(){
