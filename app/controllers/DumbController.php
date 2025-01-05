@@ -11162,4 +11162,23 @@ class DumbController extends Controller
         dd($res);
     }
 
+    function test_insert_multiple(){
+        $data = [
+            [
+                'name' => 'Product 1',
+                'price' => 100,
+                'created_at' => at()
+            ],
+            [
+                'name' => 'Product 2',
+                'price' => 200,
+                'created_at' => at()
+            ]
+        ];
+        
+        $last_id = table('products')->insertMultiple($data);
+
+        dd($last_id);
+    }
+
 }   // end class
