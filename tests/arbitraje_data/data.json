@@ -1,0 +1,49 @@
+{
+  "matches": [
+    {
+      "id": 1,
+      "home": "Chelsea",
+      "away": "Liverpool",
+      "league": "Premier League",
+      "market": "Yellow Card O/U 9.5",
+      "datetime": "2025-01-05 17:30:00",
+      "odds": [
+        {
+          "bookmaker": "Bet365",
+          "type": "Over",
+          "odd": 1.85
+        },
+        {
+          "bookmaker": "Snai",
+          "type": "Under", 
+          "odd": 2.80
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "home": "Barcelona",
+      "away": "Real Madrid",
+      "league": "La Liga",
+      "market": "1X2",
+      "datetime": "2025-01-05 20:00:00",
+      "odds": [
+        {
+          "bookmaker": "Bet365",
+          "type": "1",
+          "odd": 2.10
+        },
+        {
+          "bookmaker": "Bwin",
+          "type": "X",
+          "odd": 3.40
+        },
+        {
+          "bookmaker": "William Hill",
+          "type": "2",
+          "odd": 3.50
+        }
+      ]
+    }
+  ]
+}
