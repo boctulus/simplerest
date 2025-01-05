@@ -919,12 +919,7 @@ class ModelTest extends TestCase
   function test_fill1(){     
     $u  = DB::table(get_users_table());
 
-    // Clean-up
-    $u
-    ->where(['email'=> 'testing@g.com'])
-    ->delete(true);
-
-    $id = $u->create(['email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe', 'confirmed_email' => 1]);
+    $id = $u->create(['username' => 'testing', 'email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe', 'confirmed_email' => 1]);
     $res = DB::table(get_users_table())->unhide(['password'])->latest()->first();
 
     $this->assertNotNull($res['password']);
@@ -932,13 +927,14 @@ class ModelTest extends TestCase
     // Clean-up
     $u
     ->where(['email'=> 'testing@g.com'])
-    ->delete(true);
+    ->delete(false);
   }
 
   function test_fill2(){
     $u = DB::table(get_users_table());
+
     $u->unfill(['password']);
-    $id = $u->create(['email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe']);
+    $id = $u->create(['username' => 'testing', 'email'=> 'testing@g.com', 'password'=>'pass', 'firstname'=>'Jhon', 'lastname'=>'Doe']);
     $res = DB::table(get_users_table())->unhide(['password'])->latest()->first();
     
     $this->assertNull($res['password']);
@@ -946,7 +942,7 @@ class ModelTest extends TestCase
     // Clean-up
     $u
     ->where(['email'=> 'testing@g.com'])
-    ->delete(true);
+    ->delete(false);
   }
 
 
