@@ -1687,6 +1687,22 @@ class DumbController extends Controller
         dd($ok);
     }
 
+    function test_create(){
+        $m = DB::table('products');
+    
+        $id = $m
+        ->insert([
+            'id'   => 99999931,
+            'name' => 'BAZ',
+            'cost' => '100',
+            'description' => 'asdf',
+            'slug' => 'baz-2',
+            'images' => '[]',
+        ]);
+    
+        dd($m->getLog());
+    }
+
     /*
         create()
     */
@@ -11163,31 +11179,31 @@ class DumbController extends Controller
         dd($res);
     }
 
-    function test_sql_asdf(){
-        $slug = 'test-product-' . uniqid();
+    // function test_sql_asdf(){
+    //     $slug = 'test-product-' . uniqid();
 
-        $update_data = [
-            'name' => 'Test Product',
-            'description' => 'Initial description', 
-            'slug' => $slug,
-            'images' => '[]',          
-        ];
+    //     $update_data = [
+    //         'name' => 'Test Product',
+    //         'description' => 'Initial description', 
+    //         'slug' => $slug,
+    //         'images' => '[]',          
+    //     ];
 
-        $id = DB::table('products')->createOrUpdate($update_data, ['slug']);
+    //     $id = DB::table('products')->createOrUpdate($update_data, ['slug']);
         
-        $slug = 'test-product-' . uniqid();
+    //     $slug = 'test-product-' . uniqid();
 
-        $update_data = [
-            'description' => 'Updated description',
-            'slug' => $slug  // necesario para el where
-        ];
+    //     $update_data = [
+    //         'description' => 'Updated description',
+    //         'slug' => $slug  // necesario para el where
+    //     ];
   
-        $id = DB::table('products')
-        ->dontExec()
-        ->createOrUpdate($update_data, ['slug']);
+    //     $id = DB::table('products')
+    //     ->dontExec()
+    //     ->createOrUpdate($update_data, ['slug']);
 
-        dd(DB::getLog());
-    }
+    //     dd(DB::getLog());
+    // }
 
     function test_insert_multiple(){
         $data = [
