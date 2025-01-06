@@ -11164,24 +11164,28 @@ class DumbController extends Controller
     }
 
     function test_sql_asdf(){
-        // Limpieza previa
-        DB::table('products')->where(['name' => 'Test Product'])->setSoftDelete(false)->delete();
-        
-        // Crear registro para actualizar
-        $id = DB::table('products')->create([
-            'name' => 'Test Product',
-            'description' => 'Initial description',
-            'slug' => 'test-product-' . uniqid(),
-            'images' => '[]'
-        ]);
-        
-        // Actualizar registro
-        DB::table('products')->where(['id' => $id])->update([
-            'description' => 'Updated description',
-            'cost' => '99.99'
-        ]);
+        $slug = 'test-product-' . uniqid();
 
+        $update_data = [
+            'name' => 'Test Product',
+            'description' => 'Initial description', 
+            'slug' => $slug,
+            'images' => '[]',          
+        ];
+
+        $id = DB::table('products')->createOrUpdate($update_data, ['slug']);
         
+        $slug = 'test-product-' . uniqid();
+
+        $update_data = [
+            'description' => 'Updated description',
+            'slug' => $slug  // necesario para el where
+        ];
+  
+        $id = DB::table('products')
+        ->dontExec()
+        ->createOrUpdate($update_data, ['slug']);
+
         dd(DB::getLog());
     }
 
