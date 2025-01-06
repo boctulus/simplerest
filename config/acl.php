@@ -18,8 +18,8 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     $acl = new Acl();
 
     $acl
-    // ->addRole('guest', 1) 
-    // ->setAsGuest('guest')
+    ->addRole('guest', 1) 
+    ->setAsGuest('guest')
 
     ->addRole('registered', 2)
     // ->addInherit('guest')

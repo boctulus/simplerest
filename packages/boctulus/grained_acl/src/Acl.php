@@ -27,6 +27,10 @@ class Acl extends \simplerest\core\Acl
         // get all available sp_permissions
         $this->sp_permissions = DB::table('sp_permissions')->pluck('name');
 
+        if (empty($this->sp_permissions)){
+            throw new \Exception("Unexpected empty table `sp_permissions`");
+        }
+
         // get all available roles
         $this->roles = DB::table('roles')->get();
 

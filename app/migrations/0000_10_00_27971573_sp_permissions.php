@@ -19,36 +19,33 @@ class SpPermissions implements IMigration
     */
     public function up()
     {
-        DB::statement("
-        CREATE TABLE `sp_permissions` (
-            `id` int(11) NOT NULL,
-            `name` varchar(45) NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
-        );
+        $sc = new Schema('sp_permissions');
 
-        DB::statement("
-        INSERT INTO `sp_permissions` (`id`, `name`) VALUES
-        (1, 'read_all'),
-        (2, 'read_all_folders'),
-        (3, 'read_all_trashcan'),
-        (4, 'write_all'),
-        (5, 'write_all_folders'),
-        (6, 'write_all_trashcan'),
-        (7, 'write_all_collections'),
-        (8, 'fill_all'),
-        (9, 'grant'),
-        (10, 'impersonate'),
-        (11, 'lock'),
-        (12, 'transfer');"
-        );
+        $sc
+        ->integer('id')->auto()->pri()
+        ->varchar('name', 45);
 
-        DB::statement("
-        ALTER TABLE `sp_permissions` ADD PRIMARY KEY(`id`);
-        ");
+		$sc->create();
 
-        DB::statement("
-        ALTER TABLE `sp_permissions`
-        MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");     
+        // Insertar los permisos especiales predefinidos
+        DB::table('sp_permissions')->insert([
+            ['name' => 'read_all'],
+            ['name' => 'read_all_folders'],
+            ['name' => 'read_all_trashcan'],
+            ['name' => 'write_all'],
+            ['name' => 'write_all_folders'],
+            ['name' => 'write_all_trashcan'],
+            ['name' => 'write_all_collections'],
+            ['name' => 'fill_all'],
+            ['name' => 'grant'],
+            ['name' => 'impersonate'],
+            ['name' => 'lock'],
+            ['name' => 'transfer']
+        ]); 
+    }
+
+    public function down(){
+        Schema::dropIfExists('sp_permissions');
     }
 }
 

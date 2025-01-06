@@ -457,7 +457,7 @@ class MakeCommand implements ICommand
             dd("Deleting previous roles");
 
             DB::table('roles')
-            ->where([1, 1])
+            ->whereRaw("1=1")
             ->delete();
         }   
 
