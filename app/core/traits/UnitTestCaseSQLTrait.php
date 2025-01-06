@@ -54,6 +54,20 @@ trait UnitTestCaseSQLTrait
                 $sql
             );
         }    
+
+         // Normalizar fechas en condiciones de igualdad (UPDATE/WHERE)
+        $sql = preg_replace(
+            "/(created_at|updated_at|deleted_at)\s*=\s*'[\d\-\s\:]+'/" ,
+            "$1 = '$default_datetime'",
+            $sql
+        );
+
+        // Normalizar fechas en VALUES (INSERT)
+        $sql = preg_replace(
+            "/VALUES\s*\((.*?)'[\d\-\s\:]+'\s*(.*?)\)/i",
+            "VALUES ($1'$default_datetime'$2)",
+            $sql
+        );
     
         return trim($sql);
     }

@@ -1722,29 +1722,7 @@ class Model {
 		
 		foreach($vals as $ix => $val)
 		{				
-			if(is_null($val)){
-				$type = \PDO::PARAM_NULL; // 0
-			}elseif(is_int($val))
-				$type = \PDO::PARAM_INT;  // 1
-			elseif(is_bool($val))
-				$type = \PDO::PARAM_BOOL; // 5
-			elseif(is_string($val)){
-				if(mb_strlen($val) < 4000){
-					$type = \PDO::PARAM_STR;  // 2
-				} else {
-					$type = \PDO::PARAM_LOB;  // 3
-				}
-			}elseif(is_float($val))
-				$type = \PDO::PARAM_STR;  // 2
-			elseif(is_resource($val))	
-				// https://stackoverflow.com/a/36724762/980631
-				$type = \PDO::PARAM_LOB;  // 3
-			elseif(is_array($val)){
-				throw new \Exception("where value can not be an array!");				
-			}else {
-				throw new \Exception("Unsupported type: " . var_export($val, true));
-			}	
-
+			$type = $this->getParamType($val);
 			$st->bindValue($ix +1 , $val, $type);
 			//echo "Bind: ".($ix+1)." - $val ($type)\n";
 		}
@@ -1769,19 +1747,26 @@ class Model {
 
 	private function _dd($pre_compiled_sql, $bindings){		
 		foreach($bindings as $ix => $val){			
+			// var_dump($val);
+			// var_dump(is_string($val));
+
 			if(is_null($val)){
 				$bindings[$ix] = 'NULL';
 			}elseif(isset($vars[$ix]) && isset($this->schema['attr_types'][$val])){
 				$const = $this->schema['attr_types'][$val];
+			
 				if ($const == 'STR')
 					$bindings[$ix] = "'$val'";
+				
 			}elseif(is_int($val)){
 				// pass
 			}
 			elseif(is_bool($val)){
 				// pass
-			} elseif(is_string($val))
+			} elseif(is_string($val)){
 				$bindings[$ix] = "'$val'";	
+			}
+				
 		}
 
 		$sql = Arrays::strReplace('?', $bindings, $pre_compiled_sql);
@@ -2408,60 +2393,66 @@ class Model {
 			$conditions = [$conditions];
 
 		$_where = [];
-
 		$vars   = [];
 		$ops    = [];
+
 		if (count($conditions)>0){
 			if(is_array($conditions[Arrays::arrayKeyFirst($conditions)])){
-
 				foreach ($conditions as $ix => $cond) {
 					$unqualified_field = $this->unqualifyField($cond[0]);
 					$field             = $this->getFullyQualifiedField($cond[0]);
-					$field     	       = $this->getWrapFieldName($field); // <--- wrap
+					$field             = $this->getWrapFieldName($field); 
 				
 					if ($field == null)
 						throw new SqlException("Field can not be NULL");
 				
 					if(is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN'])))
 					{   
-						// Determinar si se deben comillar los valores
-						$should_quote = true;
-						
-						if ($this->isDecimalField($unqualified_field) && !$this->shouldQuoteDecimals()) {
-							$should_quote = false;
-						} else if (isset($this->schema['attr_types'][$unqualified_field])) {
-							$should_quote = $this->schema['attr_types'][$unqualified_field] == 'STR';
-						}
-				
-						// Aplicar comillas si corresponde
-						if ($should_quote) {
-							$cond[1] = array_map(function($e){ return "'$e'";}, $cond[1]);
-						}
-						
 						$in_val = implode(', ', $cond[1]);
-						
 						$op = isset($cond[2]) ? $cond[2] : 'IN';
 						$_where[] = "$field $op ($in_val) ";    
 					} else {
 						$vars[] = $field;
-						$this->w_vals[] = $cond[1];
-				
+						
+						// Aquí verificamos el tipo según el schema
+						if (isset($this->schema['attr_types'][$unqualified_field])) {
+							$const = $this->schema['attr_types'][$unqualified_field];
+							if ($const == 'INT') {
+								$this->w_vals[] = (int)$cond[1];
+							} else {
+								$this->w_vals[] = $cond[1];
+							}
+						} else {
+							$this->w_vals[] = $cond[1];
+						}
+
 						if ($cond[1] === NULL && (empty($cond[2]) || $cond[2]=='='))
 							$ops[] = 'IS';
 						else    
 							$ops[] = $cond[2] ?? '=';
 					}    
 				}
-
-			}else{
-				$vars[]         = $conditions[0];
-				$this->w_vals[] = $conditions[1];
+			} else {
+				$vars[]            = $conditions[0];
+				$unqualified_field = $this->unqualifyField($conditions[0]);
+				
+				// Mismo tratamiento para el caso simple
+				if (isset($this->schema['attr_types'][$unqualified_field])) {
+					$const = $this->schema['attr_types'][$unqualified_field];
+					if ($const == 'INT') {
+						$this->w_vals[] = (int)$conditions[1];
+					} else {
+						$this->w_vals[] = $conditions[1];
+					}
+				} else {
+					$this->w_vals[] = $conditions[1];
+				}
 		
 				if ($conditions[1] === NULL && (empty($conditions[2]) || $conditions[2]== '='))
 					$ops[] = 'IS';
-				else	
+				else    
 					$ops[] = $conditions[2] ?? '='; 
-			}	
+			}   
 		}
 
 		foreach($vars as $ix => $var){
@@ -3029,27 +3020,27 @@ class Model {
 
 		///////////////[ BUG FIXES ]/////////////////
 
-		$_vals = [];
-		$reps  = 0;
-		foreach($vals as $ix => $val)
-		{				
-			if($val === NULL){
-				$q = Strings::replaceNth('?', 'NULL', $q, $ix+1-$reps);
-				$reps++;
+		// $_vals = [];
+		// $reps  = 0;
+		// foreach($vals as $ix => $val)
+		// {				
+		// 	if($val === NULL){
+		// 		$q = Strings::replaceNth('?', 'NULL', $q, $ix+1-$reps);
+		// 		$reps++;
 
-			/*
-				Corrección para operaciones entre enteros y floats en PGSQL
-			*/
-			} elseif(DB::driver() == DB::PGSQL && is_float($val)){ 
-				$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
-				$reps++;
-				$_vals[] = $val;
-			} else {
-				$_vals[] = $val;
-			}
-		}
+		// 	/*
+		// 		Corrección para operaciones entre enteros y floats en PGSQL
+		// 	*/
+		// 	} elseif(DB::driver() == DB::PGSQL && is_float($val)){ 
+		// 		$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
+		// 		$reps++;
+		// 		$_vals[] = $val;
+		// 	} else {
+		// 		$_vals[] = $val;
+		// 	}
+		// }
 
-		$vals = $_vals;
+		// $vals = $_vals;
 
 		///////////////////////////////////////////
 
@@ -3065,7 +3056,7 @@ class Model {
 		foreach($vals as $ix => $val){		
 			if(is_array($val)){
 				if (isset($this->schema['attr_types'][$vars[$ix]]) && !$this->schema['attr_types'][$vars[$ix]] == 'STR'){
-					throw new \InvalidArgumentException("Param '{[$vars[$ix]}' is not expected to be an string. Given '$val'");
+					throw new \InvalidArgumentException("Param '{[$vars[$ix]}' is not expected to be an string. Given array");
 				} else {
 					$val = json_encode($val);
 					$type = \PDO::PARAM_STR;
@@ -3091,6 +3082,9 @@ class Model {
 		$this->last_pre_compiled_query = $q;
 		$this->last_operation = ($this->current_operation !== null) ? $this->current_operation : 'update';
 	 
+		// var_dump($vals);
+		// dd($this->last_bindings, $this->last_pre_compiled_query);
+
 		if (!$this->exec){
 			return 0;
 		}
@@ -3584,57 +3578,250 @@ class Model {
 		}
 	}
 
-	function insert(array $data, bool $ignore_duplicates = false){
-		if (!Arrays::isAssoc($data)){
-			if (is_array($data[0]))
-			{	
+	/**
+	 * Main method for inserting records with full model lifecycle
+	 * 
+	 * @param array $data Single record or array of records
+	 * @param bool $useTransaction Whether to wrap in transaction
+	 * @return mixed Last inserted ID or false on failure
+	 * @throws \Exception On validation or database errors
+	 */
+	function insert(array $data, bool $useTransaction = true) 
+	{
+		if ($this->conn == null) {
+			throw new SqlException('No connection');
+		}
+
+		// Single record
+		if (Arrays::isAssoc($data)) {
+			if ($useTransaction) {
 				DB::beginTransaction();
-			
-				try {
-					$ret = $this->create($data, $ignore_duplicates);
-					DB::commit();
-				} catch (\Exception $e){
-					//
-					// Si el modo NO es DEBUG => NO! incluir la sentencia SQL  (revisar en todos lados)
-					//
-
-					$val_str = implode(',', $this->getLastBindingParamters());
-					
-					DB::rollback();
-
-					if (config()['debug']){
-						$msg = "Error inserting data from ". $this->from() . ' - ' .$e->getMessage() . '- SQL: '. $this->getLog();
-					} else {
-						$msg = 'Error inserting data';
-					}
-
-					throw new \Exception($msg);
-				}
-				
-				return $ret; 
-			} else {
-				throw new \InvalidArgumentException('Array of data should be associative');
 			}
-		} else {
-			DB::beginTransaction();
 
 			try {
-				$ret = $this->create($data, $ignore_duplicates);
-				DB::commit();
+				$this->ignoreFieldsNotPresentInSchema($data);
+				$this->data = $data;
+				
+				$this->onCreating($data);
+				$data = $this->applyInputMutator($data, 'CREATE');
 
-				return $ret;
-			} catch (\Exception $e){
-				DB::rollback();
-
-				if (config()['debug']){
-					$msg = "Error inserting data from ". $this->from() . ' - ' .$e->getMessage() . '- SQL: '. $this->getLog();
-				} else {
-					$msg = 'Error inserting data';
+				if (!empty($this->validator)) {
+					$validado = $this->validator->validate($data, $this->getRules());
+					if ($validado !== true) {
+						throw new InvalidValidationException(json_encode($this->validator->getErrors()));
+					}
 				}
 
-				throw new \Exception($msg);
+				if ($this->inSchema([$this->createdAt]) && !isset($data[$this->createdAt])) {
+					$this->fill([$this->createdAt]);
+					$data[$this->createdAt] = datetime();
+				}
+
+				$ret = $this->executeInsert($data);
+
+				if ($useTransaction) {
+					DB::commit();
+				}
+
+				$this->onCreated($data, $ret);
+				return $ret;
+
+			} catch (\Exception $e) {
+				if ($useTransaction) {
+					DB::rollback();
+				}
+				throw $e;
 			}
 		}
+
+		// Multiple records
+		if ($useTransaction) {
+			DB::beginTransaction();
+		}
+
+		try {
+			$ret = null;
+			foreach ($data as $record) {
+				$ret = $this->insert($record, false);
+			}
+			
+			if ($useTransaction) {
+				DB::commit();
+			}
+			return $ret;
+
+		} catch (\Exception $e) {
+			if ($useTransaction) {
+				DB::rollback();
+			}
+			throw $e;
+		}
+	}
+
+	/**
+	 * Direct database insert bypassing hooks and mutators
+	 * Use with caution - skips model lifecycle events
+	 * 
+	 * @param array $data Data to insert
+	 * @return mixed Last inserted ID or false
+	 */
+	function rawInsert(array $data) 
+	{
+		if ($this->conn == null) {
+			throw new SqlException('No connection');
+		}
+
+		if (Arrays::isAssoc($data)) {
+			return $this->executeInsert($data);
+		}
+
+		$ret = null;
+		foreach ($data as $record) {
+			$ret = $this->executeInsert($record);
+		}
+		return $ret;
+	}
+
+	private function getParamType($val): int 
+	{
+		if(is_null($val)){
+			return \PDO::PARAM_NULL; // 0
+		}elseif(is_int($val)){
+			return \PDO::PARAM_INT;  // 1
+		}elseif(is_bool($val)){
+			return \PDO::PARAM_BOOL; // 5
+		}elseif(is_string($val)){
+			if(mb_strlen($val) < 4000){
+				return \PDO::PARAM_STR;  // 2
+			} else {
+				return \PDO::PARAM_LOB;  // 3
+			}
+		}elseif(is_float($val)){
+			return \PDO::PARAM_STR;  // 2
+		}elseif(is_resource($val)){
+			// https://stackoverflow.com/a/36724762/980631
+			return \PDO::PARAM_LOB;  // 3
+		}elseif(is_array($val)){
+			throw new \Exception("where value can not be an array!");
+		}else {
+			throw new \Exception("Unsupported type: " . var_export($val, true));
+		}
+	}
+
+	/**
+	 * Optimized bulk insert using single query
+	 * 
+	 * @param array $data Array of records to insert
+	 * @param int $batchSize Maximum records per query
+	 * @return mixed Last inserted ID or false
+	 */
+	function bulkInsert(array $data, int $batchSize = 1000) 
+	{
+		if ($this->conn == null) {
+			throw new SqlException('No connection');
+		}
+
+		if (empty($data)) {
+			throw new \InvalidArgumentException("No data provided for bulk insert");
+		}
+
+		// Get fields from first record
+		$first_record = reset($data);
+		if (!is_array($first_record) || Arrays::isAssoc($first_record)) {
+			throw new \InvalidArgumentException("Data must be array of arrays");
+		}
+
+		$fields = array_keys($first_record);
+		if ($this->inSchema([$this->createdAt]) && !isset($first_record[$this->createdAt])) {
+			$fields[] = $this->createdAt;
+			$at = datetime();
+		}
+
+		// Process in batches
+		$last_id = null;
+		foreach (array_chunk($data, $batchSize) as $batch) {
+			$all_values = [];
+			$placeholders = [];
+			
+			foreach ($batch as $record) {
+				$record_values = [];
+				foreach ($fields as $field) {
+					if ($field === $this->createdAt) {
+						$record_values[] = $at;
+					} else {
+						$value = $record[$field] ?? null;
+						if (is_array($value)) {
+							$value = json_encode($value);
+						}
+						$record_values[] = $value;
+					}
+				}
+				
+				$all_values = array_merge($all_values, $record_values);
+				$placeholders[] = '(' . implode(',', array_fill(0, count($fields), '?')) . ')';
+			}
+
+			// Build and execute query
+			$fields_str = implode(',', $fields);
+			$values_str = implode(',', $placeholders);
+			
+			$q = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES $values_str";
+			
+			$st = $this->conn->prepare($q);
+
+			// Bind values
+			foreach ($all_values as $index => $value) {
+				$type = $this->getParamType($value);				
+				$st->bindValue($index + 1, $value, $type);
+			}
+
+			$this->last_bindings = $all_values;
+			$this->last_pre_compiled_query = $q;
+
+			if (!$st->execute()) {
+				return false;
+			}
+
+			$last_id = $this->conn->lastInsertId();
+		}
+
+		return $last_id;
+	}
+
+	/**
+	 * Helper method to execute single record insert
+	 * Used by both insert() and rawInsert()
+	 */
+	private function executeInsert(array $data) 
+	{
+		$vars = array_keys($data);
+		$placeholders = array_fill(0, count($vars), '?');
+		
+		$fields_str = implode(',', $vars);
+		$values_str = implode(',', $placeholders);
+		
+		$q = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES ($values_str)";
+		
+		$st = $this->conn->prepare($q);
+
+		foreach ($data as $index => $value) {
+			$type = $this->getParamType($value);
+			
+			if (is_array($value)) {
+				$value = json_encode($value);
+			}
+			
+			$st->bindValue($index + 1, $value, $type);
+		}
+
+		$this->last_bindings = array_values($data);
+		$this->last_pre_compiled_query = $q;
+
+		if (!$st->execute()) {
+			return false;
+		}
+
+		return $this->conn->lastInsertId();
 	}
 
 	function insertOrIgnore(array $data){
@@ -3701,142 +3888,6 @@ class Model {
 		}
 	}
 
-	/**
-	 * Insert multiple records in a single statement
-	 * 
-	 * @param array $data_arr Array of records to insert
-	 * @param bool $hooks Whether to execute hooks
-	 * @param bool $mutators Whether to apply mutators
-	 * @return mixed Last inserted ID or false on failure
-	 */
-	function bulkInsert(array $data_arr, bool $hooks = true, bool $mutators = true)
-	{
-		if ($this->conn == null) {
-			throw new SqlException('No connection');
-		}
-
-		if (empty($data_arr)) {
-			throw new \InvalidArgumentException("No data provided for insert");
-		}
-
-		// Get fields from first record
-		$first_record = reset($data_arr);
-		if (!is_array($first_record)) {
-			throw new \InvalidArgumentException("Data must be array of arrays");
-		}
-
-		// Get all field names
-		$fields = array_keys($first_record);
-
-		// Add created_at if needed
-		$has_created_at = $this->inSchema([$this->createdAt]) && !isset($first_record[$this->createdAt]);
-		if ($has_created_at) {
-			$fields[] = $this->createdAt;
-			$at = datetime();
-		}
-
-		// Prepare values and do validation
-		$all_values = [];
-		$placeholders = [];
-		
-		foreach ($data_arr as $index => $data) {
-			if ($hooks) {
-				$this->onCreating($data);
-			}
-			
-			if ($mutators) {
-				$data = $this->applyInputMutator($data, 'CREATE');
-			}
-
-			// Validate data
-			if (!empty($this->validator)) {
-				$validado = $this->validator->validate($data, $this->getRules());
-				if ($validado !== true) {
-					throw new InvalidValidationException(json_encode(
-						$this->validator->getErrors()
-					));
-				}
-			}
-
-			// Prepare values for this record
-			$record_values = [];
-			foreach ($fields as $field) {
-				if ($field === $this->createdAt && $has_created_at) {
-					$record_values[] = $at;
-				} else {
-					$record_values[] = $data[$field] ?? null;
-				}
-			}
-			
-			$all_values = array_merge($all_values, $record_values);
-			
-			// Create placeholders for this record
-			$placeholders[] = '(' . implode(',', array_fill(0, count($fields), '?')) . ')';
-		}
-
-		// Build query
-		$fields_str = implode(',', $fields);
-		$values_str = implode(',', $placeholders);
-		
-		$q = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES $values_str";
-
-		if ($this->semicolon_ending) {
-			$q .= ';';
-		}
-
-		// Prepare and execute
-		$st = $this->conn->prepare($q);
-
-		// Bind all values
-		foreach ($all_values as $index => $value) {
-			if (is_null($value)) {
-				$type = \PDO::PARAM_NULL;
-			} elseif (is_int($value)) {
-				$type = \PDO::PARAM_INT;
-			} elseif (is_bool($value)) {
-				$type = \PDO::PARAM_BOOL;
-			} elseif (is_array($value)) {
-				$value = json_encode($value);
-				$type = \PDO::PARAM_STR;
-			} else {
-				$type = \PDO::PARAM_STR;
-			}
-			
-			$st->bindValue($index + 1, $value, $type);
-		}
-
-		$this->last_bindings = $all_values;
-		$this->last_pre_compiled_query = $q;
-		$this->last_operation = 'create';
-
-		if (!$this->exec) {
-			if ($hooks) {
-				$this->onCreated($data_arr, null);
-			}
-			return null;
-		}
-
-		$result = $st->execute();
-
-		if (!isset($result)) {
-			return null;
-		}
-
-		if ($result) {
-			$last_id = $this->conn->lastInsertId();
-			
-			if ($hooks) {
-				foreach ($data_arr as $data) {
-					$this->onCreated($data, $last_id);
-				}
-			}
-			
-			return $last_id;
-		}
-
-		return false;
-	}
-		
 
 	function getInsertVals(){
 		return $this->insert_vars;
