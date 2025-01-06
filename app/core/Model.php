@@ -311,15 +311,7 @@ class Model {
 
 		$to_fill = [];
 
-		// if (!empty($this->schema['id_name'])){
-		// 	$to_fill[] = $this->schema['id_name'];
-		// }
-
-		$this->fill($to_fill);		
-
-		$this->unfill([ 
-			$this->id() 
-		]);
+		$this->fill($to_fill);	
 		
 		$this->soft_delete = $this->inSchema([$this->deletedAt]);
 
@@ -3759,6 +3751,54 @@ class Model {
 	}
 
 	/**
+	 * Get PDO parameter type for binding, handling schema types and JSON arrays
+	 *
+	 * @param mixed $val The value to check
+	 * @param string|null $field The field name from schema
+	 * @return array Returns [processed_value, param_type]
+	 */
+	private function getBindValueAndType($val, ?string $field = null): array 
+	{
+		// Handle arrays (potential JSON)
+		if(is_array($val)){
+			if (isset($this->schema['attr_types'][$field]) && 
+				!$this->schema['attr_types'][$field] == 'STR'){
+				throw new \InvalidArgumentException(
+					"Param '{$field}' is not expected to be an string. Given array"
+				);
+			} 
+			return [json_encode($val), \PDO::PARAM_STR];
+		}
+
+		// Handle schema-defined types
+		if(isset($field) && isset($this->schema['attr_types'][$field])){
+			$const = $this->schema['attr_types'][$field];
+			return [$val, constant("PDO::PARAM_{$const}")];
+		}
+
+		// Handle standard types
+		if(is_null($val)){
+			return [$val, \PDO::PARAM_NULL];
+		}elseif(is_int($val)){
+			return [$val, \PDO::PARAM_INT];
+		}elseif(is_bool($val)){
+			return [$val, \PDO::PARAM_BOOL];
+		}elseif(is_string($val)){
+			if(mb_strlen($val) < 4000){
+				return [$val, \PDO::PARAM_STR];
+			} else {
+				return [$val, \PDO::PARAM_LOB];
+			}
+		}elseif(is_float($val)){
+			return [$val, \PDO::PARAM_STR];
+		}elseif(is_resource($val)){
+			return [$val, \PDO::PARAM_LOB];
+		}else {
+			throw new \Exception("Unsupported type: " . var_export($val, true));
+		}
+	}
+
+	/**
 	 * Helper method to execute single record insert
 	 * Used by both insert() and rawInsert()
 	 */
@@ -3774,14 +3814,11 @@ class Model {
 		
 		$st = $this->conn->prepare($q);
 
-		foreach ($data as $index => $value) {
-			$type = $this->getParamType($value);
-			
-			if (is_array($value)) {
-				$value = json_encode($value);
-			}
-			
-			$st->bindValue($index + 1, $value, $type);
+		// Corregimos aquí - los índices de PDO empiezan en 1
+		$index = 1; // En lugar de usar $index como la clave del array
+		foreach ($data as $value) {
+			list($processed_val, $type) = $this->getBindValueAndType($value);
+			$st->bindValue($index++, $processed_val, $type);
 		}
 
 		$this->last_bindings = array_values($data);
