@@ -2395,64 +2395,58 @@ class Model {
 		$_where = [];
 		$vars   = [];
 		$ops    = [];
-
+		
 		if (count($conditions)>0){
 			if(is_array($conditions[Arrays::arrayKeyFirst($conditions)])){
+
 				foreach ($conditions as $ix => $cond) {
 					$unqualified_field = $this->unqualifyField($cond[0]);
 					$field             = $this->getFullyQualifiedField($cond[0]);
-					$field             = $this->getWrapFieldName($field); 
+					$field     	       = $this->getWrapFieldName($field); // <--- wrap
 				
 					if ($field == null)
 						throw new SqlException("Field can not be NULL");
 				
 					if(is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN'])))
 					{   
+						// Determinar si se deben comillar los valores
+						$should_quote = true;
+						
+						if ($this->isDecimalField($unqualified_field) && !$this->shouldQuoteDecimals()) {
+							$should_quote = false;
+						} else if (isset($this->schema['attr_types'][$unqualified_field])) {
+							$should_quote = $this->schema['attr_types'][$unqualified_field] == 'STR';
+						}
+				
+						// Aplicar comillas si corresponde
+						if ($should_quote) {
+							$cond[1] = array_map(function($e){ return "'$e'";}, $cond[1]);
+						}
+						
 						$in_val = implode(', ', $cond[1]);
+						
 						$op = isset($cond[2]) ? $cond[2] : 'IN';
 						$_where[] = "$field $op ($in_val) ";    
 					} else {
 						$vars[] = $field;
-						
-						// Aquí verificamos el tipo según el schema
-						if (isset($this->schema['attr_types'][$unqualified_field])) {
-							$const = $this->schema['attr_types'][$unqualified_field];
-							if ($const == 'INT') {
-								$this->w_vals[] = (int)$cond[1];
-							} else {
-								$this->w_vals[] = $cond[1];
-							}
-						} else {
-							$this->w_vals[] = $cond[1];
-						}
-
+						$this->w_vals[] = $cond[1];
+				
 						if ($cond[1] === NULL && (empty($cond[2]) || $cond[2]=='='))
 							$ops[] = 'IS';
 						else    
 							$ops[] = $cond[2] ?? '=';
 					}    
 				}
-			} else {
-				$vars[]            = $conditions[0];
-				$unqualified_field = $this->unqualifyField($conditions[0]);
-				
-				// Mismo tratamiento para el caso simple
-				if (isset($this->schema['attr_types'][$unqualified_field])) {
-					$const = $this->schema['attr_types'][$unqualified_field];
-					if ($const == 'INT') {
-						$this->w_vals[] = (int)$conditions[1];
-					} else {
-						$this->w_vals[] = $conditions[1];
-					}
-				} else {
-					$this->w_vals[] = $conditions[1];
-				}
+
+			}else{
+				$vars[]         = $conditions[0];
+				$this->w_vals[] = $conditions[1];
 		
 				if ($conditions[1] === NULL && (empty($conditions[2]) || $conditions[2]== '='))
 					$ops[] = 'IS';
-				else    
+				else	
 					$ops[] = $conditions[2] ?? '='; 
-			}   
+			}	
 		}
 
 		foreach($vars as $ix => $var){
@@ -3549,34 +3543,10 @@ class Model {
 	 * @param array|null $uniqueFields Fields to check for existing record. If null, uses schema unique fields
 	 * @return mixed Last inserted ID or number of updated records
 	 */
-	function createOrUpdate(array $data, ?array $uniqueFields = null) 
-	{
-		// If no unique fields specified, get from schema
-		if ($uniqueFields === null) {
-			if (empty($this->schema) || empty($this->schema['uniques'])) {
-				throw new \InvalidArgumentException("No unique fields specified and none found in schema");
-			}
-			$uniqueFields = $this->schema['uniques'];
-		}
-
-		// Build where conditions for unique fields
-		$conditions = [];
-		foreach ($uniqueFields as $field) {
-			if (!isset($data[$field])) {
-				throw new \InvalidArgumentException("Required unique field '$field' not found in data");
-			}
-			$conditions[] = [$field, $data[$field]];
-		}
-
-		// Check if record exists
-		$exists = $this->where($conditions)->exists();
-
-		if ($exists) {
-			return $this->where($conditions)->update($data);
-		} else {
-			return $this->create($data);
-		}
-	}
+	// function createOrUpdate(array $data, ?array $uniqueFields = null) 
+	// {
+		
+	// }
 
 	/**
 	 * Main method for inserting records with full model lifecycle
