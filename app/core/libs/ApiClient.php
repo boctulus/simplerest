@@ -458,6 +458,14 @@ class ApiClient
         return $raw ? $this->raw_response : $this->response;
     }
 
+    function getDataOrFail(bool $raw = false){
+        if ($this->error()){
+            throw new \Exception('ApiClient: ' . $this->error());
+        }
+
+        return $this->data($raw);
+    }
+
     function getResponse($decode = null, $as_array = null){       
         if ($decode === null){
             $decode = $this->auto_decode;
