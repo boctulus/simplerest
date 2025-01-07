@@ -19,6 +19,10 @@ if (!$acl_cache || is_file($acl_file) !== true) {
 
     $acl
     ->addRole('guest', 1) 
+    ->addSpecialPermissions([
+        'read_all',
+        'write_all',
+    ])
     ->setAsGuest('guest')
 
     ->addRole('registered', 2)

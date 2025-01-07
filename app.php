@@ -83,6 +83,13 @@ foreach ($includes as $file_entry){
 }
     
 $config = include __DIR__ . '/config/config.php';
+
+if ($config['debug']){
+    if (function_exists('opcache_reset')) {
+        opcache_reset();
+    }
+}
+
         
 /*
     i18n
