@@ -50,24 +50,12 @@ class Url
         return $default;
     }
 
-    static function isURL(string $url){
-        return Strings::startsWith('http://', $url) || Strings::startsWith('https://', $url);
+    static function validate(string $url): bool {
+        return filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
 
-    static function isValid(string $url){
-        if (!static::isURL($url)){
-            return false;
-        }
-
-        return filter_var($url, FILTER_VALIDATE_URL);
-    }
-
-    static function validate(string $url){
-        return filter_var($url, FILTER_VALIDATE_URL);
-    }
-    
-    static function validateOrFail(string $url){
-        if (!filter_var($url, FILTER_VALIDATE_URL)){
+    static function validateOrFail(string $url): void {
+        if (!self::validate($url)) {
             throw new \InvalidArgumentException("URL '$url' is invalid");
         }
     }
