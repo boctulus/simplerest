@@ -46,7 +46,31 @@ O quizas mas breve:
   PROMPT;
 
 
-- GENERAR DOCUMENTACION COMPLETA de SR y SW usando alguna herramienta y complementar con la DOC que tengo ya creada.
+- Enfoque hibrido para documentar Starlight y Doxygen:
+
+. Usar Doxygen para generar la documentación técnica inicial desde el código
+. Usar Starlight para la documentación de alto nivel y guías de usuario
+. Vincular ambas documentaciones entre sí
+
+Flujo para Doxygen
+
+  // 1. Procesar clases y métodos
+  $classes = ['Class1', 'Class2']; // Lista de tus clases
+  foreach ($classes as $className) {
+      $reflection = new ReflectionClass($className);
+      foreach ($reflection->getMethods() as $method) {
+          // 2. Generar DocBlock base y enviarlo a IA
+          $baseDocBlock = Reflector::generateDocBlock($className, $method->getName());
+          $completedDocBlock = callAI($baseDocBlock, $method->getCode());
+          
+          // 3. Insertar DocBlock
+          insertDocBlock($method, $completedDocBlock);
+      }
+  }
+  // 4. Ejecutar Doxygen para generar la documentación técnica
+
+
+- Complementar con la DOC en .txt que tengo ya creada.
 
 Ver la DOC de otros frameworks y como podrian estar generandolas:
 
