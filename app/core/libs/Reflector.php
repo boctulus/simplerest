@@ -13,6 +13,126 @@ namespace simplerest\core\libs;
 class Reflector
 {
     static array $info_constructor = [];
+    static array $class_cache = [];
+
+    /**
+     * Obtiene toda la información documentable de una clase
+     * 
+     * @param string $class_name Nombre completo de la clase
+     * @return array Información completa de la clase
+     */
+    static function getClassInfo(string $class_name): array
+    {
+        if (isset(static::$class_cache[$class_name])) {
+            return static::$class_cache[$class_name];
+        }
+
+        $reflection = new \ReflectionClass($class_name);
+        
+        return static::$class_cache[$class_name] = [
+            'name' => $reflection->getName(),
+            'namespace' => $reflection->getNamespaceName(),
+            'doc_comment' => $reflection->getDocComment(),
+            'is_abstract' => $reflection->isAbstract(),
+            'constants' => static::getConstants($reflection),
+            'properties' => static::getProperties($reflection),
+            'methods' => static::getAllMethodsInfo($reflection),
+            'constructor_info' => static::getConstructor($class_name)
+        ];
+    }
+
+    /**
+     * Obtiene las constantes definidas en la clase
+     * 
+     * @param \ReflectionClass $reflection
+     * @return array
+     */
+    static function getConstants(\ReflectionClass $reflection): array
+    {
+        $constants = [];
+        foreach ($reflection->getReflectionConstants() as $const) {
+            $constants[] = [
+                'name' => $const->getName(),
+                'value' => $const->getValue(),
+                'doc_comment' => $const->getDocComment()
+            ];
+        }
+        return $constants;
+    }
+
+    /**
+     * Obtiene información de todas las propiedades
+     * 
+     * @param \ReflectionClass $reflection
+     * @return array
+     */
+    static function getProperties(\ReflectionClass $reflection): array
+    {
+        $properties = [];
+        foreach ($reflection->getProperties() as $prop) {
+            $properties[] = [
+                'name' => $prop->getName(),
+                'type' => $prop->getType() ? $prop->getType()->getName() : null,
+                'doc_comment' => $prop->getDocComment(),
+                'visibility' => (
+                    $prop->isPrivate() ? 'private' : 
+                    ($prop->isProtected() ? 'protected' : 'public')
+                ),
+                'is_static' => $prop->isStatic()
+            ];
+        }
+        return $properties;
+    }
+
+    /**
+     * Obtiene información detallada de todos los métodos
+     * 
+     * @param \ReflectionClass $reflection
+     * @return array
+     */
+    static function getAllMethodsInfo(\ReflectionClass $reflection): array
+    {
+        $methods = [];
+        foreach ($reflection->getMethods() as $method) {
+            $methods[] = [
+                'name' => $method->getName(),
+                'doc_comment' => $method->getDocComment(),
+                'visibility' => (
+                    $method->isPrivate() ? 'private' : 
+                    ($method->isProtected() ? 'protected' : 'public')
+                ),
+                'is_static' => $method->isStatic(),
+                'parameters' => static::getMethodParameters($method),
+                'return_type' => $method->getReturnType() ? 
+                    $method->getReturnType()->getName() : null
+            ];
+        }
+        return $methods;
+    }
+
+    /**
+     * Obtiene información detallada de los parámetros de un método
+     * 
+     * @param \ReflectionMethod $method
+     * @return array
+     */
+    static function getMethodParameters(\ReflectionMethod $method): array
+    {
+        $params = [];
+        foreach ($method->getParameters() as $param) {
+            $params[] = [
+                'name' => $param->getName(),
+                'type' => $param->getType() ? $param->getType()->getName() : null,
+                'is_optional' => $param->isOptional(),
+                'has_default' => $param->isDefaultValueAvailable(),
+                'default_value' => $param->isDefaultValueAvailable() ? 
+                    $param->getDefaultValue() : null,
+                'is_variadic' => $param->isVariadic(),
+                'is_passed_by_reference' => $param->isPassedByReference()
+            ];
+        }
+        return $params;
+    }
 
     /**
      * Retrieves information about the constructor parameters of a given class.
@@ -30,7 +150,7 @@ class Reflector
         $constructor = $reflection->getConstructor();
 
         if (!$constructor) {
-            return null; // No hay constructor
+            return null;
         }
 
         $params = $constructor->getParameters();
@@ -90,46 +210,34 @@ class Reflector
         return static::$info_constructor[$class_name];
     }
 
+    static function getMethods(string $class_name, $filter = null): array
+    {
+        $reflection = new \ReflectionClass($class_name);
+        return $reflection->getMethods($filter);
+    }
 
     /**
      * Retrieves public methods of a class
      * 
      * @param string $class_name The name of the class.
-     * @param string $prefix The prefix to filter methods by.
-     * @return array An array containing the names of public methods that start with the specified prefix.
+     * @return array An array containing the public methods
      */
     static function getPublicMethods(string $class_name): array
     {
-        $reflection = new \ReflectionClass($class_name);
-        $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
-
-        return $methods;
+        return static::getMethods($class_name, \ReflectionMethod::IS_PUBLIC);
     }
 
-
-    /*
+    /**
      * Retrieves public methods of a class that start with a specific prefix.
      * 
      * @param string $class_name The name of the class.
      * @param string $prefix The prefix to filter methods by.
+     * @param int $filter For example \ReflectionMethod::IS_PUBLIC) to retrive public methods
      * @return array An array containing the names of public methods that start with the specified prefix.
-     * 
-        Ej:
-      
-        $site = static::__getSite($url);
-    
-        // Obtener los métodos públicos que empiezan con "isBuiltWith"
-        $callbacks = Reflector::getPublicMethodsStartingWith(__CLASS__, 'isBuiltWith');
-    
-        foreach ($callbacks as $cb) {
-            if (static::$cb($site)){
-                return substr($cb, 11); // luego de "isBuiltWith"
-            }
-        }
      */
-    static function getPublicMethodsStartingWith(string $class_name, string $prefix): array
+    static function getMethodsStartingWith(string $class_name, string $prefix, $filter = null): array
     {
-        $methods   = static::getPublicMethods($class_name);
+        $methods   = static::getMethods($class_name);
         $callbacks = [];
 
         foreach ($methods as $method) {
@@ -139,5 +247,63 @@ class Reflector
         }
 
         return $callbacks;
+    }
+
+    /**
+     * Genera DocBlocks para una clase o método si no los tiene
+     * 
+     * @param string $class_name
+     * @param string|null $method_name
+     * @return string
+     */
+    static function generateDocBlock(string $class_name, ?string $method_name = null): string
+    {
+        $reflection = new \ReflectionClass($class_name);
+        
+        if ($method_name !== null) {
+            $method = $reflection->getMethod($method_name);
+            $params = static::getMethodParameters($method);
+            
+            $doc = "/**\n";
+            $doc .= " * [Descripción del método]\n";
+            foreach ($params as $param) {
+                $doc .= " * @param {$param['type']} \${$param['name']} [Descripción]\n";
+            }
+            if ($method->getReturnType()) {
+                $doc .= " * @return {$method->getReturnType()->getName()} [Descripción]\n";
+            }
+            $doc .= " */";
+            
+            return $doc;
+        }
+        
+        // DocBlock para la clase
+        $doc = "/**\n";
+        $doc .= " * [Descripción de la clase]\n";
+        $doc .= " *\n";
+        $doc .= " * @package " . $reflection->getNamespaceName() . "\n";
+        $doc .= " */";
+        
+        return $doc;
+    }
+
+    /**
+     * Analiza una clase y devuelve los métodos que carecen de DocBlock
+     * 
+     * @param string $class_name
+     * @return array
+     */
+    static function findMethodsWithoutDocBlock(string $class_name): array
+    {
+        $reflection = new \ReflectionClass($class_name);
+        $methods_without_doc = [];
+
+        foreach ($reflection->getMethods() as $method) {
+            if (!$method->getDocComment()) {
+                $methods_without_doc[] = $method->getName();
+            }
+        }
+
+        return $methods_without_doc;
     }
 }

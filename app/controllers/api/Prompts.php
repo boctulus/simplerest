@@ -30,40 +30,10 @@ class Prompts extends MyApiController
     { 
         $data['content'] = [];
 
-        if (isset($data['base_path'])){
-            $base_path = Files::addTrailingSlash($data['base_path']);
-        
-            foreach ($data['files'] as $file_path){
-                if (Url::validate($file_path))  {            
-                    $cli = new ApiClient($file_path);
-		            $cli
-                    ->setBinary()
-                    ->withoutStrictSSL();
+        $base_path = $data['base_path'] ?? null;
 
-                    $data['content'][] = $cli->get()->getDataOrFail();
-                } else {
-                    if (!Files::isAbsolutePath($file_path)){
-                        $file_path         = Files::removeFirstSlash($file_path);
-                        $data['content'][] = Files::getContentOrFail($base_path . DIRECTORY_SEPARATOR . $file_path);
-                    } else {
-                        $data['content'][] = Files::getContentOrFail($file_path);
-                    }        
-                }        
-            }
-        } else {
-            foreach ($data['files'] as $file_path){                
-                if (Url::validate($file_path))  {            
-                    $cli = new ApiClient($file_path);
-		            $cli
-                    ->setBinary()
-                    ->withoutStrictSSL();
-
-                    $data['content'][] = $cli->get()->getDataOrFail();
-                } else {
-                    $data['content'][] = Files::getContentOrFail($file_path);
-                }                
-            }
+        foreach ($data['files'] as $file_path) {
+            $data['content'][] = Files::getContent($file_path, $base_path);
         }
-        
     }
 } 
