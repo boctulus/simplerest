@@ -3,7 +3,33 @@ TODO SimpleRest
 
 # DOCUMENTACION
 
-- Documentar correctamente toda función con @param y @return (ver PHPdoc)
+- Documentar correctamente toda función con @param y @return (DocBlocks siguiendo PHPdoc)
+
+https://claude.ai/chat/50494670-fb32-46ce-b519-41f4903f5bdf
+
+Lo que me preocupa es que las IA generativas pueden volver a re-escribir y perder partes de mis funciones al agregar DocBlocks.
+
+Pedirle a Claude o ChatGPT a traves de API que genere cada DocBlock por separado y luego volviendo a scrapear sin depender de IAs insertar los DocBlocks de forma segura.
+
+Plan:
+
+Crear un script que:
+
+. Extraiga cada clase y método individualmente
+. Use la API de una IA para generar solo el DocBlock
+. Inserte el DocBlock de manera quirúrgica sin tocar el código
+
+Prompt:
+
+  $prompt = "Genera solo el DocBlock para este método:
+  Nombre de clase: {$className}
+  Nombre del método: {$methodName}
+  Parámetros: {$parameters}
+  Tipo de retorno: {$returnType}
+  Código: {$methodCode}
+
+  Responde SOLO con el DocBlock, nada más.";
+
 
 - GENERAR DOCUMENTACION COMPLETA de SR y SW usando alguna herramienta y complementar con la DOC que tengo ya creada.
 

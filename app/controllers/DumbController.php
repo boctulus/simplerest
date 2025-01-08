@@ -11247,13 +11247,12 @@ class DumbController extends Controller
         dd($res);
     }
 
-    function opcache_clear(){
-		if (!function_exists('opcache_reset')) {
-			die("Function opcache_reset() not available");
-		}
-
-		$ok = opcache_reset();
-		dd($ok ? "OP Cache was cleared" : "OP Cache could Not been cleared :|");
+    function test_phpdoc_gen(){
+		dd(
+            Reflector::generateDocBlock(Strings::class, 'parseCurrency')
+        );
 	}
+
+
 
 }   // end class

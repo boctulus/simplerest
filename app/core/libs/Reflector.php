@@ -250,7 +250,7 @@ class Reflector
     }
 
     /**
-     * Genera DocBlocks para una clase o método si no los tiene
+     * Genera DocBlocks para un metodo de clase
      * 
      * @param string $class_name
      * @param string|null $method_name
@@ -265,23 +265,60 @@ class Reflector
             $params = static::getMethodParameters($method);
             
             $doc = "/**\n";
-            $doc .= " * [Descripción del método]\n";
+            $doc .= " * [Breve descripción del propósito del método]\n";
+            $doc .= " * \n";
+            $doc .= " * [Descripción detallada si es necesaria]\n";
+            $doc .= " * \n";
+
+            // Parámetros
             foreach ($params as $param) {
-                $doc .= " * @param {$param['type']} \${$param['name']} [Descripción]\n";
+                $doc .= " * @param {$param['type']} \${$param['name']} [Descripción del parámetro y su propósito]\n";
             }
+
+            // Retorno
             if ($method->getReturnType()) {
-                $doc .= " * @return {$method->getReturnType()->getName()} [Descripción]\n";
+                $doc .= " * @return {$method->getReturnType()->getName()} [Descripción del valor retornado]\n";
             }
-            $doc .= " */";
+
+            // Ejemplos de uso
+            $doc .= " * \n";
+            $doc .= " * @example\n";
+            $doc .= " * ```php\n";
+
+            if ($method->isStatic()) {
+                // Para métodos estáticos
+                $doc .= " * // Ejemplo básico\n";
+                $doc .= " * " . $reflection->getShortName() . "::{$method_name}([parámetros]);\n";
+                $doc .= " * \n";
+                $doc .= " * // Otro caso de uso si aplica\n";
+                $doc .= " * " . $reflection->getShortName() . "::{$method_name}([parámetros_alternativos]);\n";
+            } else {
+                // Para métodos de instancia
+                $doc .= " * // Ejemplo básico\n";
+                $doc .= " * \$instance->{$method_name}([parámetros]);\n";
+                $doc .= " * \n";
+                $doc .= " * // Otro caso de uso si aplica\n";
+                $doc .= " * \$instance->{$method_name}([parámetros_alternativos]);\n";
+            }
+
+            $doc .= " * ```\n";
             
             return $doc;
         }
         
         // DocBlock para la clase
         $doc = "/**\n";
-        $doc .= " * [Descripción de la clase]\n";
-        $doc .= " *\n";
+        $doc .= " * [Breve descripción de la clase]\n";
+        $doc .= " * \n";
+        $doc .= " * [Descripción detallada del propósito y funcionamiento de la clase]\n";
+        $doc .= " * \n";
         $doc .= " * @package " . $reflection->getNamespaceName() . "\n";
+        $doc .= " * \n";
+        $doc .= " * @example\n";
+        $doc .= " * ```php\n";
+        $doc .= " * \$instance = new " . $reflection->getShortName() . "([parámetros]);\n";
+        $doc .= " * \$instance->algunMetodo();\n";
+        $doc .= " * ```\n";
         $doc .= " */";
         
         return $doc;
