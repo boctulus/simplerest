@@ -13,22 +13,37 @@ Pedirle a Claude o ChatGPT a traves de API que genere cada DocBlock por separado
 
 Plan:
 
-Crear un script que:
-
-. Extraiga cada clase y método individualmente
-. Use la API de una IA para generar solo el DocBlock
-. Inserte el DocBlock de manera quirúrgica sin tocar el código
+. Procesar cada clase listando los metodos 
+. Para cada metodo generar el DocBlock usando Reflector::generateDocBlock() y pasarle ese DocBlock junto con el metodo a una API de IA para que complete el DocBlock.
+. Insertar quirurgicamente el DocBlock sin tocar nada mas del código
 
 Prompt:
 
-  $prompt = "Genera solo el DocBlock para este método:
-  Nombre de clase: {$className}
-  Nombre del método: {$methodName}
-  Parámetros: {$parameters}
-  Tipo de retorno: {$returnType}
-  Código: {$methodCode}
+  $prompt = <<<PROMPT
+    Genera solo el DocBlock para este método:
+    Nombre de clase: {$className}
+    Nombre del método: {$methodName}
+    Parámetros: {$parameters}
+    Tipo de retorno: {$returnType}
+    Código: {$methodCode}
+    /*
+      Codigo del metodo
+    */
 
-  Responde SOLO con el DocBlock, nada más.";
+    Responde SOLO con el DocBlock, nada más.
+  PROMPT;
+
+<--- este PROMPT usa la salida de Reflector::generateDocBlock()
+
+O quizas mas breve:
+
+  $prompt = <<<PROMPT
+  Genera un DocBlock PHP completo incluyendo descripción breve, @param y @return para este método:
+
+  {$methodCode}
+
+  Responde SOLO con el DocBlock.
+  PROMPT;
 
 
 - GENERAR DOCUMENTACION COMPLETA de SR y SW usando alguna herramienta y complementar con la DOC que tengo ya creada.
