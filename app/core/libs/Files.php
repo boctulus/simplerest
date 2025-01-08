@@ -1527,6 +1527,17 @@ class Files
 		return $string;
 	}
 
+	/**
+	* Reads content from a file
+	* 
+	* @param string $path Path to the file to read
+	* @param boolean $use_include_path [optional] Whether to search in include_path
+	* @param resource $context [optional] A valid context resource
+	* @param integer $offset [optional] The offset where the reading starts
+	* @param integer|null $length [optional] Maximum length of data read
+	* @return string|false The read content or false on failure
+	* @throws \InvalidArgumentException If path is a directory
+	*/
 	static function read(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
 		if (is_dir($path)){
 			$path = realpath($path);
@@ -1546,21 +1557,19 @@ class Files
 		return $content;
 	}
 
+	/**
+	* Reads content from a file or throws exception on failure
+	*
+	* @param string $path Path to the file to read
+	* @param boolean $use_include_path [optional] Whether to search in include_path  
+	* @param resource $context [optional] A valid context resource
+	* @param integer $offset [optional] The offset where the reading starts
+	* @param integer|null $length [optional] Maximum length of data read
+	* @return string The read content
+	* @throws \InvalidArgumentException If file cannot be read or path is a directory
+	*/
 	static function readOrFail(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
-		if (is_dir($path)){
-			$path = realpath($path);
-			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
-		} 
-
-		if (!file_exists($path)){	
-			throw new \InvalidArgumentException("Path '$path' does not exist!");
-		}
-
-		if ($length !== null){
-			$content = @file_get_contents($path, $use_include_path, $context, $offset, $length); // @
-		} else {
-			$content = @file_get_contents($path, $use_include_path, $context, $offset); // @
-		}
+		$content = static::read($path, $use_include_path, $context, $offset, $length);
 		
 		if (strlen($content) === false){
 			throw new \InvalidArgumentException("File '$path' can not be read");
@@ -1569,13 +1578,29 @@ class Files
 		return $content;
 	}
 
-	static function getContent(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
-		return static::read($path, $use_include_path, $context, $offset, $length);
-	}
-
-	// alias
-	static function getContentOrFail(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
-		return static::readOrFail($path, $use_include_path, $context, $offset, $length);
+	/**
+	* Gets content from a file or URL, throws exception on failure
+	* 
+	* @param string $path File path or URL to get content from
+	* @param string|null $base_url [optional] Base URL/path to prepend to relative paths
+	* @return string The content
+	* @throws \InvalidArgumentException If file or URL cannot be read
+	*/
+	static function getContent(string $path, $base_url = null) 
+	{
+		if (Url::validate($path)) {
+			$cli = new ApiClient($path);
+			$cli->setBinary()
+			->withoutStrictSSL();
+			return $cli->get()->getDataOrFail();
+		}
+		
+		if ($base_url !== null && !Files::isAbsolutePath($path)) {
+			$path = Files::removeFirstSlash($path);
+			$path = Files::addTrailingSlash($base_url) . DIRECTORY_SEPARATOR . $path;
+		}
+		
+		return static::readOrFail($path);
 	}
 
 	static function touch(string $filename, int $flags = 0){

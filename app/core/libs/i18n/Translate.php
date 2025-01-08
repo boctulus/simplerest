@@ -81,7 +81,7 @@ class Translate
             throw new \InvalidArgumentException("Domain '$domain' was not binded");
         }
 
-        $ret = textdomain($domain);
+        $ret = \textdomain($domain);
 
         if ($ret != $domain){
             Logger::logError("Error trying to set text domain to '$domain'");

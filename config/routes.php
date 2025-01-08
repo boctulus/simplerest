@@ -9,6 +9,11 @@ use simplerest\shortcodes\tax_calc\TaxCalcShortcode;
 
 $route = Route::getInstance();
 
+Route::get('testx', function(){
+	echo '<pre>';
+	print_r(get_loaded_extensions());
+	echo '</pre>';	
+});
 
 Route::get("tax_calc", function() use ($route) {
 	set_template('templates/tpl_bt3.php');          

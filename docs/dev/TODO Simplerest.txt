@@ -1,9 +1,61 @@
 TODO SimpleRest
 ===============
 
-- Investigar porque table('{db_table}')->get() devuleve todos los campos pero DB::table('{db_table}')->get() por defecto al menos parece suprimir campos en salida como created_at, updated_at, etc.
+# DOCUMENTACION
 
-Puede que lo haya hecho por seguridad pero quizas no tenga tanto sentido en la consola!
+- Documentar correctamente toda función con @param y @return (ver PHPdoc)
+
+- GENERAR DOCUMENTACION COMPLETA de SR y SW usando alguna herramienta y complementar con la DOC que tengo ya creada.
+
+Ver la DOC de otros frameworks y como podrian estar generandolas:
+
+https://codeigniter.com/user_guide/cli/cli_library.html
+https://laravel.com/docs/9.x/validation#rule-string
+
+- Generar documentación del código PHP (no de la API) con dOxygen !!!!
+
+https://github.com/doxygen/doxygen
+
+
+Buenas documentaciones para lograr algo similar:
+
+https://www.ibm.com/docs/en/iis/11.7?topic=content-running-referential-integrity-analysis
+
+
+- Documentar en Git como en 
+
+https://github.com/robsonvn/laravel-couchdb
+
+
+## MODELADO DE APIs y DOCUMENTADORES
+
+- Posiblemente generar documentación en lenguaje RAML (RESTful API Modeling Language)
+
+https://raml.org/developers/design-your-api
+https://www.youtube.com/watch?v=vaWvVilZtZw
+https://github.com/raml-org/raml-spec
+https://github.com/mulesoft/api-designer
+
+- DOCUMENTAR APIs con
+
+https://readme.com/
+
+Ej:
+
+https://developer.alegra.com/reference/get_variant-attributes  <-- documentado on readme.com
+
+- Swagger for Documentation
+
+Swagger is a widely-used tool to document REST APIs that provides a way to explore the use of a specific API, therefore allowing developers to understand the underlying semantic behavior. It’s a declarative way of adding documentation using annotations which further generates a JSON describing APIs and their usage.
+
+
+- Implementar "Swagger-UI"
+
+https://medium.com/@tatianaensslin/how-to-add-swagger-ui-to-php-server-code-f1610c01dc03
+https://styde.net/como-documentar-una-api-en-laravel-usando-swagger/
+https://dataedo.com/blog/how-to-document-rest-api-project-written-in-php-using-swagger-and-dataedo
+
+------x--------
 
 - Resolver problemas con COMPOSER JSON !!!
 
@@ -679,14 +731,6 @@ https://code-boxx.com/move-files-php/
 
 
 - Debe ser posible forkear y extender "WpDataTables" (leer bien licencia) para que en vez de leer tomar como data-source un CSV, que en definitiva en algun punto lo toma como array, que lea el contenido de una TABLA de SQL
-
-- DOCUMENTAR APIs con
-
-https://readme.com/
-
-Ej:
-
-https://developer.alegra.com/reference/get_variant-attributes  <-- documentado on readme.com
 
 - En CADA API que cree para uso de terceros, incluir una forma sencilla
 de obtener resultados sin codigo solo ingresando TOKEN + JSON del request
@@ -2075,10 +2119,6 @@ Ej:
     \DB::statement('your query');
   })->describe('Execute SQL query')
 
-
-- Generar documentación del código PHP (no de la API) con dOxygen !!!!
-
-https://github.com/doxygen/doxygen
 
 - Permitir crear "módulos" para agrupar modelos, schemas, vistas, controladores, assets, rutas, migraciones, seeds, middlewares, traducciones,...
 
@@ -3597,14 +3637,6 @@ Ej:
   * Posibilidad de rollback al estilo migrations
   * Notificaciones push SSE
 
-
-- Implementar "Swagger-UI"
-
-https://medium.com/@tatianaensslin/how-to-add-swagger-ui-to-php-server-code-f1610c01dc03
-https://styde.net/como-documentar-una-api-en-laravel-usando-swagger/
-https://dataedo.com/blog/how-to-document-rest-api-project-written-in-php-using-swagger-and-dataedo
-
-
 - Implementar en "make migration"
     
   --dd | -- toSQL | --getLog
@@ -3627,15 +3659,6 @@ https://laravel.com/docs/8.x/session?fbclid=IwAR032HI1Zt5vNo6fG0ikE4hq-kYb2Z_QCc
 - Usar en cada archivo del core:
 
    declare(strict_types=1);  
-
-- Documentar correctamente toda función con @param y @return (ver PHPdoc)
-
-- GENERAR DOCUMENTACION COMPLETA de SR y SW usando alguna herramienta y complementar con la DOC que tengo ya creada.
-
-Ver la DOC de otros frameworks y como podrian estar generandolas:
-
-https://codeigniter.com/user_guide/cli/cli_library.html
-https://laravel.com/docs/9.x/validation#rule-string
 
 - Habilitar WebSockets para APIs => crear una   WebSocket API
 
@@ -5571,11 +5594,6 @@ https://stackoverflow.com/questions/30231862/laravel-eloquent-has-with-wherehas-
 https://laravel-news.com/eloquent-eager-loading
 
 
-- Documentación como la de IBM
-
-https://www.ibm.com/docs/en/iis/11.7?topic=content-running-referential-integrity-analysis
-
-
 - Implementar Scopes como los de Eloquent de Laravel
 
 https://codingdriver.com/how-to-use-scopes-in-laravel.html
@@ -5594,10 +5612,6 @@ NO debebería poder restaurar el registro.***
 
 https://github.com/DamianGonzalez27/Ivy/blob/master/Packages/Charger.php
 
-
-- Documentar en Git como en 
-
-https://github.com/robsonvn/laravel-couchdb
 
 - Permitir setear nivel de compresion (1 a 6)
 
@@ -5894,10 +5908,6 @@ Ej:
 
 https://cloud.google.com/docs/authentication/api-keys
 
-
-- Swagger for Documentation
-
-Swagger is a widely-used tool to document REST APIs that provides a way to explore the use of a specific API, therefore allowing developers to understand the underlying semantic behavior. It’s a declarative way of adding documentation using annotations which further generates a JSON describing APIs and their usage.
 
 - Al generar los modelos..... opcionalmente modificar la tabla correspondiente agregando el campo `deleted_at` y `belongs_to` 
 
@@ -7078,16 +7088,6 @@ Obviamente si el schema en el servidor cambia, debe cambiar localmente => ejecut
 - API Gateways
 
 https://www.youtube.com/watch?v=vHQqQBYJtLI
-
-
-[ MODELADO DE APIs y DOCUMANTADORES ]
-
-- Posiblemente generar documentación en lenguaje RAML (RESTful API Modeling Language)
-
-https://raml.org/developers/design-your-api
-https://www.youtube.com/watch?v=vaWvVilZtZw
-https://github.com/raml-org/raml-spec
-https://github.com/mulesoft/api-designer
 
 
 - Implementar "token exechange": en vez de identificar a un usuario que proviene de la API de Facebook o Google por su email (que podría no ser compartido)... usar el refres_token obtenido de esas APIs como user_id :) 
