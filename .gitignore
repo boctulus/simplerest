@@ -9,3 +9,4 @@ tmp/
 storage/security/
 .env
 .codegpt
+composer.json.tmp
