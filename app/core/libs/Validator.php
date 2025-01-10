@@ -417,7 +417,7 @@ class Validator implements IValidator
 					$avoid_type_check = true;
 				
 				if (isset($rule['type']) && !$avoid_type_check){
-					if ($rule['type'] != 'array' && !get_class()::isType($value, $rule['type'])){
+					if ($rule['type'] != 'array' && !get_class($this)::isType($value, $rule['type'])){
 						$err =  (isset($msg[$field]['type'])) ? $msg[$field]['type'] :  sprintf(trans("It's not a valid %s"), $rule['type']);
 						$push_error($field,['data'=>$value, 'error'=>'type', 'error_detail' => sprintf(trans($err), $rule['type'])],$errors);
 					}

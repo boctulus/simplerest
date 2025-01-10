@@ -24,20 +24,37 @@ use simplerest\core\libs\System;
     https://stackoverflow.com/a/16744070/980631
 */
 
+
 class Translate
 {
     static $currentTextDomain = null;
     static $domainPaths       = [];
     static $translations      = [];
     static $currentLang       = null;
-
     static $useGettext        = null;
+    static $ext_loaded;
 
-    /*
-        Define si debe usarse gettext() o por el contrario un reemplazo
-    */
+    static function checkGetTextLoaded(bool $log_error = true){
+        if (static::$ext_loaded !== null){
+            return static::$ext_loaded;
+        } 
+
+        static::$ext_loaded = function_exists('gettext');
+
+        if (!static::$ext_loaded && $log_error){
+            $transient_key = 'gettext_extension_error_logged';
+            
+            if (!get_transient($transient_key)) {
+                Logger::logError('Extension GetText not loaded');
+                set_transient($transient_key, true, 3600 * 24);
+            }
+        }
+        
+        return static::$ext_loaded;
+    }
+
     static function useGettext(bool $val = true){
-        static::$useGettext = $val;
+        static::$useGettext = $val && static::checkGetTextLoaded(false);
     }
 
     static function setLocale(string $lang, string $encoding = 'UTF-8')
@@ -47,7 +64,7 @@ class Translate
         if (static::$useGettext){
             setlocale(LC_ALL, "$lang.$encoding");  
             putenv("LANGUAGE=$lang.$encoding");
-            putenv("LC_ALL=$lang"); // Windows
+            putenv("LC_ALL=$lang"); 
         }
     }
 
@@ -69,10 +86,9 @@ class Translate
             Container::singleton('po_parser', POParser::class);
 
             static::$translations[$domain] = Container::make('po_parser')
-            ->parse(LOCALE_PATH .  static::$currentLang . "/LC_MESSAGES/$domain.po");
+                ->parse(LOCALE_PATH . static::$currentLang . "/LC_MESSAGES/$domain.po");
         }
 
-        // De una vez selecciono el text domain
         return static::setTextDomain($domain);
     }
 
@@ -81,11 +97,13 @@ class Translate
             throw new \InvalidArgumentException("Domain '$domain' was not binded");
         }
 
-        $ret = \textdomain($domain);
+        if (static::$useGettext){
+            $ret = \textdomain($domain);
 
-        if ($ret != $domain){
-            Logger::logError("Error trying to set text domain to '$domain'");
-            return false;
+            if ($ret != $domain){
+                Logger::logError("Error trying to set text domain to '$domain'");
+                return false;
+            }
         }
 
         return true;
@@ -98,24 +116,19 @@ class Translate
         }
 
         if (static::$useGettext){
-            return gettext($text);
+            return \gettext($text);
         }
 
         $text_domain = $text_domain ?? static::$currentTextDomain;
-
         $translation = static::$translations[$text_domain][$text] ?? $text;
 
         return !empty($translation) ? $translation : $text;
     }
 
-    // alias de Translate::gettext()
     static function trans(string $text, $text_domain = null){
         return static::gettext($text, $text_domain);
     }
 
-    /*
-        https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language
-    */
     static function setLang(?string $lang){
         static $langs = [];
         static $pure_langs = [];
@@ -139,15 +152,11 @@ class Translate
             } 
         }
 
-        /*
-            If there is no translation for an specific country then to use any for that language
-        */
         if (!Strings::contains('_', $lang)){
             $only_lang = substr($lang, 0, 2);
             $lang_ix   = array_search($only_lang, $pure_langs);
             $selected  = $langs[$lang_ix];     
         } else {
-            // full format
             $lang_ix   = array_search($lang, $langs);
 
             if ($lang_ix !== false){
@@ -155,9 +164,6 @@ class Translate
             }
         }
 
-        /*
-            If every thing fails, last chance
-        */
         if ($selected === null){
             $only_lang = substr($lang, 0, 2);
             $lang_ix   = array_search($only_lang, $pure_langs);
@@ -168,22 +174,12 @@ class Translate
             if ($throw){
                 throw new \InvalidArgumentException("Invalid lang $lang");
             }
-
             return;        
         }
 
-        //StdOut::pprint("Setting locale to '$selected.$encode'");
         static::setLocale($selected, $encode);
     }
 
-    /*
-        Exporta a archivos .po y .mo todos arrays de traducciones de lenguaje.
-
-        @param bool   $include_mo  dermina si debe generarse el archivo .mo
-        @param string $locale_path si se especifica lo toma como directorio de entrada (para los .pot.php) y de salida sino se especificara
-        @param string $to si se especifca se toma como directorio de salida para generacion de archivos .php y .po / .mo
-        @param string $preset es un nombre para una determinada forma de hacer el scaffolding
-    */
     static function exportLangDef(bool $include_mo = true, string $locale_path = null, string $to = null, string $text_domain = null, string $preset = null)
     {   
         if ($locale_path === null){
@@ -193,14 +189,10 @@ class Translate
         $to = $to ?? $locale_path;
         $to = rtrim($to, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
-        // dd($locale_path);
-
         foreach (new \DirectoryIterator($locale_path) as $fileInfo) {
             if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
             
             $lang = $fileInfo->getBasename();
-            // StdOut::pprint($lang);
-            // continue; //
 
             foreach (new \DirectoryIterator($locale_path . "/$lang") as $fileInfo) {
                 if($fileInfo->isDot() || $fileInfo->isDir()) continue;
@@ -216,22 +208,18 @@ class Translate
                     continue;
                 }
 
-                //StdOut::pprint($def_file);
-
                 $intl = include $locale_path . "$lang/" . $def_file;
 
                 switch ($preset){
                     case "wp":
                         $path_no_ext = "$to{$domain}-$lang";
-
                         $po_path     = "$path_no_ext.po";
                         $mo_path     = "$path_no_ext.mo";
                         break;
                     default:
                         Files::mkdir($to . "$lang/" . "LC_MESSAGES");
-
-                        $po_path = $to   . "$lang/" . "LC_MESSAGES/$domain.po";
-                        $mo_path = $to   . "$lang/" . "LC_MESSAGES/$domain.mo";
+                        $po_path = $to . "$lang/" . "LC_MESSAGES/$domain.po";
+                        $mo_path = $to . "$lang/" . "LC_MESSAGES/$domain.mo";
                 }                
 
                 $po_path = Files::normalize($po_path);
@@ -273,20 +261,14 @@ class Translate
 
                 if ($include_mo){
                     StdOut::pprint("Compiling to $mo_path");
-
                     exec("msgfmt $po_path -o $mo_path", $output, $exit_code);
-                    
                     StdOut::pprint("Compilation to $mo_path " . ($exit_code === 0 ? '-- ok' : '-- error'));
                     StdOut::pprint('');
                 }
-                
             }
         } 
     }
 
-    /*
-        De .pot.php a precursores de .po para cada lenguaje
-    */
     static function convertPot(string $locale_path = null, string $text_domain = null){
         if ($locale_path === null){
             $locale_path = LOCALE_PATH;
@@ -311,31 +293,17 @@ class Translate
         foreach ($php_pot as $pp){
             $pot_domain = Strings::beforeIfContains(basename($pp), '.pot.php');
             
-            // dd($pot_domain, 'DOMAIN');
-
             foreach (new \DirectoryIterator($locale_path) as $fileInfo) {
                 if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
                 
                 $dir = $fileInfo->getBasename();
-                
-                // dd($dir, 'DIR');
-                // StdOut::pprint($dir);
-    
                 $path = $locale_path . DIRECTORY_SEPARATOR . $dir;
+                
                 foreach (new \DirectoryIterator($path) as $fileInfo) {
-                    if($fileInfo->isDot()){
-                        continue;
-                    } 
+                    if($fileInfo->isDot()) continue;
 
-                    // dd($dir, 'DIR');   
-    
                     $filename = "$path/$pot_domain.php";
-
-                    // dd(file_exists($filename), $filename);
-            
                     $defs = include $pp;
-
-                    // dd($defs, $filename   );
 
                     if (!file_exists($filename)){
                         StdOut::pprint("Creando archivo $pot_domain.php en $dir");
@@ -352,12 +320,8 @@ class Translate
 
                         Files::varExport($p_defs, $filename);
                     } else {
-                        $current_defs      = include $filename;
-
-                        // dd($current_defs, "DEFS de $filename");
-
-                        $current_def_keys  = array_keys($current_defs);
-
+                        $current_defs = include $filename;
+                        $current_def_keys = array_keys($current_defs);
                         $not_incl_def_keys = array_diff($defs, $current_def_keys);
 
                         if (!empty($not_incl_def_keys)){
@@ -365,20 +329,12 @@ class Translate
                                 $current_defs[$def] = "";
                             }
                             
-                            // dd($current_defs, $dir);
-
                             StdOut::pprint("Actualizando $filename");
                             Files::varExport($current_defs, $filename);
                         }
                     }
-
-                   
                 }
             }
-
         }
-
     }
-    
 }
-
