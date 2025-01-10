@@ -62,3 +62,10 @@
 [2025-01-08 11:02:08]	0.8.12	Mejorado Reflector::generateDocBlock()
 [2025-01-08 11:11:00]	0.8.12	Automatic update
 [2025-01-08 11:31:17]	0.8.12	TODO actualizado
+[2025-01-10 18:48:05]	0.8.12	fix(i18n): Robust gettext fallback and error handling
+
+- Add transients to prevent excessive error logging
+- Implement graceful fallback when gettext extension missing
+- Fix undefined function errors in setTextDomain
+- Improve useGettext to check extension availability
+- Update documentation for new error handling system
