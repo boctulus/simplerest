@@ -226,7 +226,7 @@ class DumbController extends Controller
 
     function test_db()
     {
-        DB::getConnection('mpp');
+        // DB::getConnection('mpp');
 
         dd(
             DB::getTableNames()
@@ -7756,7 +7756,7 @@ class DumbController extends Controller
     function test_until_n_words()
     {
         dd(
-            Strings::getUpToNWords("To add support, for other word breaks like commas and dashes, preg_match gives a quick way and doesn't require splitting the string", 8)
+            Strings::getUpTo("To add support, for other word breaks like commas and dashes, preg_match gives a quick way and doesn't require splitting the string", 8)
         );
     }
 
@@ -10657,22 +10657,28 @@ class DumbController extends Controller
         - Eliminar formularios con id que contengan "login"
         Etc
     */
-    function getMinifiedHTML(string $url, bool $remove_css_classes = false, bool $remove_frameworks = false, bool $remove_lists = false)
+    function get_minified_html(string $url, bool $remove_css_classes = false, bool $remove_frameworks = false, bool $remove_lists = false)
     {
-        $cli = new ApiClient($url);
+        if (Url::validate($url)){
+            $cli = new ApiClient($url);
 
-        $res = $cli
-        ->disableSSL()
-        ->cache(3600 * 24 * 30)
-        ->get()
-        ->getResponse();
+            $res = $cli
+            ->disableSSL()
+            ->cache(3600 * 24 * 30)
+            ->get()
+            ->getResponse();
 
-        if (!empty($cli->error()) || $cli->status() !== 200){
-            throw new \Exception("Error reading response for '$url'. HTTP status code: " .$cli->status(). ".Detail: ". $cli->error());
+            if (!empty($cli->error()) || $cli->status() !== 200){
+                throw new \Exception("Error reading response for '$url'. HTTP status code: " .$cli->status(). ".Detail: ". $cli->error());
+            }
+
+            $html = $res['data']; 
+
+            dd(FileCache::getCachePath($url));
+        } else {
+            $html = Files::readOrFail($url);
         }
 
-        $html = $res['data']; 
-        dd(FileCache::getCachePath($url));
         dd(Strings::getLengthInKB($html), "LEN");
         // exit; //         
 
@@ -11253,6 +11259,68 @@ class DumbController extends Controller
         );
 	}
 
+    /*
+        --| Variables.csv
+        Array
+        (
+            [0] => Tipo de producto
+            [1] => Superior
+            [2] => SKU
+            [3] => Marca
+            [4] => Variedad
+            [5] => Concentracion
+            [6] => Sexo
+            [7] => ml
+            [8] => Formato
+            [9] => Existencias
+            [10] => Inventario
+            [11] => Precio rebajado
+            [12] => Precio normal
+            [13] => Etiquetas
+            [14] => Imagenes
+            [15] => Tamano
+            [16] => Descripcion larga
+            [17] => Descripcion corta
+            [18] => Largo
+            [19] => Ancho
+            [20] => Alto
+            [21] => Peso
+            [22] => Manejo Stock
+            [23] => Categorias
+        )
+
+        --| TOTAL
+        2403
+
+    */
+    function csv_20012024(){
+        $base_path = 'D:\Desktop\GOOGLE SHEETS\SHEET PRODS A SUBIR\\';
+
+        $data              = Files::getCSV($base_path . 'Variables.csv');
+        $rows_variables    = $data['rows'];
+        $headers_variables = $data['header'];
+
+        $data              = Files::getCSV($base_path . 'Variations Botellas.csv');
+        $rows_var_bt       = $data['rows'];
+        $headers_var_bt    = $data['header'];
+
+        $data              = Files::getCSV($base_path . 'Variations Decants.csv');
+        $rows_var_dt       = $data['rows'];
+        $headers_var_dt    = $data['header'];
+
+        // Debugging ej
+        dd($headers_var_dt, 'HEADERS');
+        dd(count($rows_var_dt), 'TOTAL');
+
+        // usort($rows, function ($a, $b) {
+        //     return $a['Código Isp'] <=> $b['Código Isp'];
+        // });
+
+        
+        // foreach ($rows as $row) {
+        // }
+        
+    }
 
 
 }   // end class

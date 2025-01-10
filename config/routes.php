@@ -10,9 +10,14 @@ use simplerest\shortcodes\tax_calc\TaxCalcShortcode;
 $route = Route::getInstance();
 
 Route::get('testx', function(){
-	echo '<pre>';
-	print_r(get_loaded_extensions());
-	echo '</pre>';	
+	// echo '<pre>';
+	// print_r(get_loaded_extensions());
+	// echo '</pre>';	
+
+	if ( false === function_exists('gettext') ) {
+		echo "You do not have the gettext library installed with PHP.";
+		exit(1);
+	}
 });
 
 Route::get("tax_calc", function() use ($route) {

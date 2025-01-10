@@ -10126,47 +10126,62 @@ On Windows, locale information is maintained per thread as of PHP 7.0.5."
 
 # Alternativa gettext y setlocale
 
-No siempre gettext() o su alias _() funcionan dado que depende de tene instalada la extension "gettext" pero además PHP debe haber sido compilado acordemente y hasta puede depender de la version de PHP el soporte.
+No siempre gettext() o su alias _() funcionan dado que depende de tener instalada la extension "gettext". Para manejar esto, la clase Translate proporciona una implementación alternativa robusta que:
 
-Por todo lo anterior, se puede optar por una alternativa usando la clase i18/Translate y sus dependencias.
+- Detecta automáticamente si gettext está disponible
+- Registra errores de falta de gettext solo una vez al día usando transients
+- Proporciona un fallback transparente cuando gettext no está disponible
+- Mantiene toda la funcionalidad incluso sin la extensión gettext
 
-El codigo
+El código:
 
-	setLang('es_AR');
-        
-	bindtextdomain('validator', LOCALE_PATH);
-	textdomain('validator');
+    setLang('es_AR');
+    bindtextdomain('validator', LOCALE_PATH);
+    textdomain('validator');
 
-	// El campo es requerido (traducido)
-	dd(_('Field is required'));
+    // El campo es requerido (traducido)
+    dd(_('Field is required'));
 
-Pasa a ...
+Pasa a:
 
-	Translate::useGettext(true); // usar funciones nativas
+    Translate::useGettext(true); // intentará usar funciones nativas si están disponibles
+    
+    setLang('es_AR');
 
-	setLang('es_AR');
+    // i18n
+    Translate::bind('validator');
 
-	// i18n
-	Translate::bind('validator');
-
-	// El campo es requerido (traducido)
-	dd(Translate::trans('Field is required'));
-
+    // El campo es requerido (traducido)
+    dd(Translate::trans('Field is required'));
 
 Detalle:
 
-	Translate::bind() 				reemplaza a 	bindtextdomain() + textdomain()
-	Translate::setTextDomain()		...				textdomain()
-	Translate::trans()				...				gettext() y _()
+Translate::bind()             reemplaza a     bindtextdomain() + textdomain()
+Translate::setTextDomain()    reemplaza a     textdomain()
+Translate::trans()           reemplaza a     gettext() y _()
 
-Y
-	Translate::useGettext(bool $val) permite elegir si se ulizaran las funciones nativas o por el contrario las alternativas.		
-	Translate::setLang() seleciona el idioma				
+Funciones de control:
+
+- Translate::useGettext(bool $val): Configura si se usarán funciones nativas (cuando estén disponibles) o alternativas
+- Translate::setLang(): Selecciona el idioma
+- Translate::checkGetTextLoaded(): Verifica disponibilidad de gettext (uso interno)
+
+La clase maneja automáticamente la disponibilidad de gettext y proporciona una experiencia consistente independientemente de la configuración del servidor.			
 
 Helpers
 
 	trans()							reemplaza a		Translate::trans()
 	setLang() 						...				Translate::setLang()
+
+
+# Manejo de Errores y Logging
+
+La clase Translate implementa un sistema inteligente de manejo de errores:
+
+- Usa transients para evitar logging excesivo de errores
+- Solo registra errores de falta de gettext una vez cada 24 horas
+- Proporciona fallback automático a implementación alternativa
+- No interrumpe la ejecución cuando gettext no está disponible
 
 
 # Clase Request
