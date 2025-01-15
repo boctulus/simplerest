@@ -71,3 +71,4 @@
 - Update documentation for new error handling system
 [2025-01-15 15:18:27]	0.8.12	Validator: implementacion basica de estructuras anidadas
 [2025-01-15 15:36:16]	0.8.12	Automatic update
+[2025-01-15 17:04:14]	0.8.12	Mejoras con dot-notation

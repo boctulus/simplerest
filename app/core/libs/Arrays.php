@@ -403,6 +403,34 @@ class Arrays
     }
 
     /*
+        Get property with dot-notation
+
+        Ej:
+
+        $weight_0 = Arrays::get($product_data, 'variations.0.weight');
+    */
+    static function get(array $data, $property = null, $default = null)
+    {        
+        if (!static::isAssoc($data)){
+            throw new \InvalidArgumentException("Expected associative array. Got " . gettype($data));
+        }
+
+        // Split the property into an array of keys
+        $keys = explode('.', $property);
+
+        // Traverse the nested array to get the final value
+        foreach ($keys as $key) {
+            if (isset($data[$key])) {
+                $data = $data[$key];
+            } else {
+                return null; // Property not found
+            }
+        }
+
+        return $data ?? $default;
+    }
+    
+    /*
         Dado un contenido (entero, string, array,...) y un "path", deja el contenido dentro del path 
         en el array en construccion o sea anidado dentro las keys del path
 
