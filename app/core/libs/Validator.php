@@ -8,7 +8,7 @@ use simplerest\core\interfaces\IValidator;
 
 /*
 	Validador de campos de formulario
-	Ver 2.2 Beta
+	Ver 2.3 Beta
 
 	@author boctulus@gmail.com
 */
@@ -57,7 +57,7 @@ class Validator implements IValidator
 				return is_numeric($value);
 			},
 			'number' => function($value) {
-				$value = trim($value);
+				$value = is_string($value) ? trim($value) : $value;
 				return ctype_digit($value) || is_numeric($value);
 			},
 			'not_numeric' => function($value) {
@@ -385,7 +385,6 @@ class Validator implements IValidator
 			//	dd($data[$field], 'VALOR:');			
 
 			//echo "---------------------------------<p/>\n";
-			
 
 			// multiple-values for each field
 
