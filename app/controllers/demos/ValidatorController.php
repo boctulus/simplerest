@@ -57,7 +57,7 @@ class ValidatorController extends Controller
                     'fields' => [
                         'attributes' => [
                             // Cuando se declara un nodo de tipo type="object" no se requiere usar "structure"
-                            'type' => 'array',  // Es tipo 'object' porque es un array asociativo                            
+                            'type' => 'object',  // Es tipo 'object' porque es un array asociativo                            
                         ],
                         'dimensions' => [
                             'type' => 'object',
