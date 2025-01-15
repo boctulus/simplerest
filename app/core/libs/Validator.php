@@ -114,6 +114,18 @@ class Validator implements IValidator
 			},			
 			'datetime' => function($value) {
 				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$value)== 1;
+			},
+			'object' => function($value) {
+				return is_array($value) && !isset($value[0]);
+			},
+			
+			'either' => function($value, $options) {
+				foreach ($options['accepts'] as $type) {
+					if (static::isType($value, $type)) {
+						return true;
+					}
+				}
+				return false;
 			}
 		];		
 
@@ -200,6 +212,62 @@ class Validator implements IValidator
 		return static::$rules[$expected_type]($value);
 	}	
 
+	protected function validateStructure($value, $structure, $field_path = '') {
+		$errors = [];
+		
+		// Si es un array de objetos/elementos
+		if (is_array($value) && isset($value[0])) {
+			foreach ($value as $index => $item) {
+				$item_path = $field_path ? "$field_path.$index" : $index;
+				$item_errors = $this->validateStructure($item, $structure, $item_path);
+				$errors = array_merge($errors, $item_errors);
+			}
+			return $errors;
+		}
+	
+		// Para objetos individuales
+		if ($structure['type'] === 'object' && isset($structure['fields'])) {
+			if (!is_array($value)) {
+				return [[$field_path, 'type', 'Expected object/array']];
+			}
+	
+			foreach ($structure['fields'] as $key => $rules) {
+				$full_path = $field_path ? "$field_path.$key" : $key;
+				
+				if (!isset($value[$key])) {
+					if (isset($rules['required']) && $rules['required']) {
+						$errors[] = [$full_path, 'required', 'Field is required'];
+					}
+					continue;
+				}
+	
+				if (isset($rules['structure'])) {
+					$nested_errors = $this->validateStructure($value[$key], $rules['structure'], $full_path);
+					$errors = array_merge($errors, $nested_errors);
+				} else {
+					if (!$this->validateValue($value[$key], $rules)) {
+						$errors[] = [$full_path, 'type', "Invalid type for field"];
+					}
+				}
+			}
+		}
+	
+		return $errors;
+	}
+	
+	protected function validateValue($value, $rules) {
+		// Reutiliza la lógica existente de validación
+		$type = $rules['type'] ?? null;
+		if (!$type) {
+			return true;
+		}
+		
+		try {
+			return static::isType($value, $type);
+		} catch(\Exception $e) {
+			return false;
+		}
+	}
 
 	/*
 		@param array $data
@@ -283,26 +351,28 @@ class Validator implements IValidator
 		$msg = [];
 		foreach($rules as $field => $rule){
 			if (isset($rule['type']) && $rule['type'] == 'array'){
-				$value = $data[$field];
+				if (isset($data[$field])){
+					$value = $data[$field];
 				
-				if (!is_array($value)){
-					$err = sprintf(trans("Invalid Data type. Expected Array"));
-					$push_error($field,['data'=>$value, 'error'=>'type', 'error_detail' => trans($err)], $errors);
-				}
+					if (!is_array($value)){
+						$err = sprintf(trans("Invalid Data type. Expected Array"));
+						$push_error($field,['data'=>$value, 'error'=>'type', 'error_detail' => trans($err)], $errors);
+					}
 
-				if (isset($rule['len']) && count($value) != $rule['len']){
-					$err = sprintf(trans("Array has not the expected lenght of %d"), $rule['len']);
-					$push_error($field,['data'=>$value, 'error'=>'len', 'error_detail' => trans($err)], $errors);
-				}
+					if (isset($rule['len']) && count($value) != $rule['len']){
+						$err = sprintf(trans("Array has not the expected lenght of %d"), $rule['len']);
+						$push_error($field,['data'=>$value, 'error'=>'len', 'error_detail' => trans($err)], $errors);
+					}
 
-				if (isset($rule['min_len']) && count($value) < $rule['min_len']){
-					$err = sprintf(trans("Array has not the minimum expected lenght of %d"),  $rule['min_len']);
-					$push_error($field,['data'=>$value, 'error'=>'min_len', 'error_detail' => trans($err)], $errors);
-				}
+					if (isset($rule['min_len']) && count($value) < $rule['min_len']){
+						$err = sprintf(trans("Array has not the minimum expected lenght of %d"),  $rule['min_len']);
+						$push_error($field,['data'=>$value, 'error'=>'min_len', 'error_detail' => trans($err)], $errors);
+					}
 
-				if (isset($rule['max_len']) && count($value) > $rule['max_len']){
-					$err = sprintf(trans("Array has not the maximum expected lenght of %d"),  $rule['max_len']);
-					$push_error($field,['data'=>$value, 'error'=>'max_len', 'error_detail' => trans($err)], $errors);
+					if (isset($rule['max_len']) && count($value) > $rule['max_len']){
+						$err = sprintf(trans("Array has not the maximum expected lenght of %d"),  $rule['max_len']);
+						$push_error($field,['data'=>$value, 'error'=>'max_len', 'error_detail' => trans($err)], $errors);
+					}
 				}
 			}
 			
@@ -361,6 +431,18 @@ class Validator implements IValidator
 						$push_error($field,['data'=>$value, 'error'=>'required', 'error_detail' => trans($err)],$errors);
 					}						
 				}	
+
+				// Si hay una estructura definida, validarla
+				if (isset($rule['structure'])) {
+					$structure_errors = $this->validateStructure($data[$field], $rule['structure'], $field);
+					foreach ($structure_errors as [$path, $error_type, $message]) {
+						$errors[$path][] = [
+							'error' => $error_type,
+							'error_detail' => $message
+						];
+					}
+					continue;
+				}
 
 				// Creo un alias entre in y set
 				if (isset($rule['set'])){
