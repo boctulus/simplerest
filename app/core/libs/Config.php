@@ -2,6 +2,8 @@
 
 namespace simplerest\core\libs;
 
+use simplerest\core\libs\Arrays;
+
 /*
     Acepta sintaxis "dot" 
 
@@ -27,7 +29,7 @@ class Config
         );
     }
 
-    static function get($property = null)
+    static function get($property = null, $default = null)
     {
         if (empty(static::$data)) {
             static::setup();
@@ -37,22 +39,8 @@ class Config
             return static::$data;
         }
 
-        // Split the property into an array of keys
-        $keys = explode('.', $property);
-        $value = static::$data;
-
-        // Traverse the nested array to get the final value
-        foreach ($keys as $key) {
-            if (isset($value[$key])) {
-                $value = $value[$key];
-            } else {
-                return null; // Property not found
-            }
-        }
-
-        return $value;
+        return Arrays::get(static::$data, $property, $default);
     }
-
 
     /*
         Acepta sintaxis "dot" 
