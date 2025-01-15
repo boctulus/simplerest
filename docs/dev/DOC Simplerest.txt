@@ -4487,6 +4487,108 @@ Ej:
 
 Idealmente esta funcionalidad deberia ser un Trait por portabilidad.
 
+### Valdacion de estructuras anidadas
+
+\section{Validación de Estructuras Anidadas}
+
+\subsection{Introducción}
+La validación de estructuras de datos anidadas requiere diferenciar entre arrays secuenciales y arrays asociativos (objetos) y definir reglas para validar sus estructuras internas.
+
+\subsection{Tipos de Estructuras}
+
+\subsubsection{Arrays}
+Un array secuencial es una lista indexada numéricamente:
+\begin{verbatim}
+$array = ['manzana', 'pera', 'uva'];
+\end{verbatim}
+
+Se define en las reglas usando:
+\begin{verbatim}
+'field' => ['type' => 'array']
+\end{verbatim}
+
+\subsubsection{Objetos}
+Un objeto (array asociativo) es una estructura con pares clave-valor:
+\begin{verbatim}
+$object = [
+   'nombre' => 'Juan',
+   'edad' => 25
+];
+\end{verbatim}
+
+Se define en las reglas usando:
+\begin{verbatim}
+'field' => ['type' => 'object']
+\end{verbatim}
+
+\subsection{Validación de Estructuras}
+
+\subsubsection{Parámetro structure}
+El parámetro \texttt{structure} se utiliza cuando necesitamos validar la estructura interna de arrays u objetos.
+
+Ejemplo de estructura compleja que requiere \texttt{structure}:
+\begin{verbatim}
+'variations' => [
+   'type' => 'array',
+   'structure' => [
+       'type' => 'object',
+       'fields' => [
+           'attributes' => [
+               'type' => 'object',
+               'fields' => [
+                   'attribute_id' => ['type' => 'string'],
+                   'attribute_value' => ['type' => 'string']
+               ]
+           ]
+       ]
+   ]
+]
+\end{verbatim}
+
+\subsubsection{Estructuras Simples}
+Para estructuras simples no es necesario el parámetro \texttt{structure}:
+\begin{verbatim}
+'simple_object' => [
+   'type' => 'object',
+   'fields' => [
+       'key1' => ['type' => 'string'],
+       'key2' => ['type' => 'integer']
+   ]
+]
+\end{verbatim}
+
+\subsection{Reglas de Uso}
+
+\begin{itemize}
+   \item Usar \texttt{type => 'array'} para listas secuenciales de elementos
+   \item Usar \texttt{type => 'object'} para estructuras clave-valor
+   \item Incluir \texttt{structure} cuando se necesite validar estructuras anidadas
+   \item Omitir \texttt{structure} para validaciones simples de tipo
+\end{itemize}
+
+\subsection{Ejemplo Completo}
+\begin{verbatim}
+$rules = [
+   'categories' => [
+       'type' => 'array',
+       'structure' => [
+           'type' => 'object',
+           'fields' => [
+               'name' => ['type' => 'string', 'required' => true],
+               'slug' => ['type' => 'string', 'required' => true]
+           ]
+       ]
+   ],
+   'simple_attributes' => [
+       'type' => 'object',
+       'fields' => [
+           'color' => ['type' => 'string'],
+           'size' => ['type' => 'string']
+       ]
+   ]
+]
+\end{verbatim}
+
 
 ### Validaciones en los modelos
 
