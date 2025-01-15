@@ -422,25 +422,25 @@ class ValidatorTest extends TestCase
         Validacion de estructuras anidadas
     */
 
-    // /** @test */
-    // public function test_validates_nested_field()
-    // {
-    //     $validator = new Validator();
-    //     $result = $validator->validate(
-    //         [
-    //             'producto' => [
-    //                 'precio' => 'abc'  // string en vez de número
-    //             ]
-    //         ],
-    //         [
-    //             'producto' => [
-    //                 'precio' => ['type' => 'number']
-    //             ]
-    //         ]
-    //     );
+    /** @test */
+    public function test_validates_nested_field()
+    {
+        $validator = new Validator();
+        $result = $validator->validate(
+            [
+                'producto' => [
+                    'precio' => 'abc'  // string en vez de número
+                ]
+            ],
+            [
+                'producto' => [
+                    'precio' => ['type' => 'number']
+                ]
+            ]
+        );
 
-    //     $this->assertFalse($result);
-    //     $errors = $validator->getErrors();
-    //     $this->assertArrayHasKey('producto', $errors);
-    // }
+        $this->assertFalse($result);
+        $errors = $validator->getErrors();
+        $this->assertArrayHasKey('producto', $errors);
+    }
 }
