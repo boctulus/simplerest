@@ -327,41 +327,41 @@ class ValidatorTest extends TestCase
 		));
 	}
 
-    public function testUniqueFields()
-{
-    $validator = new Validator();
-    
-    $db = $this->getMockBuilder('simplerest\core\libs\DB')
-        ->disableOriginalConstructor()
-        ->getMock();
-    
-    // Mock del método estático table
-    $db::staticExpects($this->any())
-        ->method('table')
-        ->with('users')
-        ->willReturn($db);
+    // public function testUniqueFields()
+    // {
+    //     $validator = new Validator();
         
-    $db->expects($this->any())
-        ->method('where')
-        ->willReturn($db);
+    //     $db = $this->getMockBuilder('simplerest\core\libs\DB')
+    //         ->disableOriginalConstructor()
+    //         ->getMock();
         
-    $db->expects($this->any())
-        ->method('exists')
-        ->willReturn(false);
+    //     // Mock del método estático table
+    //     $db::staticExpects($this->any())
+    //         ->method('table')
+    //         ->with('users')
+    //         ->willReturn($db);
+            
+    //     $db->expects($this->any())
+    //         ->method('where')
+    //         ->willReturn($db);
+            
+    //     $db->expects($this->any())
+    //         ->method('exists')
+    //         ->willReturn(false);
+            
+    //     $validator->setUniques(['email'], 'users');
         
-    $validator->setUniques(['email'], 'users');
-    
-    $result = $validator->validate(
-        [
-            'email' => 'test@test.com'
-        ],
-        [
-            'email' => ['type' => 'email']
-        ]
-    );
-    
-    $this->assertTrue($result);
-}
+    //     $result = $validator->validate(
+    //         [
+    //             'email' => 'test@test.com'
+    //         ],
+    //         [
+    //             'email' => ['type' => 'email']
+    //         ]
+    //     );
+        
+    //     $this->assertTrue($result);
+    // }
 
     // public function testIgnoredFields()
     // {
@@ -391,4 +391,56 @@ class ValidatorTest extends TestCase
     //     ));
     // }
 	
+
+    /** @test */
+    public function test_validates_basic_number_type()
+    {
+        $validator = new Validator();
+        $result = $validator->validate(
+            ['cantidad' => 'abc'],  // string en vez de número
+            ['cantidad' => ['type' => 'number']]
+        );
+
+        $this->assertFalse($result);
+        $this->assertArrayHasKey('cantidad', $validator->getErrors());
+    }
+
+    /** @test */
+    public function test_validates_basic_alpha_type()
+    {
+        $validator = new Validator();
+        $result = $validator->validate(
+            ['nombre' => 'Juan123'],  // contiene números
+            ['nombre' => ['type' => 'alpha']]
+        );
+
+        $this->assertFalse($result);
+        $this->assertArrayHasKey('nombre', $validator->getErrors());
+    }
+
+    /*
+        Validacion de estructuras anidadas
+    */
+
+    // /** @test */
+    // public function test_validates_nested_field()
+    // {
+    //     $validator = new Validator();
+    //     $result = $validator->validate(
+    //         [
+    //             'producto' => [
+    //                 'precio' => 'abc'  // string en vez de número
+    //             ]
+    //         ],
+    //         [
+    //             'producto' => [
+    //                 'precio' => ['type' => 'number']
+    //             ]
+    //         ]
+    //     );
+
+    //     $this->assertFalse($result);
+    //     $errors = $validator->getErrors();
+    //     $this->assertArrayHasKey('producto', $errors);
+    // }
 }

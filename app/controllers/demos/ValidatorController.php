@@ -11,7 +11,102 @@ use simplerest\core\controllers\Controller;
 use simplerest\core\libs\ValidationRules;
 
 class ValidatorController extends Controller
-{
+{    
+    function test_validator_2(){
+        $data = require ETC_PATH . 'prod.php';
+
+        $rules = [
+            'type' => ['type' => 'string', 'in' => ['variable', 'simple']],
+            'name' => ['type' => 'string', 'required' => true],
+            'description' => ['type' => 'string'],
+            'short_description' => ['type' => 'string'],
+            'sku' => ['type' => 'string', 'required' => true],
+            'weight' => ['type' => 'number'],
+            'length' => ['type' => 'number'],
+            'width' => ['type' => 'number'],
+            'height' => ['type' => 'number'],
+            
+            'categories' => [
+                'type' => 'array',
+                'structure' => [
+                    'type' => 'object',
+                    'fields' => [
+                        'name' => ['type' => 'string', 'required' => true],
+                        'slug' => ['type' => 'string', 'required' => true],
+                        'description' => ['type' => 'string']
+                    ]
+                ]
+            ],
+        
+            'attributes' => [
+                'type' => 'array',
+                'structure' => [
+                    'type' => 'object',
+                    'fields' => [
+                        'term_names' => ['type' => 'array'],
+                        'is_visible' => ['type' => 'boolean'],
+                        'for_variation' => ['type' => 'boolean']
+                    ]
+                ]
+            ],
+        
+            'variations' => [
+                'type' => 'array',
+                'structure' => [
+                    'type' => 'object',
+                    'fields' => [
+                        'attributes' => [
+                            // Cuando se declara un nodo de tipo type="object" no se requiere usar "structure"
+                            'type' => 'object',  // Es tipo 'object' porque es un array asociativo
+                            'fields' => [
+                                'attribute_intensidad' => ['type' => 'string'],
+                                'attribute_atraccion' => ['type' => 'string']
+                            ]
+                        ],
+                        'dimensions' => [
+                            'type' => 'object',
+                            'fields' => [
+                                'length' => ['type' => 'number'],
+                                'width' => ['type' => 'number'],
+                                'height' => ['type' => 'number']
+                            ]
+                        ],
+                        'display_price' => ['type' => 'number'],
+                        'display_regular_price' => ['type' => 'number'],
+                        'image' => [
+                            'type' => 'object',
+                            'fields' => [
+                                'title' => ['type' => 'string'],
+                                'caption' => ['type' => 'string'],
+                                'url' => ['type' => 'url'],
+                                'alt' => ['type' => 'string'],
+                                'src' => ['type' => 'url']
+                            ]
+                        ],
+                        'is_downloadable' => ['type' => 'boolean'],
+                        'is_in_stock' => ['type' => 'boolean'],
+                        'is_purchasable' => ['type' => 'boolean'],
+                        'is_sold_individually' => ['type' => 'string'],
+                        'is_virtual' => ['type' => 'boolean'],
+                        'sku' => ['type' => 'string', 'required' => true],
+                        'variation_description' => ['type' => 'string'],
+                        'variation_id' => ['type' => 'integer'],
+                        'variation_is_active' => ['type' => 'boolean'],
+                        'variation_is_visible' => ['type' => 'boolean'],
+                        'weight' => ['type' => 'number']
+                    ]
+                ]
+            ]
+        ];
+
+        $v = new Validator;
+
+        if ($v->validate($data, $rules /*, $fillables */)){
+            dd('Valido!');
+        } else {
+           dd($v->getErrors(), 'Errores de validacion');
+        } 
+    }
    
     function test_validator(){
         $data = [
@@ -19,23 +114,6 @@ class ValidatorController extends Controller
             'apellido'=>'Bz',
             'segundo_apellido'=>'San Martín',
             'usuario'=>'',
-            'celular'=>'321530', 
-            'correo'=>'a@b',
-            'calle'=>'0',
-            'numero_de_casa'=>'',
-            'observaciones'=>'la vida es complicada y bla bla bla bla bla bla bla',
-            'fecha'=>'32-09-2019',
-            'hora'=>'24:00:17',
-            'rol'=>'',
-            'fuerza'=>'100.xxx', //
-            'estrato'=>'3',
-            'felicidad'=>'0.25',
-            'energia'=>'.25',
-            'hora_almuerzo'=>'13:30:00',
-            'hora_cena'=>'18:00:00',
-            'fecha_nac'=>'10-12-1902',
-            'frutas_favoritas'=>['bananas','manzanas']  // podria provenir de un grupo de checkboxes
-            
         ];
 
         $rules = [

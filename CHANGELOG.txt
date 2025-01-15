@@ -69,3 +69,4 @@
 - Fix undefined function errors in setTextDomain
 - Improve useGettext to check extension availability
 - Update documentation for new error handling system
+[2025-01-15 15:18:27]	0.8.12	Validator: implementacion basica de estructuras anidadas

@@ -22,6 +22,8 @@ use simplerest\core\libs\System;
 
     Más
     https://stackoverflow.com/a/16744070/980631
+
+    https://claude.ai/chat/0234fab7-c622-46d2-8b27-8ed4a58f0654
 */
 
 
@@ -33,6 +35,8 @@ class Translate
     static $currentLang       = null;
     static $useGettext        = null;
     static $ext_loaded;
+    static $fallbackLocale    = 'en_US';
+    static $pluralForms       = [];
 
     static function checkGetTextLoaded(bool $log_error = true){
         if (static::$ext_loaded !== null){
@@ -74,6 +78,19 @@ class Translate
 
     static function getDomain(){
         return static::$currentTextDomain;
+    }
+
+    // Nuevo: Interpolación de variables
+    protected static function interpolate(string $message, array $context = []): string 
+    {
+        $replace = [];
+        foreach ($context as $key => $val) {
+            if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
+                $replace['{' . $key . '}'] = $val;
+            }
+        }
+
+        return strtr($message, $replace);
     }
     
     static function bind(string $domain, $path = LOCALE_PATH){
@@ -179,6 +196,29 @@ class Translate
 
         static::setLocale($selected, $encode);
     }
+
+    // Nuevo: Pluralización
+    static function transChoice(string $id, int $number, array $parameters = [], string $domain = null): string
+    {
+        $domain = $domain ?? static::$currentTextDomain;
+        
+        if (!isset(static::$pluralForms[$domain][$id])) {
+            return $id;
+        }
+
+        $forms = static::$pluralForms[$domain][$id];
+        $form = static::getPluralForm($number, count($forms));
+        
+        $translation = $forms[$form] ?? $id;
+        return static::interpolate($translation, array_merge(['count' => $number], $parameters));
+    }
+
+    protected static function getPluralForm(int $n, int $totalForms): int
+    {
+        // Implementación básica - se puede expandir según el idioma
+        return $n === 1 ? 0 : min(1, $totalForms - 1);
+    }
+
 
     static function exportLangDef(bool $include_mo = true, string $locale_path = null, string $to = null, string $text_domain = null, string $preset = null)
     {   
