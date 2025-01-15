@@ -2309,9 +2309,17 @@ class Strings
         return $str;
 	}
 
-	// Si hay caracteres BOM entonces deben primero convertirse los acentos y recien entonces remover los BOM
+	/*
+		Si hay caracteres BOM entonces deben primero convertirse los acentos y recien entonces remover los BOM
+
+		Tomada de WP All Import
+	*/
 	static function fixBOM($input) {
-		return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $input);;
+		if (substr($input, 0, 3) == chr(hexdec('EF')) . chr(hexdec('BB')) . chr(hexdec('BF'))) {
+			return substr($input, 3);
+		} else {
+			return $input;
+		}
 	}	
 
 	static function sanitize($str, bool $replace_accents = true, bool $trim = false, $allowed = 'a-z0-9- ') 
