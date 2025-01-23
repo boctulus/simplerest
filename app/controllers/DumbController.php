@@ -11331,9 +11331,9 @@ class DumbController extends Controller
         view('instructors/card_v2.php');
     }
 
-    function tailwind_card_v3(){
+    function tailwind_card_v4(){
         set_template('templates/tailwind.php');
-        view('instructors/card_v3.php');
+        view('instructors/card_v4.php');
     }
 
 }   // end class
