@@ -1,7 +1,24 @@
-  <style>
-    body {
-        background-color: #002D62;
-    }
+<style>
+body {
+    background-color: #002D62;
+    font-family: 'Arial', sans-serif;
+}
+
+#info-switch:checked + label {
+  background-color: #3b82f6;
+}
+
+#info-switch:checked + label:before {
+  transform: translateX(1.25rem);
+}
+
+/* Add touch-action for iOS compatibility */
+input[type="checkbox"], 
+label, 
+[role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
 </style>
 
 <div class="relative">
@@ -25,12 +42,19 @@
       </p>
     </div>
 
-    <!-- Botones (círculos grises) -->
+    <!-- Botones (círculares) -->
     <div class="absolute top-4 right-4 flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
-      <div class="w-8 h-8 bg-gray-500 rounded-full"></div>
-      <div class="w-8 h-8 bg-gray-500 rounded-full"></div>
-      <div class="w-8 h-8 bg-gray-500 rounded-full"></div>
+    <div class="w-8 h-8 bg-gray-500 rounded-full cursor-pointer hover:bg-gray-600 transition-colors flex items-center justify-center" onclick="alert('Editar perfil')" role="button">
+      <i class="fas fa-pencil-alt text-white"></i>
     </div>
+    <div class="w-8 h-8 bg-gray-500 rounded-full cursor-pointer hover:bg-gray-600 transition-colors flex items-center justify-center" onclick="alert('Descargar como PDF')" role="button">
+      <i class="fas fa-file-pdf text-white"></i>
+    </div>
+    <div class="w-8 h-8 bg-red-500 rounded-full cursor-pointer hover:bg-red-600 transition-colors flex items-center justify-center" onclick="alert('Borrar perfil')" role="button">
+      <i class="fas fa-trash text-white"></i>
+    </div>
+  </div>
+
   </div>
 
   <!-- Switch y contenido adicional -->
