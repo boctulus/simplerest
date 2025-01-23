@@ -45,7 +45,6 @@ O quizas mas breve:
   Responde SOLO con el DocBlock.
   PROMPT;
 
-
 - Enfoque hibrido para documentar Starlight y Doxygen:
 
 . Usar Doxygen para generar la documentación técnica inicial desde el código
@@ -90,6 +89,52 @@ https://www.ibm.com/docs/en/iis/11.7?topic=content-running-referential-integrity
 - Documentar en Git como en 
 
 https://github.com/robsonvn/laravel-couchdb
+
+
+- Para DOCUMENTAR PROGRESO de pruebas unitarias como se muestra en https://youtu.be/GgLIp1aWi1s?si=9zpMLkj2FogKJPMV&t=180
+
+https://chatgpt.com/c/678cc032-afe4-800d-a933-e6a97f41e4d1
+
+
+1. [Code Coverage Tools]:
+
+Estas herramientas evalúan cuánto del código está cubierto por las pruebas unitarias y pueden generar gráficos visuales.
+
+[Istanbul/NYC] (JavaScript/TypeScript)
+
+Puedes generar reportes de cobertura que se integran con Jest, Mocha, etc.
+Tiene salidas en HTML para una visualización gráfica.
+Comando base: nyc report --reporter=html.
+[Codecov.io] y [Coveralls]
+
+Servicios en la nube que visualizan la cobertura de tu repositorio, integrándose con CI/CD.
+Generan dashboards similares al de tu imagen.
+
+
+2. [Dashboards con Frameworks de Testing]
+
+  Jest (con Jest HTML Reporter)
+  Playwright Reporter (con visualización avanzada)
+
+
+3. [Custom Dashboards]
+
+Si deseas algo más personalizado como el gráfico mostrado:
+
+Herramientas de Visualización:
+  [Chart.js] o D3.js: Para crear gráficos interactivos de las pruebas realizadas.
+  Datatables.js: Para tablas detalladas.
+
+4. [CI/CD Integrations]
+
+Si usas CI/CD:
+
+  GitHub Actions y GitLab Pipelines pueden generar visualizaciones básicas al integrarse con herramientas como lcov o reportes en JSON/HTML.
+
+  SonarQube:
+
+  Ideal para monitorear la calidad del código y la cobertura.
+  Muestra métricas como duplicación de código, problemas y cobertura en dashboards interactivos.
 
 
 ## MODELADO DE APIs y DOCUMENTADORES
@@ -5410,10 +5455,6 @@ https://www.phpfastcache.com/
 
 - Id opcionalmente no autoincrementales por seguridad ! usar UUID(s) en su lugar
 https://www.php.net/manual/en/function.uniqid.php <-- no 
-
-- Migrar a PHP UNIT 9.0
-
-https://laravelshift.com/upgrade-phpunit-9
 
 
 - [ ACL ] Implementar eventos beforeCheckAccess y afterCheckAccess 
