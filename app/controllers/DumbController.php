@@ -10050,7 +10050,7 @@ class DumbController extends Controller
     */
     function nick()
     {
-        set_template('templates\tpl_bt5.php');
+        set_template('templates/tpl_bt5.php');
 
         $sc = new EatLeaf();
 
@@ -11319,8 +11319,16 @@ class DumbController extends Controller
         
         // foreach ($rows as $row) {
         // }
-        
     }
 
+    function tailwind_card_v1(){
+        set_template('templates/tailwind.php');
+        view('instructors/card_v1.php');
+    }
+
+    function tailwind_card_v2(){
+        set_template('templates/tailwind.php');
+        view('instructors/card_v2.php');
+    }
 
 }   // end class
