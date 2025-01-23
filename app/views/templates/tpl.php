@@ -33,15 +33,13 @@
     <script src="<?= asset('js/login.js') ?>"></script>
 
     <!-- ICONOS FONTAWESOME -->
-    <script src="<?= asset('third_party/fontawesome/5/fontawesome_kit.js') ?>" crossorigin="anonymous"></script>
-    
+    <script src="<?= asset('third_party/fontawesome/5/fontawesome_kit.js') ?>" crossorigin="anonymous"></script>    
+    <link rel="stylesheet" href="<?= asset('third_party/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
+
     <!-- TEMPLATE ADMIN LTE -->
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="<?= asset('third_party/adminlte/plugins/fontawesome-free/css/all.min.css?v=6.2') ?>">
     
     <!-- Ionicons -->
     <link rel="stylesheet" href="<?= asset('third_party/ionicframework/ionicons.min.css') ?>">
