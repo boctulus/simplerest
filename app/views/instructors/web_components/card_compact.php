@@ -28,8 +28,8 @@
                         color: #9ca3af;
                         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
                         width: 100%;
-                        max-width: 600px;
-                        margin: 0 auto 1rem; /* Margen inferior de 1rem */
+                        height: 100%; /* Added to ensure full height */
+                        margin: 0; /* Removed margin bottom */
                         background: white;
                         border-radius: 8px;
                     }
@@ -112,6 +112,27 @@
                     .social-icon svg {
                         width: 1rem;
                         height: 1rem;
+                    }
+
+                    .grid-container {
+                        display: grid;
+                        grid-template-columns: repeat(1, 1fr);
+                        gap: 2rem;
+                        padding: 1rem;
+                        width: 100%;
+                        box-sizing: border-box;
+                    }
+
+                    @media (min-width: 640px) {
+                        .grid-container {
+                            grid-template-columns: repeat(2, 1fr);
+                        }
+                    }
+
+                    @media (min-width: 1024px) {
+                        .grid-container {
+                            grid-template-columns: repeat(4, 1fr);
+                        }
                     }
                 `);
 
