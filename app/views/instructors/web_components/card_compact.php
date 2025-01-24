@@ -3,7 +3,7 @@
     <div class="card">
         <img class="profile-image" alt="Foto de perfil">
         <div class="content">
-            <h2 class="name"></h2>
+            <h2 class="name" style="padding-right:0.75rem"></h2>
             <p class="subtitle"></p>
             <p class="stats"></p>
             <span class="rating"></span>
@@ -112,27 +112,6 @@
                     .social-icon svg {
                         width: 1rem;
                         height: 1rem;
-                    }
-
-                    .grid-container {
-                        display: grid;
-                        grid-template-columns: repeat(1, 1fr);
-                        gap: 2rem;
-                        padding: 1rem;
-                        width: 100%;
-                        box-sizing: border-box;
-                    }
-
-                    @media (min-width: 640px) {
-                        .grid-container {
-                            grid-template-columns: repeat(2, 1fr);
-                        }
-                    }
-
-                    @media (min-width: 1024px) {
-                        .grid-container {
-                            grid-template-columns: repeat(4, 1fr);
-                        }
                     }
                 `);
 
