@@ -11354,7 +11354,38 @@ class DumbController extends Controller
     /*
         WEB COMPONENTS
     */
+    
+    /*
+        NO utiliza TailWind CSS ni FontAwesome
+    */
+    function wc_card_shortd(){   
+        view('instructors/web_components/card_compact.php');
+        ?>
 
+       <!-- Card 1 -->
+        <social-profile-card
+            name="Guillermo Olvera"
+            subtitle="Redes"
+            stats="11 Cursos"
+            rating="⭐ 5.0 Calificaciones"
+            image="https://i.imgur.com/qwQQMGW.png"
+            facebook="https://facebook.com"
+            twitter="https://twitter.com"
+            linkedin="https://linkedin.com"
+            github="https://github.com"
+        ></social-profile-card>
+
+        <!-- Card 2 -->
+        <social-profile-card
+            name="Pablo Bozzolo"
+            subtitle="Backend"
+            stats="15 Cursos"
+            rating="⭐ 4.95 Calificaciones"
+            image="https://i.imgur.com/oTgAKU2.jpeg"
+        ></social-profile-card>
+
+        <?php
+    }
 
     /*
         NO utiliza TailWind CSS ni FontAwesome
@@ -11425,7 +11456,7 @@ class DumbController extends Controller
         NO utiliza TailWind CSS ni FontAwesome
     */
     function wc_card_v5(){                
-        view('instructors\web_components\card_v5.php');
+        view('instructors/web_components/card_v5.php');
 
         ?>
 
@@ -11450,6 +11481,178 @@ class DumbController extends Controller
         <?php
     }
 
+    function grid(){
+        set_template('templates/tailwind.php');
+
+        $personal = json_decode('[
+            {
+                "name": "Jorge Alberto Garza Tovar",
+                "position": "Coordinator of Engineering",
+                "brands": "Dahua",
+                "certifications": "Access Zkteco (Security inspection line series ZKD, ZKX5000, ZKX6500, ZKX10080) video surveillance DHCA-VIS DHSA DHCA-ACS Transmission + DoLink Care",
+                "lines_families": {
+                    "dahua_cameras": 4,
+                    "dahua_ip": 4,
+                    "dahua_dvrs": 5,
+                    "dahua_accessories": 4,
+                    "dahua_access": 4,
+                    "dahua_videoporteros": 5
+                },
+                "expertise": 4,
+                "location": "MTY",
+                "contact": "jorge.garza@tvc.mx",
+                "phone": "81-84001777 #21421",
+                "img_url": "1.jpeg"
+            },
+            {
+                "name": "Gustavo Serrano Vazquez",
+                "position": "Product Engineer",
+                "brands": "Dahua",
+                "certifications": "Certifications in DHCA-VIS DHSA DHCA-ACS",
+                "lines_families": {
+                    "dahua_cameras": 5,
+                    "dahua_ip": 5,
+                    "dahua_dvrs": 5,
+                    "dahua_access": 4,
+                    "dahua_videoporteros": 5
+                },
+                "expertise": 5,
+                "location": "IZT",
+                "contact": "gustavo.serrano@tvc.mx",
+                "phone": "81-84001777 #28057",
+                "img_url": "2.jpeg"
+            },
+            {
+                "name": "Jonathan Martin Sifuentes Reynosa",
+                "position": "Product Engineer",
+                "brands": "Dahua",
+                "certifications": "New staff",
+                "lines_families": {
+                    "dahua_access": 4,
+                    "dahua_videoporteros": 5
+                },
+                "expertise": 4,
+                "location": "MTY",
+                "contact": "jonathan.sifuentes@tvc.mx",
+                "phone": "81-84001777 #278115",
+                "img_url": "3.jpeg"
+            },
+            {
+                "name": "Manuel Alejandro Gutierrez Alvarez",
+                "position": "Product Engineer",
+                "brands": "Dahua",
+                "certifications": "New staff",
+                "lines_families": {
+                    "dahua_access": 4,
+                    "dahua_videoporteros": 5
+                },
+                "expertise": 4,
+                "location": "MTY",
+                "contact": "manuel.gutierrez@tvc.mx",
+                "phone": "81-84001777 #279090",
+                "img_url": "4.jpeg"
+            },
+            {
+                "name": "Jennifer Olvera Hernandez",
+                "position": "Product Engineer",
+                "brands": "Dahua",
+                "certifications": "Certifications in Transmission + DoLink Care DHSA DHCA-ACS",
+                "lines_families": {
+                    "dahua_networks": 5,
+                    "dahua_alarms": 5,
+                    "dahua_signage": 5
+                },
+                "expertise": 5,
+                "location": "MTY",
+                "contact": "jennifer.olvera@tvc.mx",
+                "phone": "81-84001777 #231663",
+                "img_url": "5.jpeg"
+            },
+            {
+                "name": "Karen Esther Ontiveros Rojas",
+                "position": "Product Engineer",
+                "brands": "Dahua",
+                "certifications": "Certifications in DHCA-VIS DHSA DHCA-ACS",
+                "lines_families": {
+                    "dahua_cameras": 4,
+                    "dahua_ip": 5,
+                    "dahua_dvrs": 5,
+                    "dahua_accessories": 5,
+                    "dahua_access": 4
+                },
+                "expertise": 5,
+                "location": "MTY",
+                "contact": "karen.ontiveros@tvc.mx",
+                "phone": "81-84001777 #243213",
+                "img_url": "6.jpeg"
+            },
+            {
+                "name": "Karla Patricia Rocha Alonso",
+                "position": "Product Engineer",
+                "brands": "Dahua",
+                "certifications": "Certifications in DHCA-VIS DHSA DHCA-ACS",
+                "lines_families": {
+                    "dahua_accessories": 3,
+                    "dahua_access": 4
+                },
+                "expertise": 3,
+                "location": "MTY",
+                "contact": "karla.rocha@tvc.mx",
+                "phone": "81-84001777 #27363",
+                "img_url": "7.jpeg"
+            },
+            {
+                "name": "Andrea Anette Celestino Castilla",
+                "position": "Product Engineer",
+                "brands": "Dahua",
+                "certifications": "New staff",
+                "lines_families": {
+                    "dahua_accessories": 3,
+                    "dahua_access": 3
+                },
+                "expertise": 3,
+                "location": "MTY",
+                "contact": "andrea.celestino@tvc.mx",
+                "phone": "81-84001777 #260730",
+                "img_url": "8.jpeg"
+            },
+            {
+                "name": "Mario Gerardo Cruz Vargas",
+                "position": "Product Engineer",
+                "brands": "Dahua",
+                "certifications": "New staff",
+                "lines_families": {
+                    "dahua_accessories": 3,
+                    "dahua_access": 3
+                },
+                "expertise": 3,
+                "location": "MTY",
+                "contact": "mario.cruz@tvc.mx",
+                "phone": "81-84001777 #270755",
+                "img_url": "9.jpeg"
+            },
+            {
+                "name": "Juan Guillermo Olvera Maldonado",
+                "position": "Coordinator of Engineering",
+                "brands": "Ubiquiti, Draytek, Tp-Link",
+                "certifications": "Ubiquiti UEWA, UBWA Draytek: Discovery Tp-Link: OMADA",
+                "lines_families": {
+                    "ubiquiti_unifi": 5,
+                    "ubiquiti_airmax": 4,
+                    "draytek": 4,
+                    "tp_link_omada": 3
+                },
+                "expertise": 4,
+                "location": "MTY",
+                "contact": "guillermo.olvera@tvc.mx",
+                "phone": "81-84001777 #27663",
+                "img_url": "10.jpeg"
+            }
+        ]', true);
+
+        view('instructors/web_components/card_compact.php');
+        view('instructors/grid.php', compact('personal'));
+    }
 
 
 }   // end class
