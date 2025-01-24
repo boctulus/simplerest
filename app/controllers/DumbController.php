@@ -11355,14 +11355,11 @@ class DumbController extends Controller
         WEB COMPONENTS
     */
 
-    function wc_card_short(){        
-        css_file('third_party/fontawesome/6/all.css');
-        set_template('templates/tailwind.php');
-        
+    function wc_card_short(){   
         view('instructors/web_components/card_compact.php');
         ?>
 
-
+       <!-- Card 1 -->
         <social-profile-card
             name="Guillermo Olvera"
             subtitle="Redes"
@@ -11372,8 +11369,43 @@ class DumbController extends Controller
             facebook="https://facebook.com"
             twitter="https://twitter.com"
             linkedin="https://linkedin.com"
-            github="https://github.com">
-        </social-profile-card>
+            github="https://github.com"
+        ></social-profile-card>
+
+        <!-- Card 2 -->
+        <social-profile-card
+            name="Pablo Bozzolo"
+            subtitle="Backend"
+            stats="15 Cursos"
+            rating="⭐ 4.95 Calificaciones"
+            image="https://i.imgur.com/oTgAKU2.jpeg"
+        ></social-profile-card>
+
+        <?php
+    }
+
+    function wc_card_v5(){                
+        view('instructors\web_components\card_v5.php');
+
+        ?>
+
+        <!-- Uso del componente -->
+        <profile-card
+            image-url="https://i.imgur.com/qwQQMGW.png"
+            short-name="Guillermo Olvera"
+            full-name="Juan Guillermo Olvera Maldonado"
+            phone="81-8400-1777 #27363"
+            specialty="REDES"
+            position="Coordinador de Ingeniería"
+            rating="5.0"
+            description="Soy un desarrollador web con una amplia gama de conocimientos en <strong>muchos lenguajes front-end y back-end</strong>, marcos responsivos, bases de datos, y mejores prácticas de código."
+            email="guillermo.olvera@tvc.mx"
+            country="México"
+            province="MTY"
+            brands='["Ubiquiti", "Draytek", "Utepo", "Tp-Link"]'
+            certifications='{"Ubiquiti": "UEWA", "Draytek": "DISCOVERY", "Tp-Link": "OMA"}'
+            skills='{"Ubiquiti UniFi": 5, "Draytek": 4, "Vivotek": 3, "Tp-Link Omada": 3}'
+        ></profile-card>
 
         <?php
     }
