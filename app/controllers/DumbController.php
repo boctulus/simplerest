@@ -11331,11 +11331,24 @@ class DumbController extends Controller
         view('instructors/card_v2.php');
     }
 
+    function tailwind_card_v3(){
+        set_template('templates/tailwind.php');
+        view('instructors/card_v3.php');
+    }
+
+
     function tailwind_card_v4(){        
         css_file('third_party/fontawesome/6/all.css');            
 
         set_template('templates/tailwind.php');
         view('instructors/card_v4.php');
+    }
+
+    function tailwind_card_short(){        
+        css_file('third_party/fontawesome/6/all.css');            
+
+        set_template('templates/tailwind.php');
+        view('instructors/card_compact.php');
     }
 
 }   // end class
