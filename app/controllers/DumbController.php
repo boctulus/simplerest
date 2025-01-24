@@ -11650,7 +11650,6 @@ class DumbController extends Controller
             }
         ]', true);
 
-        view('instructors/web_components/card_compact.php');
         view('instructors/grid.php', compact('personal'));
     }
 
