@@ -11351,4 +11351,31 @@ class DumbController extends Controller
         view('instructors/card_compact.php');
     }
 
+    /*
+        WEB COMPONENTS
+    */
+
+    function wc_card_short(){        
+        css_file('third_party/fontawesome/6/all.css');
+        set_template('templates/tailwind.php');
+        
+        view('instructors/web_components/card_compact.php');
+        ?>
+
+
+        <social-profile-card
+            name="Guillermo Olvera"
+            subtitle="Redes"
+            stats="11 Cursos"
+            rating="⭐ 5.0 Calificaciones"
+            image="https://i.imgur.com/qwQQMGW.png"
+            facebook="https://facebook.com"
+            twitter="https://twitter.com"
+            linkedin="https://linkedin.com"
+            github="https://github.com">
+        </social-profile-card>
+
+        <?php
+    }
+
 }   // end class
