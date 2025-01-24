@@ -11355,6 +11355,10 @@ class DumbController extends Controller
         WEB COMPONENTS
     */
 
+
+    /*
+        NO utiliza TailWind CSS ni FontAwesome
+    */
     function wc_card_short(){   
         view('instructors/web_components/card_compact.php');
         ?>
@@ -11384,8 +11388,11 @@ class DumbController extends Controller
         <?php
     }
 
-    function wc_card_v4(){                
-        view('instructors\web_components\card_v4.php');
+    function wc_card_v4_tailwind(){                
+        css_file('third_party/fontawesome/6/all.css');            
+        set_template('templates/tailwind.php');
+
+        view('instructors/web_components/card_v4_tailwind.php');
 
         ?>
 
@@ -11404,8 +11411,9 @@ class DumbController extends Controller
             province="MTY"
             brands='["Ubiquiti", "Draytek", "Utepo", "Tp-Link"]'
             certifications='{"Ubiquiti": "UEWA", "Draytek": "DISCOVERY", "Tp-Link": "OMA"}'
-            skills='{"Ubiquiti UniFi": 5, "Draytek": 4, "Vivotek": 3, "Tp-Link Omada": 3}'
-        ></profile-card>
+            skills='{"Ubiquiti UniFi": 5, "Draytek": 4, "Vivotek": 3, "Tp-Link Omada": 3}'>
+        </profile-card>
+        
 
         <?php
     }
@@ -11413,6 +11421,8 @@ class DumbController extends Controller
     /*
         Esta version es mas simple y no incluye switch para expandir la información
         complementaria
+
+        NO utiliza TailWind CSS ni FontAwesome
     */
     function wc_card_v5(){                
         view('instructors\web_components\card_v5.php');
