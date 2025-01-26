@@ -4,6 +4,23 @@ namespace simplerest\traits;
 
 trait ShopifyWooCommerceAdaptorTrait
 {
+    protected $shopify_to_woocommerce_eq = [
+		'Title'                     => 'name',
+		'Body (HTML)'               => 'description',
+		'Quantity'                  => 'stock_quantity',
+		'Variant Inventory Qty'     => 'stock_quantity',
+		'Image Src'                 => 'images',
+		'Variant Image'             => 'images',
+		'Variant SKU'               => 'sku',
+		'Variant Price'             => 'sale_price',
+		'Variant Compare At Price'  => 'regular_price',
+		'Type'                      => 'category_ids',
+		'Tags'                      => 'tag_ids_spaces',
+		'Variant Grams'             => 'weight',
+		'Variant Requires Shipping' => 'meta:shopify_requires_shipping',
+		'Variant Taxable'           => 'tax_status',
+    ];
+    
      /*
         Convierte la estructura de productos de Shopify a la de WooCommerce
 

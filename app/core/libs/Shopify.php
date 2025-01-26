@@ -20,9 +20,7 @@ use simplerest\traits\ShopifyWooCommerceAdaptorTrait;
 
     it also contains X-Shopify-Hmac-SHA256 to verify aunthenticity of request.
 
-    https://stackoverflow.com/questions/29567824/how-to-get-shopify-shop-id-inside-of-product-update-webhook
-
-    Tanto la libreria como el Controlador se han generalizado por que podrian empaquetarse en un package !!!!
+    https://stackoverflow.com/questions/29567824/how-to-get-shopify-shop-id-inside-of-product-update-webhook!
 */
 class Shopify
 {
@@ -32,23 +30,6 @@ class Shopify
     protected $api_secret;
     protected $api_ver;
     protected $shop;
-
-    protected $shopify_to_woocommerce_eq = [
-		'Title'                     => 'name',
-		'Body (HTML)'               => 'description',
-		'Quantity'                  => 'stock_quantity',
-		'Variant Inventory Qty'     => 'stock_quantity',
-		'Image Src'                 => 'images',
-		'Variant Image'             => 'images',
-		'Variant SKU'               => 'sku',
-		'Variant Price'             => 'sale_price',
-		'Variant Compare At Price'  => 'regular_price',
-		'Type'                      => 'category_ids',
-		'Tags'                      => 'tag_ids_spaces',
-		'Variant Grams'             => 'weight',
-		'Variant Requires Shipping' => 'meta:shopify_requires_shipping',
-		'Variant Taxable'           => 'tax_status',
-    ];
 
     function __construct($shop = null, $api_token = null, $api_key = null, $api_secret = null, $api_ver = null)
     {
