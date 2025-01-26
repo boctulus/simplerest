@@ -31,7 +31,6 @@ class Shopify
     protected $shop;
 
     protected $shopify_to_woocommerce_eq = [
-		'Variant SKU'               => 'sku',
 		'Title'                     => 'name',
 		'Body (HTML)'               => 'description',
 		'Quantity'                  => 'stock_quantity',
@@ -250,7 +249,7 @@ class Shopify
         $operations = ['create', 'update', 'delete'];
 
         foreach ($operations as $operation){
-            $wh = $this->getWebHook($shop, 'products', $operation, $api_key, $api_secret, $api_ver);
+            $wh = $this->getWebHook($shop, 'products', $operation);
 
             if ($wh != null && isset($wh['id'])){
                 // DELETE /admin/api/2021-07/webhooks/1056452214977.json
