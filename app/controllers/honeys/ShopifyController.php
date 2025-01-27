@@ -2,10 +2,10 @@
 
 namespace simplerest\controllers\honeys;
 
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Shopify;
 use simplerest\core\libs\Strings;
-use simplerest\core\controllers\Controller;
 
 /*
     Para hacer pruebas con WebHooks es posible usar NgrOk
@@ -16,7 +16,8 @@ use simplerest\core\controllers\Controller;
     Cada webhook comienza con "shopify_webhook_"
 */
 class ShopifyController extends Controller
-{
+{   
+    
     protected $data;
 
     function __construct()
@@ -83,7 +84,8 @@ class ShopifyController extends Controller
         //
         // Independientemente de donde se utilice es buena idea estandarizar la estructura de los datos
         //
-        $rows = $sh->adaptToWooCommerce($arr, $api['shop'], $api['api_key'], $api['api_secret'], $api['api_ver']);
+
+        // $rows = $sh->adaptToWooCommerce($arr, $api['shop'], $api['api_key'], $api['api_secret'], $api['api_ver']);
     
         if (empty($rows)){
             Logger::log("Error al recibir datos para shop $shop");
