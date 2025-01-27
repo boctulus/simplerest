@@ -31,6 +31,7 @@ class Shopify
     protected $api_ver;
     protected $shop;
 
+
     function __construct($shop = null, $api_token = null, $api_key = null, $api_secret = null, $api_ver = null)
     {
         $this->shop       = $shop;                
@@ -56,54 +57,40 @@ class Shopify
         }
     }
 
-    function getProducts($max_rows = null){
+    function getProducts(int $max_rows = null): array
+    {
         set_time_limit(0);
-        
-        $api_key     = $this->api_key;
-        $api_secret  = $this->api_secret;
-        $api_ver     = $this->api_ver;
-        $shop        = $this->shop;
 
-        // usar since_id para "paginar"
-        $endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/products.json";
+        $endpoint = "https://{$this->shop}.myshopify.com/admin/api/{$this->api_ver}/products.json";
+        $limit = 100;
+        $products = [];
+        $page_info = null;
 
-        $limit    = 100;  // 100
-        $last_id  = 0;
-        $query_fn = function($limit, $last_id){ return "limit=$limit&since_id=$last_id"; };
-
-        // número de páginas
-        $count   = 0; 
-        while(true){
-            if (isset($max_rows) && !empty($max_rows) && ($count >= $max_rows/$limit)){
+        do {
+            if (isset($max_rows) && count($products) >= $max_rows) {
                 break;
             }
-    
-            //dd("Q=" . $query_fn($limit, $last_id));
 
-            $res = consume_api("$endpoint?".$query_fn($limit, $last_id), 'GET');
-    
-            if ($res['http_code'] != 200){
-                //dd($res['error'], 'ERROR', function(){ die; });
+            $query = http_build_query(['limit' => $limit, 'page_info' => $page_info]);
+            $response = consume_api("$endpoint?$query", 'GET', [], [
+                'X-Shopify-Access-Token' => $this->api_key
+            ]);
+
+            if ($response['http_code'] !== 200) {
                 return [
-                    'error' => $res['error']
+                    'error' => $response['error'] ?? 'Unknown error'
                 ];
             }
-    
-            $data       = json_decode($res['data'], true); 
 
-            $products[] = $data["products"];       
-            
-            $last_id    = max(array_column($products, 'id'));
+            $data = json_decode($response['data'], true);
+            $products = array_merge($products, $data['products']);
+            $page_info = $data['page_info'] ?? null;
 
-            if (count($products) != $limit){
-                break;
-            }
-
-            $count++;            
-        }    
+        } while ($page_info);
 
         return $products;
     }
+
 
     function getCollectionsByProductId($shop, $product_id, $api_key, $api_secret, $api_ver)
     {
