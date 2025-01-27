@@ -51,11 +51,7 @@ class PowerConsumption {
                 ->first();
         }
     
-        if (!$reading) {
-            throw new \Exception('No hay lecturas disponibles');
-        }
-    
-        return $reading;
+        return $reading ?? null;
     }
 
     static function listReadings(int $days){
@@ -72,6 +68,23 @@ class PowerConsumption {
     static function getConsumptionData($currentReading = null): array {
         $today = date('Y-m-d H:i:s');
         $first = static::getInitialReading();
+
+        if (!$first) {
+            return [
+                'date' => $today,
+                'consumption' => 0,
+                'average_consumption' => 0,
+                'excess' => 0,
+                'message' => 'No hay lecturas disponibles',
+                'days_elapsed' => 0,
+                'readings' => [
+                    'first' => null,
+                    'previous' => null,
+                    'last' => null
+                ]
+            ];
+        }
+
         $first_day = $first['created_at'];
         $first_reading = $first['reading'];
         
@@ -123,9 +136,10 @@ class PowerConsumption {
         $absoluteFirst = table('consumption')
             ->orderBy(['created_at' => 'asc'])
             ->first();
+
         $daysFromStart = Date::diffInDays($finalDate, $absoluteFirst['created_at']);
-        $periodDays = $daysFromStart % 30; // Días en el período actual de 30 días
-    
+        $periodDays    = @($daysFromStart % 30); // Conversione esplicita a int
+
         return [
             'date' => $finalDate,
             'consumption' => $dailyConsumption,

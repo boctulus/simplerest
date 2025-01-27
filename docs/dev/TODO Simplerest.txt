@@ -6520,6 +6520,14 @@ The register() method should only be used for, you guessed it, registering servi
 
 - Implementar un "vendor:publish" para los ServiceProviders !!!!!!!!!!
 
+> php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+
+Copied File [\vendor\spatie\laravel-permission\config\permission.php] To [\config\permission.php]
+Copied File [\vendor\spatie\laravel-permission\database\migrations\create_permission_tables.php.stub] To 
+[\database\migrations\2025_01_26_161851_create_permission_tables.php]
+
+Publishing complete.
+
 "The vendor folder should not be under revision control as such, it will be overwritten every time you deploy your solution. You use vendor:publish to copy configurable items to your application code base such that any changes you make will not keep being lost."
 
 "vendor:publish command used to copy few configuration file in your application from vendor package file.Like you are using a package where need to create a table on database and need to store few demo data.That time your packages will keep database schema and seeding and when you run vendor:publish those schema and seeding file will copy in your application.After that you just run php artisan migrate and php artisan db:seed"

@@ -11168,7 +11168,7 @@ class DumbController extends Controller
 
         $is = table('migrations')
         ->where('filename', '2021_09_14_27910163_options.php')
-        ->dd();
+        ->exists();
 
         dd($is, 'Exist?');
     }
