@@ -1,0 +1,13 @@
+.git/
+*.zip
+*.rar
+*.tar
+uploads/
+logs/
+tmp/
+storage/security/
+.dev-env
+winpush.bat
+__releases/
+test-*.php
+test_*.php
