@@ -9,7 +9,10 @@
                 <label for="prompt-description" class="form-label">PROMPT Introducción</label>
                 <textarea class="form-control" id="prompt-description" rows="4"
                     placeholder="Escribe el texto de introducción..."></textarea>
-                <button class="btn btn-danger position-absolute end-0 mt-3" id="clearFormButton">Borrar Form</button>
+                <div class="position-absolute end-0 mt-3">
+                    <button class="btn btn-primary me-2" id="extractPathsButton">Agregar rutas en PROMPT</button>
+                    <button class="btn btn-danger" id="clearFormButton">Borrar Form</button>
+                </div>
             </div>
 
             <!-- Sección para las rutas de los archivos -->
@@ -555,6 +558,12 @@
                 deleteFilePath($filePathGroup);
             });
 
+            // Agregar el evento para extraer rutas del PROMPT
+            $('#extractPathsButton').click(function(e) {
+                e.preventDefault();
+                extractPathsFromPrompt();
+            });
+
             $('form').on('submit', function (e) {
                 e.preventDefault();
             });
@@ -680,6 +689,51 @@
             }
         }
 
+        function extractPathsFromPrompt() {
+            const promptText = $('#prompt-description').val();
+            
+            // Expresión regular para detectar rutas absolutas en Windows y Unix
+            const pathRegex = /(?:[a-zA-Z]:\\[^:\n]+)|(?:\/[^\n:]+)/g;
+            
+            // Encontrar todas las coincidencias
+            const paths = promptText.match(pathRegex) || [];
+            
+            // Filtrar y limpiar las rutas encontradas
+            const validPaths = paths
+                .map(path => path.trim())
+                .filter(path => {
+                    // Verificar que la ruta tenga una extensión de archivo
+                    return path.includes('.') && !path.endsWith('.');
+                });
+            
+            // Si no se encontraron rutas válidas
+            if (validPaths.length === 0) {
+                Swal.fire('Información', 'No se encontraron rutas absolutas en el texto del PROMPT', 'info');
+                return;
+            }
+
+            // Agregar cada ruta válida encontrada
+            validPaths.forEach(path => {
+                // Verificar si la ruta ya existe
+                const exists = $('.file-input').filter(function() {
+                    return $(this).val() === path;
+                }).length > 0;
+
+                // Si la ruta no existe, agregarla
+                if (!exists) {
+                    addFilePathInput(path);
+                }
+            });
+
+            // Mostrar mensaje de éxito
+            Swal.fire({
+                title: 'Éxito',
+                text: `Se agregaron ${validPaths.length} ruta(s) desde el PROMPT`,
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
 
 
         // Función para actualizar el texto del botón con la opción seleccionada
