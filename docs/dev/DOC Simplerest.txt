@@ -8708,7 +8708,7 @@ Ej:
 
 # Service Providers
 
-El framework provee una forma de "plugins" o "paquetes" inspirada en la de Laravel. Los paquetes pueden alojarse en cualquier parte pero en /packages hay un paquete de demostración.
+Veamos como crear un paquete.
 
 El primer paso es crear la ruta donde alojaremos el paquete y por convención (inspirada en Laravel) será dentro de /packages. Cada paquete tiene un nombre conformado por dos partes: [VENDOR or CREATOR] / [PACKAGE NAME]
 
@@ -8769,6 +8769,68 @@ Un Service Provider debe extender la clase ServiceProvider y de mínima implemen
 
     }     
 
+# Para instalar el paquete se debe usar composer que hemos creado:
+
+En esta parte de la guia, asumamos el package es "api-client" 
+
+Pasos:
+
+- Copiamos el paquete
+
+packages/
+└── boctulus/
+    └── api-client/
+        ├── src/
+        │   └── ApiClientFallback.php  # namespace Boctulus\ApiClient;
+        └── composer.json
+
+- Agregamos el paquete en el composer.json en la seccion de "repositories"
+
+	"repositories": [
+        {
+            "type": "path",
+            "url": "packages/boctulus/api-client",   // <--- nuestro paquete
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
+
+y requerimos el paquete
+
+	"require": {
+		// ... otras dependencias
+		"boctulus/api-client": "@dev"
+	},
+
+El mapeo de PSR-4
+
+	"autoload": {
+		"psr-4": {
+			"App\\": "app/",
+			"Boctulus\\ApiClient\\": "packages/boctulus/api-client/src/"			
+		}
+	},
+
+- Corremos composer dump-autoload o mas especificamente:
+
+	composer clear-cache
+	composer update
+	composer dump-autoload -o
+
+Notas:
+
+Ademas de 
+
+	"require": {
+		// ... otras dependencias
+		"boctulus/api-client": "@dev"
+	},
+
+Otra forma de "requerir" el paquete es:
+
+	composer require boctulus/api-client:@dev --optimize-autoloader
+	
 
 # Config
 

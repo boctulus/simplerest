@@ -1,0 +1,13 @@
+{
+	"name": "boctulus/api-client",
+    "description": "Portable API Client",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\ApiClient\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    }
+}

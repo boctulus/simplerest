@@ -4,8 +4,31 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "86ff1b4c0535a2fcc22820800dba5e5a",
+    "content-hash": "c72007ac5d1c93c79ca0b8087ee5f498",
     "packages": [
+        {
+            "name": "boctulus/api-client",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "packages/boctulus/api-client",
+                "reference": "b13a25f530692b07d53310d76cf5c952840acd5c"
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Boctulus\\ApiClient\\": "src/"
+                }
+            },
+            "description": "Portable API Client",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
         {
             "name": "firebase/php-jwt",
             "version": "v6.10.0",
@@ -2415,15 +2438,17 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "boctulus/api-client": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.4"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

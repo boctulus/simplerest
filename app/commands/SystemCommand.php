@@ -21,6 +21,13 @@ class SystemCommand implements ICommand
 		dd($ok ? "OP Cache was cleared" : "OP Cache could Not been cleared :|");
 	}
 
+	function clear(){
+		exec('composer dump-autoload -o', $output1, $return_var1);
+		exec('composer clear-cache', $output2, $return_var2);
+
+		dd($return_var1 === 0 && $return_var2 === 0 ? "Cache cleared and autoload dumped successfully" : "Failed to clear cache or dump autoload");
+	}
+
 	function help($name = null, ...$args){
         $str = <<<STR
 		opcache_clear		
