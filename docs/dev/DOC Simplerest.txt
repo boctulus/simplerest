@@ -11714,6 +11714,30 @@ Ej:
 	Files::varExport($export, 'api_debug.php');
 
 
+# Fallback de extension Curl
+
+Se dispone de una implementacion basica de ApiClient llamada ApiClientFallback
+para cuando la extension de curl para PHP no esta disponible.
+
+Ej:
+
+	$client = new ApiClientFallback();
+
+	$client
+	->setHeaders([
+		"Content-type" => "application/json"
+	])
+	->get("https://jsonplaceholder.typicode.com/posts/1");
+
+	$res = $client->getResponse();
+
+	dd($client->status(), 'STATUS');
+	dd($client->error(), 'ERROR');
+	dd($client
+	->decode()
+	->data(), 'DATA');
+
+
 # Paginacion
 
 Una forma sencilla de paginar es agregar los parametros de paginacion con queryParam() y queryParams($array)
