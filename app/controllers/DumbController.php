@@ -2,6 +2,7 @@
 
 namespace simplerest\controllers;
 
+use simplerest\core\libs\ApiClientFallback;
 use stdClass;
 use MakeCommand;
 use simplerest\libs\Foo;
@@ -11651,6 +11652,28 @@ class DumbController extends Controller
         ]', true);
 
         view('instructors/grid.php', compact('personal'));
+    }
+
+    function test_apiclient_fallback()
+    {
+        $url    = 'https://osx86project.org/';
+
+        $client = new ApiClientFallback($url);
+
+        $res = $client->disableSSL()
+            // ->followLocations()
+            // ->cache(5)
+            ->get()
+            ->getResponse();
+
+        if ($res === null) {
+            dd("RES is NULL");
+            return;
+        }
+        
+        dd([    
+            $res
+        ], 'RES');
     }
 
 
