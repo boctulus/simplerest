@@ -11661,7 +11661,7 @@ class DumbController extends Controller
         $client = new ApiClientFallback($url);
 
         $res = $client->disableSSL()
-            // ->followLocations()
+            ->followLocations()
             // ->cache(5)
             ->get()
             ->getResponse();
@@ -11674,6 +11674,49 @@ class DumbController extends Controller
         dd([    
             $res
         ], 'RES');
+    }
+
+    function jsonplaceholder_test_get(){
+        $client = new ApiClientFallback();
+
+        $client
+        ->setHeaders([
+            "Content-type" => "application/json"
+        ])
+        ->get("https://jsonplaceholder.typicode.com/posts/1");
+
+        $res = $client->getResponse();
+
+        // dd($client->status(), 'STATUS');
+        // dd($client->error(), 'ERROR');
+        dd($client
+        // ->decode()
+        ->data(), 'DATA');
+    }
+
+    function jsonplaceholder_test_post(){
+        $client = new ApiClientFallback();
+
+        $body = [
+            "title" => "foo",
+            "body" => "bar",
+            "userId" => 999
+        ];
+        
+        $client
+        ->setHeaders([
+            "Content-type" => "application/json"
+        ])
+        ->setBody($body)
+        ->post("https://jsonplaceholder.typicode.com/posts");
+
+        $res = $client->getResponse();
+
+        // dd($client->status(), 'STATUS');
+        // dd($client->error(), 'ERROR');
+        dd($client
+        //->decode()
+        ->data(), 'DATA');
     }
 
 
