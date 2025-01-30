@@ -55,6 +55,22 @@ class ApiClientFallback
         }
     }
 
+    function getRawResponse(){
+        return $this->raw_response;
+    }
+
+
+    // alias de getStatus()
+    function status(){
+        return $this->getStatus();
+    }
+
+    // alias de getError()
+    function error(){
+        return $this->error;
+    }
+
+
     function data(bool $raw = false){
         if ($raw === false){
             if ($this->auto_decode && Strings::isJSON($this->response)){
@@ -337,10 +353,36 @@ class ApiClientFallback
         return $this->error;
     }
 
-    public function getResponse()
-    {
-        return $this->response;
+    function getResponse($decode = null, $as_array = null){       
+        if ($decode === null){
+            $decode = $this->auto_decode;
+        }
+
+        if ($as_array == null){
+            $as_array = true;
+        }
+
+        $data = $this->response;
+
+        // dd($this->content_type. 'CONTENT TYPE');        
+
+        if ((!empty($this->content_type) && Strings::startsWith('application/json', $this->content_type)) || ($decode && Strings::isJSON($data))){
+            $data = json_decode($this->response, $as_array);
+        } else 
+        
+        if ((!empty($this->content_type) && Strings::containsAny(['/xml', '+xml'], $this->content_type))  || ($decode && XML::isValidXML($data))){
+            $data = XML::toArray($data);
+        }
+        
+        $res = [
+            'data'      => $data,
+            'http_code' => $this->status,
+            'error'     => $this->error
+        ];
+
+        return $res;
     }
+
 
     public function getContentType()
     {
