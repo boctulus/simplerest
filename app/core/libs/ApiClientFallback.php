@@ -31,6 +31,13 @@ class ApiClientFallback
     protected $error;
     protected $content_type;
     protected $effective_url;
+    protected $auto_decode = true;
+    
+    // Cache
+    protected $expiration;
+    protected $read_only = false;
+    protected $cache_post_request = false;
+    protected $ignore_status_codes = [];
     
     protected $useCurl;
     protected $curl;
@@ -48,50 +55,20 @@ class ApiClientFallback
         }
     }
 
-    function setUrl($url)
-    {
-        $this->url = Url::normalize($url);
-        return $this;
-    }
-
-    function setHeaders(array $headers)
-    {
-        $this->req_headers = $headers;
-        return $this;
-    }
-
-    function setBody($body, $encoded = true)
-    {
-        $this->body = $body;
-        $this->encode_body = $encoded;
-        return $this;
-    }
-
-    function disableSSL()
-    {
-        $this->cert_ssl = false;
-        
-        if ($this->useCurl) {
-            $this->setOption(CURLOPT_SSL_VERIFYHOST, 0);
-            $this->setOption(CURLOPT_SSL_VERIFYPEER, 0);
+    function data(bool $raw = false){
+        if ($raw === false){
+            if ($this->auto_decode && Strings::isJSON($this->response)){
+                return json_decode($this->response, true);
+            }
         }
-        
-        return $this;
+
+        return $raw ? $this->raw_response : $this->response;
     }
 
     function setOption($key, $value)
     {
         $this->options[$key] = $value;
         return $this;
-    }
-
-    protected function consumeAPI($url, $http_verb, $data, $headers, $options)
-    {
-        if ($this->useCurl) {
-            return $this->curlRequest($url, $http_verb, $data, $headers, $options);
-        }
-        
-        return $this->fallbackExec($url, $http_verb, $data, $headers, $options);
     }
 
     protected function curlRequest($url, $http_verb, $data, $headers, $options)
@@ -195,6 +172,99 @@ class ApiClientFallback
         return 0;
     }
 
+    protected function consumeAPI($url, $http_verb, $data, $headers, $options)
+    {
+        if ($this->useCurl) {
+            return $this->curlRequest($url, $http_verb, $data, $headers, $options);
+        }
+        
+        return $this->fallbackExec($url, $http_verb, $data, $headers, $options);
+    }
+
+    public function followLocations($max_redirs = 10)
+    {
+        if ($this->useCurl) {
+            $this->setOption(CURLOPT_FOLLOWLOCATION, true);
+            $this->setOption(CURLOPT_MAXREDIRS, $max_redirs);
+        } else {
+            $this->options['max_redirs'] = $max_redirs;
+        }
+        return $this;
+    }
+
+    // Métodos de Cache
+    public function setCache(int $expiration_time = 60)
+    {
+        $this->expiration = $expiration_time;
+        return $this;
+    }
+
+    public function cache(int $expiration_time = 60)
+    {
+        return $this->setCache($expiration_time);
+    }
+
+    public function clearCache()
+    {
+        $path = $this->getCachePath();
+        if (file_exists($path)) {
+            unlink($path);
+        }
+        return $this;
+    }
+
+    public function readOnly(bool $flag = true)
+    {
+        $this->read_only = $flag;
+        return $this;
+    }
+
+    public function ignoreStatusCodes(array $codes)
+    {
+        $this->ignore_status_codes = $codes;
+        return $this;
+    }
+
+    protected function getCachePath()
+    {
+        $input = md5(serialize([
+            $this->url,
+            $this->verb,
+            $this->req_headers,
+            $this->body
+        ]));
+
+        return FileCache::getCachePath($input);
+    }
+
+    protected function shouldCache()
+    {
+        if ($this->expiration === null) return false;
+        if ($this->read_only) return false;
+        
+        return in_array($this->status, $this->ignore_status_codes) || 
+              ($this->status >= 200 && $this->status < 400);
+    }
+
+       protected function saveResponse(array $response)
+    {
+        $path = $this->getCachePath();
+        file_put_contents($path, '<?php return ' . var_export($response, true) . ';');
+    }
+
+    protected function getCache()
+    {
+        $path = $this->getCachePath();
+        if (file_exists($path)) {
+            $cached = include $path;
+            if (FileCache::expired(filemtime($path), $this->expiration)) {
+                return null;
+            }
+            return $cached;
+        }
+        return null;
+    }
+
     protected function buildHeaders($headers)
     {
         $formatted = [];
@@ -235,7 +305,7 @@ class ApiClientFallback
         return $this;
     }
 
-    // Métodos HTTP simplificados
+    // Métodos HTTP
     public function get($url = null, $headers = null, $options = null)
     {
         return $this->request($url ?? $this->url, 'GET', null, $headers, $options);
@@ -275,5 +345,50 @@ class ApiClientFallback
     public function getContentType()
     {
         return $this->content_type;
+    }
+
+    function setUrl($url)
+    {
+        $this->url = Url::normalize($url);
+        return $this;
+    }
+
+    function setHeaders(array $headers)
+    {
+        $this->req_headers = $headers;
+        return $this;
+    }
+
+    function setBody($body, $encoded = true)
+    {
+        $this->body = $body;
+        $this->encode_body = $encoded;
+        return $this;
+    }
+
+    function setDecode(bool $auto = true){
+        $this->auto_decode = $auto;
+        return $this;
+    }
+
+    // alias
+    function decode(bool $val = true){
+        return $this->setDecode($val);
+    }
+
+    function noDecode(){
+        return $this->setDecode(false);
+    }
+
+    function disableSSL()
+    {
+        $this->cert_ssl = false;
+        
+        if ($this->useCurl) {
+            $this->setOption(CURLOPT_SSL_VERIFYHOST, 0);
+            $this->setOption(CURLOPT_SSL_VERIFYPEER, 0);
+        }
+        
+        return $this;
     }
 }

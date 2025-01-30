@@ -94,3 +94,4 @@
 [2025-01-30 14:32:11]	0.8.12	Prompt generator mejorado
 [2025-01-30 20:31:03]	0.8.12	Automatic update
 [2025-01-30 20:54:22]	0.8.12	Primera version de ApiClientFallback
+[2025-01-30 21:18:14]	0.8.12	ApiClientFallback mejorada
