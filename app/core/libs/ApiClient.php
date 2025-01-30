@@ -485,7 +485,7 @@ class ApiClient
             $data = json_decode($this->response, $as_array);
         } else 
         
-        if ((!empty($this->content_type) && Strings::containsAny(['/xml', '+xml'], $this->content_type))  || ($decode && XML::isXML($data))){
+        if ((!empty($this->content_type) && Strings::containsAny(['/xml', '+xml'], $this->content_type))  || ($decode && XML::isValidXML($data))){
             $data = XML::toArray($data);
         }
         

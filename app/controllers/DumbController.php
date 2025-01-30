@@ -11687,10 +11687,10 @@ class DumbController extends Controller
 
         $res = $client->getResponse();
 
-        // dd($client->status(), 'STATUS');
-        // dd($client->error(), 'ERROR');
+        dd($client->status(), 'STATUS');
+        dd($client->error(), 'ERROR');
         dd($client
-        // ->decode()
+        ->decode()
         ->data(), 'DATA');
     }
 
@@ -11719,5 +11719,34 @@ class DumbController extends Controller
         ->data(), 'DATA');
     }
 
+    function test_apiclient_fallback_cache()
+    {
+        $url    = base_url() . '/dumb/now';
+
+        $client = new ApiClientFallback($url);
+
+        $res = $client->disableSSL()
+            ->followLocations()
+            ->cache(5)
+            ->get()
+            ->getResponse(false);
+
+        if ($res === null) {
+            dd("RES is NULL");
+            return;
+        }
+
+        if ($res['http_code'] != 200) {
+            dd("HTTP CODE is " . $res['http_code']);
+            return;
+        }
+
+        $html = $res['data'];
+
+        dd([
+            'realtime' => file_get_contents($url),
+            'cached'   => $html
+        ]);
+    }
 
 }   // end class
