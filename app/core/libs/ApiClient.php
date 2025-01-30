@@ -11,6 +11,8 @@ use simplerest\core\libs\Memoization;
 /*
     @author Pablo Bozzolo
 
+    @version 1.0.0
+
     Ver interesante uso de cURL aqui:
     
     https://stackoverflow.com/a/42375193/980631
