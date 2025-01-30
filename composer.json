@@ -18,7 +18,8 @@
    "require":{
       "php":">=7.4",
       "firebase/php-jwt": "^6.0",
-      "vlucas/phpdotenv": "^5.2"
+      "vlucas/phpdotenv": "^5.2",
+      "boctulus/api-client": "@dev"
    },
    "scripts":{
       "pre-autoload-dump":"Google\\Task\\Composer::cleanup"
@@ -34,9 +35,18 @@
          "devdojo\\calculator\\":"packages/devdojo/calculator/src",
          "boctulus\\grained_acl\\":"packages/boctulus/grained_acl/src",
          "boctulus\\basic_acl\\":"packages/boctulus/basic_acl/src",
-         "boctulus\\hello_world\\":"vendor/boctulus/hello_world/src"
+         "boctulus\\hello_world\\":"vendor/boctulus/hello_world/src"         
       }
    },
+   "repositories": [
+    {
+        "type": "path",
+        "url": "packages/boctulus/api-client",
+        "options": {
+            "symlink": true
+        }
+    }
+   ],
    "config":{
       "optimize-autoloader":true,
       "allow-plugins":{
@@ -44,6 +54,9 @@
       },
       "platform":{
          "php":"7.4"
+      },
+      "preferred-install": {
+        "boctulus/api-client": "dist"
       }
    },
    "minimum-stability":"stable",
