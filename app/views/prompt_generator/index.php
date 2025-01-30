@@ -9,9 +9,12 @@
                 <label for="prompt-description" class="form-label">PROMPT Introducción</label>
                 <textarea class="form-control" id="prompt-description" rows="4"
                     placeholder="Escribe el texto de introducción..."></textarea>
-                <div class="position-absolute end-0 mt-3">
-                    <button class="btn btn-primary me-2" id="extractPathsButton">Agregar rutas en PROMPT</button>
-                    <button class="btn btn-danger" id="clearFormButton">Borrar Form</button>
+                <div class="d-flex justify-content-between mt-3">
+                    <button class="btn btn-success" id="newFormButton">Nuevo</button>
+                    <div>
+                        <button class="btn btn-primary me-2" id="extractPathsButton">Agregar rutas en PROMPT</button>
+                        <button class="btn btn-danger" id="clearFormButton">Borrar Form</button>
+                    </div>
                 </div>
             </div>
 
@@ -564,6 +567,12 @@
                 extractPathsFromPrompt();
             });
 
+            // Agregar el evento para el botón nuevo
+            $('#newFormButton').click(function(e) {
+                e.preventDefault();
+                newForm();
+            });
+
             $('form').on('submit', function (e) {
                 e.preventDefault();
             });
@@ -689,6 +698,15 @@
             }
         }
 
+        // Agregar función para el nuevo botón
+        function newForm() {
+            // Limpiar el formulario
+            clearForm();
+            
+            // Remover el hash de la URL sin recargar la página
+            history.pushState('', document.title, window.location.pathname);
+        }
+
         function extractPathsFromPrompt() {
             const promptText = $('#prompt-description').val();
             
@@ -700,11 +718,11 @@
             
             // Filtrar y limpiar las rutas encontradas
             const validPaths = paths
-                .map(path => path.trim())
-                .filter(path => {
-                    // Verificar que la ruta tenga una extensión de archivo
-                    return path.includes('.') && !path.endsWith('.');
-                });
+            .map(path => path.trim())
+            .filter(path => {
+                // Verificar que la ruta tenga una extensión de archivo y no esté vacía
+                return path && path.length > 0 && path.includes('.') && !path.endsWith('.');
+            });
             
             // Si no se encontraron rutas válidas
             if (validPaths.length === 0) {
