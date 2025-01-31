@@ -42,20 +42,20 @@ return
 			'tb_prefix'  => 'wp_',
 		],
 
-		// 'az' => [
-		// 	'host'		=> env('DB_HOST', '127.0.0.1'),
-		// 	'port'		=> env('DB_PORT'),
-		// 	'driver' 	=> env('DB_CONNECTION'),
-		// 	'db_name' 	=> 'az',
-		// 	'user'		=> env('DB_USERNAME'), 
-		// 	'pass'		=> env('DB_PASSWORD'),
-		// 	'charset'	=> 'utf8',
-		// 	//'schema'	=> 'az',  
-		// 	'pdo_options' => [
-		// 		\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-		// 		\PDO::ATTR_EMULATE_PREPARES => false
-		// 	]
-		// ],
+		'laravelshopify' => [
+			'host'		=> env('DB_HOST', '127.0.0.1'),
+			'port'		=> env('DB_PORT'),
+			'driver' 	=> env('DB_CONNECTION'),
+			'db_name' 	=> 'laravelshopify',
+			'user'		=> env('DB_USERNAME'), 
+			'pass'		=> env('DB_PASSWORD'),
+			'charset'	=> 'utf8',
+			//'schema'	=> 'az',  
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => false
+			]
+		],
 
 		// 'ef' => [
 		// 	'host'		=> env('DB_HOST_2', '127.0.0.1'),
@@ -172,6 +172,10 @@ return
     'tentant_groups' => [
 		'relmotor' => [
 			'relmotor'
+		],
+
+		'laravelshopify' => [
+			'laravelshopify'
 		],
 
         // 'legion' => [
