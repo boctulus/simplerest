@@ -2,50 +2,86 @@
 
 namespace Boctulus\ApiClient;
 
+use Boctulus\ApiClient\Helpers\XML;
 use Boctulus\ApiClient\Helpers\Url;
 use Boctulus\ApiClient\Helpers\Utils;
 use Boctulus\ApiClient\Helpers\Logger;
 use Boctulus\ApiClient\Helpers\Strings;
 use Boctulus\ApiClient\Helpers\FileCache;
 use Boctulus\ApiClient\Exception;
+use Boctulus\ApiClient\Interface\ICache;
 
 class ApiClientFallback
 {
-    const HTTP_METH_POST   = "POST";
-    const HTTP_METH_GET    = "GET";
-    const HTTP_METH_PATCH  = "PATCH";
-    const HTTP_METH_PUT    = "PUT";
-    const HTTP_METH_DELETE = "DELETE";
+    /*
+        User Agents
+    */
+    const USER_AG_FIREFOX = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0';
+    const USER_AG_SAFARI  = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15';
+    const USER_AGT_EDGE   = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.79 Safari/537.36 Edg/100.0.4896.79';
+    const USER_AG_CHROME  = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36';
+    const USER_AG_POSTMAN = 'PostmanRuntime/7.34.0';
 
+
+    // Cookies
+    protected $cookieJar;
+    protected $curl;
+
+    // Request
     protected $url;
     protected $verb;
-    protected $req_headers = [];
+    protected $req_headers;
     protected $options = [];
     protected $body;
-    protected $encode_body = true;
+    protected $req_body;
+    protected $encode_body;
     protected $max_retries = 1;
-    protected $cert_ssl = null;
-    
+    protected $cert_ssl  = null;
+
+    // Username & password
+    protected $username;
+    protected $password;
+
+    // Response
     protected $raw_response;
     protected $response;
+
+    protected $filename;
+    protected $res_headers;
+    protected $auto_decode;
     protected $status;
+    protected $ignore_status_codes = false;
     protected $error;
-    protected $content_type;
+
+    // Response Info
     protected $effective_url;
-    protected $auto_decode = true;
-    
+    protected $content_type;
+
     // Cache
     protected $expiration;
     protected $read_only = false;
     protected $cache_post_request = false;
-    protected $ignore_status_codes = [];
-    
+
+    // Mock
+    protected $mocked;
+
+    // Logs
+    protected $log_req    = false;
+    protected $log_res    = false;
+    protected $logger_fn  = 'log';
+
+    // Extras
+    protected $query_params = [];
+    protected $debug   =  false;
+    protected $show_req = false;
+    protected $show_res = false;
     protected $useCurl;
-    protected $curl;
+
 
     function __construct($url = null)
-    {
+    {        
         $this->useCurl = function_exists('curl_init');
+        // $this->useCurl = false;
         
         if ($url !== null) {
             $this->setUrl($url);
@@ -53,6 +89,8 @@ class ApiClientFallback
 
         if ($this->useCurl) {
             $this->curl = curl_init();
+        } else {
+            require_once __DIR__ . '/Constants/Curl.php';
         }
     }
 
@@ -157,10 +195,15 @@ class ApiClientFallback
     protected function parseCurlOutput($output, $exitCode)
     {
         $raw = implode("\n", $output);
-        $parts = explode("\r\n\r\n", $raw, 2);
+        
+        // Detectar tipo de retorno de carro usado
+        $crlf = Strings::carriageReturn($raw);
+        $separator = $crlf . $crlf; // Separador de headers/body
+        
+        $parts = explode($separator, $raw, 2);
         
         // Parse headers
-        $headers = isset($parts[0]) ? explode("\n", $parts[0]) : [];
+        $headers = isset($parts[0]) ? explode($crlf, $parts[0]) : [];
         foreach ($headers as $header) {
             $this->parseHeader($header);
         }
@@ -189,6 +232,18 @@ class ApiClientFallback
         return 0;
     }
 
+    function getRequestHeaders(){
+        return $this->req_headers;
+    }
+
+    function getHeaders(){
+        return $this->res_headers;
+    }
+
+    function getEffectiveUrl(){
+        return $this->effective_url;
+    }
+
     protected function consumeAPI($url, $http_verb, $data, $headers, $options)
     {
         if ($this->useCurl) {
@@ -209,27 +264,7 @@ class ApiClientFallback
         return $this;
     }
 
-    // Métodos de Cache
-    public function setCache(int $expiration_time = 60)
-    {
-        $this->expiration = $expiration_time;
-        return $this;
-    }
-
-    public function cache(int $expiration_time = 60)
-    {
-        return $this->setCache($expiration_time);
-    }
-
-    public function clearCache()
-    {
-        $path = $this->getCachePath();
-        if (file_exists($path)) {
-            unlink($path);
-        }
-        return $this;
-    }
-
+    
     public function readOnly(bool $flag = true)
     {
         $this->read_only = $flag;
@@ -242,47 +277,8 @@ class ApiClientFallback
         return $this;
     }
 
-    protected function getCachePath()
-    {
-        $input = md5(serialize([
-            $this->url,
-            $this->verb,
-            $this->req_headers,
-            $this->body
-        ]));
 
-        return FileCache::getCachePath($input);
-    }
-
-    protected function shouldCache()
-    {
-        if ($this->expiration === null) return false;
-        if ($this->read_only) return false;
-        
-        return in_array($this->status, $this->ignore_status_codes) || 
-              ($this->status >= 200 && $this->status < 400);
-    }
-
-       protected function saveResponse(array $response)
-    {
-        $path = $this->getCachePath();
-        file_put_contents($path, '<?php return ' . var_export($response, true) . ';');
-    }
-
-    protected function getCache()
-    {
-        $path = $this->getCachePath();
-        if (file_exists($path)) {
-            $cached = include $path;
-            if (FileCache::expired(filemtime($path), $this->expiration)) {
-                return null;
-            }
-            return $cached;
-        }
-        return null;
-    }
-
-    protected function buildHeaders($headers)
+   protected function buildHeaders($headers)
     {
         $formatted = [];
         foreach ($headers as $key => $value) {
@@ -305,6 +301,43 @@ class ApiClientFallback
         $retries = 0;
         $ok = false;
 
+        if ($this->expiration == null){
+            $expired = true;
+        } else {
+            $cached_path     = $this->getCachePath();
+            $expired         = is_file($cached_path) ? FileCache::expired(filemtime($cached_path), $this->expiration) : true;  // fixex on jun-17/24
+        }
+
+        if (!$expired){
+            $res = $this->getCache();
+
+            if ($res !== null){
+                if (is_string($res)){
+                    //dd('DECODING...');
+                    if (is_array($res) && is_array($res['data']) && Strings::isJSON($res)){
+                        $data = json_decode($res['data'], true); 
+
+                        if ($data !== null){
+                            //throw new \Exception("Unable to decode response '$res'");
+                            $res['data'] = $data;
+                        } else {
+                            //dd('DECODED!');
+                        }
+                    }                        
+                }
+                
+                // Solo sino hay errores (hago un return y con eso) evito continuar obteniendo una respuesta fresca
+                if (empty($res['error']))
+                {    
+                    $this->status   = $res['http_code'] ?? null;
+                    $this->error    = $res['error'] ?? null;
+                    $this->response = $res['data'] ?? $res;
+
+                    return $this;
+                }
+            }
+        }
+
         while (!$ok && $retries < $this->max_retries) {
             $this->raw_response = $this->consumeAPI(
                 $this->url,
@@ -317,6 +350,19 @@ class ApiClientFallback
             $ok = empty($this->error);
             $retries++;
         }
+
+        if ($this->expiration && $this->raw_response !== null && !$this->read_only){
+            if (!empty($this->ignore_status_codes)){
+                foreach ($this->ignore_status_codes as $code){
+                    if ($this->status == $code){
+                        $this->saveResponse($this->raw_response);
+                        break;
+                    }
+                }
+            } else if ($this->status >=200 && $this->status < 400){
+                $this->saveResponse($this->raw_response);
+            }            
+        }       
 
         $this->response = $this->raw_response;
         return $this;
@@ -434,4 +480,112 @@ class ApiClientFallback
         
         return $this;
     }
+
+    function getFilename(){
+        return $this->filename;
+    }
+
+    /*
+        CACHE
+
+        En vez de guardar en disco..... usar Transientes con drivers como Memcached o REDIS !
+
+        Debe generar un HASH con todos los parametros y sino son iguales... se considera otra cache
+    */
+
+    function getCachePath(){
+        if (empty($this->url)){
+            throw new \Exception("Undefined URL");
+        }
+
+        $input = str_replace(['https://', 'http://'], '', $this->url);
+
+        if ($this->cache_post_request && $this->verb == 'POST'){
+            if (is_array($this->req_body)){
+                $this->req_body = md5(json_encode($this->req_body));
+            }
+
+            $input .= "+body={$this->req_body}";
+        }
+
+        $full_path = FileCache::getCachePath($input);
+
+        return $full_path;
+    }
+
+	protected function saveResponse($response)
+    {
+        if ($this->cache_post_request === false && $this->verb != 'GET'){
+            return;
+        }
+
+        $path = $this->getCachePath();
+
+        if ($path === null){
+            return;
+        }
+
+        file_put_contents($path, '<?php return ' . var_export($response, true) . ';');
+    }
+
+    protected function getCache(){
+        $path = $this->getCachePath();
+
+        if ($path === null){
+            return;
+        }
+
+        if (file_exists($path)){
+            if ($this->debug){
+                dd($path, 'CACHE PATH');
+            }
+
+            return include $path;
+        }
+    }
+
+    /*
+        @param $expiration_time int seconds 
+    */
+    function setCache(int $expiration_time = 60){
+        $this->expiration = $expiration_time;
+        return $this;
+    }
+
+    // alias de setCache()
+    function cache(int $expiration_time = 60){
+        return $this->setCache($expiration_time);
+    }
+
+    /*
+        Revisar. No funcionaria bien
+    */
+    function cacheUntil(string $datetime){
+        $diffInSeconds = function(string $date2, string $date1 = '') {
+            $d1 = new \DateTime($date1);
+            $d2 = new \DateTime($date2);
+        
+            return $d2->getTimestamp() - $d1->getTimestamp();
+        };
+
+        $expiration_time = $diffInSeconds($datetime);
+
+        // dd($expiration_time, 'EXP TIME (SECS)');
+
+        return $this->setCache($expiration_time);
+    }
+
+    /*
+        Que diferencia hay con FileCache::forget($this->url) ????
+    */
+    function clearCache(){
+        unlink($this->getCachePath());
+        return $this;
+    }
+
+    function enablePostRequestCache(){
+        $this->cache_post_request = true;
+        return $this;
+    }
+
 }

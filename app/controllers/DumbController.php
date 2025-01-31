@@ -11654,6 +11654,111 @@ class DumbController extends Controller
         view('instructors/grid.php', compact('personal'));
     }
 
+    function get_constants(){
+        // Verificar si la extensión cURL está instalada
+        if (!extension_loaded('curl')) {
+            echo "La extensión cURL no está instalada.\n";
+        }
+
+        // Obtener todas las constantes definidas
+        $constants = get_defined_constants(true);
+
+        // Inicializar un array para almacenar las constantes de cURL
+        $curl_constants = [];
+
+        // Filtrar las constantes de la categoría 'curl'
+        if (isset($constants['curl'])) {
+            foreach ($constants['curl'] as $name => $value) {
+                $curl_constants[$name] = $value;
+            }
+        } else {
+            // Filtrar constantes con el prefijo 'CURL' si no están categorizadas
+            foreach ($constants['user'] as $name => $value) {
+                if (strpos($name, 'CURL') === 0) {
+                    $curl_constants[$name] = $value;
+                }
+            }
+        }
+
+        // Usar var_export para exportar el array de constantes
+        var_export($curl_constants);
+
+    }
+
+    function write_constants(){
+        // Obtener todas las constantes definidas
+        $constants = get_defined_constants(true);
+
+        // Inicializar un array para almacenar las constantes de cURL
+        $curl_constants = [];
+
+        // Filtrar las constantes de la categoría 'curl'
+        if (isset($constants['curl'])) {
+            foreach ($constants['curl'] as $name => $value) {
+                $curl_constants[$name] = $value;
+            }
+        } else {
+            // Filtrar constantes con el prefijo 'CURL' si no están categorizadas
+            foreach ($constants['user'] as $name => $value) {
+                if (strpos($name, 'CURL') === 0) {
+                    $curl_constants[$name] = $value;
+                }
+            }
+        }
+
+        // Verificar que el archivo haya devuelto el array
+        if (is_array($curl_constants)) {
+            // Ruta del archivo PHP a generar
+            $filePath = 'D:\laragon\www\simplerest\packages\boctulus\api-client\src\Constants\Curl.php';
+            
+            // Abrir el archivo para escribir las definiciones
+            $file = fopen($filePath, 'w');
+
+            if ($file) {
+                // Escribir la cabecera del archivo PHP
+                fwrite($file, "<?php\n\n");
+
+                // Recorrer el array asociativo y escribir las definiciones en el archivo
+                foreach ($curl_constants as $name => $value) {
+                    fwrite($file, "define('$name', $value);\n");
+                }
+
+                // Cerrar el archivo después de escribir
+                fclose($file);
+
+                echo "El archivo con las constantes ha sido generado correctamente en: $filePath\n";
+            } else {
+                echo "Error: No se pudo generar el archivo '$filePath'.\n";
+            }
+        } else {
+            // Manejo de error si el archivo no devuelve el array esperado
+            echo "Error: El archivo 'Curl.php' no devolvió un array válido.\n";
+        }
+
+    }
+
+    function test_apiclient()
+    {
+        $url    = 'https://osx86project.org/';
+
+        $client = new ApiClient($url);
+
+        $res = $client->disableSSL()
+            ->followLocations()
+            // ->cache(5)
+            ->get()
+            ->getResponse();
+
+        if ($res === null) {
+            dd("RES is NULL");
+            return;
+        }
+        
+        dd([    
+            $res
+        ], 'RES');
+    }
+
     function test_apiclient_fallback()
     {
         $url    = 'https://osx86project.org/';
@@ -11749,6 +11854,7 @@ class DumbController extends Controller
         ]);
     }
 
+    
     
 
 }   // end class

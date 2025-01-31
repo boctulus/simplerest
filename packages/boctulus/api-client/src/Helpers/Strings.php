@@ -2,7 +2,7 @@
 
 namespace Boctulus\ApiClient\Helpers;
 
-use Boctulus\ApiClient\Request;
+use Boctulus\ApiClient\Helpers\Request;
 use Boctulus\ApiClient\Helpers\XML;
 
 class Strings 
