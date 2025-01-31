@@ -84,53 +84,63 @@ class LaravelApiGenerator
     }
     
     static function setProjectPath($path){
+        $path = Files::convertSlashes($path);
         static::$laravel_project_path = $path;
     }
 
     static function setResourceDestPath($path){
+        $path = Files::convertSlashes($path);
         $path = Files::removeTrailingSlash($path); //
         static::$resource_output_path = $path;
         Files::mkDirOrFail(static::$resource_output_path);
     }
 
     static function setControllerDestPath($path){
+        $path = Files::convertSlashes($path);
         static::$ctrl_output_path = $path;
     }
 
     static function setFactoryDestPath($path){
+        $path = Files::convertSlashes($path);
         static::$faker_output_path = $path;
     }
 
     static function setSeederDestPath($path){
+        $path = Files::convertSlashes($path);
         static::$seeder_output_path = $path;
     }
 
+    static function setControllerTemplatePath(string $path){
+        $path = Files::convertSlashes($path);
+        static::$ctrl_template_path = $path;
+    }
+
+    static function setResourceTemplatePath(string $path){
+        $path = Files::convertSlashes($path);
+        static::$resource_template_path = $path;
+    }
+
+    static function setFactoryTemplatePath(string $path){
+        $path = Files::convertSlashes($path);
+        static::$faker_template_path = $path;
+    }
+
+    static function setSeederTemplatePath(string $path){
+        $path = Files::convertSlashes($path);
+        static::$seeder_template_path = $path;
+    }
+
+    static function setSeederForFactoryTemplatePath(string $path){
+        $path = Files::convertSlashes($path);
+        static::$seeder_for_factory_tmp_path = $path;
+    }
+    
     static function setConnId($conn_id){
         static::$conn_id = $conn_id;
     }
 
     static function capitalizeTableNames(bool $status = true){
         static::$capitalized_table_names = $status;
-    }
-
-    static function setControllerTemplatePath(string $path){
-        static::$ctrl_template_path = $path;
-    }
-
-    static function setResourceTemplatePath(string $path){
-        static::$resource_template_path = $path;
-    }
-
-    static function setFactoryTemplatePath(string $path){
-        static::$faker_template_path = $path;
-    }
-
-    static function setSeederTemplatePath(string $path){
-        static::$seeder_template_path = $path;
-    }
-
-    static function setSeederForFactoryTemplatePath(string $path){
-        static::$seeder_for_factory_tmp_path = $path;
     }
 
     static function registerCallback(callable $callback){
