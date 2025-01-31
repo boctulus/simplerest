@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\ApiClient;
+namespace Boctulus\ApiClient\Helpers;
 
 use Boctulus\ApiClient\Helpers\Strings;
 use Boctulus\ApiClient\Helpers\ApiClient;

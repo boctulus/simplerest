@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Boctulus\ApiClient;
+namespace Boctulus\ApiClient\Helpers;
 
 use Boctulus\ApiClient\Helpers\Files;
 
