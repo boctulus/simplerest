@@ -156,7 +156,7 @@ class LaravelApiGenerator
     }
 
     // @return void
-    static function get_model_names(){
+    static function get_model_names(bool $include_namespace = false){
         $models_path = static::$laravel_project_path . '/'. 'app/Models/';
         $filenames = Files::glob($models_path, '*.php');
 
@@ -174,6 +174,10 @@ class LaravelApiGenerator
 
             if (empty($table_name)){
                 continue;
+            }
+
+            if (!$include_namespace){
+                $model_name = Strings::afterLast($model_name, '\\');
             }
 
             $_table_models[$table_name] = $model_name;
@@ -308,6 +312,8 @@ class LaravelApiGenerator
             /*
                 Intentare usar $class_name en todos los casos
             */
+
+            // dd($class_name); exit;
 
             $model_name = $class_name;
             $ctrl_name  = $class_name;
@@ -465,10 +471,14 @@ class LaravelApiGenerator
                 $ctrl_file = str_replace('//__VALIDATION_RULES__', $rules_str, $ctrl_file);
                 $ctrl_file = str_replace('__RESOURCE_NAME__', "{$class_name}Resource", $ctrl_file);
 
-                $class_name = basename($class_name); // Extraer solo el nombre del archivo
-                $dest = rtrim(static::$ctrl_output_path, '/') . '/' . "{$class_name}Controller.php";
+                $ctrl =  "{$class_name}Controller.php";
+                $dest =  static::$ctrl_output_path . DIRECTORY_SEPARATOR . $ctrl; 
 
-                // dd($dest, "{$model_name}Controller");
+                // dd([
+                //     'class_name' => $class_name,
+                //     'dest' => $dest
+                // ]);
+                
                 // continue;
 
                 $ok  = file_put_contents($dest, $ctrl_file);
@@ -487,7 +497,7 @@ class LaravelApiGenerator
 
             if ($write_resources){
                 $resr_name  = "{$model_name}Resource.php";
-                $dest = static::$resource_output_path . $resr_name;
+                $dest = static::$resource_output_path . DIRECTORY_SEPARATOR . $resr_name;
 
                 $resource_file = str_replace('__RESOURCE_NAME__', "{$model_name}Resource", $resource_file);
 
