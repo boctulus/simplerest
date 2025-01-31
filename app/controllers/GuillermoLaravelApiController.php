@@ -22,6 +22,27 @@ use simplerest\libs\LaravelApiGenerator;
 class GuillermoLaravelApiController extends Controller
 {
     protected $conn_id = 'laravelshopify';
+
+    function base() {
+        LaravelApiGenerator::setConnId($this->conn_id);
+    
+        $base_path = 'D:/laragon/www/laravel-shopify';
+        $controllers_path = "$base_path/app/Http/Controllers";
+        $resources_path = "$base_path/app/Http/Resources";
+        
+        LaravelApiGenerator::setProjectPath($base_path);
+        LaravelApiGenerator::setControllerDestPath($controllers_path);
+        LaravelApiGenerator::setResourceDestPath($resources_path);
+        
+        LaravelApiGenerator::writeFactories(false);
+        LaravelApiGenerator::writeSeeders(false);
+        LaravelApiGenerator::writeModels(true);
+        LaravelApiGenerator::writeControllers(true);
+        LaravelApiGenerator::writeResources(true);
+        LaravelApiGenerator::writeRoutes(true);
+
+        LaravelApiGenerator::run();
+     }
     
     /*
         Se puede usar la "base" sin ajustes si la base de datos cumple con las convenciones de Laravel
