@@ -19360,9 +19360,7 @@ $tc->runAllTests();
 - Use cautiously in production environments to avoid exposing test execution endpoints.
 
 
-# Laravel API Generator 
-
-Laravel API Generator Guide
+# Laravel API Generator Guide
 
 1. Introduction
 
@@ -19370,15 +19368,29 @@ Automates creation of RESTful API Controllers, Resources (Transformers), Seeders
 
 2. Initial Configuration
 
-// Set main paths
-LaravelApiGenerator::setProjectPath('path/project/laravel');
-LaravelApiGenerator::setResourceDestPath('path/resources/');
-LaravelApiGenerator::setControllerDestPath('path/controllers/');
-LaravelApiGenerator::setFactoryDestPath('path/factories/');
-LaravelApiGenerator::setSeederDestPath('path/seeders/');
+Para poder ejecutar el generador sin ajustes, las tablas deben cumplir las convenciones de Laravel:
 
-// Configure database connection
-LaravelApiGenerator::setConnId('connection_name');
+	Usan IDs autoincrementales como clave primaria
+	Tienen timestamps (created_at, updated_at)
+	Siguen las convenciones de nombres (plural, snake_case)
+	Usan foreign keys con convención user_id, product_id, etc.
+	Implementan soft deletes donde es apropiado
+	Tienen campos nullables marcados explícitamente
+
+En este caso puede ser tan simple como armar un script asi:
+
+ 	LaravelApiGenerator::setConnId($conn_id);
+
+	LaravelApiGenerator::capitalizeTableNames();
+	LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravelshopify_resourcecontroller.php");
+
+	LaravelApiGenerator::setProjectPath('D:\laragon\www\laravel-shopify');
+	LaravelApiGenerator::setResourceDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Resources/');
+	LaravelApiGenerator::setControllerDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Controllers/');
+	LaravelApiGenerator::setFactoryDestPath('D:\laragon\www\laravel-shopify' . '/database/factories/');
+	LaravelApiGenerator::setSeederDestPath('D:\laragon\www\laravel-shopify' . '/database/seeders/');
+
+	LaravelApiGenerator::run();
 
 3. Main Options
 3.1 Element Filtering

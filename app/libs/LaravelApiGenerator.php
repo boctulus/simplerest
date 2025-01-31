@@ -465,7 +465,8 @@ class LaravelApiGenerator
                 $ctrl_file = str_replace('//__VALIDATION_RULES__', $rules_str, $ctrl_file);
                 $ctrl_file = str_replace('__RESOURCE_NAME__', "{$class_name}Resource", $ctrl_file);
 
-                $dest = static::$ctrl_output_path . "{$class_name}Controller.php";
+                $class_name = basename($class_name); // Extraer solo el nombre del archivo
+                $dest = rtrim(static::$ctrl_output_path, '/') . '/' . "{$class_name}Controller.php";
 
                 // dd($dest, "{$model_name}Controller");
                 // continue;
