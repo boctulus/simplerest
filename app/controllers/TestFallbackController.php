@@ -9,21 +9,29 @@ class TestFallbackController extends Controller
 {
     function __construct() { parent::__construct(); }
 
-    function test_apiclientfallback_package(){
+    function index(){
+        dd(__CLASS__, 'CLASS');
+
         $client = new ApiClientFallbackAlias();
+
+        $client
+        ->cache(3);
 
         $client
         ->setHeaders([
             "Content-type" => "application/json"
         ])
-        ->get("https://jsonplaceholder.typicode.com/posts/1");
+        ->get(base_url() . '/dumb/now');
 
         $res = $client->getResponse();
 
+        dd($res, 'RESPONSE');
+
         dd($client->status(), 'STATUS');
         dd($client->error(), 'ERROR');
+        
         dd($client
-        ->decode()
+        // ->decode()
         ->data(), 'DATA');
     }
 }
