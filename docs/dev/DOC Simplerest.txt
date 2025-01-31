@@ -19358,3 +19358,131 @@ $tc->runAllTests();
 - Suitable for rapid testing during development.
 - Complements standard PHPUnit workflows without replacing CLI usage.
 - Use cautiously in production environments to avoid exposing test execution endpoints.
+
+
+# Laravel API Generator 
+
+Laravel API Generator Guide
+
+1. Introduction
+
+Automates creation of RESTful API Controllers, Resources (Transformers), Seeders, Factories, API Routes, and basic model configurations. Based on database schemas, customizable templates, and validation configurations.
+
+2. Initial Configuration
+
+// Set main paths
+LaravelApiGenerator::setProjectPath('path/project/laravel');
+LaravelApiGenerator::setResourceDestPath('path/resources/');
+LaravelApiGenerator::setControllerDestPath('path/controllers/');
+LaravelApiGenerator::setFactoryDestPath('path/factories/');
+LaravelApiGenerator::setSeederDestPath('path/seeders/');
+
+// Configure database connection
+LaravelApiGenerator::setConnId('connection_name');
+
+3. Main Options
+3.1 Element Filtering
+
+// Controller whitelist/blacklist
+LaravelApiGenerator::setControllerWhitelist(['Model1', 'Model2']);
+LaravelApiGenerator::setControllerBlacklist(['Model3', 'Model4']);
+
+// Seeder exclusions
+LaravelApiGenerator::setSeederBlacklist(['Model5']);
+
+3.2 Seeder Data Types
+
+// Fixed data
+LaravelApiGenerator::addSeedersForHardcodedNonRandomData(['Model1', 'Model2']);
+
+// Random data
+LaravelApiGenerator::addSeedersForRandomData(['Model3', 'Model4']);
+
+3.3 Templates
+
+LaravelApiGenerator::setControllerTemplatePath('path/controller_template.php');
+LaravelApiGenerator::setResourceTemplatePath('path/resource_template.php');
+
+3.4 Validation
+
+LaravelApiGenerator::setValidator('Laravel'); // or 'SimpleRest'
+
+4. Basic Usage
+
+// Initial setup
+LaravelApiGenerator::setProjectPath('...');
+
+// Register callbacks (optional)
+LaravelApiGenerator::registerCallback(function($fields) {
+    // Custom logic
+});
+
+// Run generator
+LaravelApiGenerator::run();
+
+5. Complete Example
+
+public function generateApiExample() {
+    LaravelApiGenerator::setProjectPath('/var/www/my_project');
+    LaravelApiGenerator::setControllerDestPath('/var/www/my_project/app/Http/Controllers/API/');
+    LaravelApiGenerator::setConnId('mysql_prod');
+    
+    LaravelApiGenerator::setControllerWhitelist(['User', 'Post']);
+    LaravelApiGenerator::addSeedersForRandomData(['Comment']);
+    
+    LaravelApiGenerator::setValidator('Laravel');
+    
+    LaravelApiGenerator::registerCallback(function($fields) {
+        $softDeleteField = null;
+        foreach($fields as $field) {
+            if (strpos($field, '_DELETED') !== false) {
+                $softDeleteField = $field;
+                break;
+            }
+        }
+        
+        return [
+            'eval' => [
+                "\$ctrlFile = str_replace('__SOFTDELETE_FIELD__', '$softDeleteField', \$ctrlFile);"
+            ]
+        ];
+    });
+
+    LaravelApiGenerator::run();
+}
+
+6. Template Structure
+Controller Template
+
+class __CONTROLLER_NAME__ extends Controller {
+    protected $model = __MODEL_NAME__::class;
+    protected $resource = __RESOURCE_NAME__::class;
+    
+    // __VALIDATION_RULES__
+}
+
+Resource Template
+
+class __RESOURCE_NAME__ extends JsonResource {
+    public function toArray($request) {
+        return parent::toArray($request);
+    }
+}
+
+7. Special Considerations
+
+Table names must match models
+Soft delete fields must end with _DELETED
+Active database connection required
+Schemas must be up-to-date
+Fixed data seeders require manual values
+Random seeders use Faker and existing relationships
+
+8. Additional Notes
+
+// Selective Generation
+LaravelApiGenerator::writeModels(false);
+LaravelApiGenerator::writeSeeders(true);
+
+// Table Name Capitalization
+LaravelApiGenerator::capitalizeTableNames(true);
