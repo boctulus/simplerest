@@ -491,6 +491,16 @@ class Strings
         return '';
     }
 
+	static function afterLast(string $string, string $substr){
+		$pos = strrpos($string, $substr);
+
+		if ($pos === false){
+			return '';
+		}
+
+		return substr($string, $pos + strlen($substr));
+	}
+
 	// String desde la N-ésima ocurrencia del substring, incluyendo el substring
 	static function since(string $string, string $substr, int $occurrence = 1): string {
         $pos = self::getNthOccurrence($string, $substr, $occurrence);
