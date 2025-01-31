@@ -329,9 +329,10 @@ class ApiClientFallback
                 // Solo sino hay errores (hago un return y con eso) evito continuar obteniendo una respuesta fresca
                 if (empty($res['error']))
                 {    
-                    $this->status   = $res['http_code'] ?? null;
-                    $this->error    = $res['error'] ?? null;
+                    $this->status   = $res['http_code'] ?? 200;
+                    $this->error    = $res['error'] ?? '';
                     $this->response = $res['data'] ?? $res;
+
 
                     return $this;
                 }

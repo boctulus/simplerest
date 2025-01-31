@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\ApiClient\Helpers;
 
-use simplerest\core\libs\Arrays;
+use Boctulus\ApiClient\Helpers\Arrays;
 
 /*
     Acepta sintaxis "dot" 
@@ -21,18 +21,10 @@ class Config
 {
     static protected $data = [];
 
-    static protected function setup()
-    {
-        static::$data = array_merge(
-            include CONFIG_PATH . 'config.php',
-            include CONFIG_PATH . 'databases.php'
-        );
-    }
-
     static function get($property = null, $default = null)
     {
         if (empty(static::$data)) {
-            static::setup();
+            return $default;
         }
 
         if ($property === null) {
@@ -52,10 +44,6 @@ class Config
 
     static function set(string $property, $value)
     {
-        if (empty(static::$data)) {
-            static::setup();
-        }
-
         // Check if the property is null or '/'
         if ($property === null || $property === '/' || $property === '.' || $property === '') {
             // Merge the new value with the root array
