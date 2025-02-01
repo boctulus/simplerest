@@ -25,6 +25,8 @@ class PostmanGenerator
     static protected $jwt = '';
     static protected $endpoints = [];
     static protected $segment;
+    static protected $headers = [];
+
 
     const GET    = 'GET';
     const POST   = 'POST';
@@ -80,12 +82,46 @@ class PostmanGenerator
                      Strings::randomHexaString(4) . '-' . 
                      Strings::randomHexaString(12); 
 
-        return [
+        $headers = array_merge(static::$headers, [
             '_postman_id' => $postman_id,
             'name' => static::$collection_name,
             'schema' => "https://schema.getpostman.com/json/collection/v{$version}/collection.json",
             'description' => "Collection for " . static::$collection_name . " API endpoints",
             '_exporter_id' => '2650147'
+        ]);
+
+        return $headers;
+    }
+
+    static function addHeaders(Array $headers){
+        static::$headers = array_merge(static::$headers, $headers);
+    }
+
+    static function addRegisterEndpoint(array $fields = [])
+    {
+        $defaultBody = [
+            "name" => "John Doe 2",
+            "email" => "john@example2.com",
+            "password" => "password123",
+            "password_confirmation" => "password123"
+        ];
+
+        $body = empty($fields) ? $defaultBody : array_fill_keys($fields, "");
+
+        static::$endpoints[] = [
+            'resource' => 'register', 
+            'op' => [static::POST],
+            '_folder' => false,
+            '_custom' => [
+                'headers' => [
+                    ["key" => "Accept", "value" => "application/json"],
+                    ["key" => "Content-Type", "value" => "application/json"]
+                ],
+                'body' => [
+                    "mode" => "raw",
+                    "raw" => json_encode($body, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
+                ]
+            ]
         ];
     }
 
@@ -121,50 +157,66 @@ class PostmanGenerator
     
             foreach ($endpoint['op'] as $op) {
                 $raw = static::$base_url . '/' . static::$segment . $ep_name;
-    
+            
                 if ($_host_env) {
                     $raw = Strings::after($raw, '}}');
                 }
-    
+            
                 $path = Url::getSlugs($raw);
-    
+            
                 $url = [
                     "raw" => $raw,
                 ];
-    
+            
                 if (!empty($protocol)) {
                     $url["protocol"] = $protocol;
                 }
-    
+            
                 if (!empty($hostname)) {
                     $url["host"] = is_array($hostname) ? $hostname : [$hostname];
                 }
-    
+            
                 if (!empty($port)) {
                     $url["port"] = $port;
                 }
-    
+            
                 if (!empty($path)) {
                     $url["path"] = $path;
                 }
-    
+            
                 $request = [
                     "method" => $op,
                     "header" => [],
                     "description" => ucfirst(strtolower($op)) . " " . $ep_name,
                     "url" => $url
                 ];
-    
+            
+                // Agregar headers y body personalizados si existen
+                if (isset($endpoint['_custom'])) {
+                    if (isset($endpoint['_custom']['headers'])) {
+                        $request["header"] = $endpoint['_custom']['headers'];
+                    }
+                    if (isset($endpoint['_custom']['body'])) {
+                        $request["body"] = array_merge($endpoint['_custom']['body'], [
+                            "options" => [
+                                "raw" => [
+                                    "language" => "json"
+                                ]
+                            ]
+                        ]);
+                    }
+                }
+            
                 if (!empty($auth)) {
                     $request["auth"] = $auth;
                 }
-    
+            
                 $item = [
                     'name' => "$op $ep_name",
                     'request' => $request,
                     'response' => []
                 ];
-    
+            
                 // Agrupar en carpetas por tabla (recurso)
                 if (!isset($groupedItems[$ep_name])) {
                     $groupedItems[$ep_name] = [
@@ -172,7 +224,7 @@ class PostmanGenerator
                         'item' => []
                     ];
                 }
-    
+            
                 $groupedItems[$ep_name]['item'][] = $item;
             }
         }
@@ -185,5 +237,7 @@ class PostmanGenerator
     
         return Files::write($path, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
     }
+    
+
     
 }
