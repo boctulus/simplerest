@@ -31,7 +31,6 @@ class PostmanGenerator
     const PATCH  = 'PATCH';
     const DELETE = 'DELETE';
 
-
     static function setDestPath(string $path){
         $path = Files::addTrailingSlash($path);
         static::$resource_output_path = $path;
@@ -46,7 +45,6 @@ class PostmanGenerator
         static::$base_url = Files::removeTrailingSlash($base_url);
     }
 
-    // Su uso es opcional
     static function setPort(string $port){
         static::$base_url .= ":$port";
     }
@@ -76,18 +74,17 @@ class PostmanGenerator
     }
 
     static protected function header(string $version = '2.1.0'){
-        $collection_name = static::$collection_name;
-
-        $PostmanGenerator_id =   Strings::randomHexaString(8) . '-' . 
-                        Strings::randomHexaString(4) . '-' . 
-                        Strings::randomHexaString(4) . '-' . 
-                        Strings::randomHexaString(4) . '-' . 
-                        Strings::randomHexaString(12); 
+        $postman_id = Strings::randomHexaString(8) . '-' . 
+                     Strings::randomHexaString(4) . '-' . 
+                     Strings::randomHexaString(4) . '-' . 
+                     Strings::randomHexaString(4) . '-' . 
+                     Strings::randomHexaString(12); 
 
         return [
-            '_PostmanGenerator_id' => $PostmanGenerator_id,
+            '_postman_id' => $postman_id,
             'name' => static::$collection_name,
-            'schema' => "https://schema.getPostmanGenerator.com/json/collection/v{$version}/collection.json",
+            'schema' => "https://schema.getpostman.com/json/collection/v{$version}/collection.json",
+            'description' => "Collection for " . static::$collection_name . " API endpoints",
             '_exporter_id' => '2650147'
         ];
     }
@@ -108,22 +105,17 @@ class PostmanGenerator
         
         $data = [];
         $data["info"] = static::header();
-
-        $items   = [];
+        $items = [];
 
         foreach (static::$endpoints as $endpoint){
-            $ep_name  = $endpoint['resource'];
+            $ep_name = $endpoint['resource'];
             
             if (static::$jwt != null){
                 $auth = [
                     'type' => 'bearer',
-                    'bearer' => array (
-                        array (
-                            'key' => 'token',
-                            'value' => static::$jwt,
-                            'type' => 'string',
-                        ),
-                    ),
+                    'bearer' => [
+                        'token' => static::$jwt
+                    ]
                 ];
             }
 
@@ -133,9 +125,7 @@ class PostmanGenerator
 
             $tmp_items = [];
             foreach ($endpoint['op'] as $ix => $op){
-                $header = [];
-
-                $raw  = static::$base_url . '/' . static::$segment . $ep_name;
+                $raw = static::$base_url . '/' . static::$segment . $ep_name;
 
                 if ($_host_env){
                     $raw = Strings::after($raw, '}}');
@@ -144,7 +134,7 @@ class PostmanGenerator
                 $path = Url::getSlugs($raw);
 
                 $url = [
-                    "raw" => $raw
+                    "raw" => $raw,
                 ];
 
                 if (!empty($protocol)){
@@ -152,7 +142,7 @@ class PostmanGenerator
                 }
 
                 if (!empty($hostname)){
-                    $url["host"] = $hostname;
+                    $url["host"] = is_array($hostname) ? $hostname : [$hostname];
                 }
                 
                 if (!empty($port)){
@@ -165,8 +155,9 @@ class PostmanGenerator
 
                 $request = [
                     "method" => $op,
-                    "header" => $header,
-                    "url"    => $url
+                    "header" => [],
+                    "description" => ucfirst(strtolower($op)) . " " . $ep_name,
+                    "url" => $url
                 ];
                 
                 if (!empty($auth)){
@@ -174,13 +165,13 @@ class PostmanGenerator
                 }
 
                 $item = [
-                    'name'    => $ep_name,
-                    'request' => $request
+                    'name' => $ep_name,
+                    'request' => $request,
+                    'response' => []
                 ];
           
-                $tmp_items[] = $item; 
-
-            } // for each verb
+                $tmp_items[] = $item;
+            }
 
             if ($endpoint['_folder']){
                 $items[] = [
@@ -190,19 +181,13 @@ class PostmanGenerator
             } else {
                 $items = array_merge($items, $tmp_items);
             }
+        }
 
+        $data["item"] = $items;
 
-        } // for each endpoint
-
-
-        $data["item"] = $items; //
-
-
-        $path = static::$resource_output_path . static::$collection_name . ".PostmanGenerator_collection.json";
-
+        $path = static::$resource_output_path . static::$collection_name . ".postman_collection.json";
         Files::writableOrFail($path);
 
         return Files::write($path, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
     }
 }
-
