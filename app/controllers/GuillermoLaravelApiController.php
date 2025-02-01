@@ -80,7 +80,10 @@ class GuillermoLaravelApiController extends Controller
             'price_rules',
             'inventory'        
         ], [
-            PostmanGenerator::GET
+            PostmanGenerator::GET,
+            PostmanGenerator::POST,
+            PostmanGenerator::PATCH,
+            PostmanGenerator::DELETE,
         ]);
 
         // PostmanGenerator::addEndpoints([
