@@ -74,6 +74,10 @@ class GuillermoLaravelApiController extends Controller
             'Content-Type' => 'application/json'
         ]);
 
+        // PostmanGenerator::registerUser(['name', 'email', 'password']);
+        PostmanGenerator::registerUser();
+        PostmanGenerator::loginUser();
+
         PostmanGenerator::addEndpoints([  
             'users',                      
             'carts',
@@ -91,9 +95,6 @@ class GuillermoLaravelApiController extends Controller
             PostmanGenerator::PATCH,
             PostmanGenerator::DELETE,
         ]);
-
-        // PostmanGenerator::addRegisterEndpoint(['name', 'email', 'password']);
-        PostmanGenerator::addRegisterEndpoint();
 
         // PostmanGenerator::addEndpoints([
         //     'products',
