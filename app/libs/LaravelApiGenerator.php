@@ -366,6 +366,16 @@ class LaravelApiGenerator
                     };
         
                     foreach ($rules as $field => $rule){
+                        // Skip validation rules for autoincrement primary key
+                        if ($field === $schema['autoincrement'] || $field === $schema['id_name']) {
+                            continue;
+                        }
+
+                        // También podríamos excluir created_at y updated_at
+                        if (in_array($field, ['created_at', 'updated_at'])) {
+                            continue;
+                        }
+                        
                         $r = [];                 
                         
                         if (in_array($field, $nullables)){
