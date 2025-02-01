@@ -20,7 +20,7 @@ class __CONTROLLER_NAME__ extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate($this->store_rules);
+        $validated = $request->validate(static::$store_rules);
         $model = $this->model::create($validated);
         return new $this->resource($model);
     }
@@ -34,7 +34,7 @@ class __CONTROLLER_NAME__ extends Controller
     public function update(Request $request, $id)
     {
         $model = $this->model::findOrFail($id);
-        $validated = $request->validate($this->update_rules);
+        $validated = $request->validate(static::$update_rules);
         $model->update($validated);
         return new $this->resource($model);
     }
