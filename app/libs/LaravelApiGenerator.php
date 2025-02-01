@@ -220,11 +220,16 @@ class LaravelApiGenerator
     */
     static function run(){        
         static::$excluded = [
-            'Users',
+            // 'Users',
             'Migrations',
             'FailedJobs',
             'PasswordResets',
-            'PersonalAccessTokens'
+            'PersonalAccessTokens',
+            'Cache',
+            'CacheLocks',
+            'Sessions',
+            'Jobs',
+            'JobBatches'
         ];
 
         $write_models      = static::$write_models; 
@@ -424,16 +429,16 @@ class LaravelApiGenerator
                     $laravel_store_rules_str  = $get_rules_str($laravel_store_rules); 
                     $laravel_update_rules_str = $get_rules_str($laravel_update_rules); 
         
-                    $rules_str = 'static protected $store_rules = ['."\r\n" . $laravel_store_rules_str . "\t];\r\n\r\n\t" .
-                    'static protected $update_rules = ['."\r\n" . $laravel_update_rules_str . "\t];\r\n";
+                    $rules_str = 'protected $store_rules = ['."\r\n" . $laravel_store_rules_str . "\t];\r\n\r\n\t" .
+                    'protected $update_rules = ['."\r\n" . $laravel_update_rules_str . "\t];\r\n";
                     break;
 
                 case 'SimpleRest':
                     $validator_rules_str = var_export($rules, true);
                     $uniques_str         = var_export($uniques, true);
 
-                    $rules_str = 'static protected $validation_rules = '."\r\n" . Strings::trimMultiline($validator_rules_str). ";\r\n" .
-                    "\r\n". 'static protected $uniques = '."\r\n" . Strings::trimMultiline($uniques_str). ';';
+                    $rules_str = 'protected $validation_rules = '."\r\n" . Strings::trimMultiline($validator_rules_str). ";\r\n" .
+                    "\r\n". 'protected $uniques = '."\r\n" . Strings::trimMultiline($uniques_str). ';';
                     break;
             }
 
