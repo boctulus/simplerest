@@ -97,7 +97,13 @@ class PostmanGenerator
         static::$headers = array_merge(static::$headers, $headers);
     }
 
-    static function addRegisterEndpoint(array $fields = [])
+
+    /*
+        Folder: 'auth'
+
+        URL: /api/register
+    */
+    static function registerUser(array $fields = [])
     {
         $defaultBody = [
             "name" => "John Doe 2",
@@ -111,7 +117,40 @@ class PostmanGenerator
         static::$endpoints[] = [
             'resource' => 'register', 
             'op' => [static::POST],
-            '_folder' => false,
+            '_folder' => true,
+            '_group' => 'auth',
+            '_custom' => [
+                'headers' => [
+                    ["key" => "Accept", "value" => "application/json"],
+                    ["key" => "Content-Type", "value" => "application/json"]
+                ],
+                'body' => [
+                    "mode" => "raw",
+                    "raw" => json_encode($body, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
+                ]
+            ]
+        ];
+    }
+
+    /*
+        Folder: 'auth'
+
+        URL: /api/login
+    */
+    static function loginUser(array $fields = [])
+    {
+        $defaultBody = [           
+            "email" => "john@example2.com",
+            "password" => "password123"
+        ];
+
+        $body = empty($fields) ? $defaultBody : array_fill_keys($fields, "");
+
+        static::$endpoints[] = [
+            'resource' => 'login', 
+            'op' => [static::POST],
+            '_folder' => true,
+            '_group' => 'auth',
             '_custom' => [
                 'headers' => [
                     ["key" => "Accept", "value" => "application/json"],
@@ -145,6 +184,14 @@ class PostmanGenerator
     
         foreach (static::$endpoints as $endpoint) {
             $ep_name = $endpoint['resource'];
+            $group = isset($endpoint['_group']) ? $endpoint['_group'] : $ep_name;
+    
+            if (!isset($groupedItems[$group])) {
+                $groupedItems[$group] = [
+                    'name' => $group,
+                    'item' => []
+                ];
+            }
     
             if (static::$jwt != null) {
                 $auth = [
@@ -187,23 +234,15 @@ class PostmanGenerator
                 $request = [
                     "method" => $op,
                     "header" => [],
-                    "description" => ucfirst(strtolower($op)) . " " . $ep_name,
                     "url" => $url
                 ];
             
-                // Agregar headers y body personalizados si existen
                 if (isset($endpoint['_custom'])) {
                     if (isset($endpoint['_custom']['headers'])) {
                         $request["header"] = $endpoint['_custom']['headers'];
                     }
                     if (isset($endpoint['_custom']['body'])) {
-                        $request["body"] = array_merge($endpoint['_custom']['body'], [
-                            "options" => [
-                                "raw" => [
-                                    "language" => "json"
-                                ]
-                            ]
-                        ]);
+                        $request["body"] = $endpoint['_custom']['body'];
                     }
                 }
             
@@ -216,28 +255,18 @@ class PostmanGenerator
                     'request' => $request,
                     'response' => []
                 ];
-            
-                // Agrupar en carpetas por tabla (recurso)
-                if (!isset($groupedItems[$ep_name])) {
-                    $groupedItems[$ep_name] = [
-                        'name' => $ep_name,
-                        'item' => []
-                    ];
-                }
-            
-                $groupedItems[$ep_name]['item'][] = $item;
+    
+                $groupedItems[$group]['item'][] = $item;
             }
         }
     
-        // Convertir agrupación a lista de elementos
         $data["item"] = array_values($groupedItems);
     
         $path = static::$resource_output_path . static::$collection_name . ".postman_collection.json";
         Files::writableOrFail($path);
     
         return Files::write($path, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-    }
-    
+    }   
 
     
 }
