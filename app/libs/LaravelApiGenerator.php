@@ -276,7 +276,9 @@ class LaravelApiGenerator
                 continue;
             }
 
-            // if ($__model_name != 'ProyectosEjecutadosRecurPublicos'){
+            // dd($__model_name, 'MODEL NAME');
+
+            // if ($__model_name != 'Products'){
             //     continue; ///////////
             // }
 
@@ -290,6 +292,8 @@ class LaravelApiGenerator
             include $path;
 
             $schema = $class_name_full::get();
+
+            // dd($schema, 'SCHEMA'); exit;
 
             $table_name = $schema['table_name']; // table name
             $relations  = $schema['expanded_relationships'];
@@ -468,7 +472,7 @@ class LaravelApiGenerator
                 $ctrl_file = str_replace('__MODEL_NAME__', $class_name, $ctrl_file);
                 $ctrl_file = str_replace('__TABLE_NAME__', $table_name, $ctrl_file);
                 $ctrl_file = str_replace('__PRI_KEY__', "'$id_name'", $ctrl_file);
-                $ctrl_file = str_replace('//__VALIDATION_RULES__', $rules_str, $ctrl_file);
+                $ctrl_file = str_replace('// __VALIDATION_RULES__', $rules_str, $ctrl_file);
                 $ctrl_file = str_replace('__RESOURCE_NAME__', "{$class_name}Resource", $ctrl_file);
 
                 $ctrl =  "{$class_name}Controller.php";

@@ -4,6 +4,7 @@ namespace simplerest\controllers;
 
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\DB;
+use simplerest\core\libs\PostmanGenerator;
 use simplerest\core\libs\Strings;
 use simplerest\core\traits\TimeExecutionTrait;
 use simplerest\libs\LaravelApiGenerator;
@@ -17,18 +18,28 @@ use simplerest\libs\LaravelApiGenerator;
 
         php com make schema all --from:laravelshopify --except=migrations,password_resets,cache,cache_locks,charges,failed_jobs,jobs,job_batches,migratons,password_reset_tokens,password_reset_tokens,sessions,plans
 
-    3) Ajustar la clase
+    3) Ajustar la clase y ejecutar
+
+    4) Copiar las rutas entregadas por el comando a web.php, Ej:
+
+    routes/api.php | routes
+
+    Route::resource('addresses', App\Http\Controllers\AddressController::class);
+    Route::resource('cart_items', App\Http\Controllers\CartItemController::class);
+    Route::resource('carts', App\Http\Controllers\CartController::class);
+    ...
 */
 class GuillermoLaravelApiController extends Controller
 {
     protected $conn_id = 'laravelshopify';
+    protected $laravel_project_path = 'D:/laragon/www/laravel-shopify';
 
     function base() {
         LaravelApiGenerator::setConnId($this->conn_id);
     
-        $base_path = 'D:/laragon/www/laravel-shopify';
+        $base_path        = $this->laravel_project_path;
         $controllers_path = "$base_path/app/Http/Controllers";
-        $resources_path = "$base_path/app/Http/Resources";
+        $resources_path   = "$base_path/app/Http/Resources";
         
         LaravelApiGenerator::setProjectPath($base_path);
         LaravelApiGenerator::setControllerDestPath($controllers_path);
@@ -42,193 +53,235 @@ class GuillermoLaravelApiController extends Controller
         LaravelApiGenerator::writeRoutes(true);
 
         LaravelApiGenerator::run();
-     }
+    }
     
-    /*
-        Se puede usar la "base" sin ajustes si la base de datos cumple con las convenciones de Laravel
-    */
-    function gen_laravel__base(){
-        LaravelApiGenerator::setConnId($this->conn_id);
 
-        LaravelApiGenerator::capitalizeTableNames();
-        LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravelshopify_resourcecontroller.php");
+    function generate_collections(){
+        PostmanGenerator::setCollectionName('LaravelShopify');
 
-        LaravelApiGenerator::setProjectPath('D:\laragon\www\laravel-shopify');
-        LaravelApiGenerator::setResourceDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Resources/');
-        LaravelApiGenerator::setControllerDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Controllers/');
-        LaravelApiGenerator::setFactoryDestPath('D:\laragon\www\laravel-shopify' . '/database/factories/');
-        LaravelApiGenerator::setSeederDestPath('D:\laragon\www\laravel-shopify' . '/database/seeders/');
+        PostmanGenerator::setDestPath($this->laravel_project_path . DIRECTORY_SEPARATOR . 'PostmanCollections');
 
-        LaravelApiGenerator::run();
+        //PostmanGenerator::setBaseUrl('http://127.0.0.1:8889'); 
+        PostmanGenerator::setBaseUrl('{{base_url}}'); 
+
+        PostmanGenerator::setSegment('api');
+
+        PostmanGenerator::setToken('{{token}}');
+
+        PostmanGenerator::addEndpoints([  
+            'users',                      
+            'carts',
+            'cart_items',
+            'products',
+            'addresses',
+            'orders',
+            'order_items',
+            'favorites',
+            'price_rules',
+            'inventory'        
+        ], [
+            PostmanGenerator::GET
+        ]);
+
+        // PostmanGenerator::addEndpoints([
+        //     'products',
+        // ], [
+        //     PostmanGenerator::GET,
+        //     PostmanGenerator::POST,
+        //     PostmanGenerator::PATCH,
+        //     PostmanGenerator::DELETE,
+        // ], true);
+
+        $ok = PostmanGenerator::generate();
+
+        dd($ok, 'Generated?');
     }
 
-    function gen_laravel__custom_1(){
-        LaravelApiGenerator::setConnId($this->conn_id); 
-        LaravelApiGenerator::setProjectPath('D:\laragon\www\laravel-shopify');
-        LaravelApiGenerator::setResourceDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Resources/');
-        LaravelApiGenerator::setControllerDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Controllers/');
-        LaravelApiGenerator::setFactoryDestPath('D:\laragon\www\laravel-shopify' . '/database/factories/');
-        LaravelApiGenerator::setSeederDestPath('D:\laragon\www\laravel-shopify' . '/database/seeders/');
+    // /*
+    //     Se puede usar la "base" sin ajustes si la base de datos cumple con las convenciones de Laravel
+    // */
+    // function gen_laravel__base(){
+    //     LaravelApiGenerator::setConnId($this->conn_id);
 
-        LaravelApiGenerator::setControllerWhitelist([
-            // 'TipoVinculoOER'
-            // 'orgComunalEntidadRegController',
-            // 'OrgComunal'
-            // 'ProyectoEjecutadoRecursosPropios'
-        ]);
+    //     LaravelApiGenerator::capitalizeTableNames();
+    //     LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravelshopify_resourcecontroller.php");
 
-        LaravelApiGenerator::setControllerBlacklist([
-        //     'UsuarioToken',
-        //     'EstPersJur',  
-        //     'GrupoInteres' 
-        //     // ...
-        ]);
+    //     LaravelApiGenerator::setProjectPath('D:\laragon\www\laravel-shopify');
+    //     LaravelApiGenerator::setResourceDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Resources/');
+    //     LaravelApiGenerator::setControllerDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Controllers/');
+    //     LaravelApiGenerator::setFactoryDestPath('D:\laragon\www\laravel-shopify' . '/database/factories/');
+    //     LaravelApiGenerator::setSeederDestPath('D:\laragon\www\laravel-shopify' . '/database/seeders/');
 
-        // 
+    //     LaravelApiGenerator::run();
+    // }
 
-        LaravelApiGenerator::setSeederBlacklist([
-            // ...
-        ]);
+    // function gen_laravel__custom_1(){
+    //     LaravelApiGenerator::setConnId($this->conn_id); 
+    //     LaravelApiGenerator::setProjectPath('D:\laragon\www\laravel-shopify');
+    //     LaravelApiGenerator::setResourceDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Resources/');
+    //     LaravelApiGenerator::setControllerDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Controllers/');
+    //     LaravelApiGenerator::setFactoryDestPath('D:\laragon\www\laravel-shopify' . '/database/factories/');
+    //     LaravelApiGenerator::setSeederDestPath('D:\laragon\www\laravel-shopify' . '/database/seeders/');
 
-        LaravelApiGenerator::addSeedersForHardcodedNonRandomData([
-            // 'TipoVinculoOER',
-            // 'Genero',
-            // 'EstadoLaboral',
-            // 'EstadoCivil',
-            // 'Comuna',               // quitar luego
-            // 'Municipio',            // quitar luego
-            // 'Departamento',         // quitar luego
-            // 'GrupoPoblacional',     // quitar luego
-            // 'Barrio',               // quitar luego
-            // 'EscalaTerritorial',
-            // 'NivelEscolaridad',
-            // 'Nivel',
-            // 'SectorActividad',
-            // 'Subregion',
-            // 'TipoDoc',
-            // 'TipoOrganismo',
-            // 'InstrumentoPlaneacion',
-            // 'CertificacionOrgComunal',
-            // 'EstPersJur'
-            // 'UsuarioToken',
-            // 'GrupoInteres',
-            // 'EstadoSeguimiento',
-        ]);
+    //     LaravelApiGenerator::setControllerWhitelist([
+    //         // 'TipoVinculoOER'
+    //         // 'orgComunalEntidadRegController',
+    //         // 'OrgComunal'
+    //         // 'ProyectoEjecutadoRecursosPropios'
+    //     ]);
 
-        LaravelApiGenerator::addSeedersForRandomData([
-            // 'ProyectoEjecutadoCooperacion',
-            // 'ProyectoEjecutadoRecursosPropios',
-            // 'ProyectoEjecutadoRecursosPublicos',
-            // 'RepresentanteLegal',  
-            // 'EntidadReg',
-            // 'EntidadRegGrupoPoblacional', 
-            // 'OrgComunal', 
-            // 'OrgComunalEntidadReg', 
-        ]);
+    //     LaravelApiGenerator::setControllerBlacklist([
+    //     //     'UsuarioToken',
+    //     //     'EstPersJur',  
+    //     //     'GrupoInteres' 
+    //     //     // ...
+    //     ]);
 
-        LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravelshopify_resourcecontroller.php");
+    //     // 
 
-        LaravelApiGenerator::setValidator("SimpleRest");
+    //     LaravelApiGenerator::setSeederBlacklist([
+    //         // ...
+    //     ]);
 
-        LaravelApiGenerator::registerCallback(function($fields){
-            $softdelete_fieldname = null;
-            foreach($fields as $field){
-                if ($field == 'deleted_at'){
-                    $softdelete_fieldname = $field;
-                }
-            }
+    //     LaravelApiGenerator::addSeedersForHardcodedNonRandomData([
+    //         // 'TipoVinculoOER',
+    //         // 'Genero',
+    //         // 'EstadoLaboral',
+    //         // 'EstadoCivil',
+    //         // 'Comuna',               // quitar luego
+    //         // 'Municipio',            // quitar luego
+    //         // 'Departamento',         // quitar luego
+    //         // 'GrupoPoblacional',     // quitar luego
+    //         // 'Barrio',               // quitar luego
+    //         // 'EscalaTerritorial',
+    //         // 'NivelEscolaridad',
+    //         // 'Nivel',
+    //         // 'SectorActividad',
+    //         // 'Subregion',
+    //         // 'TipoDoc',
+    //         // 'TipoOrganismo',
+    //         // 'InstrumentoPlaneacion',
+    //         // 'CertificacionOrgComunal',
+    //         // 'EstPersJur'
+    //         // 'UsuarioToken',
+    //         // 'GrupoInteres',
+    //         // 'EstadoSeguimiento',
+    //     ]);
 
-            if ($softdelete_fieldname == null){
-                // die("Campo _BORRADO es obligatorio en el template");
-            }
+    //     LaravelApiGenerator::addSeedersForRandomData([
+    //         // 'ProyectoEjecutadoCooperacion',
+    //         // 'ProyectoEjecutadoRecursosPropios',
+    //         // 'ProyectoEjecutadoRecursosPublicos',
+    //         // 'RepresentanteLegal',  
+    //         // 'EntidadReg',
+    //         // 'EntidadRegGrupoPoblacional', 
+    //         // 'OrgComunal', 
+    //         // 'OrgComunalEntidadReg', 
+    //     ]);
 
-            $habilitado_fieldname = null;
-            foreach($fields as $field){
-                if ($field == 'enabled_at'){
-                    $habilitado_fieldname = $field;
-                }
-            }
+    //     LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravelshopify_resourcecontroller.php");
 
-            return [
-                'eval' => [
-                    "\$campo_borrado    = '$softdelete_fieldname';",
-                    "\$campo_habilitado = '$habilitado_fieldname';",
-                    "if (isset(\$campo_borrado)){
-                        \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
-                    };",
-                    "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
-                        \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
-                    };"
-                ]
-            ];
-        });
+    //     LaravelApiGenerator::setValidator("SimpleRest");
+
+    //     LaravelApiGenerator::registerCallback(function($fields){
+    //         $softdelete_fieldname = null;
+    //         foreach($fields as $field){
+    //             if ($field == 'deleted_at'){
+    //                 $softdelete_fieldname = $field;
+    //             }
+    //         }
+
+    //         if ($softdelete_fieldname == null){
+    //             // die("Campo _BORRADO es obligatorio en el template");
+    //         }
+
+    //         $habilitado_fieldname = null;
+    //         foreach($fields as $field){
+    //             if ($field == 'enabled_at'){
+    //                 $habilitado_fieldname = $field;
+    //             }
+    //         }
+
+    //         return [
+    //             'eval' => [
+    //                 "\$campo_borrado    = '$softdelete_fieldname';",
+    //                 "\$campo_habilitado = '$habilitado_fieldname';",
+    //                 "if (isset(\$campo_borrado)){
+    //                     \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
+    //                 };",
+    //                 "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
+    //                     \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
+    //                 };"
+    //             ]
+    //         ];
+    //     });
 
 
-        #LaravelApiGenerator::writeModels(false);
-        LaravelApiGenerator::writeControllers(true);
-        LaravelApiGenerator::writeResources(false);
-        LaravelApiGenerator::writeRoutes(false);
-        LaravelApiGenerator::writeSeeders(false);
-        LaravelApiGenerator::writeFactories(false);  // factories o seeders de random data
+    //     #LaravelApiGenerator::writeModels(false);
+    //     LaravelApiGenerator::writeControllers(true);
+    //     LaravelApiGenerator::writeResources(false);
+    //     LaravelApiGenerator::writeRoutes(false);
+    //     LaravelApiGenerator::writeSeeders(false);
+    //     LaravelApiGenerator::writeFactories(false);  // factories o seeders de random data
 
-        LaravelApiGenerator::run();    
-    }
+    //     LaravelApiGenerator::run();    
+    // }
 
-    function gen_laravel__custom_2(){
-        LaravelApiGenerator::setConnId($this->conn_id);
+    // function gen_laravel__custom_2(){
+    //     LaravelApiGenerator::setConnId($this->conn_id);
 
-        LaravelApiGenerator::capitalizeTableNames();
-        LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravelshopify_resourcecontroller.php");
+    //     LaravelApiGenerator::capitalizeTableNames();
+    //     LaravelApiGenerator::setControllerTemplatePath(ETC_PATH . "templates/laravelshopify_resourcecontroller.php");
 
-        LaravelApiGenerator::setProjectPath('D:\laragon\www\laravel-shopify');
-        LaravelApiGenerator::setResourceDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Resources/');
-        LaravelApiGenerator::setControllerDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Controllers/');
-        // LaravelApiGenerator::setFactoryDestPath('D:\laragon\www\laravel-shopify' . '/database/factories/');
-        // LaravelApiGenerator::setSeederDestPath('D:\laragon\www\laravel-shopify' . '/database/seeders/');
+    //     LaravelApiGenerator::setProjectPath('D:\laragon\www\laravel-shopify');
+    //     LaravelApiGenerator::setResourceDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Resources/');
+    //     LaravelApiGenerator::setControllerDestPath('D:\laragon\www\laravel-shopify' . '/app/Http/Controllers/');
+    //     // LaravelApiGenerator::setFactoryDestPath('D:\laragon\www\laravel-shopify' . '/database/factories/');
+    //     // LaravelApiGenerator::setSeederDestPath('D:\laragon\www\laravel-shopify' . '/database/seeders/');
 
-        // LaravelApiGenerator::setControllerWhitelist([
-        //     'Users'
-        //     // ...
-        // ]);
+    //     // LaravelApiGenerator::setControllerWhitelist([
+    //     //     'Users'
+    //     //     // ...
+    //     // ]);
 
-        LaravelApiGenerator::setValidator("SimpleRest");
+    //     LaravelApiGenerator::setValidator("SimpleRest");
 
-        LaravelApiGenerator::registerCallback(function($fields){
-            $softdelete_fieldname = null;
-            foreach($fields as $field){
-                if ($field == 'deleted_at'){
-                    $softdelete_fieldname = $field;
-                }
-            }
+    //     LaravelApiGenerator::registerCallback(function($fields){
+    //         $softdelete_fieldname = null;
+    //         foreach($fields as $field){
+    //             if ($field == 'deleted_at'){
+    //                 $softdelete_fieldname = $field;
+    //             }
+    //         }
 
-            $habilitado_fieldname = null;
-            foreach($fields as $field){
-                if ($field == 'enabled_at'){
-                    $habilitado_fieldname = $field;
-                }
-            }
+    //         $habilitado_fieldname = null;
+    //         foreach($fields as $field){
+    //             if ($field == 'enabled_at'){
+    //                 $habilitado_fieldname = $field;
+    //             }
+    //         }
 
-            if ($softdelete_fieldname == null){
-                die("Campo _BORRADO es obligatorio en el template");
-            }
+    //         if ($softdelete_fieldname == null){
+    //             die("Campo _BORRADO es obligatorio en el template");
+    //         }
 
-            return [
-                'eval' => [
-                    "\$campo_borrado    = '$softdelete_fieldname';",
-                    "\$campo_habilitado = '$habilitado_fieldname';",
-                    "if (isset(\$campo_borrado)){
-                        \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
-                    };",
-                    "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
-                        \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
-                    };"
-                ]
-            ];
-        });
+    //         return [
+    //             'eval' => [
+    //                 "\$campo_borrado    = '$softdelete_fieldname';",
+    //                 "\$campo_habilitado = '$habilitado_fieldname';",
+    //                 "if (isset(\$campo_borrado)){
+    //                     \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
+    //                 };",
+    //                 "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
+    //                     \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
+    //                 };"
+    //             ]
+    //         ];
+    //     });
 
        
-        LaravelApiGenerator::run();
-    }
+    //     LaravelApiGenerator::run();
+    // }
 
 
 }
