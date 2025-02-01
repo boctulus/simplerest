@@ -13,6 +13,22 @@ use simplerest\core\libs\Files;
     Todos los derechos reservados (2022)
 
     Mover a "packages"
+
+    TO-DO
+
+    Mediante algun metodo setAuthenticationPackage('Sanctum') podria modificar config\auth.php cambiando las guards a:
+
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
+    ],
+
 */
 class LaravelApiGenerator
 {
