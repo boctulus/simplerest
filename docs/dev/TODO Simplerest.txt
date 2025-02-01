@@ -1,6 +1,25 @@
 TODO SimpleRest
 ===============
 
+- En la generacion de Schemas revisa este caso:
+
+D:\laragon\www\simplerest\app\schemas\laravelshopify\ProductsSchema.php
+
+    'id_name'			=> 'id',
+
+    'primary'			=> ['id'],
+
+    'autoincrement' 	=> 'id',
+
+    'nullable'			=> ['id', 'created_at', 'updated_at'],
+
+    'required'			=> ['shopify_product_id'],
+
+    'uniques'			=> ['shopify_product_id'],
+
+O sea si "id" es PRIMARY KEY por que aparece como "nullable", no aparece entre los "required" ni entre los "uniques"
+
+
 # DOCUMENTACION
 
 - Documentar correctamente toda función con @param y @return (DocBlocks siguiendo PHPdoc)
