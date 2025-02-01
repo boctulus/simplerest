@@ -68,6 +68,12 @@ class GuillermoLaravelApiController extends Controller
 
         PostmanGenerator::setToken('{{token}}');
 
+        // Agregar los headers globales
+        PostmanGenerator::addHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+        ]);
+
         PostmanGenerator::addEndpoints([  
             'users',                      
             'carts',
@@ -85,6 +91,9 @@ class GuillermoLaravelApiController extends Controller
             PostmanGenerator::PATCH,
             PostmanGenerator::DELETE,
         ]);
+
+        // PostmanGenerator::addRegisterEndpoint(['name', 'email', 'password']);
+        PostmanGenerator::addRegisterEndpoint();
 
         // PostmanGenerator::addEndpoints([
         //     'products',
