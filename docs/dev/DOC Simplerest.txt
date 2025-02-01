@@ -19466,35 +19466,97 @@ public function generateApiExample() {
 6. Template Structure
 Controller Template
 
-class __CONTROLLER_NAME__ extends Controller {
-    protected $model = __MODEL_NAME__::class;
-    protected $resource = __RESOURCE_NAME__::class;
-    
-    // __VALIDATION_RULES__
-}
+	class __CONTROLLER_NAME__ extends Controller {
+		protected $model = __MODEL_NAME__::class;
+		protected $resource = __RESOURCE_NAME__::class;
+		
+		// __VALIDATION_RULES__
+	}
 
 Resource Template
 
-class __RESOURCE_NAME__ extends JsonResource {
-    public function toArray($request) {
-        return parent::toArray($request);
-    }
-}
+	class __RESOURCE_NAME__ extends JsonResource {
+		public function toArray($request) {
+			return parent::toArray($request);
+		}
+	}
 
 7. Special Considerations
 
-Table names must match models
-Soft delete fields must end with _DELETED
-Active database connection required
-Schemas must be up-to-date
-Fixed data seeders require manual values
-Random seeders use Faker and existing relationships
+	Table names must match models
+	Soft delete fields must end with _DELETED
+	Active database connection required
+	Schemas must be up-to-date
+	Fixed data seeders require manual values
+	Random seeders use Faker and existing relationships
 
 8. Additional Notes
 
-// Selective Generation
-LaravelApiGenerator::writeModels(false);
-LaravelApiGenerator::writeSeeders(true);
+	// Selective Generation
+	LaravelApiGenerator::writeModels(false);
+	LaravelApiGenerator::writeSeeders(true);
 
-// Table Name Capitalization
-LaravelApiGenerator::capitalizeTableNames(true);
+	// Table Name Capitalization
+	LaravelApiGenerator::capitalizeTableNames(true);
+
+Pasos:
+
+1.- Ir a databases.php y agregar la conexion a la base de datos
+
+2.- Ejectuar el comando para generar el schema
+
+	php com make schema all --from:laravelshopify --except=migrations,password_resets,cache,cache_locks,charges,failed_jobs,jobs,job_batches,migratons,password_reset_tokens,password_reset_tokens,sessions,plans
+
+3.- Ajustar la clase y ejecutar
+
+4.- Copiar las rutas entregadas por el comando a web.php, Ej:
+
+routes/api.php | routes
+
+Route::resource('addresses', App\Http\Controllers\AddressController::class);
+Route::resource('cart_items', App\Http\Controllers\CartItemController::class);
+Route::resource('carts', App\Http\Controllers\CartController::class);
+...
+
+
+# Generacion de colecciones de Postman
+
+Ej:
+	PostmanGenerator::setCollectionName('LaravelShopify');
+
+	PostmanGenerator::setDestPath($this->laravel_project_path . DIRECTORY_SEPARATOR . 'PostmanCollections');
+
+	//PostmanGenerator::setBaseUrl('http://127.0.0.1:8889'); 
+	PostmanGenerator::setBaseUrl('{{base_url}}'); 
+
+	PostmanGenerator::setSegment('api');
+
+	PostmanGenerator::setToken('{{token}}');
+
+	PostmanGenerator::addEndpoints([  
+		'users',                      
+		'carts',
+		'cart_items',
+		'products',
+		'addresses',
+		'orders',
+		'order_items',
+		'favorites',
+		'price_rules',
+		'inventory'        
+	], [
+		PostmanGenerator::GET
+	]);
+
+	// PostmanGenerator::addEndpoints([
+	//     'products',
+	// ], [
+	//     PostmanGenerator::GET,
+	//     PostmanGenerator::POST,
+	//     PostmanGenerator::PATCH,
+	//     PostmanGenerator::DELETE,
+	// ], true);
+
+	$ok = PostmanGenerator::generate();
+
+	dd($ok, 'Generated?');
