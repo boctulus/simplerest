@@ -95,22 +95,22 @@ class PostmanGenerator
         $port      = static::$port;
         $auth      = null;
         $_host_env = false;
-
-        if (Strings::startsWith("{", $base_url) && Strings::endsWith("}", $base_url)){
+    
+        if (Strings::startsWith("{", $base_url) && Strings::endsWith("}", $base_url)) {
             $hostname  = $base_url;
             $_host_env = true;
         } else {
             $hostname = Url::getHostname($base_url);
         }
-        
+    
         $data = [];
         $data["info"] = static::header();
-        $items = [];
-
-        foreach (static::$endpoints as $endpoint){
+        $groupedItems = [];
+    
+        foreach (static::$endpoints as $endpoint) {
             $ep_name = $endpoint['resource'];
-            
-            if (static::$jwt != null){
+    
+            if (static::$jwt != null) {
                 $auth = [
                     'type' => 'bearer',
                     'bearer' => [
@@ -118,76 +118,72 @@ class PostmanGenerator
                     ]
                 ];
             }
-
-            if ($endpoint['_folder']){
-                $prev_items = $items;
-            }
-
-            $tmp_items = [];
-            foreach ($endpoint['op'] as $ix => $op){
+    
+            foreach ($endpoint['op'] as $op) {
                 $raw = static::$base_url . '/' . static::$segment . $ep_name;
-
-                if ($_host_env){
+    
+                if ($_host_env) {
                     $raw = Strings::after($raw, '}}');
                 }
-
+    
                 $path = Url::getSlugs($raw);
-
+    
                 $url = [
                     "raw" => $raw,
                 ];
-
-                if (!empty($protocol)){
+    
+                if (!empty($protocol)) {
                     $url["protocol"] = $protocol;
                 }
-
-                if (!empty($hostname)){
+    
+                if (!empty($hostname)) {
                     $url["host"] = is_array($hostname) ? $hostname : [$hostname];
                 }
-                
-                if (!empty($port)){
+    
+                if (!empty($port)) {
                     $url["port"] = $port;
                 }
-
-                if (!empty($path)){
+    
+                if (!empty($path)) {
                     $url["path"] = $path;
                 }
-
+    
                 $request = [
                     "method" => $op,
                     "header" => [],
                     "description" => ucfirst(strtolower($op)) . " " . $ep_name,
                     "url" => $url
                 ];
-                
-                if (!empty($auth)){
+    
+                if (!empty($auth)) {
                     $request["auth"] = $auth;
                 }
-
+    
                 $item = [
-                    'name' => $ep_name,
+                    'name' => "$op $ep_name",
                     'request' => $request,
                     'response' => []
                 ];
-          
-                $tmp_items[] = $item;
-            }
-
-            if ($endpoint['_folder']){
-                $items[] = [
-                    'name' => $ep_name,
-                    'item' => $tmp_items
-                ];
-            } else {
-                $items = array_merge($items, $tmp_items);
+    
+                // Agrupar en carpetas por tabla (recurso)
+                if (!isset($groupedItems[$ep_name])) {
+                    $groupedItems[$ep_name] = [
+                        'name' => $ep_name,
+                        'item' => []
+                    ];
+                }
+    
+                $groupedItems[$ep_name]['item'][] = $item;
             }
         }
-
-        $data["item"] = $items;
-
+    
+        // Convertir agrupación a lista de elementos
+        $data["item"] = array_values($groupedItems);
+    
         $path = static::$resource_output_path . static::$collection_name . ".postman_collection.json";
         Files::writableOrFail($path);
-
+    
         return Files::write($path, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
     }
+    
 }
