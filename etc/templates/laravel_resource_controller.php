@@ -27,23 +27,42 @@ class __CONTROLLER_NAME__ extends Controller
        return new $this->resource($model);
    }
 
+    public function update(Request $request, $id)
+    {
+        try {
+            $model = $this->model::findOrFail($id);
+            $validated = $request->validate($this->update_rules);
+            $model->update($validated);
+            return new $this->resource($model);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Resource not found'
+            ], 404);
+        }
+    }
+
    public function show($id)
    {
-       $model = $this->model::findOrFail($id);
-       return new $this->resource($model);
-   }
+        try {
+            $model = $this->model::findOrFail($id);
+            return new $this->resource($model);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Resource not found'
+            ], 404);
+        }
+    }
 
-   public function update(Request $request, $id)
-   {
-       $model = $this->model::findOrFail($id);
-       $validated = $request->validate($this->update_rules);
-       $model->update($validated);
-       return new $this->resource($model);
-   }
-
-   public function destroy($id)
-   {
-       $this->model::findOrFail($id)->delete();
-       return response()->noContent();
-   }
+    public function destroy($id)
+    {
+        try {
+            $model = $this->model::findOrFail($id);
+            $model->delete();
+            return response()->noContent();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Resource not found'
+            ], 404);
+        }
+    }
 }
