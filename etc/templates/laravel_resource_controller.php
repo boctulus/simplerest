@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\__MODEL_NAME__;
 use App\Http\Resources\__RESOURCE_NAME__;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class __CONTROLLER_NAME__ extends Controller
 {
@@ -15,17 +16,28 @@ class __CONTROLLER_NAME__ extends Controller
 
    // __VALIDATION_RULES__
 
-   public function index()
-   {
-       return $this->resource::collection($this->model::paginate());
-   }
+    public function index()
+    {
+        return $this->resource::collection($this->model::paginate())
+            ->response()
+            ->header('Content-Type', 'application/json');
+    }
 
-   public function store(Request $request) 
-   {
-       $validated = $request->validate($this->store_rules);
-       $model = $this->model::create($validated);
-       return new $this->resource($model);
-   }
+    public function store(Request $request) 
+    {
+        try {
+            $validated = $request->validate($this->store_rules);
+            $model = $this->model::create($validated);
+            return (new $this->resource($model))
+                ->response()
+                ->header('Content-Type', 'application/json');
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation Error',
+                'errors' => $e->errors()
+            ], 422);
+        }
+    }
 
     public function update(Request $request, $id)
     {
