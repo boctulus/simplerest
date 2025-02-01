@@ -36,7 +36,8 @@ class __CONTROLLER_NAME__ extends Controller
             return new $this->resource($model);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Resource not found'
+                'message' => 'Resource not found',
+                'id' => $id
             ], 404);
         }
     }
@@ -48,7 +49,8 @@ class __CONTROLLER_NAME__ extends Controller
             return new $this->resource($model);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Resource not found'
+                'message' => 'Resource not found',
+                'id' => $id
             ], 404);
         }
     }
@@ -61,7 +63,8 @@ class __CONTROLLER_NAME__ extends Controller
             return response()->noContent();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
-                'message' => 'Resource not found'
+                'message' => 'Resource not found',
+                'id' => $id
             ], 404);
         }
     }
