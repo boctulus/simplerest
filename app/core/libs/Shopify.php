@@ -229,7 +229,7 @@ class Shopify
                 $endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks/{$id}.json";
 
                 $res = consume_api($endpoint, 'DELETE');
-                dd($res, $shop);
+                // dd($res, $shop);
             }
         }
     }

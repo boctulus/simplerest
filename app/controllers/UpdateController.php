@@ -49,13 +49,13 @@ class UpdateController extends ConsoleController
                 throw new \Exception ("Class '$class_name' doesn't exist in $file");
             } 
 
-            StdOut::pprint("~~~ Executing batch $file", true);
+            StdOut::print("~~~ Executing batch $file", true);
 
             $update = new $class_name();
             $ok = $update->run();
 
             if (!$ok){
-                StdOut::pprint("[ Error ] Batch $file exited with error", true);
+                StdOut::print("[ Error ] Batch $file exited with error", true);
                 exit;
             }
 
@@ -184,7 +184,7 @@ class UpdateController extends ConsoleController
             $batches_completed = glob($completed_path . '*.php');
 
             if (count($batches) != 0 && count($batches_completed) < count($batches)){
-                StdOut::pprint("There are pending batches for update $last_ver_in_dir");
+                StdOut::print("There are pending batches for update $last_ver_in_dir");
                 exit(1);
             } else {
                 d($last_ver_in_dir, "Pending to install");

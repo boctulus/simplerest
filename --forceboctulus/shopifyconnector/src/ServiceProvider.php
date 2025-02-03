@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\packages;
+namespace simplerest\providers;
 
 class __NAME__ 
 {

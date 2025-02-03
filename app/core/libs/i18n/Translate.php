@@ -267,7 +267,7 @@ class Translate
 
                 $fp = fopen($po_path, 'w');
 
-                StdOut::pprint("Generating $po_path");
+                StdOut::print("Generating $po_path");
 
                 $header = <<<HEADER
                 msgstr\t"Project-Id-Version: SimpleRest Translations 0.0.1\\n"
@@ -300,10 +300,10 @@ class Translate
                 fclose($fp);    
 
                 if ($include_mo){
-                    StdOut::pprint("Compiling to $mo_path");
+                    StdOut::print("Compiling to $mo_path");
                     exec("msgfmt $po_path -o $mo_path", $output, $exit_code);
-                    StdOut::pprint("Compilation to $mo_path " . ($exit_code === 0 ? '-- ok' : '-- error'));
-                    StdOut::pprint('');
+                    StdOut::print("Compilation to $mo_path " . ($exit_code === 0 ? '-- ok' : '-- error'));
+                    StdOut::print('');
                 }
             }
         } 
@@ -318,7 +318,7 @@ class Translate
             $php_pot = [ $locale_path . "$text_domain.pot.php" ];
 
             if (!file_exists($php_pot[0])){
-                StdOut::pprint("File '$text_domain.pot.php' not found");
+                StdOut::print("File '$text_domain.pot.php' not found");
                 exit;
             }
         } else {
@@ -326,7 +326,7 @@ class Translate
         }
 
         if (empty($php_pot)){
-            StdOut::pprint("No *.pot.php files found");
+            StdOut::print("No *.pot.php files found");
             exit;
         }
         
@@ -346,7 +346,7 @@ class Translate
                     $defs = include $pp;
 
                     if (!file_exists($filename)){
-                        StdOut::pprint("Creando archivo $pot_domain.php en $dir");
+                        StdOut::print("Creando archivo $pot_domain.php en $dir");
 
                         $p_defs = [];
                         foreach ($defs as $def){
@@ -369,7 +369,7 @@ class Translate
                                 $current_defs[$def] = "";
                             }
                             
-                            StdOut::pprint("Actualizando $filename");
+                            StdOut::print("Actualizando $filename");
                             Files::varExport($current_defs, $filename);
                         }
                     }

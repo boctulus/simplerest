@@ -334,7 +334,7 @@ class GoogleDrive
 
             // Cada 10 downloads, hago una pausa cada 33 downloads
             if ($downloads_in_a_row % 33 === 0 && $downloads_in_a_row % 99 !== 0){
-                StdOut::pprint("Taking a nap ...");
+                StdOut::print("Taking a nap ...");
 
                 sleep(60 * rand(12, 15));
                 usleep(rand(500000, 1000000));

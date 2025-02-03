@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\packages;
+namespace simplerest\providers;
 
-class __NAME__ 
+class ShopifyConnector 
 {
     /**
      * Bootstrap the application services.
