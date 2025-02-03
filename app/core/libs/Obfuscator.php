@@ -30,7 +30,7 @@ class Obfuscator
         Files::delTree($_dst);
         Files::delTree("$tmp/obsfuscated");
 
-        StdOut::pprint("CLEARED *************************");
+        StdOut::print("CLEARED *************************");
 
         static::$cleared[] = $_dst;
     }

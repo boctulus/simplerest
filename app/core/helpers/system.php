@@ -72,7 +72,7 @@ function long_run(){
 */
 function nap($time, $echo = false){
 	if ($echo){
-		StdOut::pprint("Taking a nap of $time seconds");
+		StdOut::print("Taking a nap of $time seconds");
 	}
 
 	if (!is_numeric($time)){

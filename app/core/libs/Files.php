@@ -804,7 +804,7 @@ class Files
 			$file_exists = file_exists($dst);
 
 			if ($file_exists){
-				StdOut::pprint("File $dst already exists");
+				StdOut::print("File $dst already exists");
 				return;
 			}
 		}
@@ -834,12 +834,12 @@ class Files
 				if (!@rename($dst, $bk_dir_path . DIRECTORY_SEPARATOR . $filename)){
 					throw new \Exception("It was not possible to move $ori to $bk_dir_path");
 				} else {
-					StdOut::pprint("File $dst was backed up > $bk_dir_path --ok");
+					StdOut::print("File $dst was backed up > $bk_dir_path --ok");
 				}
 			}
 		}		
 		
-        StdOut::pprint("Copying $ori > $dst");
+        StdOut::print("Copying $ori > $dst");
 
         if (!$simulate){
 			$callable = $callable ?? static::$callable;
@@ -863,9 +863,9 @@ class Files
         }       
 
         // if ($ok){
-        //     StdOut::pprint("-- ok", true);
+        //     StdOut::print("-- ok", true);
         // } else {
-        //     StdOut::pprint("-- FAILED !", true);
+        //     StdOut::print("-- FAILED !", true);
         // }
 
         return $ok;
@@ -1024,7 +1024,7 @@ class Files
 					
 					foreach ($except_dirs as $ix => $e){
 						if (Strings::startsWith($e, $full_path)){
-							StdOut::pprint("Skiping $file");
+							StdOut::print("Skiping $file");
 							continue 2;
 						}
 					}
@@ -1589,10 +1589,20 @@ class Files
 	static function getContent(string $path, $base_url = null) 
 	{
 		if (Url::validate($path)) {
-			$cli = new ApiClient($path);
-			$cli->setBinary()
-			->withoutStrictSSL();
-			return $cli->get()->getDataOrFail();
+			if (function_exists('curl_init')){
+				$cli = new ApiClient($path);
+				$cli->setBinary()
+				->withoutStrictSSL();
+				return $cli->get()->getDataOrFail();
+			} else {
+				$content = file_get_contents($path);
+
+				if ($content === false){
+					throw new \InvalidArgumentException("URL '$path' can not be read");
+				}
+
+				return $content;
+			}
 		}
 		
 		if ($base_url !== null && !Files::isAbsolutePath($path)) {
@@ -1818,7 +1828,7 @@ class Files
 	
 				if ($content !== $updatedContent) {
 					file_put_contents($file, $updatedContent);
-					StdOut::pprint("Replaced in file: $file");
+					StdOut::print("Replaced in file: $file");
 				}
 			} elseif (is_dir($file)) {
 				static::searchAndReplaceInFiles($file, $filePattern, $searchString, $replaceString);

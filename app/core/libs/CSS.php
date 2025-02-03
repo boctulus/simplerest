@@ -222,10 +222,10 @@ class CSS
 
         $rules = [];
         foreach ($files as $path){
-            Stdout::pprint("Processing $path ...");
+            StdOut::print("Processing $path ...");
 
             $css    = static::beautifier($path);
-            Stdout::pprint("Beautification done");
+            StdOut::print("Beautification done");
 
             $_rules = Strings::lines($css, true);
                         
