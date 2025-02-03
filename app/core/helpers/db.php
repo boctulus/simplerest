@@ -577,7 +577,7 @@ function is_mul_rel(string $t1, string $t2, ?string $relation_str = null ,?strin
             return false;  
 
         default:
-            StdOut::pprint("[ Warning ] Unknow or ambiguous relationship for $tenant_id:$t1~$t2 !!!");
+            StdOut::print("[ Warning ] Unknow or ambiguous relationship for $tenant_id:$t1~$t2 !!!");
     }
 }
 
@@ -1081,7 +1081,7 @@ function process_sql_file(string $path, string $delimeter = ';', bool $stop_if_e
             continue;
         }
 
-        StdOut::pprint('SENTENCE : ' . $sentence);
+        StdOut::print('SENTENCE : ' . $sentence);
 
         try {
             $ok = DB::statement($sentence);

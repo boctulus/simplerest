@@ -1,0 +1,6 @@
+{
+    "name": "boctulus/shopifyconnector",
+    "description": "Package ShopifyConnector by boctulus",
+    "type": "library",
+    "require": {}
+}

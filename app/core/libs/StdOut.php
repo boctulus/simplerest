@@ -21,10 +21,10 @@ class StdOut
     * @param bool $save Indica si debe guardarse en el archivo configurado
     * @return void
     */
-    static function pprint($v, bool $additional_carriage_return = false, $save = false){
+    static function print($v, bool $additional_carriage_return = false, $save = false){
         if (static::$path !== null){
             ob_start();
-            dd($v, null, $additional_carriage_return);
+            VarDump::dd($v, null, $additional_carriage_return);
             $content = ob_get_contents();
             ob_end_clean();
 
@@ -38,8 +38,24 @@ class StdOut
         }
 
         if (static::$render){
-            dd($v, null, $additional_carriage_return);
+            VarDump::dd($v, null, $additional_carriage_return);
         }
+    }
+
+    static function info($v, bool $additional_carriage_return = false, $save = false){
+        static::print($v, $additional_carriage_return, $save);
+    }
+
+    static function success($v, bool $additional_carriage_return = false, $save = false){
+        static::print($v, $additional_carriage_return, $save);
+    }
+
+    static function warning($v, bool $additional_carriage_return = false){
+        static::print($v, $additional_carriage_return);
+    }
+
+    static function error($v, bool $additional_carriage_return = false){
+        static::print($v, $additional_carriage_return);
     }
 
     /**

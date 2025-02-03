@@ -6,6 +6,9 @@ if (!defined('ROOT_PATH'))
 if (!defined('CONFIG_PATH'))
 	define('CONFIG_PATH', ROOT_PATH  . 'config' . DIRECTORY_SEPARATOR);
 
+if (!defined('PACKAGES_PATH'))
+	define('PACKAGES_PATH', ROOT_PATH  . 'packages' . DIRECTORY_SEPARATOR);    
+
 if (!defined('DOCS_PATH'))
 	define('DOCS_PATH', ROOT_PATH  . 'docs' . DIRECTORY_SEPARATOR);
 

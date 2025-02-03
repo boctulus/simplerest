@@ -174,11 +174,11 @@ class MigrationsCommand implements ICommand
                     ->create($data);
 
                     if ($ok){
-                        StdOut::pprint("Migration file '$filename' was marked as ignored");
+                        StdOut::print("Migration file '$filename' was marked as ignored");
                         return;
                     }
 
-                    StdOut::pprint("Error trying to ignore file '$filename'd");
+                    StdOut::print("Error trying to ignore file '$filename'd");
 
                     return;
                 }
@@ -200,7 +200,7 @@ class MigrationsCommand implements ICommand
             $path_mg = MIGRATIONS_PATH;
 
             if (!file_exists(MIGRATIONS_PATH . $filename_mg)){
-                StdOut::pprint("$filename_mg not found");
+                StdOut::print("$filename_mg not found");
             }
 
             $full_path_mg = str_replace('//', '/', $path_mg . '/'. $filename_mg);
@@ -212,7 +212,7 @@ class MigrationsCommand implements ICommand
                 throw new \Exception ("Class '$class_name_mg' doesn't exist in $filename_mg");
             }
 
-            StdOut::pprint("Migrating '$filename_mg'\r\n");
+            StdOut::print("Migrating '$filename_mg'\r\n");
 
             try {
                 DB::disableForeignKeyConstraints();
@@ -280,7 +280,7 @@ class MigrationsCommand implements ICommand
                 throw new \Exception ("Class '$class_name' doesn't exist in $filename");
             }
 
-            StdOut::pprint("Migrating '$filename'\r\n");
+            StdOut::print("Migrating '$filename'\r\n");
 
             if (!$simulation){
                 if (!empty($to_db)){
@@ -308,13 +308,13 @@ class MigrationsCommand implements ICommand
                 }
 
             } else {
-                StdOut::pprint("*** This is a Simulation ***" . PHP_EOL);
+                StdOut::print("*** This is a Simulation ***" . PHP_EOL);
 
                 $ix++;
                 continue;
             }
             
-            StdOut::pprint("Migrated  '$filename' --ok\r\n");
+            StdOut::print("Migrated  '$filename' --ok\r\n");
             
             /*
                 Main connection restore
@@ -464,18 +464,18 @@ class MigrationsCommand implements ICommand
      
 
                 if (in_array($o, ['--simulate', 'simulate', '--sim', 'simulation', '--simulation'])){
-                    StdOut::pprint("*** This is a Simulation ***" . PHP_EOL);
+                    StdOut::print("*** This is a Simulation ***" . PHP_EOL);
                     $simulate = true;
                 }
             }
         }
 
         if (!isset($to_db)){
-            StdOut::pprint("--to= is not optional\r\n");
+            StdOut::print("--to= is not optional\r\n");
             exit;
         }
 
-        StdOut::pprint("Rolling back up to $steps migrations\r\n");
+        StdOut::print("Rolling back up to $steps migrations\r\n");
 
         if (!isset($filenames)){
             $m = (object) table('migrations');
@@ -510,7 +510,7 @@ class MigrationsCommand implements ICommand
             $full_path = preg_replace('#/+#','/',$full_path);
            
             if (!file_exists($full_path)){
-                StdOut::pprint("File '$full_path' doesn't exist");
+                StdOut::print("File '$full_path' doesn't exist");
                 exit;   
             }
 
@@ -519,14 +519,14 @@ class MigrationsCommand implements ICommand
             $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
 
             if (!class_exists($class_name)){
-                StdOut::pprint("Class '$class_name' doesn't exist in $filename");
+                StdOut::print("Class '$class_name' doesn't exist in $filename");
                 exit;
             }
 
-            StdOut::pprint("Rolling back '$filename'\r\n");
+            StdOut::print("Rolling back '$filename'\r\n");
 
             if (!method_exists($class_name, 'down')){
-                StdOut::pprint("Method down() is not present. Impossible to rollback $filename\r\n");
+                StdOut::print("Method down() is not present. Impossible to rollback $filename\r\n");
                 exit(1);
             }
 
@@ -561,12 +561,12 @@ class MigrationsCommand implements ICommand
                 //dd(DB::getLog()); ///
 
                 if (empty($aff)){
-                    StdOut::pprint("There was an error rolling back '$filename' because it was not found in `migrations` table\r\n");
+                    StdOut::print("There was an error rolling back '$filename' because it was not found in `migrations` table\r\n");
                 }
             }
 
             if (!empty($aff)){
-                StdOut::pprint("Rolled back  '$filename' --ok\r\n");
+                StdOut::print("Rolled back  '$filename' --ok\r\n");
             }            
         }
 
@@ -585,7 +585,7 @@ class MigrationsCommand implements ICommand
         }
 
         if (!isset($to_db)){
-            StdOut::pprint("--to= is not optional\r\n");
+            StdOut::print("--to= is not optional\r\n");
             exit;
         }
 
@@ -602,7 +602,7 @@ class MigrationsCommand implements ICommand
         ->delete();
 
         // Por alguna razon falla el conteo justo con esta tabla
-        StdOut::pprint("$affected entries were cleared from migrations table for database `$to_db`\r\n");
+        StdOut::print("$affected entries were cleared from migrations table for database `$to_db`\r\n");
     }
 
     /*
@@ -670,12 +670,12 @@ class MigrationsCommand implements ICommand
         }
 
         if (!isset($to_db)){
-            StdOut::pprint("--to= is not optional\r\n");
+            StdOut::print("--to= is not optional\r\n");
             exit;
         }
 
         if (!$force){
-            StdOut::pprint("fresh: this method is destructive. " .
+            StdOut::print("fresh: this method is destructive. " .
             (!isset($_f) ? "Every table for '$to_db' will be dropped." : ''). 
             "Please use option --force if you want to procede.\r\n");
             exit;
@@ -723,14 +723,14 @@ class MigrationsCommand implements ICommand
 
             $table = '';
             foreach($tables as $table) {
-                StdOut::pprint("Dropping table '$table'\r\n");
+                StdOut::print("Dropping table '$table'\r\n");
                 $res = DB::statement("DROP TABLE IF EXISTS `$table`;");
                 
                 if ($res){
-                    StdOut::pprint("Dropped table  '$table' --ok\r\n");
+                    StdOut::print("Dropped table  '$table' --ok\r\n");
                     $dropped[] = $table;
                 } else {
-                    StdOut::pprint("Dropped table failure for '$table'\r\n");
+                    StdOut::print("Dropped table failure for '$table'\r\n");
                 }
             } 
 
@@ -741,14 +741,14 @@ class MigrationsCommand implements ICommand
 
                 StdOut::hideResponse();
 
-                StdOut::pprint("Dropping table '$table'\r\n");
+                StdOut::print("Dropping table '$table'\r\n");
                 $res = DB::statement("DROP TABLE IF EXISTS `$table`;");
 
                 if ($res){
-                    StdOut::pprint("Dropped table  '$table' --ok\r\n");
+                    StdOut::print("Dropped table  '$table' --ok\r\n");
                     $dropped[] = $table;
                 } else {
-                    StdOut::pprint("Dropped table failure for '$table'\r\n");
+                    StdOut::print("Dropped table failure for '$table'\r\n");
                 }
             }
 

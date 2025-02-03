@@ -8,7 +8,7 @@ use simplerest\core\libs\Messurements as M;
 use simplerest\core\controllers\Controller;
 use simplerest\core\libs\StdOut;
 
-class ImaginatorTest extends Controller
+class ImaginatorTestController extends Controller
 {
     function __construct()
     {
@@ -145,13 +145,13 @@ class ImaginatorTest extends Controller
         $len                  = M::toInches($l_feets);  // inches
         $w                    = M::toInches($w_feets);  // inches
 
-        // StdOut::pprint($l - $upright_depth, "Max");
+        // StdOut::print($l - $upright_depth, "Max");
 
         // Calculo    
 
         $w_acc = $upright_depth;
 
-        // StdOut::pprint($w_acc, 'w acc');
+        // StdOut::print($w_acc, 'w acc');
 
         // 42 + 60 + 2*42 + 60 + 2*42 + 60 + 2*42 + 60 + 42
 
@@ -160,9 +160,9 @@ class ImaginatorTest extends Controller
             $w_acc += $aisle + ($upright_depth * 2);
             $row_count += 1;
 
-            // // StdOut::pprint("+= $aisle + ($upright_depth * 2)");
-            // // StdOut::pprint($w_acc, 'w acc');
-            // // StdOut::pprint($row_count, 'row count');
+            // // StdOut::print("+= $aisle + ($upright_depth * 2)");
+            // // StdOut::print($w_acc, 'w acc');
+            // // StdOut::print($row_count, 'row count');
         }
     
         if ($w_acc < $w && $w_acc + $aisle + $upright_depth < $w){
@@ -170,12 +170,12 @@ class ImaginatorTest extends Controller
             $row_count++;
         }
 
-        StdOut::pprint(M::toFeetAndInches($w_acc), 'w acc');
-        // StdOut::pprint("$row_count : row count");
+        StdOut::print(M::toFeetAndInches($w_acc), 'w acc');
+        // StdOut::print("$row_count : row count");
 
-        //  StdOut::pprint($h_feets, 'h');
-        //  StdOut::pprint($aisle, 'aisle');
-        //  StdOut::pprint$boxes_per_row, 'boxes per row'
+        //  StdOut::print($h_feets, 'h');
+        //  StdOut::print($aisle, 'aisle');
+        //  StdOut::print$boxes_per_row, 'boxes per row'
 
         $boxes_per_row  = floor($len / $beam_length);
 
