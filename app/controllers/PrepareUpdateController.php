@@ -31,7 +31,7 @@ class PrepareUpdateController extends ConsoleController
     }
 
     function index(){
-        StdOut::pprint("Do you need help? You can copy | zip");
+        StdOut::print("Do you need help? You can copy | zip");
     }
 
     function copy(){

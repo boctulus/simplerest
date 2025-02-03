@@ -77,5 +77,71 @@ class Config
 
         $tempArray = $value;
     }
-    
+
+    /*
+        Agrega a un nodo de un array nuevos elementos
+
+        El agregado es con key numerica.
+
+        Acepta sintaxis "dot" 
+
+        Ej:
+
+        $config = wp_parse_args($config, [
+            'title' => ucfirst($field),
+            'field' => $field,            
+            'cssClasses' => [],
+            'rendererCallback' => $renderer_function
+        ]);
+
+        Config::add('datatable_custom_rows', $config);
+
+        TO-DO
+
+        Tercer paramtro opcional $key = null, permitiria
+        agregar de forma asociativa. 
+        
+        Ej:
+
+        // Aun sin implementar
+        Config::add('db_connections', $array_conn, 'new_conn');
+    */    
+    static function add(string $property, $value)
+    {
+        if (empty(static::$data)) {
+            static::setup();
+        }
+
+        if ($property === '') {
+            if (!is_array(static::$data)) {
+                static::$data = [static::$data];
+            }
+            static::$data[] = $value;
+            return;
+        }
+
+        $keys = explode('.', $property);
+        $lastKey = array_pop($keys);
+
+        $tempArray = &static::$data;
+
+        foreach ($keys as $key) {
+            if (!isset($tempArray[$key])) {
+                $tempArray[$key] = [];
+            }
+            $tempArray = &$tempArray[$key];
+        }
+
+        if (!isset($tempArray[$lastKey])) {
+            $tempArray[$lastKey] = [];
+        }
+
+        $target = &$tempArray[$lastKey];
+
+        if (!is_array($target)) {
+            $target = [$target];
+        }
+
+        $target[] = $value;
+    }
 }

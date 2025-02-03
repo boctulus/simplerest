@@ -3945,7 +3945,7 @@ class DumbController extends Controller
         var_dump(file_exists($full_path), 'EXISTE?');
 
         if (!file_exists($full_path)) {
-            StdOut::pprint("Path '$full_path' does not exist !");
+            StdOut::print("Path '$full_path' does not exist !");
             exit;
         }
     }

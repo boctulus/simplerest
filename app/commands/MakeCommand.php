@@ -301,7 +301,7 @@ class MakeCommand implements ICommand
 
     function any($name, ...$opt){ 
         if (count($opt) == 0){
-            StdOut::pprint("Nothing to do. Please specify action using options.\r\nUse 'make help' for help.\r\n");
+            StdOut::print("Nothing to do. Please specify action using options.\r\nUse 'make help' for help.\r\n");
             exit;
         }
 
@@ -737,18 +737,18 @@ class MakeCommand implements ICommand
         $dest_path = Files::normalize($dest_path);
 
         if ($warn_ignored_file && in_array($dest_path, $this->excluded_files)){
-            StdOut::pprint("[ Skipping ] '$dest_path'. File '$filename' was ignored\r\n"); 
+            StdOut::print("[ Skipping ] '$dest_path'. File '$filename' was ignored\r\n"); 
             return true; 
         } 
         
         if (file_exists($dest_path)){
             if ($warn_file_existance && !in_array('-f', $opt) && !in_array('--force', $opt)){
-                StdOut::pprint("[ Skipping ] '$dest_path'. File '$filename' already exists. Use -f or --force if you want to override.\r\n");
+                StdOut::print("[ Skipping ] '$dest_path'. File '$filename' already exists. Use -f or --force if you want to override.\r\n");
                 return true;
             }
             
             if (!is_writable($dest_path)){
-                StdOut::pprint("[ Error ] '$dest_path'. File '$filename' is not writtable. Please check permissions.\r\n");
+                StdOut::print("[ Error ] '$dest_path'. File '$filename' is not writtable. Please check permissions.\r\n");
                 return true;
             }
         }
@@ -767,7 +767,7 @@ class MakeCommand implements ICommand
         }  
     
         if ($remove && !file_exists($dest_path)){
-            StdOut::pprint("[ Error ] '$dest_path'. File '$filename' doesn't exists.\r\n");
+            StdOut::print("[ Error ] '$dest_path'. File '$filename' doesn't exists.\r\n");
             exit; //
         }
 
@@ -793,7 +793,7 @@ class MakeCommand implements ICommand
             if (!$ok) {
                 throw new \Exception("Delete of $dest_path has failed");
             } else {
-                StdOut::pprint("$dest_path was deleted\r\n");
+                StdOut::print("$dest_path was deleted\r\n");
             }
         } else {
             $ok = (bool) file_put_contents($dest_path, $file);
@@ -801,7 +801,7 @@ class MakeCommand implements ICommand
             if (!$ok) {
                 throw new \Exception("Writing of $dest_path has failed");
             } else {
-                StdOut::pprint("$dest_path was generated\r\n");
+                StdOut::print("$dest_path was generated\r\n");
             }     
         }
 
@@ -955,7 +955,7 @@ class MakeCommand implements ICommand
           '$relationships = ' . var_export($relationships, true) . ';' . PHP_EOL
         , false);
 
-        #StdOut::pprint("Please run 'php com make rel_scan --from:$db_conn_id'");
+        #StdOut::print("Please run 'php com make rel_scan --from:$db_conn_id'");
     }
 
     function relation_scan(...$opt)
@@ -1061,7 +1061,7 @@ class MakeCommand implements ICommand
     function db_scan(...$opt){
        $params = implode(' ',$opt);
 
-        StdOut::pprint(
+        StdOut::print(
             shell_exec("php com make pivot_scan $params && php com make relation_scan $params")
         );
     }
@@ -1135,7 +1135,7 @@ class MakeCommand implements ICommand
         }
 
         if (!Schema::hasTable($name)){
-            StdOut::pprint("Table '$name' not found. It's case sensitive\r\n");
+            StdOut::print("Table '$name' not found. It's case sensitive\r\n");
             return;
         }
 
@@ -1189,9 +1189,9 @@ class MakeCommand implements ICommand
             $fields = DB::select("SHOW COLUMNS FROM $db.{$_table}", [], 'ASSOC', $from_db);
         } catch (\Exception $e) {
             $trace = __METHOD__ . '() - line: ' . __LINE__;
-            StdOut::pprint("[ SQL Error ] ". DB::getLog(). "\r\n");
-            StdOut::pprint($e->getMessage().  "\r\n");
-            StdOut::pprint("Trace: $trace");
+            StdOut::print("[ SQL Error ] ". DB::getLog(). "\r\n");
+            StdOut::print($e->getMessage().  "\r\n");
+            StdOut::print("Trace: $trace");
             exit;
         }
         
@@ -1468,8 +1468,8 @@ class MakeCommand implements ICommand
         try {
             $fields = DB::select("SHOW COLUMNS FROM $db.{$this->snake_case}");
         } catch (\Exception $e) {
-            StdOut::pprint('[ SQL Error ] '. DB::getLog(). "\r\n");
-            StdOut::pprint($e->getMessage().  "\r\n");
+            StdOut::print('[ SQL Error ] '. DB::getLog(). "\r\n");
+            StdOut::print($e->getMessage().  "\r\n");
             throw $e;
         }
         
@@ -1939,7 +1939,7 @@ class MakeCommand implements ICommand
                             $onRestriction = 'SET DEFAULT';
                             break;                    
                         default:
-                            StdOut::pprint("\r\nInvalid action '$onRestriction' for ON UPDATE / ON DELETE");
+                            StdOut::print("\r\nInvalid action '$onRestriction' for ON UPDATE / ON DELETE");
                             exit;
                     }
 
@@ -2138,7 +2138,7 @@ class MakeCommand implements ICommand
         if (isset($cat)){
             $up_rep = Strings::tabulate($up_before, 1, 0);
             $_file  = str_replace('### UP', $up_rep, $file_before);
-            StdOut::pprint(PHP_EOL . $_file);
+            StdOut::print(PHP_EOL . $_file);
         }
 
         if (!isset($dont)){
@@ -2367,7 +2367,7 @@ class MakeCommand implements ICommand
         }
 
         if (empty($dir)){
-            StdOut::pprint("Please specify path with --dir=");
+            StdOut::print("Please specify path with --dir=");
             exit;
         }
 
@@ -2419,7 +2419,7 @@ class MakeCommand implements ICommand
             if (!$ok) {
                 throw new \Exception("Delete of $dir has failed");
             } else {
-                StdOut::pprint("Directory `$dir` was deleted\r\n");
+                StdOut::print("Directory `$dir` was deleted\r\n");
             }
 
             return;
@@ -2455,5 +2455,82 @@ class MakeCommand implements ICommand
 
         $this->generic($name, $prefix, $subfix, COMMANDS_PATH, $template_path, '', ...$opt);
     }
+
+    protected function package(string $packageName, string $author, ?string $destination = null): void
+    {
+        // Normalizar nombres a kebab-case para los directorios
+        $authorSlug = strtolower(str_replace(' ', '-', preg_replace('/[^a-zA-Z0-9]+/', '-', $author)));
+        $packageSlug = strtolower(str_replace(' ', '-', preg_replace('/[^a-zA-Z0-9]+/', '-', $packageName)));
+    
+        if (empty($authorSlug) || empty($packageSlug)) {
+            StdOut::error("Author and package name are required.");
+            return;
+        }
+    
+        $basePath = $destination ?: PACKAGES_PATH;
+        $packagePath = $basePath . "{$authorSlug}/{$packageSlug}/";
+    
+        if (file_exists($packagePath)) {
+            StdOut::warning("Package already exists at: $packagePath");
+            return;
+        }
+    
+        $directories = ['src', 'config', 'tests', 'resources'];
+        foreach ($directories as $dir) {
+            $path = $packagePath . $dir;
+            if (!mkdir($path, 0755, true) && !is_dir($path)) {
+                StdOut::error("Failed to create directory: $path");
+                return;
+            }
+        }
+    
+        $composerJsonPath = $packagePath . 'composer.json';
+        if (!file_exists($composerJsonPath)) {
+            $composerContent = json_encode([
+                "name" => "{$authorSlug}/{$packageSlug}",
+                "description" => "Package {$packageName} by {$author}",
+                "type" => "library",
+                "require" => new stdClass()
+            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    
+            file_put_contents($composerJsonPath, $composerContent);
+            StdOut::info("composer.json created at: $composerJsonPath");
+        }
+    
+        // Generar namespace basado en autor y nombre del package (PascalCase)
+        $namespace = ucfirst(self::toPascalCase($authorSlug)) . "\\" . ucfirst(self::toPascalCase($packageSlug));
+    
+        $templateFiles = [
+            self::SERVICE_PROVIDER_TEMPLATE => 'src/ServiceProvider.php',
+            self::INTERFACE_TEMPLATE => 'src/ExampleInterface.php',
+        ];
+    
+        foreach ($templateFiles as $template => $destinationPath) {
+            $destinationFile = $packagePath . $destinationPath;
+            if (file_exists($template)) {
+                $content = file_get_contents($template);
+                if ($content !== false) {
+                    // Reemplazar placeholders __NAME__ y __NAMESPACE__
+                    $updatedContent = str_replace(['__NAME__', '__NAMESPACE__'], [ucfirst($packageName), $namespace], $content);
+                    file_put_contents($destinationFile, $updatedContent);
+                    StdOut::info("Copied and updated template to: $destinationFile");
+                } else {
+                    StdOut::warning("Failed to read template: $template");
+                }
+            }
+        }
+    
+        StdOut::success("Package created successfully at: $packagePath");
+    }
+    
+    /**
+     * Helper to convert kebab-case or snake_case to PascalCase
+     */
+    protected static function toPascalCase(string $value): string
+    {
+        return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $value)));
+    }
+    
+
     
 } 

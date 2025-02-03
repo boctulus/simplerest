@@ -49,7 +49,7 @@ trait ShopifyWooCommerceAdaptorTrait
             En Shopify serían active, draft, archived
         */
 
-        $a['status'] = $this->convertStatusFromShopifyToWooCommerce($a['status']);
+        $a['status'] = $this->convertProductStatusFromShopifyToWooCommerce($a['status']);
         
         /*
             tags
@@ -175,7 +175,7 @@ trait ShopifyWooCommerceAdaptorTrait
 		En WooCommerce puede ser publish, draft, pending
 		En Shopify serían active, draft, archived
 	*/
-    function convertStatusFromShopifyToWooCommerce(string $status, bool $strict = false){
+    function convertProductStatusFromShopifyToWooCommerce(string $status, bool $strict = false){
         $arr = [
             'active'   => 'publish',
             'archived' => 'draft',
@@ -193,7 +193,7 @@ trait ShopifyWooCommerceAdaptorTrait
         return $status;
     }
 
-    function convertStatusFromWooCommerceToShopify(string $status, bool $strict = false) {
+    function convertProductStatusFromWooCommerceToShopify(string $status, bool $strict = false) {
         $arr = [
             'publish' => 'active',
             'draft'   => 'draft', 

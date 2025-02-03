@@ -12760,31 +12760,31 @@ La clase StdOut ofrecer algo muy similar al helper dd() pero no admite un ¨tít
 
 	static function hideResponse()
 	static function showResponse()
-	static function pprint($v, bool $additional_carriage_return = false))
+	static function print($v, bool $additional_carriage_return = false))
 
 Ej:
 
-	StdOut::pprint("Algún dato");
+	StdOut::print("Algún dato");
 
 Y para apagar / encender la respuesta,...
 
 	StdOut::hideResponse();
-	StdOut::pprint("Algún dato");	
-	StdOut::pprint("Otro dato");	
+	StdOut::print("Algún dato");	
+	StdOut::print("Otro dato");	
 
 	// ...
 
 	StdOut::showResponse();
 
-También es posible re-dirigir la salida de pprint() a un archivo.
+También es posible re-dirigir la salida de print() a un archivo.
 
 	StdOut::toFile($path);
-	StdOut::pprint($data);
+	StdOut::print($data);
 
 O directamente a /logs
 
 	StdOut::toLog();
-	StdOut::pprint($data);
+	StdOut::print($data);
 
 
 Ejemplo practico:
@@ -12805,7 +12805,7 @@ En un controlador podria tener algo como:
 
 y en algun lugar dentro de MigrationsCommand:
 
-	StdOut::pprint("Error trying to ignore file '$filename'd");
+	StdOut::print("Error trying to ignore file '$filename'd");
 	
 
 # Formateo de salida
@@ -19521,42 +19521,202 @@ Route::resource('carts', App\Http\Controllers\CartController::class);
 
 # Generacion de colecciones de Postman
 
-Ej:
-	PostmanGenerator::setCollectionName('LaravelShopify');
+Manual de PostmanGenerator
 
-	PostmanGenerator::setDestPath($this->laravel_project_path . DIRECTORY_SEPARATOR . 'PostmanCollections');
+Esta clase permite generar colecciones de Postman de manera programática y flexible para tus APIs. 
 
-	//PostmanGenerator::setBaseUrl('http://127.0.0.1:8889'); 
-	PostmanGenerator::setBaseUrl('{{base_url}}'); 
+## 🚀 Inicio Rápido
 
-	PostmanGenerator::setSegment('api');
+```php
+// Configuración básica
+PostmanGenerator::setCollectionName('MiAPI');
+PostmanGenerator::setDestPath('./collections');
+PostmanGenerator::setBaseUrl('{{base_url}}');
+PostmanGenerator::setSegment('api');
+PostmanGenerator::setToken('{{token}}');
 
-	PostmanGenerator::setToken('{{token}}');
+// Agregar endpoints
+PostmanGenerator::addEndpoints([
+    'users',
+    'products',
+    'orders'
+], [
+    PostmanGenerator::GET,
+    PostmanGenerator::POST,
+    PostmanGenerator::PATCH,
+    PostmanGenerator::DELETE
+]);
 
-	PostmanGenerator::addEndpoints([  
-		'users',                      
-		'carts',
-		'cart_items',
-		'products',
-		'addresses',
-		'orders',
-		'order_items',
-		'favorites',
-		'price_rules',
-		'inventory'        
-	], [
-		PostmanGenerator::GET
-	]);
+// Generar la colección
+PostmanGenerator::generate();
+```
 
-	// PostmanGenerator::addEndpoints([
-	//     'products',
-	// ], [
-	//     PostmanGenerator::GET,
-	//     PostmanGenerator::POST,
-	//     PostmanGenerator::PATCH,
-	//     PostmanGenerator::DELETE,
-	// ], true);
+## 📚 Métodos Principales
 
-	$ok = PostmanGenerator::generate();
+### Configuración
 
-	dd($ok, 'Generated?');
+```php
+// Nombre de la colección
+PostmanGenerator::setCollectionName('MiAPI');
+
+// Ruta donde se guardará el archivo
+PostmanGenerator::setDestPath('./collections');
+
+// URL base (puede usar variables de entorno de Postman)
+PostmanGenerator::setBaseUrl('{{base_url}}');
+// o URL directa
+PostmanGenerator::setBaseUrl('http://api.midominio.com');
+
+// Puerto (opcional)
+PostmanGenerator::setPort('8080');
+
+// Segmento base de la API (ej: 'api' para /api/users)
+PostmanGenerator::setSegment('api');
+
+// Token para autenticación
+PostmanGenerator::setToken('{{token}}');
+```
+
+### Agregar Endpoints
+
+#### Método Tradicional
+```php
+// Agregar múltiples endpoints con múltiples métodos HTTP
+PostmanGenerator::addEndpoints([
+    'users',
+    'products'
+], [
+    PostmanGenerator::GET,
+    PostmanGenerator::POST
+]);
+```
+
+#### Método Personalizado
+```php
+// Agregar un endpoint específico con configuración personalizada
+PostmanGenerator::addCustomEndpoint(
+    resource: 'login',          // Nombre del endpoint
+    method: PostmanGenerator::POST,   // Método HTTP
+    group: 'auth',              // Carpeta (opcional)
+    body: [                     // Cuerpo de la petición (opcional)
+        'email' => 'user@example.com',
+        'password' => '123456'
+    ]
+);
+```
+
+### Endpoints de Autenticación Predefinidos
+
+```php
+// Agregar endpoint de registro
+PostmanGenerator::registerUser();
+
+// Agregar endpoint de login
+PostmanGenerator::loginUser();
+
+// También puedes personalizar los campos
+PostmanGenerator::registerUser([
+    'username',
+    'email',
+    'password'
+]);
+```
+
+## 📁 Estructura Generada
+
+La colección generada tendrá esta estructura:
+
+```
+MiAPI
+├── auth/
+│   ├── POST register
+│   └── POST login
+├── users/
+│   ├── GET users
+│   ├── POST users
+│   ├── PATCH users
+│   └── DELETE users
+└── products/
+    ├── GET products
+    ├── POST products
+    ├── PATCH products
+    └── DELETE products
+```
+
+## 🔥 Ejemplos de Uso
+
+### API Básica
+```php
+PostmanGenerator::setCollectionName('API Básica');
+PostmanGenerator::setDestPath('./collections');
+PostmanGenerator::setBaseUrl('{{base_url}}');
+PostmanGenerator::setSegment('api');
+
+PostmanGenerator::addEndpoints(['users', 'products'], [
+    PostmanGenerator::GET,
+    PostmanGenerator::POST
+]);
+
+PostmanGenerator::generate();
+```
+
+### API con Autenticación
+```php
+PostmanGenerator::setCollectionName('API con Auth');
+PostmanGenerator::setDestPath('./collections');
+PostmanGenerator::setBaseUrl('{{base_url}}');
+PostmanGenerator::setSegment('api');
+PostmanGenerator::setToken('{{token}}');
+
+// Agregar endpoints de auth
+PostmanGenerator::registerUser();
+PostmanGenerator::loginUser();
+
+// Agregar endpoints protegidos
+PostmanGenerator::addEndpoints(['users', 'products'], [
+    PostmanGenerator::GET,
+    PostmanGenerator::POST,
+    PostmanGenerator::PATCH,
+    PostmanGenerator::DELETE
+]);
+
+PostmanGenerator::generate();
+```
+
+### API con Endpoints Personalizados
+```php
+PostmanGenerator::setCollectionName('API Personalizada');
+PostmanGenerator::setDestPath('./collections');
+PostmanGenerator::setBaseUrl('{{base_url}}');
+PostmanGenerator::setSegment('api');
+
+// Endpoint personalizado
+PostmanGenerator::addCustomEndpoint(
+    'verify-email',
+    PostmanGenerator::POST,
+    'auth',
+    ['token' => 'verification-token']
+);
+
+// Endpoints regulares
+PostmanGenerator::addEndpoints(['users'], [
+    PostmanGenerator::GET,
+    PostmanGenerator::POST
+]);
+
+PostmanGenerator::generate();
+```
+
+## 📝 Notas
+
+- Los endpoints se agrupan automáticamente en carpetas según su recurso
+- Puedes usar variables de entorno de Postman en la URL base y token
+- Los endpoints personalizados pueden tener cuerpo y headers específicos
+- La colección se guarda en formato JSON compatible con Postman
+
+## 🤝 Contribuir
+
+Para contribuir a esta clase:
+1. Asegúrate de seguir las convenciones de código existentes
+2. Documenta cualquier nuevo método o funcionalidad
+3. Actualiza este manual si agregas nuevas características
