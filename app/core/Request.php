@@ -222,6 +222,11 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
         return $out;
     }
 
+    function isAjax(): bool
+    {
+        return static::header('X-Requested-With') == 'XMLHttpRequest';
+    }
+
     function getAuth(){
         $token = $this->shiftQuery('token'); 
 
