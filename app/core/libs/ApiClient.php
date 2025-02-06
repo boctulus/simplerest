@@ -83,7 +83,7 @@ class ApiClient
     protected $res_headers;
     protected $auto_decode;
     protected $status;
-    protected $ignore_status_codes = false;
+    protected $ignore_status_codes = [];
     protected $error;
 
     // Response Info
