@@ -115,3 +115,4 @@
 [2025-02-03 12:48:56]	0.8.12	CellRenderer funcional!
 [2025-02-03 12:49:54]	0.8.12	Automatic update
 [2025-02-05 08:15:47]	0.8.12	Request::isAjax()
+[2025-02-06 11:48:32]	0.8.12	Various fixes ApiClient and ApiClientFallback

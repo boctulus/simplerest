@@ -50,7 +50,7 @@ class ApiClientFallback
     protected $res_headers;
     protected $auto_decode;
     protected $status;
-    protected $ignore_status_codes = false;
+    protected $ignore_status_codes = [];
     protected $error;
 
     // Response Info
@@ -126,9 +126,10 @@ class ApiClientFallback
         return $this;
     }
 
-    protected function curlRequest($url, $http_verb, $data, $headers, $options)
+    protected function curlRequest($url, $http_verb, $data, $headers = null, $options = null)
     {
-        curl_setopt_array($this->curl, [
+        // Configuración base para cURL
+        $curlOptions = [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
@@ -138,12 +139,23 @@ class ApiClientFallback
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => $http_verb,
             CURLOPT_POSTFIELDS => $data,
-            CURLOPT_HTTPHEADER => $this->buildHeaders($headers),
-            CURLOPT_HEADERFUNCTION => function($curl, $header) use (&$resHeaders) {
+            CURLOPT_HEADERFUNCTION => function ($curl, $header) use (&$resHeaders) {
                 $this->parseHeader($header);
                 return strlen($header);
             }
-        ] + $options);
+        ];
+
+        // Agregar headers si no son null
+        if ($headers !== null) {
+            $curlOptions[CURLOPT_HTTPHEADER] = $this->buildHeaders($headers);
+        }
+
+        // Combinar opciones adicionales si existen
+        if (is_array($options)) {
+            $curlOptions += $options;
+        }
+
+        curl_setopt_array($this->curl, $curlOptions);
 
         $response = curl_exec($this->curl);
         $this->error = curl_error($this->curl);
@@ -153,6 +165,7 @@ class ApiClientFallback
 
         return $response;
     }
+
 
     protected function fallbackExec($url, $http_verb, $data, $headers, $options)
     {
@@ -314,7 +327,7 @@ class ApiClientFallback
             if ($res !== null){
                 if (is_string($res)){
                     //dd('DECODING...');
-                    if (is_array($res) && is_array($res['data']) && Strings::isJSON($res)){
+                    if (Strings::isJSON($res)){
                         $data = json_decode($res['data'], true); 
 
                         if ($data !== null){
