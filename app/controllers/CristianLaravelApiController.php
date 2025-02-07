@@ -29,7 +29,7 @@ use simplerest\libs\LaravelApiGenerator;
     Route::resource('carts', App\Http\Controllers\CartController::class);
     ...
 */
-class GuillermoLaravelApiController extends Controller
+class CristianLaravelApiController extends Controller
 {
     protected $conn_id = 'laravelshopify';
     protected $laravel_project_path = 'D:/laragon/www/laravel-shopify';
@@ -45,12 +45,27 @@ class GuillermoLaravelApiController extends Controller
         LaravelApiGenerator::setControllerDestPath($controllers_path);
         LaravelApiGenerator::setResourceDestPath($resources_path);
         
-        LaravelApiGenerator::writeFactories(false);
-        LaravelApiGenerator::writeSeeders(false);
-        LaravelApiGenerator::writeModels(true);
+        // LaravelApiGenerator::writeFactories(false);
+        // LaravelApiGenerator::writeSeeders(false);
+        // LaravelApiGenerator::writeModels(true);
         LaravelApiGenerator::writeControllers(true);
         LaravelApiGenerator::writeResources(true);
         LaravelApiGenerator::writeRoutes(true);
+
+        LaravelApiGenerator::setControllerBlacklist([
+            'Products',
+            'Address',
+            'Cart',
+            'Order',
+            'Favorite',
+            'PriceRule',
+            'User'
+            // ...
+        ]);
+
+        LaravelApiGenerator::setControllerWhitelist([
+            'OrderStatus'       
+        ]);
 
         LaravelApiGenerator::run();
     }
@@ -88,7 +103,8 @@ class GuillermoLaravelApiController extends Controller
             'order_items',
             'favorites',
             'price_rules',
-            'inventory'        
+            'inventory',
+            'order_status'        
         ], [
             PostmanGenerator::GET,
             PostmanGenerator::POST,

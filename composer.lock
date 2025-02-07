@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c72007ac5d1c93c79ca0b8087ee5f498",
+    "content-hash": "135e2e3ef84c6ddf9c4932f09ad5182a",
     "packages": [
         {
             "name": "boctulus/api-client",
@@ -24,6 +24,21 @@
                 }
             },
             "description": "Portable API Client",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "boctulus/shopifyconnector",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "packages/boctulus/shopifyconnector",
+                "reference": "a726ef40720093c760db376445887b3389adc39b"
+            },
+            "type": "library",
+            "description": "Package ShopifyConnector by boctulus",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -2439,7 +2454,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "boctulus/api-client": 20
+        "boctulus/api-client": 20,
+        "boctulus/shopifyconnector": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

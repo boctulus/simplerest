@@ -19,7 +19,8 @@
       "php":">=7.4",
       "firebase/php-jwt": "^6.0",
       "vlucas/phpdotenv": "^5.2",
-      "boctulus/api-client": "@dev"
+      "boctulus/api-client": "@dev",
+      "boctulus/shopifyconnector": "@dev"
    },
    "scripts":{
       "pre-autoload-dump":"Google\\Task\\Composer::cleanup"
@@ -45,6 +46,13 @@
         "options": {
             "symlink": true
         }
+    },
+    {
+        "type": "path",
+        "url": "packages/boctulus/shopifyconnector",
+        "options": {
+            "symlink": true
+        }
     }
    ],
    "config":{
@@ -56,7 +64,8 @@
          "php":"7.4"
       },
       "preferred-install": {
-        "boctulus/api-client": "dist"
+        "boctulus/api-client": "dist",
+        "boctulus/shopifyconnector": "dist"
       }
    },
    "minimum-stability":"stable",
