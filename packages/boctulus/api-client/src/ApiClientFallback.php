@@ -128,44 +128,70 @@ class ApiClientFallback
 
     protected function curlRequest($url, $http_verb, $data, $headers = null, $options = null)
     {
-        // Configuración base para cURL
+        // Asegurar que headers sea un array
+        $headers = $headers ?? [];
+
+        // Configuración base de cURL
         $curlOptions = [
-            CURLOPT_URL => $url,
+            CURLOPT_URL            => $url,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
+            CURLOPT_ENCODING       => '',
+            CURLOPT_MAXREDIRS      => 10,
+            CURLOPT_TIMEOUT        => 0,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => $http_verb,
-            CURLOPT_POSTFIELDS => $data,
-            CURLOPT_HEADERFUNCTION => function ($curl, $header) use (&$resHeaders) {
+            CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST  => $http_verb,
+            CURLOPT_HEADERFUNCTION => function ($curl, $header) {
                 $this->parseHeader($header);
                 return strlen($header);
             }
         ];
 
-        // Agregar headers si no son null
-        if ($headers !== null) {
-            $curlOptions[CURLOPT_HTTPHEADER] = $this->buildHeaders($headers);
+        // Para métodos diferentes a GET que tienen body
+        if ($http_verb != 'GET' && !empty($data)) {
+            // Establecer el body
+            $curlOptions[CURLOPT_POSTFIELDS] = $data;
+            
+            // Establecer Content-Length tanto en headers como en opciones cURL
+            $content_length = strlen($data);
+            $headers['Content-Length'] = $content_length;
+            $curlOptions[CURLOPT_HTTPHEADER][] = 'Content-Length: ' . $content_length;
         }
 
-        // Combinar opciones adicionales si existen
+        // Convertir y configurar headers adicionales
+        if (!empty($headers)) {
+            $formattedHeaders = $this->buildHeaders($headers);
+            if (isset($curlOptions[CURLOPT_HTTPHEADER])) {
+                $curlOptions[CURLOPT_HTTPHEADER] = array_merge($curlOptions[CURLOPT_HTTPHEADER], $formattedHeaders);
+            } else {
+                $curlOptions[CURLOPT_HTTPHEADER] = $formattedHeaders;
+            }
+        }
+
+        // Combinar con opciones adicionales si existen
         if (is_array($options)) {
-            $curlOptions += $options;
+            $curlOptions = $options + $curlOptions;
         }
 
+        // Debug - mostrar headers enviados
+        if ($this->debug) {
+            var_dump($curlOptions[CURLOPT_HTTPHEADER]);
+        }
+
+        // Aplicar todas las opciones a cURL
         curl_setopt_array($this->curl, $curlOptions);
 
+        // Ejecutar la petición
         $response = curl_exec($this->curl);
-        $this->error = curl_error($this->curl);
-        $this->status = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-        $this->content_type = curl_getinfo($this->curl, CURLINFO_CONTENT_TYPE);
+
+        // Capturar información de la respuesta
+        $this->error         = curl_error($this->curl);
+        $this->status        = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+        $this->content_type  = curl_getinfo($this->curl, CURLINFO_CONTENT_TYPE);
         $this->effective_url = curl_getinfo($this->curl, CURLINFO_EFFECTIVE_URL);
 
         return $response;
     }
-
 
     protected function fallbackExec($url, $http_verb, $data, $headers, $options)
     {
@@ -180,9 +206,18 @@ class ApiClientFallback
 
         // Body
         if (!empty($data)) {
+            if (is_array($data)){
+                $data = json_encode($data);
+            }
+
+            $data = "'" . $data . "'";
+
             $cmd[] = '--data';
-            $cmd[] = escapeshellarg($data);
+            $cmd[] = $data;
         }
+
+        // dd($data, 'DATA');
+        // dd($cmd, 'CMD'); exit;
 
         // SSL
         if ($this->cert_ssl === false) {
@@ -200,7 +235,13 @@ class ApiClientFallback
 
         $cmd[] = escapeshellarg($url);
 
-        exec(implode(' ', $cmd) . ' 2>&1', $output, $exitCode);
+        $command = implode(' ', $cmd) . ' 2>&1';
+
+        // if ($this->debug){
+        //     dd($command);             
+        // }
+
+        exec($command, $output, $exitCode);
         
         return $this->parseCurlOutput($output, $exitCode);
     }
@@ -259,6 +300,11 @@ class ApiClientFallback
 
     protected function consumeAPI($url, $http_verb, $data, $headers, $options)
     {
+        // Add Content-Length header if there's data and body encoding is enabled
+        if ($http_verb != 'GET' && !empty($data) && $this->encode_body) {
+            $headers['Content-Length'] = strlen($data);
+        }
+        
         if ($this->useCurl) {
             return $this->curlRequest($url, $http_verb, $data, $headers, $options);
         }
@@ -291,8 +337,12 @@ class ApiClientFallback
     }
 
 
-   protected function buildHeaders($headers)
+    protected function buildHeaders($headers)
     {
+        if ($headers === null){
+            throw new \InvalidArgumentException("Invalid value null for headers");
+        }
+
         $formatted = [];
         foreach ($headers as $key => $value) {
             $formatted[] = "$key: $value";
@@ -307,8 +357,11 @@ class ApiClientFallback
         $this->req_headers = $headers ?? $this->req_headers;
         $this->options = $options ?? $this->options;
 
+        // ----> ¡Corrección Clave! <----
+        $body = $body ?? $this->body; // Usar $this->body si $body es null
+
         if ($this->encode_body && is_array($body)) {
-            $body = json_encode($body);
+            $body = json_encode($body, JSON_UNESCAPED_SLASHES); // Codificar sin espacios         
         }
 
         $retries = 0;
@@ -317,8 +370,8 @@ class ApiClientFallback
         if ($this->expiration == null){
             $expired = true;
         } else {
-            $cached_path     = $this->getCachePath();
-            $expired         = is_file($cached_path) ? FileCache::expired(filemtime($cached_path), $this->expiration) : true;  // fixex on jun-17/24
+            $cached_path = $this->getCachePath();
+            $expired     = is_file($cached_path) ? FileCache::expired(filemtime($cached_path), $this->expiration) : true;  // fixex on jun-17/24
         }
 
         if (!$expired){
@@ -351,6 +404,8 @@ class ApiClientFallback
                 }
             }
         }
+
+        // dd($this->req_headers, '$this->req_headers'); exit;
 
         while (!$ok && $retries < $this->max_retries) {
             $this->raw_response = $this->consumeAPI(
