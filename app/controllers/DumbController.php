@@ -125,6 +125,7 @@ use simplerest\libs\ArbitrageCalculator;
 use simplerest\libs\Cake;
 use simplerest\libs\Foo2;
 use simplerest\libs\Foo;
+use simplerest\libs\HaulmerSignatureSDK;
 use simplerest\libs\Ingredient1;
 use simplerest\libs\Ingredient2;
 use simplerest\libs\ItalianGrammarAnalyzer;
@@ -322,6 +323,13 @@ class DumbController extends Controller
     function now()
     {
         return at();
+    }
+
+    function now_json()
+    {
+        return [
+            'now' => at()
+        ];
     }
 
     function test_apiclient_cache()
@@ -1347,64 +1355,63 @@ class DumbController extends Controller
     }
 
 
-    function euro()
-    {
-        $res = consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
+    // function euro()
+    // {
+    //     $res = consume_api('https://totoro.banrep.gov.co/estadisticas-economicas/rest/consultaDatosService/consultaMercadoCambiario', 'GET');
 
-        if ($res['http_code'] != 200) {
-            throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
-        }
+    //     if ($res['http_code'] != 200) {
+    //         throw new \Exception("Error: " . $res['code'] . ' -code: ' . $res['code']);
+    //     }
 
-        $data    = $res['data'];
-        $final  = $data[count($data) - 1];
-        $copusd = $final[1];
+    //     $data    = $res['data'];
+    //     $final  = $data[count($data) - 1];
+    //     $copusd = $final[1];
 
-        // Build Swap
-        $swap = (new \Swap\Builder())
-            ->add('european_central_bank')
-            ->add('national_bank_of_romania')
-            ->add('central_bank_of_republic_turkey')
-            ->add('central_bank_of_czech_republic')
-            ->add('russian_central_bank')
-            ->add('bulgarian_national_bank')
-            ->add('webservicex')
-            ->build();
+    //     // Build Swap
+    //     $swap = (new \Swap\Builder())
+    //         ->add('european_central_bank')
+    //         ->add('national_bank_of_romania')
+    //         ->add('central_bank_of_republic_turkey')
+    //         ->add('central_bank_of_czech_republic')
+    //         ->add('russian_central_bank')
+    //         ->add('bulgarian_national_bank')
+    //         ->add('webservicex')
+    //         ->build();
 
-        // Get the latest EUR/USD rate
-        $rate = ($swap->latest('EUR/USD'))->getValue();
+    //     // Get the latest EUR/USD rate
+    //     $rate = ($swap->latest('EUR/USD'))->getValue();
 
-        $copeur = $copusd * $rate;
+    //     $copeur = $copusd * $rate;
 
-        dd($copeur, "EUR/COP - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
-    }
+    //     dd($copeur, "EUR/COP - VALOR FINAL " . date("Y-m-d H:i:s", substr($final[0], 0, 10)));
+    // }
 
-    function swap()
-    {
+    // function swap()
+    // {
 
-        // Build Swap
-        $swap = (new \Swap\Builder())
-            ->add('european_central_bank')
-            ->add('national_bank_of_romania')
-            ->add('central_bank_of_republic_turkey')
-            ->add('central_bank_of_czech_republic')
-            ->add('russian_central_bank')
-            ->add('bulgarian_national_bank')
-            ->add('webservicex')
-            ->build();
+    //     // Build Swap
+    //     $swap = (new \Swap\Builder())
+    //         ->add('european_central_bank')
+    //         ->add('national_bank_of_romania')
+    //         ->add('central_bank_of_republic_turkey')
+    //         ->add('central_bank_of_czech_republic')
+    //         ->add('russian_central_bank')
+    //         ->add('bulgarian_national_bank')
+    //         ->add('webservicex')
+    //         ->build();
 
-        // Get the latest EUR/USD rate
-        $rate = $swap->latest('EUR/USD');
+    //     // Get the latest EUR/USD rate
+    //     $rate = $swap->latest('EUR/USD');
 
-        // 1.129
-        dd($rate->getValue(), 'EUR/USD');
+    //     // 1.129
+    //     dd($rate->getValue(), 'EUR/USD');
 
-        // 2016-08-26
-        $rate->getDate()->format('Y-m-d');
+    //     // 2016-08-26
+    //     $rate->getDate()->format('Y-m-d');
 
-        // Get the EUR/USD rate 15 days ago
-        $rate = $swap->historical('EUR/USD', (new \DateTime())->modify('-15 days'));
-    }
-
+    //     // Get the EUR/USD rate 15 days ago
+    //     $rate = $swap->historical('EUR/USD', (new \DateTime())->modify('-15 days'));
+    // }
 
     function parse_class()
     {
@@ -11781,6 +11788,43 @@ class DumbController extends Controller
         ], 'RES');
     }
 
+    function test_apiclient_fallback_2()
+    {
+        $client = new ApiClientFallback();
+
+        // Configurar la URL
+        $client->setUrl('https://api.haulmer.dev/v2.0/partners/signature/generate');
+        // $client->debug(true);
+
+        // Headers
+        $headers = [
+            'apikey' => 'cebc90896c0445599e6d2269b9f89c8f',
+            'Content-Type' => 'application/json'
+        ];
+
+        // Body (como array para que se encodee automáticamente)
+        $body = [
+            "period" => 1,
+            "email" => "email@correo.com"
+        ];
+
+        // Configurar el cuerpo y habilitar encoding
+        $client->setBody($body, true); // Segundo parámetro = encode_body = true
+
+        // Hacer la petición POST (sin pasar $body nuevamente)
+        $response = $client->post(null, $body, $headers); // <- ¡Body viene de setBody()!
+
+        // Debug
+        dd("STATUS: " . $response->status());
+        dd("ERROR: " . ($response->error() ?? 'Ninguno'));
+        
+        dd($response->data());
+        
+        dd([    
+            $response
+        ], 'RES');
+    }
+
     function jsonplaceholder_test_get(){
         $client = new ApiClientFallback();
 
@@ -11854,7 +11898,6 @@ class DumbController extends Controller
         ]);
     }
 
-    
     
 
 }   // end class

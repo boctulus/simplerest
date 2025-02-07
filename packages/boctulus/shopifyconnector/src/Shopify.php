@@ -1,9 +1,8 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\ShopifyConnector;
 
-use simplerest\core\libs\DB;
-use simplerest\traits\ShopifyWooCommerceAdaptorTrait;
+// use Boctulus\ShopifyConnector\Traits\ShopifyWooCommerceAdaptorTrait;
 
 /*
     Hacer uso de un controlador o de rutas para procesar Webhooks
