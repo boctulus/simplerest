@@ -12,7 +12,12 @@ class HaulmerSignatureSDK {
 
     public function __construct($apiKey, $sandbox = false) {
         $this->apiKey = $apiKey;
-        $this->apiClient = new ApiClientFallback();
+
+        $this->apiClient = (new ApiClientFallback())        
+        ->setHeaders([
+            'apikey' => $this->apiKey,
+            'Content-Type' => 'application/json'
+        ]);
         
         if($sandbox) {
             $this->base_url = 'https://api.haulmer.dev/v2.0';
@@ -20,11 +25,7 @@ class HaulmerSignatureSDK {
     }
 
     public function getClient(){
-        return $this->apiClient
-        ->setHeaders([
-            'apikey' => $this->apiKey,
-            'Content-Type' => 'application/json'
-        ]);
+        return $this->apiClient;
     }
 
     public function generateToken($period, $email) {
@@ -40,7 +41,7 @@ class HaulmerSignatureSDK {
             ->setBody([
                 'period' => $period,
                 'email' => $email
-            ], true)   
+            ], true)        
             ->request($this->base_url.'/partners/signature/generate', 'POST')         
             ->data();
     }
@@ -63,10 +64,9 @@ class HaulmerSignatureSDK {
             throw new \Exception("Password must be between 10 and 32 characters");
         }
 
-        return $this->apiClient
-            ->setUrl($this->base_url."/partners/signature/createSignature/$token")
+        return $this->apiClient            
             ->setBody($data, true)
-            ->post()
+            ->request($this->base_url."/partners/signature/createSignature/$token", 'POST')         
             ->data();
     }
 

@@ -2,13 +2,15 @@
 
 namespace Boctulus\ApiClient;
 
-use Boctulus\ApiClient\Helpers\XML;
-use Boctulus\ApiClient\Helpers\Url;
-use Boctulus\ApiClient\Helpers\Utils;
+use Boctulus\ApiClient\Exception;
+use Boctulus\ApiClient\Helpers\Curl;
+use Boctulus\ApiClient\Helpers\FileCache;
 use Boctulus\ApiClient\Helpers\Logger;
 use Boctulus\ApiClient\Helpers\Strings;
-use Boctulus\ApiClient\Helpers\FileCache;
-use Boctulus\ApiClient\Exception;
+use Boctulus\ApiClient\Helpers\System;
+use Boctulus\ApiClient\Helpers\Url;
+use Boctulus\ApiClient\Helpers\Utils;
+use Boctulus\ApiClient\Helpers\XML;
 use Boctulus\ApiClient\Interface\ICache;
 
 class ApiClientFallback
@@ -76,6 +78,7 @@ class ApiClientFallback
     protected $show_req = false;
     protected $show_res = false;
     protected $useCurl;
+    protected $fallback_cmd = 'curl';
 
 
     function __construct($url = null)
@@ -94,10 +97,13 @@ class ApiClientFallback
         }
     }
 
+    public function useInvokeWebRequest(){
+        $this->fallback_cmd = 'Invoke-WebRequest';
+    }
+
     function getRawResponse(){
         return $this->raw_response;
     }
-
 
     // alias de getStatus()
     function status(){
@@ -108,7 +114,6 @@ class ApiClientFallback
     function error(){
         return $this->error;
     }
-
 
     function data(bool $raw = false){
         if ($raw === false){
@@ -193,10 +198,87 @@ class ApiClientFallback
         return $response;
     }
 
-    protected function fallbackExec($url, $http_verb, $data, $headers, $options)
+    function convertCurlToPowershell($curlCommand) {
+        $curlCommand = preg_replace('/^curl\s+/', '', trim($curlCommand));
+        
+        $url = '';
+        $method = 'Get';
+        $headers = [];
+        $data = '';
+        
+        if (preg_match('/("[^"]+"|\'[^\']+\'|\S+)(?=\s*$)/', $curlCommand, $matches)) {
+            $url = trim($matches[0], "'\"");
+            $curlCommand = trim(substr($curlCommand, 0, -strlen($matches[0])));
+        }
+        
+        $pattern = '/(?:^|\s)(-[A-Za-z]|\-\-[A-Za-z\-]+)(?:[\s=]("[^"]+"|\'[^\']+\'|\S+))?/';
+        preg_match_all($pattern, $curlCommand, $matches, PREG_SET_ORDER);
+        
+        foreach ($matches as $match) {
+            $option = $match[1];
+            $value = isset($match[2]) ? trim($match[2], "'\"") : null;
+            
+            switch ($option) {
+                case '-X':
+                case '--request':
+                    $method = $value;
+                    break;
+                case '-H':
+                case '--header':
+                    if (strpos($value, ':') !== false) {
+                        list($headerName, $headerValue) = array_map('trim', explode(':', $value, 2));
+                        $headers[$headerName] = $headerValue;
+                    }
+                    break;
+                case '-d':
+                case '--data':
+                case '--data-binary':
+                    $data = $value;
+                    break;
+            }
+        }
+        
+        $headersString = '';
+        if (!empty($headers)) {
+            $headerParts = [];
+            foreach ($headers as $name => $value) {
+                $headerParts[] = "\"$name\" = \"$value\"";
+            }
+            $headersString = "@{" . implode('; ', $headerParts) . "}";
+        }
+        
+        $psCommand = "Invoke-RestMethod -Method $method -Uri '$url'";
+        
+        if (!empty($headersString)) {
+            $psCommand .= " -Headers $headersString";
+        }
+        
+        if ($data) {
+            $psCommand .= " -Body '$data'";
+        }
+        
+        return $psCommand;
+    }
+
+    protected function invokeWebRequest($curl_command)
     {
-        $curl = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'curl.exe' : 'curl';
-        $cmd = [$curl, '-sSi', '-X', escapeshellarg($http_verb)];
+        $ps_command = Curl::convertCurlToPowershell($curl_command, true);
+
+        dd($curl_command);
+        dd($ps_command);
+        
+        $exit_code  = null;
+        $res        = System::ps_exec($ps_command, $exit_code);
+
+        return $res;
+    }
+
+    protected function fallbackExec($url, $http_verb, $data, $headers, $options)
+    {   
+        $is_win = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+
+        $curl = 'curl';
+        $cmd  = [$curl, '-sSi', '-X', escapeshellarg($http_verb)];
 
         // Headers
         foreach ($this->buildHeaders($headers) as $header) {
@@ -238,12 +320,15 @@ class ApiClientFallback
         $command = implode(' ', $cmd) . ' 2>&1';
 
         // if ($this->debug){
-        //     dd($command);             
+            // dd($command);             
         // }
 
-        exec($command, $output, $exitCode);
-        
-        return $this->parseCurlOutput($output, $exitCode);
+        if ($is_win || $this->fallback_cmd === 'Invoke-WebRequest') {            
+            return $this->invokeWebRequest($command);
+        } else {
+            exec($command, $output, $exitCode);        
+            return $this->parseCurlOutput($output, $exitCode);
+        }
     }
 
     protected function parseCurlOutput($output, $exitCode)
@@ -357,8 +442,7 @@ class ApiClientFallback
         $this->req_headers = $headers ?? $this->req_headers;
         $this->options = $options ?? $this->options;
 
-        // ----> ¡Corrección Clave! <----
-        $body = $body ?? $this->body; // Usar $this->body si $body es null
+        $body = $body ?? $this->body;
 
         if ($this->encode_body && is_array($body)) {
             $body = json_encode($body, JSON_UNESCAPED_SLASHES); // Codificar sin espacios         
