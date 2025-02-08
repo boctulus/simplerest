@@ -11799,6 +11799,40 @@ Ej:
 	->decode()
 	->data(), 'DATA');
 
+El fallback tiene una variante para correr sobre PowerShell que se activa con useInvokeWebRequest()
+
+Ej:
+
+	$client = new ApiClientFallback();
+	$client->useInvokeWebRequest(); // Activar modo PowerShell
+
+	// Configurar la URL
+	$client->setUrl('https://api.haulmer.dev/v2.0/partners/signature/generate');
+	
+	// Headers
+	$headers = [
+		'apikey' => 'cebc90896c0445599e6d2269b9f89c8f',
+		'Content-Type' => 'application/json'
+	];
+
+	// Body (como array para que se encodee automáticamente)
+	$body = [
+		"period" => 1,
+		"email" => "email@correo.com"
+	];
+
+	// Configurar el cuerpo y habilitar encoding
+	$client->setBody($body, true); // Segundo parámetro = encode_body = true
+
+	// Hacer la petición POST (sin pasar $body nuevamente)
+	$response = $client->post(null, $body, $headers); // <- ¡Body viene de setBody()!
+
+	// Debug
+	dd("STATUS: " . $response->status());
+	dd("ERROR: " . ($response->error() ?? ''));
+	
+	dd($response->data(), 'DATA');
+    
 
 # Paginacion
 
