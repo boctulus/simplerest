@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\ApiClient\Helpers;
 
-use simplerest\core\libs\Files;
+use Boctulus\ApiClient\Helpers\Files;
 
 class System
 {
@@ -352,27 +352,6 @@ class System
         
         // Devolver la salida como string
         return implode("\n", $output);
-    }
-
-    /*
-        PowerShell está activo?
-
-        Versión detectada:  Major  Minor  Build  Revision -----  -----  -----  -------- 5      1      22000  2538
-    */
-    function check_for_powershell(){            
-        // Comando PowerShell para verificar su versión
-        $command = 'powershell -command "$PSVersionTable.PSVersion"';
-
-        exec($command, $output, $return_var);
-
-        if ($return_var === 0) {
-            // echo "PowerShell está activo.\n";
-            // echo "Versión detectada: " . implode(" ", $output) . "\n";
-            return true;
-        } else {
-            // echo "PowerShell no está disponible o cmd es el shell predeterminado.\n";
-            return false;
-        }
     }
 
     /*

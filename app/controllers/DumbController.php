@@ -44,46 +44,47 @@ use simplerest\core\libs\CronJobMananger;
 use simplerest\core\libs\CSS;
 use simplerest\core\libs\CSSUtils;;
 
+use simplerest\core\libs\Curl;
 use simplerest\core\libs\DatabaseBackup;
+
 use simplerest\core\libs\Date;
 
 use simplerest\core\libs\DB;
 
 use simplerest\core\libs\DBCache;
-
 use simplerest\core\libs\DomCrawler;
-use simplerest\core\libs\EasyHTMLTable;
 
+use simplerest\core\libs\EasyHTMLTable;
 use simplerest\core\libs\EmailTemplate;
 use simplerest\core\libs\Env;
 use simplerest\core\libs\Factory;
+
 use simplerest\core\libs\FileCache;
 
 use simplerest\core\libs\FileMemoization;
-
 use simplerest\core\libs\FileMemoizationV2;
-use simplerest\core\libs\Files;
 
+use simplerest\core\libs\Files;
 use simplerest\core\libs\FileUploader;
 use simplerest\core\libs\GitHub;
 use simplerest\core\libs\GoogleDrive;
 use simplerest\core\libs\GoogleMaps;
 use simplerest\core\libs\GrokAI;
 use simplerest\core\libs\Hardware;
-use simplerest\core\libs\HTML as HTMLTools;
 
+use simplerest\core\libs\HTML as HTMLTools;
 use simplerest\core\libs\HtmlBuilder\Bt5Form;
 use simplerest\core\libs\HtmlBuilder\Form;
-use simplerest\core\libs\HtmlBuilder\Html;
 
+use simplerest\core\libs\HtmlBuilder\Html;
 use simplerest\core\libs\HtmlBuilder\Tag;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use simplerest\core\libs\i18n\POParser;
 use simplerest\core\libs\i18n\Translate;
 use simplerest\core\libs\InMemoryCache;
 use simplerest\core\libs\JobQueue;
-use simplerest\core\libs\LangDetector;
 
+use simplerest\core\libs\LangDetector;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\MailFromRemoteWP;
@@ -97,8 +98,8 @@ use simplerest\core\libs\PHPLexicalAnalyzer;
 use simplerest\core\libs\PostmanGenerator;
 use simplerest\core\libs\RandomGenerator;
 use simplerest\core\libs\Reflector;
-use simplerest\core\libs\Schema;
 
+use simplerest\core\libs\Schema;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\SimpleCrypt;
 use simplerest\core\libs\StdOut;
@@ -11791,6 +11792,7 @@ class DumbController extends Controller
     function test_apiclient_fallback_2()
     {
         $client = new ApiClientFallback();
+        $client->useInvokeWebRequest(); // Activar modo PowerShell
 
         // Configurar la URL
         $client->setUrl('https://api.haulmer.dev/v2.0/partners/signature/generate');
@@ -11818,11 +11820,11 @@ class DumbController extends Controller
         dd("STATUS: " . $response->status());
         dd("ERROR: " . ($response->error() ?? 'Ninguno'));
         
-        dd($response->data());
+        dd($response->data(), 'RESPONSE');
         
-        dd([    
-            $response
-        ], 'RES');
+        // dd([    
+        //     $response
+        // ], 'RES');
     }
 
     function jsonplaceholder_test_get(){
@@ -11898,6 +11900,39 @@ class DumbController extends Controller
         ]);
     }
 
+    function test_curl_conversion(){
+        // Ejemplo de uso:
+        $curlCommand = <<<CMD
+        curl -sSi -X "POST" -H "apikey: cebc90896c0445599e6d2269b9f89c8f" -H "Content-Type: application/json" -H "Content-Length: 39" --data '{"period":1,"email":"email@correo.com"}' "https://api.haulmer.dev/v2.0/partners/signature/generate" 
+        CMD;
+
+        // OK
+        $ps_command = Curl::convertCurlToPowershell($curlCommand, true);
+        dd($ps_command, 'PS COMMAND');
+
+        $exit_code = 0;
+        $output = System::ps_exec($ps_command, $exit_code);
+
+        dd($output, 'OUTPUT');
+        dd($exit_code, 'EXIT CODE');
+    }
     
+
+    function test_curl_exec(){        
+        // OK
+        $ps_command = <<<CMD
+        Invoke-RestMethod -Method POST -Uri 'https://api.haulmer.dev/v2.0/partners/signature/generate' -Headers @{"apikey" = "cebc90896c0445599e6d2269b9f89c8f"; "Content-Type" = "application/json"; "Content-Length" = "39"} -Body '{"period":1,"email":"email@correo.com"}'
+        CMD;
+        
+        dd($ps_command, 'PS COMMAND');
+
+        $exit_code = 0;
+        $output = System::ps_exec($ps_command, $exit_code);
+
+        dd($output, 'OUTPUT');
+        dd($exit_code, 'EXIT CODE');
+
+        
+    }
 
 }   // end class
