@@ -29,33 +29,17 @@ class SignatureTestController extends Controller
         }
     }
 
-    /*
-        Debo enviar algo como:
-        
-        curl --location 'https://api.haulmer.dev/v2.0/partners/signature/createSignature/7151e745-a704-42c4-ad81-50bd301e07fe' \
-        --header 'apikey: cebc90896c0445599e6d2269b9f89c8f' \
-        --header 'Content-Type: application/json' \
-        --data-raw '{
-            "names" : "test",
-            "f_lastname" : "test",
-            "m_lastname" : "test",
-            "rut" : "12345678-3",
-            "serie_ci" : "123456789",
-            "email": "correo.pruebas.qa7@gmail.com",
-            "password": "prueba123456"
-        }'
-    */
     public function create_signature() {
         try {
-            $token = "4953f1d1-313d-476f-921d-00789363e147";
+            $token = "ed5c5eef-869f-4484-a84c-ce4ba39f622a"; // token generado
             $result = $this->sdk->createSignature($token, [
-                'names' => 'Juan',
-                'f_lastname' => 'Pérez',
-                'm_lastname' => 'López',
-                'rut' => '12345678-9',
-                'serie_ci' => '123456789',
-                'email' => 'juan@example.com',
-                'password' => 'password123456'
+               "names" => "Ricardo Andrés",
+                "f_lastname"  => "Ahumada",
+                "m_lastname"  => "Leiva",
+                "rut"  => "18280886-5",
+                "serie_ci"  => "B52947255",
+                "email"  => "correo.pruebas.qa7@gmail.com",
+                "password"  => "prueba123456"
             ]);
 
             $cli = $this->sdk->getClient();
