@@ -9,6 +9,7 @@ use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\VarDump;
 use simplerest\core\api\v1\ApiController;
+use simplerest\core\controllers\ConsoleController;
 
 class FrontController
 {

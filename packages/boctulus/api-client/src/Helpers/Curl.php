@@ -6,7 +6,10 @@ use Boctulus\ApiClient\Helpers\Strings;
 
 class Curl
 {
-    static function convertCurlToPowershell($curlCommand, $as_json = false)
+    /*
+        Las REGEx estan mal
+    */
+    static function convertCurlToPowershell($curlCommand, $catch_errors = true, $as_json = false)
     {
         $curlCommand = str_replace('2>&1', '', $curlCommand);
         $curlCommand = preg_replace('/^curl\s+/', '', trim($curlCommand));
@@ -24,9 +27,14 @@ class Curl
         $pattern = '/(?:^|\s)(-[A-Za-z]|\-\-[A-Za-z\-]+)(?:[\s=]("[^"]+"|\'[^\']+\'|\S+))?/';
         preg_match_all($pattern, $curlCommand, $matches, PREG_SET_ORDER);
 
+
+        // dd($matches);
+
         foreach ($matches as $match) {
             $option = $match[1];
             $value = isset($match[2]) ? trim($match[2], "'\"") : null;
+
+            // dd($option, 'OPTION');
 
             switch ($option) {
                 case '-X':
@@ -66,13 +74,22 @@ class Curl
         }
 
         if ($data) {
-            $psCommand .= " -Body '$data';";
+            $psCommand .= " -Body '$data'";  // Se eliminó el punto y coma innecesario
         }
 
         if ($as_json) {
             $psCommand .= "\necho \$response | ConvertTo-Json";
         }
 
+        if ($catch_errors) {
+            $lines = explode("\n", $psCommand);
+            $indentedLines = array_map(function($line) {
+                return '    ' . $line;
+            }, $lines);
+            $indentedCommand = implode("\n", $indentedLines);
+            $psCommand = "try {\n" . $indentedCommand . "\n} catch {\n    \$errorResponse = \$_.ErrorDetails.Message | ConvertFrom-Json\n    echo (\$errorResponse | ConvertTo-Json)\n}";
+        }
+    
         return $psCommand;
     }
 }
