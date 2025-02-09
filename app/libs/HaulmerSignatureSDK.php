@@ -2,9 +2,17 @@
 
 namespace simplerest\libs;
 
-use Boctulus\ApiClient\ApiClientFallback;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\ApiClient;
+use Boctulus\ApiClient\ApiClientFallback;
 
+/*
+    @author Pablo Bozzolo
+
+    DOC
+
+    https://doc-api-signature.haulmer.com/
+*/
 class HaulmerSignatureSDK {
     private $apiClient;
     private $apiKey;
@@ -13,7 +21,7 @@ class HaulmerSignatureSDK {
     public function __construct($apiKey, $sandbox = false) {
         $this->apiKey = $apiKey;
 
-        $this->apiClient = (new ApiClientFallback())        
+        $this->apiClient = (new ApiClient())        
         ->setHeaders([
             'apikey' => $this->apiKey,
             'Content-Type' => 'application/json'
@@ -22,6 +30,10 @@ class HaulmerSignatureSDK {
         if($sandbox) {
             $this->base_url = 'https://api.haulmer.dev/v2.0';
         }
+    }
+
+    public function setCache($expiration_time){
+        $this->apiClient->cache($expiration_time);
     }
 
     public function getClient(){
@@ -84,7 +96,34 @@ class HaulmerSignatureSDK {
             ->data();
     }
 
-    public function getSetupInfo($token) {
+    /*
+        Dado que la generación de firmas es realizado por los clientes, el integrador no conoce el estado de progreso del proceso. 
+        
+        Para estar informado se deja a disposición este endpoint que informará el estado y la información básica del cliente 
+        (asociado al token de la firma electrónica).
+
+        DESCRIPCIÓN DE RESPUESTA:
+        
+        status: Indica el estado de progreso del proceso de generación de firma.
+        client_name: Nombre del cliente.
+        client_rut: RUT del cliente.
+        client_email: Email del cliente.
+
+        {
+            "status": "setup complete",
+            "client_name": "Claudia Munoz Flores",
+            "client_rut": "18918017-9",
+            "client_email": "correo.pruebas.qa7@gmail.com"
+        }
+
+        Si "status" es "setup complete" entonces el cliente ha firmado?
+
+        REQUEST:
+
+        curl --location 'https://api.haulmer.dev/v2.0/partners/signature/details/3abc9f13-6f11-485a-ab4e-6f2485df6a7a' \
+        --header 'apiKey: e00d938cb3e5448490a6a1847ce7bf1c'
+    */
+    public function getSignatureDetails($token) {
         return $this->apiClient
             ->setUrl($this->base_url."/partners/signature/details/$token")            
             ->get()
