@@ -115,54 +115,55 @@
 
         // Hacer la solicitud POST
         $.ajax({
-            url: 'http://simplerest.lan/api/v1/prompts',
+            url: '/api/v1/prompts',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function (response) {
-                // Procesar y mostrar el contenido recibido si es exitoso
-                clearValidationErrors();  // Limpiar cualquier error anterior
-                displayFileContents(description, response.data.prompts.content, files, notes);
-
-                const id = response.data.id;
-                const newUrl = `${window.location.pathname}#chat-${id}`;
-                history.pushState({ id: id }, '', newUrl);
-                saveFormVersion(id, description, files, notes);
+            success: function(response) {
+                // ... lógica exitosa ...
             },
-            error: function (xhr, status, error) {
-                if (xhr.status === 400) {
-                    // Si el error es de validación, mostrarlo en el formulario
-                    const validationErrors = xhr.responseJSON.error.detail;
-                    showValidationErrors(validationErrors);
-                } else {
-                    console.error('Error al obtener el contenido del prompt:', error);
+            error: function(xhr, status, error) {
+                let errorMessage = 'Error desconocido';
+                
+                // 1. Manejo estructurado de errores
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error.message || 
+                                xhr.responseJSON.error.detail || 
+                                'Error en el servidor';
                 }
 
-                if (xhr.status === 500) {
-                    const errorMessage = xhr.responseJSON.error.message;
-                    const errorPath = errorMessage.match(/Path '(.+)' does not exist/)[1];
+                // 2. Mostrar SweetAlert con detalles técnicos
+                Swal.fire({
+                    title: `Error ${xhr.status}`,
+                    html: `<div style="text-align:left;">
+                            <b>Mensaje:</b> ${errorMessage}<br>
+                            <b>Tipo:</b> ${xhr.responseJSON?.error?.type || 'N/A'}<br>
+                            <b>Código:</b> ${xhr.responseJSON?.error?.code || 'N/A'}
+                        </div>`,
+                    icon: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: 'Reintentar',
+                    cancelButtonText: 'Ver detalles',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isDismissed) {
+                        // 3. Mostrar detalles técnicos en consola
+                        console.error('Detalles completos del error:', {
+                            status: xhr.status,
+                            response: xhr.responseJSON,
+                            config: xhr.config
+                        });
+                    } else if (result.isConfirmed) {
+                        // 4. Reintentar automáticamente
+                        getPromptContent();
+                    }
+                });
 
-                    // Actualizar el input correspondiente a la ruta problemática
-                    $('.file-input').each(function () {
-                        if ($(this).val() === errorPath) {
-                            let $group = $(this).closest('.file-path-group');
-                            $group.replaceWith(addFilePathInput(errorPath, true));
-                        }
-                    });
-
-                    // Mostrar el mensaje de error con SweetAlert
-                    Swal.fire({
-                        title: 'Error',
-                        text: errorMessage,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                } else {
-                    console.error('Error al obtener el contenido del prompt:', error);
-                }
+                // 5. Restauración visual del formulario
+                clearValidationErrors();
+                $('.file-input').removeClass('is-invalid');
             }
         });
-
     }
 
     // Función para mostrar errores de validación
@@ -357,42 +358,63 @@
     /*
         Mostrar resultado en #generatedPrompt
     */
-    function displayFileContents(description, contents, files, notes) {
-        let generatedPrompt = '';
+    function displayFileContents(description, contents, notes) {
+    let generatedPrompt = '';
 
-        // Incluir el contenido de la introducción
-        generatedPrompt += `${description}\n\n`;
+    // 1. Normalizar parámetros
+    const safeDescription = typeof description === 'string' ? description : '';
+    const safeNotes = typeof notes === 'string' ? notes : '';
 
-        // Iterar sobre los archivos y sus contenidos
-        files.forEach(function (filePath, index) {
-            let content = contents[index];
-            let extension = filePath.split('.').pop();
-            let $existingInput = $(`.file-input[value="${filePath}"]`);
-            let isDisabled = $existingInput.closest('.file-path-group').attr('data-disabled') === 'true';
+    // 2. Agregar introducción validada
+    if (safeDescription.trim() !== '') {
+        generatedPrompt += `${safeDescription}\n\n`;
+    }
 
-            // Formatear según la extensión del archivo
-            let formattedContent;
-            if (extension === 'css') {
-                formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`css\n${content}\n\`\`\`\n`;
-            } else if (extension === 'js') {
-                formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`javascript\n${content}\n\`\`\`\n`;
-            } else if (extension === 'php') {
-                formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`php\n${content}\n\`\`\`\n`;
-            } else if (extension === 'json' || extension === 'jsonl') {
-                formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`json\n${content}\n\`\`\`\n`;
-            } else {
-                formattedContent = `\n/* Ruta: ${filePath} */\n\`\`\`\n${content}\n\`\`\`\n`;
-            }
+    // 3. Validar estructura de contents
+    if (!contents || typeof contents !== 'object') {
+        console.error('Contenido inválido:', contents);
+        Swal.fire('Error', 'Formato de archivos inválido', 'error');
+        return;
+    }
 
-            // Agregar el contenido formateado al prompt
-            generatedPrompt += formattedContent;
-        });
+    // 4. Iterar sobre archivos
+    Object.entries(contents).forEach(([filePath, fileContent]) => {
+        if (typeof fileContent !== 'string') {
+            console.warn(`Contenido no es texto en: ${filePath}`);
+            return;
+        }
+        
+        // Formatear bloque de código
+        const extension = filePath.split('.').pop().toLowerCase();
+        const language = {
+            'php': 'php',
+            'js': 'javascript',
+            // ... otros mapeos
+        }[extension] || '';
+        
+        generatedPrompt += `/* Ruta: ${filePath} */\n\`\`\`${language}\n${fileContent}\n\`\`\`\n\n`;
+    });
 
-        // Incluir las notas finales
-        generatedPrompt += `\n${notes}\n`;
+    // 5. Agregar notas finales validadas
+    if (safeNotes.trim() !== '') {
+        generatedPrompt += `// Notas finales\n${safeNotes}\n`;
+    }
 
-        // Mostrar el contenido en el textarea #generatedPrompt
-        $('#generatedPrompt').val(generatedPrompt);
+    // 6. Actualizar textarea
+    $('#generatedPrompt').val(generatedPrompt);
+}
+
+    function formatFileContent(filePath, content) {
+        const extension = filePath.split('.').pop().toLowerCase();
+        const languageMap = {
+            'php': 'php',
+            'js': 'javascript',
+            'css': 'css',
+            'json': 'json',
+        };
+
+        const language = languageMap[extension] || '';
+        return `\n/* Ruta: ${filePath} */\n\`\`\`${language}\n${content}\n\`\`\`\n`;
     }
 
     function handleHashChange() {

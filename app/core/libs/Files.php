@@ -2,9 +2,11 @@
 
 namespace simplerest\core\libs;
 
-use simplerest\core\libs\System;
 use simplerest\core\libs\Logger;
+use simplerest\core\libs\System;
 use simplerest\core\libs\SortedIterator;
+use simplerest\core\exceptions\CantReadFileException;
+use simplerest\core\exceptions\NotFileButDirectoryException;
 
 class Files 
 {
@@ -1541,7 +1543,7 @@ class Files
 	static function read(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
 		if (is_dir($path)){
 			$path = realpath($path);
-			throw new \InvalidArgumentException("$path is not a valid file. It's a directory!");
+			throw new NotFileButDirectoryException("Expected file. Given directory for '$path'");
 		} 
 
 		if (!file_exists($path)){	
@@ -1566,13 +1568,13 @@ class Files
 	* @param integer $offset [optional] The offset where the reading starts
 	* @param integer|null $length [optional] Maximum length of data read
 	* @return string The read content
-	* @throws \InvalidArgumentException If file cannot be read or path is a directory
+	* @throws CantReadFileException If file cannot be read or path is a directory
 	*/
 	static function readOrFail(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
 		$content = static::read($path, $use_include_path, $context, $offset, $length);
 		
-		if (strlen($content) === false){
-			throw new \InvalidArgumentException("File '$path' can not be read");
+		if ($content === false){
+			throw new CantReadFileException("Can't read file. Given path '$path'");
 		}
 
 		return $content;
