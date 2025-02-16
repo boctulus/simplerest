@@ -1,6 +1,28 @@
 TODO SimpleRest
 ===============
 
+- Si se genera una Exception en vez de simplemente devolver algo como ... 
+
+{
+    "status": 500,
+    "error": {
+        "type": null,
+        "code": null,
+        "message": "Can't read file. Given path 'D:\\laragon\\www\\tvc\\app\\Models\\LineFamily.php'",
+        "detail": null,
+        "location": null
+    }
+}
+
+deberia indicar que el tipo de error es una "Exception" y el tipo, ej:
+
+Exception:CantReadFileException
+
+En "detail" sino se detalla nada se llenaria con "Exception"
+
+En "location" se podria incluir {$file}:$line donde se genera la excepcion o error.
+
+
 - En la generacion de Schemas revisa este caso:
 
 D:\laragon\www\simplerest\app\schemas\laravelshopify\ProductsSchema.php
