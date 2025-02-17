@@ -101,8 +101,10 @@
 
 <script>
     let currentPromptIndex = -1;
-    let prompts = [];
-
+    let cachedPrompts = {}; // Cache para almacenar prompts por página
+    let currentPage = 1;
+    let totalPages = 1;
+    let nextUrl = null; 
 
     // Función para obtener el contenido desde la API
     function getPromptContent() {
@@ -623,26 +625,29 @@
             });
         }
 
-        // Función para cargar todos los prompts
-        function loadPrompts() {
-            $.ajax({
-                url: '/api/v1/prompts',
-                type: 'GET',
-                success: function(response) {
-                    prompts = response.data.prompts;
-                    if (prompts.length > 0) {
-                        currentPromptIndex = 0;
-                        loadPromptData(currentPromptIndex);
-                    }
-                }
-            });
+        // Función para cargar prompts de una página específica
+    function loadPromptsPage(page) {
+        // Si ya tenemos esta página en caché, usar esos datos
+        if (cachedPrompts[page]) {
+            return Promise.resolve(cachedPrompts[page]);
         }
 
-        // Función para cargar un prompt específico
-        // Modify the loadPromptData function
-function loadPromptData(index) {
-    if (index >= 0 && index < prompts.length) {
-        const prompt = prompts[index];
+        // Si no está en caché, hacer el request
+        return $.ajax({
+            url: `/api/v1/prompts?page=${page}`,
+            type: 'GET'
+        }).then(function(response) {
+            // Guardar en caché
+            cachedPrompts[page] = response.data;
+            totalPages = response.paginator.totalPages;
+            nextUrl = response.paginator.nextUrl;
+            return response.data;
+        });
+    }
+
+    // Función para cargar los datos de un prompt en el formulario
+    function loadPromptData(prompt) {
+        if (!prompt) return;
         
         // Cargar datos en el formulario
         $('#prompt-description').val(prompt.description || '');
@@ -651,39 +656,85 @@ function loadPromptData(index) {
         // Limpiar y cargar rutas de archivos
         $('#filePathsContainer').empty();
         if (prompt.files) {
-            const files = JSON.parse(prompt.files);
-            files.forEach(file => addFilePathInput(file));
+            try {
+                const files = JSON.parse(prompt.files);
+                files.forEach(file => addFilePathInput(file));
+            } catch (e) {
+                console.error('Error parsing files:', e);
+            }
         }
         
-        // Get current URL without hash
+        // Actualizar URL
         const baseUrl = window.location.href.split('#')[0];
-        
-        // Update URL preserving the full path and adding the hash
         history.pushState(
             {id: prompt.id}, 
             '', 
             `${baseUrl}#chat-${prompt.id}`
         );
     }
-}
 
-        // Event handlers para los botones de navegación
-        $('#prevPrompt').click(function() {
-            if (currentPromptIndex > 0) {
-                currentPromptIndex--;
-                loadPromptData(currentPromptIndex);
+    // Función para obtener el prompt actual
+    function getCurrentPrompt() {
+        if (!cachedPrompts[currentPage]) return null;
+        return cachedPrompts[currentPage].prompts[currentPromptIndex];
+    }
+
+    // Manejadores de navegación
+    $('#prevPrompt').click(function() {
+        if (currentPromptIndex > 0) {
+            currentPromptIndex--;
+            loadPromptData(getCurrentPrompt());
+        } else if (currentPage > 1) {
+            currentPage--;
+            loadPromptsPage(currentPage).then(data => {
+                currentPromptIndex = data.prompts.length - 1;
+                loadPromptData(getCurrentPrompt());
+            });
+        }
+    });
+
+
+    $('#nextPrompt').click(function() {
+        const currentPageData = cachedPrompts[currentPage];
+        if (!currentPageData) return;
+        
+        if (currentPromptIndex < currentPageData.prompts.length - 1) {
+            currentPromptIndex++;
+            loadPromptData(getCurrentPrompt());
+        } else if (currentPage < totalPages) {
+            currentPage++;
+            loadPromptsPage(currentPage).then(data => {
+                currentPromptIndex = 0;
+                loadPromptData(getCurrentPrompt());
+            });
+        }
+    });
+
+    
+        // Inicialización al cargar la página
+// Inicialización
+function initialize() {
+        loadPromptsPage(1).then(data => {
+            if (data.prompts && data.prompts.length > 0) {
+                currentPromptIndex = 0;
+                loadPromptData(getCurrentPrompt());
+                
+                // Si hay un hash en la URL, intentar cargar ese prompt específico
+                const hash = window.location.hash;
+                if (hash.startsWith('#chat-')) {
+                    const requestedId = parseInt(hash.replace('#chat-', ''));
+                    const promptIndex = data.prompts.findIndex(p => p.id === requestedId);
+                    if (promptIndex >= 0) {
+                        currentPromptIndex = promptIndex;
+                        loadPromptData(getCurrentPrompt());
+                    }
+                }
             }
         });
+    }
 
-        $('#nextPrompt').click(function() {
-            if (currentPromptIndex < prompts.length - 1) {
-                currentPromptIndex++;
-                loadPromptData(currentPromptIndex);
-            }
-        });
-
-        // Cargar prompts al iniciar
-        loadPrompts();
+// Llamar a la inicialización cuando el documento esté listo
+initialize();
 
         // Función para eliminar rutas seleccionadas
         function deleteSelectedPaths() {
