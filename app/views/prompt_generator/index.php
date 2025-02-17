@@ -360,7 +360,7 @@
     /*
         Mostrar resultado en #generatedPrompt
     */
-    function displayFileContents(description, contents, notes) {
+    function displayFileContents(description, contents, files, notes) {
         let generatedPrompt = '';
 
         // 1. Normalizar parámetros
