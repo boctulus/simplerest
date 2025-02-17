@@ -10,4 +10,3 @@ storage/security/
 .env
 .codegpt
 composer.json.tmp
-CHANGELOG.txt
