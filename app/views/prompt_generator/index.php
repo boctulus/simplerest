@@ -1,8 +1,25 @@
+<style>
+.navigation-buttons {
+    margin-left: auto; /* Empuja los botones hacia la derecha */
+}
+
+.navigation-buttons button {
+    min-width: 40px;
+    padding: 0.375rem 0.75rem;
+}
+</style>
+
 <div class="container-fluid mt-4">
 
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <h1 class="mb-3">Generador de Prompt</h1>
+            <div class="d-flex align-items-center position-relative mb-3">
+                <h1 class="mb-3">Generador de Prompt</h1>
+                <div class="ms-auto"> <!-- Botones de navegacion -->
+                    <button class="btn btn-primary me-2" id="prevPrompt">&lt;</button>
+                    <button class="btn btn-primary" id="nextPrompt">&gt;</button>
+                </div>
+            </div>
 
             <!-- Sección de introducción -->
             <div class="mb-5 position-relative">
@@ -83,6 +100,10 @@
 </div>
 
 <script>
+    let currentPromptIndex = -1;
+    let prompts = [];
+
+
     // Función para obtener el contenido desde la API
     function getPromptContent() {
         const description = $('#prompt-description').val(); // Introducción
@@ -601,6 +622,68 @@
                 e.preventDefault();
             });
         }
+
+        // Función para cargar todos los prompts
+        function loadPrompts() {
+            $.ajax({
+                url: '/api/v1/prompts',
+                type: 'GET',
+                success: function(response) {
+                    prompts = response.data.prompts;
+                    if (prompts.length > 0) {
+                        currentPromptIndex = 0;
+                        loadPromptData(currentPromptIndex);
+                    }
+                }
+            });
+        }
+
+        // Función para cargar un prompt específico
+        // Modify the loadPromptData function
+function loadPromptData(index) {
+    if (index >= 0 && index < prompts.length) {
+        const prompt = prompts[index];
+        
+        // Cargar datos en el formulario
+        $('#prompt-description').val(prompt.description || '');
+        $('#promptFinal').val(prompt.notes || '');
+        
+        // Limpiar y cargar rutas de archivos
+        $('#filePathsContainer').empty();
+        if (prompt.files) {
+            const files = JSON.parse(prompt.files);
+            files.forEach(file => addFilePathInput(file));
+        }
+        
+        // Get current URL without hash
+        const baseUrl = window.location.href.split('#')[0];
+        
+        // Update URL preserving the full path and adding the hash
+        history.pushState(
+            {id: prompt.id}, 
+            '', 
+            `${baseUrl}#chat-${prompt.id}`
+        );
+    }
+}
+
+        // Event handlers para los botones de navegación
+        $('#prevPrompt').click(function() {
+            if (currentPromptIndex > 0) {
+                currentPromptIndex--;
+                loadPromptData(currentPromptIndex);
+            }
+        });
+
+        $('#nextPrompt').click(function() {
+            if (currentPromptIndex < prompts.length - 1) {
+                currentPromptIndex++;
+                loadPromptData(currentPromptIndex);
+            }
+        });
+
+        // Cargar prompts al iniciar
+        loadPrompts();
 
         // Función para eliminar rutas seleccionadas
         function deleteSelectedPaths() {
