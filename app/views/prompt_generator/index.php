@@ -50,7 +50,7 @@
 
                 <!-- Botón dropdown para ejecutar con ChatGPT o Claude -->
                 <div class="btn-group">
-                <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="executeButton">
+                    <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="executeButton">
                         Ejecutar con
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -85,11 +85,11 @@
 <script>
     // Función para obtener el contenido desde la API
     function getPromptContent() {
-        const description = $('#prompt-description').val();  // Introducción
-        const files = $('.file-input').filter(function () {
+        const description = $('#prompt-description').val(); // Introducción
+        const files = $('.file-input').filter(function() {
             // Solo incluir rutas no vacías y no deshabilitadas
             return !$(this).closest('.file-path-group').attr('data-disabled') && $(this).val().trim() !== '';
-        }).map(function () {
+        }).map(function() {
             return $(this).val().trim();
         }).get();
 
@@ -100,7 +100,7 @@
 
         const notes = $('#promptFinal').val();
         // Obtener todas las rutas de archivos
-        $('.file-input').not(':disabled').each(function () {
+        $('.file-input').not(':disabled').each(function() {
             const filePath = $(this).val();
             if (filePath) {
                 files.push(filePath);
@@ -120,50 +120,52 @@
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function(response) {
-                // ... lógica exitosa ...
+                // Procesar y mostrar el contenido recibido si es exitoso
+                clearValidationErrors(); // Limpiar cualquier error anterior
+                displayFileContents(description, response.data.prompts.content, files, notes);
+
+                const id = response.data.id;
+                const newUrl = `${window.location.pathname}#chat-${id}`;
+                history.pushState({
+                    id: id
+                }, '', newUrl);
+                saveFormVersion(id, description, files, notes);
             },
             error: function(xhr, status, error) {
                 let errorMessage = 'Error desconocido';
-                
-                // 1. Manejo estructurado de errores
+
                 if (xhr.responseJSON && xhr.responseJSON.error) {
-                    errorMessage = xhr.responseJSON.error.message || 
-                                xhr.responseJSON.error.detail || 
-                                'Error en el servidor';
+                    errorMessage = xhr.responseJSON.error.message ||
+                        xhr.responseJSON.error.detail ||
+                        'Error en el servidor';
                 }
 
-                // 2. Mostrar SweetAlert con detalles técnicos
                 Swal.fire({
                     title: `Error ${xhr.status}`,
                     html: `<div style="text-align:left;">
-                            <b>Mensaje:</b> ${errorMessage}<br>
-                            <b>Tipo:</b> ${xhr.responseJSON?.error?.type || 'N/A'}<br>
-                            <b>Código:</b> ${xhr.responseJSON?.error?.code || 'N/A'}
-                        </div>`,
+                 <b>Mensaje:</b> ${errorMessage}<br>
+                 <b>Tipo:</b> ${xhr.responseJSON?.error?.type || 'N/A'}<br>
+                 <b>Código:</b> ${xhr.responseJSON?.error?.code || 'N/A'}
+               </div>`,
                     icon: 'error',
                     showCancelButton: true,
                     confirmButtonText: 'Reintentar',
-                    cancelButtonText: 'Ver detalles',
-                    allowOutsideClick: false
+                    cancelButtonText: 'Cerrar', // ← Texto modificado
+                    allowOutsideClick: false,
+                    showCloseButton: false // Oculta la 'X' de cierre
                 }).then((result) => {
-                    if (result.isDismissed) {
-                        // 3. Mostrar detalles técnicos en consola
-                        console.error('Detalles completos del error:', {
-                            status: xhr.status,
-                            response: xhr.responseJSON,
-                            config: xhr.config
-                        });
-                    } else if (result.isConfirmed) {
-                        // 4. Reintentar automáticamente
+                    if (result.isConfirmed) {
+                        // Solo reintentar si hace clic en el botón principal
                         getPromptContent();
                     }
+                    // El cierre simple no requiere lógica adicional
                 });
 
-                // 5. Restauración visual del formulario
                 clearValidationErrors();
                 $('.file-input').removeClass('is-invalid');
             }
         });
+
     }
 
     // Función para mostrar errores de validación
@@ -178,7 +180,7 @@
 
         if (errors.files) {
             // Aquí podrías iterar sobre las rutas de archivos si es necesario
-            $('.file-input').each(function (index) {
+            $('.file-input').each(function(index) {
                 if (errors.files[index]) {
                     $(this).addClass('is-invalid');
                     $(this).after(`<div class="invalid-feedback">${errors.files[index].error_detail}</div>`);
@@ -195,7 +197,7 @@
     function handleServerResponse(response) {
         if (response.error) {
             // Manejar errores de ruta
-            $('.file-input').each(function (index) {
+            $('.file-input').each(function(index) {
                 let $input = $(this);
                 let value = $input.val();
                 let hasError = response.error.invalidPaths.includes(value);
@@ -232,7 +234,7 @@
     }
 
     function restoreDeleteButtons() {
-        $('.file-path-group.has-error').each(function () {
+        $('.file-path-group.has-error').each(function() {
             let $group = $(this);
             $group.removeClass('has-error');
             $group.find('.is-invalid').removeClass('is-invalid');
@@ -245,8 +247,8 @@
     function clearValidationErrors() {
         $('.is-invalid').removeClass('is-invalid');
         $('.invalid-feedback').remove();
-        
-        $('.file-path-group').each(function () {
+
+        $('.file-path-group').each(function() {
             let $group = $(this);
             let value = $group.find('.file-input').val();
             let isDisabled = $group.attr('data-disabled') === 'true';
@@ -329,7 +331,7 @@
             if (Array.isArray(savedForm.files)) {
                 // Usar un Set para evitar duplicados
                 const uniquePaths = new Set();
-                
+
                 savedForm.files.forEach(file => {
                     let filePath, isDisabled;
                     if (typeof file === 'string') {
@@ -339,7 +341,7 @@
                         filePath = file.path;
                         isDisabled = file.disabled;
                     }
-                    
+
                     // Solo agregar si la ruta no existe ya
                     if (!uniquePaths.has(filePath)) {
                         uniquePaths.add(filePath);
@@ -359,50 +361,50 @@
         Mostrar resultado en #generatedPrompt
     */
     function displayFileContents(description, contents, notes) {
-    let generatedPrompt = '';
+        let generatedPrompt = '';
 
-    // 1. Normalizar parámetros
-    const safeDescription = typeof description === 'string' ? description : '';
-    const safeNotes = typeof notes === 'string' ? notes : '';
+        // 1. Normalizar parámetros
+        const safeDescription = typeof description === 'string' ? description : '';
+        const safeNotes = typeof notes === 'string' ? notes : '';
 
-    // 2. Agregar introducción validada
-    if (safeDescription.trim() !== '') {
-        generatedPrompt += `${safeDescription}\n\n`;
-    }
+        // 2. Agregar introducción validada
+        if (safeDescription.trim() !== '') {
+            generatedPrompt += `${safeDescription}\n\n`;
+        }
 
-    // 3. Validar estructura de contents
-    if (!contents || typeof contents !== 'object') {
-        console.error('Contenido inválido:', contents);
-        Swal.fire('Error', 'Formato de archivos inválido', 'error');
-        return;
-    }
-
-    // 4. Iterar sobre archivos
-    Object.entries(contents).forEach(([filePath, fileContent]) => {
-        if (typeof fileContent !== 'string') {
-            console.warn(`Contenido no es texto en: ${filePath}`);
+        // 3. Validar estructura de contents
+        if (!contents || typeof contents !== 'object') {
+            console.error('Contenido inválido:', contents);
+            Swal.fire('Error', 'Formato de archivos inválido', 'error');
             return;
         }
-        
-        // Formatear bloque de código
-        const extension = filePath.split('.').pop().toLowerCase();
-        const language = {
-            'php': 'php',
-            'js': 'javascript',
-            // ... otros mapeos
-        }[extension] || '';
-        
-        generatedPrompt += `/* Ruta: ${filePath} */\n\`\`\`${language}\n${fileContent}\n\`\`\`\n\n`;
-    });
 
-    // 5. Agregar notas finales validadas
-    if (safeNotes.trim() !== '') {
-        generatedPrompt += `// Notas finales\n${safeNotes}\n`;
+        // 4. Iterar sobre archivos
+        Object.entries(contents).forEach(([filePath, fileContent]) => {
+            if (typeof fileContent !== 'string') {
+                console.warn(`Contenido no es texto en: ${filePath}`);
+                return;
+            }
+
+            // Formatear bloque de código
+            const extension = filePath.split('.').pop().toLowerCase();
+            const language = {
+                'php': 'php',
+                'js': 'javascript',
+                // ... otros mapeos
+            } [extension] || '';
+
+            generatedPrompt += `/* Ruta: ${filePath} */\n\`\`\`${language}\n${fileContent}\n\`\`\`\n\n`;
+        });
+
+        // 5. Agregar notas finales validadas
+        if (safeNotes.trim() !== '') {
+            generatedPrompt += `// Notas finales\n${safeNotes}\n`;
+        }
+
+        // 6. Actualizar textarea
+        $('#generatedPrompt').val(generatedPrompt);
     }
-
-    // 6. Actualizar textarea
-    $('#generatedPrompt').val(generatedPrompt);
-}
 
     function formatFileContent(filePath, content) {
         const extension = filePath.split('.').pop().toLowerCase();
@@ -450,7 +452,7 @@
     }
 
     function togglePathStatus(enable) {
-        $('.file-path-checkbox:checked').each(function () {
+        $('.file-path-checkbox:checked').each(function() {
             let $group = $(this).closest('.file-path-group');
             let $input = $group.find('.file-input');
             $group.attr('data-disabled', !enable);
@@ -475,12 +477,12 @@
         $('#disableSelectedPaths').toggle(!allDisabled);
     }
 
-    $('#enableSelectedPaths').click(function (e) {
+    $('#enableSelectedPaths').click(function(e) {
         e.preventDefault();
         togglePathStatus(true);
     });
 
-    $('#disableSelectedPaths').click(function (e) {
+    $('#disableSelectedPaths').click(function(e) {
         e.preventDefault();
         togglePathStatus(false);
     });
@@ -489,7 +491,7 @@
     $(document).on('change', '.file-path-checkbox', updateBulkActionOptions);
 
     // Manejar el evento de carga de la página
-    window.onload = function () {
+    window.onload = function() {
         // Si la página carga con un hash en la URL
         if (window.location.hash) {
             handleHashChange();
@@ -499,55 +501,55 @@
     // Manejar el evento 'hashchange' para detectar cambios en el hash de la URL
     window.addEventListener('hashchange', handleHashChange);
 
-    window.addEventListener('popstate', function (event) {
+    window.addEventListener('popstate', function(event) {
         if (event.state && event.state.id) {
             loadFormStateFromLocalStorage();
         }
     });
 
     // Manejar el estado del historial para cuando se navega hacia atrás o adelante
-    window.onpopstate = function () {
+    window.onpopstate = function() {
         handleHashChange();
     };
 
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         // Inicializar eventos
         initializeEvents();
         addFilePathInput(); // que haya al menos una ruta
 
         // Función para inicializar los eventos
         function initializeEvents() {
-            $('#addFilePath').click(function (e) {
+            $('#addFilePath').click(function(e) {
                 e.preventDefault();
                 addFilePathInput();
             });
 
-            $('#generatePrompt').click(function (e) {
+            $('#generatePrompt').click(function(e) {
                 e.preventDefault();
                 generatePrompt();
             });
 
-            $('#deleteSelectedPaths').click(function (e) {
+            $('#deleteSelectedPaths').click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 deleteSelectedPaths();
             });
 
-            $('#deleteSelectedPaths').click(function (e) {
+            $('#deleteSelectedPaths').click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 deleteSelectedPaths();
             });
 
-            $('#enableSelectedPaths').click(function (e) {
+            $('#enableSelectedPaths').click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 togglePathStatus(true);
             });
 
             // Función para copiar al portapapeles
-            $('#copyPrompt').click(function (e) {
+            $('#copyPrompt').click(function(e) {
                 e.preventDefault();
                 copyToClipboard();
             });
@@ -555,30 +557,30 @@
             $('#clearFormButton').click(clearForm);
 
             // Función para mostrar en pantalla completa
-            $('#fullscreenPrompt').click(function (e) {
+            $('#fullscreenPrompt').click(function(e) {
                 e.preventDefault();
                 toggleFullscreen($('#generatedPrompt')[0]);
             });
 
             // Asignar eventos a los botones del dropdown
-            $('#executeWithChatGPT').click(function (e) {
+            $('#executeWithChatGPT').click(function(e) {
                 e.preventDefault();
                 executeWithChatGPT();
             });
 
-            $('#executeWithClaude').click(function (e) {
+            $('#executeWithClaude').click(function(e) {
                 e.preventDefault();
                 executeWithClaude();
             });
 
             // Registrar el evento para generar el prompt
-            $('#generate-prompt').on('click', function (e) {
+            $('#generate-prompt').on('click', function(e) {
                 e.preventDefault();
                 getPromptContent();
             });
 
             // Eventos para los botones de eliminar en inputs dinámicos
-            $(document).on('click', '.delete-file-path', function () {
+            $(document).on('click', '.delete-file-path', function() {
                 let $filePathGroup = $(this).closest('.file-path-group');
                 deleteFilePath($filePathGroup);
             });
@@ -595,7 +597,7 @@
                 newForm();
             });
 
-            $('form').on('submit', function (e) {
+            $('form').on('submit', function(e) {
                 e.preventDefault();
             });
         }
@@ -673,7 +675,7 @@
             let generatedPrompt = intro + '\n\n';
 
             // Agregar archivos con cabeceras
-            filePaths.forEach(function (path) {
+            filePaths.forEach(function(path) {
                 generatedPrompt += `### Archivo: ${path} ###\n/* Contenido del archivo ${path} */\n\n`;
             });
 
@@ -691,10 +693,10 @@
             // Verificar si la API del portapapeles está disponible
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 // Usamos el API del portapapeles si está disponible
-                navigator.clipboard.writeText(generatedPrompt).then(function () {
+                navigator.clipboard.writeText(generatedPrompt).then(function() {
                     // Si se copia correctamente, mostramos un mensaje de éxito
                     Swal.fire('Éxito', 'El prompt ha sido copiado al portapapeles', 'success');
-                }).catch(function (error) {
+                }).catch(function(error) {
                     // Si ocurre algún error, mostramos un mensaje de error
                     Swal.fire('Error', 'Hubo un problema al copiar el prompt', 'error');
                     console.error('Error al copiar al portapapeles:', error);
@@ -708,7 +710,7 @@
                 // Seleccionamos el contenido del textarea temporal y lo copiamos
                 tempTextArea.select();
                 try {
-                    document.execCommand("copy");  // Copiamos el texto seleccionado
+                    document.execCommand("copy"); // Copiamos el texto seleccionado
                     Swal.fire('Éxito', 'El prompt ha sido copiado al portapapeles', 'success');
                 } catch (error) {
                     Swal.fire('Error', 'Hubo un problema al copiar el prompt', 'error');
@@ -724,28 +726,28 @@
         function newForm() {
             // Limpiar el formulario
             clearForm();
-            
+
             // Remover el hash de la URL sin recargar la página
             history.pushState('', document.title, window.location.pathname);
         }
 
         function extractPathsFromPrompt() {
             const promptText = $('#prompt-description').val();
-            
+
             // Expresión regular para detectar rutas absolutas en Windows y Unix
             const pathRegex = /(?:[a-zA-Z]:\\[^:\n]+)|(?:\/[^\n:]+)/g;
-            
+
             // Encontrar todas las coincidencias
             const paths = promptText.match(pathRegex) || [];
-            
+
             // Filtrar y limpiar las rutas encontradas
             const validPaths = paths
-            .map(path => path.trim())
-            .filter(path => {
-                // Verificar que la ruta tenga una extensión de archivo y no esté vacía
-                return path && path.length > 0 && path.includes('.') && !path.endsWith('.');
-            });
-            
+                .map(path => path.trim())
+                .filter(path => {
+                    // Verificar que la ruta tenga una extensión de archivo y no esté vacía
+                    return path && path.length > 0 && path.includes('.') && !path.endsWith('.');
+                });
+
             // Si no se encontraron rutas válidas
             if (validPaths.length === 0) {
                 Swal.fire('Información', 'No se encontraron rutas absolutas en el texto del PROMPT', 'info');
@@ -811,9 +813,6 @@
                 document.getElementById('form-container').innerHTML = `<p>No form found for ID: ${id}</p>`;
             }
         }
-
-
-
 
     });
 </script>
