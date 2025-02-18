@@ -1,12 +1,13 @@
 <style>
-.navigation-buttons {
-    margin-left: auto; /* Empuja los botones hacia la derecha */
-}
+    .navigation-buttons {
+        margin-left: auto;
+        /* Empuja los botones hacia la derecha */
+    }
 
-.navigation-buttons button {
-    min-width: 40px;
-    padding: 0.375rem 0.75rem;
-}
+    .navigation-buttons button {
+        min-width: 40px;
+        padding: 0.375rem 0.75rem;
+    }
 </style>
 
 <div class="container-fluid mt-4">
@@ -104,7 +105,7 @@
     let cachedPrompts = {}; // Cache para almacenar prompts por página
     let currentPage = 1;
     let totalPages = 1;
-    let nextUrl = null; 
+    let nextUrl = null;
 
     // Función para obtener el contenido desde la API
     function getPromptContent() {
@@ -149,9 +150,9 @@
 
                 const id = response.data.id;
                 const newUrl = `${window.location.pathname}#chat-${id}`;
-                history.pushState({
-                    id: id
-                }, '', newUrl);
+                if (window.location.hash !== `#chat-${id}`) {
+                    history.replaceState({ id: id }, '', newUrl); // Usar replaceState para evitar entrada duplicada en historial
+                }
                 saveFormVersion(id, description, files, notes);
             },
             error: function(xhr, status, error) {
@@ -371,7 +372,17 @@
                         addFilePathInput(filePath, false, isDisabled);
                     }
                 });
+
+                // Actualizar el índice y página actual
+                currentPromptIndex = -1;
+                currentPage = 1;
             }
+
+            // Asegurar al menos un input
+            if ($('.file-path-group').length === 0) {
+                addFilePathInput();
+            }
+
         }
 
         // Asegurarse de que siempre haya al menos una ruta
@@ -445,6 +456,16 @@
     function handleHashChange() {
         const hash = window.location.hash;
         if (hash.startsWith('#chat-')) {
+            const formId = hash.split('-')[1];
+            const savedForm = JSON.parse(localStorage.getItem(`chat-${formId}`));
+            if (savedForm) {
+                loadFormStateFromLocalStorage();
+            } else {
+                // Si no existe en localStorage, limpiar el formulario
+                clearForm();
+            }
+        } else {
+            // Si no hay hash, cargar estado actual desde localStorage general
             loadFormStateFromLocalStorage();
         }
     }
@@ -541,6 +562,14 @@
         initializeEvents();
         addFilePathInput(); // que haya al menos una ruta
 
+        // Cargar estado inicial basado en hash si existe
+        handleHashChange();
+
+        // Inicializar API solo si no hay hash
+        if (!window.location.hash) {
+            initialize();
+        }
+
         // Función para inicializar los eventos
         function initializeEvents() {
             $('#addFilePath').click(function(e) {
@@ -626,115 +655,107 @@
         }
 
         // Función para cargar prompts de una página específica
-    function loadPromptsPage(page) {
-        // Si ya tenemos esta página en caché, usar esos datos
-        if (cachedPrompts[page]) {
-            return Promise.resolve(cachedPrompts[page]);
-        }
-
-        // Si no está en caché, hacer el request
-        return $.ajax({
-            url: `/api/v1/prompts?page=${page}`,
-            type: 'GET'
-        }).then(function(response) {
-            // Guardar en caché
-            cachedPrompts[page] = response.data;
-            totalPages = response.paginator.totalPages;
-            nextUrl = response.paginator.nextUrl;
-            return response.data;
-        });
-    }
-
-    // Función para cargar los datos de un prompt en el formulario
-    function loadPromptData(prompt) {
-        if (!prompt) return;
-        
-        // Cargar datos en el formulario
-        $('#prompt-description').val(prompt.description || '');
-        $('#promptFinal').val(prompt.notes || '');
-        
-        // Limpiar y cargar rutas de archivos
-        $('#filePathsContainer').empty();
-        if (prompt.files) {
-            try {
-                const files = JSON.parse(prompt.files);
-                files.forEach(file => addFilePathInput(file));
-            } catch (e) {
-                console.error('Error parsing files:', e);
+        function loadPromptsPage(page) {
+            // Si ya tenemos esta página en caché, usar esos datos
+            if (cachedPrompts[page]) {
+                return Promise.resolve(cachedPrompts[page]);
             }
-        }
-        
-        // Actualizar URL
-        const baseUrl = window.location.href.split('#')[0];
-        history.pushState(
-            {id: prompt.id}, 
-            '', 
-            `${baseUrl}#chat-${prompt.id}`
-        );
-    }
 
-    // Función para obtener el prompt actual
-    function getCurrentPrompt() {
-        if (!cachedPrompts[currentPage]) return null;
-        return cachedPrompts[currentPage].prompts[currentPromptIndex];
-    }
-
-    // Manejadores de navegación
-    $('#prevPrompt').click(function() {
-        if (currentPromptIndex > 0) {
-            currentPromptIndex--;
-            loadPromptData(getCurrentPrompt());
-        } else if (currentPage > 1) {
-            currentPage--;
-            loadPromptsPage(currentPage).then(data => {
-                currentPromptIndex = data.prompts.length - 1;
-                loadPromptData(getCurrentPrompt());
+            // Si no está en caché, hacer el request
+            return $.ajax({
+                url: `/api/v1/prompts?page=${page}`,
+                type: 'GET'
+            }).then(function(response) {
+                // Guardar en caché
+                cachedPrompts[page] = response.data;
+                totalPages = response.paginator.totalPages;
+                nextUrl = response.paginator.nextUrl;
+                return response.data;
             });
         }
-    });
 
+        // Función para cargar los datos de un prompt en el formulario
+        function loadPromptData(prompt) {
+            if (!prompt) return;
 
-    $('#nextPrompt').click(function() {
-        const currentPageData = cachedPrompts[currentPage];
-        if (!currentPageData) return;
-        
-        if (currentPromptIndex < currentPageData.prompts.length - 1) {
-            currentPromptIndex++;
-            loadPromptData(getCurrentPrompt());
-        } else if (currentPage < totalPages) {
-            currentPage++;
-            loadPromptsPage(currentPage).then(data => {
-                currentPromptIndex = 0;
-                loadPromptData(getCurrentPrompt());
-            });
-        }
-    });
+            // Cargar datos en el formulario
+            $('#prompt-description').val(prompt.description || '');
+            $('#promptFinal').val(prompt.notes || '');
 
-    
-        // Inicialización al cargar la página
-// Inicialización
-function initialize() {
-        loadPromptsPage(1).then(data => {
-            if (data.prompts && data.prompts.length > 0) {
-                currentPromptIndex = 0;
-                loadPromptData(getCurrentPrompt());
-                
-                // Si hay un hash en la URL, intentar cargar ese prompt específico
-                const hash = window.location.hash;
-                if (hash.startsWith('#chat-')) {
-                    const requestedId = parseInt(hash.replace('#chat-', ''));
-                    const promptIndex = data.prompts.findIndex(p => p.id === requestedId);
-                    if (promptIndex >= 0) {
-                        currentPromptIndex = promptIndex;
-                        loadPromptData(getCurrentPrompt());
-                    }
+            // Limpiar y cargar rutas de archivos
+            $('#filePathsContainer').empty();
+            if (prompt.files) {
+                try {
+                    const files = JSON.parse(prompt.files);
+                    files.forEach(file => addFilePathInput(file));
+                } catch (e) {
+                    console.error('Error parsing files:', e);
                 }
             }
-        });
-    }
 
-// Llamar a la inicialización cuando el documento esté listo
-initialize();
+            // Actualizar URL
+            const baseUrl = window.location.href.split('#')[0];
+            history.pushState({
+                    id: prompt.id
+                },
+                '',
+                `${baseUrl}#chat-${prompt.id}`
+            );
+        }
+
+        // Función para obtener el prompt actual
+        function getCurrentPrompt() {
+            if (!cachedPrompts[currentPage]) return null;
+            return cachedPrompts[currentPage].prompts[currentPromptIndex];
+        }
+
+        // Manejadores de navegación
+        $('#prevPrompt').click(function() {
+            if (currentPromptIndex > 0) {
+                currentPromptIndex--;
+                loadPromptData(getCurrentPrompt());
+            } else if (currentPage > 1) {
+                currentPage--;
+                loadPromptsPage(currentPage).then(data => {
+                    currentPromptIndex = data.prompts.length - 1;
+                    loadPromptData(getCurrentPrompt());
+                });
+            }
+        });
+
+
+        $('#nextPrompt').click(function() {
+            const currentPageData = cachedPrompts[currentPage];
+            if (!currentPageData) return;
+
+            if (currentPromptIndex < currentPageData.prompts.length - 1) {
+                currentPromptIndex++;
+                loadPromptData(getCurrentPrompt());
+            } else if (currentPage < totalPages) {
+                currentPage++;
+                loadPromptsPage(currentPage).then(data => {
+                    currentPromptIndex = 0;
+                    loadPromptData(getCurrentPrompt());
+                });
+            }
+        });
+
+
+        // Inicialización al cargar la página
+        function initialize() {
+            // Solo cargar desde API si no hay hash en la URL
+            if (!window.location.hash) {
+                loadPromptsPage(1).then(data => {
+                    if (data.prompts.length > 0) {
+                        currentPromptIndex = 0;
+                        loadPromptData(getCurrentPrompt());
+                    }
+                });
+            }
+        }
+
+        // Llamar a la inicialización cuando el documento esté listo
+        initialize();
 
         // Función para eliminar rutas seleccionadas
         function deleteSelectedPaths() {
