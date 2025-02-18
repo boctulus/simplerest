@@ -4,3 +4,4 @@
 [2025-02-17 11:17:27]	0.8.12	Botones de navregacion
 [2025-02-17 11:32:10]	0.8.12	Botones de navegacion OK
 [2025-02-18 20:53:37]	0.8.12	Generador de prompts. Reparado el ingreso de URL con #hash
+[2025-02-18 23:28:52]	0.8.12	Actualizacion interfaz metodo IMail:send()
