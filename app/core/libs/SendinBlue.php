@@ -3,15 +3,16 @@
 namespace simplerest\core\libs;
 
 use GuzzleHttp;
-use simplerest\core\libs\Logger;
 use simplerest\core\interfaces\IMail;
+use simplerest\core\libs\Logger;
+use simplerest\core\libs\StdOut;
+use simplerest\libs\SendinBlue\Client\Api\TransactionalEmailsApi;
 use simplerest\libs\SendinBlue\Client\Configuration;
 use simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail;
-use simplerest\libs\SendinBlue\Client\Api\TransactionalEmailsApi;
 
 class SendinBlue extends MailBase implements IMail
 {
-    static function send(Array $to, $subject = '', $body = '', $attachments = null, Array $from = [], Array $cc = [], Array $bcc = [], Array $reply_to = [], $alt_body = null){
+    static function send(Array $to, $subject = '', $body = '', $attachments = null, Array $from = [], Array $cc = [], Array $bcc = [], Array $reply_to = [], $alt_body = null) : bool {
         $config = config();
 
         $body = trim($body);
@@ -94,9 +95,11 @@ class SendinBlue extends MailBase implements IMail
                 if (static::$silent){
                     Files::dump(true, 'dump.txt', true);
                 } else {
-                    dd($result);
+                    StdOut::print($result);
                 }
             }
+
+            return true;
         } catch (\Exception $e) {
             static::$errors = $e;
 
@@ -104,9 +107,11 @@ class SendinBlue extends MailBase implements IMail
                 if (static::$silent){
                     Files::dump($e->getMessage(), null, true);
                 } else {
-                    dd($e->getMessage());
+                    StdOut::print($e->getMessage());
                 }
             }
+
+            return false;
         }
     }
 

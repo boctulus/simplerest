@@ -115,7 +115,7 @@ class Mail extends MailBase implements IMail
             $alt_body = null
         )
     */
-    static function send($to, $subject = '', $body = '', $attachments = null, $from = [], Array $cc = [], $bcc = [], $reply_to = [], $alt_body = null){
+    static function send($to, $subject = '', $body = '', $attachments = null, $from = [], Array $cc = [], $bcc = [], $reply_to = [], $alt_body = null) : bool {
 		$config = config();
 
         $body = trim($body);
