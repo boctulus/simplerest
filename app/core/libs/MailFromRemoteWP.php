@@ -20,7 +20,7 @@ class MailFromRemoteWP extends MailBase
         static::$url = $url;
     }
 
-    static function send($to, $subject = '', $body = '', $attachments = null, $from = [], Array $cc = [], $bcc = [], $reply_to = [], $alt_body = null){
+    static function send($to, $subject = '', $body = '', $attachments = null, $from = [], Array $cc = [], $bcc = [], $reply_to = [], $alt_body = null) : bool {
 		if (empty(static::$url)){
             throw new \Exception("Set remote WP url first");
         }
