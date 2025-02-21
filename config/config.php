@@ -1,6 +1,7 @@
 <?php
 
 use simplerest\core\libs\Env;
+use simplerest\core\libs\Mail;
 use simplerest\core\libs\Paginator;
 
 
@@ -210,74 +211,10 @@ return [
 				// 	]
 				// ]
 			],
-
-			'pulque' => [
-				'Host'			=> Env::get('MAIL_HOST_3'),
-				'Port'			=> Env::get('MAIL_PORT_3'),
-				'Username' 		=> Env::get('MAIL_USERNAME_3'),
-				'Password' 		=> Env::get('MAIL_PASSWORD_3'),
-				'SMTPSecure'	=> Env::get('MAIL_ENCRYPTION_3'),
-				'SMTPAuth' 		=> Env::get('MAIL_AUTH_3'),
-				//'SMTPAutoTLS'   => false,
-				'SMTPDebug' 	=> 0,
-				'CharSet' 		=> 'UTF-8',
-				'Debugutput' 	=> 'html',
-
-				// Extras
-				'SMTPOptions'   => [
-					'ssl' => [
-						'verify_peer' => false,
-						'verify_peer_name' => false,
-						'allow_self_signed' => true
-					]
-				]
-			],
-
-			'miguel_peru' => [
-				'Host'			=> Env::get('MAIL_HOST_4'),
-				'Port'			=> Env::get('MAIL_PORT_4'),
-				'Username' 		=> Env::get('MAIL_USERNAME_4'),
-				'Password' 		=> Env::get('MAIL_PASSWORD_4'),
-				'SMTPSecure'	=> Env::get('MAIL_ENCRYPTION_4'),
-				'SMTPAuth' 		=> Env::get('MAIL_AUTH_4'),
-				'SMTPDebug' 	=> 0,
-				'CharSet' 		=> 'UTF-8',
-				'Debugutput' 	=> 'html',
-
-				//Extras
-				// 'SMTPOptions'   => [
-				// 	'ssl' => [
-				// 		'verify_peer' => false,
-				// 		'verify_peer_name' => false,
-				// 		'allow_self_signed' => true
-				// 	]					
-				// ]
-			],
-
-			'solbin_sblue' => [
-				'Host'			=> Env::get('MAIL_HOST_5'),
-				'Port'			=> Env::get('MAIL_PORT_5'),
-				'Username' 		=> Env::get('MAIL_USERNAME_5'),
-				'Password' 		=> Env::get('MAIL_PASSWORD_5'),
-				'SMTPSecure'	=> Env::get('MAIL_ENCRYPTION_5'),
-				'SMTPAuth' 		=> Env::get('MAIL_AUTH_5'),
-				'SMTPDebug' 	=> 0,
-				'CharSet' 		=> 'UTF-8',
-				'Debugutput' 	=> 'html',
-
-				//Extras
-				// 'SMTPOptions'   => [
-				// 	'ssl' => [
-				// 		'verify_peer' => false,
-				// 		'verify_peer_name' => false,
-				// 		'allow_self_signed' => true
-				// 	]					
-				// ]
-			]
-
 		],
 
-		'mailer_default' => 'google'
+		'mailer_default'       => 'google',
+		// 'mailer_class_default' =>  Mail::class
 	],
 
 	/*

@@ -1430,6 +1430,20 @@ class Strings
 		return count($words);
 	}
 
+	static function truncate($string, $max_len, bool $add_dots = false){
+		if ($string === null){
+			return;
+		}
+
+		$string = trim($string);
+		
+		if ($string === ''){
+			return $string;
+		}
+
+		return static::left($string, $max_len) . ((strlen($string) > $max_len) && $add_dots ? '...' : '');
+	}
+
 	/*
 		Revise el DOM y acorte los textos utilizando el metodo getUpToNWords() 
 		listado mas abajo a $n_words palabras 
