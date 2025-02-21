@@ -42,20 +42,9 @@ class StdOut
         }
     }
 
-    static function info($v, bool $additional_carriage_return = false, $save = false){
-        static::print($v, $additional_carriage_return, $save);
-    }
-
-    static function success($v, bool $additional_carriage_return = false, $save = false){
-        static::print($v, $additional_carriage_return, $save);
-    }
-
-    static function warning($v, bool $additional_carriage_return = false){
-        static::print($v, $additional_carriage_return);
-    }
-
-    static function error($v, bool $additional_carriage_return = false){
-        static::print($v, $additional_carriage_return);
+    // alias
+    static function dd($v, bool $additional_carriage_return = false){
+        static::pprint($v, $additional_carriage_return);
     }
 
     /**
