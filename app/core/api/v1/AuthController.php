@@ -3,19 +3,21 @@
 namespace simplerest\core\api\v1;
 
 use Exception;
-use simplerest\core\controllers\Controller;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use simplerest\core\Acl;
-use simplerest\core\libs\Validator;
+use simplerest\core\controllers\Controller;
 use simplerest\core\exceptions\InvalidValidationException;
-use simplerest\core\libs\Files;
-
 use simplerest\core\interfaces\IAuth;
 use simplerest\core\interfaces\IDbAccess;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Files;
+
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Validator;
+use simplerest\core\Request;
+use simplerest\core\Response;
 
 
 class AuthController extends Controller implements IAuth
@@ -29,7 +31,7 @@ class AuthController extends Controller implements IAuth
     protected $__confirmed_email;
     protected $__active;
     
-    protected $config;
+    protected $config = [];
 
     static protected $current_user_uid; //
     static protected $current_user_permissions = []; //
@@ -40,6 +42,8 @@ class AuthController extends Controller implements IAuth
         cors();
 
         parent::__construct();
+
+        $this->config = config();
 
         $model = get_user_model_name();    
            
@@ -249,9 +253,14 @@ class AuthController extends Controller implements IAuth
 
         try 
         {                                      
-            list($refresh) = sscanf($auth, 'Bearer %s');
+            list($jwt) = sscanf($auth, 'Bearer %s');
 
-            $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['refresh_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
+            $key = new Key(
+                $this->config['refresh_token']['secret_key'],
+                $this->config['refresh_token']['encryption']
+            );
+            
+            $payload = JWT::decode($jwt, $key);
             
             if (empty($payload))
                 error('Unauthorized!',401);                     
@@ -381,7 +390,12 @@ class AuthController extends Controller implements IAuth
         try {                                      
             list($refresh) = sscanf($auth, 'Bearer %s');
 
-            $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['refresh_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
+            $key = new Key(
+                $this->config['refresh_token']['secret_key'],
+                $this->config['refresh_token']['encryption']
+            );
+            
+            $payload = JWT::decode($refresh, $key);
             
             if (empty($payload))
                 error('Unauthorized!',401);                     
@@ -456,7 +470,12 @@ class AuthController extends Controller implements IAuth
             // refresh token
             list($refresh) = sscanf($auth, 'Bearer %s');
 
-            $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['refresh_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
+            $key = new Key(
+                $this->config['refresh_token']['secret_key'],
+                $this->config['refresh_token']['encryption']
+            );
+            
+            $payload = JWT::decode($refresh, $key);
 
             if (empty($payload))
                 error('Unauthorized!',401);                     
@@ -713,7 +732,12 @@ class AuthController extends Controller implements IAuth
         if($jwt != null)
         {
             try{
-                $payload = \Firebase\JWT\JWT::decode($jwt, $this->config['access_token']['secret_key'], [ $this->config['access_token']['encryption'] ]);
+                $key = new Key(
+                    $this->config['access_token']['secret_key'],
+                    $this->config['access_token']['encryption']
+                );
+                
+                $payload = JWT::decode($jwt, $key);
                 
                 $config = config();
                 
@@ -900,7 +924,12 @@ class AuthController extends Controller implements IAuth
         if($jwt != null)
         {
             try {
-                $payload = \Firebase\JWT\JWT::decode($jwt, $this->config['email_token']['secret_key'], [ $this->config['email_token']['encryption'] ]);
+                $key = new Key(
+                    $this->config['email_token']['secret_key'],
+                    $this->config['email_token']['encryption']
+                );
+                
+                $payload = JWT::decode($jwt, $key);
                 
                 if (empty($payload))
                     $error = 'Unauthorized!';                     
@@ -1067,7 +1096,12 @@ class AuthController extends Controller implements IAuth
             if($jwt != null)
             {
                 try {
-                    $payload = \Firebase\JWT\JWT::decode($jwt, $this->config['email_token']['secret_key'], [ $this->config['email_token']['encryption'] ]);
+                    $key = new Key(
+                        $this->config['email_token']['secret_key'],
+                        $this->config['email_token']['encryption']
+                    );
+                    
+                    $payload = JWT::decode($jwt, $key);
                     
                     if (empty($payload))
                         error('Unauthorized!',401);                     
@@ -1179,9 +1213,14 @@ class AuthController extends Controller implements IAuth
         }
 
         try {                                             
-            list($refresh) = sscanf($auth, 'Bearer %s');
+            list($jwt) = sscanf($auth, 'Bearer %s');
 
-            $payload = \Firebase\JWT\JWT::decode($refresh, $this->config['email_token']['secret_key'], [ $this->config['refresh_token']['encryption'] ]);
+            $key = new Key(
+                $this->config['email_token']['secret_key'],
+                $this->config['email_token']['encryption']
+            );
+            
+            $payload = JWT::decode($jwt, $key);
             
             if (empty($payload))
                 error('Unauthorized!',401);                     

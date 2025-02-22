@@ -2436,13 +2436,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         return static::$soft_delete;
     }
 
-    static function whois(){
-        return strrev(Strings::interlace([
-            '.ersrshi l >o.im Aslto<oozBobPy ear rwmr sRlmS ',
-            'dvee tgrlA.mclagT uucb lzo la bdteckoeafteepi'
-        ])) . PHP_EOL;
-    }
-
     /*
         API event hooks
     */    
