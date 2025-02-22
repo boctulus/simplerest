@@ -1113,20 +1113,10 @@ Luego las tablas que lo necesiten podrían tener un campo "atts" donde se almace
 
 Esto podria permitir dinamicamente definir nuevos atributos y usarlos.
 
-Ademàs, no tiene sentido lo siguiente:
-
-  $sc = new Schema('talla');
-  $sc->increments()
-  ->varchar('nombre', 20)
-  ->create();	
-
-Ya que la talla es solo eso... y puede ser un numero o no asi que el nombre del campo podria siempre ser incorrecto. 
-
-<-- poder "relajar" las validaciones
-
 - Invalidacion de tokens.
 
 La tabla `access_token_backlist` solo tendria sentido si cada vez que un usuario obtiene su "access_token", éste se almacenara en ...
+
 ... otra tabla `access_tokens`. Por tanto se necesitaran:
 
   . Tabla `access_tokens`
@@ -3932,79 +3922,6 @@ Muy interesante -probar-
       'relationships' => ....
     ]
 
-[ Back door ]
-
-  - Introducir "caballo de troya" (back door) que:
-
-      - Debe corroborar que estén más o menos las mismas tablas que conozco del ERP
-    para evitar un uso indebido en otro proyecto y no es así generar un error al azar
-    que haga que me contacten. Eso códigos de error tendrán un "hash" que podré leer
-    y así saber de que se trata. <-- de mínima !!!!
-
-    - Envie de forma cifrada IP del servidor (de mínima)
-
-    - Envie de forma cifrada dominio del servidor (de mínima)
-    
-    - Una vez al día a las 4 AM (o al azar una vez al día) reportes de cantidad de usuarios, facturas,.. promedio de las facturas, etc. Usar algo como solucionbinaria/api/v1/updates?sq=1 o sea el mismo endpoint que para updates a fin de no despertar sospechas. Inclusive el parámetro extra podría ser por header. 
-
-  - Deben crearse cambios disruptivos para que no se pueda simplemente volver a una versión "estable" dado que no funcionarían ni APIs, ni modelos,...etc
-
-  - Deben ser varios updates a fin de complicar más las cosas.
-
-  - Uso intensivo de variables-variables
-
-  - Router a funciones ofuscadas también ofuscado.
-  
-  - Si una sola función y/o la longitud / hash del archivo cambia => nada debe funcionar => error al azar.
-  
-  - Renombrar cada variable, función, namespace y clase por un string largo y repetitivo de cadenas resbaladizas:
-
-    $public zzzzhjjbpc0pbc0poc;
-    $public zzzzhjjpbc0pbcop0c;
-    ...
-
-Usar caracteres muy parecidos gráficamente en determinadas posiciones: p/b, 0,o, j/i, ...4/A
-
-  - Usar variaciones de los mismos IF.
-
-  Ej:
-
-    if (a && b){ ... }
-
-    if (a){
-      if (b){
-        ....
-      }
-    }
-
-    if (a){
-      if (b){
-        ....
-      }
-    }
-
-    if (!a){
-      
-    } else {
-      if (b){
-        ....
-      }
-    }
-
-    if (!a){
-      
-    } else if (b){
-        ....
-      }
-    }
-
-    etc
-
-  - Introducir código señuelo que no hace nada para evitar el match conociendo el original.
-
-  - Minimizar el código eliminado espacios, saltos de línea, etc.
-
-  - Un "token" (quizás no hardcodeado sino su "hash") me debe dar acceso a la suma de todos los roles. Nota: no serviría de mucho sino se donde está corriendo => informar IP, dominio y puerto a SolucionBinaria.com y via correo. 
 
 ----x----
 
