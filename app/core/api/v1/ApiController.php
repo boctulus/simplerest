@@ -20,7 +20,7 @@ use simplerest\core\api\v1\ResourceController;
 use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\core\interfaces\ISubResources;
 
-use simplerest\core\traits\SubResourcesV2;
+use simplerest\core\traits\SubResourceHandler;
 
 abstract class ApiController extends ResourceController implements IApi, ISubResources
 {
@@ -49,7 +49,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     static protected $soft_delete = true;
     static protected $connect_to = [];
 
-    use SubResourcesV2;
+    use SubResourceHandler;
 
     static function getHidden(){
 		return static::$hidden;

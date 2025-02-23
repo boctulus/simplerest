@@ -1,6 +1,18 @@
 TODO SimpleRest
 ===============
 
+- Hacer que sean equivalentes:
+
+# Funciona 
+
+D:\laragon\www\simplerest> php com migrations migrate --to=edu --file=edu/2025_02_23_136560811_users_table.php
+
+# No funciona (todavia)
+
+PS D:\laragon\www\simplerest> php com migrations migrate --dir=edu --to=edu --file=2025_02_23_136560811_users_table.php
+
+O sea especificar --file={path}/{file} debe de ser igual a --dir={path} --file={file}
+
 - Si se genera una Exception en vez de simplemente devolver algo como ... 
 
 {
