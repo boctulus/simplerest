@@ -56,10 +56,6 @@ if (!function_exists('apache_request_headers')){
     }
 }
 
-/*
-    Deberia procesarme con mas precaucion lo que provenga de Ajax ? 
-*/
-
 function is_ajax(){
     return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest");
 }
