@@ -3,6 +3,7 @@
 $pivots        = array (
   'categories,users' => 'courses',
   'courses,users' => 'course_student',
+  'courses,tags' => 'course_tag',
 );
 
 $pivot_fks     = array (
@@ -15,6 +16,11 @@ $pivot_fks     = array (
   array (
     'courses' => 'course_id',
     'users' => 'user_id',
+  ),
+  'course_tag' => 
+  array (
+    'courses' => 'course_id',
+    'tags' => 'tag_id',
   ),
 );
 
@@ -54,6 +60,25 @@ $relationships = array (
       array (
         0 => 'users.id',
         1 => 'course_student.user_id',
+      ),
+    ),
+  ),
+  'course_tag' => 
+  array (
+    'courses' => 
+    array (
+      0 => 
+      array (
+        0 => 'courses.id',
+        1 => 'course_tag.course_id',
+      ),
+    ),
+    'tags' => 
+    array (
+      0 => 
+      array (
+        0 => 'tags.id',
+        1 => 'course_tag.tag_id',
       ),
     ),
   ),

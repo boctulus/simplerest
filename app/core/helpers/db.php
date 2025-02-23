@@ -638,7 +638,7 @@ function is_mul_rel_cached(string $t1, string $t2, ?string $relation_str = null 
     $r = get_relations($tenant_id);
 
     if (!isset($r['multiplicity']["$t1~$t2"])){
-        throw new \Exception("Please run \"php com make relation_scan --from:$tenant_id\" or re-build all schemas");
+        throw new \Exception("Mutiplicity information is missing for '$t1~$t2' (or they are not related). Please run \"php com make relation_scan --from:$tenant_id\" or re-build all schemas");
     }
 
     return $r['multiplicity']["$t1~$t2"];

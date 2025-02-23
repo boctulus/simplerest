@@ -3785,14 +3785,28 @@ class ModelController extends Controller
         DB::getConnection('edu');
 
         $rows = DB::table('courses')
-        ->with('categories', 'users') 
-        ->where('title', 'Calculus I')
-        ->limit(5)
+            ->qualify()
+            ->connectTo(['categories', 'users'])
+            ->where('title', 'Calculus I')
+            ->limit(5)
+            ->get();
+
+        dd($rows);
+    }    
+
+    function test_with_0()
+    {
+        DB::getConnection('edu');
+
+        $rows = DB::table('courses')
+        ->qualify()
+        ->connectTo(['tags'])                
         ->get();
 
         dd($rows);
     }
-    
+
+
 
 }
 
