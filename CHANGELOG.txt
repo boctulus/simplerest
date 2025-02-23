@@ -7,3 +7,4 @@
 [2025-02-18 23:28:52]	0.8.12	Actualizacion interfaz metodo IMail:send()
 [2025-02-21 21:58:10]	0.8.12	Automatic update
 [2025-02-22 18:26:46]	0.8.12	AuthController acomodada a cambios en paquete firebase/php-jwt
+[2025-02-23 09:44:59]	0.8.12	CorsHandler reemplaza clase HTTP
