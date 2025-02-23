@@ -6,21 +6,19 @@ use simplerest\core\interfaces\ISchema;
 
 ### IMPORTS
 
-class UsersSchema implements ISchema
+class TagsSchema implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'		=> 'users',
+			'table_name'		=> 'tags',
 
 			'id_name'			=> 'id',
 
-			'fields'			=> ['id', 'name', 'email', 'role', 'created_at', 'updated_at'],
+			'fields'			=> ['id', 'name', 'created_at', 'updated_at'],
 
 			'attr_types'		=> [
 				'id' => 'INT',
 				'name' => 'STR',
-				'email' => 'STR',
-				'role' => 'STR',
 				'created_at' => 'STR',
 				'updated_at' => 'STR'
 			],
@@ -35,15 +33,13 @@ class UsersSchema implements ISchema
 
 			'nullable'			=> ['id', 'updated_at'],
 
-			'required'			=> ['name', 'email', 'role', 'created_at'],
+			'required'			=> ['name', 'created_at'],
 
-			'uniques'			=> ['email'],
+			'uniques'			=> ['name'],
 
 			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'name' => ['type' => 'str', 'max' => 100, 'required' => true],
-				'email' => ['type' => 'str', 'max' => 150, 'required' => true],
-				'role' => ['type' => 'str', 'required' => true],
 				'created_at' => ['type' => 'datetime', 'required' => true],
 				'updated_at' => ['type' => 'datetime']
 			],
@@ -51,43 +47,24 @@ class UsersSchema implements ISchema
 			'fks' 				=> [],
 
 			'relationships' => [
-				'course_student' => [
-					['course_student.user_id','users.id']
-				],
-				'courses' => [
-					['courses.professor_id','users.id']
+				'course_tag' => [
+					['course_tag.tag_id','tags.id']
 				]
 			],
 
 			'expanded_relationships' => array (
-  'course_student' => 
+  'course_tag' => 
   array (
     0 => 
     array (
       0 => 
       array (
-        0 => 'course_student',
-        1 => 'user_id',
+        0 => 'course_tag',
+        1 => 'tag_id',
       ),
       1 => 
       array (
-        0 => 'users',
-        1 => 'id',
-      ),
-    ),
-  ),
-  'courses' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'courses',
-        1 => 'professor_id',
-      ),
-      1 => 
-      array (
-        0 => 'users',
+        0 => 'tags',
         1 => 'id',
       ),
     ),
