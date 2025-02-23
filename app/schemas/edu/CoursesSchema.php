@@ -64,6 +64,9 @@ class CoursesSchema implements ISchema
 				],
 				'course_student' => [
 					['course_student.course_id','courses.id']
+				],
+				'course_tag' => [
+					['course_tag.course_id','courses.id']
 				]
 			],
 
@@ -123,6 +126,22 @@ class CoursesSchema implements ISchema
       0 => 
       array (
         0 => 'course_student',
+        1 => 'course_id',
+      ),
+      1 => 
+      array (
+        0 => 'courses',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'course_tag' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'course_tag',
         1 => 'course_id',
       ),
       1 => 

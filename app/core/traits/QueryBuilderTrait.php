@@ -130,8 +130,12 @@ trait QueryBuilderTrait
 	static protected $sql_formatter_callback;
 	protected        $sql_formatter_status;
 	protected 		 $decimal_as_string = null; 
+
+    protected        $connect_to = [];
 	
 	static protected $current_sql;
+
+    
 
 	// Constantes
     const DECIMAL_AS_STRING = false; // false = sin comillas (default), true = con comillas
@@ -1619,35 +1623,49 @@ trait QueryBuilderTrait
 		return $this->where;
 	}
 
-	function get(array $fields = null, array $order = null, int $limit = NULL, int $offset = null, $pristine = false){
-		$this->onReading();
-
-        // Cargar relaciones antes de construir la consulta SQL
-        if (!empty($this->with)) {
-            $this->loadRelations();
+	public function connectTo(array $tables) {
+        $this->connect_to = $tables;
+        return $this;
+    }
+    
+    function get(array $fields = null, array $order = null, int $limit = NULL, int $offset = null, $pristine = false){
+        $this->onReading();
+    
+        // Si hay tablas conectadas
+        if (!empty($this->connect_to)) {
+            $output = $this->getSubResources(
+                $this->table_name, 
+                $this->connect_to, 
+                $this, 
+                DB::getCurrentConnectionId()
+            );
+            
+            return $output;
         }
-
-		$q  = $this->toSql($fields, $order, $limit, $offset);
-		$st = $this->bind($q);
-
-		$count = null;
-		if ($this->exec && $st->execute()){
-			$output = $st->fetchAll($this->getFetchMode());
-			
-			$count  = $st->rowCount();
-			if (empty($output)) {
-				$ret = [];
-			}else {
-				$ret = $pristine ? $output : $this->applyTransformer($this->applyOutputMutators($output));
-			}
-
-			$this->onRead($count);
-		}else
-			$ret = false;
-				
-		return $ret;	
-	}
-
+    
+        // Flujo normal sin relaciones
+        $q = $this->toSql($fields, $order, $limit, $offset);
+        $st = $this->bind($q);
+    
+        $count = null;
+        if ($this->exec && $st->execute()){
+            $output = $st->fetchAll($this->getFetchMode());
+            
+            $count  = $st->rowCount();
+            if (empty($output)) {
+                $ret = [];
+            } else {
+                $ret = $pristine ? $output : $this->applyTransformer($this->applyOutputMutators($output));
+            }
+    
+            $this->onRead($count);
+        } else {
+            $ret = false;
+        }
+                
+        return $ret; 
+    }
+    
 	function first(array $fields = null, $pristine = false){
 		$this->onReading();
 
