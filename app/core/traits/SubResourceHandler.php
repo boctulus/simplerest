@@ -2,7 +2,6 @@
 
 namespace simplerest\core\traits;
 
-use simplerest\core\libs\Factory;
 use simplerest\core\libs\DB;
 use simplerest\core\Model;
 use simplerest\core\libs\Strings;
@@ -13,7 +12,7 @@ use simplerest\core\libs\Strings;
     @author Bozzolo Pablo
 */
 
-trait SubResourcesV2
+trait SubResourceHandler
 {
     static function getSubResources(string $table, Array $connect_to, ?Object &$instance = null, ?string $tenant_id = null)
     {   
@@ -85,7 +84,7 @@ trait SubResourcesV2
                     // https://stackoverflow.com/questions/6162324/is-there-a-mysql-equivalent-to-postgresql-array-to-string
 
                     if (DB::driverVersion(true) < '8.4'){
-                        throw new \Exception("Unsupported Postgresql version for HATEOAS");
+                        throw new \Exception("Unsupported Postgresql version");
                     } else {
                         $sql = "array_to_string(array_agg($q), ',')";
                     }
@@ -324,4 +323,5 @@ trait SubResourcesV2
         //dd(sql_formatter($sql)); exit;//
         return $rows;
     }
+    
 }
