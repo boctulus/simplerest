@@ -14198,6 +14198,78 @@ Ej:
 Claramente la función debería estar en la clase Files y como mucho haber un alias en la clase Url.
 
 
+# CORS Handler
+
+Caso 1: API Pública (Permitir todos los orígenes)
+
+	$cors = new CorsHandler();
+	$cors->->handle();
+
+Encabezados enviados en la respuesta:
+
+	Access-Control-Allow-Origin: *
+	Access-Control-Allow-Credentials: true
+	Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, ...
+	Access-Control-Allow-Methods: POST, OPTIONS
+
+Caso 2: API Restringida a Dominios Específicos
+
+	$cors = new CorsHandler();
+	$cors->setAllowedOrigins(['https://example.com', 'https://admin.example.com']);
+	$cors->setAllowCredentials(true); // Requerido si usas cookies o autenticación
+	$cors->->handle();
+
+Encabezados enviados si el origen es permitido:
+
+	Access-Control-Allow-Origin: https://example.com
+	Access-Control-Allow-Credentials: true
+	Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, ...
+	Access-Control-Allow-Methods: POST, OPTIONS
+
+Caso 3: Permitir Orígenes con Patrones (Subdominios de un Dominio Específico)
+
+	$cors = new CorsHandler();
+	$cors->setAllowedOriginsPatterns(['/^https:\/\/.*\.example\.com$/']);
+	$cors->->handle();
+
+Encabezados enviados si el origen coincide con el patrón:
+
+	Access-Control-Allow-Origin: https://app.example.com
+	Access-Control-Allow-Credentials: true
+	Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, ...
+	Access-Control-Allow-Methods: POST, OPTIONS
+
+
+Carga desde archivo de configuración
+
+Ej:
+
+	$config = [
+		'paths' => ['api/*', 'v2/*'],
+		'allowedMethods' => ['*'],
+		'allowedOrigins' => ['*'],
+		'allowedOriginsPatterns' => [],
+		'allowedHeaders' => ['*'],
+		'exposedHeaders' => ['X-Custom-Header'],
+		'maxAge' => 3600,
+		'supportsCredentials' => false,
+	];
+
+	$cors = new CorsHandler();
+	$cors->loadConfig($config);
+	$cors->handle();
+
+El helper cors() lee el archivo config/cors.php y lo procesa con CorsHandler.
+
+	function cors(){
+        $params = require CONFIG_PATH . 'cors.php';
+        
+        $cors = new CorsHandler($params);
+        $cors->loadConfig($params);
+        $cors->handle();
+    }    
+
+
 # HTML & Form builder
 
 El framework provee de las clases HTML, Form y Bt5Form para la construcción programática de HTML. 

@@ -9,6 +9,12 @@ use simplerest\shortcodes\tax_calc\TaxCalcShortcode;
 
 $route = Route::getInstance();
 
+Route::get('api-test/cors',  'CorsTesterController@get');
+Route::post('api-test/cors',  'CorsTesterController@post');
+// Route::put('api-test/cors',  'CorsTesterController');
+// Route::delete('api-test/cors',  'CorsTesterController');
+
+
 Route::get('testx', function(){
 	// echo '<pre>';
 	// print_r(get_loaded_extensions());
