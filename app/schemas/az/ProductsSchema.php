@@ -4,8 +4,6 @@ namespace simplerest\schemas\az;
 
 use simplerest\core\interfaces\ISchema;
 
-### IMPORTS
-
 class ProductsSchema implements ISchema
 { 
 	static function get(){

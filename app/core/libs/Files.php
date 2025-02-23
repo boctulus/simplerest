@@ -2,11 +2,12 @@
 
 namespace simplerest\core\libs;
 
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\System;
-use simplerest\core\libs\SortedIterator;
-use simplerest\core\exceptions\CantReadFileException;
+use simplerest\core\exceptions\FileNotFoundException;
 use simplerest\core\exceptions\NotFileButDirectoryException;
+use simplerest\core\exceptions\UnreadableFileException;
+use simplerest\core\libs\Logger;
+use simplerest\core\libs\SortedIterator;
+use simplerest\core\libs\System;
 
 class Files 
 {
@@ -1537,44 +1538,61 @@ class Files
 	* @param resource $context [optional] A valid context resource
 	* @param integer $offset [optional] The offset where the reading starts
 	* @param integer|null $length [optional] Maximum length of data read
-	* @return string|false The read content or false on failure
-	* @throws \InvalidArgumentException If path is a directory
+	* @return string|false The read content or false on failure	
 	*/
-	static function read(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
-		if (is_dir($path)){
-			$path = realpath($path);
-			throw new NotFileButDirectoryException("Expected file. Given directory for '$path'");
-		} 
-
-		if (!file_exists($path)){	
+	static function read(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null) {
+		try {
+			if (is_dir($path)) {
+				return false;
+			}
+	
+			if (!file_exists($path) || !is_file($path) || !is_readable($path)) {
+				return false;
+			}
+	
+			$content = ($length !== null)
+				? file_get_contents($path, $use_include_path, $context, $offset, $length)
+				: file_get_contents($path, $use_include_path, $context, $offset);
+	
+			return $content !== false ? $content : false;
+		} catch (\Exception $e) {
 			return false;
 		}
+	}	
 
-		if ($length !== null){
-			$content = @file_get_contents($path, $use_include_path, $context, $offset, $length); // @
-		} else {
-			$content = @file_get_contents($path, $use_include_path, $context, $offset); // @
-		}
-		
-		return $content;
-	}
-
-	/**
-	* Reads content from a file or throws exception on failure
+	/**	
+	* Reads content from a file or throws an exception on failure.
 	*
-	* @param string $path Path to the file to read
-	* @param boolean $use_include_path [optional] Whether to search in include_path  
-	* @param resource $context [optional] A valid context resource
-	* @param integer $offset [optional] The offset where the reading starts
-	* @param integer|null $length [optional] Maximum length of data read
-	* @return string The read content
-	* @throws CantReadFileException If file cannot be read or path is a directory
+	* @param string $path Path to the file to read.
+	* @param boolean $use_include_path [optional] Whether to search in include_path.
+	* @param resource|null $context [optional] A valid context resource.
+	* @param integer $offset [optional] The offset where the reading starts.
+	* @param integer|null $length [optional] Maximum length of data read.
+	* @return string The read content.
+	* @throws NotFileButDirectoryException If path is a directory.
+	* @throws FileNotFoundException If file does not exist.
+	* @throws UnreadableFileException If file cannot be read.
 	*/
-	static function readOrFail(string $path, bool $use_include_path = false, $context = null, int $offset = 0, $length = null){
-		$content = static::read($path, $use_include_path, $context, $offset, $length);
-		
-		if ($content === false){
-			throw new CantReadFileException("Can't read file. Given path '$path'");
+	static function readOrFail(string $path, bool $use_include_path = false, $context = null, int $offset = 0, ?int $length = null): string {
+		if (is_dir($path)) {
+			$path = realpath($path);
+			throw new NotFileButDirectoryException("Expected file. Given directory for '$path'");
+		}
+
+		if (!file_exists($path) || !is_file($path)) {
+			throw new FileNotFoundException("File not found: '$path'");
+		}
+
+		if (!is_readable($path)) {
+			throw new UnreadableFileException("Can't read file: '$path'");
+		}
+
+		$content = ($length !== null)
+			? file_get_contents($path, $use_include_path, $context, $offset, $length)
+			: file_get_contents($path, $use_include_path, $context, $offset);
+
+		if ($content === false) {
+			throw new UnreadableFileException("Failed to read file: '$path'");
 		}
 
 		return $content;

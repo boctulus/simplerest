@@ -2,7 +2,7 @@
 
 namespace simplerest\core\exceptions;
 
-class CantReadFileException extends \Exception {
+class TableNotFoundException extends \Exception {
     public function __construct($message = null, $code = 0, \Throwable $previous = null) {
         // if ($message === null) {
         //    $message = 'Some default message';
