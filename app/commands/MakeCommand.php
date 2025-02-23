@@ -19,7 +19,7 @@ class MakeCommand implements ICommand
     const TEMPLATES = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR;
 
     const MODEL_TEMPLATE  = self::TEMPLATES . 'Model.php';
-    const MODEL_NO_SCHEMA_TEMPLATE  = self::TEMPLATES . 'Model-no-schema.php';
+    const MODEL_NO_SCHEMA_TEMPLATE  = self::TEMPLATES . 'ModelWithoutSchema.php';
     const SCHEMA_TEMPLATE = self::TEMPLATES . 'Schema.php';
     const MIGRATION_TEMPLATE = self::TEMPLATES . 'Migration.php'; 
     const MIGRATION_TEMPLATE_CREATE = self::TEMPLATES . 'Migration_New.php'; 
