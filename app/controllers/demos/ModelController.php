@@ -3761,5 +3761,38 @@ class ModelController extends Controller
         );
     }
 
+
+    function test_soft_delete(){
+        DB::table('products')
+        ->deleted()
+        ->groupBy(['cost', 'size', 'belongs_to'])
+        ->having(['belongs_to', 90])
+        ->or(function ($q) {
+            $q->having(['cost', 100, '>='])
+            ->having(['size' => '1L']);
+        })
+        ->orderBy(['size' => 'DESC'])
+        ->dontExec()
+        ->get(['cost', 'size', 'belongs_to']);
+
+        dd(
+            DB::getLog()
+        );
+    }
+
+    function test_with()
+    {
+        DB::getConnection('edu');
+
+        $rows = DB::table('courses')
+        ->with('categories', 'users') 
+        ->where('title', 'Calculus I')
+        ->limit(5)
+        ->get();
+
+        dd($rows);
+    }
+    
+
 }
 
