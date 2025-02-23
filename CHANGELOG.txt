@@ -10,3 +10,4 @@
 [2025-02-23 09:44:59]	0.8.12	CorsHandler reemplaza clase HTTP
 [2025-02-23 13:32:15]	0.8.12	Previos refactorings
 [2025-02-23 21:36:53]	0.8.12	Implementacion en curso de with() en Model
+[2025-02-23 23:31:30]	0.8.12	Automatic update
