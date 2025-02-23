@@ -21,7 +21,7 @@ class RobotController extends Controller
     function __construct()
     {
         parent::__construct(); 
-        HTTP::cors();
+        cors();
 
         $this->robot_path = Env::get('ROBOT_PATH');
     }

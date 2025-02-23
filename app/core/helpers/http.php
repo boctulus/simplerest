@@ -1,13 +1,17 @@
 <?php
 
-use simplerest\core\Route;
+use simplerest\core\libs\CorsHandler;
 use simplerest\core\libs\Url;
 use simplerest\core\Response;
-use simplerest\core\libs\HTTP;
+use simplerest\core\Route;
 
 if (!function_exists('cors')){
     function cors(){
-        HTTP::cors();
+        $params = require CONFIG_PATH . 'cors.php';
+        
+        $cors = new CorsHandler($params);
+        $cors->loadConfig($params);
+        $cors->handle();
     }    
 }
 
