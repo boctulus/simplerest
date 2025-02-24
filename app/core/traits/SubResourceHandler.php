@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace simplerest\core\traits;
 
@@ -14,28 +16,28 @@ use simplerest\core\libs\Strings;
 
 trait SubResourceHandler
 {
-    static function getSubResources(string $table, Array $connect_to, ?Object &$instance = null, ?string $tenant_id = null)
-    {   
+    static function getSubResources(string $table, array $connect_to, ?Object &$instance = null, ?string $tenant_id = null)
+    {
         static $ret;
 
-        if ($tenant_id != null){
+        if ($tenant_id != null) {
             DB::getConnection($tenant_id);
-        }        
+        }
 
         // Genero una clave única usando el nombre de la tabla y un hash de los subrecursos
         $connect_to_key = implode(':', $connect_to);
         $cache_key      = "{$table}|{$connect_to_key}|{$tenant_id}";
-    
-        if ($ret !== null && isset($ret[$cache_key])){
+
+        if ($ret !== null && isset($ret[$cache_key])) {
             return $ret[$cache_key];
         }
 
-        if ($instance == null){
+        if ($instance == null) {
             $instance = DB::table($table);
-        }        
+        }
 
-        $fields = [];   
-      
+        $fields = [];
+
         $tb = $table;
         $fields = DB::table($tb)->getNotHidden();
 
@@ -45,15 +47,15 @@ trait SubResourceHandler
         /*
             Reemplace the INNER JOIN to the main table for WHERE
         */
-        $fn_where_x_join = function($sql, $table){
+        $fn_where_x_join = function ($sql, $table) {
             $pos = strpos($sql, 'WHERE');
 
-            if ($pos !== false){
-                $sql = substr($sql, 0, $pos) . 'AND' . substr($sql, $pos +5);    
-            } 
-            
+            if ($pos !== false) {
+                $sql = substr($sql, 0, $pos) . 'AND' . substr($sql, $pos + 5);
+            }
+
             $sql = str_replace("INNER JOIN $table ON ", "WHERE ", $sql);
-            
+
             return $sql;
         };
 
@@ -62,42 +64,42 @@ trait SubResourceHandler
 
             https://stackoverflow.com/questions/48843188/mysql-json-object-instead-of-group-concat/48844772
         */
-        $fn_json_arrayagg = function($q){
-             switch (DB::driver()){
+        $fn_json_arrayagg = function ($q) {
+            switch (DB::driver()) {
                 case 'mysql':
-                    if (DB::isMariaDB() || DB::driverVersion(true) < '5.7.22'){
+                    if (DB::isMariaDB() || DB::driverVersion(true) < '5.7.22') {
                         $sql = "CONCAT( ' [' ,GROUP_CONCAT($q),']')";
                     } else {
-                        $sql = "JSON_ARRAYAGG($q)";    
+                        $sql = "JSON_ARRAYAGG($q)";
                     }
 
                     break;
-                
-                // untested
+
+                    // untested
                 case 'sqlite':
                     $sql = "CONCAT( ' [' ,GROUP_CONCAT($q),']')";
                     break;
-                
-                // untested
-                case 'pgsql': 
+
+                    // untested
+                case 'pgsql':
                     // https://stackoverflow.com/questions/2560946/postgresql-group-concat-equivalent/8803563
                     // https://stackoverflow.com/questions/6162324/is-there-a-mysql-equivalent-to-postgresql-array-to-string
 
-                    if (DB::driverVersion(true) < '8.4'){
+                    if (DB::driverVersion(true) < '8.4') {
                         throw new \Exception("Unsupported Postgresql version");
                     } else {
                         $sql = "array_to_string(array_agg($q), ',')";
                     }
-                         
+
                     break;
 
-                // untested    
+                    // untested    
                 case 'oracle':
-                    $sql = "JSON_ARRAYAGG($q)"; 
+                    $sql = "JSON_ARRAYAGG($q)";
                     break;
 
                 default:
-                    $sql = "JSON_ARRAYAGG($q)"; 
+                    $sql = "JSON_ARRAYAGG($q)";
             }
 
             return $sql;
@@ -105,7 +107,7 @@ trait SubResourceHandler
 
         $subqueries = [];
         $encoded    = [];
-        foreach ($connect_to as $ix => $tb){
+        foreach ($connect_to as $ix => $tb) {
             $_fields = DB::table($tb)->getNotHidden();
 
             $pri = get_primary_key($tb);
@@ -113,31 +115,30 @@ trait SubResourceHandler
             $cnt = count($rs);
 
             $alias   = null;
-            switch ($cnt)
-            {
-                // relación n:m
+            switch ($cnt) {
+                    // relación n:m
                 case 0:
                     // En una relación con tabla puente no hay referencia directa desde la tabla principal
                     // hacia la tabla objetivo justamente porque existe una tabla intermedia.
 
-                   
+
                 case 1:
                     $m = DB::table($tb, '__' . $tb);
-            
+
                     $arr = [];
-                    foreach ($_fields as $f){
+                    foreach ($_fields as $f) {
                         $arr[] = "'$f', __$tb.{$f}";
                     }
-        
+
                     $obj = implode(',' . PHP_EOL, $arr);
 
-                    if (is_mul_rel_cached($table, $tb, null, $tenant_id)){
+                    if (is_mul_rel_cached($table, $tb, null, $tenant_id)) {
                         $sel = "
                             IF(
                                 COUNT(__$tb.$pri) = 0, JSON_ARRAY(),
-                                {$fn_json_arrayagg( 
-                                    'JSON_OBJECT('.$obj.')' 
-                                )}
+                                {$fn_json_arrayagg(
+                            'JSON_OBJECT(' .$obj . ')'
+                        )}
                             )";
                     } else {
                         $sel = "
@@ -150,31 +151,31 @@ trait SubResourceHandler
 
                     $encoded[] = "$tb";
 
-                    $m->join($table);     
-                    
-                    $sql = $m   
-                    ->dontBind()
-                    ->dontExec()     
-                    ->dd();
-    
+                    $m->join($table);
+
+                    $sql = $m
+                        ->dontBind()
+                        ->dontExec()
+                        ->dd();
+
                     $sql = "($sql) as $tb";
-                    
-    
+
+
                     // INNER JOIN to WHERE conversion
                     $sql = $fn_where_x_join($sql, $table);
-    
+
                     /////////////////////////////
                     //dd(Model::query($sql), $tb);
                     //dd(sql_formatter($sql), "SubQuery for $tb");
                     // dd('-------------------------------------'. PHP_EOL . PHP_EOL);
                     // dd($sql, "Pre-compiled SubQuery for $tb"); //
                     // print_r(PHP_EOL . PHP_EOL);
-    
-    
+
+
                     $subqueries[] = $sql;
                     break;
 
-                // $cnt > 1
+                    // $cnt > 1
                 default:
                     /*
                         Caso donde hay más de una relación entre dos tablas. 
@@ -185,27 +186,27 @@ trait SubResourceHandler
                     // De acá la idea es quedarme con los JOINS 
                     //
                     $m = DB::table($table)
-                    ->join($tb);
+                        ->join($tb);
 
                     $sql = $m
-                    ->dontBind()
-                    ->dontExec()       
-                    ->dd();
+                        ->dontBind()
+                        ->dontExec()
+                        ->dd();
 
                     $ini = strpos($sql, 'INNER JOIN');
                     $end = strpos($sql, 'WHERE ', $ini + 7);
 
                     $inners = trim(Strings::middle($sql, $ini, $end));
                     $in_arr = explode('INNER JOIN ', $inners);
-                    
+
                     $aliases = [];
                     $ons = [];
-                    foreach ($in_arr as $ix => $inner){
-                        if (empty($inner)){
+                    foreach ($in_arr as $ix => $inner) {
+                        if (empty($inner)) {
                             continue;
                         }
 
-                        if (!preg_match('/[a-zA-Z0-9_]+ as ([a-zA-Z0-9_]+) ON (.*)/', $inner, $matches)){
+                        if (!preg_match('/[a-zA-Z0-9_]+ as ([a-zA-Z0-9_]+) ON (.*)/', $inner, $matches)) {
                             // dd($sql, 'SQL para JOINs');
                             // dd("Trying parse $inner");
                             throw new \Exception("SQL Error. Something was wrong");
@@ -219,74 +220,74 @@ trait SubResourceHandler
                     // dd($aliases, 'ALIASes');
 
                     // Acá debería iterar los JOINs....... 
-                    foreach ($ons as $ix => $cond)
-                    {
-                        $alias     = $aliases[$ix];
-                        $encoded[] = $alias;
-                    
-                        $m = DB::table($tb, $alias);
+                    foreach ($ons as $ix => $cond) {
+                        // Obtenemos el alias descriptivo basado en la FK o tabla pivot
+                        $raw_alias = $aliases[$ix];
+
+                        // Extraemos el nombre descriptivo de la FK o tabla pivot
+                        if (Strings::contains('__fk_', $raw_alias)) {
+                            // Para FKs directas, extraemos el nombre del campo (ej: professor_id -> professor)
+                            $descriptive_alias = Strings::before($raw_alias, '_id');
+                        } elseif (Strings::contains('__pivot_', $raw_alias)) {
+                            // Para relaciones N:M, usamos el nombre en singular (ej: course_students -> student)
+                            $pivot_table = Strings::after($raw_alias, '__pivot_');
+                            $descriptive_alias = Strings::singular(Strings::after($pivot_table, '_'));
+                        } else {
+                            $descriptive_alias = $raw_alias;
+                        }
+
+                        $encoded[] = $descriptive_alias;
+
+                        $m = DB::table($tb, $descriptive_alias);
 
                         $arr = [];
-                        foreach ($_fields as $f){
-                            $arr[] = "'$f', {$alias}.{$f}";
+                        foreach ($_fields as $f) {
+                            $arr[] = "'$f', {$descriptive_alias}.{$f}";
                         }
-            
-                        $obj = implode(',' . PHP_EOL, $arr);                    
 
-                        if (is_mul_rel_cached($table, $tb, null, $tenant_id)){
+                        $obj = implode(',' . PHP_EOL, $arr);
+
+                        // La lógica de agregación se mantiene igual
+                        if (is_mul_rel_cached($table, $tb, null, $tenant_id)) {
                             $sel = "
-                            IF(
-                                COUNT($alias.$pri) = 0, JSON_ARRAY(),
-                                {$fn_json_arrayagg( 
-                                    'JSON_OBJECT('.$obj.')' 
-                                )}
-                            )";
+            IF(
+                COUNT($descriptive_alias.$pri) = 0, JSON_ARRAY(),
+                {$fn_json_arrayagg(
+                                'JSON_OBJECT(' .$obj . ')'
+                            )}
+            )";
                         } else {
                             $sel = "
-                            IF(
-                                COUNT($alias.$pri) = 0, '',
-                                JSON_OBJECT($obj) )";
+            IF(
+                COUNT($descriptive_alias.$pri) = 0, '',
+                JSON_OBJECT($obj) )";
                         }
 
                         $m->selectRaw($sel);
                         $m->whereRaw($cond);
 
                         $sql = $m
-                        ->dontBind()
-                        ->dontExec()       
-                        ->dd();
-        
-                        
-                        if (!is_null($alias)){
-                            $sql = "($sql) as $alias";
-                        } else {
-                            $sql = "($sql) as $tb";
-                        }
-                    
-                        /////////////////////////////
-                        //dd(Model::query($sql), $tb);
-                        //dd(sql_formatter($sql), "SubQuery for $tb"); //
-                        // dd('-------------------------------------'. PHP_EOL . PHP_EOL);
-                        // dd($sql, "Pre-compiled SubQuery for $tb"); //
-                        // print_r(PHP_EOL . PHP_EOL);
-        
+                            ->dontBind()
+                            ->dontExec()
+                            ->dd();
+
+                        $sql = "($sql) as $descriptive_alias";
 
                         $subqueries[] = $sql;
                     }
-
                     break;
             }  // end switch
 
         }
 
 
-       //exit;  //////////
+        //exit;  //////////
 
         /*
             Query assembly
         */
 
-        $sub_qs = implode(','. PHP_EOL . PHP_EOL, $subqueries);
+        $sub_qs = implode(',' . PHP_EOL . PHP_EOL, $subqueries);
         //dd($sub_qs);
 
         //exit; /////
@@ -298,30 +299,29 @@ trait SubResourceHandler
         */
 
         $sql = $instance
-        ->select($fields)
-        ->selectRaw($sub_qs)
-        ->dd();   
-        
+            ->select($fields)
+            ->selectRaw($sub_qs)
+            ->dd();
+
         //dd($instance->dd(true), 'SQL'); exit; /// *
-    
+
         $rows = Model::query($sql);
 
         /*
             JSON decoding
         */
-        foreach ($rows as $ix => $row){
-            foreach ($row as $field => $dato){
-                if (in_array($field, $encoded)){
+        foreach ($rows as $ix => $row) {
+            foreach ($row as $field => $dato) {
+                if (in_array($field, $encoded)) {
                     $rows[$ix][$field] = json_decode($dato, true);
                 }
             }
         }
 
         // Al final de todo el procesamiento, guardo en caché
-        $ret[$cache_key] = $rows;       
+        $ret[$cache_key] = $rows;
 
         //dd(sql_formatter($sql)); exit;//
         return $rows;
     }
-    
 }
