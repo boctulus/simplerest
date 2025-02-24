@@ -3804,7 +3804,7 @@ class ModelController extends Controller
         $rows = DB::table('courses')
             ->qualify()
             ->where(['title', 'Calculus I'])            
-            ->connectTo(['categories', 'users']) 
+            ->connectTo(['categories', 'users', 'tags']) 
             ->get();
 
         dd($rows);
