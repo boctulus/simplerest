@@ -21,7 +21,8 @@
       "vlucas/phpdotenv": "^5.2",
       "boctulus/api-client": "@dev",
       "boctulus/shopifyconnector": "@dev",
-		"nikic/php-parser": "^5.4"
+		"nikic/php-parser": "^5.4",
+		"doctrine/inflector": "^2.0"
    },
    "scripts":{
       "pre-autoload-dump":"Google\\Task\\Composer::cleanup"
