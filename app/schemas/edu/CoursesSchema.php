@@ -71,87 +71,87 @@ class CoursesSchema implements ISchema
 			],
 
 			'expanded_relationships' => array (
-  'categories' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'categories',
-        1 => 'id',
+        'categories' => 
+        array (
+          0 => 
+          array (
+            0 => 
+            array (
+              0 => 'categories',
+              1 => 'id',
+            ),
+            1 => 
+            array (
+              0 => 'courses',
+              1 => 'category_id',
+            ),
+          ),
+        ),
+        'users' => 
+        array (
+          0 => 
+          array (
+            0 => 
+            array (
+              0 => 'users',
+              1 => 'id',
+            ),
+            1 => 
+            array (
+              0 => 'courses',
+              1 => 'professor_id',
+            ),
+          ),
+        ),
+        'course_details' => 
+        array (
+          0 => 
+          array (
+            0 => 
+            array (
+              0 => 'course_details',
+              1 => 'course_id',
+            ),
+            1 => 
+            array (
+              0 => 'courses',
+              1 => 'id',
+            ),
+          ),
+        ),
+        'course_student' => 
+        array (
+          0 => 
+          array (
+            0 => 
+            array (
+              0 => 'course_student',
+              1 => 'course_id',
+            ),
+            1 => 
+            array (
+              0 => 'courses',
+              1 => 'id',
+            ),
+          ),
+        ),
+        'course_tag' => 
+        array (
+          0 => 
+          array (
+            0 => 
+            array (
+              0 => 'course_tag',
+              1 => 'course_id',
+            ),
+            1 => 
+            array (
+              0 => 'courses',
+              1 => 'id',
+            ),
+          ),
+        ),
       ),
-      1 => 
-      array (
-        0 => 'courses',
-        1 => 'category_id',
-      ),
-    ),
-  ),
-  'users' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'users',
-        1 => 'id',
-      ),
-      1 => 
-      array (
-        0 => 'courses',
-        1 => 'professor_id',
-      ),
-    ),
-  ),
-  'course_details' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'course_details',
-        1 => 'course_id',
-      ),
-      1 => 
-      array (
-        0 => 'courses',
-        1 => 'id',
-      ),
-    ),
-  ),
-  'course_student' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'course_student',
-        1 => 'course_id',
-      ),
-      1 => 
-      array (
-        0 => 'courses',
-        1 => 'id',
-      ),
-    ),
-  ),
-  'course_tag' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'course_tag',
-        1 => 'course_id',
-      ),
-      1 => 
-      array (
-        0 => 'courses',
-        1 => 'id',
-      ),
-    ),
-  ),
-),
 
 			'relationships_from' => [
 				'categories' => [
@@ -163,39 +163,39 @@ class CoursesSchema implements ISchema
 			],
 
 			'expanded_relationships_from' => array (
-  'categories' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'categories',
-        1 => 'id',
-      ),
-      1 => 
-      array (
-        0 => 'courses',
-        1 => 'category_id',
-      ),
-    ),
-  ),
-  'users' => 
-  array (
-    0 => 
-    array (
-      0 => 
-      array (
-        0 => 'users',
-        1 => 'id',
-      ),
-      1 => 
-      array (
-        0 => 'courses',
-        1 => 'professor_id',
-      ),
-    ),
-  ),
-)
+        'categories' => 
+        array (
+          0 => 
+          array (
+            0 => 
+            array (
+              0 => 'categories',
+              1 => 'id',
+            ),
+            1 => 
+            array (
+              0 => 'courses',
+              1 => 'category_id',
+            ),
+          ),
+        ),
+        'users' => 
+        array (
+          0 => 
+          array (
+            0 => 
+            array (
+              0 => 'users',
+              1 => 'id',
+            ),
+            1 => 
+            array (
+              0 => 'courses',
+              1 => 'professor_id',
+            ),
+          ),
+        ),
+      )
 		];
 	}	
 }

@@ -1,9 +1,9 @@
 <?php
 
 namespace simplerest\core\libs;
+
 use simplerest\core\interfaces\AIChat;
 use simplerest\core\exceptions\NotImplementedException;
-
 
 /*
     Ej:
@@ -98,8 +98,8 @@ class ClaudeAI implements AIChat
             'claude-instant-1.2'       => static::MESSAGES,
         ];
 
-        if ($model === null){
-            $model = $this->$model;
+        if (empty($model)){
+            $model = $this->model;
         }
 
         if (!array_key_exists($model, $model_endpoints)){

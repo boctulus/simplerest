@@ -152,6 +152,8 @@ use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use simplerest\core\libs\CodeReducer;
+use simplerest\core\libs\PHPParser;
 
 class DumbController extends Controller
 {
@@ -11964,4 +11966,19 @@ class DumbController extends Controller
         dd($exit_code, 'EXIT CODE');
     }
 
+    function test_reduce_php_code(){
+        $code = Files::getContent('D:\laragon\www\simplerest\app\core\libs\ClaudeAI.php');
+
+        $parser = new PHPParser();
+
+        dd(
+            $parser->reduceCode($code, [
+                '__construct',
+                'exec', 
+                'exec_messages', 
+                'getContent'
+            ])    
+        );
+    }
+    
 }   // end class

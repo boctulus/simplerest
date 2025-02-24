@@ -11,3 +11,4 @@
 [2025-02-23 13:32:15]	0.8.12	Previos refactorings
 [2025-02-23 21:36:53]	0.8.12	Implementacion en curso de with() en Model
 [2025-02-23 23:31:30]	0.8.12	Automatic update
+[2025-02-24 22:07:18]	0.8.12	Clases para reduccion de codigo PHP
