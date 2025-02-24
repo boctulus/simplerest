@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace simplerest\core\traits;
 
+use Doctrine\Inflector\InflectorFactory;
 use simplerest\core\libs\DB;
-use simplerest\core\Model;
 use simplerest\core\libs\Strings;
+use simplerest\core\Model;
 
 /*
     SimpleRest
@@ -97,145 +98,90 @@ trait SubResourceHandler
         $_fields = DB::table($tb)->getNotHidden();
         $pri = get_primary_key($tb);
         
-        // Detectar si estamos trabajando con la relación courses-users
-        $specialCase = ($table == 'courses' && $tb == 'users');
+        // Obtener todas las posibles relaciones entre las tablas
+        $allRelationPaths = [];
         
-        // Caso 1: Relación directa (profesor)
+        // 1. Buscar relaciones directas
         if (isset($rels[$tb])) {
             $rs = $rels[$tb];
-            $cnt = count($rs);
             
-            // Manejamos primero las relaciones directas (1:1, 1:n, n:1)
-            if ($cnt >= 1) {
-                foreach ($rs as $rix => $relation) {
-                    $sourceField = $relation[1][1]; // ej: professor_id
-                    
-                    // Determinamos un alias descriptivo para la relación
-                    $descriptiveAlias = $tb;
-                    
-                    // Si es una FK con formato específico, extraemos el nombre
-                    if (preg_match('/^(.+)_id$/', $sourceField, $matches)) {
-                        $descriptiveAlias = $matches[1]; // ej: professor
-                    }
-                    
-                    // Solo para relación courses-users, forzamos el alias "professor"
-                    if ($specialCase && $sourceField == 'professor_id') {
-                        $descriptiveAlias = 'professor';
-                    }
-                    
-                    $m = DB::table($tb, "__$descriptiveAlias");
-
-                    $arr = [];
-                    foreach ($_fields as $f) {
-                        $arr[] = "'$f', __$descriptiveAlias.{$f}";
-                    }
-
-                    $obj = implode(',' . PHP_EOL, $arr);
-
-                    // Verificamos si es una relación múltiple
-                    if (is_mul_rel_cached($table, $tb, null, $tenant_id)) {
-                        $sel = "
-                            IF(
-                                COUNT(__$descriptiveAlias.$pri) = 0, JSON_ARRAY(),
-                                {$fn_json_arrayagg(
-                            'JSON_OBJECT(' .$obj . ')'
-                        )}
-                            )";
-                    } else {
-                        $sel = "
-                        IF(
-                            COUNT(__$descriptiveAlias.$pri) = 0, '',
-                            JSON_OBJECT($obj) )";
-                    }
-
-                    $m->selectRaw($sel);
-                    
-                    // Añadimos condición específica si es la relación con profesor
-                    if ($specialCase && $descriptiveAlias == 'professor') {
-                        $m->join($table, "__$descriptiveAlias.id", '=', "$table.$sourceField");
-                    } else {
-                        $m->join($table);
-                    }
-
-                    $sql = $m
-                        ->dontBind()
-                        ->dontExec()
-                        ->dd();
-
-                    $sql = "($sql) as $descriptiveAlias";
-
-                    // INNER JOIN to WHERE conversion
-                    $sql = $fn_where_x_join($sql, $table);
-
-                    $subqueries[] = $sql;
-                    $encoded[] = $descriptiveAlias;
+            foreach ($rs as $rix => $relation) {
+                $sourceField = $relation[1][1]; // ej: professor_id
+                $targetTable = $relation[0][0]; // tabla relacionada
+                
+                // Derivar un alias descriptivo de la clave foránea
+                $descriptiveAlias = $tb;
+                if (preg_match('/^(.+)_id$/', $sourceField, $matches)) {
+                    $descriptiveAlias = $matches[1];
                 }
+                
+                $allRelationPaths[] = [
+                    'type' => 'direct',
+                    'sourceField' => $sourceField,
+                    'targetTable' => $targetTable,
+                    'alias' => $descriptiveAlias,
+                    'relation' => $relation
+                ];
             }
         }
         
-        // Caso 2: Relaciones N:M (estudiantes)
+        // 2. Buscar relaciones N:M a través de tabla pivot
         $pivot = get_pivot([$table, $tb]);
         
         if (!empty($pivot)) {
             $bridge = $pivot['bridge'];
             $fks = $pivot['fks'];
             
-            // Para el caso específico de cursos-usuarios a través de course_student
-            if ($specialCase && $bridge == 'course_student') {
-                $descriptiveAlias = 'students';
+            // Determinar si la tabla pivot incluye un rol o tipo específico
+            $relationshipName = null;
+            
+            // Intentar derivar un nombre de relación significativo de la tabla pivot
+            if (strpos($bridge, '_') !== false) {
+                $pivotParts = explode('_', $bridge);
                 
-                $m = DB::table($tb, "__$descriptiveAlias");
-                
-                $arr = [];
-                foreach ($_fields as $f) {
-                    $arr[] = "'$f', __$descriptiveAlias.{$f}";
+                // Si hay más de 2 partes (ej: 'course_student'), la parte después del primer '_' 
+                // podría ser descriptiva del rol
+                if (count($pivotParts) > 2) {
+                    $possibleRole = $pivotParts[1]; // ej: 'student' de 'course_student'
+                    if ($possibleRole !== $table && $possibleRole !== $tb) {
+                        $inflector = InflectorFactory::create()->build();
+                        $relationshipName = $inflector->pluralize($possibleRole);
+                    }
                 }
-                
-                $obj = implode(',' . PHP_EOL, $arr);
-                
-                // Siempre es una relación múltiple
-                $sel = "
-                    IF(
-                        COUNT(__$descriptiveAlias.$pri) = 0, JSON_ARRAY(),
-                        {$fn_json_arrayagg(
-                    'JSON_OBJECT(' .$obj . ')'
-                )}
-                    )";
-                
-                $m->selectRaw($sel);
-                
-                // Creamos los joins necesarios para obtener estudiantes
-                $m->join($bridge, "__$descriptiveAlias.id", '=', "$bridge.user_id")
-                  ->join($table, "$table.id", '=', "$bridge.course_id")
-                  ->where(["__$descriptiveAlias.role", 'student']);
-                
-                $sql = $m
-                    ->dontBind()
-                    ->dontExec()
-                    ->dd();
-                
-                $sql = "($sql) as $descriptiveAlias";
-                
-                // INNER JOIN to WHERE conversion
-                $sql = $fn_where_x_join($sql, $table);
-                
-                $subqueries[] = $sql;
-                $encoded[] = $descriptiveAlias;
             }
-            // Para otras relaciones N:M generales
-            else if ($cnt == 0) {
-                $descriptiveAlias = Strings::pluralize($tb);
-                
-                $m = DB::table($tb, "__$descriptiveAlias");
-                
-                $arr = [];
-                foreach ($_fields as $f) {
-                    $arr[] = "'$f', __$descriptiveAlias.{$f}";
-                }
-                
-                $obj = implode(',' . PHP_EOL, $arr);
-                
-                // Siempre es una relación múltiple
+            
+            // Si no pudimos derivar un nombre significativo, usar el plural de la tabla
+            if ($relationshipName === null) {
+                $inflector = InflectorFactory::create()->build();
+                $relationshipName = $inflector->pluralize($tb);
+            }
+            
+            $allRelationPaths[] = [
+                'type' => 'pivot',
+                'bridge' => $bridge,
+                'fks' => $fks,
+                'alias' => $relationshipName
+            ];
+        }
+        
+        // Procesar cada camino de relación
+        foreach ($allRelationPaths as $path) {
+            $descriptiveAlias = $path['alias'];
+            
+            $m = DB::table($tb, "__$descriptiveAlias");
+            
+            $arr = [];
+            foreach ($_fields as $f) {
+                $arr[] = "'$f', __$descriptiveAlias.{$f}";
+            }
+            
+            $obj = implode(',' . PHP_EOL, $arr);
+            
+            // Determinar si es una relación múltiple
+            $isMultiple = ($path['type'] === 'pivot') || 
+                          is_mul_rel_cached($table, $tb, null, $tenant_id);
+            
+            if ($isMultiple) {
                 $sel = "
                     IF(
                         COUNT(__$descriptiveAlias.$pri) = 0, JSON_ARRAY(),
@@ -243,26 +189,39 @@ trait SubResourceHandler
                     'JSON_OBJECT(' .$obj . ')'
                 )}
                     )";
+            } else {
+                $sel = "
+                IF(
+                    COUNT(__$descriptiveAlias.$pri) = 0, '',
+                    JSON_OBJECT($obj) )";
+            }
+            
+            $m->selectRaw($sel);
+            
+            // Generar los JOINs según el tipo de relación
+            if ($path['type'] === 'direct') {
+                $sourceField = $path['sourceField'];
+                $m->join($table, "__$descriptiveAlias.id", '=', "$table.$sourceField");
+            } else if ($path['type'] === 'pivot') {
+                $bridge = $path['bridge'];
+                $fks = $path['fks'];
                 
-                $m->selectRaw($sel);
-                
-                // Joins genéricos para N:M
                 $m->join($bridge, "__$descriptiveAlias.id", '=', "$bridge.{$fks[$tb]}")
                   ->join($table, "$table.id", '=', "$bridge.{$fks[$table]}");
-                
-                $sql = $m
-                    ->dontBind()
-                    ->dontExec()
-                    ->dd();
-                
-                $sql = "($sql) as $descriptiveAlias";
-                
-                // INNER JOIN to WHERE conversion
-                $sql = $fn_where_x_join($sql, $table);
-                
-                $subqueries[] = $sql;
-                $encoded[] = $descriptiveAlias;
             }
+            
+            $sql = $m
+                ->dontBind()
+                ->dontExec()
+                ->dd();
+            
+            $sql = "($sql) as $descriptiveAlias";
+            
+            // INNER JOIN to WHERE conversion
+            $sql = $fn_where_x_join($sql, $table);
+            
+            $subqueries[] = $sql;
+            $encoded[] = $descriptiveAlias;
         }
     }
 
