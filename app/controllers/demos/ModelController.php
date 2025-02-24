@@ -3780,32 +3780,35 @@ class ModelController extends Controller
         );
     }
 
-    function test_with()
-    {
-        DB::getConnection('edu');
 
-        $rows = DB::table('courses')
-            ->qualify()
-            ->connectTo(['categories', 'users'])
-            ->where('title', 'Calculus I')
-            ->limit(5)
-            ->get();
-
-        dd($rows);
-    }    
-
+    // OK
     function test_with_0()
     {
         DB::getConnection('edu');
 
         $rows = DB::table('courses')
         ->qualify()
-        ->connectTo(['tags'])                
+        ->connectTo(['categories', 'tags'])                
         ->get();
 
         dd($rows);
     }
 
+    /*  
+        Solo devuelve un user y no los "users" que tiene cada curso en "courses"
+    */
+    function test_with()
+    {
+        DB::getConnection('edu');
+
+        $rows = DB::table('courses')
+            ->qualify()
+            ->where(['title', 'Calculus I'])            
+            ->connectTo(['categories', 'users']) 
+            ->get();
+
+        dd($rows);
+    }    
 
 
 }
