@@ -19,12 +19,24 @@ use simplerest\core\exceptions\SchemaException;
 
 trait QueryBuilderTrait
 {
-    use ExceptionHandler;   
+	use ExceptionHandler;
 
-    // for internal use
+	/**
+	 * Estados de ejecución para las operaciones de escritura
+	 */
+
+	const EXECUTION_MODE_NORMAL   = 0;     // Ejecución normal
+	const EXECUTION_MODE_SIMULATE = 1;   // Simular operación (no realiza cambios en BD)
+	const EXECUTION_MODE_PREVIEW  = 2;    // Obtener SQL y valores que se ejecutarían
+
+	const DECIMAL_AS_STRING = false; // false = sin comillas (default), true = con comillas
+
+	// for internal use
 	protected $table_name;
 	protected $table_alias = [];
 	protected $prefix;
+
+	protected $executionMode = self::EXECUTION_MODE_NORMAL;
 
 	protected $fillable     = [];
 	protected $not_fillable = [];
@@ -75,17 +87,17 @@ trait QueryBuilderTrait
 	protected $exec = true;
 	protected $bind = true;
 	protected $strict_mode_having = false;
-	protected $should_qualify = false; //
+	protected $enable_qualification = false; //
 	protected $semicolon_ending = false;
 	protected $fetch_mode;
 	protected $soft_delete;
 	protected $last_inserted_id;
-	protected $paginator = true;	
+	protected $paginator = true;
 	protected $fetch_mode_default = \PDO::FETCH_ASSOC;
 	protected $last_operation;
 	protected $current_operation;
 	protected $insert_vars = [];
-	protected $data = []; 
+	protected $data = [];
 
 	protected $having_group_op;
 	protected $wrap_fields = false;
@@ -93,10 +105,10 @@ trait QueryBuilderTrait
 
 	protected $createdAt = 'created_at';
 	protected $updatedAt = 'updated_at';
-	protected $deletedAt = 'deleted_at'; 
+	protected $deletedAt = 'deleted_at';
 	protected $createdBy = 'created_by';
 	protected $updatedBy = 'updated_by';
-	protected $deletedBy = 'deleted_by'; 
+	protected $deletedBy = 'deleted_by';
 	protected $is_locked = 'is_locked';
 	protected $belongsTo = 'belongs_to';
 
@@ -129,23 +141,18 @@ trait QueryBuilderTrait
 
 	static protected $sql_formatter_callback;
 	protected        $sql_formatter_status;
-	protected 		 $decimal_as_string = null; 
+	protected 		 $decimal_as_string = null;
 
-    protected        $connect_to = [];
-	
+	protected        $connect_to = [];
+
 	static protected $current_sql;
 
-    
-
-	// Constantes
-    const DECIMAL_AS_STRING = false; // false = sin comillas (default), true = con comillas
-
-
-    	/*	
+	/*	
 		Returns table or its alias if exists for the referenced table
 	*/
-	function getTableAlias(){
-		if (isset($this->table_alias[$this->table_name])){
+	function getTableAlias()
+	{
+		if (isset($this->table_alias[$this->table_name])) {
 			$tb_name = $this->table_alias[$this->table_name];
 		} else {
 			$tb_name = $this->table_name;
@@ -154,34 +161,38 @@ trait QueryBuilderTrait
 		return $tb_name;
 	}
 
-	protected function getFullyQualifiedField(string $field){
-		if (!$this->should_qualify){
+	protected function getFullyQualifiedField(string $field)
+	{
+		if (!$this->enable_qualification) {
 			return $field;
 		}
 
-		if (!Strings::contains('.', $field)){
+		if (!Strings::contains('.', $field)) {
 			$tb_name = $this->getTableAlias();
-	
+
 			return "{$tb_name}.$field";
 		} else {
 			return $field;
 		}
 	}
 
-	protected function unqualifyField(string $field){
-		if (Strings::contains('.', $field)){
+	protected function unqualifyField(string $field)
+	{
+		if (Strings::contains('.', $field)) {
 			$_f = explode('.', $field);
 			return $_f[1];
 		}
 
 		return $field;
-	} 
+	}
 
-	function addRules(ValidationRules $vr){
+	function addRules(ValidationRules $vr)
+	{
 		$this->schema['rules'] = array_merge($this->schema['rules'], $vr->getRules());
 	}
 
-	function noValidation(){
+	function noValidation()
+	{
 		$this->validator = null;
 		return $this;
 	}
@@ -189,54 +200,61 @@ trait QueryBuilderTrait
 	/*
 		Returns prmary key
 	*/
-	function getKeyName(){
+	function getKeyName()
+	{
 		return $this->schema['id_name'];
 	}
 
-	function getTableName(){
+	function getTableName()
+	{
 		return $this->table_name;
 	}
 
 	/*
 		Turns on / off pagination
 	*/
-	function setPaginator(bool $status){
+	function setPaginator(bool $status)
+	{
 		$this->paginator = $status;
 		return $this;
 	}
 
-	function registerInputMutator(string $field, callable $fn, ?callable $apply_if_fn){
+	function registerInputMutator(string $field, callable $fn, ?callable $apply_if_fn)
+	{
 		$this->input_mutators[$field] = [$fn, $apply_if_fn];
 		return $this;
 	}
 
-	function registerOutputMutator(string $field, callable $fn){
+	function registerOutputMutator(string $field, callable $fn)
+	{
 		$this->output_mutators[$field] = $fn;
 		return $this;
 	}
 
 	// acepta un Transformer
-	function registerTransformer(ITransformer $t, $controller = NULL){
+	function registerTransformer(ITransformer $t, $controller = NULL)
+	{
 		$this->unhideAll();
 		$this->transformer = $t;
 		$this->controller  = $controller;
 		return $this;
 	}
-	
-	function applyInputMutator(array $data, string $current_op){	
-		if ($current_op != 'CREATE' && $current_op != 'UPDATE'){
+
+	function applyInputMutator(array $data, string $current_op)
+	{
+		if ($current_op != 'CREATE' && $current_op != 'UPDATE') {
 			throw new \InvalidArgumentException("Invalid operation '$current_op'");
 		}
 
-		foreach ($this->input_mutators as $field => list($fn, $apply_if_fn)){
+		foreach ($this->input_mutators as $field => list($fn, $apply_if_fn)) {
 			if (!in_array($field, $this->getAttr()))
-				throw new ColumnTableNotFoundException("Accesor error. Column '$field' is not present in " . $this->table_name); 
+				throw new ColumnTableNotFoundException("Accesor error. Column '$field' is not present in " . $this->table_name);
 
 			$dato = $data[$field] ?? NULL;
-					
-			if ($apply_if_fn == null || $apply_if_fn(...[$current_op, $dato])){				
+
+			if ($apply_if_fn == null || $apply_if_fn(...[$current_op, $dato])) {
 				$data[$field] = $fn($dato);
-			} 				
+			}
 		}
 
 		return $data;
@@ -249,40 +267,42 @@ trait QueryBuilderTrait
 
 		Está confirmado que si el FETCH_MODE no es ASSOC, va a fallar
 	*/
-	function applyOutputMutators($rows){
+	function applyOutputMutators($rows)
+	{
 		if (empty($rows))
 			return;
-		
+
 		if (empty($this->output_mutators))
 			return $rows;
 
 		//$by_id = in_array('id', $this->w_vars);	
-		
-		foreach ($this->output_mutators as $field => $fn){
-			if (!in_array($field, $this->getAttr()))
-				throw new ColumnTableNotFoundException("Transformer error. Field '$field' is not present in " . $this->table_name); 
 
-			if ($this->getFetchMode() == \PDO::FETCH_ASSOC){
-				foreach ($rows as $k => $row){
+		foreach ($this->output_mutators as $field => $fn) {
+			if (!in_array($field, $this->getAttr()))
+				throw new ColumnTableNotFoundException("Transformer error. Field '$field' is not present in " . $this->table_name);
+
+			if ($this->getFetchMode() == \PDO::FETCH_ASSOC) {
+				foreach ($rows as $k => $row) {
 					$rows[$k][$field] = $fn($row[$field]);
 				}
-			}elseif ($this->getFetchMode() == \PDO::FETCH_OBJ){
-				foreach ($rows as $k => $row){
+			} elseif ($this->getFetchMode() == \PDO::FETCH_OBJ) {
+				foreach ($rows as $k => $row) {
 					$rows[$k]->$field = $fn($row->$field);
 				}
-			}			
+			}
 		}
 		return $rows;
 	}
-	
-	function applyTransformer($rows){
+
+	function applyTransformer($rows)
+	{
 		if (empty($rows))
 			return;
-		
+
 		if (empty($this->transformer))
 			return $rows;
-		
-		foreach ($rows as $k => $row){
+
+		foreach ($rows as $k => $row) {
 			//var_dump($row);
 
 			if (is_array($row))
@@ -295,12 +315,14 @@ trait QueryBuilderTrait
 	}
 
 
-	function setFetchMode(string $mode){
+	function setFetchMode(string $mode)
+	{
 		$this->fetch_mode = constant("PDO::FETCH_{$mode}");
 		return $this;
 	}
 
-	function assoc(){
+	function assoc()
+	{
 		$this->fetch_mode = \PDO::FETCH_ASSOC;
 		return $this;
 	}
@@ -315,18 +337,21 @@ trait QueryBuilderTrait
         
         $newStatus = !$contact->favorite;
 	*/
-	function asObject() {
+	function asObject()
+	{
 		$this->setFetchMode('OBJ');
 		return $this;
-	 }
+	}
 
-	function column(){
+	function column()
+	{
 		$this->fetch_mode = \PDO::FETCH_COLUMN;
 		return $this;
 	}
 
-	protected function getFetchMode($mode_wished = null){
-		if ($this->fetch_mode == NULL){
+	protected function getFetchMode($mode_wished = null)
+	{
+		if ($this->fetch_mode == NULL) {
 			if ($mode_wished != NULL) {
 				return constant("PDO::FETCH_{$mode_wished}");
 			} else {
@@ -337,13 +362,15 @@ trait QueryBuilderTrait
 		}
 	}
 
-	function setValidator(?IValidator $validator = null){
+	function setValidator(?IValidator $validator = null)
+	{
 		$this->validator = $validator;
 		return $this;
 	}
 
-	function setTableAlias(string $tb_alias, ?string $table = null){
-		if ($table === null){
+	function setTableAlias(string $tb_alias, ?string $table = null)
+	{
+		if ($table === null) {
 			$table = $this->table_name;
 		}
 
@@ -351,14 +378,16 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function alias(string $tb_alias, ?string $table = null){
+	function alias(string $tb_alias, ?string $table = null)
+	{
 		return $this->setTableAlias($tb_alias, $table);
 	}
 
 	/*
 		Don't execute the query
 	*/
-	function dontExec(){
+	function dontExec()
+	{
 		$this->exec = false;
 		return $this;
 	}
@@ -366,28 +395,33 @@ trait QueryBuilderTrait
 	/*
 		Don't bind params
 	*/
-	function dontBind(){
+	function dontBind()
+	{
 		$this->bind = false;
 		return $this;
 	}
 
-	function doBind(){
+	function doBind()
+	{
 		$this->bind = true;
 		return $this;
 	}
 
-	function setStrictModeHaving(bool $state){
+	function setStrictModeHaving(bool $state)
+	{
 		$this->strict_mode_having = $state;
 		return $this;
 	}
 
-	function dontQualify(){
-		$this->should_qualify = false;
+	function dontQualify()
+	{
+		$this->enable_qualification = false;
 		return $this;
 	}
 
-	function qualify(){
-		$this->should_qualify = true;
+	function qualify()
+	{
+		$this->enable_qualification = true;
 		return $this;
 	}
 
@@ -397,61 +431,67 @@ trait QueryBuilderTrait
 		$this->table_name          = $table;
 		$this->table_alias[$table] = $table_alias;
 
-		if (!empty($this->prefix)){
+		if (!empty($this->prefix)) {
 			$this->table_name = $this->prefix . $this->table_name;
 			$this->prefix     = null;
 		}
 
-		return $this;		
+		return $this;
 	}
 
 	// alias for table();
-	function setTable(string $table, $table_alias = null){
-		return $this->table($table, $table_alias);		
+	function setTable(string $table, $table_alias = null)
+	{
+		return $this->table($table, $table_alias);
 	}
 
-	function prefix($prefix = ''){
+	function prefix($prefix = '')
+	{
 		$this->prefix     = $prefix;
 		return $this;
 	}
 
 	// alias for prefix()
-	function setPrefix($prefix = ''){
+	function setPrefix($prefix = '')
+	{
 		return $this->prefix($prefix);
 	}
-	
-	function removePrefix(string $prefix){
+
+	function removePrefix(string $prefix)
+	{
 		$table = Strings::after($this->table_name, $prefix);
-		$this->table($table);	
+		$this->table($table);
 		$this->prefix = null;
-		
+
 		return $this;
 	}
 
-	protected function from(){
-		if ($this->table_raw_q != null){
+	protected function from()
+	{
+		if ($this->table_raw_q != null) {
 			return $this->table_raw_q;
 		}
 
-		if ($this->table_name == null){
+		if ($this->table_name == null) {
 			throw new \Exception("No table_name defined");
 		}
 
 		$tb_name = $this->table_name;
 
-		if (DB::driver() == DB::PGSQL && DB::schema() != null){
+		if (DB::driver() == DB::PGSQL && DB::schema() != null) {
 			$tb_name = DB::schema() . '.' . $tb_name;
 		}
 
-		$from = isset($this->table_alias[$this->table_name]) ? ($tb_name. ' as '.$this->table_alias[$this->table_name]) : $tb_name.' ';  
+		$from = isset($this->table_alias[$this->table_name]) ? ($tb_name . ' as ' . $this->table_alias[$this->table_name]) : $tb_name . ' ';
 		return trim($from);
 	}
 
-	function fromRaw(string $q){
+	function fromRaw(string $q)
+	{
 		$this->table_raw_q = $q;
 		return $this;
 	}
-		
+
 	/**
 	 * unhide
 	 * remove from hidden list of fields
@@ -460,9 +500,10 @@ trait QueryBuilderTrait
 	 *
 	 * @return void
 	 */
-	function unhide(array $unhidden_fields) : Model {
-		if (!empty($this->hidden) && !empty($unhidden_fields)){			
-			foreach ($unhidden_fields as $uf){
+	function unhide(array $unhidden_fields): Model
+	{
+		if (!empty($this->hidden) && !empty($unhidden_fields)) {
+			foreach ($unhidden_fields as $uf) {
 				$k = array_search($uf, $this->hidden);
 				unset($this->hidden[$k]);
 			}
@@ -470,11 +511,12 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function unhideAll() : Model {
+	function unhideAll(): Model
+	{
 		$this->hidden = [];
 		return $this;
 	}
-	
+
 	/**
 	 * hide
 	 * turn off field visibility from fetch methods 
@@ -483,17 +525,18 @@ trait QueryBuilderTrait
 	 *
 	 * @return void
 	 */
-	function hide(array $fields) : Model {
-		foreach ($fields as $f){
-			if (!in_array($f, $this->hidden)){
+	function hide(array $fields): Model
+	{
+		foreach ($fields as $f) {
+			if (!in_array($f, $this->hidden)) {
 				$this->hidden[] = $f;
 			}
 		}
 
-		return $this;	
+		return $this;
 	}
 
-	
+
 	/**
 	 * fill
 	 * makes a field fillable
@@ -502,28 +545,30 @@ trait QueryBuilderTrait
 	 *
 	 * @return object
 	 */
-	function fill(array $fields){
-		foreach ($fields as $f){
-			if (!in_array($f, $this->fillable)){
+	function fill(array $fields)
+	{
+		foreach ($fields as $f) {
+			if (!in_array($f, $this->fillable)) {
 				$this->fillable[] = $f;
 			}
-		
+
 			/*
 				Remuevo los campos fillables del array de los no-fillables	
 			*/
 			$pos = array_search($f, $this->not_fillable);
-			
-			if ($pos !== false){
+
+			if ($pos !== false) {
 				unset($this->not_fillable[$pos]);
 			}
 		}
 
-		return $this;	
+		return $this;
 	}
 
-	function unfill(array $fields){
-		foreach ($fields as $f){
-			if (!in_array($f, $this->not_fillable)){
+	function unfill(array $fields)
+	{
+		foreach ($fields as $f) {
+			if (!in_array($f, $this->not_fillable)) {
 				$this->not_fillable[] = $f;
 			}
 
@@ -531,25 +576,26 @@ trait QueryBuilderTrait
 				Remuevo los campos no-fillables del array de los fillables	
 			*/
 			$pos = array_search($f, $this->fillable);
-			
-			if ($pos !== false){
+
+			if ($pos !== false) {
 				unset($this->fillable[$pos]);
 			}
 		}
 
-		return $this;	
+		return $this;
 	}
 
 	/*
 		Make all fields fillable
 	*/
-	function fillAll(){
+	function fillAll()
+	{
 		$this->fillable     = $this->attributes;
 		$this->not_fillable = [];
 
-		return $this;	
+		return $this;
 	}
-	
+
 	/**
 	 * unfill
 	 * remove from fillable list of fields
@@ -558,25 +604,26 @@ trait QueryBuilderTrait
 	 *
 	 * @return void
 	 */
-	protected function unfillAll(array $fields){
-		if (!empty($this->fillable) && !empty($fields)){		
-			foreach ($this->fillable as $ix => $f){
-				foreach ($fields as $to_unset){
-					if ($f == $to_unset){
-						if (!in_array($f, $this->not_fillable)){
-							$this->not_fillable[] = $f;							
-						}	
+	protected function unfillAll(array $fields)
+	{
+		if (!empty($this->fillable) && !empty($fields)) {
+			foreach ($this->fillable as $ix => $f) {
+				foreach ($fields as $to_unset) {
+					if ($f == $to_unset) {
+						if (!in_array($f, $this->not_fillable)) {
+							$this->not_fillable[] = $f;
+						}
 
 						unset($this->fillable[$ix]);
 						break;
 					}
-				}				
+				}
 			}
 		}
 
 		return $this;
 	}
-	
+
 
 	// INNER | LEFT | RIGTH JOIN
 	function join($table, $on1 = null, $op = '=', $on2 = null, string $type = 'INNER JOIN')
@@ -584,56 +631,55 @@ trait QueryBuilderTrait
 		$_table     = null;
 		$this_alias = null;
 
-		if (preg_match('/([a-z0-9_]+) as ([a-z0-9_]+)/i', $table, $matches)){
+		if (preg_match('/([a-z0-9_]+) as ([a-z0-9_]+)/i', $table, $matches)) {
 			$_table     = $matches[0];
 			$table      = $matches[1];
 			$this_alias = $matches[2];
 		}
 
-		$on_replace = function(&$on) use ($this_alias, $table)
-		{	
-			if (empty($on)){
+		$on_replace = function (&$on) use ($this_alias, $table) {
+			if (empty($on)) {
 				throw new \InvalidArgumentException("Paramter 1 in on_replace can not be null or empty");
 			}
 
 			$_on = explode('.', $on);
 
-			if (count($_on) != 2){
+			if (count($_on) != 2) {
 				throw new \InvalidArgumentException("Paramter 1 format in on_replace is not well-formatted.");
 			}
-			
-			if (isset($this->table_alias[$this->table_name])){
-				if ($_on[0] ==  $this->table_name){
+
+			if (isset($this->table_alias[$this->table_name])) {
+				if ($_on[0] ==  $this->table_name) {
 					$on = $this->table_alias[$this->table_name] . '.' . $_on[1];
 				}
 			}
 
-			if (!is_null($this_alias)){
-				if ($_on[0] ==  $table){
+			if (!is_null($this_alias)) {
+				if ($_on[0] ==  $table) {
 					$on = $this_alias . '.' . $_on[1];
 				}
 			}
 		};
 
 		// try auto-join
-		if ($on1 == null && $on2 == null){
-			if ($this->schema == NULL){
-				throw new \Exception("Undefined schema for ". $this->table_name); 
+		if ($on1 == null && $on2 == null) {
+			if ($this->schema == NULL) {
+				throw new \Exception("Undefined schema for " . $this->table_name);
 			}
 
-			if (!isset($this->schema['relationships'])){
-				throw new \Exception("Undefined relationships for table '{$this->table_name}'"); 
+			if (!isset($this->schema['relationships'])) {
+				throw new \Exception("Undefined relationships for table '{$this->table_name}'");
 			}
 
 			$rel   = $this->schema['relationships'];
 			$pivot = get_pivot([$this->table_name, $table], DB::getCurrentConnectionId());
 
 			// Si la relación no existe => podría ser N:M o no existir
-			if (!isset($rel[$table])){
+			if (!isset($rel[$table])) {
 				// **
 				// Podría ser una relación N:M si hay pivote o...  1:1, 1:N
 
-				if (!is_null($pivot)){
+				if (!is_null($pivot)) {
 					// Relación N:M
 
 					$bridge = $pivot['bridge'];
@@ -641,13 +687,13 @@ trait QueryBuilderTrait
 
 					$keys = array_keys($rels);
 
-					if ($keys[0] == $table){
+					if ($keys[0] == $table) {
 						$rels = array_reverse($rels);
 					}
 
-					foreach ($rels as $tb => $rel){
-						if ($tb == $table){
-							if (!is_null($_table)){
+					foreach ($rels as $tb => $rel) {
+						if ($tb == $table) {
+							if (!is_null($_table)) {
 								$t = $_table;
 							} else {
 								$t = $table;
@@ -662,21 +708,19 @@ trait QueryBuilderTrait
 						$on_replace($on1);
 						$on_replace($on2);
 
-						$this->join($t, $on1, '=', $on2, $type);							
+						$this->join($t, $on1, '=', $on2, $type);
 					}
 
 					return $this;
-
 				} else {
 					// NUNCA DEBERÍA LLEGAR ACÁ PORQUE O ES N:M o NADA
-				}   
-						
+				}
 			} // else...
 
-		
+
 			$relx  = $this->schema['expanded_relationships'];
 
-			if (!isset($relx[$table])){
+			if (!isset($relx[$table])) {
 				throw new \Exception("Table '$table' is not 'present' in {$this->table_name}'s schema as if it had a relationship with it");
 			}
 
@@ -684,22 +728,22 @@ trait QueryBuilderTrait
 
 			//dd($rels, 'RELS'); ///
 
-			if (count($relxs) >= 2){
+			if (count($relxs) >= 2) {
 				//dd("Relación multiple entre las mismas dos tablas"); //
 
-				foreach ($relxs as $r){
-					if(!isset($r[0]['alias'])){
+				foreach ($relxs as $r) {
+					if (!isset($r[0]['alias'])) {
 						$alias = '__' . $r[0][1];
 					} else {
 						$alias = $r[0]['alias'];
-					}					
+					}
 
-					$on1 = "{$alias}.{$r[0][1]}"; 
+					$on1 = "{$alias}.{$r[0][1]}";
 					$on2 = "{$r[1][0]}.{$r[1][1]}";
-					
+
 					$ori_tb_name = $table;
 					$_table = "$ori_tb_name as $alias";
-					
+
 					// dd([
 					// 	'table' => $_table,
 					// 	'on1' => $on1,
@@ -710,17 +754,15 @@ trait QueryBuilderTrait
 					$this->joins[] = [$_table, $on1, $op, $on2, $type];
 				}
 
-				
-				return $this;
 
+				return $this;
 			} else {
 				$on1 = $rel[$table][0][0];
 				$on2 = $rel[$table][0][1];
 			}
-					
 		}
 
-		if (!is_null($_table)){
+		if (!is_null($_table)) {
 			$table = $_table;
 		}
 
@@ -731,17 +773,20 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function joinRaw(string $str){
+	function joinRaw(string $str)
+	{
 		$this->join_raw[] = $str;
 		return $this;
 	}
 
-	function leftJoin($table, $on1 = null, $op = '=', $on2 = null) {
+	function leftJoin($table, $on1 = null, $op = '=', $on2 = null)
+	{
 		$this->join($table, $on1, $op, $on2, 'LEFT JOIN');
 		return $this;
 	}
 
-	function rightJoin($table, $on1 = null, $op = '=', $on2 = null) {
+	function rightJoin($table, $on1 = null, $op = '=', $on2 = null)
+	{
 		$this->join($table, $on1, $op, $on2, 'RIGHT JOIN');
 		return $this;
 	}
@@ -752,75 +797,86 @@ trait QueryBuilderTrait
 		https://stackoverflow.com/questions/7978663/mysql-full-join/36001694
 	*/
 
-	function crossJoin($table) {
+	function crossJoin($table)
+	{
 		$this->joins[] = [$table, null, null, null, 'CROSS JOIN'];
 		return $this;
 	}
 
-	function naturalJoin($table) {
+	function naturalJoin($table)
+	{
 		$this->joins[] = [$table, null, null, null, 'NATURAL JOIN'];;
 		return $this;
 	}
-	
-	function orderBy(array $o){
+
+	function orderBy(array $o)
+	{
 		$this->order = array_merge($this->order, $o);
 		return $this;
 	}
 
-	function orderByRaw(string $o){
+	function orderByRaw(string $o)
+	{
 		$this->raw_order[] = $o;
 		return $this;
 	}
 
 
-	function reorder(){
+	function reorder()
+	{
 		$this->order = [];
 		$this->raw_order = [];
 		return $this;
 	}
 
-	function take(int $limit = null){
-		if ($limit !== null){
+	function take(int $limit = null)
+	{
+		if ($limit !== null) {
 			$this->limit = $limit;
 		}
 
 		return $this;
 	}
 
-	function limit(int $limit = null){
+	function limit(int $limit = null)
+	{
 		return $this->take($limit);
 	}
 
 	function offset(int $n = null)
 	{
-		if ($n !== null){
+		if ($n !== null) {
 			$this->offset = $n;
 		}
-		
+
 		return $this;
 	}
 
-	function skip(int $n = null){
+	function skip(int $n = null)
+	{
 		return $this->offset($n);
 	}
 
-	function paginate(int $page, ?int $page_size = null){
-		if ($page_size === null){
+	function paginate(int $page, ?int $page_size = null)
+	{
+		if ($page_size === null) {
 			$page_size = config()['paginator']['default_limit'] ?? 10;
 		}
 
 		$this->limit  = $page_size;
-        $this->offset = Paginator::calcOffset($page, $page_size);
+		$this->offset = Paginator::calcOffset($page, $page_size);
 
 		return $this;
 	}
 
-	function groupBy(array $g){
+	function groupBy(array $g)
+	{
 		$this->group = array_merge($this->group, $g);
 		return $this;
 	}
 
-	function random(){
+	function random()
+	{
 		$this->randomize = true;
 
 		if (!empty($this->order))
@@ -829,34 +885,38 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function rand(){
+	function rand()
+	{
 		return $this->random();
 	}
 
-	function select(array $fields){
+	function select(array $fields)
+	{
 		$this->fields = $fields;
 		return $this;
 	}
 
-	function addSelect(string $field){
+	function addSelect(string $field)
+	{
 		$this->fields[] = $field;
 		return $this;
 	}
 
-	function selectRaw(string $q, array $vals = null){
+	function selectRaw(string $q, array $vals = null)
+	{
 		if (substr_count($q, '?') != count((array) $vals))
 			throw new \InvalidArgumentException("Number of ? are not consitent with the number of passed values");
-		
-		if (empty($this->select_raw_q)){
+
+		if (empty($this->select_raw_q)) {
 			$this->select_raw_q = $q;
 
-			if ($vals != null){
+			if ($vals != null) {
 				$this->select_raw_vals = $vals;
 			}
 		} else {
 			$this->select_raw_q = "{$this->select_raw_q}, $q";
 
-			if ($vals != null){
+			if ($vals != null) {
 				$this->select_raw_vals = array_merge($this->select_raw_vals, $vals);
 			}
 		}
@@ -864,26 +924,26 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function whereRaw(string $q, array $vals = null){
-		$qm = substr_count($q, '?'); 
+	function whereRaw(string $q, array $vals = null)
+	{
+		$qm = substr_count($q, '?');
 
-		if ($qm !=0){
-			if (!empty($vals)){
+		if ($qm != 0) {
+			if (!empty($vals)) {
 				if ($qm != count((array) $vals))
 					throw new \InvalidArgumentException("Number of ? are not consitent with the number of passed values");
-				
+
 				$this->where_raw_vals = $vals;
-			}else{
+			} else {
 				if ($qm != count($this->to_merge_bindings))
 					throw new \InvalidArgumentException("Number of ? are not consitent with the number of passed values");
-					
-				$this->where_raw_vals = $this->to_merge_bindings;		
-			}
 
+				$this->where_raw_vals = $this->to_merge_bindings;
+			}
 		}
-		
+
 		$this->where_raw_q = $q;
-	
+
 		return $this;
 	}
 
@@ -892,28 +952,33 @@ trait QueryBuilderTrait
 
 		https://laravel.com/docs/9.x/queries#where-exists-clauses
 	*/
-	function whereExists(string $q, array $vals = null){
+	function whereExists(string $q, array $vals = null)
+	{
 		$this->whereRaw("EXISTS $q", $vals);
 		return $this;
 	}
 
-	function whereRegEx(string $field, $value){	
+	function whereRegEx(string $field, $value)
+	{
 		$this->whereRaw("$field REGEXP ?", [$value]);
 		return $this;
 	}
 
 	// alias
-	function whereRegExp(string $field, $value){
+	function whereRegExp(string $field, $value)
+	{
 		return $this->whereRegEx($field, $value);
 	}
 
-	function whereNotRegEx(string $field, $value){	
+	function whereNotRegEx(string $field, $value)
+	{
 		$this->whereRaw("NOT $field REGEXP ?", [$value]);
 		return $this;
 	}
 
 	// alias
-	function whereNotRegExp(string $field, $value){
+	function whereNotRegExp(string $field, $value)
+	{
 		return $this->whereNotRegEx($field, $value);
 	}
 
@@ -925,58 +990,58 @@ trait QueryBuilderTrait
 		whereYear()
 		whereTime()
 	*/
-	function whereDate(string $field, string $value, string $operator = '='){
-		if (!in_array($operator, ['=', '>', '<'])){
+	function whereDate(string $field, string $value, string $operator = '=')
+	{
+		if (!in_array($operator, ['=', '>', '<'])) {
 			throw new \InvalidArgumentException("Invalid operator: '$operator' is invalid for date comparissions");
 		}
 
 		$len = strlen($value);
 
-		if ($this->schema !== null){
-			if (!isset($this->schema['rules'][$field])){
+		if ($this->schema !== null) {
+			if (!isset($this->schema['rules'][$field])) {
 				throw new \InvalidArgumentException("Unknown field '$field'");
-			}	
+			}
 		}
 
-		if ($len === 10){
-			if (!Validator::isType($value, 'date')){
+		if ($len === 10) {
+			if (!Validator::isType($value, 'date')) {
 				throw new \InvalidArgumentException("Invalid type: '$value' is not a date");
 			}
 
-			switch ($this->schema['rules'][$field]['type']){
+			switch ($this->schema['rules'][$field]['type']) {
 				case 'date':
 					return $this->where([$field, $value, $operator]);
 				case 'datetime':
-					switch ($operator){
+					switch ($operator) {
 						case '=':
-							return $this->where([$field, $value.'%', 'LIKE']);
+							return $this->where([$field, $value . '%', 'LIKE']);
 						case '>':
 							$value = (new \DateTime("$value +1 day"))->format('Y-m-d H:i:s');
 							return $this->where([$field, $value, '>']);
 						case '<':
 							$value = (new \DateTime("$value -1 day"))->format('Y-m-d H:i:s');
-							return $this->where([$field, $value, '<']);							
+							return $this->where([$field, $value, '<']);
 					}
 				default:
 					throw new \InvalidArgumentException("Filed type '$field' is not a date or datetime");
 			}
-
-		} else if ($len === 19){
-			if (!Validator::isType($value, 'datetime')){
+		} else if ($len === 19) {
+			if (!Validator::isType($value, 'datetime')) {
 				throw new \InvalidArgumentException("Invalid type: '$value' is not a date");
 			}
 
-			switch ($this->schema['rules'][$field]['type']){
+			switch ($this->schema['rules'][$field]['type']) {
 				case 'date':
 					throw new \InvalidArgumentException("Presition can not exced yyyy-mm-dd");
 				case 'datetime':
-					switch ($operator){
+					switch ($operator) {
 						case '=':
-							return $this->where([$field, $value.'%', 'LIKE']);
+							return $this->where([$field, $value . '%', 'LIKE']);
 						case '>':
 							return $this->where([$field, $value, '>']);
 						case '<':
-							return $this->where([$field, $value, '<']);							
+							return $this->where([$field, $value, '<']);
 					}
 				default:
 					throw new \InvalidArgumentException("Filed type '$field' is not a date or datetime");
@@ -984,25 +1049,27 @@ trait QueryBuilderTrait
 		} else {
 			throw new \InvalidArgumentException("Invalid type: '$value' is not a date or datetime");
 		}
-		
 	}
 
-	function distinct(array $fields = null){
+	function distinct(array $fields = null)
+	{
 		if ($fields !=  null)
 			$this->fields = $fields;
-		
+
 		$this->distinct = true;
 		return $this;
 	}
 
-	function union(Model $m){
+	function union(Model $m)
+	{
 		$this->union_type = 'NORMAL';
 		$this->union_q = $m->toSql();
 		$this->union_vals = $m->getBindings();
 		return $this;
 	}
 
-	function unionAll(Model $m){
+	function unionAll(Model $m)
+	{
 		$this->union_type = 'ALL';
 		$this->union_q = $m->toSql();
 		$this->union_vals = $m->getBindings();
@@ -1010,7 +1077,7 @@ trait QueryBuilderTrait
 	}
 
 	function toSql(array $fields = null, array $order = null, int $limit = NULL, int $offset = null, bool $existance = false, $aggregate_func = null, $aggregate_field = null, $aggregate_field_alias = NULL)
-	{		
+	{
 		$this->aggregate_field_alias = $aggregate_field_alias;
 
 		// dd($this->table_name, "TABLE NAME ======================>");
@@ -1018,36 +1085,34 @@ trait QueryBuilderTrait
 		if (!empty($fields))
 			$fields = array_merge($this->fields, $fields);
 		else
-			$fields = $this->fields;	
+			$fields = $this->fields;
 
 		if (!empty($fields)) {
-			$fields = array_map(function($field) {
+			$fields = array_map(function ($field) {
 				return $this->getWrapFieldName($field);
 			}, $fields);
 		}
 
 		$paginator = null;
 
-		if (!$existance)
-		{			
+		if (!$existance) {
 			// remove hidden			
-			if (!empty($this->hidden)){			
-			
-				if (empty($this->select_raw_q)){
+			if (!empty($this->hidden)) {
+
+				if (empty($this->select_raw_q)) {
 					if (empty($fields) && $aggregate_func == null) {
 						$fields = $this->attributes;
 					}
-		
-					foreach ($this->hidden as $h){
+
+					foreach ($this->hidden as $h) {
 						$k = array_search($h, $fields);
 						if ($k != null)
 							unset($fields[$k]);
 					}
-				}			
-
+				}
 			}
-							
-			if ($this->distinct){
+
+			if ($this->distinct) {
 				$remove = [$this->schema['id_name']];
 
 				if ($this->inSchema([$this->createdAt]))
@@ -1059,24 +1124,24 @@ trait QueryBuilderTrait
 				if ($this->inSchema([$this->deletedAt]))
 					$remove[] = $this->deletedAt;
 
-				if (!empty($fields)){
-					if (!empty($aggregate_func)){
-					 	$fields = array_diff($this->getAttr(), $remove);
+				if (!empty($fields)) {
+					if (!empty($aggregate_func)) {
+						$fields = array_diff($this->getAttr(), $remove);
 					} else {
 						$fields = array_diff($fields, $remove);
 					}
 				}
-			} 		
+			}
 
-			if ($this->paginator){
+			if ($this->paginator) {
 				$order  = (!empty($order) && !$this->randomize) ? array_merge($this->order, $order) : $this->order;
 				$limit  = $limit  ?? $this->limit  ?? null;
-				$offset = $offset ?? $this->offset ?? 0; 
-				
-				if($limit>0 || $order!=NULL){					
+				$offset = $offset ?? $this->offset ?? 0;
+
+				if ($limit > 0 || $order != NULL) {
 					try {
 						$qualified_order = [];
-						foreach ($order as $of => $o){
+						foreach ($order as $of => $o) {
 							$fq = $this->getFullyQualifiedField($of);
 							$qualified_order[$fq] = $o;
 						}
@@ -1089,41 +1154,40 @@ trait QueryBuilderTrait
 						$paginator->compile();
 
 						$this->pag_vals = $paginator->getBinding();
-					}catch (SqlException $e){
+					} catch (SqlException $e) {
 						throw new SqlException("Pagination error: {$e->getMessage()}");
 					}
-				}else{
+				} else {
 					$paginator = null;
 				}
-							
 			} else {
-				$paginator = null;	
-			}	
-		}		
-	
-		$imp = function(array $fields){
-			if (!$this->should_qualify){
+				$paginator = null;
+			}
+		}
+
+		$imp = function (array $fields) {
+			if (!$this->enable_qualification) {
 				return implode(',', $fields);
 			}
 
 			$ta = $this->getTableAlias();
 
-			$arr = array_map(function($f) use ($ta) {
+			$arr = array_map(function ($f) use ($ta) {
 				return "$ta.$f";
 			}, $fields);
 
 			return implode(',', $arr);
 		};
-	
-		if (!$existance){
-			if (!empty($fields)){
+
+		if (!$existance) {
+			if (!empty($fields)) {
 				$_f_imp = $imp($fields);
-				$_f     = $_f_imp. ',';
-			}else
+				$_f     = $_f_imp . ',';
+			} else
 				$_f = '';
-				
-			if ($aggregate_func != null){
-				if (strtoupper($aggregate_func) == 'COUNT'){					
+
+			if ($aggregate_func != null) {
+				if (strtoupper($aggregate_func) == 'COUNT') {
 					if ($aggregate_field == null)
 						$aggregate_field = '*';
 
@@ -1131,61 +1195,60 @@ trait QueryBuilderTrait
 						$q  = "SELECT $_f $aggregate_func(DISTINCT $aggregate_field)" . (!empty($aggregate_field_alias) ? " as $aggregate_field_alias" : '');
 					else
 						$q  = "SELECT $_f $aggregate_func($aggregate_field)" . (!empty($aggregate_field_alias) ? " as $aggregate_field_alias" : '');
-				}else{
+				} else {
 					$q  = "SELECT $_f $aggregate_func($aggregate_field)" . (!empty($aggregate_field_alias) ? " as $aggregate_field_alias" : '');
 				}
-					
-			}else{
+			} else {
 				$sq = 'SELECT ';
-				
+
 				// SELECT RAW
-				if (!empty($this->select_raw_q)){
+				if (!empty($this->select_raw_q)) {
 					$distinct = ($this->distinct == true) ? 'DISTINCT' : '';
 
 					// $other_fields = !empty($fields) ? ', '.$_f_imp : '';
 					// $q  .= $distinct .' '.$this->select_raw_q. $other_fields;
-				
+
 					$other_fields = !empty($fields) ? $_f_imp : '';
 					$q  = $other_fields;
 					$q .= (!empty(trim($q)) ? ',' : '') . $this->select_raw_q;
 
 					$q = "$sq $distinct $q";
-				}else {
+				} else {
 					if (empty($fields))
 						$q  = $sq . '*';
 					else {
 						$distinct = ($this->distinct == true) ? 'DISTINCT' : '';
-						$q  = $sq . $distinct.' '.$_f_imp;
+						$q  = $sq . $distinct . ' ' . $_f_imp;
 					}
-				}					
+				}
 			}
 		} else {
 			$q  = 'SELECT EXISTS (SELECT 1';
-		}	
+		}
 
 		$q  .= ' FROM ' . DB::quote($this->from());
 
 		////////////////////////
-		$values = array_merge($this->w_vals, $this->h_vals); 
-		$vars   = array_merge($this->w_vars, $this->h_vars); 
+		$values = array_merge($this->w_vals, $this->h_vals);
+		$vars   = array_merge($this->w_vars, $this->h_vars);
 		////////////////////////
 
 
 		// Validación
-		if (!empty($this->validator)){
+		if (!empty($this->validator)) {
 			$validado = $this->validator->validate(array_combine($vars, $values), $this->getRules());
 
-			if ($validado !== true){
+			if ($validado !== true) {
 				throw new InvalidValidationException(json_encode(
 					$this->validator->getErrors()
 				));
-			} 
+			}
 		}
-		
+
 		// JOINS
 		$joins = '';
-		foreach ($this->joins as $j){
-			if ($j[4] == 'CROSS JOIN' || $j[4] == 'NATURAL JOIN'){
+		foreach ($this->joins as $j) {
+			if ($j[4] == 'CROSS JOIN' || $j[4] == 'NATURAL JOIN') {
 				$joins .= " $j[4] $j[0] ";
 			} else {
 				$joins .= " $j[4] $j[0] ON $j[1]$j[2]$j[3] ";
@@ -1195,66 +1258,72 @@ trait QueryBuilderTrait
 		$joins .= ' ' . implode(' ', $this->join_raw);
 
 		$q  .= $joins;
-		
+
 
 		// WHERE
 		$where_section = $this->whereFormedQuery();
-		if (!empty($where_section)){
+		if (!empty($where_section)) {
 
 			// patch
 			$where_section = str_replace(
-							[
-								'AND OR', 
-								'(AND ',
-								'(OR '
-							], 
-							[	'OR ',
-								'( ',
-								'( '
-							], $where_section);
+				[
+					'AND OR',
+					'(AND ',
+					'(OR '
+				],
+				[
+					'OR ',
+					'( ',
+					'( '
+				],
+				$where_section
+			);
 
-			$where_section = str_replace('(  NOT ', '(NOT ', $where_section);	
+			$where_section = str_replace('(  NOT ', '(NOT ', $where_section);
 
 			$q  .= ' WHERE ' . $where_section;
 		}
-					
 
-		$group = (!empty($this->group)) ? 'GROUP BY '.  $imp($this->group) : '';
+
+		$group = (!empty($this->group)) ? 'GROUP BY ' .  $imp($this->group) : '';
 		$q  .= " $group";
 
-	
+
 		// HAVING
 		$having_section = $this->havingFormedQuery();
-		
-		if (!empty($having_section)){
+
+		if (!empty($having_section)) {
 
 			// patch
 			$having_section = str_replace(
-							[
-								'AND OR', 
-								'(AND ',
-								'(OR '
-							], 
-							[	'OR ',
-								'( ',
-								'( '
-							], $having_section);
+				[
+					'AND OR',
+					'(AND ',
+					'(OR '
+				],
+				[
+					'OR ',
+					'( ',
+					'( '
+				],
+				$having_section
+			);
 
-			$having_section = str_replace('(  NOT ', '(NOT ', $having_section);	
+			$having_section = str_replace('(  NOT ', '(NOT ', $having_section);
 
 			$q  .= ' HAVING ' . $having_section;
 		}
 
-		if ($this->randomize){
+		if ($this->randomize) {
 			$q .= DB::random();
 		} else {
 			if (!empty($this->raw_order))
-				$q .= ' ORDER BY '.implode(', ', $this->raw_order);
+				$q .= ' ORDER BY ' . implode(', ', $this->raw_order);
 		}
-		
+
 		// UNION
-		if (!empty($this->union_q)){
-			$q .= 'UNION '.($this->union_type == 'ALL' ? 'ALL' : '').' '.$this->union_q.' ';
+		if (!empty($this->union_q)) {
+			$q .= 'UNION ' . ($this->union_type == 'ALL' ? 'ALL' : '') . ' ' . $this->union_q . ' ';
 		}
 
 
@@ -1264,121 +1333,121 @@ trait QueryBuilderTrait
 
 
 		// PAGINATION
-		if (!$existance && $paginator!==null){
+		if (!$existance && $paginator !== null) {
 			$q .= $paginator->getQuery();
 		}
 
 		$q  = rtrim($q);
-		
+
 		if ($existance)
 			$q .= ')';
 
 
-		if (isset($this->table_alias[$this->table_name])){
+		if (isset($this->table_alias[$this->table_name])) {
 			$tb_name = $this->table_alias[$this->table_name];
 		} else {
 			$tb_name = $this->table_name;
 		}
 
-		$q = preg_replace_callback('/ \.([a-z0-9_]+)/', function($matches) use ($tb_name) {
-			return ' '.$tb_name .'.'.  $matches[1]; 
+		$q = preg_replace_callback('/ \.([a-z0-9_]+)/', function ($matches) use ($tb_name) {
+			return ' ' . $tb_name . '.' .  $matches[1];
 		}, $q);
 
-		$q = preg_replace_callback('/\(\.([a-z0-9_]+)/', function($matches) use ($tb_name){
-			return '(' . $tb_name .'.'.  $matches[1]; 
+		$q = preg_replace_callback('/\(\.([a-z0-9_]+)/', function ($matches) use ($tb_name) {
+			return '(' . $tb_name . '.' .  $matches[1];
 		}, $q);
 
 
 		$q = str_replace('WHERE AND', 'WHERE', $q);
-		$q = str_replace('AND AND'  , 'AND',  $q);
-		
-		
+		$q = str_replace('AND AND', 'AND',  $q);
+
+
 		$this->last_bindings = $this->getBindings();
 		$this->last_pre_compiled_query = $q;
 		$this->last_operation = 'get';
 
-		return $q;	
+		return $q;
 	}
 
 	function whereFormedQuery()
-	{	
-		$where = $this->where_raw_q.' ';
+	{
+		$where = $this->where_raw_q . ' ';
 
-		if (!empty($this->where)){
+		if (!empty($this->where)) {
 			$implode = '';
 
 			$cnt = count($this->where);
 
-			if ($cnt>0){
+			if ($cnt > 0) {
 				$implode .= $this->where[0];
-				for ($ix=1; $ix<$cnt; $ix++){
-					$implode .= ' '.$this->where_group_op[$ix] . ' '.$this->where[$ix];
+				for ($ix = 1; $ix < $cnt; $ix++) {
+					$implode .= ' ' . $this->where_group_op[$ix] . ' ' . $this->where[$ix];
 				}
-			}			
+			}
 
 			$where = trim($where);
 
-			if (!empty($where)){
+			if (!empty($where)) {
 				$op = $this->where_group_op[0] ?? 'AND';
-				$where = "($where) $op ". $implode. ' '; // <-------------
-			}else{
+				$where = "($where) $op " . $implode . ' '; // <-------------
+			} else {
 				$where = "$implode ";
 			}
-		} 	
-		
+		}
+
 		$where = trim($where);
-		
-		if ($this->inSchema([$this->deletedAt])){
-			if (!$this->show_deleted){
+
+		if ($this->inSchema([$this->deletedAt])) {
+			if (!$this->show_deleted) {
 
 				$tb_name   = $this->getTableAlias();
-				$deletedAt = $this->should_qualify ? "{$tb_name}.{$this->deletedAt}" : $this->deletedAt;
-				
+				$deletedAt = $this->enable_qualification ? "{$tb_name}.{$this->deletedAt}" : $this->deletedAt;
+
 				if (empty($where))
 					$where = "$deletedAt IS NULL";
 				else
-					$where =  ($where[0]=='(' && $where[strlen($where)-1] ==')' ? $where :   "($where)" ) . " AND $deletedAt IS NULL";
-
+					$where =  ($where[0] == '(' && $where[strlen($where) - 1] == ')' ? $where :   "($where)") . " AND $deletedAt IS NULL";
 			}
 		}
-		
+
 		return ltrim($where);
 	}
 
-	function havingFormedQuery(){
+	function havingFormedQuery()
+	{
 		$having = '';
-		
-		if (!empty($this->having_raw_q))
-			$having = $this->having_raw_q.' ';
 
-		if (!empty($this->having)){
+		if (!empty($this->having_raw_q))
+			$having = $this->having_raw_q . ' ';
+
+		if (!empty($this->having)) {
 			$implode = '';
 
 			$cnt = count($this->having);
 
-			if ($cnt>0){
+			if ($cnt > 0) {
 				$implode .= $this->having[0];
-				for ($ix=1; $ix<$cnt; $ix++){
-					$implode .= ' '.$this->having_group_op[$ix] . ' '.$this->having[$ix];
+				for ($ix = 1; $ix < $cnt; $ix++) {
+					$implode .= ' ' . $this->having_group_op[$ix] . ' ' . $this->having[$ix];
 				}
-			}			
+			}
 
 			$having = trim($having);
-			
-			if (!empty($having)){
-				$having = "($having) AND ". $implode. ' ';
-			}else{
+
+			if (!empty($having)) {
+				$having = "($having) AND " . $implode . ' ';
+			} else {
 				$having = "$implode ";
 			}
-		}		
+		}
 
 		// acá viene la magia
-		$having = preg_replace_callback('/([a-z]+)\(([a-z0-9_]+)\)/i', function($matches){
+		$having = preg_replace_callback('/([a-z]+)\(([a-z0-9_]+)\)/i', function ($matches) {
 			$fn    = $matches[1];
 			$field = $matches[2];
-		
+
 			$field = $this->getFullyQualifiedField($field);
-			
+
 			return "$fn($field)";
 		}, $having);
 
@@ -1386,37 +1455,38 @@ trait QueryBuilderTrait
 	}
 
 	function getBindings()
-	{	
+	{
 		$pag = [];
-		if (!empty($this->pag_vals)){
-			switch (count($this->pag_vals)){
+		if (!empty($this->pag_vals)) {
+			switch (count($this->pag_vals)) {
 				case 2:
-					$pag = [ $this->pag_vals[0][1], $this->pag_vals[1][1] ];
-				break;
-				case 1: 	
-					$pag = [ $this->pag_vals[0][1] ];
-				break;
-			} 
+					$pag = [$this->pag_vals[0][1], $this->pag_vals[1][1]];
+					break;
+				case 1:
+					$pag = [$this->pag_vals[0][1]];
+					break;
+			}
 		}
-		
-		$values = array_merge(	
-								$this->select_raw_vals,
-								$this->from_raw_vals,
-								$this->where_raw_vals,
-								$this->w_vals,
-								$this->having_raw_vals,
-								$this->h_vals,
-								$pag
-							);
+
+		$values = array_merge(
+			$this->select_raw_vals,
+			$this->from_raw_vals,
+			$this->where_raw_vals,
+			$this->w_vals,
+			$this->having_raw_vals,
+			$this->h_vals,
+			$pag
+		);
 		return $values;
 	}
 
 	//
-	function mergeBindings(Model $model){
+	function mergeBindings(Model $model)
+	{
 		$this->to_merge_bindings = $model->getBindings();
 
-		if (!empty($this->table_raw_q)){
-			$this->from_raw_vals = $this->to_merge_bindings;	
+		if (!empty($this->table_raw_q)) {
+			$this->from_raw_vals = $this->to_merge_bindings;
 		}
 
 		return $this;
@@ -1428,37 +1498,38 @@ trait QueryBuilderTrait
 	*/
 	protected function bind(string $q)
 	{
-		if (!$this->bind){
+		if (!$this->bind) {
 			return;
 		}
 
-		if ($this->conn == null){
+		if ($this->conn == null) {
 			$this->connect();
 		}
 
-		$vals = array_merge($this->select_raw_vals, 
-							$this->from_raw_vals, 
-							$this->where_raw_vals,
-							$this->w_vals,
-							$this->having_raw_vals,
-							$this->h_vals,
-							$this->union_vals);
+		$vals = array_merge(
+			$this->select_raw_vals,
+			$this->from_raw_vals,
+			$this->where_raw_vals,
+			$this->w_vals,
+			$this->having_raw_vals,
+			$this->h_vals,
+			$this->union_vals
+		);
 
 		///////////////[ BUG FIXES ]/////////////////
 
 		$_vals = [];
 		$reps  = 0;
-		foreach($vals as $ix => $val)
-		{				
-			if($val === NULL){
-				$q = Strings::replaceNth('?', 'NULL', $q, $ix+1-$reps);
+		foreach ($vals as $ix => $val) {
+			if ($val === NULL) {
+				$q = Strings::replaceNth('?', 'NULL', $q, $ix + 1 - $reps);
 				$reps++;
 
-			/*
+				/*
 				Corrección para operaciones entre enteros y floats en PGSQL
 			*/
-			} elseif(DB::driver() == DB::PGSQL && is_float($val)){ 
-				$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
+			} elseif (DB::driver() == DB::PGSQL && is_float($val)) {
+				$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix + 1 - $reps);
 				$reps++;
 				$_vals[] = $val;
 			} else {
@@ -1470,8 +1541,7 @@ trait QueryBuilderTrait
 
 		///////////////////////////////////////////
 
-
-		if (!$this->exec){
+		if (!$this->exec) {
 			return; //
 		}
 
@@ -1488,215 +1558,308 @@ trait QueryBuilderTrait
 		static::$current_sql = $q;
 
 		try {
-			$st = $this->conn->prepare($q);			
-		} catch (\Exception $e){
+			$st = $this->conn->prepare($q);
+		} catch (\Exception $e) {
 			$vals_str = implode(',', $vals);
 
 			$this->logSQL();
-			throw new SqlException("Query '$q' - and vals = [$vals_str] | ". $e->getMessage());
+			throw new SqlException("Query '$q' - and vals = [$vals_str] | " . $e->getMessage());
 		}
-		
-		foreach($vals as $ix => $val)
-		{				
+
+		foreach ($vals as $ix => $val) {
 			$type = $this->getParamType($val);
-			$st->bindValue($ix +1 , $val, $type);
+			$st->bindValue($ix + 1, $val, $type);
 			//echo "Bind: ".($ix+1)." - $val ($type)\n";
 		}
 
 		$sh = count($vals);
 
 		$bindings = $this->pag_vals;
-		foreach($bindings as $ix => $binding){
-			$st->bindValue($ix +1 +$sh, $binding[1], $binding[2]);
-		}		
-		
-		return $st;	
+		foreach ($bindings as $ix => $binding) {
+			$st->bindValue($ix + 1 + $sh, $binding[1], $binding[2]);
+		}
+
+		return $st;
 	}
 
-	function getLastPrecompiledQuery(){
+	function getLastPrecompiledQuery()
+	{
 		return $this->last_pre_compiled_query;
 	}
 
-	function getLastBindingParamters(){
+	function getLastBindingParamters()
+	{
 		return $this->last_bindings;
 	}
 
-	private function _dd($pre_compiled_sql, $bindings){		
-		foreach($bindings as $ix => $val){			
+	private function _dd($pre_compiled_sql, $bindings)
+	{
+		foreach ($bindings as $ix => $val) {
 			// var_dump($val);
 			// var_dump(is_string($val));
 
-			if(is_null($val)){
+			if (is_null($val)) {
 				$bindings[$ix] = 'NULL';
-			}elseif(isset($vars[$ix]) && isset($this->schema['attr_types'][$val])){
+			} elseif (isset($vars[$ix]) && isset($this->schema['attr_types'][$val])) {
 				$const = $this->schema['attr_types'][$val];
-			
+
 				if ($const == 'STR')
 					$bindings[$ix] = "'$val'";
-				
-			}elseif(is_int($val)){
+			} elseif (is_int($val)) {
 				// pass
-			}
-			elseif(is_bool($val)){
+			} elseif (is_bool($val)) {
 				// pass
-			} elseif(is_string($val)){
-				$bindings[$ix] = "'$val'";	
+			} elseif (is_string($val)) {
+				$bindings[$ix] = "'$val'";
 			}
-				
 		}
 
 		$sql = Arrays::strReplace('?', $bindings, $pre_compiled_sql);
 		$sql = trim(preg_replace('!\s+!', ' ', $sql));
 
-		if ($this->semicolon_ending){
+		if ($this->semicolon_ending) {
 			$sql .= ';';
 		}
 
-		if ($this->sql_formatter_status){
+		if ($this->sql_formatter_status) {
 			$sql = static::sqlFormatter($sql);
-		}		
+		}
 
 		return $sql;
 	}
 
 	// Debug query
-	function dd(bool $sql_formatter = false){
+	function dd(bool $sql_formatter = false)
+	{
 		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formatter;
 
-		if ($this->last_operation == 'create'){
+		if ($this->last_operation == 'create') {
 			return $this->last_compiled_sql;
 		}
 
 		return $this->_dd($this->toSql(), $this->getBindings());
 	}
 
-	function getLog(bool $sql_formatter = false){		
+	function getLog(bool $sql_formatter = false)
+	{
 		$this->sql_formatter_status = self::$sql_formatter_status ?? $sql_formatter;
 
-		if ($this->last_operation == 'create'){
+		if ($this->last_operation == 'create') {
 			return $this->last_compiled_sql;
 		}
 
 		return $this->_dd($this->last_pre_compiled_query, $this->last_bindings);
 	}
 
-	function debug(){
+	function debug()
+	{
 		$op = $this->current_operation ?? $this->last_operation;
 
-		if ($op == 'create'){
+		if ($op == 'create') {
 			$combined = array_combine($this->insert_vars, $this->getLastBindingParamters());
 			$sql = $this->last_pre_compiled_query;
-							
-			return preg_replace_callback('/:([a-z][a-z0-9_\-ñáéíóú]+)/', function($matches) use ($combined) {
+
+			return preg_replace_callback('/:([a-z][a-z0-9_\-ñáéíóú]+)/', function ($matches) use ($combined) {
 				$key = $matches[1];
 
 				// para el debug ignoro los tipos
 				return "'$combined[$key]'";
 			}, $sql);
-		
 		} else {
 			return $this->dd();
 		}
 	}
 
-	function logSQL(){
+	function logSQL()
+	{
 		$config = config();
 
-		if ($config['debug'] && $config['log_sql']){
+		if ($config['debug'] && $config['log_sql']) {
 			log_sql($this->dd());
 		}
 	}
 
-	function getLastOperation(){
+	function getLastOperation()
+	{
 		return $this->last_operation;
 	}
 
-	function getCurrentOperation(){
+	function getCurrentOperation()
+	{
 		return $this->current_operation;
 	}
 
-	function getOp(){
+	function getOp()
+	{
 		return $this->current_operation ?? $this->last_operation;
 	}
 
-	function getWhere(){
+	function getWhere()
+	{
 		return $this->where;
 	}
 
-	public function connectTo(array $tables) {
-        // Habilitar la calificación automáticamente cuando se usa connectTo
-        $this->qualify();
+	public function connectTo(array $tables)
+	{
+		// Habilitar la calificación automáticamente cuando se usa connectTo
+		$this->qualify();
 
-        $this->connect_to = $tables;
-        return $this;
-    }
-    
-    function get(array $fields = null, array $order = null, int $limit = NULL, int $offset = null, $pristine = false){
-        $this->onReading();
-    
-        // Si hay tablas conectadas
-        if (!empty($this->connect_to)) {
-            $output = $this->getSubResources(
-                $this->table_name, 
-                $this->connect_to, 
-                $this, 
-                DB::getCurrentConnectionId()
-            );
-            
-            return $output;
-        }
-    
-        // Flujo normal sin relaciones
-        $q = $this->toSql($fields, $order, $limit, $offset);
-        $st = $this->bind($q);
-    
-        $count = null;
-        if ($this->exec && $st->execute()){
-            $output = $st->fetchAll($this->getFetchMode());
-            
-            $count  = $st->rowCount();
-            if (empty($output)) {
-                $ret = [];
-            } else {
-                $ret = $pristine ? $output : $this->applyTransformer($this->applyOutputMutators($output));
-            }
-    
-            $this->onRead($count);
-        } else {
-            $ret = false;
-        }
-                
-        return $ret; 
-    }
+		$this->connect_to = $tables;
+		return $this;
+	}
 
-	function first(array $fields = null, $pristine = false){
+	/**
+	 * Procesa la condición WHERE para manejar calificadores de tablas relacionadas
+	 * 
+	 * @param array|string $condition La condición a procesar
+	 * @return array La condición procesada lista para usar
+	 */
+	protected function processWhereCondition($condition)
+	{
+		// Si no está habilitada la calificación o la condición no es un array, retornar la condición original
+		if (!isset($this->enable_qualification) || !$this->enable_qualification || !is_array($condition)) {
+			return $condition;
+		}
+
+		// Verificar si la condición tiene formato de columna calificada (tabla.columna)
+		if (isset($condition[0]) && is_string($condition[0]) && strpos($condition[0], '.') !== false) {
+			list($relatedTable, $relatedColumn) = explode('.', $condition[0], 2);
+
+			// Verificar si esta tabla relacionada ya está en joins
+			$relatedTableExists = false;
+			foreach ($this->joins as $join) {
+				if ($join['table'] === $relatedTable || $join['alias'] === $relatedTable) {
+					$relatedTableExists = true;
+					break;
+				}
+			}
+
+			// Si la tabla relacionada no está en joins, intentar añadirla
+			if (!$relatedTableExists) {
+				// Buscar relación en el schema
+				if (isset($this->schema) && isset($this->schema['expanded_relationships'][$relatedTable])) {
+					$relation = $this->schema['expanded_relationships'][$relatedTable][0];
+					$this->join($relatedTable);
+					$relatedTableExists = true;
+				} else {
+					// Verificar si es un alias derivado de una FK (ej: 'professor' → 'professor_id')
+					$possibleFk = $relatedTable . '_id';
+					if ($this->columnExists($possibleFk)) {
+						// Es un alias de una FK directa, necesitamos hacer join con la tabla correcta
+						$this->join($this->findTableByAlias($relatedTable), 'id', '=', $this->table_name . '.' . $possibleFk);
+						$relatedTableExists = true;
+					}
+				}
+			}
+
+			// Si logramos añadir la tabla relacionada, modificar la condición
+			if ($relatedTableExists) {
+				// La condición ahora usa la columna calificada
+				$condition[0] = "$relatedTable.$relatedColumn";
+			}
+		}
+
+		return $condition;
+	}
+
+	/**
+	 * Encuentra la tabla real correspondiente a un alias derivado
+	 * 
+	 * @param string $alias El alias a buscar
+	 * @return string|null La tabla correspondiente o null si no se encuentra
+	 */
+	public function findTableByAlias($alias)
+	{
+		// Buscar en todas las relaciones para encontrar de qué tabla proviene este alias
+		if (isset($this->schema) && isset($this->schema['expanded_relationships'])) {
+			foreach ($this->schema['expanded_relationships'] as $tableName => $relations) {
+				foreach ($relations as $relation) {
+					$sourceField = $relation[1][1]; // ej: professor_id
+
+					// Si el nombre de la columna sugiere un alias
+					if (preg_match('/^(.+)_id$/', $sourceField, $matches)) {
+						$possibleAlias = $matches[1];
+						if ($possibleAlias === $alias) {
+							return $tableName;
+						}
+					}
+				}
+			}
+		}
+
+		// Si no encontramos correspondencia, asumimos que el alias es igual al nombre de la tabla
+		return $alias;
+	}
+
+	function get(array $fields = null, array $order = null, int $limit = NULL, int $offset = null, $pristine = false)
+	{
+		$this->onReading();
+
+		// Si hay tablas conectadas
+		if (!empty($this->connect_to)) {
+			$output = $this->getSubResources(
+				$this->table_name,
+				$this->connect_to,
+				$this,
+				DB::getCurrentConnectionId()
+			);
+
+			return $output;
+		}
+
+		// Flujo normal sin relaciones
+		$q = $this->toSql($fields, $order, $limit, $offset);
+		$st = $this->bind($q);
+
+		$count = null;
+		if ($this->exec && $st->execute()) {
+			$output = $st->fetchAll($this->getFetchMode());
+
+			$count  = $st->rowCount();
+			if (empty($output)) {
+				$ret = [];
+			} else {
+				$ret = $pristine ? $output : $this->applyTransformer($this->applyOutputMutators($output));
+			}
+
+			$this->onRead($count);
+		} else {
+			$ret = false;
+		}
+
+		return $ret;
+	}
+
+	function first(array $fields = null, $pristine = false)
+	{
 		$this->onReading();
 
 		$q  = $this->toSql($fields, NULL);
 		$st = $this->bind($q);
 
 		$count = null;
-		if ($this->exec && $st->execute()){
+		if ($this->exec && $st->execute()) {
 			$output = $st->fetch($this->getFetchMode());
 			$count = $st->rowCount();
 
 			if (empty($output)) {
 				$ret = []; // deberia retornar null !!!!!! Corregir pero analizar y probar luego ApiController
-			}else {
+			} else {
 				$ret = $pristine ? $output : $this->applyTransformer($this->applyOutputMutators($output));
 			}
 
 			$this->onRead($count);
-		}else
+		} else
 			$ret = false;
-				
+
 		return $ret;
 	}
 
-	function firstOrFail(array $fields = null, $pristine = false){
+	function firstOrFail(array $fields = null, $pristine = false)
+	{
 		$ret = $this->first($fields, $pristine);
 
-		if (empty($ret)){
+		if (empty($ret)) {
 			// Debería ser una Excepción personalizada
 			throw new \Exception("No rows");
 		}
@@ -1704,15 +1867,18 @@ trait QueryBuilderTrait
 		return $ret;
 	}
 
-	function getOne(array $fields = null, $pristine = false){
+	function getOne(array $fields = null, $pristine = false)
+	{
 		return $this->first($fields, $pristine);
 	}
 
-	function top(array $fields = null, $pristine = false){
+	function top(array $fields = null, $pristine = false)
+	{
 		return $this->first($fields, $pristine);
 	}
 
-	function value($field, ?string $cast_to = null){
+	function value($field, ?string $cast_to = null)
+	{
 		$this->onReading();
 
 		$q  = $this->toSql([$field]);
@@ -1721,7 +1887,7 @@ trait QueryBuilderTrait
 		$count = null;
 		if ($this->exec && $st->execute()) {
 			$ret = $st->fetch(\PDO::FETCH_NUM)[0] ?? false;
-			
+
 			$count = $st->rowCount();
 			$this->onRead($count);
 		} else
@@ -1731,8 +1897,8 @@ trait QueryBuilderTrait
 			Castear false daria muchos errores
 			ya que es el valor devuelto ante fallo
 		*/
-		if ($ret != false && !empty($cast_to)){
-			switch ($cast_to){
+		if ($ret != false && !empty($cast_to)) {
+			switch ($cast_to) {
 				case 'string':
 					$ret = (string) $ret;
 					break;
@@ -1744,14 +1910,14 @@ trait QueryBuilderTrait
 					$ret = (float) $ret;
 					break;
 				case 'double':
-					$ret = (double) $ret;
+					$ret = (float) $ret;
 					break;
 				case 'bool':
-					switch(gettype($ret)){
+					switch (gettype($ret)) {
 						case 'string':
 							$_s = strtolower($ret);
-							
-							switch($_s){
+
+							switch ($_s) {
 								case '1':
 								case 'on':
 									$ret = true;
@@ -1761,10 +1927,10 @@ trait QueryBuilderTrait
 									$ret = false;
 									break;
 							}
-						break;
+							break;
 
 						case 'int':
-							switch($ret){
+							switch ($ret) {
 								case 1:
 									$ret = true;
 									break;
@@ -1772,39 +1938,43 @@ trait QueryBuilderTrait
 									$ret = false;
 									break;
 							}
-						break;
+							break;
 					}
 					// sino cumple esas reglas estricas, el casting de bools no se efectua
-					
+
 					break;
 				default:
 					throw new \InvalidArgumentException("Invalid cast");
 			}
 		}
-			
-		return $ret;	
+
+		return $ret;
 	}
 
-	function exists(){
+	function exists()
+	{
 		$q  = $this->toSql(null, null, null, null, true);
 		$st = $this->bind($q);
 
-		if ($this->exec && $st->execute()){
+		if ($this->exec && $st->execute()) {
 			return (bool) $st->fetch(\PDO::FETCH_NUM)[0];
-		}else
-			return false;	
+		} else
+			return false;
 	}
 
-	function pluck(string $field){
+	function pluck(string $field)
+	{
 		$this->setFetchMode('COLUMN');
 		$this->fields = [$field];
 
 		$q  = $this->toSql();
 		$st = $this->bind($q);
-	
+
 		if ($this->exec && $st->execute()) {
-			$res = $this->applyTransformer($this->applyOutputMutators(
-				$st->fetchAll($this->getFetchMode()))
+			$res = $this->applyTransformer(
+				$this->applyOutputMutators(
+					$st->fetchAll($this->getFetchMode())
+				)
 			);
 
 			/*	
@@ -1815,12 +1985,12 @@ trait QueryBuilderTrait
 					// ...
 				],
 			*/
-			if ($this->schema != NULL && isset($this->schema['sql_data_types']) && isset($this->schema['sql_data_types'][$field]) )
-			{
-				if ($this->schema['sql_data_types'][$field] == 'JSON'){
-					$res = array_map(function ($e){
-						return json_decode($e, true);
-					},
+			if ($this->schema != NULL && isset($this->schema['sql_data_types']) && isset($this->schema['sql_data_types'][$field])) {
+				if ($this->schema['sql_data_types'][$field] == 'JSON') {
+					$res = array_map(
+						function ($e) {
+							return json_decode($e, true);
+						},
 						$res
 					);
 				}
@@ -1828,7 +1998,7 @@ trait QueryBuilderTrait
 
 			return $res;
 		} else
-			return false;	
+			return false;
 	}
 
 	protected function aggregate(string $fn_name, $field, $alias)
@@ -1841,152 +2011,173 @@ trait QueryBuilderTrait
 			'COUNT',
 			'SUM',
 			'AVG'
-		])){
+		])) {
 			throw new \InvalidArgumentException("Invalid aggregate function");
 		}
-		
+
 		$q = $this->toSql(null, null, null, null, false, $fn_name, $field, $alias);
 		$st = $this->bind($q);
 
-		if (empty($this->group)){
-			if ($this->exec && $st->execute()){
+		if (empty($this->group)) {
+			if ($this->exec && $st->execute()) {
 				// fetch
-				return(int) $st->fetch($this->getFetchMode('COLUMN'));
-			}else
-				return false;	
-		}else{
-			if ($this->exec && $st->execute()){
+				return (int) $st->fetch($this->getFetchMode('COLUMN'));
+			} else
+				return false;
+		} else {
+			if ($this->exec && $st->execute()) {
 				// fetch all
 				return (int) $st->fetchAll($this->getFetchMode('COLUMN'));
-			}else
+			} else
 				return false;
-		}	
+		}
 	}
 
-	function avg($field, $alias = NULL){
+	function avg($field, $alias = NULL)
+	{
 		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
-	function sum($field, $alias = NULL){
+	function sum($field, $alias = NULL)
+	{
 		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
-	function min($field, $alias = NULL){
+	function min($field, $alias = NULL)
+	{
 		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
-	function max($field, $alias = NULL){
+	function max($field, $alias = NULL)
+	{
 		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
-	function count($field = NULL, $alias = NULL){
+	function count($field = NULL, $alias = NULL)
+	{
 		return $this->aggregate(__FUNCTION__, $field, $alias);
 	}
 
-	function getWhereVals(): array {
+	function getWhereVals(): array
+	{
 		return $this->w_vals;
 	}
 
-	function getWhereVars(): array {
+	function getWhereVars(): array
+	{
 		return $this->w_vars;
 	}
 
-	function getWhereRawVals(){
+	function getWhereRawVals()
+	{
 		return $this->where_raw_vals;
 	}
 
-	function getHavingVals(): array{
+	function getHavingVals(): array
+	{
 		return $this->h_vals;
 	}
 
-	function getHavingVars(): array{
+	function getHavingVars(): array
+	{
 		return $this->h_vars;
 	}
 
-	function getHavingRawVals(): array{
+	function getHavingRawVals(): array
+	{
 		return $this->having_raw_vals;
 	}
 
 	// crea un grupo dentro del where
-	function group(callable $closure, string $conjunction = 'AND', bool $negate = false) 
-	{	
+	function group(callable $closure, string $conjunction = 'AND', bool $negate = false)
+	{
 		$not = $negate ? ' NOT ' : '';
 
-		$m = new Model();		
-		call_user_func($closure, $m);	
+		$m = new Model();
+		call_user_func($closure, $m);
 
 		$w_formed 	= $m->whereFormedQuery();
 
-		if (!empty($w_formed)){
+		if (!empty($w_formed)) {
 			$w_vars   	= $m->getWhereVars();
 			$w_vals   	= $m->getWhereVals();
 			$w_raw_vals = $m->getWhereRawVals();
 
-			$this->where[] = "$conjunction $not($w_formed)";	
+			$this->where[] = "$conjunction $not($w_formed)";
 			$this->w_vars  = array_merge($this->w_vars, $w_vars);
 			$this->w_vals  = array_merge($this->w_vals, $w_raw_vals, $w_vals); // *
-			
+
 			$this->where_group_op[] = '';
 		}
 
 
 		$h_formed 	= $m->havingFormedQuery();
 
-		if(!empty($h_formed)){
+		if (!empty($h_formed)) {
 			$h_vars   	= $m->getHavingVars();
 			$h_vals   	= $m->getHavingVals();
 			$h_raw_vals = $m->getHavingRawVals();
 
-			$this->having[] = "$conjunction $not($h_formed)";	
+			$this->having[] = "$conjunction $not($h_formed)";
 			$this->h_vars  = array_merge($this->h_vars, $h_vars);
 			$this->h_vals  = array_merge($this->h_vals, $h_raw_vals, $h_vals); // *
-			
+
 			$this->having_group_op[] = '';
 		}
 
 		return $this;
 	}
 
-	function and(callable $closure){
+	function and(callable $closure)
+	{
 		return $this->group($closure, 'AND', false);
 	}
 
-	function or(callable $closure){
+	function or(callable $closure)
+	{
 		return $this->group($closure, 'OR', false);
 	}
 
-	function andNot(callable $closure){
+	function andNot(callable $closure)
+	{
 		return $this->group($closure, 'AND', true);
 	}
 
 	// alias
-	function not(callable $closure){
+	function not(callable $closure)
+	{
 		return $this->andNot($closure);
 	}
 
-	function orNot(callable $closure){
+	function orNot(callable $closure)
+	{
 		return $this->group($closure, 'OR', true);
 	}
 
-	function when($precondition = null, ?callable $closure = null, ?callable $closure2 = null){
-		if (!empty($precondition)){			
-			call_user_func($closure, $this);	
-		} elseif ($closure2 != null){
+	function when($precondition = null, ?callable $closure = null, ?callable $closure2 = null)
+	{
+		if (!empty($precondition)) {
+			call_user_func($closure, $this);
+		} elseif ($closure2 != null) {
 			call_user_func($closure2, $this);
 		}
-		
-		return $this;	
+
+		return $this;
 	}
 
-	static protected function _where_array(Array $cond_ay, $parent_conj = 'AND')
+	static protected function _where_array(array $cond_ay, $parent_conj = 'AND')
 	{
 		$accepted_conj = [
-			'AND', 'OR', 'NOT', 'AND NOT', 'OR NOT'
+			'AND',
+			'OR',
+			'NOT',
+			'AND NOT',
+			'OR NOT'
 		];
 
 		$code = '';
-		foreach ($cond_ay as $key => $ay){
-			if (!is_array($ay)){
+		foreach ($cond_ay as $key => $ay) {
+			if (!is_array($ay)) {
 				continue;
 			}
 
@@ -1994,8 +2185,8 @@ trait QueryBuilderTrait
 
 			//dd($ay, "PARENT CONJ is $parent_conj");
 
-			if (is_string($key)){
-				if (!in_array($key, $accepted_conj)){
+			if (is_string($key)) {
+				if (!in_array($key, $accepted_conj)) {
 					throw new \Exception("Conjuntion '$key' is invalid");
 				}
 
@@ -2006,9 +2197,9 @@ trait QueryBuilderTrait
 
 				//dd($ay, "GRUPO con op $key " . ($is_simple ? ' -- simple' : ''));
 
-				if ($is_simple || !$is_multi){
+				if ($is_simple || !$is_multi) {
 					$w_type = ($parent_conj == 'OR' ? 'whereOr' : 'where');
-				
+
 					// switch ($parent_conj){
 					// 	case 'OR':
 					// 		$w_type = 'whereOr';
@@ -2026,7 +2217,7 @@ trait QueryBuilderTrait
 					// 	case 'AND NOT':
 					// 		$w_type = 'andNot'; //
 					// 		break;
-				
+
 					// 	default:
 					// 		$w_type = 'where';
 					// 		break;
@@ -2035,18 +2226,16 @@ trait QueryBuilderTrait
 
 					$code .= "\$q->$w_type($ay_str);\n";
 				} else {
-					$code  .=  "\$q->group(function (\$q) {". static::_where_array($ay, $conj) ."});\n";
+					$code  .=  "\$q->group(function (\$q) {" . static::_where_array($ay, $conj) . "});\n";
 				}
-				
-				
 			} else {
 				$is_simple = is_array($ay) && Arrays::areSimpleAllSubArrays($ay);
 				$is_multi  = is_array($ay) && Arrays::isMultidim($ay);
 
 				//dd($ay, "GRUPO - key $key" . ($is_simple ? ' -- simple' : ''));
 
-				if ($is_simple || !$is_multi){
-					
+				if ($is_simple || !$is_multi) {
+
 					$w_type = ($parent_conj == 'OR' ? 'orWhere' : 'where');
 
 					// switch ($parent_conj){
@@ -2066,32 +2255,30 @@ trait QueryBuilderTrait
 					// 	case 'AND NOT':
 					// 		$w_type = 'andNot'; //
 					// 		break;
-				
+
 					// 	default:
 					// 		$w_type = 'where';
 					// 		break;
 					// }
 
 
-					$code  .= "\$q->$w_type(". $ay_str .");\n";
-				
+					$code  .= "\$q->$w_type(" . $ay_str . ");\n";
 				} else {
 
 					// dd(
 					// 	$ay, "Multi?" . ((int) $is_multi) .  " Simple? " . ((int) $is_simple)
 					// );
 
-					if (!in_array($key, $accepted_conj)){
+					if (!in_array($key, $accepted_conj)) {
 						$conj = 'AND';
 					} else {
 						$conj = $key;
 					}
 
-					$code  .=  "\$q->group(function (\$q) {". static::_where_array($ay, $conj) ."});\n";
+					$code  .=  "\$q->group(function (\$q) {" . static::_where_array($ay, $conj) . "});\n";
 				}
-
 			}
-		}	
+		}
 
 		return $code;
 	}
@@ -2167,7 +2354,8 @@ trait QueryBuilderTrait
 
 		Antes llamada where_ay()
 	*/
-	static function where_array(Array $cond_ay){
+	static function where_array(array $cond_ay)
+	{
 		return ltrim(
 			static::_where_array($cond_ay),
 			'$q'
@@ -2179,11 +2367,14 @@ trait QueryBuilderTrait
 		//dd($group_op, 'group_op');
 		//dd($conjunction, 'conjuntion');
 
-		if (empty($conditions)){
+		if (empty($conditions)) {
 			return;
 		}
 
-		if (Arrays::isAssoc($conditions)){
+		// Procesar condiciones para manejar calificadores de tabla
+		$conditions = $this->processWhereCondition($conditions);
+
+		if (Arrays::isAssoc($conditions)) {
 			$conditions = Arrays::nonAssoc($conditions);
 		}
 
@@ -2193,61 +2384,61 @@ trait QueryBuilderTrait
 		$_where = [];
 		$vars   = [];
 		$ops    = [];
-		
-		if (count($conditions)>0){
-			if(is_array($conditions[Arrays::arrayKeyFirst($conditions)])){
+
+		if (count($conditions) > 0) {
+			if (is_array($conditions[Arrays::arrayKeyFirst($conditions)])) {
 
 				foreach ($conditions as $ix => $cond) {
 					$unqualified_field = $this->unqualifyField($cond[0]);
 					$field             = $this->getFullyQualifiedField($cond[0]);
 					$field     	       = $this->getWrapFieldName($field); // <--- wrap
-				
+
 					if ($field == null)
 						throw new SqlException("Field can not be NULL");
-				
-					if(is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN'])))
-					{   
+
+					if (is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN']))) {
 						// Determinar si se deben comillar los valores
 						$should_quote = true;
-						
+
 						if ($this->isDecimalField($unqualified_field) && !$this->shouldQuoteDecimals()) {
 							$should_quote = false;
 						} else if (isset($this->schema['attr_types'][$unqualified_field])) {
 							$should_quote = $this->schema['attr_types'][$unqualified_field] == 'STR';
 						}
-				
+
 						// Aplicar comillas si corresponde
 						if ($should_quote) {
-							$cond[1] = array_map(function($e){ return "'$e'";}, $cond[1]);
+							$cond[1] = array_map(function ($e) {
+								return "'$e'";
+							}, $cond[1]);
 						}
-						
+
 						$in_val = implode(', ', $cond[1]);
-						
+
 						$op = isset($cond[2]) ? $cond[2] : 'IN';
-						$_where[] = "$field $op ($in_val) ";    
+						$_where[] = "$field $op ($in_val) ";
 					} else {
 						$vars[] = $field;
 						$this->w_vals[] = $cond[1];
-				
-						if ($cond[1] === NULL && (empty($cond[2]) || $cond[2]=='='))
-							$ops[] = 'IS';
-						else    
-							$ops[] = $cond[2] ?? '=';
-					}    
-				}
 
-			}else{
+						if ($cond[1] === NULL && (empty($cond[2]) || $cond[2] == '='))
+							$ops[] = 'IS';
+						else
+							$ops[] = $cond[2] ?? '=';
+					}
+				}
+			} else {
 				$vars[]         = $conditions[0];
 				$this->w_vals[] = $conditions[1];
-		
-				if ($conditions[1] === NULL && (empty($conditions[2]) || $conditions[2]== '='))
+
+				if ($conditions[1] === NULL && (empty($conditions[2]) || $conditions[2] == '='))
 					$ops[] = 'IS';
-				else	
-					$ops[] = $conditions[2] ?? '='; 
-			}	
+				else
+					$ops[] = $conditions[2] ?? '=';
+			}
 		}
 
-		foreach($vars as $ix => $var){
+		foreach ($vars as $ix => $var) {
 			$_where[] = "$var $ops[$ix] ?";
 		}
 
@@ -2256,37 +2447,39 @@ trait QueryBuilderTrait
 		////////////////////////////////////////////
 		// group
 		$ws_str = implode(" $conjunction ", $_where);
-		
-		if (count($conditions)>1 && !empty($ws_str))
-			$ws_str = "($ws_str)";
-		
-		$this->where_group_op[] = $group_op;	
 
-		$this->where[] = ' ' .$ws_str;
+		if (count($conditions) > 1 && !empty($ws_str))
+			$ws_str = "($ws_str)";
+
+		$this->where_group_op[] = $group_op;
+
+		$this->where[] = ' ' . $ws_str;
 
 		return;
 	}
 
-	function whereColumn(string $field1, string $field2, string $op = '='){
+	function whereColumn(string $field1, string $field2, string $op = '=')
+	{
 		$validation = Factory::validador()->validate(
 			[
-				'col1' => $field1, 
+				'col1' => $field1,
 				'col2' => $field2
 			],
-			[ 
-				'col1' => ['type' => 'alpha_num_dash'], 
+			[
+				'col1' => ['type' => 'alpha_num_dash'],
 				'col2' => ['type' => 'alpha_num_dash']
-			]);
+			]
+		);
 
-		if (!$validation){
+		if (!$validation) {
 			throw new InvalidValidationException(json_encode(
 				$this->validator->getErrors()
 			));
 		}
 
-		if (!in_array($op, ['=', '>', '<', '<=', '>=', '!='])){
+		if (!in_array($op, ['=', '>', '<', '<=', '>=', '!='])) {
 			throw new \InvalidArgumentException("Invalid operator '$op'");
-		}	
+		}
 
 		$field1 = $this->getFullyQualifiedField($field1);
 		$field2 = $this->getFullyQualifiedField($field2);
@@ -2304,7 +2497,7 @@ trait QueryBuilderTrait
 
 	// 	/*
 	// 		Laravel compatibility
-			
+
 	// 		In "Laravel mode", $conditions es la key y $conjunction el valor
 	// 	*/
 	// 	if (is_string($conditions)){
@@ -2352,7 +2545,8 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function orWhere($conditions, $conjunction = 'AND'){
+	function orWhere($conditions, $conjunction = 'AND')
+	{
 		$this->_where($conditions, 'OR', $conjunction);
 		return $this;
 	}
@@ -2368,24 +2562,28 @@ trait QueryBuilderTrait
 		->orWhereLike('email', "%$search%")
 		->get();
 	*/
-	function orWhereLike(string $field, $val){
+	function orWhereLike(string $field, $val)
+	{
 		$this->_where([[$this->getFullyQualifiedField($field), $val, 'LIKE']], 'OR');
 		return $this;
 	}
 
-	function whereOr($conditions){
+	function whereOr($conditions)
+	{
 		$this->_where($conditions, 'AND', 'OR');
 		return $this;
 	}
 
 	// ok
-	function orHaving($conditions, $conjunction = 'AND'){
+	function orHaving($conditions, $conjunction = 'AND')
+	{
 		$this->_having($conditions, 'OR', $conjunction);
 		return $this;
 	}
 
-	function orWhereRaw(string $q, array $vals = null){
-		$this->or(function($x) use ($q, $vals){
+	function orWhereRaw(string $q, array $vals = null)
+	{
+		$this->or(function ($x) use ($q, $vals) {
 			$x->whereRaw($q, $vals);
 		});
 
@@ -2395,7 +2593,8 @@ trait QueryBuilderTrait
 	/*
 		Es un error usar or() ya que depende de group() que afecta solo a los WHERE
 	*/
-	function orHavingRaw(string $q, array $vals = null){
+	function orHavingRaw(string $q, array $vals = null)
+	{
 		// $this->or(function($x) use ($q, $vals){
 		// 	$x->HavingRaw($q, $vals);
 		// });
@@ -2403,15 +2602,17 @@ trait QueryBuilderTrait
 		// return $this;
 	}
 
-	function firstWhere($conditions, $conjunction = 'AND'){
+	function firstWhere($conditions, $conjunction = 'AND')
+	{
 		$this->where($conditions, $conjunction);
 		return $this->first();
 	}
 
-	function find($id){
-		if (empty($this->schema)){
+	function find($id)
+	{
+		if (empty($this->schema)) {
 			return $this->where(['id' => $id]);
-		}		
+		}
 
 		return $this->where([$this->getFullyQualifiedField($this->schema['id_name']) => $id]);
 	}
@@ -2423,98 +2624,111 @@ trait QueryBuilderTrait
 
 		$user->posts()->findOr(1, fn () => '...');
 	*/
-	function findOr($id, ?callable $fn = null){
+	function findOr($id, ?callable $fn = null)
+	{
 		$query = $this->find($id);
 
-		if ($fn != null && !$this->exists()){
+		if ($fn != null && !$this->exists()) {
 			return $fn($id);
-		}   
+		}
 
 		return $query;
 	}
 
-	function findOrFail($id){
-		return $this->findOr($id, function($id){
+	function findOrFail($id)
+	{
+		return $this->findOr($id, function ($id) {
 			throw new \Exception("Resource for `{$this->table_name}` and id=$id doesn't exist");
 		});
 	}
 
-	function whereNot(string $field, $val){
+	function whereNot(string $field, $val)
+	{
 		$this->where([$this->getFullyQualifiedField($field), $val, '!=']);
 		return $this;
 	}
 
-	function whereNull(string $field){
+	function whereNull(string $field)
+	{
 		$this->where([$this->getFullyQualifiedField($field), NULL]);
 		return $this;
 	}
 
-	function whereNotNull(string $field){
+	function whereNotNull(string $field)
+	{
 		$this->where([$this->getFullyQualifiedField($field), NULL, 'IS NOT']);
 		return $this;
 	}
 
-	function whereIn(string $field, array $vals){
+	function whereIn(string $field, array $vals)
+	{
 		$this->where([$this->getFullyQualifiedField($field), $vals, 'IN']);
 		return $this;
 	}
 
-	function whereNotIn(string $field, array $vals){
+	function whereNotIn(string $field, array $vals)
+	{
 		$this->where([$this->getFullyQualifiedField($field), $vals, 'NOT IN']);
 		return $this;
 	}
 
-	function whereBetween(string $field, array $vals){
-		if (count($vals)!=2)
+	function whereBetween(string $field, array $vals)
+	{
+		if (count($vals) != 2)
 			throw new \InvalidArgumentException("whereBetween accepts an array of exactly two items");
 
-		$min = min($vals[0],$vals[1]);
-		$max = max($vals[0],$vals[1]);
+		$min = min($vals[0], $vals[1]);
+		$max = max($vals[0], $vals[1]);
 
 		$this->where([$this->getFullyQualifiedField($field), $min, '>=']);
 		$this->where([$this->getFullyQualifiedField($field), $max, '<=']);
 		return $this;
 	}
 
-	function whereNotBetween(string $field, array $vals){
-		if (count($vals)!=2)
+	function whereNotBetween(string $field, array $vals)
+	{
+		if (count($vals) != 2)
 			throw new \InvalidArgumentException("whereBetween accepts an array of exactly two items");
 
-		$min = min($vals[0],$vals[1]);
-		$max = max($vals[0],$vals[1]);
+		$min = min($vals[0], $vals[1]);
+		$max = max($vals[0], $vals[1]);
 
 		$this->where([
-						[$this->getFullyQualifiedField($field), $min, '<'],
-						[$this->getFullyQualifiedField($field), $max, '>']
+			[$this->getFullyQualifiedField($field), $min, '<'],
+			[$this->getFullyQualifiedField($field), $max, '>']
 		], 'OR');
 		return $this;
 	}
 
-	function whereLike(string $field, $val){
+	function whereLike(string $field, $val)
+	{
 		$this->where([$this->getFullyQualifiedField($field), $val, 'LIKE']);
 		return $this;
 	}
 
-	function oldest(){
+	function oldest()
+	{
 		$this->orderBy([$this->getFullyQualifiedField($this->createdAt) => 'DESC']);
 		return $this;
 	}
 
-	function latest(){
+	function latest()
+	{
 		$this->oldest();
 		return $this;
 	}
 
-	function newest(){
+	function newest()
+	{
 		$this->orderBy([$this->getFullyQualifiedField($this->createdAt) => 'ASC']);
 		return $this;
 	}
-	
+
 	function _having(array $conditions = null, $group_op = 'AND', $conjunction = null)
-	{	
-		if (Arrays::isAssoc($conditions)){
-            $conditions = Arrays::nonAssoc($conditions);
-        }
+	{
+		if (Arrays::isAssoc($conditions)) {
+			$conditions = Arrays::nonAssoc($conditions);
+		}
 
 		if ((count($conditions) == 3 || count($conditions) == 2) && !is_array($conditions[1]))
 			$conditions = [$conditions];
@@ -2522,21 +2736,20 @@ trait QueryBuilderTrait
 		// dd($conditions, 'CONDITIONS');
 
 		$_having = [];
-		foreach ((array) $conditions as $cond)
-		{	
-			if (Arrays::isAssoc($cond)){
+		foreach ((array) $conditions as $cond) {
+			if (Arrays::isAssoc($cond)) {
 				$cond[0] = Arrays::arrayKeyFirst($cond);
 				$cond[1] = $cond[$cond[0]];
 			}
-			
-			if (in_array($cond[0], $this->getAttr())){
+
+			if (in_array($cond[0], $this->getAttr())) {
 				$dom = $this->getFullyQualifiedField($cond[0]);
 			} else {
 				$dom = $cond[0];
-			}			
+			}
 
-			$op = $cond[2] ?? '=';	
-			
+			$op = $cond[2] ?? '=';
+
 			$_having[] = "$dom $op ?";
 			$this->h_vars[] = $dom;
 			$this->h_vals[] = $cond[1];
@@ -2545,13 +2758,13 @@ trait QueryBuilderTrait
 		////////////////////////////////////////////
 		// group
 		$ws_str = implode(" $conjunction ", $_having);
-		
-		if (count($conditions)>1 && !empty($ws_str))
-			$ws_str = "($ws_str)";
-		
-		$this->having_group_op[] = $group_op;	
 
-		$this->having[] = ' ' .$ws_str;
+		if (count($conditions) > 1 && !empty($ws_str))
+			$ws_str = "($ws_str)";
+
+		$this->having_group_op[] = $group_op;
+
+		$this->having[] = ' ' . $ws_str;
 		////////////////////////////////////////////
 
 		// dd($this->having, 'HAVING:');
@@ -2574,32 +2787,33 @@ trait QueryBuilderTrait
 		// Generaría algo como:
 		// ... HAVING (COUNT(id) > ?) OR (SUM(amount) > ?)
 	*/
-	function havingRaw(string $q, array $vals = null, $conjunction = 'AND'){
+	function havingRaw(string $q, array $vals = null, $conjunction = 'AND')
+	{
 		if (substr_count($q, '?') != count($vals))
 			throw new \InvalidArgumentException("Number of ? are not consistent with the number of passed values");
-		
-		if (empty($this->having_raw_q)){
+
+		if (empty($this->having_raw_q)) {
 			$this->having_raw_q = $q;
 		} else {
 			$this->having_raw_q = "({$this->having_raw_q}) $conjunction ($q)";
 		}
-	
-		if ($vals != null){
-			if (empty($this->having_raw_vals)){
+
+		if ($vals != null) {
+			if (empty($this->having_raw_vals)) {
 				$this->having_raw_vals = $vals;
 			} else {
 				$this->having_raw_vals = array_merge($this->having_raw_vals, $vals);
 			}
 		}
-				
+
 		return $this;
 	}
 
 	// function having(array $conditions, $conjunction = 'AND')
 	// {	
 	// 	if (Arrays::isAssoc($conditions)){
-    //         $conditions = Arrays::nonAssoc($conditions);
-    //     }
+	//         $conditions = Arrays::nonAssoc($conditions);
+	//     }
 
 	// 	if (!is_array($conditions[0])){
 	// 		if (Strings::contains('(', $conditions[0])){
@@ -2616,7 +2830,7 @@ trait QueryBuilderTrait
 	// 			return $this;
 	// 		}
 	// 	} 
-	
+
 	// 	$this->_having($conditions, 'AND', $conjunction);
 	// 	return $this;
 	// }
@@ -2678,14 +2892,15 @@ trait QueryBuilderTrait
 
 		El uso de esta función deberá ser reemplazado por DB::select()
 	*/
-	static function query(string $raw_sql, $fetch_mode = \PDO::FETCH_ASSOC){
+	static function query(string $raw_sql, $fetch_mode = \PDO::FETCH_ASSOC)
+	{
 		$conn = DB::getConnection();
 
 		$query = $conn->query($raw_sql);
 		DB::setRawSql($raw_sql);
 
-		if ($fetch_mode !== null){
-			if (is_string($fetch_mode)){
+		if ($fetch_mode !== null) {
+			if (is_string($fetch_mode)) {
 				$fetch_mode = constant("\PDO::FETCH_{$fetch_mode}");
 			}
 
@@ -2710,12 +2925,12 @@ trait QueryBuilderTrait
 	{
 		if ($this->conn == null)
 			throw new SqlException('No conection');
-			
-		if (empty($data)){
+
+		if (empty($data)) {
 			throw new SqlException('There is no data to update');
 		}
 
-		if (!Arrays::isAssoc($data)){
+		if (!Arrays::isAssoc($data)) {
 			throw new SqlException('Array of data should be associative');
 		}
 
@@ -2724,7 +2939,7 @@ trait QueryBuilderTrait
 
 		$this->data = $data;
 
-		switch ($this->current_operation){
+		switch ($this->current_operation) {
 			case 'restore':
 				$this->onRestoring($data);
 				break;
@@ -2732,83 +2947,83 @@ trait QueryBuilderTrait
 				$this->onDeleting($data);
 			default:
 				$this->onUpdating($data);
-		}		
+		}
 
 		$data = $this->applyInputMutator($data, 'UPDATE');
 		$vars = array_keys($data);
 		$vals = array_values($data);
 
-		if(!empty($this->fillable) && is_array($this->fillable)){
-			foreach($vars as $var){
-				if (!in_array($var,$this->fillable))
+		if (!empty($this->fillable) && is_array($this->fillable)) {
+			foreach ($vars as $var) {
+				if (!in_array($var, $this->fillable))
 					throw new SqlException("Update: $var is not fillable");
 			}
 		}
 
 		// Validación
-		if (!empty($this->validator)){
+		if (!empty($this->validator)) {
 			$validado = $this->validator->validate($data, $this->getRules());
-			if ($validado !== true){
+			if ($validado !== true) {
 				throw new InvalidValidationException(json_encode(
 					$this->validator->getErrors()
 				));
-			} 
+			}
 		}
-	
+
 		$set = '';
-		foreach($vars as $ix => $var){
+		foreach ($vars as $ix => $var) {
 			$set .= " $var = ?, ";
 		}
-		$set =trim(substr($set, 0, strlen($set)-2));
+		$set = trim(substr($set, 0, strlen($set) - 2));
 
-		if ($set_updated_at && $this->inSchema([$this->updatedAt])){
-			if (isset($this->config)){
+		if ($set_updated_at && $this->inSchema([$this->updatedAt])) {
+			if (isset($this->config)) {
 				$d = new \DateTime('', new \DateTimeZone($this->config['DateTimeZone'])); // *
 			} else {
 				$d = new \DateTime();
 			}
-						
+
 			$at = $d->format('Y-m-d G:i:s');
 
 			$set .= ", {$this->updatedAt} = '$at'";
 		}
 
-		if (!empty($this->where)){
+		if (!empty($this->where)) {
 			$where = implode(' AND ', $this->where);
 		} else {
 			$where = '';
 		}
 
-		if (!empty($this->where_raw_q)){
-			if (!empty($where)){
+		if (!empty($this->where_raw_q)) {
+			if (!empty($where)) {
 				$where = $this->where_raw_q . " AND $where";
 			} else {
 				$where = $this->where_raw_q;
-			}			
+			}
 		}
 
-		if (trim($where) == ''){
+		if (trim($where) == '') {
 			throw new SqlException("WHERE can not be empty in UPDATE statement");
 		}
 
-		$q = "UPDATE ". DB::quote($this->from()) .
-				" SET $set WHERE " . $where;		
+		$q = "UPDATE " . DB::quote($this->from()) .
+			" SET $set WHERE " . $where;
 
 		// dd($q, 'Update statement');
 
 		/*
 			JSON no puede ser un string vacio ('')
 		*/
-		foreach($vals as $ix => $val){	
-			if (isset($this->schema['attr_type_detail'][$vars[$ix]]) && in_array($this->schema['attr_type_detail'][$vars[$ix]], ['JSON'])){
-				if ($vals[$ix] == ''){
+		foreach ($vals as $ix => $val) {
+			if (isset($this->schema['attr_type_detail'][$vars[$ix]]) && in_array($this->schema['attr_type_detail'][$vars[$ix]], ['JSON'])) {
+				if ($vals[$ix] == '') {
 					$vals[$ix] = null;
-				} 
+				}
 			}
 		}
-		
+
 		$vals = array_merge($vals, $this->w_vals);
-		$vars = array_merge($vars, $this->w_vars);		
+		$vars = array_merge($vars, $this->w_vars);
 
 		///////////////[ BUG FIXES ]/////////////////
 
@@ -2836,7 +3051,7 @@ trait QueryBuilderTrait
 
 		///////////////////////////////////////////
 
-		if ($this->semicolon_ending){
+		if ($this->semicolon_ending) {
 			$q .= ';';
 		}
 
@@ -2845,46 +3060,46 @@ trait QueryBuilderTrait
 
 		$st = $this->conn->prepare($q);
 
-		foreach($vals as $ix => $val){		
-			if(is_array($val)){
-				if (isset($this->schema['attr_types'][$vars[$ix]]) && !$this->schema['attr_types'][$vars[$ix]] == 'STR'){
+		foreach ($vals as $ix => $val) {
+			if (is_array($val)) {
+				if (isset($this->schema['attr_types'][$vars[$ix]]) && !$this->schema['attr_types'][$vars[$ix]] == 'STR') {
 					throw new \InvalidArgumentException("Param '{[$vars[$ix]}' is not expected to be an string. Given array");
 				} else {
 					$val = json_encode($val);
 					$type = \PDO::PARAM_STR;
-				}	
+				}
 			} else {
-				if(is_null($val)){
+				if (is_null($val)) {
 					$type = \PDO::PARAM_NULL;
-				}elseif(isset($vars[$ix]) && isset($this->schema['attr_types'][$vars[$ix]])){
+				} elseif (isset($vars[$ix]) && isset($this->schema['attr_types'][$vars[$ix]])) {
 					$const = $this->schema['attr_types'][$vars[$ix]];
 					$type = constant("PDO::PARAM_{$const}");
-				}elseif(is_int($val))
+				} elseif (is_int($val))
 					$type = \PDO::PARAM_INT;
-				elseif(is_bool($val))
+				elseif (is_bool($val))
 					$type = \PDO::PARAM_BOOL;
-				elseif(is_string($val))
-					$type = \PDO::PARAM_STR;	
+				elseif (is_string($val))
+					$type = \PDO::PARAM_STR;
 			}
-			
-			$st->bindValue($ix+1, $val, $type);
+
+			$st->bindValue($ix + 1, $val, $type);
 		}
 
 		$this->last_bindings = $vals;
 		$this->last_pre_compiled_query = $q;
 		$this->last_operation = ($this->current_operation !== null) ? $this->current_operation : 'update';
-	 
+
 		// var_dump($vals);
 		// dd($this->last_bindings, $this->last_pre_compiled_query);
 
-		if (!$this->exec){
+		if (!$this->exec) {
 			return 0;
 		}
 
-		if($st->execute()) {
+		if ($st->execute()) {
 			$count = $st->rowCount();
 
-			switch ($this->current_operation){
+			switch ($this->current_operation) {
 				case 'restore':
 					$this->onRestored($data, $count);
 					break;
@@ -2893,35 +3108,40 @@ trait QueryBuilderTrait
 					break;
 				default:
 					$this->onUpdated($data, $count);
-			}	
-		
-		} else 
+			}
+		} else
 			$count = false;
-			
+
 		return $count;
 	}
 
 	function updateOrFail(array $data, $set_updated_at = true)
 	{
-		if (!$this->exists()){
+		if (!$this->exists()) {
 			throw new \Exception("Resource does not exist");
-		}                     
+		}
+
+		if (!$this->exec) {
+			return 0;
+		}
 
 		return $this->update($data, $set_updated_at);
 	}
 
-	function touch(){
+	function touch()
+	{
 		$this->fill([$this->updatedAt()]);
 		return $this->update([$this->updatedAt() => at()]);
 	}
 
-	function setSoftDelete(bool $status) {
-		if (!$this->inSchema([$this->deletedAt])){
-			if ($status){
-				throw new SqlException("There is no $this->deletedAt for table '".$this->from()."' in the attr_types");
+	function setSoftDelete(bool $status)
+	{
+		if (!$this->inSchema([$this->deletedAt])) {
+			if ($status) {
+				throw new SqlException("There is no $this->deletedAt for table '" . $this->from() . "' in the attr_types");
 			}
-		} 
-		
+		}
+
 		$this->soft_delete = $status;
 		return $this;
 	}
@@ -2938,21 +3158,21 @@ trait QueryBuilderTrait
 			throw new SqlException('No conection');
 
 		// Validación
-		if (!empty($this->validator)){
+		if (!empty($this->validator)) {
 			$validado = $this->validator->validate(array_combine($this->w_vars, $this->w_vals), $this->getRules());
 
-			if ($validado !== true){
+			if ($validado !== true) {
 				throw new InvalidValidationException(json_encode(
 					$this->validator->getErrors()
 				));
-			} 
+			}
 		}
 
-		if ($this->soft_delete && $soft_delete){
+		if ($this->soft_delete && $soft_delete) {
 			$at = at();
 
 			$to_fill = [];
-			if (!empty($data)){
+			if (!empty($data)) {
 				$to_fill = array_keys($data);
 			}
 			$to_fill[] = $this->deletedAt;
@@ -2960,74 +3180,77 @@ trait QueryBuilderTrait
 			$data =  array_merge($data, [$this->deletedAt => $at]);
 
 			$this->fill($to_fill);
-			
+
 			$this->current_operation = 'delete';
 			$ret = $this->update($data, false);
 			$this->last_operation    = 'delete';
 
 			return $ret;
-		}		
+		}
 
 		$this->onDeleting($data);
 
-		$where = '';	
-		if (!empty($this->where)){
+		$where = '';
+		if (!empty($this->where)) {
 			$where = implode(' AND ', $this->where);
-		}		
-	
+		}
+
 		$where = trim($where);
-		
-		if (empty($where) && empty($this->where_raw_q)){
+
+		if (empty($where) && empty($this->where_raw_q)) {
 			throw new \Exception("DELETE statement requieres WHERE condition");
 		}
 
-		if (!empty($this->where_raw_q)){
-			if (!empty($where)){
+		if (!empty($this->where_raw_q)) {
+			if (!empty($where)) {
 				$where = $this->where_raw_q . " AND $where";
 			} else {
 				$where = $this->where_raw_q;
-			}			
+			}
 		}
 
-		$q = "DELETE FROM ". DB::quote($this->from()) . " WHERE " . $where;
-		
-		if ($this->semicolon_ending){
+		$q = "DELETE FROM " . DB::quote($this->from()) . " WHERE " . $where;
+
+		if ($this->semicolon_ending) {
 			$q .= ';';
 		}
 
-		$st = $this->bind($q);
-	 
-		$this->last_bindings = $this->getBindings();
+		if ($this->bind){
+			$st = $this->bind($q);
+			$this->last_bindings = $this->getBindings();
+		}		
+		
 		$this->last_pre_compiled_query = $q;
 		$this->last_operation = 'delete';
 
-		if($this->exec && $st->execute()) {
+		if ($this->exec && $st->execute()) {
 			$count = $st->rowCount();
 			$this->onDeleted($data, $count);
-		} else 
-			$count = false;	
-		
-		return $count;	
+		} else
+			$count = false;
+
+		return $count;
 	}
 
-	function forceDelete(){
+	function forceDelete()
+	{
 		$this->delete(false);
 	}
 
-	protected function checkUndeletePreconditions() : bool
+	protected function checkUndeletePreconditions(): bool
 	{
-		if (!$this->soft_delete){
+		if (!$this->soft_delete) {
 			throw new \Exception("Undelete is not available");
-		}	
+		}
 
-		$where = '';	
-		if (!empty($this->where)){
+		$where = '';
+		if (!empty($this->where)) {
 			$where = implode(' AND ', $this->where);
-		}		
-	
+		}
+
 		$where = trim($where);
-		
-		if (empty($where) && empty($this->where_raw_q)){
+
+		if (empty($where) && empty($this->where_raw_q)) {
 			throw new \Exception("Lacks WHERE condition");
 		}
 
@@ -3035,17 +3258,20 @@ trait QueryBuilderTrait
 	}
 
 	// debe remover cualquier condición que involucre a $this->deletedAt en el WHERE !!!!
-	function deleted($state = true){
+	function deleted($state = true)
+	{
 		$this->show_deleted = $state;
 		return $this;
 	}
 
 	// alias de deleted()
-	function withTrashed(){
+	function withTrashed()
+	{
 		return $this->deleted(true);
 	}
 
-	function onlyTrashed(){
+	function onlyTrashed()
+	{
 		$this->deleted();
 		$this->whereNotNull($this->deletedAt());
 		return $this;
@@ -3054,7 +3280,7 @@ trait QueryBuilderTrait
 	/*
 		Devuelve si la row fue borrada
 	*/
-	function trashed() : bool
+	function trashed(): bool
 	{
 		$this->checkUndeletePreconditions();
 		$this->onlyTrashed();
@@ -3062,7 +3288,7 @@ trait QueryBuilderTrait
 	}
 
 	// alias
-	function is_trashed() : bool
+	function is_trashed(): bool
 	{
 		return $this->trashed();
 	}
@@ -3075,13 +3301,13 @@ trait QueryBuilderTrait
 	{
 		$this->current_operation = 'restore';
 		$this->checkUndeletePreconditions();
-		
-		if (isset($this->config)){
+
+		if (isset($this->config)) {
 			$d = new \DateTime('', new \DateTimeZone($this->config['DateTimeZone']));
 		} else {
 			$d = new \DateTime();
 		}
-		
+
 		$at = at();
 
 		$this->fill([$this->deletedAt]);
@@ -3092,14 +3318,16 @@ trait QueryBuilderTrait
 
 		$this->current_operation = null;
 		return $ret;
-	}	
+	}
 
 	// alias for delete()
-	function restore(){
+	function restore()
+	{
 		return $this->undelete();
 	}
 
-	function truncate(){
+	function truncate()
+	{
 		DB::truncate($this->table_name);
 		return $this;
 	}
@@ -3108,15 +3336,42 @@ trait QueryBuilderTrait
 		Si un campo es enviado al Modelo pero realmente no existe en el schema
 		entonces se debe ignorar para evitar generar un error innecesario.
 	*/
-	protected function ignoreFieldsNotPresentInSchema(array &$data){
-		if (empty($this->schema)){
+	protected function ignoreFieldsNotPresentInSchema(array &$data)
+	{
+		if (empty($this->schema)) {
 			return;
 		}
 
-		foreach ($data as $key => $dato){
-			if (!in_array($key, $this->getFillables())){
+		foreach ($data as $key => $dato) {
+			if (!in_array($key, $this->getFillables())) {
 				unset($data[$key]);
 			}
+		}
+	}
+
+	private function getParamType($val): int
+	{
+		if (is_null($val)) {
+			return \PDO::PARAM_NULL; // 0
+		} elseif (is_int($val)) {
+			return \PDO::PARAM_INT;  // 1
+		} elseif (is_bool($val)) {
+			return \PDO::PARAM_BOOL; // 5
+		} elseif (is_string($val)) {
+			if (mb_strlen($val) < 4000) {
+				return \PDO::PARAM_STR;  // 2
+			} else {
+				return \PDO::PARAM_LOB;  // 3
+			}
+		} elseif (is_float($val)) {
+			return \PDO::PARAM_STR;  // 2
+		} elseif (is_resource($val)) {
+			// https://stackoverflow.com/a/36724762/980631
+			return \PDO::PARAM_LOB;  // 3
+		} elseif (is_array($val)) {
+			throw new \Exception("where value can not be an array!");
+		} else {
+			throw new \Exception("Unsupported type: " . var_export($val, true));
 		}
 	}
 
@@ -3126,31 +3381,31 @@ trait QueryBuilderTrait
 		Si la data es un array de arrays, intenta un INSERT MULTIPLE
 	*/
 	function create(array $data, $ignore_duplicates = false)
-	{	
+	{
 		$this->current_operation = 'create';
 
 		if ($this->conn == null)
 			throw new SqlException('No connection');
 
-		if (!Arrays::isAssoc($data)){
-			foreach ($data as $dato){
-				if (is_array($dato)){					
+		if (!Arrays::isAssoc($data)) {
+			foreach ($data as $dato) {
+				if (is_array($dato)) {
 					$last_id = $this->create($dato, $ignore_duplicates);
 				} else {
 					throw new \InvalidArgumentException('Array of data should be associative');
 				}
 			}
 		}
-		
+
 		// control de recursión para INSERT múltiple
-		if (isset($data[0]) && is_array($data[0])){
+		if (isset($data[0]) && is_array($data[0])) {
 			return $last_id ?? null;
 		}
 
 		$this->ignoreFieldsNotPresentInSchema($data);
 
-		$this->data = $data;	
-		
+		$this->data = $data;
+
 		$data = $this->applyInputMutator($data, 'CREATE');
 		$vars = array_keys($data);
 		$vals = array_values($data);
@@ -3158,7 +3413,7 @@ trait QueryBuilderTrait
 		// Event hook
 		$this->onCreating($data);
 
-		if ($this->inSchema([$this->createdAt]) && !isset($data[$this->createdAt])){
+		if ($this->inSchema([$this->createdAt]) && !isset($data[$this->createdAt])) {
 			$this->fill([$this->createdAt]);
 
 			$at = datetime();
@@ -3172,16 +3427,15 @@ trait QueryBuilderTrait
 		// dd($this->not_fillable, 'NOT FILLABLE');
 
 		// Validación
-		if (!empty($this->validator))
-		{			
+		if (!empty($this->validator)) {
 			$validado = $this->validator->validate($data, $this->getRules(), $this->fillable, $this->not_fillable);
-			if ($validado !== true){
-				dd($this->validator->getErrors());
+			if ($validado !== true) {
+				// dd($this->validator->getErrors());
 
 				throw new InvalidValidationException(json_encode(
 					$this->validator->getErrors()
 				));
-			} 
+			}
 		}
 
 		// Convert array values (like 'files') to JSON before mapping
@@ -3191,30 +3445,30 @@ trait QueryBuilderTrait
 			}
 		}
 
-		$symbols  = array_map(function(?string $e = null){
-			if ($e === null){
+		$symbols  = array_map(function (?string $e = null) {
+			if ($e === null) {
 				$e = '';
 			}
 
-			return ':'.$e;
+			return ':' . $e;
 		}, $vars);
 
-		$q_marks  = array_map(function(?string $e = null){
-			if ($e === null){
+		$q_marks  = array_map(function (?string $e = null) {
+			if ($e === null) {
 				$e = '';
 			}
-			
+
 			return "'$e'";
 		}, $vals);
 
 		/*
 			BLOB, TEXT, GEOMETRY or JSON columns can't have a default value
 		*/
-		foreach($vals as $ix => $val){	
-			if (isset($this->schema['attr_type_detail'][$vars[$ix]]) && in_array($this->schema['attr_type_detail'][$vars[$ix]], ['JSON', 'TEXT', 'BLOB', 'GEOMETRY'])){
-				if ($vals[$ix] == ''){
+		foreach ($vals as $ix => $val) {
+			if (isset($this->schema['attr_type_detail'][$vars[$ix]]) && in_array($this->schema['attr_type_detail'][$vars[$ix]], ['JSON', 'TEXT', 'BLOB', 'GEOMETRY'])) {
+				if ($vals[$ix] == '') {
 					$vals[$ix] = null;
-				} 
+				}
 			}
 		}
 
@@ -3223,46 +3477,46 @@ trait QueryBuilderTrait
 				return "`$var`";
 			}, $vars));
 		} else {
-			$str_vars = implode(', ',$vars);
+			$str_vars = implode(', ', $vars);
 		}
 
-		$str_vals     = implode(', ',$symbols);
+		$str_vals     = implode(', ', $symbols);
 
-		$str_qmarks   = implode(', ',$q_marks);
+		$str_qmarks   = implode(', ', $q_marks);
 
 		$this->insert_vars = $vars;
 
 		$q                       = "INSERT INTO " . DB::quote($this->from()) . " ($str_vars) VALUES ($str_vals)";
 		$this->last_compiled_sql = "INSERT INTO " . DB::quote($this->from()) . " ($str_vars) VALUES ($str_qmarks)";
 
-		if ($this->semicolon_ending){
+		if ($this->semicolon_ending) {
 			$q .= ';';
 		}
 
 		$st = $this->conn->prepare($q);
-	
-		foreach($vals as $ix => $val){	
-			if(is_array($val)){
-				if (isset($this->schema['attr_types'][$vars[$ix]]) && !$this->schema['attr_types'][$vars[$ix]] == 'STR'){
+
+		foreach ($vals as $ix => $val) {
+			if (is_array($val)) {
+				if (isset($this->schema['attr_types'][$vars[$ix]]) && !$this->schema['attr_types'][$vars[$ix]] == 'STR') {
 					throw new \InvalidArgumentException("Param '{[$vars[$ix]}' is not expected to be an string. Given array");
 				} else {
 					$vals[$ix] = json_encode($val);
 					$type = \PDO::PARAM_STR;
-				}			
+				}
 			} else {
-				if(is_null($val)){
+				if (is_null($val)) {
 					$type = \PDO::PARAM_NULL;
-				}elseif(isset($vars[$ix]) && $this->schema != NULL && isset($this->schema['attr_types'][$vars[$ix]])){
+				} elseif (isset($vars[$ix]) && $this->schema != NULL && isset($this->schema['attr_types'][$vars[$ix]])) {
 					$const = $this->schema['attr_types'][$vars[$ix]];
 					$type = constant("PDO::PARAM_{$const}");
-				}elseif(is_int($val))
+				} elseif (is_int($val))
 					$type = \PDO::PARAM_INT;
-				elseif(is_bool($val))
+				elseif (is_bool($val))
 					$type = \PDO::PARAM_BOOL;
-				elseif(is_string($val))
+				elseif (is_string($val))
 					$type = \PDO::PARAM_STR;
 			}
-			
+
 			// dd($type, "TYPE");	
 			// dd([$vals[$ix], $symbols[$ix], $type]);
 
@@ -3273,64 +3527,82 @@ trait QueryBuilderTrait
 		$this->last_pre_compiled_query = $q;
 		$this->last_operation = 'create';
 
-		if (!$this->exec){
+		if ($this->executionMode == self::EXECUTION_MODE_PREVIEW) {
+			// Retornar información sobre la operación sin ejecutar
+			return [
+				'operation' => 'create',
+				'table' => $this->table_name,
+				'data' => $data,
+				'sql' => $this->_dd($q, $vals),
+				'bindings' => $vals
+			];
+		} else if ($this->executionMode == self::EXECUTION_MODE_SIMULATE) {
+			$this->logSQL();
+
+			// Simular la operación
+			$this->last_inserted_id = -1; // ID ficticio
+			$this->onCreated($data, $this->last_inserted_id);
+			return $this->last_inserted_id;
+		}
+
+		if (!$this->exec) {
 			$this->logSQL();
 
 			// Ejecuto igual el hook a fines de poder ver la query con dd()
 			$this->onCreated($data, null);
 			return NULL;
-		}	
-
+		}
 
 		try {
 			$result = $st->execute();
-		} catch (\PDOException $e){
+		} catch (\PDOException $e) {
 			$this->logSQL();
-			
+
 			$debug = config()['debug'];
 
-			if (!$ignore_duplicates && !Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())){
+			if (!$ignore_duplicates && !Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())) {
 				throw new \PDOException($debug ? $e->getMessage() : "Integrity constraint violation");
 			} else {
-				if ($debug){
-					$msg = "Error inserting data from ". $this->from() . ' - ' .$e->getMessage();
+				if ($debug) {
+					$msg = "Error inserting data from " . $this->from() . ' - ' . $e->getMessage();
 				} else {
 					$msg = 'Error inserting data';
 				}
 
 				throw new \PDOException($msg);
-			} 			
+			}
 		}
-	
+
 		$this->current_operation = null;
-	
-		if (!isset($result)){
+
+		if (!isset($result)) {
 			return;
 		}
 
-		if ($result){
+		if ($result) {
 			// sin schema no hay forma de saber la PRI Key. Intento con 'id' 
-			if ($this->schema != null && $this->schema['id_name'] != null){
+			if ($this->schema != null && $this->schema['id_name'] != null) {
 				$id_name = $this->schema['id_name'];
 			} else {
 				$id_name = 'id';
 			}
-			
-			if (isset($data[$id_name])){
+
+			if (isset($data[$id_name])) {
 				$this->last_inserted_id =	$data[$id_name];
 			} else {
 				$this->last_inserted_id = $this->conn->lastInsertId();
 			}
 
 			$this->onCreated($data, $this->last_inserted_id);
-		}else {
+		} else {
 			$this->last_inserted_id = false;
 		}
 
 		return $this->last_inserted_id;
 	}
 
-	function createOrIgnore(array $data){
+	function createOrIgnore(array $data)
+	{
 		$this->create($data, true);
 	}
 
@@ -3341,10 +3613,48 @@ trait QueryBuilderTrait
 	 * @param array|null $uniqueFields Fields to check for existing record. If null, uses schema unique fields
 	 * @return mixed Last inserted ID or number of updated records
 	 */
-	// function createOrUpdate(array $data, ?array $uniqueFields = null) 
-	// {
-		
-	// }
+	function createOrUpdate(array $data, ?array $uniqueFields = null)
+	{
+		// Determinar los campos únicos a utilizar
+		if ($uniqueFields === null) {
+			$uniqueFields = $this->getUniques() ?? [];
+		}
+
+		if (empty($uniqueFields)) {
+			// Si no hay campos únicos, simplemente insertar
+			return $this->create($data);
+		}
+
+		// Verificar si el registro ya existe
+		$conditions = [];
+		foreach ($uniqueFields as $field) {
+			if (isset($data[$field])) {
+				$conditions[] = [$field, $data[$field]];
+			}
+		}
+
+		if (empty($conditions)) {
+			// Si no pudimos construir condiciones para verificar, simplemente insertar
+			return $this->create($data);
+		}
+
+		// Consultar existencia
+		$exists = clone $this;
+		$recordExists = $exists->where($conditions)->exists();
+
+		// En modo simulación, registramos la consulta pero continuamos el flujo
+		if ($this->executionMode == self::EXECUTION_MODE_SIMULATE) {
+			$this->logSQL();
+		}
+
+		if ($recordExists && $this->executionMode != self::EXECUTION_MODE_SIMULATE) {
+			// Actualizar registro existente
+			return $this->where($conditions)->update($data);
+		} else {
+			// Insertar nuevo registro
+			return $this->create($data);
+		}
+	}
 
 	/**
 	 * Main method for inserting records with full model lifecycle
@@ -3354,7 +3664,7 @@ trait QueryBuilderTrait
 	 * @return mixed Last inserted ID or false on failure
 	 * @throws \Exception On validation or database errors
 	 */
-	function insert(array $data, bool $useTransaction = true) 
+	function insert(array $data, bool $useTransaction = true)
 	{
 		if ($this->conn == null) {
 			throw new SqlException('No connection');
@@ -3369,7 +3679,7 @@ trait QueryBuilderTrait
 			try {
 				$this->ignoreFieldsNotPresentInSchema($data);
 				$this->data = $data;
-				
+
 				$this->onCreating($data);
 				$data = $this->applyInputMutator($data, 'CREATE');
 
@@ -3393,7 +3703,6 @@ trait QueryBuilderTrait
 
 				$this->onCreated($data, $ret);
 				return $ret;
-
 			} catch (\Exception $e) {
 				if ($useTransaction) {
 					DB::rollback();
@@ -3412,12 +3721,11 @@ trait QueryBuilderTrait
 			foreach ($data as $record) {
 				$ret = $this->insert($record, false);
 			}
-			
+
 			if ($useTransaction) {
 				DB::commit();
 			}
 			return $ret;
-
 		} catch (\Exception $e) {
 			if ($useTransaction) {
 				DB::rollback();
@@ -3433,7 +3741,7 @@ trait QueryBuilderTrait
 	 * @param array $data Data to insert
 	 * @return mixed Last inserted ID or false
 	 */
-	function rawInsert(array $data) 
+	function rawInsert(array $data)
 	{
 		if ($this->conn == null) {
 			throw new SqlException('No connection');
@@ -3450,32 +3758,6 @@ trait QueryBuilderTrait
 		return $ret;
 	}
 
-	private function getParamType($val): int 
-	{
-		if(is_null($val)){
-			return \PDO::PARAM_NULL; // 0
-		}elseif(is_int($val)){
-			return \PDO::PARAM_INT;  // 1
-		}elseif(is_bool($val)){
-			return \PDO::PARAM_BOOL; // 5
-		}elseif(is_string($val)){
-			if(mb_strlen($val) < 4000){
-				return \PDO::PARAM_STR;  // 2
-			} else {
-				return \PDO::PARAM_LOB;  // 3
-			}
-		}elseif(is_float($val)){
-			return \PDO::PARAM_STR;  // 2
-		}elseif(is_resource($val)){
-			// https://stackoverflow.com/a/36724762/980631
-			return \PDO::PARAM_LOB;  // 3
-		}elseif(is_array($val)){
-			throw new \Exception("where value can not be an array!");
-		}else {
-			throw new \Exception("Unsupported type: " . var_export($val, true));
-		}
-	}
-
 	/**
 	 * Optimized bulk insert using single query
 	 * 
@@ -3483,7 +3765,7 @@ trait QueryBuilderTrait
 	 * @param int $batchSize Maximum records per query
 	 * @return mixed Last inserted ID or false
 	 */
-	function bulkInsert(array $data, int $batchSize = 1000) 
+	function bulkInsert(array $data, int $batchSize = 1000)
 	{
 		if ($this->conn == null) {
 			throw new SqlException('No connection');
@@ -3505,12 +3787,75 @@ trait QueryBuilderTrait
 			$at = datetime();
 		}
 
+		// Event hook para toda la operación
+		$this->onCreating($data);
+
+		// Si estamos en modo de simulación temprana, retornamos un ID ficticio
+		if ($this->executionMode == self::EXECUTION_MODE_SIMULATE) {
+			$this->last_inserted_id = -1; // ID ficticio
+			$this->onCreated($data, $this->last_inserted_id);
+			return $this->last_inserted_id;
+		}
+
+		// Preview para todo el conjunto de datos
+		if ($this->executionMode == self::EXECUTION_MODE_PREVIEW) {
+			$preview_data = [];
+			$batch_count = 0;
+
+			foreach (array_chunk($data, $batchSize) as $batch) {
+				$batch_count++;
+				// Preparamos los datos como lo haríamos para la inserción real
+				$all_values = [];
+				$placeholders = [];
+
+				foreach ($batch as $record) {
+					$record_values = [];
+					foreach ($fields as $field) {
+						if ($field === $this->createdAt) {
+							$record_values[] = $at;
+						} else {
+							$value = $record[$field] ?? null;
+							if (is_array($value)) {
+								$value = json_encode($value);
+							}
+							$record_values[] = $value;
+						}
+					}
+
+					$all_values = array_merge($all_values, $record_values);
+					$placeholders[] = '(' . implode(',', array_fill(0, count($fields), '?')) . ')';
+				}
+
+				// Build query for preview
+				$fields_str = implode(',', $fields);
+				$values_str = implode(',', $placeholders);
+
+				$q = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES $values_str";
+
+				$preview_data["batch_$batch_count"] = [
+					'record_count' => count($batch),
+					'sql' => $q,
+					'bindings_count' => count($all_values),
+					'formatted_sample' => $this->_dd($q, array_slice($all_values, 0, min(10, count($all_values)))) // Muestra solo los primeros 10 bindings
+				];
+			}
+
+			return [
+				'operation' => 'bulk_insert',
+				'table' => $this->table_name,
+				'total_records' => count($data),
+				'batch_size' => $batchSize,
+				'batch_count' => $batch_count,
+				'batches' => $preview_data
+			];
+		}
+
 		// Process in batches
 		$last_id = null;
 		foreach (array_chunk($data, $batchSize) as $batch) {
 			$all_values = [];
 			$placeholders = [];
-			
+
 			foreach ($batch as $record) {
 				$record_values = [];
 				foreach ($fields as $field) {
@@ -3524,7 +3869,7 @@ trait QueryBuilderTrait
 						$record_values[] = $value;
 					}
 				}
-				
+
 				$all_values = array_merge($all_values, $record_values);
 				$placeholders[] = '(' . implode(',', array_fill(0, count($fields), '?')) . ')';
 			}
@@ -3532,19 +3877,31 @@ trait QueryBuilderTrait
 			// Build and execute query
 			$fields_str = implode(',', $fields);
 			$values_str = implode(',', $placeholders);
-			
+
 			$q = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES $values_str";
-			
+
 			$st = $this->conn->prepare($q);
 
 			// Bind values
 			foreach ($all_values as $index => $value) {
-				$type = $this->getParamType($value);				
+				$type = $this->getParamType($value);
 				$st->bindValue($index + 1, $value, $type);
 			}
 
 			$this->last_bindings = $all_values;
 			$this->last_pre_compiled_query = $q;
+			$this->last_operation = 'bulk_insert';
+
+			// Si estamos en modo SIMULATE, simulamos la operación sin ejecutarla
+			if ($this->executionMode == self::EXECUTION_MODE_SIMULATE) {
+				$this->logSQL();
+				continue; // Seguimos con el siguiente lote sin ejecutar
+			}
+
+			if (!$this->exec) {
+				$this->logSQL();
+				continue;
+			}
 
 			if (!$st->execute()) {
 				return false;
@@ -3553,82 +3910,77 @@ trait QueryBuilderTrait
 			$last_id = $this->conn->lastInsertId();
 		}
 
+		// Hook después de toda la operación
+		if ($this->executionMode == self::EXECUTION_MODE_SIMULATE) {
+			$this->last_inserted_id = -1; // ID ficticio
+			$this->onCreated($data, $this->last_inserted_id);
+			return $this->last_inserted_id;
+		}
+
 		return $last_id;
-	}
-
-	/**
-	 * Get PDO parameter type for binding, handling schema types and JSON arrays
-	 *
-	 * @param mixed $val The value to check
-	 * @param string|null $field The field name from schema
-	 * @return array Returns [processed_value, param_type]
-	 */
-	private function getBindValueAndType($val, ?string $field = null): array 
-	{
-		// Handle arrays (potential JSON)
-		if(is_array($val)){
-			if (isset($this->schema['attr_types'][$field]) && 
-				!$this->schema['attr_types'][$field] == 'STR'){
-				throw new \InvalidArgumentException(
-					"Param '{$field}' is not expected to be an string. Given array"
-				);
-			} 
-			return [json_encode($val), \PDO::PARAM_STR];
-		}
-
-		// Handle schema-defined types
-		if(isset($field) && isset($this->schema['attr_types'][$field])){
-			$const = $this->schema['attr_types'][$field];
-			return [$val, constant("PDO::PARAM_{$const}")];
-		}
-
-		// Handle standard types
-		if(is_null($val)){
-			return [$val, \PDO::PARAM_NULL];
-		}elseif(is_int($val)){
-			return [$val, \PDO::PARAM_INT];
-		}elseif(is_bool($val)){
-			return [$val, \PDO::PARAM_BOOL];
-		}elseif(is_string($val)){
-			if(mb_strlen($val) < 4000){
-				return [$val, \PDO::PARAM_STR];
-			} else {
-				return [$val, \PDO::PARAM_LOB];
-			}
-		}elseif(is_float($val)){
-			return [$val, \PDO::PARAM_STR];
-		}elseif(is_resource($val)){
-			return [$val, \PDO::PARAM_LOB];
-		}else {
-			throw new \Exception("Unsupported type: " . var_export($val, true));
-		}
 	}
 
 	/**
 	 * Helper method to execute single record insert
 	 * Used by both insert() and rawInsert()
 	 */
-	private function executeInsert(array $data) 
+	private function executeInsert(array $data)
 	{
 		$vars = array_keys($data);
 		$placeholders = array_fill(0, count($vars), '?');
-		
+
 		$fields_str = implode(',', $vars);
 		$values_str = implode(',', $placeholders);
-		
+
 		$q = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES ($values_str)";
-		
+
 		$st = $this->conn->prepare($q);
 
-		// Corregimos aquí - los índices de PDO empiezan en 1
+		// Preparamos los valores y tipos
+		$values = [];
+		$types = [];
+
 		$index = 1; // En lugar de usar $index como la clave del array
-		foreach ($data as $value) {
-			list($processed_val, $type) = $this->getBindValueAndType($value);
-			$st->bindValue($index++, $processed_val, $type);
+		foreach ($data as $field => $value) {
+			list($processed_val, $type) = $this->getBindValueAndType($value, $field);
+			$values[] = $processed_val;
+			$types[] = $type;
+			$index++;
 		}
 
 		$this->last_bindings = array_values($data);
 		$this->last_pre_compiled_query = $q;
+		$this->last_operation = 'create';
+
+		// Si estamos en modo preview, retornamos información sin ejecutar
+		if ($this->executionMode == self::EXECUTION_MODE_PREVIEW) {
+			return [
+				'operation' => 'insert',
+				'table' => $this->table_name,
+				'data' => $data,
+				'sql' => $q,
+				'bindings' => $values,
+				'formatted_sql' => $this->_dd($q, $values)
+			];
+		}
+
+		// Si estamos en modo simulate, registramos la SQL pero no ejecutamos
+		if ($this->executionMode == self::EXECUTION_MODE_SIMULATE) {
+			$this->logSQL();
+			return -1; // ID ficticio
+		}
+
+		// Si no debemos ejecutar, solo registramos y salimos
+		if (!$this->exec) {
+			$this->logSQL();
+			return null;
+		}
+
+		// Hacemos el binding de valores
+		$index = 1;
+		foreach ($values as $i => $val) {
+			$st->bindValue($index++, $val, $types[$i]);
+		}
 
 		if (!$st->execute()) {
 			return false;
@@ -3637,7 +3989,8 @@ trait QueryBuilderTrait
 		return $this->conn->lastInsertId();
 	}
 
-	function insertOrIgnore(array $data){
+	function insertOrIgnore(array $data)
+	{
 		$this->insert($data, true);
 	}
 
@@ -3651,10 +4004,41 @@ trait QueryBuilderTrait
 	 */
 	function insertOrUpdate(array $data, ?array $uniqueFields = null)
 	{
+		// Si estamos en modo preview, podemos retornar información de todas las operaciones
+		// que se realizarían, sin necesidad de procesar cada registro
+		if ($this->executionMode == self::EXECUTION_MODE_PREVIEW) {
+			if (!Arrays::isAssoc($data)) {
+				$preview_data = [];
+				foreach ($data as $i => $record) {
+					$preview_data[] = $this->previewCreateOrUpdate($record, $uniqueFields);
+				}
+
+				return [
+					'operation' => 'insert_or_update_batch',
+					'table' => $this->table_name,
+					'record_count' => count($data),
+					'records' => $preview_data
+				];
+			} else {
+				return $this->previewCreateOrUpdate($data, $uniqueFields);
+			}
+		}
+
+		// Procesamiento normal de operaciones múltiples
 		if (!Arrays::isAssoc($data)) {
 			if (is_array($data[0])) {
+				// En modo simulate, no necesitamos una transacción real
+				if ($this->executionMode == self::EXECUTION_MODE_SIMULATE) {
+					$ret = null;
+					foreach ($data as $record) {
+						$ret = $this->createOrUpdate($record, $uniqueFields);
+					}
+					return $ret;
+				}
+
+				// En modo normal, utilizamos una transacción
 				DB::beginTransaction();
-			
+
 				try {
 					$ret = null;
 					foreach ($data as $record) {
@@ -3666,8 +4050,8 @@ trait QueryBuilderTrait
 					DB::rollback();
 
 					if (config()['debug']) {
-						$msg = "Error inserting/updating data in " . $this->from() . 
-							' - ' . $e->getMessage() . 
+						$msg = "Error inserting/updating data in " . $this->from() .
+							' - ' . $e->getMessage() .
 							' - SQL: ' . $this->getLog();
 					} else {
 						$msg = 'Error inserting/updating data';
@@ -3679,6 +4063,12 @@ trait QueryBuilderTrait
 				throw new \InvalidArgumentException('Array of data should be associative');
 			}
 		} else {
+			// En modo simulate, no necesitamos una transacción real
+			if ($this->executionMode == self::EXECUTION_MODE_SIMULATE) {
+				return $this->createOrUpdate($data, $uniqueFields);
+			}
+
+			// En modo normal, utilizamos una transacción
 			DB::beginTransaction();
 
 			try {
@@ -3689,8 +4079,8 @@ trait QueryBuilderTrait
 				DB::rollback();
 
 				if (config()['debug']) {
-					$msg = "Error inserting/updating data in " . $this->from() . 
-						' - ' . $e->getMessage() . 
+					$msg = "Error inserting/updating data in " . $this->from() .
+						' - ' . $e->getMessage() .
 						' - SQL: ' . $this->getLog();
 				} else {
 					$msg = 'Error inserting/updating data';
@@ -3701,12 +4091,178 @@ trait QueryBuilderTrait
 		}
 	}
 
+	/**
+	 * Genera una vista previa de la operación createOrUpdate sin ejecutarla
+	 *
+	 * @param array $data Datos a insertar/actualizar
+	 * @param array|null $uniqueFields Campos únicos para verificar
+	 * @return array Información sobre la operación
+	 */
+	private function previewCreateOrUpdate(array $data, ?array $uniqueFields = null)
+	{
+		// Determinar los campos únicos a utilizar
+		if ($uniqueFields === null) {
+			$uniqueFields = $this->getUniques() ?? [];
+		}
 
-	function getInsertVals(){
+		if (empty($uniqueFields)) {
+			// Si no hay campos únicos, sería solo una inserción
+			return [
+				'operation' => 'insert',
+				'table' => $this->table_name,
+				'data' => $data,
+				'sql' => $this->previewInsertSQL($data),
+				'notes' => 'No unique fields provided - would perform insert only'
+			];
+		}
+
+		// Construir la consulta para verificar existencia
+		$conditions = [];
+		foreach ($uniqueFields as $field) {
+			if (isset($data[$field])) {
+				$conditions[] = [$field, $data[$field]];
+			}
+		}
+
+		// Si no hay condiciones válidas basadas en los campos proporcionados, sería una inserción
+		if (empty($conditions)) {
+			return [
+				'operation' => 'insert',
+				'table' => $this->table_name,
+				'data' => $data,
+				'sql' => $this->previewInsertSQL($data),
+				'notes' => 'No matching conditions for unique fields - would perform insert only'
+			];
+		}
+
+		// Previsualizar la consulta de búsqueda
+		$findQuery = clone $this;
+		$findQuery->where($conditions);
+		$findSQL = $findQuery->toSql();
+
+		return [
+			'operation' => 'insert_or_update',
+			'table' => $this->table_name,
+			'data' => $data,
+			'check_operation' => [
+				'sql' => $findSQL,
+				'bindings' => $findQuery->getBindings(),
+				'formatted_sql' => $findQuery->dd()
+			],
+			'if_exists' => [
+				'operation' => 'update',
+				'sql' => $this->previewUpdateSQL($data, $conditions),
+			],
+			'if_not_exists' => [
+				'operation' => 'insert',
+				'sql' => $this->previewInsertSQL($data),
+			],
+			'notes' => 'Would check for existence before determining whether to insert or update'
+		];
+	}
+
+	/**
+	 * Genera SQL para inserción (solo para previsualización)
+	 */
+	private function previewInsertSQL(array $data)
+	{
+		$fields = array_keys($data);
+		$placeholders = array_fill(0, count($fields), '?');
+
+		$fields_str = implode(', ', $fields);
+		$placeholders_str = implode(', ', $placeholders);
+
+		$sql = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES ($placeholders_str)";
+
+		return $this->_dd($sql, array_values($data));
+	}
+
+	/**
+	 * Genera SQL para actualización (solo para previsualización)
+	 */
+	private function previewUpdateSQL(array $data, array $conditions)
+	{
+		$updateFields = [];
+		foreach ($data as $field => $value) {
+			$updateFields[] = "$field = ?";
+		}
+
+		$updateStr = implode(', ', $updateFields);
+
+		$whereStr = [];
+		foreach ($conditions as $condition) {
+			$whereStr[] = "{$condition[0]} = ?";
+		}
+
+		$whereClause = implode(' AND ', $whereStr);
+
+		$sql = "UPDATE " . DB::quote($this->from()) . " SET $updateStr WHERE $whereClause";
+
+		$bindings = array_values($data);
+		foreach ($conditions as $condition) {
+			$bindings[] = $condition[1];
+		}
+
+		return $this->_dd($sql, $bindings);
+	}
+
+
+	function getInsertVals()
+	{
 		return $this->insert_vars;
 	}
-	
-	
+
+
+	/**
+	 * Get PDO parameter type for binding, handling schema types and JSON arrays
+	 *
+	 * @param mixed $val The value to check
+	 * @param string|null $field The field name from schema
+	 * @return array Returns [processed_value, param_type]
+	 */
+	private function getBindValueAndType($val, ?string $field = null): array
+	{
+		// Handle arrays (potential JSON)
+		if (is_array($val)) {
+			if (
+				isset($this->schema['attr_types'][$field]) &&
+				!$this->schema['attr_types'][$field] == 'STR'
+			) {
+				throw new \InvalidArgumentException(
+					"Param '{$field}' is not expected to be an string. Given array"
+				);
+			}
+			return [json_encode($val), \PDO::PARAM_STR];
+		}
+
+		// Handle schema-defined types
+		if (isset($field) && isset($this->schema['attr_types'][$field])) {
+			$const = $this->schema['attr_types'][$field];
+			return [$val, constant("PDO::PARAM_{$const}")];
+		}
+
+		// Handle standard types
+		if (is_null($val)) {
+			return [$val, \PDO::PARAM_NULL];
+		} elseif (is_int($val)) {
+			return [$val, \PDO::PARAM_INT];
+		} elseif (is_bool($val)) {
+			return [$val, \PDO::PARAM_BOOL];
+		} elseif (is_string($val)) {
+			if (mb_strlen($val) < 4000) {
+				return [$val, \PDO::PARAM_STR];
+			} else {
+				return [$val, \PDO::PARAM_LOB];
+			}
+		} elseif (is_float($val)) {
+			return [$val, \PDO::PARAM_STR];
+		} elseif (is_resource($val)) {
+			return [$val, \PDO::PARAM_LOB];
+		} else {
+			throw new \Exception("Unsupported type: " . var_export($val, true));
+		}
+	}
+
 	/*
 		 to be called inside onUpdating() event hook
 
@@ -3714,122 +4270,139 @@ trait QueryBuilderTrait
 
 		 https://stackoverflow.com/questions/45702409/laravel-check-if-updateorcreate-performed-update/49350664#49350664
 		 https://stackoverflow.com/questions/48793257/laravel-check-with-observer-if-column-was-changed-on-update/48793801
-	*/	 
+	*/
 
-	function isDirty($fields = null) 
+	function isDirty($fields = null)
 	{
-		if ($fields == null){
+		if ($fields == null) {
 			$fields = $this->attributes;
 		}
 
-		if (!is_array($fields)){
+		if (!is_array($fields)) {
 			$fields = [$fields];
 		}
 
 		// to be updated
 		$keys = array_keys($this->data);
 
-		if (!$this->inSchema($fields)){
+		if (!$this->inSchema($fields)) {
 			throw new \Exception("A field was not found in table {$this->table_name}");
 		}
-		
+
 		$old_vals = $this->first($fields);
-		foreach ($fields as $field){	
-			if (!in_array($field, $keys)){
+		foreach ($fields as $field) {
+			if (!in_array($field, $keys)) {
 				continue;
 			}
 
 			$new_val = $this->data[$field];
-			
-			if ($new_val != $old_vals[$field]){
+
+			if ($new_val != $old_vals[$field]) {
 				return true;
-			}	
+			}
 		}
 
 		return false;
 	}
 
 
-    public function wrap(bool $flag = true) {
+	public function wrap(bool $flag = true)
+	{
 		$this->wrap_fields = $flag;
 		return $this;
 	}
 
-	protected function getWrapFieldName($field) {
+	protected function getWrapFieldName($field)
+	{
 		if ($this->wrap_fields) {
-			return DB::quote($field); 
+			return DB::quote($field);
 		}
 		return $field;
 	}
 
-	protected function isDecimalField(string $field): bool {
+	protected function isDecimalField(string $field): bool
+	{
 		if (empty($this->schema) || empty($this->schema['rules'])) {
 			return false;
 		}
-		
-		return isset($this->schema['rules'][$field]) && 
-			   isset($this->schema['rules'][$field]['type']) &&
-			   Strings::startsWith('decimal', strtolower($this->schema['rules'][$field]['type']));
+
+		return isset($this->schema['rules'][$field]) &&
+			isset($this->schema['rules'][$field]['type']) &&
+			Strings::startsWith('decimal', strtolower($this->schema['rules'][$field]['type']));
 	}
 
-    protected function shouldQuoteDecimals(): bool {
-        if ($this->decimal_as_string !== null) {
-            return $this->decimal_as_string;
-        }
-        return self::DECIMAL_AS_STRING;
-    }
+	protected function shouldQuoteDecimals(): bool
+	{
+		if ($this->decimal_as_string !== null) {
+			return $this->decimal_as_string;
+		}
+		return self::DECIMAL_AS_STRING;
+	}
 
-	function getFieldNames(){
+	function getFieldNames()
+	{
 		return $this->field_names;
 	}
 
-	function getformatters(){
+	function getformatters()
+	{
 		return $this->formatters;
 	}
 
-	function getHidden(){
+	function getHidden()
+	{
 		return $this->hidden;
 	}
 
-	function createdAt(){
+	function createdAt()
+	{
 		return $this->createdAt;
 	}
 
-	function createdBy(){
+	function createdBy()
+	{
 		return $this->createdBy;
 	}
 
-	function updatedAt(){
+	function updatedAt()
+	{
 		return $this->updatedAt;
 	}
 
-	function updatedBy(){
+	function updatedBy()
+	{
 		return $this->updatedBy;
 	}
 
-	function deletedAt(){
+	function deletedAt()
+	{
 		return $this->deletedAt;
 	}
 
-	function deletedBy(){
+	function deletedBy()
+	{
 		return $this->deletedBy;
 	}
 
-	function isLocked(){
+	function isLocked()
+	{
 		return $this->is_locked;
 	}
 
 	// alias
 
-	function locked(){
+	function locked()
+	{
 		return $this->is_locked;
 	}
 
-	function belongsTo(){
+	function belongsTo()
+	{
 		return $this->belongsTo;
 	}
 
-	function getAutoFields(){
+	function getAutoFields()
+	{
 		return [
 			$this->createdBy(),
 			$this->createdAt(),
@@ -3842,37 +4415,43 @@ trait QueryBuilderTrait
 		];
 	}
 
-	function setSqlFormatter(callable $fn){
+	function setSqlFormatter(callable $fn)
+	{
 		static::$sql_formatter_callback = $fn;
 	}
 
-	function sqlformatterOff(){
+	function sqlformatterOff()
+	{
 		$this->sql_formatter_status = false;
 
 		return $this;
 	}
 
-	function sqlformatterOn(){
+	function sqlformatterOn()
+	{
 		$this->sql_formatter_status = true;
 
 		return $this;
 	}
 
-	static function sqlFormatter(string $query, ...$options) : string {
-		if (!empty(static::$sql_formatter_callback) && is_callable(static::$sql_formatter_callback)){
+	static function sqlFormatter(string $query, ...$options): string
+	{
+		if (!empty(static::$sql_formatter_callback) && is_callable(static::$sql_formatter_callback)) {
 			$fn = static::$sql_formatter_callback;
 
 			return $fn($query, ...$options);
-		}			
+		}
 
 		return $query;
-	} 
+	}
 
-    function getSchema(){
+	function getSchema()
+	{
 		return $this->schema;
 	}
 
-	function hasSchema(){
+	function hasSchema()
+	{
 		return !empty($this->schema);
 	}
 
@@ -3883,17 +4462,18 @@ trait QueryBuilderTrait
 	 *
 	 * @return bool
 	 */
-	function inSchema(array $props){
+	function inSchema(array $props)
+	{
 		// debería chequear que la tabla exista
 
 		if (empty($props))
 			throw new SchemaException("Attributes not found");
 
 		foreach ($props as $prop)
-			if (!in_array($prop, $this->attributes)){
-				return false; 
-			}	
-		
+			if (!in_array($prop, $this->attributes)) {
+				return false;
+			}
+
 		return true;
 	}
 
@@ -3904,85 +4484,102 @@ trait QueryBuilderTrait
 	 *
 	 * @return array
 	 */
-	function getMissing(array $fields){
+	function getMissing(array $fields)
+	{
 		$diff =  array_diff($this->attributes, array_keys($fields));
 		return array_diff($diff, $this->schema['nullable']);
 	}
-	
+
 	/**
 	 * Get attr_types 
-	 */ 
+	 */
 	function getAttr()
 	{
 		return $this->attributes;
 	}
 
-	function getIdName(){
+	function getIdName()
+	{
 		return $this->schema['id_name'] ?? null; // *
 	}
 
 	// alias for getIdName()
-	function id(){
+	function id()
+	{
 		return $this->getIdName();
 	}
 
-	function getNotHidden(){
+	function getNotHidden()
+	{
 		return array_diff($this->attributes, $this->hidden);
 	}
 
-	function isNullable(string $field){
+	function isNullable(string $field)
+	{
 		return in_array($field, $this->schema['nullable']);
 	}
 
-	function isFillable(string $field){
+	function isFillable(string $field)
+	{
 		return in_array($field, $this->fillable) && !in_array($field, $this->not_fillable);
 	}
 
-	function getFillables(){
+	function getFillables()
+	{
 		return $this->fillable;
 	}
 
-	function getNotFillables(){
+	function getNotFillables()
+	{
 		return $this->not_fillable;
 	}
 
-	function setNullables(Array $arr){
+	function setNullables(array $arr)
+	{
 		$this->schema['nullable'] = $arr;
 	}
 
-	function addNullables(Array $arr){
+	function addNullables(array $arr)
+	{
 		$this->schema['nullable'] = array_merge($this->schema['nullable'], $arr);
 	}
 
-	function removeNullables(Array $arr){
+	function removeNullables(array $arr)
+	{
 		$this->schema['nullable'] = array_diff($this->schema['nullable'], $arr);
 	}
 
-	function getNullables(){
+	function getNullables()
+	{
 		return $this->schema['nullable'];
 	}
 
-	function getNotNullables(){
+	function getNotNullables()
+	{
 		return array_diff($this->attributes, $this->schema['nullable']);
 	}
 
-	function getUniques(){
+	function getUniques()
+	{
 		return $this->schema['uniques'];
 	}
 
-	function getRules(){
+	function getRules()
+	{
 		return $this->schema['rules'] ?? NULL;
 	}
 
-	function getRule(string $name){
+	function getRule(string $name)
+	{
 		return $this->schema['rules'][$name] ?? NULL;
 	}
 
-	function getFieldOrder(){
+	function getFieldOrder()
+	{
 		return $this->field_order;
 	}
 
-    /*	
+	/*	
 		Adds prefix to raw statements / queries
 
 		it's a partial implementation
@@ -3991,26 +4588,26 @@ trait QueryBuilderTrait
 	{
 		$tb_prefix = $tb_prefix ?? DB::getTablePrefix() ?? null;
 
-		if (empty($tb_prefix)){
+		if (empty($tb_prefix)) {
 			return $st;
 		}
 
 		// Para evitar agregarlo dos veces
-		if (Strings::contains($tb_prefix, $st)){
+		if (Strings::contains($tb_prefix, $st)) {
 			return $st;
 		}
 
 		$tb        = Strings::match($st, "/REFERENCES[ ]+`?([^\b^`^ ]+)`?/i");
 		$tb_quoted = preg_quote($tb, '/');
 
-		if (!empty($tb)){
+		if (!empty($tb)) {
 			$st = preg_replace("/REFERENCES[ ]+`$tb_quoted`/i", "REFERENCES `$tb_prefix{$tb}`", $st);
 			$st = preg_replace("/REFERENCES[ ]+$tb_quoted/i", "REFERENCES $tb_prefix{$tb}", $st);
 		}
 
 		$tb = Strings::match($st, "/CREATE[ ]+TABLE(?: IF NOT EXISTS)?[ ]+`?([^\b^`^ ]+)`?/i");
 
-		if (!empty($tb)){
+		if (!empty($tb)) {
 			$st = preg_replace("/CREATE TABLE IF NOT EXISTS?[ ]+`$tb`/i", "CREATE TABLE IF NOT EXISTS `$tb_prefix{$tb}`", $st);
 			$st = preg_replace("/CREATE TABLE[ ]+`$tb`/i", "CREATE TABLE `$tb_prefix{$tb}`", $st);
 			$st = preg_replace("/CREATE TABLE IF NOT EXISTS?[ ]+$tb/i", "CREATE TABLE IF NOT EXISTS $tb_prefix{$tb}", $st);
@@ -4021,7 +4618,7 @@ trait QueryBuilderTrait
 
 		$tb = Strings::match($st, "/UPDATE[ ]+`?([^\b^`^ ]+)`?/i");
 
-		if (!empty($tb)){
+		if (!empty($tb)) {
 			$st = preg_replace("/UPDATE[ ]+`$tb`/i", "UPDATE `$tb_prefix{$tb}`", $st);
 			$st = preg_replace("/UPDATE[ ]+$tb/i", "UPDATE $tb_prefix{$tb}", $st);
 
@@ -4030,7 +4627,7 @@ trait QueryBuilderTrait
 
 		$tb = Strings::match($st, "/DELETE[ ]+FROM[ ]+`?([^\b^`^ ]+)`?/i");
 
-		if (!empty($tb)){
+		if (!empty($tb)) {
 			$st = preg_replace("/DELETE[ ]+FROM[ ]+`$tb`/i", "DELETE FROM `$tb_prefix{$tb}`", $st);
 			$st = preg_replace("/DELETE[ ]+FROM[ ]+$tb/i", "DELETE FROM $tb_prefix{$tb}", $st);
 
@@ -4039,7 +4636,7 @@ trait QueryBuilderTrait
 
 		$tb = Strings::match($st, "/ALTER[ ]+TABLE[ ]+`?([^\b^`^ ]+)`?/i");
 
-		if (!empty($tb)){
+		if (!empty($tb)) {
 			$st = preg_replace("/ALTER[ ]+TABLE[ ]+`$tb`/i", "ALTER TABLE `$tb_prefix{$tb}`", $st);
 			$st = preg_replace("/ALTER[ ]+TABLE[ ]+$tb/i", "ALTER TABLE $tb_prefix{$tb}", $st);
 
@@ -4048,17 +4645,17 @@ trait QueryBuilderTrait
 
 		$tb = Strings::match($st, "/INSERT[ ]+INTO[ ]+`?([^\b^`^ ]+)`?/i");
 
-		if (!empty($tb)){
+		if (!empty($tb)) {
 			$st = preg_replace("/INSERT[ ]+INTO[ ]+`$tb`/i", "INSERT INTO `$tb_prefix{$tb}`", $st);
 			$st = preg_replace("/INSERT[ ]+INTO[ ]+$tb/i", "INSERT INTO $tb_prefix{$tb}", $st);
 
 			return $st;
 		}
 
-		if (Strings::match($st, "/(SELECT)[ ]/i")){
+		if (Strings::match($st, "/(SELECT)[ ]/i")) {
 			$tb = Strings::match($st, "/FROM[ ]+`?([^\b^`^ ]+)`?/i");
 
-			if (!Strings::startsWith('information_schema.tables', $tb) && !empty($tb)){
+			if (!Strings::startsWith('information_schema.tables', $tb) && !empty($tb)) {
 				$st = preg_replace("/FROM[ ]+`$tb`/i", "FROM `$tb_prefix{$tb}`", $st);
 				$st = preg_replace("/FROM[ ]+$tb/i", "FROM $tb_prefix{$tb}", $st);
 			}
@@ -4074,13 +4671,68 @@ trait QueryBuilderTrait
 		*/
 		$tb = Strings::match($st, "/JOIN[ ]+`?([^\b^`^ ]+)`?/i");
 
-		if (!empty($tb)){
+		if (!empty($tb)) {
 			$st = preg_replace("/JOIN[ ]+`$tb`/i", "JOIN `$tb_prefix{$tb}`", $st);
 			$st = preg_replace("/JOIN[ ]+$tb/i", "JOIN $tb_prefix{$tb}", $st);
 
 			// Aca podria ver de agregar prefijo en la parte del "ON" en JOINs
 		}
 
-		return $st;		
+		return $st;
+	}
+
+	/**
+	 * Configura el modo de ejecución para operaciones de escritura
+	 * 
+	 * @param int $mode Uno de los modos EXECUTION_MODE_*
+	 * @return $this
+	 */
+	function setExecutionMode(int $mode)
+	{
+		if (!in_array($mode, [self::EXECUTION_MODE_NORMAL, self::EXECUTION_MODE_SIMULATE, self::EXECUTION_MODE_PREVIEW])) {
+			throw new \InvalidArgumentException("Invalid execution mode: $mode");
+		}
+		$this->executionMode = $mode;
+		return $this;
+	}
+
+	/**
+	 * Obtiene el modo de ejecución actual
+	 * 
+	 * @return int
+	 */
+	function getExecutionMode()
+	{
+		return $this->executionMode;
+	}
+
+	/**
+	 * Establece el modo para simular operaciones sin modificar la base de datos
+	 * 
+	 * @return $this
+	 */
+	function simulate()
+	{
+		return $this->setExecutionMode(self::EXECUTION_MODE_SIMULATE);
+	}
+
+	/**
+	 * Establece el modo para obtener la vista previa de la SQL sin ejecutarla
+	 * 
+	 * @return $this
+	 */
+	function preview()
+	{
+		return $this->setExecutionMode(self::EXECUTION_MODE_PREVIEW);
+	}
+
+	/**
+	 * Establece el modo normal (ejecutar operaciones realmente)
+	 * 
+	 * @return $this
+	 */
+	function normalExecution()
+	{
+		return $this->setExecutionMode(self::EXECUTION_MODE_NORMAL);
 	}
 }

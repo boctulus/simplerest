@@ -3,24 +3,25 @@
 namespace simplerest\core\api\v1;
 
 use PDO;
+use simplerest\core\Acl;  
+use simplerest\core\Model;
+use simplerest\libs\Debug;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Url;
-use simplerest\libs\Debug;
 use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Time;  
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
-use simplerest\core\libs\Time;  
-use simplerest\core\Acl;  
 use simplerest\core\libs\Validator;
 use simplerest\core\interfaces\IApi;
 use simplerest\core\interfaces\IAuth;
 use simplerest\core\FoldersAclExtension;
 use simplerest\core\exceptions\SqlException;
-use simplerest\core\api\v1\ResourceController;
-use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\core\interfaces\ISubResources;
+use simplerest\core\api\v1\ResourceController;
 
 use simplerest\core\traits\SubResourceHandler;
+use simplerest\core\exceptions\InvalidValidationException;
 
 abstract class ApiController extends ResourceController implements IApi, ISubResources
 {
@@ -1082,8 +1083,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             error('Invalid JSON',400);
             
         /*
-            Valido solamente para este tipo de API 
-        
+            Si el contenido no es un array, intento convertirlo a array
         */        
         if (!is_array($data)){
             $data = json_decode($data, true);
@@ -1093,6 +1093,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             error('Invalid JSON',400);
 
         $this->instance = $this->getModelInstance();
+
+        if (isset($data['mode_simulate']) && !filter_var($data['mode_simulate'], FILTER_VALIDATE_BOOLEAN)) {
+            $executionMode = Model::EXECUTION_MODE_SIMULATE;
+            unset($data['mode_simulate']);
+        } else {
+            $executionMode = Model::EXECUTION_MODE_NORMAL;
+        }
 
         $id = $data[$this->instance->getIdName()] ?? null;
         $this->folder = $this->folder = $data['folder'] ?? null;
@@ -1423,7 +1430,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         unset($data[$t]);
                     }
                 }
-
                 
                 // dd($this->instance->getFillables(),    'FILLABLES');
                 // dd($this->instance->getNotFillables(), 'NOT FILLABLES');
@@ -1431,6 +1437,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 // Debería acá comenzar transacción
 
                 $last_inserted_id = DB::table($this->table_name)
+                ->setExecutionMode($executionMode)
                 ->create($data);
 
                 // Tablas dependientes

@@ -2,18 +2,19 @@
 
 namespace simplerest\controllers\demos;
 
-use simplerest\core\Model;
+use ReflectionClass;
+use simplerest\core\controllers\Controller;
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Paginator;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Validator;
+use simplerest\core\Model;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\core\libs\Paginator;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Strings;
-use simplerest\models\az\BarModel;
-use simplerest\core\libs\Validator;
-use simplerest\models\az\ProductsModel;
-use simplerest\core\controllers\Controller;
 use simplerest\models\az\AutomovilesModel;
+use simplerest\models\az\BarModel;
+use simplerest\models\az\ProductsModel;
 
 class ModelController extends Controller
 {
@@ -3780,7 +3781,6 @@ class ModelController extends Controller
         );
     }
 
-
     // OK
     function test_with_0()
     {
@@ -3824,7 +3824,6 @@ class ModelController extends Controller
         DB::getConnection('edu');
 
         $rows = DB::table('courses')
-            ->qualify()
             ->where(['title', 'Calculus I'])            
             ->connectTo(['categories', 'users', 'tags']) 
             ->get();
@@ -3832,17 +3831,46 @@ class ModelController extends Controller
         dd($rows);
     }    
 
+    /*
+        AUN NO FUNCIONA
+    */
     function test_with_2()
     {
         DB::getConnection('edu');
 
         $rows = DB::table('courses')            
             ->where(['category.name', 'Mathematics']) 
-            // ->where(['professor.name', 'Bob Smith'])           
+            ->where(['professor.name', 'Bob Smith'])           
             ->connectTo(['categories', 'users', 'tags']) 
             ->get();
 
         dd($rows);
     }    
+
+    // OK
+    function testFindTableByAlias() {
+        // Conexion a base de datos en particular
+        DB::getConnection('edu');
+
+        // A encontrar
+        $alias = 'professor';
+        // $alias = 'category';
+        // $alias = 'student';
+        // $alias = 'nonexistent';
+
+        // Crear una instancia al Modelo para la tabla 'courses'
+        $model = DB::table('courses');
+        
+        // Usamos Reflection para acceder al método protegido
+        $reflection = new ReflectionClass($model);
+        $method = $reflection->getMethod('findTableByAlias');
+        $method->setAccessible(true);
+        
+        // Llamar al método
+        $result = $method->invoke($model, $alias);
+        
+        dd($result);
+    }
+
 }
 
