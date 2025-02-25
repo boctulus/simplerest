@@ -42,12 +42,30 @@ class Container
         static::bind($key, $value, true);
     }
 
+    public static function getImplementation(string $interface): ?string {
+        foreach (static::$contracts as $class => $interfaces) {
+            if (isset($interfaces[$interface])) {
+                return $interfaces[$interface];
+            }
+        }
+        return null;
+    }
+
     static public function make(string $key, Array $params = [])
     {
+        // Si es una interfaz, buscar implementación
+        if (interface_exists($key)) {
+            $implementation = static::getImplementation($key);
+            if ($implementation === null) {
+                throw new \InvalidArgumentException("No implementation found for interface: $key");
+            }
+            $key = $implementation;
+        }
+            
         if (!isset(static::$bindings[$key])) {
             throw new \InvalidArgumentException("Class not found");          
         }
-
+    
         if (!is_object(static::$bindings[$key]['value'])){
             if (class_exists(static::$bindings[$key]['value'])){
                 $params_to_pass = [];
@@ -82,8 +100,7 @@ class Container
                             $params_to_pass[] = null;
                         }
                     }
-                }
-                
+                }                
 
                 /*
                     Instancio objeto y acá debería "bindear" parámetros de ser necesarios

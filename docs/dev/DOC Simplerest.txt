@@ -4439,17 +4439,19 @@ Ej:
 	POST http://simplerest.lan/api/v1/prompts
 
 	{
+		"mode_simulate": false,
 		"title": "Prueba de Generador de prompt",
 		"description": "Analiza estos archivos y dime que hacen",
 		"files": [
 			"http://relmotor.lan/wp-content/plugins/relmotor-central/app/shortcodes/relmotor/assets/js/search-engine.js?ver=1.1.151",
 			"D:\\laragon\\www\\simplerest\\app\\controllers\\api\\Prompts.php"
 		],
-		"notes": "Gracias!",
-    	"mode_simulate": false
+		"notes": "Gracias!"
 	}
 
+
 Los hooks se seguiran disparando tanto a nivel de API como a nivel de Model.
+
 
 Nota: falta extender la implementación a demas metodos tanto en ApiController como en Model.
 
