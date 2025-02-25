@@ -1624,6 +1624,9 @@ trait QueryBuilderTrait
 	}
 
 	public function connectTo(array $tables) {
+        // Habilitar la calificación automáticamente cuando se usa connectTo
+        $this->qualify();
+
         $this->connect_to = $tables;
         return $this;
     }
@@ -1665,7 +1668,7 @@ trait QueryBuilderTrait
                 
         return $ret; 
     }
-    
+
 	function first(array $fields = null, $pristine = false){
 		$this->onReading();
 

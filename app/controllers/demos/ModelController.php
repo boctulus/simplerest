@@ -3795,7 +3795,29 @@ class ModelController extends Controller
     }
 
     /*  
-        Solo devuelve un user y no los "users" que tiene cada curso en "courses"
+        Trae tablas relacionadas --ok
+
+        TO-DO:
+
+        - Poder cualificar las columnas a traer de las tablas relacionadas
+
+        Ej:
+
+        ->where(['category.name', 'Mathematics']) 
+
+        pero tambien:
+
+        ->where(['professor.name', 'Bob Smith']) 
+
+        - Curiosamente, el dd() sobre el objeto $m no muestra las tablas relacionadas
+
+        DB::table('courses')
+        ->qualify()
+        ->where(['title', 'Calculus I'])            
+        ->connectTo(['categories', 'users', 'tags']) 
+        ->dd();
+
+        <-- comprender porque y documentarlo
     */
     function test_with()
     {
@@ -3810,6 +3832,17 @@ class ModelController extends Controller
         dd($rows);
     }    
 
+    function test_with_2()
+    {
+        DB::getConnection('edu');
 
+        $rows = DB::table('courses')            
+            ->where(['category.name', 'Mathematics']) 
+            // ->where(['professor.name', 'Bob Smith'])           
+            ->connectTo(['categories', 'users', 'tags']) 
+            ->get();
+
+        dd($rows);
+    }    
 }
 
