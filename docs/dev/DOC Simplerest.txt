@@ -1347,6 +1347,34 @@ SimpleRest viene con un constructor de consultas ("queries") y sentencias ("stat
 
 SimpleREST ofrece varios métodos para insertar registros en la base de datos. Los principales son create() e insert(), cada uno con sus características particulares.
 
+1. **`create(array $data, $ignore_duplicates = false)`**  
+   Intenta crear un registro o múltiples registros en la base de datos.
+
+2. **`createOrIgnore(array $data)`**  
+   Crea un registro ignorando duplicados.
+
+3. **`createOrUpate(array $data)`** 
+	Crea o actualiza registros.
+
+4. **`insert(array $data, bool $useTransaction = true)`**  
+   Método principal para insertar uno o varios registros con el ciclo de vida completo del modelo.
+
+5. **`rawInsert(array $data)`**  
+   Inserta directamente en la base de datos, omitiendo hooks y mutadores.
+
+6. **`bulkInsert(array $data, int $batchSize = 1000)`**  
+   Realiza una inserción masiva optimizada utilizando una sola consulta.
+
+7. **`executeInsert(array $data)`**  
+   Método auxiliar para ejecutar la inserción de un solo registro (utilizado por `insert()` y `rawInsert()`).
+
+8. **`insertOrIgnore(array $data)`**  
+   Inserta un registro ignorando errores de duplicación.
+
+9. **`insertOrUpdate(array $data, ?array $uniqueFields = null)`**  
+   Inserta o actualiza múltiples registros basados en campos únicos, envolviendo las operaciones en una transacción.
+
+
 Método create()
 
 El método básico para insertar un único registro. Acepta un array asociativo de campos y valores:
@@ -1430,7 +1458,7 @@ Esta documentación mejorada proporciona una visión más clara de las diferenci
 
 # Obtención de registros
 
-Antes que nada es posible usar la clase DB solo (si as'i se desea) para hacer la conexion la DB y hacer el resto de forma artesanal.
+Antes que nada es posible usar la clase DB solo (si asi se desea) para hacer la conexion la DB y hacer el resto de forma artesanal.
 
 Ej:
 
@@ -1486,7 +1514,6 @@ Si bien el método where() admite userse de dos ambas dos formas no es aconsejab
 	->get();
 
 La última forma es funcional pero podría fallar en algún caso.
-
 
 # Comparar dos campos en el WHERE
 
@@ -1900,8 +1927,130 @@ Posible salida:
 	INNER JOIN users as __belongs_to ON __belongs_to.id = p.belongs_to 
 	INNER JOIN users as __deleted_by ON __deleted_by.id = p.deleted_by
 
-
 El "problema" es que cuando hay más de una relación entre dos tablas se necesita un alias por cada relación y con "as" solo es posible especificar una por lo cual la ambiguedad la resuelve automáticamente el framework.
+
+
+# Recuperar registros de tablas relacionadas
+
+Con el metodo connectTo() combinado con metodos como get() que hacen un SELECT, se devuelven registros de tablas relacionadas devolviendo los datos de forma estructurada.
+
+Ej:
+
+	$rows = DB::table('courses')
+		->where(['title', 'Calculus I'])            
+		->connectTo(['categories', 'users', 'tags']) 
+		->get();
+
+Salida:
+
+	Array
+	(
+		[0] => Array
+			(
+				[id] => 6
+				[title] => Calculus I
+				[active] => 1
+				[category_id] => 2
+				[professor_id] => 2
+				[created_at] => 2025-02-23 20:57:29
+				[updated_at] => 2025-02-23 20:57:29
+				[category] => Array
+					(
+						[id] => 2
+						[name] => Mathematics
+						[created_at] => 2025-02-23 20:34:08.000000
+						[updated_at] => 2025-02-23 20:34:08.000000
+					)
+
+				[professor] => Array
+					(
+						[0] => Array
+							(
+								[id] => 2
+								[name] => Bob Smith
+								[role] => professor
+								[email] => bob@example.com
+								[created_at] => 2025-02-23 20:34:08.000000
+								[updated_at] => 2025-02-23 20:34:08.000000
+							)
+
+					)
+
+				[users] => Array
+					(
+						[0] => Array
+							(
+								[id] => 4
+								[name] => Diana White
+								[role] => student
+								[email] => diana@example.com
+								[created_at] => 2025-02-23 20:34:08.000000
+								[updated_at] => 2025-02-23 20:34:08.000000
+							)
+
+						[1] => Array
+							(
+								[id] => 5
+								[name] => Ethan Green
+								[role] => student
+								[email] => ethan@example.com
+								[created_at] => 2025-02-23 20:34:08.000000
+								[updated_at] => 2025-02-23 20:34:08.000000
+							)
+
+					)
+
+				[tags] => Array
+					(
+						[0] => Array
+							(
+								[id] => 2
+								[name] => Mathematics
+								[created_at] => 2025-02-23 23:30:31.000000
+								[updated_at] => 2025-02-23 23:30:31.000000
+							)
+
+						[1] => Array
+							(
+								[id] => 3
+								[name] => Physics
+								[created_at] => 2025-02-23 23:30:31.000000
+								[updated_at] => 2025-02-23 23:30:31.000000
+							)
+					)
+			)
+	)
+
+
+Activación automática
+
+La cualificación de campos se habilita automáticamente al usar el método connectTo(), pero también puedes activarla manualmente:
+
+	DB::table('courses')
+	->qualify()  // Habilitar manualmente la cualificación
+	->where(['professor.name', 'Bob Smith'])
+	->get();
+
+O desactivarla:
+
+DB::table('courses')
+   ->dontQualify()  // Deshabilitar cualificación
+   ->where({condicion});
+
+
+Método findTableByAlias()
+
+Este método analiza las relaciones definidas en el esquema para determinar a qué tabla real corresponde un alias. 
+
+Por ejemplo, si tienes un campo professor_id en la tabla `courses` que referencia a users.id, el alias 'professor' se mapeará a la tabla 'users'.
+
+	/**
+	* Encuentra la tabla real correspondiente a un alias derivado
+	* 
+	* @param string $alias El alias a buscar
+	* @return string|null La tabla correspondiente o null si no se encuentra
+	*/
+	public function findTableByAlias($alias)
 
 
 ### Referencia de métodos de la clase Model
@@ -3416,6 +3565,216 @@ Ej:
     }
 
 
+# Modos de Ejecución
+
+Se implementa un sistema de modos de ejecución que permite controlar cómo se procesan las operaciones de base de datos. Esto es especialmente útil para depuración, auditoría y pruebas.
+
+## Modos Disponibles
+
+Se soporta tres modos de ejecución:
+
+- **EXECUTION_MODE_NORMAL**: (valor por defecto) Ejecuta las operaciones normalmente en la base de datos.
+- **EXECUTION_MODE_SIMULATE**: Simula la ejecución sin modificar la base de datos.
+- **EXECUTION_MODE_PREVIEW**: Devuelve información sobre la operación SQL sin ejecutarla.
+
+## Uso de los Modos de Ejecución
+
+### Modo Normal
+
+Este es el comportamiento predeterminado, donde todas las operaciones se ejecutan en la base de datos.
+
+```php
+// Uso implícito del modo normal
+$user = DB::table('users')->create([
+    'name' => 'John Smith',
+    'email' => 'john@example.com'
+]);
+
+// Uso explícito del modo normal
+$user = DB::table('users')
+    ->setExecutionMode(Model::EXECUTION_MODE_NORMAL)
+    ->create([
+        'name' => 'John Smith',
+        'email' => 'john@example.com'
+    ]);
+```
+
+### Modo de Simulación
+
+Este modo es útil para probar la lógica de la aplicación sin afectar los datos. El sistema procesará la operación completa (incluyendo validaciones y hooks) pero no ejecutará la consulta SQL final.
+
+```php
+// Simular una inserción
+$simulatedId = DB::table('users')
+    ->setExecutionMode(Model::EXECUTION_MODE_SIMULATE)
+    ->create([
+        'name' => 'Test User',
+        'email' => 'test@example.com'
+    ]);
+
+// $simulatedId contendrá un ID ficticio (-1)
+// La tabla 'users' no será modificada
+```
+
+Este modo es especialmente útil para:
+- Probar flujos de trabajo complejos sin afectar datos reales
+- Verificar que todas las validaciones y hooks funcionan correctamente
+- Registrar operaciones para auditoría sin ejecutarlas
+
+### Modo de Previsualización
+
+Este modo devuelve información detallada sobre la operación SQL que se ejecutaría, sin llevarla a cabo realmente.
+
+```php
+// Previsualizar una actualización
+$previewInfo = DB::table('products')
+    ->where('id', 5)
+    ->setExecutionMode(Model::EXECUTION_MODE_PREVIEW)
+    ->update([
+        'price' => 19.99,
+        'stock' => 100
+    ]);
+
+// $previewInfo contendrá información detallada como:
+// - La operación (update)
+// - La tabla (products)
+// - Los datos a actualizar
+// - La consulta SQL formateada
+// - Los parámetros de binding
+```
+
+Este modo es valioso para:
+- Depuración de consultas complejas
+- Generación de documentación
+- Herramientas de administración que muestran el SQL a ejecutar
+- Auditoría de operaciones potenciales
+
+## Ejemplos de Casos de Uso
+
+### API con Modo de Simulación
+
+```php
+function createUser() {
+    $data = request()->getBody();
+    
+    // Verificar si debe ser una simulación
+    $enableSaving = !isset($data['enable_saving']) || 
+                   filter_var($data['enable_saving'], FILTER_VALIDATE_BOOLEAN);
+    
+    if (!$enableSaving) {
+        unset($data['enable_saving']);
+        $mode = Model::EXECUTION_MODE_SIMULATE;
+    } else {
+        $mode = Model::EXECUTION_MODE_NORMAL;
+    }
+    
+    // Configurar modo y ejecutar
+    $instance = DB::table('users');
+    $instance->setExecutionMode($mode);
+    $result = $instance->create($data);
+    
+    // Enviar respuesta apropiada
+    $response = [
+        'user' => $data,
+        'id' => $result
+    ];
+    
+    if (!$enableSaving) {
+        $response['_saved'] = false;
+        $response['_notice'] = 'Data was not saved to database (simulation mode)';
+    }
+    
+    return response()->send($response, 201);
+}
+```
+
+### Generador de SQL para Informes
+
+```php
+function generateSqlReport() {
+    $queries = [];
+    
+    // Recopilar varias consultas sin ejecutarlas
+    $queries['new_users'] = DB::table('users')
+        ->where('created_at', date('Y-m-d'), '>=')
+        ->setExecutionMode(Model::EXECUTION_MODE_PREVIEW)
+        ->get();
+        
+    $queries['out_of_stock'] = DB::table('products')
+        ->where('stock', 0)
+        ->setExecutionMode(Model::EXECUTION_MODE_PREVIEW)
+        ->get();
+        
+    $queries['pending_orders'] = DB::table('orders')
+        ->where('status', 'pending')
+        ->setExecutionMode(Model::EXECUTION_MODE_PREVIEW)
+        ->get();
+    
+    // Generar informe con todas las consultas SQL
+    return view('admin.sql_report', ['queries' => $queries]);
+}
+```
+
+### Operación Bulk con Validación Previa
+
+```php
+function importProducts($products) {
+    // Primero validar todos los registros sin guardarlos
+    $errors = [];
+    $instance = DB::table('products')->setExecutionMode(Model::EXECUTION_MODE_SIMULATE);
+    
+    foreach ($products as $index => $product) {
+        try {
+            $instance->create($product);
+        } catch (InvalidValidationException $e) {
+            $errors[$index] = json_decode($e->getMessage(), true);
+        }
+    }
+    
+    // Si hay errores, detener y reportar
+    if (!empty($errors)) {
+        return [
+            'success' => false,
+            'message' => 'Validation failed',
+            'errors' => $errors
+        ];
+    }
+    
+    // Si todo es válido, proceder con la inserción real
+    $instance->setExecutionMode(Model::EXECUTION_MODE_NORMAL);
+    $results = [];
+    
+    foreach ($products as $product) {
+        $results[] = $instance->create($product);
+    }
+    
+    return [
+        'success' => true,
+        'message' => 'All products imported successfully',
+        'inserted_ids' => $results
+    ];
+}
+```
+
+## Consideraciones de Rendimiento
+
+- El modo `EXECUTION_MODE_SIMULATE` tiene un rendimiento similar al modo normal, ya que realiza todas las validaciones y preparación, pero evita la ejecución final.
+- El modo `EXECUTION_MODE_PREVIEW` es considerablemente más rápido ya que se detiene antes de preparar la consulta completa.
+
+## Integración con Logs y Auditoría
+
+Los modos de ejecución se integran perfectamente con el sistema de logs:
+
+```php
+// Configuración para registrar todas las consultas (ejecutadas o simuladas)
+if ($this->executionMode == self::EXECUTION_MODE_SIMULATE) {
+    $this->logSQL();
+    // Resto del código de simulación...
+}
+```
+
+Esto garantiza que las consultas simuladas también aparezcan en los logs, facilitando la auditoría y depuración.
+
 # Formateo de las queries
 
 Con fines de debugging se utiliza por defecto un paquete que formatea las queries SQL en la mayor parte de los casos aunque no es perfecto y puede querer desactivarse o parametrizarse de otra manera.
@@ -4069,6 +4428,30 @@ De igual forma si el parámetro viniera por GET entonces puede leerse de forma d
 Ej:
 
 	$my_param = request()->shiftQuery('my_param');
+
+
+# Simular salvado en POST para APIs que extienden ApiController
+
+Para simular escritura pasar en el body el parametro "mode_simulate" como false
+
+Ej:
+
+	POST http://simplerest.lan/api/v1/prompts
+
+	{
+		"title": "Prueba de Generador de prompt",
+		"description": "Analiza estos archivos y dime que hacen",
+		"files": [
+			"http://relmotor.lan/wp-content/plugins/relmotor-central/app/shortcodes/relmotor/assets/js/search-engine.js?ver=1.1.151",
+			"D:\\laragon\\www\\simplerest\\app\\controllers\\api\\Prompts.php"
+		],
+		"notes": "Gracias!",
+    	"mode_simulate": false
+	}
+
+Los hooks se seguiran disparando tanto a nivel de API como a nivel de Model.
+
+Nota: falta extender la implementación a demas metodos tanto en ApiController como en Model.
 
 
 # Hooks sobre el módulo de autenticación

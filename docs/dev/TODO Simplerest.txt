@@ -1,7 +1,14 @@
 TODO SimpleRest
 ===============
 
-- Hacer que sean equivalentes:
+- TERMINAR el where() cualificado 
+
+http://simplerest.lan/prompt_generator#chat-324
+https://claude.ai/chat/e0bfc5c7-e994-439f-9290-76ce561f0b40
+
+- Al ejecutar "migrations migrate" deberia ser posible combinar --dir= + --to + --file= 
+
+- Terminar de implementar de forma concistente los EXECUTION_MODE_* en el resto de metodos como delete(), etc..
 
 # Funciona 
 
