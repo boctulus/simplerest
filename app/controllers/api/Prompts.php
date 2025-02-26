@@ -36,52 +36,60 @@ class Prompts extends MyApiController
         // Eliminar duplicados en files, preservando la estructura (strings u objetos)
         $data['files'] = array_unique($data['files'], SORT_REGULAR);
 
-        foreach ($data['files'] as $file_item) {
-            // Determinar si es string o array (objeto)
-            if (is_string($file_item)) {
-                $path = $file_item;
-                $allowed_functions = null;
-            } elseif (is_array($file_item) && isset($file_item['path'])) {
-                $path = $file_item['path'];
-                $allowed_functions = $file_item['allowed_functions'] ?? null;
-                // Validar que allowed_functions sea un array si está presente
-                if ($allowed_functions !== null && !is_array($allowed_functions)) {
-                    throw new \Exception("allowed_functions must be an array");
-                }
-            } else {
-                throw new \Exception("Invalid file item");
-            }
+        try {
 
-            try {
-                // Intentar leer el contenido del archivo
-                $content = Files::getContent($path, $base_path);
-                if ($allowed_functions !== null) {
-                    $parser = new PHPParser();
-                    $content = $parser->reduceCode($content, $allowed_functions);
-                }
-                $data['content'][$path] = $content;
-            } catch (NotFileButDirectoryException $e) {
-                // Manejar directorios
-                if ($base_path !== null && !Files::isAbsolutePath($path)) {
-                    $dir_path = Files::addTrailingSlash($base_path) . DIRECTORY_SEPARATOR . Files::removeFirstSlash($path);
+            foreach ($data['files'] as $file_item) {
+                // Determinar si es string o array (objeto)
+                if (is_string($file_item)) {
+                    $path = $file_item;
+                    $allowed_functions = null;
+                } elseif (is_array($file_item) && isset($file_item['path'])) {
+                    $path = $file_item['path'];
+                    $allowed_functions = $file_item['allowed_functions'] ?? null;
+                    // Validar que allowed_functions sea un array si está presente
+                    if ($allowed_functions !== null && !is_array($allowed_functions)) {
+                        throw new \Exception("allowed_functions must be an array");
+                    }
                 } else {
-                    $dir_path = $path;
+                    throw new \Exception("Invalid file item");
                 }
 
-                $files = Files::recursiveGlob($dir_path . DIRECTORY_SEPARATOR . '*.*');
-                if (count($files) > $max_files) {
-                    throw new \Exception("So many files to read");
-                }
-
-                foreach ($files as $file) {
-                    $content = file_get_contents($file);
+                try {
+                    // Intentar leer el contenido del archivo
+                    $content = Files::getContent($path, $base_path);
                     if ($allowed_functions !== null) {
                         $parser = new PHPParser();
                         $content = $parser->reduceCode($content, $allowed_functions);
                     }
-                    $data['content'][$file] = $content;
+                    $data['content'][$path] = $content;
+                } catch (NotFileButDirectoryException $e) {
+                    // Manejar directorios
+                    if ($base_path !== null && !Files::isAbsolutePath($path)) {
+                        $dir_path = Files::addTrailingSlash($base_path) . DIRECTORY_SEPARATOR . Files::removeFirstSlash($path);
+                    } else {
+                        $dir_path = $path;
+                    }
+
+                    $files = Files::recursiveGlob($dir_path . DIRECTORY_SEPARATOR . '*.*');
+                    if (count($files) > $max_files) {
+                        throw new \Exception("So many files to read");
+                    }
+
+                    foreach ($files as $file) {
+                        $content = file_get_contents($file);
+                        if ($allowed_functions !== null) {
+                            $parser = new PHPParser();
+                            $content = $parser->reduceCode($content, $allowed_functions);
+                        }
+                        $data['content'][$file] = $content;
+                    }
                 }
             }
+
+        } catch (\Exception $e) {
+            // Asegura que los errores se devuelvan correctamente
+            $this->response(['error' => ['message' => $e->getMessage()]], 400);
+            return;
         }
     }
 }
