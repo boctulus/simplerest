@@ -19,3 +19,4 @@
 [2025-02-25 15:30:34]	0.8.12	mode_simulate en Model y ApiController (impl. parcial)
 [2025-02-26 07:01:00]	0.8.12	composer.json actualizado
 [2025-02-26 12:15:54]	0.8.12	Validator soporta JSONs
+[2025-02-26 12:55:20]	0.8.12	Automatic update
