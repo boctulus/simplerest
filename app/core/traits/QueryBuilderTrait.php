@@ -1005,7 +1005,7 @@ trait QueryBuilderTrait
 		}
 
 		if ($len === 10) {
-			if (!Validator::isType($value, 'date')) {
+			if (!(new Validator())->isType($value, 'date')) {
 				throw new \InvalidArgumentException("Invalid type: '$value' is not a date");
 			}
 
@@ -1027,7 +1027,7 @@ trait QueryBuilderTrait
 					throw new \InvalidArgumentException("Filed type '$field' is not a date or datetime");
 			}
 		} else if ($len === 19) {
-			if (!Validator::isType($value, 'datetime')) {
+			if (!(new Validator())->isType($value, 'datetime')) {
 				throw new \InvalidArgumentException("Invalid type: '$value' is not a date");
 			}
 

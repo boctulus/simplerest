@@ -182,7 +182,7 @@ class RibiSOAP extends ApiClient
     // LISTAR
     function consultarclientes()
     {
-        // if (!NITColombiaValidator::isValid($nit, true)) {
+        // if (!NITColombia(new Validator())->isValid($nit, true)) {
         //     throw new \InvalidArgumentException("NIT no válido");
         // }
 
@@ -205,7 +205,7 @@ class RibiSOAP extends ApiClient
     // OK
     function consultarcliente($nit)
     {
-        // if (!NITColombiaValidator::isValid($nit, true)) {
+        // if (!NITColombia(new Validator())->isValid($nit, true)) {
         //     throw new \InvalidArgumentException("NIT no válido");
         // }
 
@@ -383,7 +383,7 @@ class RibiSOAP extends ApiClient
         }
 
         // if ($validate_nit && $params['tipodocumento'] == 'NIT'){
-        //     if (!NITColombiaValidator::isValid($params['nit'], true)) {
+        //     if (!NITColombia(new Validator())->isValid($params['nit'], true)) {
         //         throw new \InvalidArgumentException("NIT no válido");
         //     }
         // }
@@ -443,7 +443,7 @@ class RibiSOAP extends ApiClient
         }
 
         // if ($validate_nit){
-        //     if (!NITColombiaValidator::isValid($params['nit'], true)) {
+        //     if (!NITColombia(new Validator())->isValid($params['nit'], true)) {
         //         throw new \InvalidArgumentException("NIT no válido");
         //     }
         // }

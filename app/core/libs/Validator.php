@@ -7,596 +7,626 @@ use simplerest\core\libs\i18n\Translate;
 use simplerest\core\interfaces\IValidator;
 
 /*
-	Validador de campos de formulario
-	Ver 2.3 Beta
-
-	@author boctulus@gmail.com
+    Validador de campos de formulario
+    Ver 2.3 Beta
+    @author boctulus@gmail.com
 */
 class Validator implements IValidator
 {
-	protected $required  = true;
-	protected $ignored_fields = [];
-	protected $uniques = [];
-	protected $errors  = [];
-	protected $table   = null;
+    protected $required = true;
+    protected $ignored_fields = [];
+    protected $uniques = [];
+    protected $errors = [];
+    protected $warnings = [];
+    protected $table = null;
+    protected $current_field;
 
-	static protected $rules = [];
-	static protected $rule_types = [];
+    function __construct()
+    {
+        // i18n
+        Translate::bind('validator');
+    }
 
-	/*
-		https://stackoverflow.com/a/1989284/980631
-	*/	
-	function __construct(){
-		// i18n
-		Translate::bind('validator');
+    function getErrors(): array
+    {
+        return $this->errors;
+    }
 
-		static::loadDefinitions();
-	}
+    public function getWarnings(): array
+    {
+        return $this->warnings;
+    }
 
-	function getErrors() : array {
-		return $this->errors;
-	}
+    function setUniques(array $uniques, string $table)
+    {
+        $this->uniques = $uniques;
+        $this->table = $table;
+        return $this;
+    }
 
-	function setUniques(Array $uniques, string $table){
-		$this->uniques = $uniques;
-		$this->table   = $table;
-		return $this;
-	}
+    // Para ser usado en UPDATEs
+    function setRequired(bool $state)
+    {
+        $this->required = $state;
+        return $this;
+    }
 
-	// default rules
-	static function loadDefinitions(){
-		static::$rules = [ 
-			'boolean' => function($value) {
-				return $value == 0 || $value == 1;
-			},
-			'integer' => function($value) {
-				return preg_match('/^(-?[0-9]+)+$/',trim($value)) == 1;
-			},
-			'float' => function($value) {
-				$value = trim($value);
-				return is_numeric($value);
-			},
-			'number' => function($value) {
-				$value = is_string($value) ? trim($value) : $value;
-				return ctype_digit($value) || is_numeric($value);
-			},
-			'not_numeric' => function($value) {
-				$value = trim($value);
-				return preg_match('/^[^0-9]+$/', $value) === 1;  // Solo pasa si NO contiene números
-			},
-			'string' => function($value) {
-				if (is_string($value)) {
-					return true;
-				} elseif (is_array($value) && !empty($value) && array_keys($value) !== range(0, count($value) - 1)) {
-					// Es un array asociativo, lo aceptamos como "JSON decodificado"
-					trigger_error("Se esperaba un string para el campo, pero se recibió un array asociativo. Considera usar tipo 'json' en las reglas.", E_USER_WARNING);
-					return true;
-				}
-				return false;
-			},
-			'alpha' => function($value) {                                   
-				return (preg_match('/^[a-z]+$/i',$value) == 1); 
-			},	
-			'alpha_num' => function($value) {                                     
-				return (preg_match('/^[a-z0-9]+$/i',$value) == 1);
-			},
-			'alpha_dash' => function($value) {                                     
-				return (preg_match('/^[a-z\-_]+$/i',$value) == 1);
-			},
-			'alpha_num_dash' => function($value) {                                    
-				return (preg_match('/^[a-z0-9\-_]+$/i',$value) == 1);
-			},	
-			'alpha_spaces' => function($value) {                                     
-				return (preg_match('/^[a-z ]+$/i',$value) == 1);  
-			},
-			'alpha_utf8' => function($value) {                                    
-				return (preg_match('/^[\pL\pM]+$/u',$value) == 1); 
-			},
-			'alpha_num_utf8' => function($value) {                                    
-				return (preg_match('/^[\pL\pM0-9]+$/u',$value) == 1);
-			},
-			'alpha_dash_utf8' => function($value) {                                   
-				return (preg_match('/^[\pL\pM\-_]+$/u',$value) == 1); 	
-			},
-			'alpha_spaces_utf8' => function($value) {                                   
-				return (preg_match('/^[\pL\pM\p{Zs}]+$/u',$value) == 1); 		
-			},
-			'email' => function($value) {
-				return filter_var($value, FILTER_VALIDATE_EMAIL);
-			},
-			'url' => function($value) {
-				return filter_var($value, FILTER_VALIDATE_URL);
-			},
-			'mac' => function($value) {
-				return filter_var($value, FILTER_VALIDATE_MAC);
-			},		
-			'domain' => function($value) {
-				return filter_var($value, FILTER_VALIDATE_DOMAIN);
-			},
-			'date' => function($value) {
-				return get_class()::isValidDate($value);
-			},
-			'time' => function($value) {
-				return get_class()::isValidDate($value,'H:i:s');
-			},			
-			'datetime' => function($value) {
-				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$value)== 1;
-			},
-			'json' => function($value) {
-				if (is_string($value)) {
-					// Verifica si es un JSON válido
-					json_decode($value);
-					return json_last_error() === JSON_ERROR_NONE;
-				} elseif (is_array($value)) {
-					// Acepta cualquier array como un JSON decodificado
-					return true;
-				}
-				return false;
-			},
-			'object' => function($value) {
-				return is_array($value) && !isset($value[0]);
-			},			
-			'either' => function($value, $options) {
-				foreach ($options['accepts'] as $type) {
-					if (static::isType($value, $type)) {
-						return true;
-					}
-				}
-				return false;
-			}
-		];		
+    function ignoreFields(array $fields)
+    {
+        $this->ignored_fields = $fields;
+        return $this;
+    }
 
-		/*
-			Alias
-		*/
+    // Métodos de validación por tipo
+    protected function validateBoolean($value)
+    {
+        return $value == 0 || $value == 1;
+    }
 
-		static::$rules['int']           = static::$rules['integer'];
-		static::$rules['num']           = static::$rules['number'];
-		static::$rules['numeric']       = static::$rules['number'];
-		static::$rules['not-number']    = static::$rules['not_numeric'];
-		static::$rules['not-num']       = static::$rules['not_numeric'];
-		static::$rules['notnum'] 	    = static::$rules['not_numeric'];
-		static::$rules['not-numeric']   = static::$rules['not_numeric'];
-		static::$rules['bool']          = static::$rules['boolean'];
-		static::$rules['str']           = static::$rules['string'];
-		static::$rules['timestamp']     = static::$rules['datetime'];
-		
-		static::$rule_types = array_keys(static::$rules);
-	}
+    protected function validateInteger($value)
+    {
+        return preg_match('/^(-?[0-9]+)+$/', trim($value)) == 1;
+    }
 
-	// Para ser usado en UPDATEs
-	function setRequired(bool $state){
-		$this->required = $state;
-		return $this;
-	}
+    protected function validateFloat($value)
+    {
+        $value = trim($value);
+        return is_numeric($value);
+    }
 
-	function ignoreFields(array $fields){
-		$this->ignored_fields = $fields;
-		return $this;
-	}
+    protected function validateNumber($value)
+{
+    $value = is_string($value) ? trim($value) : $value;
+    // Solo usa ctype_digit si $value es string, de lo contrario usa is_numeric
+    return (is_string($value) && ctype_digit($value)) || is_numeric($value);
+}
 
-	/*
-		@param string $value
-		@param string $expected_type
-		@return mixed
-		
-		Chequear si es mejor utilizar FILTER_VALIDATE_INT y FILTER_VALIDATE_FLOAT
+    protected function validateNotNumeric($value)
+    {
+        $value = trim($value);
+        return preg_match('/^[^0-9]+$/', $value) === 1;
+    }
 
-		https://www.php.net/manual/en/filter.filters.validate.php
-		
-		
-	*/
-	static function isType($value, string $expected_type, bool $null_throw_exception = false){
-		if ($value === NULL){
-			if (!$null_throw_exception){
-				throw new \InvalidArgumentException('No data'); 
-			} else {
-				return false;
-			}
-		}			
-		
-		if (empty($expected_type)){
-			throw new \InvalidArgumentException('Data type is undefined');
-		}
+    protected function validateString($value)
+    {
+        if (is_string($value)) {
+            return true;
+        } elseif (is_array($value) && !empty($value) && array_keys($value) !== range(0, count($value) - 1)) {
+            // Es un array asociativo, lo aceptamos como "JSON decodificado"
+            $this->warnings[$this->current_field][] = [
+                'data' => $value,
+                'warning' => 'type',
+                'warning_detail' => 'Se esperaba un string, pero se recibió un array. Considera usar tipo "json" en las reglas.'
+            ];
+            return true;
+        }
+        return false;
+    }
+
+    protected function validateAlpha($value)
+    {
+        return preg_match('/^[a-z]+$/i', $value) == 1;
+    }
+
+    protected function validateAlphaNum($value)
+    {
+        return preg_match('/^[a-z0-9]+$/i', $value) == 1;
+    }
+
+    protected function validateAlphaDash($value)
+    {
+        return preg_match('/^[a-z\-_]+$/i', $value) == 1;
+    }
+
+    protected function validateAlphaNumDash($value)
+    {
+        return preg_match('/^[a-z0-9\-_]+$/i', $value) == 1;
+    }
+
+    protected function validateAlphaSpaces($value)
+    {
+        return preg_match('/^[a-z ]+$/i', $value) == 1;
+    }
+
+    protected function validateAlphaUtf8($value)
+    {
+        return preg_match('/^[\pL\pM]+$/u', $value) == 1;
+    }
+
+    protected function validateAlphaNumUtf8($value)
+    {
+        return preg_match('/^[\pL\pM0-9]+$/u', $value) == 1;
+    }
+
+    protected function validateAlphaDashUtf8($value)
+    {
+        return preg_match('/^[\pL\pM\-_]+$/u', $value) == 1;
+    }
+
+    protected function validateAlphaSpacesUtf8($value)
+    {
+        return preg_match('/^[\pL\pM\p{Zs}]+$/u', $value) == 1;
+    }
+
+    protected function validateEmail($value)
+    {
+        return filter_var($value, FILTER_VALIDATE_EMAIL);
+    }
+
+    protected function validateUrl($value)
+    {
+        return filter_var($value, FILTER_VALIDATE_URL);
+    }
+
+    protected function validateMac($value)
+    {
+        return filter_var($value, FILTER_VALIDATE_MAC);
+    }
+
+    protected function validateDomain($value)
+    {
+        return filter_var($value, FILTER_VALIDATE_DOMAIN);
+    }
+
+    protected function validateDate($value)
+    {
+        return $this->isValidDate($value);
+    }
+
+    protected function validateTime($value)
+    {
+        return $this->isValidDate($value, 'H:i:s');
+    }
+
+    protected function validateDatetime($value)
+    {
+        return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/', $value) == 1;
+    }
+
+    protected function validateJson($value)
+    {
+        if (is_string($value)) {
+            json_decode($value);
+            return json_last_error() === JSON_ERROR_NONE;
+        } elseif (is_array($value)) {
+            return true;
+        }
+        return false;
+    }
+
+    protected function validateObject($value)
+    {
+        return is_array($value) && !isset($value[0]);
+    }
+
+    protected function validateEither($value, $options)
+    {
+        foreach ($options['accepts'] as $type) {
+            if ($this->isType($value, $type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Alias y mapeo de tipos
+    protected $typeAliases = [
+        'int' => 'integer',
+        'num' => 'number',
+        'numeric' => 'number',
+        'not-number' => 'not_numeric',
+        'not-num' => 'not_numeric',
+        'notnum' => 'not_numeric',
+        'not-numeric' => 'not_numeric',
+        'bool' => 'boolean',
+        'str' => 'string',
+        'timestamp' => 'datetime',
+    ];
+
+    protected $typeMethods = [
+        'boolean' => 'validateBoolean',
+        'integer' => 'validateInteger',
+        'float' => 'validateFloat',
+        'number' => 'validateNumber',
+        'not_numeric' => 'validateNotNumeric',
+        'string' => 'validateString',
+        'alpha' => 'validateAlpha',
+        'alpha_num' => 'validateAlphaNum',
+        'alpha_dash' => 'validateAlphaDash',
+        'alpha_num_dash' => 'validateAlphaNumDash',
+        'alpha_spaces' => 'validateAlphaSpaces',
+        'alpha_utf8' => 'validateAlphaUtf8',
+        'alpha_num_utf8' => 'validateAlphaNumUtf8',
+        'alpha_dash_utf8' => 'validateAlphaDashUtf8',
+        'alpha_spaces_utf8' => 'validateAlphaSpacesUtf8',
+        'email' => 'validateEmail',
+        'url' => 'validateUrl',
+        'mac' => 'validateMac',
+        'domain' => 'validateDomain',
+        'date' => 'validateDate',
+        'time' => 'validateTime',
+        'datetime' => 'validateDatetime',
+        'json' => 'validateJson',
+        'object' => 'validateObject',
+        'either' => 'validateEither',
+    ];
+
+    function isType($value, string $expected_type, bool $null_throw_exception = false)
+    {
+        if ($value === null) {
+            if (!$null_throw_exception) {
+                throw new \InvalidArgumentException('No data');
+            } else {
+                return false;
+            }
+        }
+
+        if (empty($expected_type)) {
+            throw new \InvalidArgumentException('Data type is undefined');
+        }
+
+        // Manejo de regex
+        if (substr($expected_type, 0, 6) === 'regex:') {
+			$regex = substr($expected_type, 6);
 			
-		if (substr($expected_type,0,6) == 'regex:'){
-			try{
-				$regex = substr($expected_type,6);
-				return preg_match($regex,$value) == 1;	
-			}catch(\Exception $e){				
+			// Verificar si el regex es válido
+			if (@preg_match($regex, '') === false) {
 				throw new \InvalidArgumentException('Regex malformed');
-			}	
-		}
-
-		if (substr($expected_type,0,8) == 'decimal('){
-			$regex = substr($expected_type,6);
-			$nums  = substr($expected_type, strlen('decimal('), -1);
-			list($tot,$dec) = explode(',', $nums);
-
-			$f = explode('.',$value);
-			return (strlen($value) <= ($tot+1) && strlen($f[1] ?? '') <= $dec);	
-		}
-
-		if (static::$rules == []){
-			static::loadDefinitions();
-		}
-
-		// La única modificación real es aquí:
-		if (!in_array($expected_type, static::$rule_types)){
-			throw new \InvalidArgumentException('Invalid data type: ' . $expected_type);
-		}
-
-		return static::$rules[$expected_type]($value);
-	}	
-
-	protected function validateStructure($value, $structure, $field_path = '') {
-		$errors = [];
-		
-		// Si es un array de objetos/elementos
-		if (is_array($value) && isset($value[0])) {
-			foreach ($value as $index => $item) {
-				$item_path = $field_path ? "$field_path.$index" : $index;
-				$item_errors = $this->validateStructure($item, $structure, $item_path);
-				$errors = array_merge($errors, $item_errors);
 			}
-			return $errors;
+			
+			// Aplicar el regex al valor
+			return preg_match($regex, $value) === 1;
 		}
-	
-		// Para objetos individuales
-		if ($structure['type'] === 'object' && isset($structure['fields'])) {
-			if (!is_array($value)) {
-				return [[$field_path, 'type', 'Expected object/array']];
-			}
-	
-			foreach ($structure['fields'] as $key => $rules) {
-				$full_path = $field_path ? "$field_path.$key" : $key;
-				
-				if (!isset($value[$key])) {
-					if (isset($rules['required']) && $rules['required']) {
-						$errors[] = [$full_path, 'required', 'Field is required'];
-					}
-					continue;
-				}
-	
-				if (isset($rules['structure'])) {
-					$nested_errors = $this->validateStructure($value[$key], $rules['structure'], $full_path);
-					$errors = array_merge($errors, $nested_errors);
-				} else {
-					if (!$this->validateValue($value[$key], $rules)) {
-						$errors[] = [$full_path, 'type', "Invalid type for field"];
-					}
-				}
-			}
+
+        // Manejo de decimal
+        if (substr($expected_type, 0, 8) == 'decimal(') {
+            $nums = substr($expected_type, 8, -1);
+            list($tot, $dec) = explode(',', $nums);
+            $f = explode('.', $value);
+            return (strlen($value) <= ($tot + 1) && strlen($f[1] ?? '') <= $dec);
+        }
+
+        // Resolver alias
+        if (isset($this->typeAliases[$expected_type])) {
+            $expected_type = $this->typeAliases[$expected_type];
+        }
+
+        // Verificar si el tipo es válido
+        if (!isset($this->typeMethods[$expected_type])) {
+            throw new \InvalidArgumentException('Invalid data type: ' . $expected_type);
+        }
+
+        // Llamar al método correspondiente
+        $method = $this->typeMethods[$expected_type];
+        return $this->$method($value);
+    }
+
+    protected function validateStructure($value, $structure, $field_path = '')
+    {
+        $errors = [];
+
+        // Si es un array de objetos/elementos
+        if (is_array($value) && isset($value[0])) {
+            foreach ($value as $index => $item) {
+                $item_path = $field_path ? "$field_path.$index" : $index;
+                $item_errors = $this->validateStructure($item, $structure, $item_path);
+                $errors = array_merge($errors, $item_errors);
+            }
+            return $errors;
+        }
+
+        // Para objetos individuales
+        if ($structure['type'] === 'object' && isset($structure['fields'])) {
+            if (!is_array($value)) {
+                return [[$field_path, 'type', 'Expected object/array']];
+            }
+
+            foreach ($structure['fields'] as $key => $rules) {
+                $full_path = $field_path ? "$field_path.$key" : $key;
+
+                if (!isset($value[$key])) {
+                    if (isset($rules['required']) && $rules['required']) {
+                        $errors[] = [$full_path, 'required', 'Field is required'];
+                    }
+                    continue;
+                }
+
+                if (isset($rules['structure'])) {
+                    $nested_errors = $this->validateStructure($value[$key], $rules['structure'], $full_path);
+                    $errors = array_merge($errors, $nested_errors);
+                } else {
+                    if (!$this->validateValue($value[$key], $rules)) {
+                        $errors[] = [$full_path, 'type', "Invalid type for field"];
+                    }
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    protected function validateValue($value, $rules)
+    {
+        $type = $rules['type'] ?? null;
+        if (!$type) {
+            return true;
+        }
+
+        try {
+            return $this->isType($value, $type);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    function validate(array $data, ?array $rules = null, $fillables = null, $not_fillables = null): bool
+    {
+        $errors = [];
+
+		if ($rules === []) {
+			throw new \InvalidArgumentException('Rules array cannot be empty');
 		}
-	
-		return $errors;
-	}
-	
-	protected function validateValue($value, $rules) {
-		// Reutiliza la lógica existente de validación
-		$type = $rules['type'] ?? null;
-		if (!$type) {
+
+		if ($rules === null) {
 			return true;
 		}
-		
-		try {
-			return static::isType($value, $type);
-		} catch(\Exception $e) {
-			return false;
-		}
-	}
 
-	/*
-		@param array $data
-		@param array $rules
-		@return boolean
+        if ($fillables !== null) {
+            foreach ($data as $field => $value) {
+                if (!in_array($field, $fillables)) {
+                    $errors[$field][] = [
+                        "error" => "fillable",
+                        "error_detail" => "Field is not fillable"
+                    ];
+                }
+            }
 
-	*/
-	function validate(array $data, ?array $rules = null, $fillables = null, $not_fillables = null) : bool 
-	{
-		if (empty($rules))
-			throw new \InvalidArgumentException('No validation rules!');
-		
-		$errors = [];
+            if (!empty($errors)) {
+                $this->errors = $errors;
+                return false;
+            }
+        }
 
-		if ($fillables !== null){
-			foreach ($data as $field => $value){
-				if (!in_array($field, $fillables)){
-					$errors[$field][] = [
-						"error" => "fillable",
-						"error_detail" => "Field is not fillable"
-					];
-				}
-			}
+        if ($not_fillables !== null) {
+            foreach ($data as $field => $value) {
+                if (in_array($field, $not_fillables)) {
+                    $errors[$field][] = [
+                        "error" => "not_fillable",
+                        "error_detail" => "Field is not fillable"
+                    ];
+                }
+            }
 
-			// Por eficiencia si hay campos no-fillables, aborto.
-			if (!empty($errors)){
-				$this->errors = $errors;
-				return false;
-			}
-		}
+            if (!empty($errors)) {
+                $this->errors = $errors;
+                return false;
+            }
+        }
 
-		if ($not_fillables !== null){
-			foreach ($data as $field => $value){
-				if (in_array($field, $not_fillables)){
-					$errors[$field][] = [
-						"error"        => "not_fillable",
-						"error_detail" => "Field is not fillable"
-					];
-				}
-			}
+        if (!empty($this->uniques)) {
+            foreach ($this->uniques as $unique_field) {
+                if (isset($data[$unique_field])) {
+                    if (DB::table($this->table)->where([$unique_field => $data[$unique_field]])->exists()) {
+                        $errors[$unique_field] = [
+                            "error" => "unique",
+                            "error_detail" => "Field is not unique"
+                        ];
+                    }
+                }
+            }
 
-			// Por eficiencia si hay errores, aborto.
-			if (!empty($errors)){
-				$this->errors = $errors;
-				return false;
-			}
-		}
+            if (!empty($errors)) {
+                $this->errors = $errors;
+                return false;
+            }
+        }
 
-		if (!empty($this->uniques)){
-			foreach ($this->uniques as $unique_field){
-				if (isset($data[$unique_field])){
-					if (DB::table($this->table)->where([
-						$unique_field => $data[$unique_field] 
-					])->exists()){
-						$errores[$unique_field] = [
-							"error" => "unique",
-							"error_detail" => "Field is no unique"
-						];
-					}
-				}
-			}
+        $push_error = function ($campo, array $error, array &$errors) {
+            if (isset($errors[$campo])) {
+                $errors[$campo][] = $error;
+            } else {
+                $errors[$campo] = [$error];
+            }
+        };
 
-			if (!empty($errors)){
-				$this->errors = $errors;
-				return false;
-			}
-		}
+        $msg = [];
+        foreach ($rules as $field => $rule) {
+            $this->current_field = $field;
 
-		/*
-			Crea array con el campo como índice
-		*/
-		$push_error = function ($campo, array $error, array &$errors){
-			if(isset($errors[$campo]))
-				$errors[$campo][] = $error;
-			else{
-				$errors[$campo] = [];
-				$errors[$campo][] = $error;
-			}	
-		};
-			
-		$msg = [];
-		foreach($rules as $field => $rule){
-			if (isset($rule['type']) && $rule['type'] == 'array'){
-				if (isset($data[$field])){
-					$value = $data[$field];
-				
-					if (!is_array($value)){
-						$err = sprintf(trans("Invalid Data type. Expected Array"));
-						$push_error($field,['data'=>$value, 'error'=>'type', 'error_detail' => trans($err)], $errors);
-					}
+            if (isset($rule['type']) && $rule['type'] == 'array') {
+                if (isset($data[$field])) {
+                    $value = $data[$field];
 
-					if (isset($rule['len']) && count($value) != $rule['len']){
-						$err = sprintf(trans("Array has not the expected lenght of %d"), $rule['len']);
-						$push_error($field,['data'=>$value, 'error'=>'len', 'error_detail' => trans($err)], $errors);
-					}
+                    if (!is_array($value)) {
+                        $err = sprintf(trans("Invalid Data type. Expected Array"));
+                        $push_error($field, ['data' => $value, 'error' => 'type', 'error_detail' => trans($err)], $errors);
+                    }
 
-					if (isset($rule['min_len']) && count($value) < $rule['min_len']){
-						$err = sprintf(trans("Array has not the minimum expected lenght of %d"),  $rule['min_len']);
-						$push_error($field,['data'=>$value, 'error'=>'min_len', 'error_detail' => trans($err)], $errors);
-					}
+                    if (isset($rule['len']) && count($value) != $rule['len']) {
+                        $err = sprintf(trans("Array has not the expected length of %d"), $rule['len']);
+                        $push_error($field, ['data' => $value, 'error' => 'len', 'error_detail' => trans($err)], $errors);
+                    }
 
-					if (isset($rule['max_len']) && count($value) > $rule['max_len']){
-						$err = sprintf(trans("Array has not the maximum expected lenght of %d"),  $rule['max_len']);
-						$push_error($field,['data'=>$value, 'error'=>'max_len', 'error_detail' => trans($err)], $errors);
-					}
-				}
-			}
-			
-			//var_export(array_diff(array_keys($rule), ['messages']));
-			if (isset($rules[$field]['messages'])){
-				$msg[$field] = $rule['messages'];
-			}				
+                    if (isset($rule['min_len']) && count($value) < $rule['min_len']) {
+                        $err = sprintf(trans("Array has not the minimum expected length of %d"), $rule['min_len']);
+                        $push_error($field, ['data' => $value, 'error' => 'min_len', 'error_detail' => trans($err)], $errors);
+                    }
 
-			//if (isset($data[$field]))			
-			//	dd($data[$field], 'VALOR:');			
+                    if (isset($rule['max_len']) && count($value) > $rule['max_len']) {
+                        $err = sprintf(trans("Array has not the maximum expected length of %d"), $rule['max_len']);
+                        $push_error($field, ['data' => $value, 'error' => 'max_len', 'error_detail' => trans($err)], $errors);
+                    }
+                }
+            }
 
-			//echo "---------------------------------<p/>\n";
+            if (isset($rules[$field]['messages'])) {
+                $msg[$field] = $rule['messages'];
+            }
 
-			// multiple-values for each field
+            if (!isset($data[$field])) {
+                if ($this->required && isset($rule['required']) && $rule['required']) {
+                    $err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] : "Field is required";
+                    $push_error($field, ['data' => null, 'error' => 'required', 'error_detail' => trans($err)], $errors);
+                }
+                continue;
+            }
 
-			if (!isset($data[$field])){
-				if ($this->required && isset($rule['required']) && $rule['required']){
-					$err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] :  "Field is required";
-					$push_error($field,['data'=> null, 'error'=> 'required', 'error_detail' =>trans($err)],$errors);
-				}	
-				
-				continue;
-			}
-				
-			foreach ((array) $data[$field] as $value){
-				//dd(['field' => $field, 'data' => $value]);
+            foreach ((array) $data[$field] as $value) {
+                if (!isset($value) || $value === '' || $value === null) {
+                    if ($this->required && isset($rule['required']) && $rule['required']) {
+                        $err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] : "Field is required";
+                        $push_error($field, ['data' => null, 'error' => 'required', 'error_detail' => trans($err)], $errors);
+                    }
+                    continue 2;
+                }
 
-				//var_export($rules[$field]['messages']);
-				//var_export(array_diff(array_keys($rule), ['messages']));
+                if (in_array($field, (array) $this->ignored_fields)) {
+                    continue 2;
+                }
 
-				//$constraints = array_diff(array_keys($rule), ['messages']);
-				//var_export($constraints);
+                if (!isset($rule['required']) || $this->required) {
+                    $rule['required'] = false;
+                }
 
-				if (!isset($value) || $value === '' || $value === null){
-					//var_export(['field' =>$value, 'required' => $rule['required']]);
-	
-					if ($this->required && isset($rule['required']) && $rule['required']){
-						$err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] :  "Field is required";
-						$push_error($field,['data'=> null, 'error'=> 'required', 'error_detail' => trans($err)],$errors);
-					}
-	
-					continue 2;
-				}
-				
-				if(in_array($field, (array) $this->ignored_fields))
-					continue 2;
-				
-				if (!isset($rule['required']) || $this->required)
-					$rule['required'] = false;
-	
-				$avoid_type_check = false;
-				if($rule['required']){
-					if(trim($value)==''){
-						$err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] :  "Field is required";
-						$push_error($field,['data'=>$value, 'error'=>'required', 'error_detail' => trans($err)],$errors);
-					}						
-				}	
+                $avoid_type_check = false;
+                if ($rule['required']) {
+                    if (trim($value) == '') {
+                        $err = (isset($msg[$field]['required'])) ? $msg[$field]['required'] : "Field is required";
+                        $push_error($field, ['data' => $value, 'error' => 'required', 'error_detail' => trans($err)], $errors);
+                    }
+                }
 
-				// Si hay una estructura definida, validarla
-				if (isset($rule['structure'])) {
-					$structure_errors = $this->validateStructure($data[$field], $rule['structure'], $field);
-					foreach ($structure_errors as [$path, $error_type, $message]) {
-						$errors[$path][] = [
-							'error' => $error_type,
-							'error_detail' => $message
-						];
-					}
-					continue;
-				}
+                if (isset($rule['structure'])) {
+                    $structure_errors = $this->validateStructure($data[$field], $rule['structure'], $field);
+                    foreach ($structure_errors as [$path, $error_type, $message]) {
+                        $errors[$path][] = [
+                            'error' => $error_type,
+                            'error_detail' => $message
+                        ];
+                    }
+                    continue;
+                }
 
-				// Creo un alias entre in y set
-				if (isset($rule['set'])){
-					$rule['in'] = $rule['set'];
-				}
-				
-				if (isset($rule['in'])){
-					if (!is_array($rule['in']))
-						throw new \InvalidArgumentException("IN requieres an array");
+                if (isset($rule['set'])) {
+                    $rule['in'] = $rule['set'];
+                }
 
-					$err = (isset($msg[$field]['in'])) ? $msg[$field]['in'] : sprintf(trans("%s is not a valid value. Accepted: %s"), $value, implode(',', $rule['in']));
-					if (!in_array($value, $rule['in'])){
-						$push_error($field,['data'=>$value, 'error'=>'in', 'error_detail' => trans($err)],$errors);
-					}					
-				}
+                if (isset($rule['in'])) {
+                    if (!is_array($rule['in'])) {
+                        throw new \InvalidArgumentException("IN requires an array");
+                    }
+                    $err = (isset($msg[$field]['in'])) ? $msg[$field]['in'] : sprintf(trans("%s is not a valid value. Accepted: %s"), $value, implode(',', $rule['in']));
+                    if (!in_array($value, $rule['in'])) {
+                        $push_error($field, ['data' => $value, 'error' => 'in', 'error_detail' => trans($err)], $errors);
+                    }
+                }
 
-				if (isset($rule['not_in'])){
-					if (!is_array($rule['not_in']))
-						throw new \InvalidArgumentException("in requieres an array");
+                if (isset($rule['not_in'])) {
+                    if (!is_array($rule['not_in'])) {
+                        throw new \InvalidArgumentException("not_in requires an array");
+                    }
+                    $err = (isset($msg[$field]['not_in'])) ? $msg[$field]['not_in'] : sprintf(trans("%s is not a valid value. Accepted: %s"), $value, implode(',', $rule['not_in']));
+                    if (in_array($value, $rule['not_in'])) {
+                        $push_error($field, ['data' => $value, 'error' => 'not_in', 'error_detail' => trans($err)], $errors);
+                    }
+                }
 
-					$err = (isset($msg[$field]['not_in'])) ? $msg[$field]['not_in'] : sprintf(trans("%s is not a valid value. Accepted: %s"), $value, implode(',', $rule['in']));
-					if (in_array($value, $rule['not_in'])){
-						$push_error($field,['data'=>$value, 'error'=>'not_in', 'error_detail' => trans($err)],$errors);
-					}					
-				}
+                if (isset($rule['between'])) {
+                    if (!is_array($rule['between']) || count($rule['between']) != 2) {
+                        throw new \InvalidArgumentException("between requires an array of two values");
+                    }
+                    if ($value < $rule['between'][0] || $value > $rule['between'][1]) {
+                        $err = (isset($msg[$field]['between'])) ? $msg[$field]['between'] : sprintf(trans("%s is not between %s and %s"), $value, $rule['between'][0], $rule['between'][1]);
+                        $push_error($field, ['data' => $value, 'error' => 'between', 'error_detail' => trans($err)], $errors);
+                    }
+                }
 
-				if (isset($rule['between'])){
-					if (!is_array($rule['between']))
-						throw new \InvalidArgumentException("between requieres an array");
+                if (isset($rule['not_between'])) {
+                    if (!is_array($rule['not_between']) || count($rule['not_between']) != 2) {
+                        throw new \InvalidArgumentException("not_between requires an array of two values");
+                    }
+                    if (!($value < $rule['not_between'][0] || $value > $rule['not_between'][1])) {
+                        $err = (isset($msg[$field]['not_between'])) ? $msg[$field]['not_between'] : sprintf(trans("%s should be less than %s or greater than %s"), $value, $rule['not_between'][0], $rule['not_between'][1]);
+                        $push_error($field, ['data' => $value, 'error' => 'not_between', 'error_detail' => trans($err)], $errors);
+                    }
+                }
 
-					if (count($rule['between'])!=2)
-						throw new \InvalidArgumentException("between requieres an array of two values");
+                if (isset($rule['type']) && in_array($rule['type'], ['number', 'int', 'float', 'double']) && trim($value) == '') {
+                    $avoid_type_check = true;
+                }
 
-					if ($value > $rule['between'][1] || $value < $rule['between'][0]){
-						$err = (isset($msg[$field]['between'])) ? $msg[$field]['between'] : sprintf(trans("%s is not between %s and %s"), $value, $rule['between'][0], $rule['between'][1]);
-						$push_error($field,['data'=>$value, 'error'=>'between', 'error_detail' => trans($err)],$errors);
-					}					
-				}
+                if (isset($rule['type']) && !$avoid_type_check) {
+                    if ($rule['type'] != 'array' && !$this->isType($value, $rule['type'])) {
+                        $err = (isset($msg[$field]['type'])) ? $msg[$field]['type'] : sprintf(trans("It's not a valid %s"), $rule['type']);
+                        $push_error($field, ['data' => $value, 'error' => 'type', 'error_detail' => sprintf(trans($err), $rule['type'])], $errors);
+                    }
+                }
 
-				if (isset($rule['not_between'])){
-					if (!is_array($rule['not_between']))
-						throw new \InvalidArgumentException("not_between requieres an array");
+                if (isset($rule['type'])) {
+                    if (in_array($rule['type'], ['str', 'string', 'not_num', 'email']) || strpos($rule['type'], 'regex:') === 0) {
+                        if (isset($rule['min'])) {
+                            $rule['min'] = (int) $rule['min'];
+                            if (strlen(trim($value)) < $rule['min']) {
+                                $err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] : "The minimum length is %d characters";
+                                $push_error($field, ['data' => $value, 'error' => 'min', 'error_detail' => sprintf(trans($err), $rule['min'])], $errors);
+                            }
+                        }
 
-					if (count($rule['not_between'])!=2)
-						throw new \InvalidArgumentException("not_between requieres an array of two values");
+                        if (isset($rule['max'])) {
+                            $rule['max'] = (int) $rule['max'];
+                            if (strlen(trim($value)) > $rule['max']) {
+                                $err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] : 'The maximum length is %d characters';
+                                $push_error($field, ['data' => $value, 'error' => 'max', 'error_detail' => sprintf(trans($err), $rule['max'])], $errors);
+                            }
+                        }
+                    }
 
-					if (!($value > $rule['not_between'][1] || $value < $rule['not_between'][0])){
-						$err = (isset($msg[$field]['not_between'])) ? $msg[$field]['not_between'] :  sprintf(trans("%s should be less than %s or gretter than %s"), $value, $rule['not_between'][0], $rule['not_between'][1]);
-						$push_error($field,['data'=>$value, 'error'=>'not_between', 'error_detail' => trans($err)],$errors);
-					}					
-				}
+                    if (in_array($rule['type'], ['number', 'int', 'float', 'double'])) {
+                        if (isset($rule['min'])) {
+                            $rule['min'] = (float) $rule['min'];
+                            if ($value < $rule['min']) {
+                                $err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] : 'Minimum is %d';
+                                $push_error($field, ['data' => $value, 'error' => 'min', 'error_detail' => sprintf(trans($err), $rule['min'])], $errors);
+                            }
+                        }
 
-				if (isset($rule['type']) && in_array($rule['type'],['number','int','float','double']) && trim($value)=='')
-					$avoid_type_check = true;
-				
-				if (isset($rule['type']) && !$avoid_type_check){
-					if ($rule['type'] != 'array' && !get_class($this)::isType($value, $rule['type'])){
-						$err =  (isset($msg[$field]['type'])) ? $msg[$field]['type'] :  sprintf(trans("It's not a valid %s"), $rule['type']);
-						$push_error($field,['data'=>$value, 'error'=>'type', 'error_detail' => sprintf(trans($err), $rule['type'])],$errors);
-					}
-				}
-						
-				if(isset($rule['type'])){	
-					if (in_array($rule['type'],['str','string','not_num','email']) || strpos($rule['type'], 'regex:') === 0 ){
-            
-						if(isset($rule['min'])){ 
-							$rule['min'] = (int) $rule['min'];
-							if(strlen(trim($value)) < $rule['min']){
-								$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] : "The minimum length is %d characters";
-								$push_error($field,['data'=>$value, 'error'=>'min', 'error_detail' => sprintf(trans($err),$rule['min'])],$errors);
-							}                                    
-						}
-							
-						if(isset($rule['max'])){ 
-							$rule['max'] = (int) $rule['max'];
-							if(strlen(trim($value)) > $rule['max']){
-								$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] : 'The maximum length is %d characters';
-								$push_error($field,['data'=>$value, 'error'=>'max', 'error_detail' => sprintf(trans($err), $rule['max'])],$errors);
-							}                                
-						}
-					}    
-					
-					if(in_array($rule['type'],['number','int','float','double'])){
-							
-							if(isset($rule['min'])){ 
-								$rule['min'] = (float) $rule['min']; // cast
-								if($value<$rule['min']){
-									$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] :  'Minimum is %d';
-									$push_error($field,['data'=>$value, 'error'=>'min', 'error_detail' => sprintf(trans($err), $rule['min'])],$errors);
-								}
-									
-							}
-							
-							if(isset($rule['max'])){ 
-								$rule['max'] = (float) $rule['max']; // cast
-								if($value>$rule['max']){
-									$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] :  'Maximum is %d';
+                        if (isset($rule['max'])) {
+                            $rule['max'] = (float) $rule['max'];
+                            if ($value > $rule['max']) {
+                                $err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] : 'Maximum is %d';
+                                $push_error($field, ['data' => $value, 'error' => 'max', 'error_detail' => sprintf(trans($err), $rule['max'])], $errors);
+                            }
+                        }
+                    }
 
-									$push_error($field,['data'=>$value, 'error'=>'max', 'error_detail' => sprintf(trans($err), $rule['max'])],$errors);
-								}
-									
-							}
-					}	
-					
-					if(in_array($rule['type'],['time','date'])){
-							
-						$t0 = strtotime($value);
+                    if (in_array($rule['type'], ['time', 'date'])) {
+                        $t0 = strtotime($value);
 
-						if(isset($rule['min'])){ 
-							if($t0<strtotime($rule['min'])){
-								$err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] :  'Minimum is '.$rule['min'];
-								$push_error($field,['data'=>$value, 'error'=>'min', 'error_detail' => sprintf(trans($err), $rule['min'])],$errors);
-							}
-								
-						}
-						
-						if(isset($rule['max'])){ 
-							if($t0>strtotime($rule['max'])){
-								$err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] : 'Maximum is '.$rule['max'];
-								$push_error($field,['data'=>$value, 'error'=>'max', 'error_detail' => sprintf(trans($err), $rule['max'])],$errors);
-							}
-								
-						}
-					}	
-					
-				}	
-			}
-							
-		}
+                        if (isset($rule['min'])) {
+                            if ($t0 < strtotime($rule['min'])) {
+                                $err = (isset($msg[$field]['min'])) ? $msg[$field]['min'] : 'Minimum is ' . $rule['min'];
+                                $push_error($field, ['data' => $value, 'error' => 'min', 'error_detail' => sprintf(trans($err), $rule['min'])], $errors);
+                            }
+                        }
 
-		$this->errors = $errors;
-		
-		return empty($errors);
-	}
-	
-	// ok
-	private static function isValidDate($date, $format = 'Y-m-d') {
-		$dateObj = \DateTime::createFromFormat($format, $date);
-		return $dateObj && $dateObj->format($format) == $date;
-	}
+                        if (isset($rule['max'])) {
+                            if ($t0 > strtotime($rule['max'])) {
+                                $err = (isset($msg[$field]['max'])) ? $msg[$field]['max'] : 'Maximum is ' . $rule['max'];
+                                $push_error($field, ['data' => $value, 'error' => 'max', 'error_detail' => sprintf(trans($err), $rule['max'])], $errors);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->errors = $errors;
+        return empty($errors);
+    }
+
+    private function isValidDate($date, $format = 'Y-m-d')
+    {
+        $dateObj = \DateTime::createFromFormat($format, $date);
+        return $dateObj && $dateObj->format($format) == $date;
+    }
 }
