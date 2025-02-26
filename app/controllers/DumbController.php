@@ -1613,13 +1613,13 @@ class DumbController extends Controller
 
     function is_type()
     {
-        dd(Validator::isType('8', 'str'));
-        dd(Validator::isType(8, 'str'));
+        dd((new Validator())->isType('8', 'str'));
+        dd((new Validator())->isType(8, 'str'));
     }
 
     function validate_data($str)
     {
-        dd(Validator::isType($str, 'date'));
+        dd((new Validator())->isType($str, 'date'));
     }
 
     function get_pri()
@@ -9963,7 +9963,7 @@ class DumbController extends Controller
         // Ejemplos de uso
         $valid_nits = ['901143974', '9005726197', '900218578', '9009752417', '9009752415'];
         foreach ($valid_nits as $nit) {
-            if (NITColombiaValidator::isValid($nit, true)) {
+            if (NITColombia(new Validator())->isValid($nit, true)) {
                 echo "El NIT $nit ES válido.\n";
             } else {
                 echo "El NIT $nit no es válido.\n";

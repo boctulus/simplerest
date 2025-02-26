@@ -197,101 +197,101 @@ class ValidatorTest extends TestCase
 	function testisTypeExceptionPorTipoEmpty()
     {
         $this->expectException(\InvalidArgumentException::class);
-        Validator::isType('Brayan','');
+        (new Validator())->isType('Brayan','');
     }
 	
 	function testisTypeExceptionPorTipoDesconocido()
 	{
 		$this->expectException(\InvalidArgumentException::class);
-		Validator::isType('Brayan', 'tipo_inexistente');
+		(new Validator())->isType('Brayan', 'tipo_inexistente');
 	}
 		
 	function testisTypeExceptionPorDatoNull()
     {
         $this->expectException(\InvalidArgumentException::class);
-        Validator::isType(NULL,'int');
+        (new Validator())->isType(NULL,'int');
     }
 	
 	function testisTypeExceptionPorRegexInvalida()
     {
         $this->expectException(\InvalidArgumentException::class);
-        Validator::isType('190-200-200','regex:/(.*/');
+        (new Validator())->isType('190-200-200','regex:/(.*/');
     }
 	
 	function testisType()
     {
 		$this->assertTrue(
-			Validator::isType('Brayan','string')
+			(new Validator())->isType('Brayan','string')
         );
 		
 		$this->assertFalse(
-			Validator::isType('1250','notnum')
+			(new Validator())->isType('1250','notnum')
         );
 		
 		$this->assertFalse(
-			Validator::isType('Sebastian2','notnum')
+			(new Validator())->isType('Sebastian2','notnum')
         );
 		
 		$this->assertTrue(
-			Validator::isType('1250','string')
+			(new Validator())->isType('1250','string')
         );
 		
 		$this->assertTrue(
-			Validator::isType('','string')
+			(new Validator())->isType('','string')
         );
 		
 		$this->assertTrue(
-			Validator::isType('   ','string')
+			(new Validator())->isType('   ','string')
         );
 		
 		$this->assertTrue(
-			Validator::isType('32543','number')
+			(new Validator())->isType('32543','number')
         );
 		
 		$this->assertTrue(
-			Validator::isType('-32543','number')
+			(new Validator())->isType('-32543','number')
         );
 		
 		$this->assertTrue(
-			Validator::isType(' 16  ','number')
+			(new Validator())->isType(' 16  ','number')
         );
 		
 		$this->assertTrue(
-			Validator::isType(' 16  ','int')
+			(new Validator())->isType(' 16  ','int')
         );
 		
 		$this->assertFalse(
-			Validator::isType('16.3','int')
+			(new Validator())->isType('16.3','int')
         );
 		
 		$this->assertFalse(
-			Validator::isType(' 16.3  ','int')
+			(new Validator())->isType(' 16.3  ','int')
         );
 		
 		
 		$this->assertTrue(
-			Validator::isType('16.3','decimal(8,2)')
+			(new Validator())->isType('16.3','decimal(8,2)')
 		);
 			
 		// $this->assertTrue(
-		// 	Validator::isType('-.02','decimal(8,2')
+		// 	(new Validator())->isType('-.02','decimal(8,2')
 		// );
 		
 		$this->assertFalse(
-			Validator::isType('-.02','decimal(8,2')
+			(new Validator())->isType('-.02','decimal(8,2')
         );
 		
 
 		$this->assertTrue(
-			Validator::isType('.023','number')
+			(new Validator())->isType('.023','number')
         );
 		
 		$this->assertTrue(
-			Validator::isType('192.168.0.27','regex:/^((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?1)){3}\z/')
+			(new Validator())->isType('192.168.0.27','regex:/^((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?1)){3}\z/')
         );
 		
 		$this->assertFalse(
-			Validator::isType('192.168.0.300','regex:/^((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?1)){3}\z/')
+			(new Validator())->isType('192.168.0.300','regex:/^((2[0-4]|1\d|[1-9])?\d|25[0-5])(\.(?1)){3}\z/')
         );
 	}
 	
