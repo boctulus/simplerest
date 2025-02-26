@@ -512,7 +512,11 @@ class ValidatorController extends Controller
 
         if ($ok !== true){
             dd($validator->getErrors(), 'Data validation errors');
-        }  
+        }  else {
+            dd('OK');
+        }
+        
+        dd($validator->getWarnings(), 'Warning');
     }
 
     function test_json(){

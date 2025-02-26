@@ -4975,6 +4975,172 @@ $rules = [
 \end{verbatim}
 
 
+Validacion de tipo 'json'
+
+El validador toma como valido un string ('str') si este es un array asociativo asumiendo es un JSON que fue decodificado.
+
+En este caso se reporta un warning que puede recuperarse con getWarnings()
+
+Ej:
+
+	$validator = new Validator;
+
+	$data = array (
+		'title' => 'Prueba de Generador de prompt',
+		'description' => 'Analiza estos archivos y dime que hacen',
+		'files' => 
+		array (
+			0 => 
+			array (
+			'path' => 'D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php',
+			'allowed_functions' => 
+			array (
+				0 => '__construct',
+				1 => 'exec',
+				2 => 'exec_messages',
+				3 => 'getContent',
+			),
+			),
+		),
+		'notes' => 'Gracias!',
+		'created_at' => '2025-02-26 11:53:16',
+	);
+
+	$rules = array (
+		'id' => 
+		array (
+			'type' => 'int',
+		),
+		'title' => 
+		array (
+			'type' => 'str',
+			'max' => 100,
+		),
+		'project' => 
+		array (
+			'type' => 'int',
+		),
+		'description' => 
+		array (
+			'type' => 'str',
+			'required' => true,
+		),
+		'base_path' => 
+		array (
+			'type' => 'str',
+			'max' => 100,
+		),
+		'files' => 
+		array (
+			'type' => 'str',
+			'required' => true,
+		),
+		'notes' => 
+		array (
+			'type' => 'str',
+		),
+		'created_at' => 
+		array (
+			'type' => 'datetime',
+			'required' => true,
+		),
+		'updated_at' => 
+		array (
+			'type' => 'datetime',
+		),
+	);          
+
+	$ok = $validator->validate($data, $rules);
+
+	if ($ok !== true){
+		dd($validator->getErrors(), 'Data validation errors');
+	}  else {
+		dd('OK');
+	}
+	
+	dd($validator->getWarnings(), 'Warning');
+
+
+El validador tambien admite el tipo 'json'
+
+Ej:
+
+	$validator = new Validator;
+
+	$data = array (
+		'title' => 'Prueba de Generador de prompt',
+		'description' => 'Analiza estos archivos y dime que hacen',
+		'files' => 
+		array (
+			0 => 
+			array (
+			'path' => 'D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php',
+			'allowed_functions' => 
+			array (
+				0 => '__construct',
+				1 => 'exec',
+				2 => 'exec_messages',
+				3 => 'getContent',
+			),
+			),
+		),
+		'notes' => 'Gracias!',
+		'created_at' => '2025-02-26 11:53:16',
+	);
+
+	$rules = array (
+		'id' => 
+		array (
+			'type' => 'int',
+		),
+		'title' => 
+		array (
+			'type' => 'str',
+			'max' => 100,
+		),
+		'project' => 
+		array (
+			'type' => 'int',
+		),
+		'description' => 
+		array (
+			'type' => 'str',
+			'required' => true,
+		),
+		'base_path' => 
+		array (
+			'type' => 'str',
+			'max' => 100,
+		),
+		'files' => 
+		array (
+			'type' => 'json',
+			'required' => true,
+		),
+		'notes' => 
+		array (
+			'type' => 'str',
+		),
+		'created_at' => 
+		array (
+			'type' => 'datetime',
+			'required' => true,
+		),
+		'updated_at' => 
+		array (
+			'type' => 'datetime',
+		),
+	);          
+
+	$ok = $validator->validate($data, $rules);
+
+	if ($ok !== true){
+		dd($validator->getErrors(), 'Data validation errors');
+	}  else {
+		dd('OK');
+	}
+
+
 ### Validaciones en los modelos
 
 Para efectuar la validación sobre las operaciones CRUD con los modelos es tan simple como incluir una instancia de la clase Validator:
