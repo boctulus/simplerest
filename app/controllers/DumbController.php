@@ -11979,13 +11979,15 @@ class DumbController extends Controller
 
         $parser = new PHPParser();
 
+        $reduced_code = $parser->reduceCode($code, [
+            '__construct',
+            'exec', 
+            'exec_messages', 
+            'getContent'
+        ]);
+
         dd(
-            $parser->reduceCode($code, [
-                '__construct',
-                'exec', 
-                'exec_messages', 
-                'getContent'
-            ])    
+           $reduced_code   
         );
     }
 

@@ -1,0 +1,43 @@
+array (
+  'id' => 
+  array (
+    'type' => 'int',
+  ),
+  'title' => 
+  array (
+    'type' => 'str',
+    'max' => 100,
+  ),
+  'project' => 
+  array (
+    'type' => 'int',
+  ),
+  'description' => 
+  array (
+    'type' => 'str',
+    'required' => true,
+  ),
+  'base_path' => 
+  array (
+    'type' => 'str',
+    'max' => 100,
+  ),
+  'files' => 
+  array (
+    'type' => 'str',
+    'required' => true,
+  ),
+  'notes' => 
+  array (
+    'type' => 'str',
+  ),
+  'created_at' => 
+  array (
+    'type' => 'datetime',
+    'required' => true,
+  ),
+  'updated_at' => 
+  array (
+    'type' => 'datetime',
+  ),
+)
