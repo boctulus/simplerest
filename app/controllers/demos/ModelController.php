@@ -3831,22 +3831,6 @@ class ModelController extends Controller
         dd($rows);
     }    
 
-    /*
-        AUN NO FUNCIONA
-    */
-    function test_with_2()
-    {
-        DB::getConnection('edu');
-
-        $rows = DB::table('courses')            
-            ->where(['category.name', 'Mathematics']) 
-            ->where(['professor.name', 'Bob Smith'])           
-            ->connectTo(['categories', 'users', 'tags']) 
-            ->get();
-
-        dd($rows);
-    }    
-
     // OK
     function testFindTableByAlias() {
         // Conexion a base de datos en particular
@@ -3871,6 +3855,67 @@ class ModelController extends Controller
         
         dd($result);
     }
+
+    function test_with_2_manual_join()
+    {
+        DB::getConnection('edu');
+
+        $sql = DB::table('courses')
+        ->join('categories')
+        ->where(['categories.name', 'Mathematics'])
+        ->dd();
+
+        /*
+            --| MAKING JOIN
+            Array
+            (
+                [table] => categories
+                [on1] =>
+                [op] => =
+                [on2] =>
+                [type] => INNER JOIN
+            )
+        */
+
+        // SELECT * FROM `courses` INNER JOIN categories ON categories.id=courses.category_id WHERE categories.name = 'Mathematics'
+        dd($sql);
+
+        // ok
+        dd(DB::select($sql));
+    }    
+
+    /*
+        AUN NO FUNCIONA
+    */
+    function test_with_2()
+    {
+        DB::getConnection('edu');
+
+        $sql = DB::table('courses')            
+        // ->join('categories')
+        ->where(['categories.name', 'Mathematics'])
+        // ->where(['professor.name', 'Bob Smith'])           
+        // ->connectTo(['categories', 'users', 'tags']) 
+        ->dd();
+
+        /*
+            --| MAKING JOIN
+            Array
+            (
+                [table] => categories
+                [on1] => categories.id
+                [op] => =
+                [on2] => courses.categories_id
+                [type] => INNER JOIN
+            )
+        */
+
+        // SELECT * FROM `courses` INNER JOIN categories ON categories.id=courses.categories_id WHERE categories.name = 'Mathematics'
+        dd($sql);
+
+        // SQLSTATE[42S22]: Column not found: 1054 Unknown column 'courses.categories_id' in 'on clause'
+        dd(DB::select($sql));
+    }    
 
 }
 

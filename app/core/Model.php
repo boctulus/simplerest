@@ -14,7 +14,6 @@ class Model
 	use ExceptionHandler;
 	use QueryBuilderTrait;
 	use SubResourceHandler;	
-	use RelationshipTrait;
 	
 	protected $schema;
 
