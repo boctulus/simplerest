@@ -440,5 +440,157 @@ class ValidatorController extends Controller
         ]);
     }
 
+    function test_decoded_json(){
+        $validator = new Validator;
+
+        $data = array (
+            'title' => 'Prueba de Generador de prompt',
+            'description' => 'Analiza estos archivos y dime que hacen',
+            'files' => 
+            array (
+              0 => 
+              array (
+                'path' => 'D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php',
+                'allowed_functions' => 
+                array (
+                  0 => '__construct',
+                  1 => 'exec',
+                  2 => 'exec_messages',
+                  3 => 'getContent',
+                ),
+              ),
+            ),
+            'notes' => 'Gracias!',
+            'created_at' => '2025-02-26 11:53:16',
+        );
+
+        $rules = array (
+            'id' => 
+            array (
+              'type' => 'int',
+            ),
+            'title' => 
+            array (
+              'type' => 'str',
+              'max' => 100,
+            ),
+            'project' => 
+            array (
+              'type' => 'int',
+            ),
+            'description' => 
+            array (
+              'type' => 'str',
+              'required' => true,
+            ),
+            'base_path' => 
+            array (
+              'type' => 'str',
+              'max' => 100,
+            ),
+            'files' => 
+            array (
+              'type' => 'str',
+              'required' => true,
+            ),
+            'notes' => 
+            array (
+              'type' => 'str',
+            ),
+            'created_at' => 
+            array (
+              'type' => 'datetime',
+              'required' => true,
+            ),
+            'updated_at' => 
+            array (
+              'type' => 'datetime',
+            ),
+        );          
+
+        $ok = $validator->validate($data, $rules);
+
+        if ($ok !== true){
+            dd($validator->getErrors(), 'Data validation errors');
+        }  
+    }
+
+    function test_json(){
+        $validator = new Validator;
+
+        $data = array (
+            'title' => 'Prueba de Generador de prompt',
+            'description' => 'Analiza estos archivos y dime que hacen',
+            'files' => 
+            array (
+              0 => 
+              array (
+                'path' => 'D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php',
+                'allowed_functions' => 
+                array (
+                  0 => '__construct',
+                  1 => 'exec',
+                  2 => 'exec_messages',
+                  3 => 'getContent',
+                ),
+              ),
+            ),
+            'notes' => 'Gracias!',
+            'created_at' => '2025-02-26 11:53:16',
+        );
+
+        $rules = array (
+            'id' => 
+            array (
+              'type' => 'int',
+            ),
+            'title' => 
+            array (
+              'type' => 'str',
+              'max' => 100,
+            ),
+            'project' => 
+            array (
+              'type' => 'int',
+            ),
+            'description' => 
+            array (
+              'type' => 'str',
+              'required' => true,
+            ),
+            'base_path' => 
+            array (
+              'type' => 'str',
+              'max' => 100,
+            ),
+            'files' => 
+            array (
+              'type' => 'json',
+              'required' => true,
+            ),
+            'notes' => 
+            array (
+              'type' => 'str',
+            ),
+            'created_at' => 
+            array (
+              'type' => 'datetime',
+              'required' => true,
+            ),
+            'updated_at' => 
+            array (
+              'type' => 'datetime',
+            ),
+        );          
+
+        $ok = $validator->validate($data, $rules);
+
+        if ($ok !== true){
+            dd($validator->getErrors(), 'Data validation errors');
+        }  else {
+            dd('OK');
+        }
+    }
+
 }
 
