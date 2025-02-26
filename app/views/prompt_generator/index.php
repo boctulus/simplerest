@@ -107,29 +107,75 @@
     let totalPages = 1;
     let nextUrl = null;
 
+    // Función para parsear las funciones con múltiples separadores
+    function parseFunctions(text) {
+        // Primero dividir por saltos de línea
+        let functions = [];
+
+        // Dividir primero por saltos de línea
+        let lines = text.split('\n');
+
+        lines.forEach(line => {
+            // Luego dividir por comas
+            let commaParts = line.split(',');
+
+            commaParts.forEach(part => {
+                // Finalmente dividir por espacios
+                let spaceParts = part.split(' ');
+
+                spaceParts.forEach(func => {
+                    func = func.trim();
+                    if (func) {
+                        functions.push(func);
+                    }
+                });
+            });
+        });
+
+        // Eliminar duplicados y retornar
+        return [...new Set(functions)];
+    }
+
     // Función para obtener el contenido desde la API
     function getPromptContent() {
-        const description = $('#prompt-description').val(); // Introducción
-        const files = $('.file-input').filter(function() {
-            // Solo incluir rutas no vacías y no deshabilitadas
-            return !$(this).closest('.file-path-group').attr('data-disabled') && $(this).val().trim() !== '';
-        }).map(function() {
-            return $(this).val().trim();
-        }).get();
+        const description = $('#prompt-description').val();
+        const notes = $('#promptFinal').val();
 
-        // Preseguir y hacer la solicitud POST solo si hay archivos para procesar
+        // Nuevo formato: array de objetos para archivos
+        const files = [];
+
+        // Recorrer todos los grupos de ruta
+        $('.file-path-group').each(function() {
+            let $group = $(this);
+            let filePath = $group.find('.file-input').val().trim();
+
+            // Solo incluir rutas no vacías y no deshabilitadas
+            if (filePath && $group.attr('data-disabled') !== 'true') {
+                const fileId = $group.data('file-id');
+                let fileObj = {
+                    path: filePath
+                };
+
+                // Buscar el textarea asociado
+                const $functionsContainer = $(`.functions-container[data-file-id="${fileId}"]`);
+
+                // Si el textarea está visible y tiene contenido, incluir allowed_functions
+                if (!$functionsContainer.hasClass('d-none')) {
+                    let functionsText = $functionsContainer.find('.allowed-functions').val();
+
+                    if (functionsText.trim()) {
+                        // Parsear las funciones considerando múltiples separadores
+                        fileObj.allowed_functions = parseFunctions(functionsText);
+                    }
+                }
+
+                files.push(fileObj);
+            }
+        });
+
         if (files.length == 0) {
             Swal.fire('Advertencia', 'Generando.... pero no hay rutas de archivos para procesar.', 'warning');
         }
-
-        const notes = $('#promptFinal').val();
-        // Obtener todas las rutas de archivos
-        $('.file-input').not(':disabled').each(function() {
-            const filePath = $(this).val();
-            if (filePath) {
-                files.push(filePath);
-            }
-        });
 
         const data = {
             description: description,
@@ -137,21 +183,27 @@
             notes: notes
         };
 
-        // Hacer la solicitud POST
+        // Limpia el área de errores antes de la solicitud
+        $('#errorContainer').empty();
+
+        console.log('Enviando datos:', data); // Para depuración
+
+        // Solicitud AJAX
         $.ajax({
             url: '/api/v1/prompts',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function(response) {
-                // Procesar y mostrar el contenido recibido si es exitoso
-                clearValidationErrors(); // Limpiar cualquier error anterior
+                clearValidationErrors();
                 displayFileContents(description, response.data.prompts.content, files, notes);
 
                 const id = response.data.id;
                 const newUrl = `${window.location.pathname}#chat-${id}`;
                 if (window.location.hash !== `#chat-${id}`) {
-                    history.replaceState({ id: id }, '', newUrl); // Usar replaceState para evitar entrada duplicada en historial
+                    history.replaceState({
+                        id: id
+                    }, '', newUrl);
                 }
                 saveFormVersion(id, description, files, notes);
             },
@@ -237,24 +289,68 @@
     }
 
     // Función para agregar un input dinámico
-    function addFilePathInput(value = '', hasError = false, isDisabled = false) {
+    function addFilePathInput(value = '', hasError = false, isDisabled = false, allowedFunctions = []) {
         if (typeof value === 'object' && value !== null) {
-            // Si es un objeto, intentamos obtener una propiedad que pueda contener la ruta
             value = '';
         }
 
-        let inputHtml = `
-            <div class="input-group mb-2 file-path-group" ${isDisabled ? 'data-disabled="true"' : ''}>
+        // Crear un ID único para asociar el input y su textarea
+        const uniqueId = 'file-' + Math.random().toString(36).substr(2, 9);
+
+        // Crear el wrapper para contener ambos elementos
+        const $wrapper = $('<div class="file-wrapper"></div>');
+        
+        // Crear el grupo de ruta
+        const $filePathGroup = $(`
+            <div class="input-group mb-2 file-path-group" data-file-id="${uniqueId}" ${isDisabled ? 'data-disabled="true"' : ''}>
                 <div class="input-group-text">
                     <input type="checkbox" class="form-check-input mt-0 file-path-checkbox" ${isDisabled ? 'checked' : ''}>
                 </div>
                 <input type="text" class="form-control file-input ${hasError ? 'is-invalid' : ''} ${isDisabled ? 'text-muted' : ''}" 
                     placeholder="Ingresa la ruta del archivo..." value="${value}" ${isDisabled ? 'disabled' : ''}>
-                <button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>
+                
+                <!-- Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">Opciones</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item delete-file-path" href="#">Borrar</a></li>
+                        <li><a class="dropdown-item toggle-file-status" href="#">${isDisabled ? 'Habilitar' : 'Deshabilitar'}</a></li>
+                        <li><a class="dropdown-item toggle-code-reduction" href="#" data-file-id="${uniqueId}">Reducir código</a></li>
+                    </ul>
+                </div>
+                
                 ${hasError ? `<div class="invalid-feedback">La ruta '${value}' no existe</div>` : ''}
             </div>
-        `;
-        $('#filePathsContainer').append(inputHtml);
+        `);
+
+        // Crear el contenedor de funciones
+        const $functionsContainer = $(`
+            <div class="functions-container mb-3 d-none" data-file-id="${uniqueId}">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <small class="fw-bold">Funciones a conservar para: ${value}</small>
+                        <button type="button" class="btn-close close-functions" aria-label="Close" data-file-id="${uniqueId}"></button>
+                    </div>
+                    <div class="card-body p-2">
+                        <textarea class="form-control allowed-functions" rows="3" 
+                            placeholder="Liste funciones a conservar (separadas por línea, coma o espacio)">${Array.isArray(allowedFunctions) ? allowedFunctions.join('\n') : ''}</textarea>
+                        <small class="form-text text-muted">Ingrese los nombres de las funciones a conservar</small>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        // Agregar ambos elementos al wrapper
+        $wrapper.append($filePathGroup);
+        $wrapper.append($functionsContainer);
+
+        // Agregar el wrapper al contenedor principal
+        $('#filePathsContainer').append($wrapper);
+
+        return uniqueId;
     }
 
     function restoreDeleteButtons() {
@@ -263,7 +359,24 @@
             $group.removeClass('has-error');
             $group.find('.is-invalid').removeClass('is-invalid');
             $group.find('.invalid-feedback').remove();
-            $group.append('<button class="btn btn-outline-secondary delete-file-path" type="button">&times;</button>');
+
+            // Crear ID único para el nuevo dropdown
+            const uniqueId = 'func-' + Math.random().toString(36).substr(2, 9);
+
+            // Agregar el dropdown completo
+            $group.append(`
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdown${uniqueId}" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">Opciones</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown${uniqueId}">
+                        <li><a class="dropdown-item delete-file-path" href="#">Borrar</a></li>
+                        <li><a class="dropdown-item toggle-file-status" href="#">${$group.attr('data-disabled') === 'true' ? 'Habilitar' : 'Deshabilitar'}</a></li>
+                        <li><a class="dropdown-item toggle-code-reduction" href="#">Reducir código</a></li>
+                    </ul>
+                </div>
+            `);
         });
     }
 
@@ -305,15 +418,7 @@
         const formVersion = {
             id: id,
             description: description,
-            files: files.map(file => {
-                if (typeof file === 'string') {
-                    return {
-                        path: file,
-                        disabled: $('.file-input[value="' + file + '"]').closest('.file-path-group').attr('data-disabled') === 'true'
-                    };
-                }
-                return file;
-            }),
+            files: files, // Ahora files ya contiene los objetos con path y allowed_functions
             notes: notes,
             timestamp: new Date().toISOString()
         };
@@ -353,40 +458,39 @@
             $('#filePathsContainer').empty(); // Limpiar contenedor existente
 
             if (Array.isArray(savedForm.files)) {
-                // Usar un Set para evitar duplicados
-                const uniquePaths = new Set();
-
                 savedForm.files.forEach(file => {
-                    let filePath, isDisabled;
+                    let filePath, isDisabled, allowedFunctions;
+
                     if (typeof file === 'string') {
+                        // Compatibilidad con formato antiguo
                         filePath = file;
                         isDisabled = false;
+                        allowedFunctions = null;
                     } else {
                         filePath = file.path;
-                        isDisabled = file.disabled;
+                        isDisabled = file.disabled || false;
+                        allowedFunctions = file.allowed_functions || null;
                     }
 
-                    // Solo agregar si la ruta no existe ya
-                    if (!uniquePaths.has(filePath)) {
-                        uniquePaths.add(filePath);
-                        addFilePathInput(filePath, false, isDisabled);
+                    if (filePath) {
+                        // Añadir input y mostrar textarea si tiene funciones
+                        const fileId = addFilePathInput(filePath, false, isDisabled, allowedFunctions);
+
+                        // Si hay funciones, mostrar el textarea
+                        if (allowedFunctions && allowedFunctions.length > 0) {
+                            setTimeout(() => {
+                                $(`.functions-container[data-file-id="${fileId}"]`).removeClass('d-none');
+                            }, 100);
+                        }
                     }
                 });
-
-                // Actualizar el índice y página actual
-                currentPromptIndex = -1;
-                currentPage = 1;
             }
 
             // Asegurar al menos un input
             if ($('.file-path-group').length === 0) {
                 addFilePathInput();
             }
-
-        }
-
-        // Asegurarse de que siempre haya al menos una ruta
-        if ($('.file-path-group').length === 0) {
+        } else if ($('.file-path-group').length === 0) {
             addFilePathInput();
         }
     }
@@ -740,6 +844,57 @@
             }
         });
 
+        // Evento para borrar archivo
+        $(document).on('click', '.delete-file-path', function(e) {
+            e.preventDefault();
+            let $filePathGroup = $(this).closest('.file-path-group');
+            deleteFilePath($filePathGroup);
+        });
+
+        // Evento para habilitar/deshabilitar una ruta
+        $(document).on('click', '.toggle-file-status', function(e) {
+            e.preventDefault();
+            let $group = $(this).closest('.file-path-group');
+            let $input = $group.find('.file-input');
+            let isDisabled = $group.attr('data-disabled') === 'true';
+
+            // Cambiar estado
+            $group.attr('data-disabled', !isDisabled);
+            $input.prop('disabled', !isDisabled);
+
+            if (isDisabled) {
+                // Habilitar
+                $group.removeClass('disabled');
+                $input.removeClass('text-muted');
+                $(this).text('Deshabilitar');
+            } else {
+                // Deshabilitar
+                $group.addClass('disabled');
+                $input.addClass('text-muted');
+                $(this).text('Habilitar');
+            }
+        });
+
+        // Evento para cerrar el textarea de funciones
+        $(document).on('click', '.close-functions', function(e) {
+            e.preventDefault();
+            const fileId = $(this).data('file-id');
+            $(`.functions-container[data-file-id="${fileId}"]`).addClass('d-none');
+        });
+
+        // Evento para mostrar/ocultar el textarea de funciones
+        $(document).on('click', '.toggle-code-reduction', function(e) {
+            e.preventDefault();
+            const fileId = $(this).data('file-id');
+            const $container = $(`.functions-container[data-file-id="${fileId}"]`);
+            $container.toggleClass('d-none');
+
+            // Actualizar el nombre del archivo en la cabecera
+            if (!$container.hasClass('d-none')) {
+                const filePath = $(this).closest('.file-path-group').find('.file-input').val();
+                $container.find('.card-header small').text('Funciones a conservar para: ' + filePath);
+            }
+        });
 
         // Inicialización al cargar la página
         function initialize() {
