@@ -1,0 +1,20 @@
+array (
+  'title' => 'Prueba de Generador de prompt',
+  'description' => 'Analiza estos archivos y dime que hacen',
+  'files' => 
+  array (
+    0 => 
+    array (
+      'path' => 'D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php',
+      'allowed_functions' => 
+      array (
+        0 => '__construct',
+        1 => 'exec',
+        2 => 'exec_messages',
+        3 => 'getContent',
+      ),
+    ),
+  ),
+  'notes' => 'Gracias!',
+  'created_at' => '2025-02-26 11:53:16',
+)

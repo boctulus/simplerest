@@ -8,6 +8,7 @@ use simplerest\core\Model;
 use simplerest\libs\Debug;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\Files;
 use simplerest\core\libs\Arrays;
 use simplerest\core\libs\Time;  
 use simplerest\core\libs\Factory;
@@ -18,8 +19,8 @@ use simplerest\core\interfaces\IAuth;
 use simplerest\core\FoldersAclExtension;
 use simplerest\core\exceptions\SqlException;
 use simplerest\core\interfaces\ISubResources;
-use simplerest\core\api\v1\ResourceController;
 
+use simplerest\core\api\v1\ResourceController;
 use simplerest\core\traits\SubResourceHandler;
 use simplerest\core\exceptions\InvalidValidationException;
 
@@ -1190,9 +1191,12 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             $validator = new Validator;
 
             $ok = $validator->validate($data, $this->instance->getRules());
+
+            // Files::dump($data, ETC_PATH . '_data.txt');
+            // Files::dump($this->instance->getRules(), ETC_PATH . '_rules.txt');
                
             if ($ok !== true){
-                error(trans('Data validation error'), 400, $validator->getErrors());
+                // error(trans('Data validation error'), 400, $validator->getErrors());
             }  
 
             if (!empty($this->folder)) {

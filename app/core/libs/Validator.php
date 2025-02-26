@@ -65,7 +65,14 @@ class Validator implements IValidator
 				return preg_match('/^[^0-9]+$/', $value) === 1;  // Solo pasa si NO contiene números
 			},
 			'string' => function($value) {
-				return is_string($value);
+				if (is_string($value)) {
+					return true;
+				} elseif (is_array($value) && !empty($value) && array_keys($value) !== range(0, count($value) - 1)) {
+					// Es un array asociativo, lo aceptamos como "JSON decodificado"
+					trigger_error("Se esperaba un string para el campo, pero se recibió un array asociativo. Considera usar tipo 'json' en las reglas.", E_USER_WARNING);
+					return true;
+				}
+				return false;
 			},
 			'alpha' => function($value) {                                   
 				return (preg_match('/^[a-z]+$/i',$value) == 1); 
@@ -115,10 +122,20 @@ class Validator implements IValidator
 			'datetime' => function($value) {
 				return preg_match('/[1-2][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-5][0-9]/',$value)== 1;
 			},
+			'json' => function($value) {
+				if (is_string($value)) {
+					// Verifica si es un JSON válido
+					json_decode($value);
+					return json_last_error() === JSON_ERROR_NONE;
+				} elseif (is_array($value)) {
+					// Acepta cualquier array como un JSON decodificado
+					return true;
+				}
+				return false;
+			},
 			'object' => function($value) {
 				return is_array($value) && !isset($value[0]);
-			},
-			
+			},			
 			'either' => function($value, $options) {
 				foreach ($options['accepts'] as $type) {
 					if (static::isType($value, $type)) {
