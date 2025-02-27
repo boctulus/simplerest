@@ -3984,10 +3984,12 @@ class ModelController extends Controller
         $rows = $m
         ->connectTo(['categories', 'users', 'tags'])
         ->where(['categories.name', 'Mathematics'])
-        ->where(['users.name', 'Bob Smith'])
-        ->where(['users.role', 'professor'])
+        // ->where(['users.name', 'Bob Smith'])
+        // ->where(['users.role', 'professor'])
         //->dontExec()
+
         ->get();
+        // ->first();
 
         dd(
             $rows
