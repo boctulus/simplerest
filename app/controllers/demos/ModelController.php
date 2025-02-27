@@ -2314,23 +2314,30 @@ class ModelController extends Controller
         INNER JOIN users ON folders.belongs_to=users.id 
         INNER JOIN user_roles ON users.id=user_roles.user_id 
         
-        WHERE (guest = 1 AND table = \'products\' AND r = 1) 
+        WHERE (guest = 1 AND r = 1) 
         ORDER BY users.id DESC;
     */
     function joins()
     {
-        $m = (new Model())->table('other_permissions', 'op')
+        DB::getConnection();
+
+        $m = (new Model())->table('folder_other_permissions', 'op')
             ->join('folders', 'op.folder_id', '=',  'folders.id')
             ->join('users', 'folders.belongs_to', '=', 'users.id')
             ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
             ->where([
                 ['guest', 1],
-                ['table', 'products'],
                 ['r', 1]
             ])
             ->orderByRaw('users.id DESC');
 
-        dd($m->dd(true));
+        $sql = $m->dd();
+
+        dd($sql);
+
+        dd(
+            DB::select($sql)
+        );
     }
 
     function jx()
@@ -3814,7 +3821,7 @@ class ModelController extends Controller
         DB::getConnection('edu');
 
         $rows = DB::table('courses')
-        ->qualify()
+        // ->qualify()
         ->connectTo(['categories', 'tags'])                
         ->get();
 
@@ -3871,11 +3878,18 @@ class ModelController extends Controller
         $m
         ->connectTo(['categories', 'users', 'tags'])
         ->where(['categories.name', 'Mathematics'])
-        ->dontExec()
+        ->where(['users.name', 'Bob Smith'])
+        //->dontExec()
         ->get();
 
+        $sql = DB::getLog();
+
         dd(
-            DB::getLog()
+            $sql
+        );
+
+        dd(
+            DB::select($sql)
         );
     }    
 
