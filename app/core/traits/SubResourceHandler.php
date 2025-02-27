@@ -167,6 +167,7 @@ trait SubResourceHandler
 
         $sub_qs = implode(',' . PHP_EOL . PHP_EOL, $subqueries);
         $sql = $instance->select($fields)->selectRaw($sub_qs)->dd();
+        
 
         if ($this->exec){
             $rows = Model::query($sql);
