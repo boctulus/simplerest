@@ -10,16 +10,15 @@ class FbController extends Controller
 {    
     function index(){
         $grupos = <<<STR
-        BILINGUAL | PH
-        https://web.facebook.com/groups/302230533271805
-        https://web.facebook.com/groups/390130634729808/
-        https://web.facebook.com/groups/460001011521792/
-        https://web.facebook.com/groups/368909364369813
-        
+        PrestaShop (PS) | ES
+        https://www.facebook.com/groups/812244488850962/
+        https://www.facebook.com/groups/805067380403114/
+        https://www.facebook.com/groups/143809115745953/
+        https://www.facebook.com/groups/1727781270823954/
+
         WEB dev | ES
         https://web.facebook.com/groups/2586263318303964/
-        https://web.facebook.com/groups/275031689253437
-        https://web.facebook.com/groups/572104168179897/
+        https://web.facebook.com/groups/275031689253437        
 
         Flutter | ES
         https://web.facebook.com/groups/1599766916772654
@@ -106,6 +105,12 @@ class FbController extends Controller
 
         C# .NET
         https://www.facebook.com/groups/304179163001281/
+
+        BILINGUAL | PH
+        https://web.facebook.com/groups/302230533271805
+        https://web.facebook.com/groups/390130634729808/
+        https://web.facebook.com/groups/460001011521792/
+        https://web.facebook.com/groups/368909364369813
         STR;
 
         $sections = [];
