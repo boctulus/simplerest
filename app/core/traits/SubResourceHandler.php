@@ -17,6 +17,8 @@ use simplerest\core\Model;
 
 trait SubResourceHandler
 {
+    public $exec = true;
+
     function getSubResources(string $table, array $connect_to, ?Object &$instance = null, ?string $tenant_id = null)
     {
         static $ret;
@@ -185,5 +187,5 @@ trait SubResourceHandler
 
         $ret[$cache_key] = $rows;
         return $rows;
-    }
+    }    
 }

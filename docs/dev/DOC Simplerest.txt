@@ -8307,8 +8307,7 @@ Ej:
 	/api/v1/products?valoraciones.texto=bueno
 	&product_categories.name_catego[startsWith]=f#
 
-
-# Select de campos con HATEOAS
+Nota:
 
 Siempre es posible aplicar filtros y seleccionar que campos se van a mostrar pero el "id" del recurso principal no puede omitirse si se desea traer sub-recursos ya que con él se arman las relaciones.
 
