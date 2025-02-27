@@ -2038,6 +2038,82 @@ DB::table('courses')
    ->where({condicion});
 
 
+Cualificación en WHERE sobre tablas relacionadas con connectTo()
+
+Lo ideal en estos casos es cualificar el campo utilizado como filtro con el nombre de la tabla ya que varias tablas podrian repetir el nombre de los campos.
+
+Ej:
+
+ 	DB::getConnection('edu');
+
+	$m = DB::table('courses');
+
+	$rows = $m
+	->connectTo(['categories', 'users', 'tags'])
+	->where(['categories.name', 'Mathematics'])
+	->where(['users.name', 'Bob Smith'])
+	->where(['users.role', 'professor'])	
+	->get();
+
+	dd(
+		$rows
+	);
+
+
+Diferencias entre connectTo() y join()
+
+Cuando se realiza con JOIN con join() se tiene control total sobre como se hace el "join". En automatico join() realiza un INNER JOIN.
+
+Ademas de join() se puede usar joinTo() para unir varias tablas de forma conjunta con una sintaxis equivalente a la de connectTo() aunque el resultado no es igual.
+
+Ej:
+
+	DB::getConnection('edu');
+
+	$rows = DB::table('courses')
+	->where(['title', 'Calculus I'])            
+	->joinTo(['categories', 'users', 'tags']) 
+	->get();
+
+producira un resultado "aplanado" similar a:
+
+	Array
+	(
+		[0] => Array
+			(
+				[id] => 2
+				[title] => Calculus I
+				[active] => 1
+				[category_id] => 2
+				[professor_id] => 2
+				[created_at] => 2025-02-23 23:30:31
+				[updated_at] => 2025-02-23 23:30:31
+				[name] => Mathematics
+				[email] => bob@example.com
+				[role] => professor
+				[course_id] => 6
+				[tag_id] => 2
+			)
+
+		[1] => Array
+			(
+				[id] => 3
+				[title] => Calculus I
+				[active] => 1
+				[category_id] => 2
+				[professor_id] => 2
+				[created_at] => 2025-02-23 23:30:31
+				[updated_at] => 2025-02-23 23:30:31
+				[name] => Physics
+				[email] => bob@example.com
+				[role] => professor
+				[course_id] => 6
+				[tag_id] => 3
+			)
+
+	)
+
+
 Método findTableByAlias()
 
 Este método analiza las relaciones definidas en el esquema para determinar a qué tabla real corresponde un alias. 
