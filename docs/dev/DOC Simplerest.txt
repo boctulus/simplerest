@@ -4263,7 +4263,8 @@ DB::dbLogOff();
 5. dbLogStart
 
 Resumen:
-Este método activa el registro general y permite definir si el log se almacena en la tabla general_log o en un archivo especificado.
+
+Este método activa el registro general y permite definir si el log se almacena en la tabla `mysql`.`general_log` o en un archivo especificado.
 
 Casos de Uso:
 
@@ -4272,6 +4273,11 @@ Ejemplo:
 
 
 DB::dbLogStart('/path/to/logfile.log'); // Registrar en un archivo
+
+Ej:
+
+# Ruta absoluta
+DB::dbLogStart('D:\laragon\www\simplerest\logs\db.log'); // log start
 
 
 # Hooks en APIs
