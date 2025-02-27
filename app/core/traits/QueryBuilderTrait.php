@@ -68,6 +68,7 @@ trait QueryBuilderTrait
 	protected $union_q;
 	protected $union_vals = [];
 	protected $union_type;
+	protected $subquery_aliases = [];
 	protected $join_raw = [];
 	protected $aggregate_field_alias;
 	protected $randomize = false;
@@ -806,6 +807,18 @@ trait QueryBuilderTrait
 	function naturalJoin($table)
 	{
 		$this->joins[] = [$table, null, null, null, 'NATURAL JOIN'];;
+		return $this;
+	}
+
+	function joinTo(...$tables){
+		if (is_array($tables[0])){
+			$tables = $tables[0];
+		}
+
+		foreach ($tables as $tb) {
+			$this->join($tb);
+		}
+
 		return $this;
 	}
 
@@ -1709,6 +1722,22 @@ trait QueryBuilderTrait
 	}
 
 	/**
+	 * Check if a column exists in the table schema.
+	 *
+	 * @param string $column The name of the column to check.
+	 * @return bool True if the column exists, false otherwise.
+	 */
+	protected function columnExists(string $column): bool
+	{
+		$column = $this->unqualifyField($column); // Handle 'table.column' format
+
+		if ($this->schema === null || empty($this->attributes)) {
+			return false;
+		}
+		return in_array($column, $this->attributes, true);
+	}
+
+	/**
 	 * Procesa la condición WHERE para manejar calificadores de tablas relacionadas
 	 * 
 	 * @param array|string $condition La condición a procesar
@@ -1728,7 +1757,7 @@ trait QueryBuilderTrait
 			// Verificar si esta tabla relacionada ya está en joins
 			$relatedTableExists = false;
 			foreach ($this->joins as $join) {
-				if ($join['table'] === $relatedTable || $join['alias'] === $relatedTable) {
+				if ($join[0] === $relatedTable) {
 					$relatedTableExists = true;
 					break;
 				}
