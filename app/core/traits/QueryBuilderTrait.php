@@ -1837,7 +1837,7 @@ trait QueryBuilderTrait
 		}
 
 		// Flujo normal sin relaciones
-		$q = $this->toSql($fields, $order, $limit, $offset);
+		$q  = $this->toSql($fields, $order, $limit, $offset);
 		$st = $this->bind($q);
 
 		$count = null;
@@ -1862,6 +1862,20 @@ trait QueryBuilderTrait
 	function first(array $fields = null, $pristine = false)
 	{
 		$this->onReading();
+
+		// Si hay tablas conectadas
+		if (!empty($this->connect_to)) {
+			$output = $this
+				->limit(1)
+				->getSubResources(
+				$this->table_name,
+				$this->connect_to,
+				$this,
+				DB::getCurrentConnectionId()
+			);
+
+			return $output;
+		}
 
 		$q  = $this->toSql($fields, NULL);
 		$st = $this->bind($q);
