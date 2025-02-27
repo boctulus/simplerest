@@ -3869,6 +3869,18 @@ class ModelController extends Controller
         );
     }    
 
+    function test_where_with_join()
+    {
+        DB::getConnection('edu');
+
+        $rows = DB::table('courses')
+		->where(['title', 'Calculus I'])            
+		->joinTo(['categories', 'users', 'tags']) 
+		->get();
+
+        dd($rows);
+    }
+
     function test_with_1()
     {
         DB::getConnection('edu');
@@ -3893,38 +3905,29 @@ class ModelController extends Controller
         );
     }    
 
-    /*
-        AUN NO FUNCIONA
-    */
-    function test_with_3()
+    function test_with_1b()
     {
         DB::getConnection('edu');
 
-        $sql = DB::table('courses')            
-        ->connectTo(['categories', 'users', 'tags']) 
-        // ->join('categories')
+        $m = DB::table('courses');
+
+        $rows = $m
+        ->connectTo(['categories', 'users', 'tags'])
         ->where(['categories.name', 'Mathematics'])
-        ->where(['professor.name', 'Bob Smith'])                   
-        ->dd();
+        ->where(['users.name', 'Bob Smith'])
+        //->dontExec()
+        ->get();
 
-        /*
-            --| MAKING JOIN
-            Array
-            (
-                [table] => categories
-                [on1] => categories.id
-                [op] => =
-                [on2] => courses.categories_id
-                [type] => INNER JOIN
-            )
-        */
+        // $sql = DB::getLog();
 
-        // SELECT * FROM `courses` INNER JOIN categories ON categories.id=courses.categories_id WHERE categories.name = 'Mathematics'
-        dd($sql);
+        // dd(
+        //     $sql
+        // );
 
-        // SQLSTATE[42S22]: Column not found: 1054 Unknown column 'courses.categories_id' in 'on clause'
-        dd(DB::select($sql));
-    }    
+        dd(
+            $rows
+        );
+    }   
 
     function test_with_2_manual_join()
     {
@@ -3954,9 +3957,6 @@ class ModelController extends Controller
         dd(DB::select($sql));
     }    
 
-    /*
-        AUN NO FUNCIONA
-    */
     function test_with_2()
     {
         DB::getConnection('edu');
@@ -3967,90 +3967,35 @@ class ModelController extends Controller
         ->where(['categories.name', 'Mathematics'])              
         ->dd();
 
-        /*
-            --| MAKING JOIN
-            Array
-            (
-                [table] => categories
-                [on1] => categories.id
-                [op] => =
-                [on2] => courses.categories_id
-                [type] => INNER JOIN
-            )
-        */
-
-        // SELECT * FROM `courses` INNER JOIN categories ON categories.id=courses.categories_id WHERE categories.name = 'Mathematics'
         dd($sql);
 
-        // SQLSTATE[42S22]: Column not found: 1054 Unknown column 'courses.categories_id' in 'on clause'
         dd(DB::select($sql));
     }    
 
-
-    function test_query(){
-        $sql = <<<SQL
-        SELECT
-        courses.id,
-        courses.title,
-        courses.active,
-        courses.category_id,
-        courses.professor_id,
-        courses.created_at,
-        courses.updated_at,
-        (
-            SELECT
-            IF( COUNT(__category.id) = 0, '', JSON_OBJECT('id', __category.id, 'name', __category.name, 'created_at', __category.created_at, 'updated_at', __category.updated_at) )
-            FROM
-            `categories` AS `__category`
-            WHERE
-            __category.id = courses.category_id
-        ) AS category,
-        (
-            SELECT
-            IF( COUNT(__professor.id) = 0, JSON_ARRAY(), JSON_ARRAYAGG(JSON_OBJECT('id', __professor.id, 'name', __professor.name, 'email', __professor.email, 'role', __professor.role, 'created_at', __professor.created_at, 'updated_at', __professor.updated_at)) )
-            FROM
-            `users` AS `__professor`
-            WHERE
-            __professor.id = courses.professor_id
-        ) AS professor,
-        (
-            SELECT
-            IF( COUNT(__users.id) = 0, JSON_ARRAY(), JSON_ARRAYAGG(JSON_OBJECT('id', __users.id, 'name', __users.name, 'email', __users.email, 'role', __users.role, 'created_at', __users.created_at, 'updated_at', __users.updated_at)) )
-            FROM
-            `users` AS `__users`
-            INNER JOIN
-                course_student
-                ON __users.id = course_student.user_id
-            WHERE
-            courses.id = course_student.course_id
-        ) AS users,
-        (
-            SELECT
-            IF( COUNT(__tags.id) = 0, JSON_ARRAY(), JSON_ARRAYAGG(JSON_OBJECT('id', __tags.id, 'name', __tags.name, 'created_at', __tags.created_at, 'updated_at', __tags.updated_at)) )
-            FROM
-            `tags` AS `__tags`
-            INNER JOIN
-                course_tag
-                ON __tags.id = course_tag.tag_id
-            WHERE
-            courses.id = course_tag.course_id
-        ) AS tags
-        FROM
-        `courses`
-        WHERE
-        EXISTS (
-            SELECT 1
-            FROM `categories` AS `__category`
-            WHERE __category.id = courses.category_id
-            AND __category.name = 'Mathematics'
-        );
-        SQL;
-
+    /*
+        Para buscar un "professor" llamado "Bob Smith| que enseñe "Mathematics"
+    */
+    function test_with_3()
+    {
         DB::getConnection('edu');
 
+        $m = DB::table('courses');
+
+        $rows = $m
+        ->connectTo(['categories', 'users', 'tags'])
+        ->where(['categories.name', 'Mathematics'])
+        ->where(['users.name', 'Bob Smith'])
+        ->where(['users.role', 'professor'])
+        //->dontExec()
+        ->get();
+
         dd(
-            DB::select($sql)
+            $rows
         );
-    }
+    }    
+
+
+    
+
 }
 
