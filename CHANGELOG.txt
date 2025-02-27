@@ -21,3 +21,4 @@
 [2025-02-26 12:15:54]	0.8.12	Validator soporta JSONs
 [2025-02-26 12:55:20]	0.8.12	Automatic update
 [2025-02-26 21:53:40]	0.8.12	Automatic update
+[2025-02-27 11:50:18]	0.8.12	getSubResource es concordante con el flag $exec de Model
