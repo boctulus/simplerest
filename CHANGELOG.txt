@@ -24,3 +24,4 @@
 [2025-02-27 11:50:18]	0.8.12	getSubResource es concordante con el flag $exec de Model
 [2025-02-27 13:47:54]	0.8.12	FUNCIONA el where() sobre subrecursos
 [2025-02-27 16:20:19]	0.8.12	Automatic update
+[2025-02-27 18:55:25]	0.8.12	Soporte para first() con connnectTo()

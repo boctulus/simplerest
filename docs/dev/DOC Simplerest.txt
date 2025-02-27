@@ -1930,6 +1930,8 @@ Posible salida:
 El "problema" es que cuando hay más de una relación entre dos tablas se necesita un alias por cada relación y con "as" solo es posible especificar una por lo cual la ambiguedad la resuelve automáticamente el framework.
 
 
+SubRecursos
+
 # Recuperar registros de tablas relacionadas
 
 Con el metodo connectTo() combinado con metodos como get() que hacen un SELECT, se devuelven registros de tablas relacionadas devolviendo los datos de forma estructurada.
@@ -2112,6 +2114,11 @@ producira un resultado "aplanado" similar a:
 			)
 
 	)
+
+
+Nota:
+
+Con connectTo() son soportados los metodos get() y first()
 
 
 Método findTableByAlias()
