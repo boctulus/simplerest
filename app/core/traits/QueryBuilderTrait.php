@@ -31,6 +31,9 @@ trait QueryBuilderTrait
 
 	const DECIMAL_AS_STRING = false; // false = sin comillas (default), true = con comillas
 
+	public    $exec = true;
+	public    $subquery_aliases = [];
+
 	// for internal use
 	protected $table_name;
 	protected $table_alias = [];
@@ -67,8 +70,7 @@ trait QueryBuilderTrait
 	protected $from_raw_vals   = [];
 	protected $union_q;
 	protected $union_vals = [];
-	protected $union_type;
-	protected $subquery_aliases = [];
+	protected $union_type;	
 	protected $join_raw = [];
 	protected $aggregate_field_alias;
 	protected $randomize = false;
@@ -84,8 +86,7 @@ trait QueryBuilderTrait
 	protected $input_mutators = [];
 	protected $output_mutators = [];
 	protected $transformer;
-	protected $controller;
-	protected $exec = true;
+	protected $controller;	
 	protected $bind = true;
 	protected $strict_mode_having = false;
 	protected $enable_qualification = false; //
