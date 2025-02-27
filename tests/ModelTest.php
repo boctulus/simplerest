@@ -890,6 +890,11 @@ class ModelTest extends TestCase
 
   function test_hide()
   {
+    // Clean-up
+    DB::table(get_users_table())
+      ->where(['email' => 'testing@g.com'])
+      ->delete(false);  
+
     $unhide = ['password'];
     $hide = ['username', 'confirmed_email', 'firstname', 'lastname', 'deleted_at', 'belongs_to'];
 
@@ -912,10 +917,10 @@ class ModelTest extends TestCase
 
     $this->assertNotNull($res['password']);
 
-    // Clean-up
-    $u
-      ->where(['email' => 'testing@g.com'])
-      ->delete(false);
+   // Clean-up
+   DB::table(get_users_table())
+   ->where(['email' => 'testing@g.com'])
+   ->delete(false);  
   }
 
   function test_fill2()
