@@ -76,6 +76,8 @@ trait QueryBuilderTrait
 	protected $last_pre_compiled_query;
 	protected $last_bindings = [];
 	protected $last_compiled_sql;
+	protected $subquery_conditions = [];
+	protected $subquery_aliases = [];
 	protected $limit;
 	protected $offset;
 	protected $pag_vals = [];
@@ -624,28 +626,10 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	// Sin ensayar
-	function hasJoin($table)
-    {
-        foreach ($this->joins as $join) {
-            if ($join['table'] === $table) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 	// INNER | LEFT | RIGTH JOIN
 	function join($table, $on1 = null, $op = '=', $on2 = null, string $type = 'INNER JOIN')
 	{
-		dd([
-			'table' => $table,
-			'on1' => $on1,
-			'op' => $op,
-			'on2' => $on2,
-			'type' => $type
-		],"MAKING JOIN");
-
 		$_table     = null;
 		$this_alias = null;
 
@@ -1727,6 +1711,24 @@ trait QueryBuilderTrait
 	}
 
 	/**
+	 * Procesa la condición WHERE para manejar calificadores de tablas relacionadas
+	 * 
+	 * @param array|string $condition La condición a procesar
+	 * @return array La condición procesada lista para usar
+	 */
+	protected function processWhereCondition($condition)
+	{
+		// Si no está habilitada la calificación o la condición no es un array, retornar la condición original
+		if (!isset($this->enable_qualification) || !$this->enable_qualification || !is_array($condition)) {
+			return $condition;
+		}
+
+		// ..
+
+		return $condition;
+	}
+
+	/**
 	 * Encuentra la tabla real correspondiente a un alias derivado
 	 * 
 	 * @param string $alias El alias a buscar
@@ -2129,6 +2131,116 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
+	protected function _where(?array $conditions = null, string $group_op = 'AND', $conjunction = null)
+	{
+		if (empty($conditions)) {
+			return;
+		}
+	
+		if (Arrays::isAssoc($conditions)) {
+			$conditions = Arrays::nonAssoc($conditions);
+		}
+	
+		if (isset($conditions[0]) && is_string($conditions[0])) {
+			$conditions = [$conditions];
+		}
+	
+		$_where = [];
+		$vars   = [];
+		$ops    = [];
+	
+		foreach ($conditions as $cond) {
+			if (!isset($cond[0])) {
+				continue;
+			}
+	
+			// Separar el calificador y el campo (e.g., "categories.name" -> "categories", "name")
+			$parts = explode('.', $cond[0]);
+			if (count($parts) === 2) {
+				$tableQualifier = $parts[0];
+				$field = $parts[1];
+	
+				// Verificar si el calificador corresponde a una tabla relacionada
+				if (!empty($this->connect_to) && in_array($tableQualifier, $this->connect_to)) {
+					// Almacenar la condición para aplicarla en la subconsulta
+					$this->subquery_conditions[$tableQualifier][] = [$field, $cond[1], $cond[2] ?? '='];
+	
+					// Generar una condición EXISTS para la consulta principal
+					$alias = "__" . $tableQualifier;
+					$relationship = $this->schema['relationships'][$tableQualifier][0] ?? null;
+					
+					if (!$relationship) {
+						throw new SqlException("No relationship defined for table '$tableQualifier'");
+					}
+
+					$foreignKey = $relationship[1]; // Clave foránea en la tabla principal (e.g., category_id)
+
+					$cond2 = $cond[2] ?? '=';
+
+					$existsCondition = "EXISTS (
+						SELECT 1
+						FROM `{$tableQualifier}` AS `{$alias}`
+						WHERE `{$alias}`.id = {$this->getTableAlias()}.{$foreignKey}
+						AND `{$alias}`.{$field} {$cond2} ?
+					)";
+					
+					$_where[] = $existsCondition;
+					$this->w_vals[] = $cond[1];
+					continue;
+				}
+			}
+	
+			// Procesar condiciones no cualificadas (pertenecientes a la tabla principal)
+			$unqualified_field = $this->unqualifyField($cond[0]);
+			$field = $this->getFullyQualifiedField($cond[0]);
+			$field = $this->getWrapFieldName($field);
+	
+			if ($field == null) {
+				throw new SqlException("Field can not be NULL");
+			}
+	
+			if (is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN']))) {
+				$should_quote = true;
+				if ($this->isDecimalField($unqualified_field) && !$this->shouldQuoteDecimals()) {
+					$should_quote = false;
+				} else if (isset($this->schema['attr_types'][$unqualified_field])) {
+					$should_quote = $this->schema['attr_types'][$unqualified_field] == 'STR';
+				}
+	
+				if ($should_quote) {
+					$cond[1] = array_map(function ($e) { return "'$e'"; }, $cond[1]);
+				}
+	
+				$in_val = implode(', ', $cond[1]);
+				$op = isset($cond[2]) ? $cond[2] : 'IN';
+				$_where[] = "$field $op ($in_val) ";
+			} else {
+				$vars[] = $field;
+				$this->w_vals[] = $cond[1];
+	
+				if ($cond[1] === NULL && (empty($cond[2]) || $cond[2] == '='))
+					$ops[] = 'IS';
+				else
+					$ops[] = $cond[2] ?? '=';
+			}
+		}
+	
+		foreach ($vars as $ix => $var) {
+			$_where[] = "$var $ops[$ix] ?";
+		}
+	
+		$this->w_vars = array_merge($this->w_vars, $vars);
+	
+		$ws_str = implode(" $conjunction ", $_where);
+	
+		if (count($conditions) > 1 && !empty($ws_str)) {
+			$ws_str = "($ws_str)";
+		}
+	
+		$this->where_group_op[] = $group_op;
+		$this->where[] = ' ' . $ws_str;
+	}
+
 	static protected function _where_array(array $cond_ay, $parent_conj = 'AND')
 	{
 		$accepted_conj = [
@@ -2326,110 +2438,57 @@ trait QueryBuilderTrait
 		);
 	}
 
-	protected function _where(?array $conditions = null, string $group_op = 'AND', $conjunction = null)
+	function whereColumn(string $field1, string $field2, string $op = '=')
 	{
-		if (empty($conditions)) {
-			return;
+		$validation = Factory::validador()->validate(
+			[
+				'col1' => $field1,
+				'col2' => $field2
+			],
+			[
+				'col1' => ['type' => 'alpha_num_dash'],
+				'col2' => ['type' => 'alpha_num_dash']
+			]
+		);
+
+		if (!$validation) {
+			throw new InvalidValidationException(json_encode(
+				$this->validator->getErrors()
+			));
 		}
 
-		// Procesar condiciones para manejar calificadores de tabla
-		$conditions = $this->processWhereCondition($conditions);
-
-		if (Arrays::isAssoc($conditions)) {
-			$conditions = Arrays::nonAssoc($conditions);
+		if (!in_array($op, ['=', '>', '<', '<=', '>=', '!='])) {
+			throw new \InvalidArgumentException("Invalid operator '$op'");
 		}
 
-		if (isset($conditions[0]) && is_string($conditions[0]))
-			$conditions = [$conditions];
+		$field1 = $this->getFullyQualifiedField($field1);
+		$field2 = $this->getFullyQualifiedField($field2);
 
-		$_where = [];
-		$vars   = [];
-		$ops    = [];
-
-		if (count($conditions) > 0) {
-			if (is_array($conditions[Arrays::arrayKeyFirst($conditions)])) {
-				foreach ($conditions as $ix => $cond) {
-					$unqualified_field = $this->unqualifyField($cond[0]);
-					$field             = $this->getFullyQualifiedField($cond[0]);
-					$field             = $this->getWrapFieldName($field);
-
-					if ($field == null)
-						throw new SqlException("Field can not be NULL");
-
-					if (is_array($cond[1]) && (empty($cond[2]) || in_array($cond[2], ['IN', 'NOT IN']))) {
-						$should_quote = true;
-						if ($this->isDecimalField($unqualified_field) && !$this->shouldQuoteDecimals()) {
-							$should_quote = false;
-						} else if (isset($this->schema['attr_types'][$unqualified_field])) {
-							$should_quote = $this->schema['attr_types'][$unqualified_field] == 'STR';
-						}
-
-						if ($should_quote) {
-							$cond[1] = array_map(function ($e) {
-								return "'$e'";
-							}, $cond[1]);
-						}
-
-						$in_val = implode(', ', $cond[1]);
-						$op = isset($cond[2]) ? $cond[2] : 'IN';
-						$_where[] = "$field $op ($in_val) ";
-					} else {
-						$vars[] = $field;
-						$this->w_vals[] = $cond[1];
-
-						if ($cond[1] === NULL && (empty($cond[2]) || $cond[2] == '='))
-							$ops[] = 'IS';
-						else
-							$ops[] = $cond[2] ?? '=';
-					}
-				}
-			} else {
-				$vars[]         = $conditions[0];
-				$this->w_vals[] = $conditions[1];
-
-				if ($conditions[1] === NULL && (empty($conditions[2]) || $conditions[2] == '='))
-					$ops[] = 'IS';
-				else
-					$ops[] = $conditions[2] ?? '=';
-			}
-		}
-
-		foreach ($vars as $ix => $var) {
-			$_where[] = "$var $ops[$ix] ?";
-		}
-
-		$this->w_vars = array_merge($this->w_vars, $vars);
-
-		$ws_str = implode(" $conjunction ", $_where);
-
-		if (count($conditions) > 1 && !empty($ws_str))
-			$ws_str = "($ws_str)";
-
-		$this->where_group_op[] = $group_op;
-		$this->where[] = ' ' . $ws_str;
-
-		return;
+		$this->where_raw_q = "{$field1}{$op}{$field2}";
+		return $this;
 	}
 
-	/**
-	 * Procesa la condición WHERE para manejar calificadores de tablas relacionadas
-	 * 
-	 * @param array|string $condition La condición a procesar
-	 * @return array La condición procesada lista para usar
-	 */
-	protected function processWhereCondition($condition)
-	{
-		if (is_array($condition) && strpos($condition[0], '.') !== false) {
-			list($table, $column) = explode('.', $condition[0]);
-			// Verifica si la tabla ya está en los joins
-			if (!in_array($table, array_column($this->joins, 0))) {
-				// Agrega el JOIN automáticamente
-				$this->join($table, "$table.id", '=', "courses.{$table}_id");
-			}
-			$condition[0] = "$table.$column";
-		}
-		return $condition;
-	}
+	// function where($conditions, $conjunction = 'AND')
+	// {
+	// 	// Si se hace where(1) lo convierte en WHERE 1=1
+	// 	if ($conditions == 1){
+	// 		$conditions = [1, 1];
+	// 	}
+
+	// 	/*
+	// 		Laravel compatibility
+
+	// 		In "Laravel mode", $conditions es la key y $conjunction el valor
+	// 	*/
+	// 	if (is_string($conditions)){
+	// 		$key              = $conditions;
+	// 		$conditions       = [];
+	// 		$conditions[$key] = $conjunction;
+	// 	}
+
+	// 	$this->_where($conditions, 'AND', $conjunction);
+	// 	return $this;
+	// }
 
 	/*
 		Refactoring por Claude para compatibilidad con Laravel
@@ -3136,11 +3195,11 @@ trait QueryBuilderTrait
 			$q .= ';';
 		}
 
-		if ($this->bind){
+		if ($this->bind) {
 			$st = $this->bind($q);
 			$this->last_bindings = $this->getBindings();
-		}		
-		
+		}
+
 		$this->last_pre_compiled_query = $q;
 		$this->last_operation = 'delete';
 

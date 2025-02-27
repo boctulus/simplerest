@@ -1635,11 +1635,11 @@ class DumbController extends Controller
 
         $api_version = 'v1';
 
-        $connect_to = Products::getConnectable();
+        $connect_to = Products::getConnectedSubResources();
         $instance   = null;
         $table = 'products';
 
-        $res = Products::getSubResources($table, $connect_to, $instance, null, 145);
+        $res = table('products')->getSubResources($table, $connect_to, $instance, null, 145);
         dd($res);
     }
 
@@ -1651,11 +1651,11 @@ class DumbController extends Controller
 
         $api_version = 'v1';
 
-        $connect_to = Products::getConnectable();
+        $connect_to = Products::getConnectedSubResources();
         $instance   = null;
         $table = 'products';
 
-        $res = Products::getSubResources($table, $connect_to, $instance);
+        $res = table('products')->getSubResources($table, $connect_to, $instance);
         dd($res);
     }
 
@@ -1667,11 +1667,11 @@ class DumbController extends Controller
 
         $api_version = 'v1';
 
-        $connect_to = TblPersona::getConnectable();
+        $connect_to = TblPersona::getConnectedSubResources();
         $instance   = null;
         $table = 'tbl_persona';
 
-        $res = Products::getSubResources($table, $connect_to, $instance);
+        $res = table('products')->getSubResources($table, $connect_to, $instance);
         dd($res);
     }
 

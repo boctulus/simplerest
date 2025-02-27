@@ -3781,6 +3781,33 @@ class ModelController extends Controller
         );
     }
 
+
+    // OK
+    function testFindTableByAlias() {
+        // Conexion a base de datos en particular
+        DB::getConnection('edu');
+
+        // A encontrar
+        $alias = 'professor';
+        // $alias = 'category';
+        // $alias = 'student';
+        // $alias = 'nonexistent';
+
+        // Crear una instancia al Modelo para la tabla 'courses'
+        $model = DB::table('courses');
+        
+        // Usamos Reflection para acceder al método protegido
+        $reflection = new ReflectionClass($model);
+        $method = $reflection->getMethod('findTableByAlias');
+        $method->setAccessible(true);
+        
+        // Llamar al método
+        $result = $method->invoke($model, $alias);
+        
+        dd($result);
+    }
+
+
     // OK
     function test_with_0()
     {
@@ -3829,32 +3856,61 @@ class ModelController extends Controller
             ->get();
 
         dd($rows);
+
+        dd(
+            DB::getLog()
+        );
     }    
 
-    // OK
-    function testFindTableByAlias() {
-        // Conexion a base de datos en particular
+    function test_with_1()
+    {
         DB::getConnection('edu');
 
-        // A encontrar
-        $alias = 'professor';
-        // $alias = 'category';
-        // $alias = 'student';
-        // $alias = 'nonexistent';
+        $m = DB::table('courses');
 
-        // Crear una instancia al Modelo para la tabla 'courses'
-        $model = DB::table('courses');
-        
-        // Usamos Reflection para acceder al método protegido
-        $reflection = new ReflectionClass($model);
-        $method = $reflection->getMethod('findTableByAlias');
-        $method->setAccessible(true);
-        
-        // Llamar al método
-        $result = $method->invoke($model, $alias);
-        
-        dd($result);
-    }
+        $m
+        ->connectTo(['categories', 'users', 'tags'])
+        ->where(['categories.name', 'Mathematics'])
+        ->dontExec()
+        ->get();
+
+        dd(
+            DB::getLog()
+        );
+    }    
+
+    /*
+        AUN NO FUNCIONA
+    */
+    function test_with_3()
+    {
+        DB::getConnection('edu');
+
+        $sql = DB::table('courses')            
+        ->connectTo(['categories', 'users', 'tags']) 
+        // ->join('categories')
+        ->where(['categories.name', 'Mathematics'])
+        ->where(['professor.name', 'Bob Smith'])                   
+        ->dd();
+
+        /*
+            --| MAKING JOIN
+            Array
+            (
+                [table] => categories
+                [on1] => categories.id
+                [op] => =
+                [on2] => courses.categories_id
+                [type] => INNER JOIN
+            )
+        */
+
+        // SELECT * FROM `courses` INNER JOIN categories ON categories.id=courses.categories_id WHERE categories.name = 'Mathematics'
+        dd($sql);
+
+        // SQLSTATE[42S22]: Column not found: 1054 Unknown column 'courses.categories_id' in 'on clause'
+        dd(DB::select($sql));
+    }    
 
     function test_with_2_manual_join()
     {
@@ -3892,10 +3948,9 @@ class ModelController extends Controller
         DB::getConnection('edu');
 
         $sql = DB::table('courses')            
+        ->connectTo(['categories', 'users', 'tags']) 
         // ->join('categories')
-        ->where(['categories.name', 'Mathematics'])
-        // ->where(['professor.name', 'Bob Smith'])           
-        // ->connectTo(['categories', 'users', 'tags']) 
+        ->where(['categories.name', 'Mathematics'])              
         ->dd();
 
         /*
@@ -3917,5 +3972,71 @@ class ModelController extends Controller
         dd(DB::select($sql));
     }    
 
+
+    function test_query(){
+        $sql = <<<SQL
+        SELECT
+        courses.id,
+        courses.title,
+        courses.active,
+        courses.category_id,
+        courses.professor_id,
+        courses.created_at,
+        courses.updated_at,
+        (
+            SELECT
+            IF( COUNT(__category.id) = 0, '', JSON_OBJECT('id', __category.id, 'name', __category.name, 'created_at', __category.created_at, 'updated_at', __category.updated_at) )
+            FROM
+            `categories` AS `__category`
+            WHERE
+            __category.id = courses.category_id
+        ) AS category,
+        (
+            SELECT
+            IF( COUNT(__professor.id) = 0, JSON_ARRAY(), JSON_ARRAYAGG(JSON_OBJECT('id', __professor.id, 'name', __professor.name, 'email', __professor.email, 'role', __professor.role, 'created_at', __professor.created_at, 'updated_at', __professor.updated_at)) )
+            FROM
+            `users` AS `__professor`
+            WHERE
+            __professor.id = courses.professor_id
+        ) AS professor,
+        (
+            SELECT
+            IF( COUNT(__users.id) = 0, JSON_ARRAY(), JSON_ARRAYAGG(JSON_OBJECT('id', __users.id, 'name', __users.name, 'email', __users.email, 'role', __users.role, 'created_at', __users.created_at, 'updated_at', __users.updated_at)) )
+            FROM
+            `users` AS `__users`
+            INNER JOIN
+                course_student
+                ON __users.id = course_student.user_id
+            WHERE
+            courses.id = course_student.course_id
+        ) AS users,
+        (
+            SELECT
+            IF( COUNT(__tags.id) = 0, JSON_ARRAY(), JSON_ARRAYAGG(JSON_OBJECT('id', __tags.id, 'name', __tags.name, 'created_at', __tags.created_at, 'updated_at', __tags.updated_at)) )
+            FROM
+            `tags` AS `__tags`
+            INNER JOIN
+                course_tag
+                ON __tags.id = course_tag.tag_id
+            WHERE
+            courses.id = course_tag.course_id
+        ) AS tags
+        FROM
+        `courses`
+        WHERE
+        EXISTS (
+            SELECT 1
+            FROM `categories` AS `__category`
+            WHERE __category.id = courses.category_id
+            AND __category.name = 'Mathematics'
+        );
+        SQL;
+
+        DB::getConnection('edu');
+
+        dd(
+            DB::select($sql)
+        );
+    }
 }
 
