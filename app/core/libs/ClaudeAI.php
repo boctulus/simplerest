@@ -45,7 +45,7 @@ class ClaudeAI implements AIChat
     const MESSAGES = 1;
 
     function __construct($api_key = null, $api_version = null) {
-        $this->api_key = $api_key ?? config()['claude_api_key'] ?? die('claude_api_key is required');
+        $this->api_key = $api_key ?? Config::get()['claude_api_key'] ?? die('claude_api_key is required');
         $this->api_version = $api_version ?? self::DEFAULT_API_VERSION;
 
         $this->client = ApiClient::instance()

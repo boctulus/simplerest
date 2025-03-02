@@ -49,9 +49,7 @@ class ProductsSchema implements ISchema
 			],
 
 			'attr_type_detail'	=> [
-				'images' => 'JSON',
-				'dimensions' => 'JSON',
-				'attributes' => 'JSON'
+
 			],
 
 			'primary'			=> ['id'],
@@ -68,8 +66,8 @@ class ProductsSchema implements ISchema
 				'id' => ['type' => 'int'],
 				'name' => ['type' => 'str', 'max' => 80, 'required' => true],
 				'type' => ['type' => 'str', 'max' => 20],
-				'regular_price' => ['type' => 'str'],
-				'sale_price' => ['type' => 'str'],
+				'regular_price' => ['type' => 'str', 'max' => 60],
+				'sale_price' => ['type' => 'str', 'max' => 60],
 				'description' => ['type' => 'str', 'required' => true],
 				'short_description' => ['type' => 'str', 'max' => 512],
 				'slug' => ['type' => 'str', 'max' => 100, 'required' => true],
@@ -83,15 +81,15 @@ class ProductsSchema implements ISchema
 				'stock' => ['type' => 'int'],
 				'stock_status' => ['type' => 'str', 'max' => 30],
 				'url_ori' => ['type' => 'str', 'max' => 300],
-				'posted' => ['type' => 'bool'],
+				'posted' => ['type' => 'int'],
 				'comment' => ['type' => 'str', 'max' => 200],
 				'created_at' => ['type' => 'datetime', 'required' => true],
 				'updated_at' => ['type' => 'datetime'],
 				'cost' => ['type' => 'decimal(10,2)'],
 				'size' => ['type' => 'str', 'max' => 20],
 				'belongs_to' => ['type' => 'int'],
-				'active' => ['type' => 'bool'],
-				'locked' => ['type' => 'bool'],
+				'active' => ['type' => 'int'],
+				'locked' => ['type' => 'int'],
 				'workspace' => ['type' => 'str', 'max' => 50],
 				'deleted_at' => ['type' => 'timestamp']
 			],

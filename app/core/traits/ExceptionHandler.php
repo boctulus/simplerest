@@ -2,6 +2,7 @@
 
 namespace simplerest\core\traits;
 
+use simplerest\core\libs\Config;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Url;
 
@@ -20,7 +21,7 @@ trait ExceptionHandler
 
         $error_msg = $e->getMessage();
 
-        $config    = config();
+        $config    = Config::get();
        
         $backtrace = null;
         if ($config['debug']) {

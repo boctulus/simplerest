@@ -10,10 +10,11 @@ use simplerest\core\controllers\Controller;
 use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\core\interfaces\IAuth;
 use simplerest\core\interfaces\IDbAccess;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Factory;
-use simplerest\core\libs\Files;
 
+use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Validator;
 use simplerest\core\Request;
@@ -39,24 +40,27 @@ class AuthController extends Controller implements IAuth
 
     function __construct()
     { 
-        cors();
+        parent::__construct();     
 
-        parent::__construct();
+        withDefaultConnection(function() {
+            $model = get_user_model_name();   
 
-        $this->config = config();
+            $this->__email           = $model::$email;
+            $this->__username        = $model::$username;
+            $this->__password        = $model::$password;
+            $this->__confirmed_email = $model::$confirmed_email;
+            $this->__active          = $model::$is_active;
+            $this->__id              = get_id_name(get_users_table());
+        });
 
-        $model = get_user_model_name();    
-           
-        $this->__email           = $model::$email;
-        $this->__username        = $model::$username;
-        $this->__password        = $model::$password;
-        $this->__confirmed_email = $model::$confirmed_email;
-        $this->__active          = $model::$is_active;
+        $this->config = Config::get();    
 
-        $this->__id = get_id_name(get_users_table());
+        if (!is_cli()){
+            cors();
+        }
     }
        
-    protected function gen_jwt(array $props, string $token_type, int $expires_in = null){
+    protected function gen_jwt(array $props, string $token_type, $expires_in = null){
         $time = time();
 
         $payload = [
@@ -669,7 +673,7 @@ class AuthController extends Controller implements IAuth
             
             if (empty($roles)){
                 $roles = [
-                    config()['default_role'] ?? acl()->getRegistered()
+                    Config::get()['default_role'] ?? acl()->getRegistered()
                 ];
             }
 
@@ -739,7 +743,7 @@ class AuthController extends Controller implements IAuth
                 
                 $payload = JWT::decode($jwt, $key);
                 
-                $config = config();
+                $config = Config::get();
                 
                 if (empty($payload))
                     error('Unauthorized!',401);             
@@ -869,7 +873,7 @@ class AuthController extends Controller implements IAuth
                 if ($tenantid !== null){
                     $db_access = $ret['db_access'] ?? [];   
                    
-                    if (config()['restrict_by_tenant']){
+                    if (Config::get()['restrict_by_tenant']){
                         if (!in_array($tenantid, $db_access)){
                             //dd($ret['roles']);
                             //dd(acl()->getRolePermissions());

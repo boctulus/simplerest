@@ -2,12 +2,13 @@
 
 namespace simplerest\controllers\test_apis;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Time;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\Paginator;
 use simplerest\core\controllers\Controller;
+use simplerest\core\libs\ApiClient;
+use simplerest\core\libs\Config;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Paginator;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Time;
 
 class RelmotorController extends Controller
 {
@@ -35,7 +36,7 @@ class RelmotorController extends Controller
         */
 
         // En WordPress por ejemplo, no puedo usar ?page=
-        $page_key   = config()['paginator']['params']['page'] ?? 'page';
+        $page_key   = Config::get()['paginator']['params']['page'] ?? 'page';
     
         $page_size = $_GET['size'] ?? 10;
         $page      = $_GET[$page_key] ?? 1;

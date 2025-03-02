@@ -99,7 +99,7 @@ class VarDump
 		}	
 
 		if ($msg_at_top && !empty($msg)){
-			$cfg = config();
+			$cfg = Config::get();
 			$ini = $cfg['var_dump_separators']['start'] ?? '--| ';
 			$end = $cfg['var_dump_separators']['end']   ?? '';
 
@@ -124,7 +124,7 @@ class VarDump
 		}	
 
 		if (!$msg_at_top && !empty($msg)){
-			$cfg = config();
+			$cfg = Config::get();
 			$ini = $cfg['var_dump_separators']['start'] ?? '--| ';
 			$end = $cfg['var_dump_separators']['end']   ?? '';
 

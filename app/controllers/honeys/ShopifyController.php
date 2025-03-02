@@ -3,6 +3,7 @@
 namespace simplerest\controllers\honeys;
 
 use simplerest\core\controllers\Controller;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Shopify;
 use simplerest\core\libs\Strings;
@@ -27,7 +28,7 @@ class ShopifyController extends Controller
     }
 
     protected function getApiParams($shop){
-        $api  = config()['shopify']['api'][$shop]; // <----- array es seteado por la libreria Shopify
+        $api  = Config::get()['shopify']['api'][$shop]; // <----- array es seteado por la libreria Shopify
         return $api;
     }
 
@@ -57,7 +58,7 @@ class ShopifyController extends Controller
         El objeto podria ser un adaptador sobre la clase Products de WooCommerce por ejemplo
     */
     function shopify_webhook_insert_or_update_products(object $persistent_object){
-        $config = config();
+        $config = Config::get();
     
         if ($config['debug']){
             Logger::log("Shopify WebHook fired");

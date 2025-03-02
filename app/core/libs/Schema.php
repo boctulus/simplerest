@@ -387,7 +387,7 @@ class Schema
 	}
 
 	static function getTables(string $conn_id = null) {	
-		$config = config();
+		$config = Config::get();
 		
 		if ($conn_id != null){
 			if (!isset($config['db_connections'][$conn_id])){
@@ -408,7 +408,7 @@ class Schema
 		https://arjunphp.com/how-to-get-mysql-table-comments/
 	*/
 	static function getTableComment( string $table, string $conn_id = null) {	
-		$config = config();
+		$config = Config::get();
 		
 		if ($conn_id != null){
 			if (!isset($config['db_connections'][$conn_id])){
@@ -428,7 +428,7 @@ class Schema
 
 	// -- ok
 	static function getColumnComment(string $table, string $field, string $conn_id = null) {	
-		$config = config();
+		$config = Config::get();
 		
 		if ($conn_id != null){
 			if (!isset($config['db_connections'][$conn_id])){

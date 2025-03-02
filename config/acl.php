@@ -1,11 +1,13 @@
 <?php
 
 use boctulus\grained_acl\Acl;
+use simplerest\core\libs\Config;
 use simplerest\libs\Debug;
 
 
+
 $acl_cache = false;
-$acl_file  = config()['acl_file'];
+$acl_file  = Config::get()['acl_file'];
 
 // Check whether ACL data already exist
 if (!$acl_cache || is_file($acl_file) !== true) {

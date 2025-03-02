@@ -15,6 +15,10 @@ abstract class ResourceController extends Controller
 
     function __construct(?IAuth $auth = null)
     {   
+        if (is_cli()){
+            return;
+        }
+
         cors(); 
 
         foreach ($this->headers as $key => $header){
@@ -26,9 +30,10 @@ abstract class ResourceController extends Controller
         }
         
         $auth = $auth ?? auth();
-        $this->auth = ($auth)->check();
-  
+        $this->auth = ($auth)->check();      
+          
         parent::__construct();
     }
     
-}  
+}
+

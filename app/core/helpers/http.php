@@ -7,7 +7,7 @@ use simplerest\core\Route;
 
 if (!function_exists('cors')){
     function cors(){
-        $params = require CONFIG_PATH . 'cors.php';
+        $params = get_cfg('cors.php');
         
         $cors = new CorsHandler($params);
         $cors->loadConfig($params);

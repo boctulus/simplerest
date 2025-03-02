@@ -68,7 +68,7 @@ class StdOut
     */
     static function toLog(bool $only = true, bool $include_datetime = true){
         static::$log_includes_datetime = $include_datetime;
-        static::toFile(LOGS_PATH . '/' . config()['log_file'], $only);
+        static::toFile(LOGS_PATH . '/' . Config::get()['log_file'], $only);
     }
 
     /**

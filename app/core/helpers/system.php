@@ -2,6 +2,7 @@
 
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\System;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\ApacheWebServer;
 
 
@@ -35,7 +36,7 @@ function is_unix(){
 }
 
 function set_server_limits($upload_max_filesize = '1024M', $post_max_size = '1024M', $memory_limit = '768M', $max_exec_time = '600'){
-    $config = config();
+    $config = Config::get();
 
     /*
         Si no funciona, debe modificarse el php.ini
