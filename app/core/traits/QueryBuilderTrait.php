@@ -2,20 +2,21 @@
 
 namespace simplerest\core\traits;
 
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Paginator;
-use simplerest\core\libs\Validator;
-use simplerest\core\libs\ValidationRules;
-use simplerest\core\interfaces\IValidator;
-use simplerest\core\interfaces\ITransformer;
-use simplerest\core\exceptions\SqlException;
-use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\core\exceptions\ColumnTableNotFoundException;
+use simplerest\core\exceptions\InvalidValidationException;
 use simplerest\core\exceptions\SchemaException;
+use simplerest\core\exceptions\SqlException;
+use simplerest\core\interfaces\ITransformer;
+use simplerest\core\interfaces\IValidator;
+use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Config;
+use simplerest\core\libs\DB;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Paginator;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\ValidationRules;
+use simplerest\core\libs\Validator;
+use simplerest\core\Model;
 
 trait QueryBuilderTrait
 {
@@ -70,7 +71,7 @@ trait QueryBuilderTrait
 	protected $from_raw_vals   = [];
 	protected $union_q;
 	protected $union_vals = [];
-	protected $union_type;	
+	protected $union_type;
 	protected $join_raw = [];
 	protected $aggregate_field_alias;
 	protected $randomize = false;
@@ -86,7 +87,7 @@ trait QueryBuilderTrait
 	protected $input_mutators = [];
 	protected $output_mutators = [];
 	protected $transformer;
-	protected $controller;	
+	protected $controller;
 	protected $bind = true;
 	protected $strict_mode_having = false;
 	protected $enable_qualification = false; //
@@ -811,8 +812,9 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function joinTo(...$tables){
-		if (is_array($tables[0])){
+	function joinTo(...$tables)
+	{
+		if (is_array($tables[0])) {
 			$tables = $tables[0];
 		}
 
@@ -874,7 +876,7 @@ trait QueryBuilderTrait
 	function paginate(int $page, ?int $page_size = null)
 	{
 		if ($page_size === null) {
-			$page_size = config()['paginator']['default_limit'] ?? 10;
+			$page_size = Config::get()['paginator']['default_limit'] ?? 10;
 		}
 
 		$this->limit  = $page_size;
@@ -1686,10 +1688,10 @@ trait QueryBuilderTrait
 
 	function logSQL()
 	{
-		$config = config();
+		$config = Config::get();
 
 		if ($config['debug'] && $config['log_sql']) {
-			log_sql($this->dd());
+			log_sql($this->dd() ?? 'EMPTY-QUERY');
 		}
 	}
 
@@ -1869,11 +1871,11 @@ trait QueryBuilderTrait
 			$output = $this
 				->limit(1)
 				->getSubResources(
-				$this->table_name,
-				$this->connect_to,
-				$this,
-				DB::getCurrentConnectionId()
-			);
+					$this->table_name,
+					$this->connect_to,
+					$this,
+					DB::getCurrentConnectionId()
+				);
 
 			return $output;
 		}
@@ -3259,11 +3261,11 @@ trait QueryBuilderTrait
 			$q .= ';';
 		}
 
-		if ($this->bind){
+		if ($this->bind) {
 			$st = $this->bind($q);
 			$this->last_bindings = $this->getBindings();
-		}		
-		
+		}
+
 		$this->last_pre_compiled_query = $q;
 		$this->last_operation = 'delete';
 
@@ -3428,7 +3430,9 @@ trait QueryBuilderTrait
 	{
 		$this->current_operation = 'create';
 
-		if ($this->conn == null)
+		// dd($data, __FUNCTION__ . "( `{$this->table_name}` )");
+
+		if ($this->conn == null && $this->exec)
 			throw new SqlException('No connection');
 
 		if (!Arrays::isAssoc($data)) {
@@ -3602,7 +3606,7 @@ trait QueryBuilderTrait
 		} catch (\PDOException $e) {
 			$this->logSQL();
 
-			$debug = config()['debug'];
+			$debug = Config::get()['debug'];
 
 			if (!$ignore_duplicates && !Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())) {
 				throw new \PDOException($debug ? $e->getMessage() : "Integrity constraint violation");
@@ -3714,6 +3718,8 @@ trait QueryBuilderTrait
 			throw new SqlException('No connection');
 		}
 
+		// dd($data, __FUNCTION__ . "( `{$this->table_name}` )");
+
 		// Single record
 		if (Arrays::isAssoc($data)) {
 			if ($useTransaction) {
@@ -3787,7 +3793,7 @@ trait QueryBuilderTrait
 	 */
 	function rawInsert(array $data)
 	{
-		if ($this->conn == null) {
+		if ($this->conn == null && $this->exec) {
 			throw new SqlException('No connection');
 		}
 
@@ -3811,7 +3817,7 @@ trait QueryBuilderTrait
 	 */
 	function bulkInsert(array $data, int $batchSize = 1000)
 	{
-		if ($this->conn == null) {
+		if ($this->conn == null && $this->exec) {
 			throw new SqlException('No connection');
 		}
 
@@ -4093,7 +4099,7 @@ trait QueryBuilderTrait
 				} catch (\Exception $e) {
 					DB::rollback();
 
-					if (config()['debug']) {
+					if (Config::get()['debug']) {
 						$msg = "Error inserting/updating data in " . $this->from() .
 							' - ' . $e->getMessage() .
 							' - SQL: ' . $this->getLog();
@@ -4122,7 +4128,7 @@ trait QueryBuilderTrait
 			} catch (\Exception $e) {
 				DB::rollback();
 
-				if (config()['debug']) {
+				if (Config::get()['debug']) {
 					$msg = "Error inserting/updating data in " . $this->from() .
 						' - ' . $e->getMessage() .
 						' - SQL: ' . $this->getLog();
@@ -4256,36 +4262,46 @@ trait QueryBuilderTrait
 		return $this->insert_vars;
 	}
 
-
 	/**
-	 * Get PDO parameter type for binding, handling schema types and JSON arrays
+	 * Obtiene el valor procesado y el tipo de parámetro PDO para vinculación, manejando tipos del esquema y arreglos JSON 
 	 *
-	 * @param mixed $val The value to check
-	 * @param string|null $field The field name from schema
-	 * @return array Returns [processed_value, param_type]
+	 * (Corregida el 28/02/2025 por posible error de operador lógico en if)
+	 * 
+	 * @param mixed $val El valor a verificar
+	 * @param string|null $field El nombre del campo del esquema (opcional)
+	 * @return array Devuelve [valor_procesado, tipo_parametro]
+	 * @throws \InvalidArgumentException Si el tipo del valor no es válido para el campo especificado
+	 * @throws \Exception Si se encuentra un tipo no soportado
 	 */
 	private function getBindValueAndType($val, ?string $field = null): array
 	{
-		// Handle arrays (potential JSON)
+		// Manejo de arreglos (potencialmente JSON)
 		if (is_array($val)) {
 			if (
+				$field !== null &&
 				isset($this->schema['attr_types'][$field]) &&
-				!$this->schema['attr_types'][$field] == 'STR'
+				$this->schema['attr_types'][$field] !== 'STR'
 			) {
 				throw new \InvalidArgumentException(
-					"Param '{$field}' is not expected to be an string. Given array"
+					"El campo '{$field}' debe ser de tipo 'STR' para aceptar arreglos, pero se especificó '{$this->schema['attr_types'][$field]}'."
 				);
 			}
 			return [json_encode($val), \PDO::PARAM_STR];
 		}
 
-		// Handle schema-defined types
-		if (isset($field) && isset($this->schema['attr_types'][$field])) {
+		// Manejo de tipos definidos en el esquema
+		if ($field !== null && isset($this->schema['attr_types'][$field])) {
 			$const = $this->schema['attr_types'][$field];
-			return [$val, constant("PDO::PARAM_{$const}")];
+			$paramType = constant("PDO::PARAM_{$const}");
+			if ($paramType === null) {
+				throw new \Exception(
+					"El tipo '{$const}' especificado en el esquema para el campo '{$field}' no es válido en PDO."
+				);
+			}
+			return [$val, $paramType];
 		}
 
-		// Handle standard types
+		// Manejo de tipos estándar
 		if (is_null($val)) {
 			return [$val, \PDO::PARAM_NULL];
 		} elseif (is_int($val)) {
@@ -4293,17 +4309,22 @@ trait QueryBuilderTrait
 		} elseif (is_bool($val)) {
 			return [$val, \PDO::PARAM_BOOL];
 		} elseif (is_string($val)) {
+			// Límite de 4000 caracteres ajustable según la base de datos
 			if (mb_strlen($val) < 4000) {
 				return [$val, \PDO::PARAM_STR];
 			} else {
 				return [$val, \PDO::PARAM_LOB];
 			}
 		} elseif (is_float($val)) {
-			return [$val, \PDO::PARAM_STR];
+			// Formato consistente para evitar problemas de precisión
+			$formattedVal = sprintf("%.10f", $val); // Precisión ajustable
+			return [$formattedVal, \PDO::PARAM_STR];
 		} elseif (is_resource($val)) {
 			return [$val, \PDO::PARAM_LOB];
 		} else {
-			throw new \Exception("Unsupported type: " . var_export($val, true));
+			throw new \Exception(
+				"Tipo no soportado para el valor: " . var_export($val, true) . ". Tipos soportados: null, int, bool, string, float, resource."
+			);
 		}
 	}
 
@@ -4779,4 +4800,12 @@ trait QueryBuilderTrait
 	{
 		return $this->setExecutionMode(self::EXECUTION_MODE_NORMAL);
 	}
+
+	/////////////////////////////////////////////////////////////
+	//
+	// Métodos de inserción con SubRecursos
+	//
+	/////////////////////////////////////////////////////////////
+	
+	// ...
 }

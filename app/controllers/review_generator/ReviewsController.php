@@ -2,14 +2,15 @@
 
 namespace simplerest\controllers\review_generator;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\ChatGPT;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ApiClient;
-use simplerest\libs\ItalianReviews;
 use simplerest\core\controllers\Controller;
+use simplerest\core\libs\ApiClient;
+use simplerest\core\libs\ChatGPT;
+use simplerest\core\libs\Config;
+use simplerest\core\libs\DB;
 use simplerest\core\libs\RandomGenerator;
+use simplerest\core\libs\Strings;
 use simplerest\libs\ItalianGrammarAnalyzer;
+use simplerest\libs\ItalianReviews;
 use simplerest\shortcodes\star_rating\StarRatingShortcode;
 
 
@@ -122,7 +123,7 @@ class ReviewsController extends Controller
 
     function insert_answers()
     {
-        $prefix = config()['tb_prefix'];
+        $prefix = Config::get()['tb_prefix'];
 
         $rows = $this->parse();
 

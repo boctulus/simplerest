@@ -57,7 +57,7 @@ class Logger
     static function getLogFilename(bool $full_path = false)
     {
         if (static::$logfile == null){
-            static::$logfile = config()['log_file'];
+            static::$logfile = Config::get()['log_file'];
         }
 
         return ($full_path ? LOGS_PATH : '') . static::$logfile;
@@ -114,7 +114,7 @@ class Logger
 			dd($data, date('[d-M-Y H:i:s e]') . $extra) ;
 		}
 
-		if (config()['error_log'] ?? true){
+		if (Config::get()['error_log'] ?? true){
 			$mode = 0;
 			if ($custom_path){
 				$mode = 3;

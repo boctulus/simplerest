@@ -23,21 +23,24 @@ class Acl extends \simplerest\core\Acl
     }
 
  
-    protected function setup(){        
-        // get all available sp_permissions
-        $this->sp_permissions = DB::table('sp_permissions')->pluck('name');
+    protected function setup()
+    {        
+        withDefaultConnection(function(){
+            // get all available sp_permissions
+            $this->sp_permissions = DB::table('sp_permissions')->pluck('name');
 
-        if (empty($this->sp_permissions)){
-            throw new \Exception("Unexpected empty table `sp_permissions`");
-        }
+            if (empty($this->sp_permissions)){
+                throw new \Exception("Unexpected empty table `sp_permissions`");
+            }
 
-        // get all available roles
-        $this->roles = DB::table('roles')->get();
+            // get all available roles
+            $this->roles = DB::table('roles')->get();
 
-        foreach($this->roles as $rr){
-            $this->role_names[] = $rr['name'];
-            $this->role_ids[]   = $rr['id'];
-        }
+            foreach($this->roles as $rr){
+                $this->role_names[] = $rr['name'];
+                $this->role_ids[]   = $rr['id'];
+            }
+        });        
     }
 
     public function addRole(string $role_name, $role_id = NULL) {

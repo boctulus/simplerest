@@ -2,10 +2,11 @@
 
 namespace simplerest\core;
 
-use simplerest\core\libs\Strings;
-use simplerest\core\interfaces\Arrayable;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Arrays;
+use simplerest\core\libs\Config;
+use simplerest\core\libs\Strings;
+use simplerest\core\interfaces\Arrayable;
 
 /*
     Correcciones necesarias !!
@@ -190,7 +191,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     }
 
     function getPaginatorParams(){
-        $param_names    = config()['paginator']['params'];
+        $param_names    = Config::get()['paginator']['params'];
         $page_name      = $param_names['page'];
         $page_size_name = $param_names['pageSize'];
         
@@ -429,7 +430,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
 
     // Antes method()
     function method(){
-        $config = config();
+        $config = Config::get();
 
         $asked_method = null;
         if ($config['method_override']['by_url'] ?? null){

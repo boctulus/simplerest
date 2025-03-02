@@ -1,6 +1,7 @@
 <?php
 
 use simplerest\core\interfaces\IMigration;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Schema;
 
@@ -40,7 +41,7 @@ class UserTbPermissionsCreation implements IMigration
             Esta debe depender del nombre de la tabla users y del id de dicha tabla 
         */
 
-        $users_table = config()['users_table'];
+        $users_table = Config::get()['users_table'];
         $users_pri   = get_id_name($users_table);
 
         $sc

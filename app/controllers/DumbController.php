@@ -1198,7 +1198,7 @@ class DumbController extends Controller
 
     function curl()
     {
-        define('HOST', config()['app_url']);
+        define('HOST', Config::get()['app_url']);
         define('BASE_URL', HOST . '/');
 
         $url = BASE_URL . "api/v1/auth/login";
@@ -2057,7 +2057,7 @@ class DumbController extends Controller
     {
         DB::getDefaultConnection();
 
-        dd(DB::getConnectionConfig());
+        dd(DB::getConnectionConfig::get());
 
         $rows = DB::table('tbl_base_datos')
             ->get();
@@ -8480,7 +8480,7 @@ class DumbController extends Controller
         Config::set('db_connections.main.tb_prefix', 'wp_');
 
         dd(
-            config()['db_connections']['main']['tb_prefix']
+            Config::get()['db_connections']['main']['tb_prefix']
         );
 
         dd(
@@ -10480,12 +10480,12 @@ class DumbController extends Controller
     function test_set_env(){
         // valor
         dd(
-            Env::get('variable')
+            Env::get('APP_NAME')
         );
 
         // valor
         dd(
-            Config::get('my_config_variable')
+            Config::get('namespace')
         );
     }
 

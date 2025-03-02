@@ -16,12 +16,12 @@ class CorsHandler
 {
     private array $paths;
     private array $allowedOrigins;
-    private bool $supportsCredentials;
+    private bool  $supportsCredentials;
     private array $allowedHeaders;
     private array $allowedMethods;
     private array $allowedOriginsPatterns;
     private array $exposedHeaders;
-    private int $maxAge;
+    private int   $maxAge;
 
     public function __construct(
         array $paths = ['*'],

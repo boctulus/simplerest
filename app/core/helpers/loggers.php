@@ -1,14 +1,16 @@
 <?php
 
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Logger;
+
 
 
 /*
     Requiere que este habilitado el modo debug
 */
 function logger($data, ?string $path = null, $append = true){
-    if (!config()['debug']){
+    if (!Config::get()['debug']){
         return;
     }
 
@@ -19,7 +21,7 @@ function logger($data, ?string $path = null, $append = true){
     Requiere que este habilitado el modo debug
 */
 function dump($object, ?string $path = null, $append = false){
-    if (!config()['debug']){
+    if (!Config::get()['debug']){
         return;
     }
 
@@ -30,7 +32,7 @@ function dump($object, ?string $path = null, $append = false){
     Requiere que este habilitado el modo debug
 */
 function log_error($error){
-    if (!config()['debug']){
+    if (!Config::get()['debug']){
         return;
     }
 
@@ -41,7 +43,8 @@ function log_error($error){
     Requiere que este habilitado el modo debug y log_sql
 */  
 function log_sql(string $sql_str){
-    if (!config()['debug'] || !config()['log_sql']){
+    $cfg = Config::get();
+    if (!$cfg['debug'] || !$cfg['log_sql']){
         return;
     }
 

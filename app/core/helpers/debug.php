@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\core\libs\Url;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\VarDump;
 
 function show_debug_trace(bool $status = true){
@@ -54,7 +54,7 @@ function print_array($array, $msg = null, $prepend = '', bool $additional_carria
     $pre = !$cli;	
 
     if (!empty($msg)){
-        $cfg = config();
+        $cfg = Config::get();
         $ini = $cfg['var_dump_separators']['start'] ?? '--| ';
         $end = $cfg['var_dump_separators']['end']   ?? '';
     }

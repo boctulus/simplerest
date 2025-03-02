@@ -2,11 +2,12 @@
 
 namespace simplerest\core\libs;
 
-use PHPMailer\PHPMailer\SMTP;
-use simplerest\core\libs\Logger;
-
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
 use simplerest\core\interfaces\IMail;
+use simplerest\core\libs\Config;
+use simplerest\core\libs\Logger;
 
 /*
   Cambiar algunos métodos a de intancia a fin de poder usar métodos encadenados
@@ -27,7 +28,7 @@ class Mail extends MailBase implements IMail
     }
 
     static function getMailer(){
-        $config = config();
+        $config = Config::get();
         return static::$mailer ?? $config['email']['mailer_default'];
     }
 
@@ -116,7 +117,7 @@ class Mail extends MailBase implements IMail
         )
     */
     static function send($to, $subject = '', $body = '', $attachments = null, $from = [], Array $cc = [], $bcc = [], $reply_to = [], $alt_body = null) : bool {
-		$config = config();
+		$config = Config::get();
 
         $body = trim($body);
 

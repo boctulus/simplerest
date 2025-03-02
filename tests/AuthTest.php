@@ -30,7 +30,7 @@ class AuthTest extends TestCase
 
 	function __construct() {
 		parent::__construct();
-        $this->config = config();
+        $this->config = Config::get();
     }
 
     /*

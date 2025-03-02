@@ -2,10 +2,11 @@
 
 namespace simplerest\core;
 
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Strings;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Msg;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Url;
 
 class Route 
 {
@@ -27,7 +28,7 @@ class Route
     protected static function setup() {
         global $argv;
         
-        $config = config();
+        $config = Config::get();
 
         if (php_sapi_name() != 'cli'){
             $res = Response::getInstance();

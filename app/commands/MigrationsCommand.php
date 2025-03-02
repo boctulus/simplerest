@@ -409,7 +409,7 @@ class MigrationsCommand implements ICommand
                 if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
                     $to_db = $matches[1];
 
-                    $main = config()['db_connection_default'];
+                    $main = Config::get()['db_connection_default'];
 
                     if ($to_db == $main || $to_db == 'default'){
                         $to_db = '__NULL__';

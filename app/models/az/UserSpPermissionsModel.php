@@ -8,9 +8,6 @@ use simplerest\schemas\az\UserSpPermissionsSchema;
 
 class UserSpPermissionsModel extends MyModel
 {
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

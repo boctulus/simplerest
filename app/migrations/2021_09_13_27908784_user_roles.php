@@ -1,9 +1,10 @@
 <?php
 
+use simplerest\core\interfaces\IMigration;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\System;
-use simplerest\core\libs\Factory;
-use simplerest\core\interfaces\IMigration;
+use users;
 
 class UserRoles implements IMigration
 {
@@ -37,7 +38,7 @@ class UserRoles implements IMigration
         // El helper get_id_name() requiere que el schema exista 
         System::com("make schema users --from:main");
 
-        $users_table = config()['users_table'];
+        $users_table = Config::get()['users_table'];
         $users_pri   = get_id_name($users_table);
 
         $sc->foreign('user_id')->references($users_pri)->on($users_table)->onDelete('cascade');

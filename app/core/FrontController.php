@@ -2,14 +2,15 @@
 
 namespace simplerest\core;
 
-use simplerest\core\libs\Cli;
-use simplerest\core\libs\Msg;
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\VarDump;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\controllers\ConsoleController;
+use simplerest\core\libs\Cli;
+use simplerest\core\libs\Config;
+use simplerest\core\libs\Files;
+use simplerest\core\libs\Msg;
+use simplerest\core\libs\Strings;
+use simplerest\core\libs\Url;
+use simplerest\core\libs\VarDump;
 
 class FrontController
 {
@@ -20,7 +21,7 @@ class FrontController
         global $argv;
         global $api_version;
 
-        $config      = config();
+        $config      = Config::get();
         $middlewares = include CONFIG_PATH . 'middlewares.php';
         
         $res = Response::getInstance();    

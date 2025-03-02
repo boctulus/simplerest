@@ -99,7 +99,7 @@ class VarDump
 		}	
 
 		if ($msg_at_top && !empty($msg)){
-			$cfg = config();
+			$cfg = Config::get();
 			$ini = $cfg['var_dump_separators']['start'] ?? '--| ';
 			$end = $cfg['var_dump_separators']['end']   ?? '';
 
@@ -124,7 +124,7 @@ class VarDump
 		}	
 
 		if (!$msg_at_top && !empty($msg)){
-			$cfg = config();
+			$cfg = Config::get();
 			$ini = $cfg['var_dump_separators']['start'] ?? '--| ';
 			$end = $cfg['var_dump_separators']['end']   ?? '';
 
@@ -151,11 +151,21 @@ class VarDump
 		}
 
 		if (static::$render_trace){
-			$trace = debug_backtrace();
-			$file  = debug_backtrace()[count($trace)-1]['file'] ?? '?';
-			$line  = debug_backtrace()[count($trace)-1]['line'] ?? '?';
+			$trace_ay = debug_backtrace();
 
-			static::export("{$file}:{$line}", "LOCATION", true, $msg_at_top);
+			$locations = [];
+			foreach ($trace_ay as $ix => $trace){				
+				$fn   = $trace['function'] ?? 'fn?';
+				$file = $trace['file'] ?? 'file?';
+				$line = $trace['line'] ?? 'line?';
+				
+				if ($fn == 'dd' && (strpos($file, 'VarDump.php') === false) && (strpos($file, 'debug.php') === false)){			
+					// var_dump($trace['file']);		
+					$locations[] = "{$file}:{$line}";				
+				}
+			}
+
+			static::export($locations, "TRACE", true, $msg_at_top);
 		}
 
 		if (static::$log){

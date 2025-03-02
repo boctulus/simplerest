@@ -11,7 +11,7 @@ return [
 	'app_url'   => Env::get('APP_URL'),
 	'app_name'  => Env::get('APP_NAME'),
 	'app_env'   => Env::get('APP_ENV'),
-	'namespace' => 'simplerest',	// es usado ?
+	'namespace' => 'simplerest',	
 
 	/*
 		For a sub-foder in /var/www/html just set as

@@ -10,15 +10,18 @@
 require_once __DIR__ . '/app.php';
 
 use simplerest\core\Route;
+use simplerest\core\libs\Config;
 use simplerest\core\FrontController;
 
-if (config()['router']){        
+$cfg = Config::get();
+
+if ($cfg['router']){        
     include __DIR__ . '/config/routes.php';
     Route::compile();
     Route::resolve();
 } 
 
-if (config()['front_controller']){        
+if ($cfg['front_controller']){        
     FrontController::resolve();
 } 
 
