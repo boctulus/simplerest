@@ -13,7 +13,7 @@ class WebController extends Controller
 
     protected static $default_template = 'templates/tpl_basic.php';
 
-    function __view(string $view_path, array $vars_to_be_passed = null, ?string $layout = null, int $expiration_time = 0){
+    function __view(string $view_path, array $vars_to_be_passed = [], ?string $layout = null, int $expiration_time = 0){
         global $ctrl;
 
         $_ctrl  = explode('\\',get_class($this));

@@ -9,6 +9,7 @@ use simplerest\core\libs\Factory;
 use simplerest\core\libs\Paginator;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Validator;
+use simplerest\core\libs\VarDump;
 use simplerest\core\Model;
 use simplerest\core\Request;
 use simplerest\core\Response;
@@ -3996,6 +3997,36 @@ class ModelController extends Controller
         );
     }    
 
+
+    ////////////////////////// INSERTS ///////////////////////////
+
+    function test_insert_struct(){
+        DB::getConnection('edu');
+
+        $data = [
+            'title' => 'Mathematics for Phisicists',
+            'categories' => [
+                'name' => 'Mathematics'
+            ],
+            'users' => [
+                ['name' => 'Bob Smith', 'role' => 'professor'],
+                ['name' => 'Diana White', 'role' => 'student']
+            ]
+        ];
+
+        VarDump::showTrace();
+        
+        $course_id = DB::table('courses')
+            ->connectTo(['categories', 'users'])
+            ->dontExec() //
+            ->insertStruct($data); 
+
+        dd(
+            DB::getLog()
+        );
+
+        // dd($course_id);
+    }
 
     
 

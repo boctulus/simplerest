@@ -3,21 +3,19 @@
 namespace simplerest\core\api\v1;
 
 use simplerest\controllers\MyApiController; 
-use simplerest\core\interfaces\IAuth;
 use simplerest\core\libs\Factory;
-use simplerest\core\Acl;
 use simplerest\core\libs\DB;
-use simplerest\libs\Debug;
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Validator;
+use simplerest\core\libs\Config;
 use simplerest\core\exceptions\InvalidValidationException;
 
 class MySelf extends MyApiController 
 {  
+    protected $is_active;
+    protected $__id;
+
     function __construct() 
     { 
-        $config = config();
+        $config = Config::get();
         $this->table_name = $config['users_table'];
 
         parent::__construct();

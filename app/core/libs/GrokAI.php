@@ -15,7 +15,7 @@ class GrokAI implements AIChat
     public $client;
 
     function __construct($api_key = null) {
-        $this->api_key = $api_key ?? config()['xai_api_key'] ?? die('xai_api_key is required');
+        $this->api_key = $api_key ?? Config::get()['xai_api_key'] ?? die('xai_api_key is required');
 
         $this->client = ApiClient::instance()
         ->setHeaders([

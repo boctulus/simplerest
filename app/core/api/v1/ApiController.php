@@ -261,7 +261,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
      *
      * @return void
      */
-    function head(int $id = null) {
+    function head($id = null) {
         if (method_exists($this,'get')){
             ob_start();
             $this->get($id);
@@ -1108,10 +1108,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         try {
             $this->instance->connect();
 
-            $acl = acl();
-
             // event hook             
             $this->onPostingBeforeCheck($id, $data);
+
+            $acl = acl();
            
             if (!$acl->hasSpecialPermission('fill_all')){          
                 if ($this->instance->inSchema([$this->instance->createdBy()])){
@@ -1196,7 +1196,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             // Files::dump($this->instance->getRules(), ETC_PATH . '_rules.txt');
                
             if ($ok !== true){
-                // error(trans('Data validation error'), 400, $validator->getErrors());
+                error(trans('Data validation error'), 400, $validator->getErrors());
             }  
 
             if (!empty($this->folder)) {

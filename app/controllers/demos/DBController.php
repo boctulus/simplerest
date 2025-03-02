@@ -2,12 +2,13 @@
 
 namespace simplerest\controllers\demos;
 
+use simplerest\core\controllers\Controller;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Factory;
+use simplerest\core\libs\Schema;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\Factory;
-use simplerest\core\controllers\Controller;
 
 class DBController extends Controller
 {
@@ -31,7 +32,7 @@ class DBController extends Controller
 
     function test_conn2()
     {
-        config()['db_connection_default'] = 'db2';
+        Config::get()['db_connection_default'] = 'db2';
 
         $sc = new Schema('cables');
 

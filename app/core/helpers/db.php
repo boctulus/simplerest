@@ -7,6 +7,59 @@ use simplerest\core\libs\Arrays;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
 use simplerest\core\exceptions\SqlException;
+use simplerest\core\libs\Config;
+
+/*
+    Ejecuta callback bajo una conexion a base de datos
+
+    @param $new_connection_id
+    @param $callback
+*/
+function withConnection($new_connection_id, $callback, ...$params) {
+    $conn_id = DB::getCurrentConnectionId();
+    $restore_conn = false;
+    
+    if ($conn_id === null || $conn_id != $new_connection_id) {  
+        DB::setConnection($new_connection_id); 
+
+        if ($conn_id != null){
+            $restore_conn = true;
+        }
+    }
+    
+    try {
+        $ret = $callback(...$params);
+    } finally {
+        if ($restore_conn) {
+            DB::setConnection($conn_id);
+        }
+
+        return $ret ?? null;
+    }
+}
+
+function withDefaultConnection($callback, ...$params) {
+    $conn_id = DB::getCurrentConnectionId();
+    $restore_conn = false;
+
+    if ($conn_id != DB::getDefaultConnectionId()) {  
+        DB::getDefaultConnection(); 
+
+        if ($conn_id != null){
+            $restore_conn = true;
+        }
+    }
+    
+    try {
+        $ret = $callback(...$params);
+    } finally {
+        if ($restore_conn) {
+            DB::setConnection($conn_id);
+        }
+
+        return $ret ?? null;
+    }
+}
 
 function log_queries()
 {
@@ -50,7 +103,7 @@ function get_default_connection_id(){
 
 function get_default_database_name(){
     $def_con = get_default_connection_id();
-    return config()['db_connections'][$def_con]['db_name'];
+    return Config::get()['db_connections'][$def_con]['db_name'];
 }
 
 function get_model_instance(string $model_name, $fetch_mode = 'ASSOC', bool $reuse = false){
@@ -85,7 +138,7 @@ function get_api_name($resource_name, $api_ver = null){
         $api_version = 'v'.$api_ver;
     }
 
-    if (!Strings::startsWith('\\simplerest\\',$resource_name)){
+    if (!Strings::startsWith('\\'. Config::get('namespace') . '\\',$resource_name)){
         $api = get_api_namespace($resource_name);
     } else {
         $api = $resource_name;
@@ -290,7 +343,7 @@ function table(string $tb_name) : MyModel {
 }
 
 function get_users_table(){
-    $users_table = config()['users_table'] ?? null;
+    $users_table = Config::get()['users_table'] ?? null;
 
     if (empty($users_table)){
         response()->error("users_table in config file is required", 500);
@@ -304,8 +357,8 @@ function get_model_namespace($tenant_id = null){
         $tenant_id = DB::getCurrentConnectionId(true);
     }   
 
-    if ($tenant_id == config()['db_connection_default']){
-        $extra = config()['db_connection_default'] . '\\';
+    if ($tenant_id == Config::get()['db_connection_default']){
+        $extra = Config::get()['db_connection_default'] . '\\';
     } else {
         $group = DB::getTenantGroupName($tenant_id);
 
@@ -324,8 +377,8 @@ function get_model_name($table_name, $tenant_id = null){
         $tenant_id = DB::getCurrentConnectionId(true);
     }   
 
-    if ($tenant_id == config()['db_connection_default']){
-        $extra = config()['db_connection_default'] . '\\';
+    if ($tenant_id == Config::get()['db_connection_default']){
+        $extra = Config::get()['db_connection_default'] . '\\';
     } else {
         $group = DB::getTenantGroupName($tenant_id);
 
@@ -373,8 +426,8 @@ function get_schema_path($table_name = null, $tenant_id = null){
         return $schema_paths[$tenant_id][$_table_name];
     }
 
-    if ($tenant_id == config()['db_connection_default']){
-        $extra = config()['db_connection_default'] . '/';
+    if ($tenant_id == Config::get()['db_connection_default']){
+        $extra = Config::get()['db_connection_default'] . '/';
     } else {
         $group = DB::getTenantGroupName($tenant_id);
 
@@ -400,8 +453,10 @@ function get_schema_name($table_name, $tenant_id = null){
         $tenant_id = DB::getCurrentConnectionId();
     }   
 
-    if ($tenant_id == config()['db_connection_default']){
-        $extra = config()['db_connection_default'] . '\\';
+    $defcon = Config::get()['db_connection_default'];
+
+    if ($tenant_id == $defcon){
+        $extra = $defcon . '\\';
     } else {
         $group = DB::getTenantGroupName($tenant_id);
 
@@ -588,7 +643,7 @@ function is_mul_rel(string $t1, string $t2, ?string $relation_str = null ,?strin
 function get_relations(?string $tenant_id = null, ?string $table = null){
     static $rels;
 
-    $def_conn_id = config()['db_connection_default'];
+    $def_conn_id = Config::get()['db_connection_default'];
 
     $key = ($tenant_id ?? $def_conn_id) . '.' . $table;
 
@@ -1055,11 +1110,13 @@ function get_fks(string $t1, string $t2, ?string $tenant_id = null){
 function tb_prefix() {
     $conn_id = DB::getCurrentConnectionId();
 
+    $cfg = Config::get();
+
     if ($conn_id == null){
-        return config()['db_connections']['main']['tb_prefix'] ?? null;
+        return $cfg['db_connections']['main']['tb_prefix'] ?? null;
     }
 
-    return config()['db_connections'][$conn_id]['tb_prefix'] ?? null;
+    return $cfg['db_connections'][$conn_id]['tb_prefix'] ?? null;
 }
 
 function sql_formatter(string $sql, ...$options){

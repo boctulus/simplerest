@@ -14,13 +14,15 @@ class JobsSchema implements ISchema
 
 			'id_name'			=> 'id',
 
-			'fields'			=> ['id', 'queue', 'object', 'params', 'created_at'],
+			'fields'			=> ['id', 'class', 'queue', 'object', 'params', 'taken', 'created_at'],
 
 			'attr_types'		=> [
 				'id' => 'INT',
+				'class' => 'STR',
 				'queue' => 'STR',
 				'object' => 'STR',
 				'params' => 'STR',
+				'taken' => 'INT',
 				'created_at' => 'STR'
 			],
 
@@ -32,17 +34,19 @@ class JobsSchema implements ISchema
 
 			'autoincrement' 	=> 'id',
 
-			'nullable'			=> ['id'],
+			'nullable'			=> ['id', 'taken'],
 
-			'required'			=> ['queue', 'object', 'params', 'created_at'],
+			'required'			=> ['class', 'queue', 'object', 'params', 'created_at'],
 
 			'uniques'			=> [],
 
 			'rules' 			=> [
 				'id' => ['type' => 'int'],
+				'class' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'queue' => ['type' => 'str', 'max' => 60, 'required' => true],
 				'object' => ['type' => 'str', 'required' => true],
 				'params' => ['type' => 'str', 'required' => true],
+				'taken' => ['type' => 'bool'],
 				'created_at' => ['type' => 'datetime', 'required' => true]
 			],
 

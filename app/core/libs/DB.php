@@ -58,10 +58,10 @@ class DB
 	public static function setConnection(string $id)
 	{
 		if ($id === null){
-			throw new \InvalidArgumentException("Connection identifier can not be NULL");
+			throw new \InvalidArgumentException("Empty connection identifier");
 		}
 
-		if (!isset(config()['db_connections'][$id])){
+		if (!isset(Config::get()['db_connections'][$id])){
 			throw new \InvalidArgumentException("Unregistered connection identifier for '$id'");
 		}
 
@@ -69,7 +69,7 @@ class DB
 	}
 
     public static function getConnection(string $conn_id = null) {	
-		$config = config();
+		$config = Config::get();
 
 		$cc = count($config['db_connections']);
 		
@@ -84,7 +84,7 @@ class DB
 				if ($cc == 1){
 					static::$current_id_conn = array_keys($config['db_connections'])[0];
 				} elseif (!empty($config['db_connection_default'])) {
-					static::$current_id_conn = config()['db_connection_default'];
+					static::$current_id_conn = Config::get()['db_connection_default'];
 				} else {	
 					throw new \InvalidArgumentException('No database selected');
 				}	
@@ -204,7 +204,7 @@ class DB
 		} catch (\PDOException $e) {
 			$msg = 'PDO Exception: '. $e->getMessage();
 
-			if (config()['debug']){
+			if (Config::get()['debug']){
 				$conn_arr = $config['db_connections'][static::$current_id_conn];
 				$msg .= ". Connection = ". var_export($conn_arr, true);
 			}
@@ -218,11 +218,11 @@ class DB
 	}
 
 	static function getDefaultConnectionId(){
-		return config()['db_connection_default'];
+		return Config::get()['db_connection_default'];
 	}
 	
 	static function getDefaultConnection(){
-		return self::getConnection(config()['db_connection_default']);
+		return self::getConnection(Config::get()['db_connection_default']);
 	}
 
 	public static function isDefaultConnection(){
@@ -252,7 +252,7 @@ class DB
 	}
 
 	static function getConnectionConfig(){
-		return config()['db_connections'];
+		return Config::get()['db_connections'];
 	}
 
 	static function closeAllConnections(){
@@ -270,7 +270,7 @@ class DB
 
 	
 	public static function getAllConnectionIds(){
-		return array_keys(config()['db_connections']);
+		return array_keys(Config::get()['db_connections']);
 	}
 
 	// alias
@@ -291,7 +291,7 @@ class DB
 			return null;
 		}
 
-		return config()['db_connections'][static::$current_id_conn];
+		return Config::get()['db_connections'][static::$current_id_conn];
 	}
 
 	public static function database(){
@@ -425,11 +425,11 @@ class DB
 	}
 	
 	static function getTenantGroupNames() : Array {
-		if (!isset(config()['tentant_groups'])){
+		if (!isset(Config::get()['tentant_groups'])){
 			throw new \Exception("File config.php is outdated. Lacks 'tentant_groups' section");
 		}
 
-		return array_keys(config()['tentant_groups']);
+		return array_keys(Config::get()['tentant_groups']);
 	}
 
 	static function getTenantGroupName(?string $tenant_id = null) : ?string {
@@ -447,11 +447,16 @@ class DB
 			return $gns[$tenant_id];
 		}
 
-		if (!isset(config()['tentant_groups'])){
+		if (!isset(Config::get()['tentant_groups'])){
 			throw new \Exception("File config.php is outdated. Lacks 'tentant_groups' section");
 		}
 
-        foreach (config()['tentant_groups'] as $group_name => $tg){
+		// Sino se define "tenant_group", uso el nombre de la conexion
+		if (!isset(Config::get()['tentant_groups'][$tenant_id])){
+			return $tenant_id;
+		}
+
+        foreach (Config::get()['tentant_groups'] as $group_name => $tg){
             foreach ($tg as $conn_pattern){
                 if (preg_match("/$conn_pattern/", $tenant_id)){
                     $gns[$tenant_id] = $group_name;

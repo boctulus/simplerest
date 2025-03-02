@@ -248,7 +248,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         with font-awesome or any other icon font library -->
 
                         <?php
-                            $pg_grps= config()['admin_menu_linked_pages'] ?? null;
+                            $pg_grps= Config::get()['admin_menu_linked_pages'] ?? null;
 
                             if ($pg_grps){
                                 echo tag('navItemSideMenu')->items($pg_grps)

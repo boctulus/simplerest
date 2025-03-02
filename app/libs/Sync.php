@@ -2,8 +2,9 @@
 
 namespace simplerest\libs;
 
-use simplerest\core\libs\Files;
 use simplerest\core\interfaces\IProcessable;
+use simplerest\core\libs\Config;
+use simplerest\core\libs\Files;
 
 class Sync implements IProcessable
 {
@@ -35,7 +36,7 @@ class Sync implements IProcessable
         $processed = 0;
         $updated   = 0;
 
-        $sep = config()['field_separator'] ?? ';';
+        $sep = Config::get()['field_separator'] ?? ';';
 
         Files::processCSV(static::$path, $sep, false, function($p) use ($query_sku) { 
             global $total, $processed, $updated; 

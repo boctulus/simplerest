@@ -306,7 +306,7 @@ class Url
     }
 
     static function httpProtocol(){
-        $config = config();
+        $config = Config::get();
 
         if (isset($config['https']) && $config['https'] != null){
             $is_ssl = ($config['https'] && !strtolower($config['https']) == 'off');
@@ -611,7 +611,7 @@ class Url
         static $cachedHostnames = [];
      
         if (is_cli() && empty($url)){
-            return config()['app_url'];
+            return Config::get()['app_url'];
         }
 
         if (is_null($url)){

@@ -92,7 +92,7 @@ function view(string $view_path, ?array $vars  = null, ?string $layout = null, i
     A diferencia de view(), no requiere de una vista
 */
 function render($content = null, ?string $layout = null, ?array $vars  = null){
-    $config = config();
+    $config = Config::get();
 
     if (empty($layout)){
         $layout = $config['template'];

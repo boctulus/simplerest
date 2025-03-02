@@ -2,11 +2,13 @@
 
 namespace simplerest\core;
 
+use simplerest\core\exceptions\SchemaException;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\DB;
 use simplerest\core\traits\ExceptionHandler;
+use simplerest\core\traits\InsertWithSubResourcesTrait;
+// use simplerest\core\traits\RelationshipTrait;
 use simplerest\core\traits\QueryBuilderTrait;
-use simplerest\core\exceptions\SchemaException;
-use simplerest\core\traits\RelationshipTrait;
 use simplerest\core\traits\SubResourceHandler;
 
 class Model 
@@ -14,12 +16,16 @@ class Model
 	use ExceptionHandler;
 	use QueryBuilderTrait;
 	use SubResourceHandler;	
-	use RelationshipTrait;
+	// use RelationshipTrait;
+	use InsertWithSubResourcesTrait;
 	
+	public    $exec = true;
 	protected $schema;
+	
 
 	function __construct(bool $connect = false, $schema = null, bool $load_config = true)
 	{
+		$this->exec = true;
 		$this->boot();
 
 		$this->prefix = DB::getTablePrefix();
@@ -38,7 +44,7 @@ class Model
 		}
 
 		if ($load_config){
-			$this->config = config();
+			$this->config = Config::get();
 
 			if ($this->config['error_handling']) {
 				set_exception_handler([$this, 'exception_handler']);

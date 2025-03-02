@@ -5,6 +5,7 @@ namespace simplerest\core\libs;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\XML;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\FileCache;
@@ -29,7 +30,7 @@ class GoogleDrive
         Podria trabajar tambien on OAuth
     */
 	protected function __getClient($api_key = null){
-		$cfg = config();
+		$cfg = Config::get();
 
         $google_console_api_key = $this->api_key ?? $api_key ?? $cfg['google_console_api_key'];
 

@@ -24,8 +24,8 @@ class SignatureTestController extends Controller
     public function __construct() {
         parent::__construct();
 
-        $sandbox = true; //
-        $this->sdk = new HaulmerSignatureSDK('cebc90896c0445599e6d2269b9f89c8f', $sandbox);
+        $sandbox = false; //
+        $this->sdk = new HaulmerSignatureSDK('b61b4586095f460994fa0582785abab2', $sandbox);
 
         if ($sandbox){
             $this->sdk->setCache(48 * 3600);

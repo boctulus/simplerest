@@ -1,7 +1,7 @@
 <?php
 
 use simplerest\core\interfaces\ICommand;
-use simplerest\core\libs\Cache;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Files;
@@ -55,7 +55,7 @@ class MakeCommand implements ICommand
             Factory::response()->send("Error: Make can only be excecuted in console", 403);
         }
 
-        $this->namespace = config()['namespace'];
+        $this->namespace = Config::get()['namespace'];
 
         if (file_exists(APP_PATH. '.make_ignore')){
             $this->excluded_files = preg_split('/\R/', file_get_contents(APP_PATH. '.make_ignore'));
@@ -445,12 +445,12 @@ class MakeCommand implements ICommand
             }
         }
 
-        if (!isset(config()['acl_file'])){
+        if (!isset(Config::get()['acl_file'])){
             throw new \Exception("ACL filename not defined");
         }
 
-        if (file_exists(config()['acl_file'])){
-            unlink(config()['acl_file']);
+        if (file_exists(Config::get()['acl_file'])){
+            unlink(Config::get()['acl_file']);
         }
 
         if ($force){
@@ -1153,7 +1153,7 @@ class MakeCommand implements ICommand
         DB::getConnection();
         $current = DB::getCurrentConnectionId(true);
 
-        if ($current == config()['db_connection_default']){
+        if ($current == Config::get()['db_connection_default']){
             $file = str_replace('namespace simplerest\schemas', 'namespace simplerest\schemas' . "\\$current", $file);
 
             Files::mkDir(SCHEMA_PATH . $current);
@@ -1548,7 +1548,7 @@ class MakeCommand implements ICommand
         $current = DB::getCurrentConnectionId(true);
         
         $folder = '';
-        if ($current == config()['db_connection_default']){
+        if ($current == Config::get()['db_connection_default']){
             $file = str_replace('namespace simplerest\models', 'namespace simplerest\models' . "\\$current", $file);
 
             Files::mkDir(MODELS_PATH . $current);

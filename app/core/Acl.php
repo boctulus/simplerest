@@ -3,6 +3,7 @@
 namespace simplerest\core;
 
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Files;
 use simplerest\core\interfaces\IAcl;
 
@@ -43,7 +44,7 @@ abstract class Acl implements IAcl
         }
     
         Files::writableOrFail(SECURITY_PATH);
-        Files::writableOrFail(SECURITY_PATH . config()['acl_file']);
+        Files::writableOrFail(SECURITY_PATH . Config::get()['acl_file']);
     }
 
     public function getEveryPossibleRole(){

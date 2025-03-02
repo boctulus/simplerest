@@ -188,4 +188,52 @@ trait SubResourceHandler
         $ret[$cache_key] = $rows;
         return $rows;
     }    
+
+    ///
+
+
+    function getInsertionOrder(array $tables, ?string $tenant_id = null): array {
+        $dependencies = [];
+        
+        // Construir las dependencias
+        foreach ($tables as $table) {
+            $schema = get_schema($table, $tenant_id);
+            $fks = $schema['fks'];
+            $deps = [];
+        
+            // Identificar tablas referenciadas por las FKs
+            $rels = $schema['relationships'] ?? [];
+            foreach ($rels as $related_table => $relations) {
+                foreach ($relations as $relation) {
+                    // Extraer la columna FK de $relation[1] (ej. 'courses.category_id' -> 'category_id')
+                    list($fk_table, $fk_column) = explode('.', $relation[1]);
+                    // Verificar que la FK pertenece a la tabla actual y está en $fks
+                    if ($fk_table === $table && in_array($fk_column, $fks) && in_array($related_table, $tables)) {
+                        $deps[] = $related_table;
+                    }
+                }
+            }
+            $dependencies[$table] = array_unique($deps);
+        }
+        
+        // Realizar ordenamiento topológico
+        $order = [];
+        $visited = [];
+        
+        function topologicalSort($table, &$dependencies, &$order, &$visited) {
+            if (isset($visited[$table])) return;
+            $visited[$table] = true;
+        
+            foreach ($dependencies[$table] ?? [] as $dep) {
+                topologicalSort($dep, $dependencies, $order, $visited);
+            }
+            $order[] = $table;
+        }
+        
+        foreach ($tables as $table) {
+            topologicalSort($table, $dependencies, $order, $visited);
+        }
+        
+        return $order;
+    }
 }

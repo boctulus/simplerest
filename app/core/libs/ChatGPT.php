@@ -37,7 +37,7 @@ class ChatGPT implements AIChat
     const EMBEDDINGS  = 40;
 
     function __construct($api_key = null) {
-        $this->api_key = $api_key ?? config()['openai_api_key'] ?? die('openai_api_key is required');
+        $this->api_key = $api_key ?? Config::get()['openai_api_key'] ?? die('openai_api_key is required');
 
         $this->client = ApiClient::instance()
         ->setHeaders(
