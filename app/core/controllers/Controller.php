@@ -3,7 +3,7 @@
 namespace simplerest\core\controllers;
 
 use simplerest\core\libs\DB;
-use simplerest\core\libs\StdOut;
+use simplerest\core\libs\Config;
 use simplerest\core\traits\ExceptionHandler;
 
 abstract class Controller
@@ -16,7 +16,7 @@ abstract class Controller
     protected $output_format = 'auto'; // Valores posibles: 'auto', 'json', 'pretty_json', 'dd'
     
     function __construct() {
-        $this->config = config();
+        $this->config = Config::get();
 
         if ($this->config['error_handling']) {
             set_exception_handler([$this, 'exception_handler']);

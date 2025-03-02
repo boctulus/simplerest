@@ -2,9 +2,10 @@
 
 namespace simplerest\core;
 
+use simplerest\core\libs\Config;
 use simplerest\core\libs\DB;
-use simplerest\core\libs\Url;
 use simplerest\core\libs\Strings;
+use simplerest\core\libs\Url;
 
 class Response
 {
@@ -24,7 +25,7 @@ class Response
 
 
     protected function __construct() { 
-        static::$config = config();
+        static::$config = Config::get();
         static::$pretty = static::$config['pretty'];
     }
 
@@ -144,7 +145,7 @@ class Response
     }
 
     function setPaginatorParams($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
-        $formatter = config()['paginator']['formatter'];
+        $formatter = Config::get()['paginator']['formatter'];
        
         static::$to_be_encoded    = true; 
 

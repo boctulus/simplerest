@@ -1,10 +1,22 @@
 TODO SimpleRest
 ===============
 
-- TERMINAR el where() cualificado 
+- Implemenar insert() a nivel de Model con SubRecursos
 
-http://simplerest.lan/prompt_generator#chat-324
-https://claude.ai/chat/e0bfc5c7-e994-439f-9290-76ce561f0b40
+http://simplerest.lan/prompt_generator#chat-427
+
+http://simplerest.lan/demos/model/test_insert_struct
+
+
+- Diferencias ?
+
+  if ($this->executionMode != self::EXECUTION_MODE_SIMULATE) 
+  
+  vs.
+
+  if ($this->exec)
+
+- Decidir que otras clases Exception crear y la jerarquia
 
 - Implementar el "Adapter Pattern" (Patrón Adaptador) para casos como el "inflector" (pluralizer / singularizer) 
 
@@ -12,7 +24,7 @@ https://chat.deepseek.com/a/chat/s/8a543c0b-1e20-4771-a82b-035bf2dd506b
 https://claude.ai/chat/f89ff1ae-1995-4b52-bdb1-464481a5d40e
 http://simplerest.lan/prompt_generator#chat-338
 
-En mi framework SimplRest quisiera evitar acoplamiento a paquetes especificos de composer.
+En mi framework SimpleRest quisiera evitar acoplamiento a paquetes especificos de composer.
 
 Ej:
 

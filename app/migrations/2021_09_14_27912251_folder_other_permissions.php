@@ -1,7 +1,7 @@
 <?php
 
 use simplerest\core\interfaces\IMigration;
-use simplerest\core\libs\Factory;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Schema;
 
 class FolderOtherPermissions implements IMigration
@@ -26,7 +26,7 @@ class FolderOtherPermissions implements IMigration
         ->bool('w')
         ->datetime('created_at');
 
-        $users_table = config()['users_table'];
+        $users_table = Config::get()['users_table'];
         $users_pri   = get_id_name($users_table);
 
         $sc

@@ -2,10 +2,11 @@
 
 namespace simplerest\libs\scrapers;
 
-use simplerest\core\libs\JsonLd;
-use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
+use simplerest\core\libs\Config;
+use simplerest\core\libs\JsonLd;
 use simplerest\core\libs\ProductScraper;
+use simplerest\core\libs\Strings;
 use simplerest\core\libs\Url;
 
 class GiglioScraper /* extends ProductScraper */
@@ -35,7 +36,7 @@ class GiglioScraper /* extends ProductScraper */
         Debe ajustarse en cada caso
     */
     static function getClient($url = null, $method = null, $exp_time = 21600){
-        $cfg  	  = config();
+        $cfg  	  = Config::get();
 
         $exp_time = $cfg['exp_time'] ?? 0;
 
@@ -1020,7 +1021,7 @@ class GiglioScraper /* extends ProductScraper */
         }
 
         
-        set_transient('catego_list', $arr, config()['categor_exp_time']);
+        set_transient('catego_list', $arr, Config::get()['categor_exp_time']);
 
         return $arr;
     }

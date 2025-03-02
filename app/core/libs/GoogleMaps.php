@@ -9,7 +9,7 @@ class GoogleMaps
     public function __construct(?string $api_key = null)
     {
         if ($api_key === null){
-            $api_key = config()['google_maps_api_key'];
+            $api_key = Config::get()['google_maps_api_key'];
         } 
 
         $this->api_key = $api_key;

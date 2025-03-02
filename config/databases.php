@@ -72,6 +72,21 @@ return
 			]
 		],
 
+		'complex01' => [
+			'host'		=> env('DB_HOST_EDU', '127.0.0.1'),
+			'port'		=> env('DB_PORT_EDU'),
+			'driver' 	=> env('DB_CONNECTION_EDU'),
+			'db_name' 	=> 'test_complex_db01',
+			'user'		=> env('DB_USERNAME_EDU'), 
+			'pass'		=> env('DB_PASSWORD_EDU'),
+			'charset'	=> 'utf8',
+			//'schema'	=> 'test_complex_db01',  
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => false
+			]
+		],
+
 		// 'woo3' => [
 		// 	'host'		=> env('DB_HOST_WOO3', '127.0.0.1'),
 		// 	'port'		=> env('DB_PORT_WOO3'),
@@ -170,22 +185,15 @@ return
 	'db_connection_default' => 'main',
 
     'tentant_groups' => [
-		'relmotor' => [
-			'relmotor'
-		],
-
-		'laravelshopify' => [
-			'laravelshopify'
-		],
+		// 'companies' => [
+		// 	'company_db-[0-9]+',			
+		// 	'company_testing'
+		// ],
 
         // 'legion' => [
         //     'db_[0-9]+',
         //     'db_legion',
         //     'db_flor'
 		// ],
-
-		'edu' => [
-			'edu'
-		],
     ], 
 ];

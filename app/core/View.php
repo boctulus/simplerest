@@ -4,7 +4,7 @@ namespace simplerest\core;
 
 use simplerest\core\libs\Cache;
 use simplerest\core\libs\Files;
-use simplerest\core\libs\Logger;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\FileCache;
 use simplerest\core\traits\ExceptionHandler;
@@ -23,7 +23,7 @@ class View
 
     function __construct(string $view_path, array $vars  = null, ?string $layout = null, int $expiration_time = 0)
     {
-		$this->config = config();
+		$this->config = Config::get();
 
 		if ($this->config['error_handling']) {
             set_exception_handler([$this, 'exception_handler']);

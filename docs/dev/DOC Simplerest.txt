@@ -2100,7 +2100,7 @@ producira un resultado "aplanado" similar a:
 		[1] => Array
 			(
 				[id] => 3
-				[title] => Calculus I
+				[title] => Calculus Ie
 				[active] => 1
 				[category_id] => 2
 				[professor_id] => 2
@@ -7925,6 +7925,17 @@ El comando "migrations" tiene una ayuda que es invocada cuando no se pasan pará
 
 El framework tiene implementación de multitenencia a varios niveles: tablas, bases de datos y "grupos" de bases de datos.
 
+Los "tenant groups" son arreglos de nombres de bases de datos que comparten el mismo schema. Aceptan expresiones regulares y se definen dentro de config/databases.php
+
+Ej:
+
+	'tentant_groups' => [
+		'companies' => [
+			'company_db-[0-9]+',			
+			'company_testing'
+		],
+    ], 
+
 El método DB::getConnection() permite especificar opcionalmente el identificador de la conexión a base de datos a la que nos queremos conectar y la clase Model acepta una conexión así que es posible hacer lo siguiente:
 
 Ej:
@@ -7964,7 +7975,7 @@ o
 	$m = DB::table('cables');
 	dd($m->get());
 
-Ej. con migraciones:
+Conexion explicita dentro de archivo de migraciones:
 
 	DB::getConnection('db2');
 
@@ -7981,7 +7992,6 @@ Para generar el archivo de migración anterior (las primeras dos líneas) se pue
 
 	php com make migration creacion_tabla_cables_bla_bla --to=db2 --table=cables
 
-
 Nota:
 
 Es importante notar que al hacer uso de config() se accede a una versión en caché del archivo config.php y éste helper es usado internamente por SimpleRest por lo cual lo siguiente *no* funcionará:
@@ -7991,9 +8001,9 @@ Es importante notar que al hacer uso de config() se accede a una versión en cac
 
 De hecho si se hiciera un dd() o var_dump() de config() antes y después de intentar el cambio se verá que nada ha cambiado.
 
-/*
-	Incorrecto
-*/
+	/*
+		Incorrecto
+	*/
 
 	config()['db_connection_default'] = 'db2';
 	DB::getDefaultConnection();
@@ -8001,13 +8011,29 @@ De hecho si se hiciera un dd() o var_dump() de config() antes y después de inte
 	// no se verá reflejado cambio alguno
 	dd(DB::getCurrentConnectionId());  
 
-/*
-	Correcto
-*/
+	/*
+		Correcto
+	*/
 
 	DB::setConnection('db2');
 	dd(DB::getCurrentConnectionId());
 
+
+Es cambiar facilmente y de forma temporal de conexion para ejecutar un bloque con los siguientes helerps:
+
+	withConnection($new_connection_id, $callback, ...$params)
+	
+	withDefaultConnection($callback, ...$params)
+
+Ej:
+
+	withDefaultConnection(function(){
+		$rows = DB::table('{table}')->get();
+
+		// ...
+	});   
+
+	// continua con la conexion anterior si la habia
 
 # fresh
 
@@ -8915,7 +8941,7 @@ PATCH
 	}
 
 
-ACTUALIZACIÓN AL 28-DIC-20202
+ACTUALIZACIÓN AL 28-DIC-2022
 
 Para relaciones 1:n ya es posible recibir registros de sub-recursos con ID + otros campos  (caso C)
 

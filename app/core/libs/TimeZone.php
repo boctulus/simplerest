@@ -24,7 +24,7 @@ class TimeZone
 
     function __construct()
     {
-        $cfg = config();
+        $cfg = Config::get();
         if (isset($cfg['DateTimeZone'])){
             $this->setDefault(Date::getGMTfromTimeZone($cfg['DateTimeZone']));
         }

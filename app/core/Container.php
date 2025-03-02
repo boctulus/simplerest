@@ -9,6 +9,7 @@ namespace simplerest\core;
 */
 
 use simplerest\core\libs\Reflector;
+use simplerest\core\libs\Config;
 
 class Container 
 {

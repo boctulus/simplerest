@@ -17,9 +17,9 @@ class BackgroundProcessSchema implements ISchema
 			'fields'			=> ['id', 'filename', 'pid', 'created_at'],
 
 			'attr_types'		=> [
-				'id'       => 'INT',
+				'id' => 'INT',
 				'filename' => 'STR',
-				'pid'      => 'INT',
+				'pid' => 'INT',
 				'created_at' => 'STR'
 			],
 
@@ -35,7 +35,7 @@ class BackgroundProcessSchema implements ISchema
 
 			'required'			=> ['filename', 'pid', 'created_at'],
 
-			'uniques'			=> ['pid'],
+			'uniques'			=> ['filename', 'pid'],
 
 			'rules' 			=> [
 				'id' => ['type' => 'int'],

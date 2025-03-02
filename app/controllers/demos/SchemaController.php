@@ -19,7 +19,7 @@ class SchemaController extends Controller
     */
     function create_table()
     {
-        //config()['db_connection_default'] = 'db2';
+        //Config::get()['db_connection_default'] = 'db2';
         $sc = (new Schema('facturas'))
 
             ->setEngine('InnoDB')

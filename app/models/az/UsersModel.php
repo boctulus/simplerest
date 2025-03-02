@@ -2,21 +2,31 @@
 
 namespace simplerest\models\az;
 
-use simplerest\models\MyModel;
-use simplerest\core\Model;
 use simplerest\core\libs\ValidationRules;
+use simplerest\core\Model;
+use simplerest\models\MyModel;
+use simplerest\schemas\main\UsersSchema;
 
 /*
 	La ruta depende del nombre de la conexión por defecto o sea será algo como:
 
 	simplerest\schemas\{nombre_conexion_default}\UsersSchema
+
+	Ej:
+
+	use simplerest\schemas\az\UsersSchema;  
 */
-use simplerest\schemas\az\UsersSchema;  
 
 class UsersModel extends Model
  { 	
-	protected $hidden   = [	'password' ];
+	protected $hidden       = [	'password' ];
 	protected $not_fillable = ['confirmed_email', 'is_active'];
+
+	public static $email           = 'email';
+	public static $username        = 'username';
+	public static $password        = 'password';
+	public static $confirmed_email = 'confirmed_email';
+	public static $active          = 'is_active';
 
     function __construct(bool $connect = false){		
 		$this->registerInputMutator('password', function($pass){ 

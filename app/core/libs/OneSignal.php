@@ -8,7 +8,7 @@ class OneSignal
         return (new ApiClient())
         ->setHeaders([             
             'Content-Type: application/json',
-            'Authorization: Basic ' . config()['app_rest_api_key']
+            'Authorization: Basic ' . Config::get()['app_rest_api_key']
         ])->setOptions([
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_HEADER => false
