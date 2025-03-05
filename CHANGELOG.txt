@@ -30,3 +30,4 @@
 [2025-03-05 08:53:03]	0.8.12	OpenFacturaSDK ver 1.0.0 beta
 [2025-03-05 09:20:14]	0.8.12	OpenFacturaSDKMock ver 1.0.0 beta
 [2025-03-05 09:33:43]	0.8.12	DOC OpenFacturaSDK
+[2025-03-05 10:35:13]	0.8.12	Better mock
