@@ -1,8 +1,7 @@
 <?php
 
-namespace __NAMESPACE;
+namespace __NAMESPACE__;
 
 interface __NAME__ {
-    // methods
-
+    // __METHODS__
 }

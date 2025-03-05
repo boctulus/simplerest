@@ -2,7 +2,9 @@
 
 namespace simplerest\libs;
 
-class OpenFacturaSDKMock
+use simplerest\interfaces\IOpenFactura;
+
+class OpenFacturaSDKMock implements IOpenFactura
 {
     private $apiKey;
     private $base_url;
@@ -303,5 +305,95 @@ class OpenFacturaSDKMock
             "enlace": "https://mock-enlace-autoservicio.com/mock_token",
             "expiracion": "2023-12-31T23:59:59Z"
         }', true);
+    }
+
+    /**
+     * Lista contribuyentes asociados a la organización (hipotético).
+     *
+     * @param array $queryParams Filtros como estado, tipo, etc.
+     * @return array Lista de contribuyentes en formato asociativo
+     */
+    public function listTaxpayers($queryParams = []) {
+        return [
+            [
+                "rut" => "76795561-8",
+                "razonSocial" => "HAULMER SPA",
+                "giro" => "VENTA AL POR MENOR POR CORREO, POR INTERNET Y VIA TELEFONICA",
+                "actividadEconomica" => "479100",
+                "direccion" => "ARTURO PRAT 527   CURICO",
+                "comuna" => "Curicó"
+            ],
+            [
+                "rut" => "76430498-5",
+                "razonSocial" => "HOSTY SPA",
+                "giro" => "EMPRESAS DE SERVICIOS INTEGRALES DE INFORMÁTICA",
+                "actividadEconomica" => "620200",
+                "direccion" => "ARTURO PRAT 527 3 pis OF 1",
+                "comuna" => "Curicó"
+            ]
+        ];
+    }
+
+    /**
+     * Obtiene detalles completos de un documento por su token.
+     *
+     * @param string $token Token del documento
+     * @return array Detalles del documento en formato asociativo
+     */
+    public function getDocumentDetails($token) {
+        return [
+            "token" => $token,
+            "tipoDTE" => 33,
+            "folio" => 12345,
+            "fechaEmision" => "2023-01-01",
+            "rutEmisor" => "76795561-8",
+            "razonSocialEmisor" => "HAULMER SPA",
+            "rutReceptor" => "76430498-5",
+            "razonSocialReceptor" => "HOSTY SPA",
+            "montoTotal" => 10000,
+            "iva" => 1900,
+            "estado" => "ACEPTADO",
+            "detalle" => [
+                [
+                    "item" => "Producto 1",
+                    "cantidad" => 2,
+                    "precio" => 5000,
+                    "descuento" => 0
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Envía un documento por email.
+     *
+     * @param string $token Token del documento
+     * @param array $emailData Datos del email (to, subject, etc.)
+     * @return array Respuesta de éxito en formato asociativo
+     */
+    public function sendDocumentEmail($token, $emailData) {
+        return [
+            "success" => true,
+            "message" => "Documento enviado por email correctamente",
+            "emailDetails" => [
+                "to" => $emailData['to'] ?? "destinatario@ejemplo.com",
+                "subject" => $emailData['subject'] ?? "Documento Electrónico",
+                "sentAt" => date("Y-m-d\TH:i:s\Z")
+            ]
+        ];
+    }
+
+    /**
+     * Verifica el estado de la API.
+     *
+     * @return array Estado de la API en formato asociativo
+     */
+    public function checkApiStatus() {
+        return [
+            "status" => "operativo",
+            "version" => "2.0.0",
+            "uptime" => "99.9%",
+            "lastMaintenance" => "2023-01-01T00:00:00Z"
+        ];
     }
 }
