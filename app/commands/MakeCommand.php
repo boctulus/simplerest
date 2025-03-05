@@ -131,7 +131,7 @@ class MakeCommand implements ICommand
           
         make helper my_helper [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make lib my_lib [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
-        make interface [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
+        make interface [ -- from= ] [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make schema my_table [ --from:{conn_id} ] [--force | -f] [ --unignore | -u ] [ --strict ] [ --remove ]
         make schema all [ --from:{conn_id} ] [ --unignore | -u ] [ --strict ] [ --except={table1,table2,table3} ]
         make model my_table  [--force | -f] [ --unignore | -u ] [ --no-check | --no-verify ] [ --no-schema | -x ] [ --strict ] [ --remove ]
@@ -277,6 +277,15 @@ class MakeCommand implements ICommand
         Ex:
 
         make css_scan --dir="D:\www\woo2\wp-content\plugins\mutawp\assets\css\storefront"
+
+
+        # Interfaces
+
+        make interface SomeClass
+
+        Ex:
+
+        make interface OpenFactura --from=D:\laragon\www\simplerest\app\libs\OpenFacturaSDK.php
 
         # Mixed examples
         
@@ -583,26 +592,137 @@ class MakeCommand implements ICommand
 
     function interface($name, ...$opt) {
         $core = false;
-
-        foreach ($opt as $o){ 
-            if (preg_match('/^(--core|-c)$/', $o)){
+    
+        // Detectar opción --core
+        foreach ($opt as $o) {
+            if (preg_match('/^(--core|-c)$/', $o)) {
                 $core = true;
             }
         }
-
-        if ($core){
+    
+        // Configurar namespace y destino según --core
+        if ($core) {
             $namespace = $this->namespace . '\\core\\interfaces';
             $dest_path = CORE_INTERFACE_PATH;
         } else {
             $namespace = $this->namespace . '\\interfaces';
             $dest_path = INTERFACE_PATH;
         }
-
+    
         $template_path = self::INTERFACE_TEMPLATE;
         $prefix = 'I';
-        $subfix = '';  // Ej: 'Controller'
-
-        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
+        $subfix = '';
+    
+        // Detectar parámetro --from=
+        $fromFile = null;
+        foreach ($opt as $o) {
+            if (strpos($o, '--from=') === 0) {
+                $fromFile = substr($o, 7); // Extraer el path después de '--from='
+                break;
+            }
+        }
+    
+        // Generar código de métodos si se proporciona --from=
+        $methodsCode = '';
+        if ($fromFile !== null) {
+            if (!file_exists($fromFile)) {
+                StdOut::print("Error: El archivo '$fromFile' no existe.\r\n");
+                return;
+            }
+    
+            // Obtener el nombre de la clase del archivo
+            $className = PHPLexicalAnalyzer::getClassNameByFileName($fromFile);
+            if ($className === null) {
+                StdOut::print("Error: No se encontró ninguna clase en el archivo '$fromFile'.\r\n");
+                return;
+            }
+    
+            // Usar Reflector para obtener información de la clase
+            require_once CORE_PATH . 'libs' . DIRECTORY_SEPARATOR . 'Reflector.php';
+            $classInfo = \simplerest\core\libs\Reflector::getClassInfo($className);
+            $methods = $classInfo['methods'];
+    
+            // Generar firmas de métodos públicos no estáticos
+            foreach ($methods as $method) {
+                if ($method['visibility'] !== 'public' || $method['is_static']) {
+                    continue; // Solo métodos públicos no estáticos
+                }
+    
+                $params = [];
+                foreach ($method['parameters'] as $param) {
+                    $paramStr = '';
+                    if ($param['type']) {
+                        $paramStr .= $param['type'] . ' ';
+                    }
+                    $paramStr .= '$' . $param['name'];
+                    if ($param['is_optional'] && $param['has_default']) {
+                        $paramStr .= ' = ' . var_export($param['default_value'], true);
+                    }
+                    $params[] = $paramStr;
+                }
+    
+                $returnType = $method['return_type'] ? ': ' . $method['return_type'] : '';
+                $methodsCode .= "    public function {$method['name']}(" . implode(', ', $params) . ")$returnType;\r\n";
+            }
+        }
+    
+        // Configurar el nombre y el subpath
+        $name = str_replace('/', DIRECTORY_SEPARATOR, $name);
+        if (Strings::endsWith($subfix, $name, false)) {
+            $name = Strings::before($name, $subfix);
+        }
+    
+        $unignore = false;
+        $remove = false;
+        $force = false;
+        $strict = false;
+        $lowercase = false;
+    
+        foreach ($opt as $o) {
+            if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)) {
+                $unignore = true;
+            }
+            if (preg_match('/^(--strict)$/', $o)) {
+                $strict = true;
+            }
+            if (preg_match('/^(--lowercase)$/', $o)) {
+                $lowercase = true;
+            }
+        }
+    
+        $sub_path = '';
+        if (strpos($name, DIRECTORY_SEPARATOR) !== false) {
+            $exp = explode(DIRECTORY_SEPARATOR, $name);
+            $sub = implode(DIRECTORY_SEPARATOR, array_slice($exp, 0, count($exp) - 1));
+            $sub_path = $sub . DIRECTORY_SEPARATOR;
+            $name = $exp[count($exp) - 1];
+            $namespace .= "\\$sub";
+        }
+    
+        $this->setup($name);
+        $fname = (!$lowercase ? $this->camel_case : strtolower($this->snake_case));
+        $filename = $prefix . $fname . $subfix . '.php';
+        $dest_path = $dest_path . $sub_path . $filename;
+    
+        $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
+        $remove = $this->forDeletion($filename, $dest_path, $opt);
+    
+        if ($remove) {
+            $this->write($dest_path, '', $protected, true);
+            return;
+        }
+    
+        // Cargar y personalizar la plantilla
+        $data = file_get_contents($template_path);
+        $data = str_replace('__NAME__', $prefix . $this->camel_case . $subfix, $data);
+        $data = str_replace('__NAMESPACE__', $namespace, $data);
+        $data = str_replace('// __METHODS__', $methodsCode, $data);
+    
+        if ($strict) {
+            $data = str_replace('<?php', '<?php declare(strict_types=1);', $data);
+        }
+    
+        $this->write($dest_path, $data, $protected);
     }
 
     function exception($name, ...$opt) {
