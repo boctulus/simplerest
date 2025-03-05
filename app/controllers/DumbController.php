@@ -2057,7 +2057,7 @@ class DumbController extends Controller
     {
         DB::getDefaultConnection();
 
-        dd(DB::getConnectionConfig::get());
+        dd(DB::getConnectionConfig());
 
         $rows = DB::table('tbl_base_datos')
             ->get();
@@ -11989,6 +11989,26 @@ class DumbController extends Controller
         dd(
            $reduced_code   
         );
+    }
+
+    function test_array_reordering(){
+        // Ejemplo de uso
+        $data = [
+            'title' => 'Mathematics for Phisicists',
+            'categories' => [
+                'name' => 'Mathematics'
+            ],
+            'users' => [
+                ['name' => 'Bob Smith', 'role' => 'professor'],
+                ['name' => 'Diana White', 'role' => 'student']
+            ]
+        ];
+
+        $order = ['users', 'categories'];
+
+        $result = Arrays::reorderArray($data, $order);
+        
+        dd($result);
     }
 
     

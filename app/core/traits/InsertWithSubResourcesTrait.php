@@ -3,6 +3,7 @@
 namespace simplerest\core\traits;
 
 use simplerest\core\exceptions\InvalidValidationException;
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Validator;
@@ -35,7 +36,7 @@ trait InsertWithSubResourcesTrait
 
     function insertStruct($data) 
     {   
-        // dd($data, 'DATA');
+        dd($data, 'DATA');
 
         if (is_string($data)){
             $data = json_decode($data, true);
@@ -45,7 +46,23 @@ trait InsertWithSubResourcesTrait
             throw new \InvalidArgumentException("Invalid data");
         }
 
-        $id = $data[$this->getIdName()] ?? null;
+        // Step 1: Extract table names from structured data
+        $tables = array_keys($data);
+
+        dd($tables, 'TABLES to be ordered');
+
+        // Step 2: Get the correct insertion order
+        $tables_in_order = $this->getInsertionOrder($tables);
+
+        dd($tables_in_order, 'TABLES in order');
+
+        // Step 3: re-arrange array $data
+
+        $data = Arrays::reorderArray($data, $tables_in_order);
+
+        dd($data, 'DATA'); exit; /// 
+
+        // $id = $data[$this->getIdName()] ?? null;
 
         try {
             // event hook             
