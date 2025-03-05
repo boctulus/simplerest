@@ -12580,9 +12580,18 @@ Forma de uso
 	}, true);
 
 
-# Mocking
+# Mocking 
 
-Es posible "mockear" una solicitud http, con lo cual si esta tiene costo por ejemplo y no hay un sandbox,
+$ php com make interface OpenFactura --from=D:\laragon\www\simplerest\app\libs\OpenFacturaSDK.php
+
+Eso nos genera una interfaz con todos los metodos publicos
+
+Luego creamos una clase, por ejemplo OpenFacturaSDKMock y extendemos IOpenFactura (la interfaz) con lo cual sabemos que en principio no nos olvidaremos de mockear ningun metodo.
+
+
+# Mocking con ApiClient
+
+Es posible "mockear" solicitudes http hechas a ApiClient, con lo cual si esta tiene costo por ejemplo y no hay un sandbox,
 podriamos probarla las veces que querramos.
 
 Consideraciones:
