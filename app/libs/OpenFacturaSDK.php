@@ -4,6 +4,7 @@ namespace simplerest\libs;
 
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
+use simplerest\interfaces\IOpenFactura;
 
 /*
     SDK para OpenFactura
@@ -32,7 +33,7 @@ use simplerest\core\libs\ApiClient;
     La cabecera se elimina después de la solicitud, evitando interferencias en futuras peticiones.    
 }
 */
-class OpenFacturaSDK 
+class OpenFacturaSDK implements IOpenFactura
 {
     protected $apiClient;
     protected $apiKey;
