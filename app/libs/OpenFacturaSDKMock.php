@@ -112,40 +112,73 @@ class OpenFacturaSDKMock
     }
 
     /**
-     * Devuelve información simulada de la organización (similar a getCompanyInfo).
+     * Devuelve información de la organización asociada a la API key.
      *
-     * @return array Datos de la organización.
+     * @return array Información de la organización en formato JSON decodificado
      */
     public function getOrganization() {
-        return $this->getCompanyInfo();
+        return json_decode('{
+            "rut": "76795561-8",
+            "razonSocial": "HAULMER SPA",
+            "giro": "VENTA AL POR MENOR POR CORREO, POR INTERNET Y VIA TELEFONICA",
+            "actividadEconomica": "479100",
+            "direccion": "ARTURO PRAT 527   CURICO",
+            "comuna": "Curicó",
+            "telefono": "0 0",
+            "codigoSucursal": "81303347"
+        }', true);
     }
 
     /**
-     * Devuelve una lista simulada de documentos emitidos por la organización.
+     * Devuelve una lista de documentos emitidos por la organización.
      *
-     * @param array $queryParams Parámetros de consulta (no usados en el mock).
-     * @return array Lista de documentos.
+     * @param array $queryParams Parámetros de consulta (no usados en el mock)
+     * @return array Lista de documentos en formato JSON decodificado
      */
     public function getOrganizationDocuments($queryParams = []) {
-        return [
-            ['tipoDTE' => 33, 'folio' => 123, 'fechaEmision' => '2023-01-01', 'montoTotal' => 10000],
-            ['tipoDTE' => 34, 'folio' => 124, 'fechaEmision' => '2023-01-02', 'montoTotal' => 20000]
-        ];
+        return json_decode('[
+            {
+                "tipoDTE": 33,
+                "folio": 123,
+                "fechaEmision": "2023-01-01",
+                "montoTotal": 10000,
+                "estado": "ACEPTADO"
+            },
+            {
+                "tipoDTE": 34,
+                "folio": 124,
+                "fechaEmision": "2023-01-02",
+                "montoTotal": 20000,
+                "estado": "ACEPTADO"
+            }
+        ]', true);
     }
 
     /**
-     * Devuelve un registro simulado de compras para un año y mes específicos.
+     * Devuelve el registro de compras para un año y mes específicos.
      *
-     * @param int $year Año.
-     * @param int $month Mes.
-     * @param array $queryParams Parámetros de consulta (no usados en el mock).
-     * @return array Lista de compras.
+     * @param int $year Año del registro
+     * @param int $month Mes del registro
+     * @param array $queryParams Parámetros de consulta (no usados en el mock)
+     * @return array Lista de compras en formato JSON decodificado
      */
     public function getPurchaseRegistry($year, $month, $queryParams = []) {
-        return [
-            ['tipoDTE' => 33, 'folio' => 100, 'fechaEmision' => "$year-$month-01", 'montoTotal' => 5000],
-            ['tipoDTE' => 33, 'folio' => 101, 'fechaEmision' => "$year-$month-15", 'montoTotal' => 7000]
-        ];
+        return json_decode('[
+            {
+                "tipoDTE": 33,
+                "folio": 100,
+                "fechaEmision": "' . sprintf("%04d-%02d-01", $year, $month) . '",
+                "montoTotal": 5000,
+                "proveedor": "Empresa Ejemplo SPA"
+            },
+            {
+                "tipoDTE": 33,
+                "folio": 101,
+                "fechaEmision": "' . sprintf("%04d-%02d-15", $year, $month) . '",
+                "montoTotal": 7000,
+                "proveedor": "Otra Empresa Ltda"
+            }
+        ]', true);
     }
 
     /**
@@ -157,10 +190,22 @@ class OpenFacturaSDKMock
      * @return array Lista de ventas.
      */
     public function getSalesRegistry($year, $month, $queryParams = []) {
-        return [
-            ['tipoDTE' => 33, 'folio' => 200, 'fechaEmision' => "$year-$month-05", 'montoTotal' => 15000],
-            ['tipoDTE' => 34, 'folio' => 201, 'fechaEmision' => "$year-$month-20", 'montoTotal' => 25000]
-        ];
+        return json_decode('[
+            {
+                "tipoDTE": 33,
+                "folio": 200,
+                "fechaEmision": "' . sprintf("%04d-%02d-05", $year, $month) . '",
+                "montoTotal": 15000,
+                "cliente": "Cliente Ejemplo"
+            },
+            {
+                "tipoDTE": 34,
+                "folio": 201,
+                "fechaEmision": "' . sprintf("%04d-%02d-20", $year, $month) . '",
+                "montoTotal": 25000,
+                "cliente": "Otro Cliente"
+            }
+        ]', true);
     }
 
     /**
@@ -172,14 +217,21 @@ class OpenFacturaSDKMock
      * @return array Datos del documento.
      */
     public function getDocumentByRutTypeFolio($rut, $type, $folio) {
-        return [
-            'rut' => $rut,
-            'tipoDTE' => $type,
-            'folio' => $folio,
-            'fechaEmision' => '2023-01-01',
-            'montoTotal' => 10000,
-            'estado' => 'ACEPTADO'
-        ];
+        return json_decode('{
+            "rut": "' . $rut . '",
+            "tipoDTE": ' . $type . ',
+            "folio": ' . $folio . ',
+            "fechaEmision": "2023-01-01",
+            "montoTotal": 10000,
+            "estado": "ACEPTADO",
+            "detalle": [
+                {
+                    "item": "Producto 1",
+                    "cantidad": 2,
+                    "precio": 5000
+                }
+            ]
+        }', true);
     }
 
     /**
@@ -190,14 +242,15 @@ class OpenFacturaSDKMock
      * @return array Datos del documento.
      */
     public function getDocumentByTokenValue($token, $value) {
-        return [
-            'token' => $token,
-            'value' => $value,
-            'tipoDTE' => 33,
-            'folio' => 123,
-            'fechaEmision' => '2023-01-01',
-            'montoTotal' => 10000
-        ];
+        return json_decode('{
+            "token": "' . $token . '",
+            "value": "' . $value . '",
+            "tipoDTE": 33,
+            "folio": 123,
+            "fechaEmision": "2023-01-01",
+            "montoTotal": 10000,
+            "estado": "ACEPTADO"
+        }', true);
     }
 
     /**
@@ -207,7 +260,10 @@ class OpenFacturaSDKMock
      * @return array Respuesta simulada.
      */
     public function documentIssued($data) {
-        return ['success' => true, 'message' => 'Documento emitido procesado'];
+        return json_decode('{
+            "success": true,
+            "message": "Documento emitido procesado correctamente"
+        }', true);
     }
 
     /**
@@ -217,7 +273,10 @@ class OpenFacturaSDKMock
      * @return array Respuesta simulada.
      */
     public function documentReceived($data) {
-        return ['success' => true, 'message' => 'Documento recibido procesado'];
+        return json_decode('{
+            "success": true,
+            "message": "Documento recibido procesado correctamente"
+        }', true);
     }
 
     /**
@@ -227,7 +286,10 @@ class OpenFacturaSDKMock
      * @return array Respuesta simulada.
      */
     public function documentReceivedAccuse($data) {
-        return ['success' => true, 'message' => 'Acuse de recibo procesado'];
+        return json_decode('{
+            "success": true,
+            "message": "Acuse de recibo procesado correctamente"
+        }', true);
     }
 
     /**
@@ -237,6 +299,9 @@ class OpenFacturaSDKMock
      * @return array Enlace simulado.
      */
     public function emitirEnlaceAutoservicio($data) {
-        return ['enlace' => 'https://mock-enlace-autoservicio.com/mock_token'];
+        return json_decode('{
+            "enlace": "https://mock-enlace-autoservicio.com/mock_token",
+            "expiracion": "2023-12-31T23:59:59Z"
+        }', true);
     }
 }

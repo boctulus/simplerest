@@ -8,7 +8,7 @@ use simplerest\core\libs\ApiClient;
 /*
     SDK para OpenFactura
 
-    @version 1.0.0
+    @version 1.1.0
 
     @author Pablo Bozzolo
 
@@ -34,9 +34,9 @@ use simplerest\core\libs\ApiClient;
 */
 class OpenFacturaSDK 
 {
-    private $apiClient;
-    private $apiKey;
-    private $base_url;
+    protected $apiClient;
+    protected $apiKey;
+    protected $base_url;
 
     /**
      * Constructor de la clase.
@@ -156,6 +156,20 @@ class OpenFacturaSDK
     }
 
     /**
+     * Lista contribuyentes asociados a la organización (hipotético).
+     *
+     * @param array $queryParams Filtros como estado, tipo, etc.
+     * @return mixed Lista de contribuyentes.
+     */
+    public function listTaxpayers($queryParams = []) {
+        $url = $this->base_url . '/v2/dte/taxpayers';
+        if (!empty($queryParams)) {
+            $url .= '?' . http_build_query($queryParams);
+        }
+        return $this->apiClient->get($url)->data();
+    }
+
+    /**
      * Get organization details.
      *
      * @return mixed The API response data.
@@ -272,7 +286,48 @@ class OpenFacturaSDK
      * @return mixed The API response data.
      */
     public function emitirEnlaceAutoservicio($data) {
-        return $this->apiClient->setBody($data)->post($this->base_url . '/v2/dte/selfservice')->data();
+        return $this->apiClient
+            ->setBody($data, true)
+            ->post($this->base_url . '/v2/dte/selfservice')
+            ->data();
     }
+
+    /**
+     * Obtiene detalles completos de un documento por su token.
+     *
+     * @param string $token Token del documento.
+     * @return mixed Detalles del documento.
+     */
+    public function getDocumentDetails($token) {
+        return $this->apiClient
+            ->get($this->base_url . '/v2/dte/document/' . urlencode($token))
+            ->data();
+    }
+
+    /**
+     * Envía un documento por email.
+     *
+     * @param string $token Token del documento.
+     * @param array $emailData Datos del email (to, subject, etc.).
+     * @return mixed Respuesta de la API.
+     */
+    public function sendDocumentEmail($token, $emailData) {
+        $url = $this->base_url . '/v2/dte/document/' . urlencode($token) . '/email';
+        return $this->apiClient
+            ->setBody($emailData, true)
+            ->post($url)
+            ->data();
+    }
+
+    /**
+     * Verifica el estado de la API.
+     *
+     * @return mixed Estado de la API.
+     */
+    public function checkApiStatus() {
+        return $this->apiClient
+            ->get($this->base_url . '/v2/status')
+            ->data();
+    }    
 }   
 
