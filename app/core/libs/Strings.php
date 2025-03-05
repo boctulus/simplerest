@@ -658,6 +658,25 @@ class Strings
 		@param string $str 
 		@param bool $trim
 		@param bool $empty_lines
+
+		Ej:
+
+			$tables = <<<TABLES
+			customer_details
+			customers
+			order_items
+			orders
+			products
+			seller_products
+			sellers
+			support_categories
+			support_tickets
+			users
+			TABLES;
+
+			$tables = Strings::lines($tables, true, true);
+			
+			print_array($tables);
 	*/
 	static function lines(string $str, bool $trim = false, bool $empty_lines = true, $carry_ret = null){
 		if (empty($str)){

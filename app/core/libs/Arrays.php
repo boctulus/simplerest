@@ -4,6 +4,21 @@ namespace simplerest\core\libs;
 
 class Arrays 
 {
+    public static function reorderArray(array $array, array $order_keys): array {
+        $orderedArray = [];
+
+        // Insertar las claves en el orden especificado
+        foreach ($order_keys as $key) {
+            if (array_key_exists($key, $array)) {
+                $orderedArray[$key] = $array[$key];
+                unset($array[$key]); // Eliminar del original para evitar duplicados
+            }
+        }
+
+        // Insertar las claves restantes al final
+        return array_merge($orderedArray, $array);
+    }
+
     /*
         Trata un array no-asociativo como un Set (conjunto)
 
@@ -68,6 +83,10 @@ class Arrays
         }
 
         return $filtered;
+    }
+
+    static function stringToArray(string $str, bool $discard_empty_lines = true) : array {
+        return Strings::lines($str, true, !$discard_empty_lines);
     }
     
     /*
