@@ -6,9 +6,31 @@ use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
 
 /*
-    DOC
+    SDK para OpenFactura
 
-    https://chatgpt.com/c/67c79f14-3c04-800d-97cc-d3c79ea52ab7
+    @version 1.0.0
+
+    @author Pablo Bozzolo
+
+    API KEY de desarrollo "928e15a2d14d4a6292345f04960f4bd3"
+
+    Metodos
+
+    - emitirDTE: Emisión de DTEs con soporte para opciones de respuesta (response), campos personalizados (custom), envío de email (sendEmail) y clave de idempotencia (Idempotency-Key).
+    - getDTEStatus: Consulta del estado de un DTE por token.
+    - anularDTE52: Anulación de guías de despacho electrónicas (DTE tipo 52).
+    - getCompanyInfo: Obtención de información de la empresa.
+    - Métodos adicionales como getTaxpayer, getOrganization, getOrganizationDocuments,...
+
+    Manejo de Idempotencia
+
+    El método emitirDTE permite configurar una clave de idempotencia mediante Idempotency-Key, lo cual es una práctica recomendada por la documentación para evitar duplicados en reintentos. 
+
+    if ($idempotencyKey) {
+        $this->apiClient->setHeader('Idempotency-Key', $idempotencyKey);
+
+    La cabecera se elimina después de la solicitud, evitando interferencias en futuras peticiones.    
+}
 */
 class OpenFacturaSDK 
 {
@@ -90,7 +112,7 @@ class OpenFacturaSDK
         return $this->apiClient
             ->request($this->base_url . '/v2/dte/document/' . $token . '/status', 'GET')
             ->data();
-    }
+    }   
 
     /**
      * Anula una Guía de Despacho Electrónica (DTE tipo 52).
