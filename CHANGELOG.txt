@@ -28,3 +28,4 @@
 [2025-02-27 20:58:39]	0.8.12	Automatic update
 [2025-03-02 11:29:29]	0.8.12	Automatic update
 [2025-03-05 08:53:03]	0.8.12	OpenFacturaSDK ver 1.0.0 beta
+[2025-03-05 09:20:14]	0.8.12	OpenFacturaSDKMock ver 1.0.0 beta
