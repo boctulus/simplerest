@@ -3,6 +3,7 @@
 namespace simplerest\controllers;
 
 use simplerest\core\controllers\Controller;
+use simplerest\core\libs\Arrays;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\VarDump;
@@ -28,18 +29,33 @@ class TestInsertController extends Controller
 
     function test_insertion_order_2(){
         $m = new Model();
-
-        $tables = ['tags', 'courses', 'categories', 'users']; // revisar la lista
         $tenant_id = 'complex01';
 
-        DB::getConnection($tenant_id);
+        $tables = <<<TABLES
+        customer_details  
+        customers
+        order_items
+        orders
+        products
+        seller_products
+        sellers
+        support_categories
+        support_tickets
+        users
+        tags
+        categories
+        TABLES;
 
-        dd(DB::getTableNames());
-        exit;
-
+        $tables = Arrays::stringToArray($tables);
+        
+        dd($tables, 'Tables');
+        // exit;
+        
+        DB::getConnection($tenant_id);       
+        
         $order = $m->getInsertionOrder($tables);
 
-        dd($order);
+        dd($order, 'Order of tables for database insertion');
     }
 
     function test_insert_struct(){
@@ -61,11 +77,11 @@ class TestInsertController extends Controller
             //->dontExec()             
             ->insertStruct($data); 
 
-        dd(
-            DB::getLog(), 'SQL' 
-        );
+        // dd(
+        //     DB::getLog(), 'SQL' 
+        // );
 
-        // dd($course_id);
+        dd($course_id);
     }
 }
 

@@ -4,6 +4,7 @@ $pivots        = array (
   'sellers,users' => 'customers',
   'orders,products' => 'order_items',
   'customers,sellers' => 'orders',
+  'products,tags' => 'product_tags',
   'products,sellers' => 'seller_products',
 );
 
@@ -22,6 +23,11 @@ $pivot_fks     = array (
   array (
     'customers' => 'customer_id',
     'sellers' => 'seller_id',
+  ),
+  'product_tags' => 
+  array (
+    'products' => 'product_id',
+    'tags' => 'tag_id',
   ),
   'seller_products' => 
   array (
@@ -90,6 +96,25 @@ $relationships = array (
       array (
         0 => 'sellers.id',
         1 => 'orders.seller_id',
+      ),
+    ),
+  ),
+  'product_tags' => 
+  array (
+    'products' => 
+    array (
+      0 => 
+      array (
+        0 => 'products.id',
+        1 => 'product_tags.product_id',
+      ),
+    ),
+    'tags' => 
+    array (
+      0 => 
+      array (
+        0 => 'tags.id',
+        1 => 'product_tags.tag_id',
       ),
     ),
   ),

@@ -6,6 +6,7 @@ namespace simplerest\core\traits;
 
 use Doctrine\Inflector\InflectorFactory;
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Schema;
 use simplerest\core\libs\Strings;
 use simplerest\core\Model;
 
@@ -189,51 +190,126 @@ trait SubResourceHandler
         return $rows;
     }    
 
-    ///
+     /*
+        Construir las dependencias para insercion
+
+        Algoritmo seguro:
+
+        1.= Crear lista de todas las FKs (tabla) origen y (tabla) destino. Ej:
+
+            [
+                'fk'  => 'product_id',
+                'ori' => 'order_items',
+                'dst' => 'products'
+            ],
+            // ..
+
+        2.= Colocar tablas sin FKs primero y el resto despues
+
+        3.- Recorrer una sola vez el array que "lista de todas las FKs origen y destino"
+
+        e ir haciendo movimientos posicionales dentro del array a medida que se procesa la lista.
 
 
+        Nota:
+
+        Es preferible usar expanded_relationships en vez de relationships por eficiencia dentro de schema        
+    */
+
+    /**
+     * Determines the correct order for inserting data into tables based on foreign key dependencies.
+     *
+     * @param array $tables Array of table names to order.
+     * @param ?string $tenant_id Optional tenant identifier for database connection.
+     * @return array Ordered array of table names.
+     * @throws \Exception If a cyclic dependency is detected.
+     */
     function getInsertionOrder(array $tables, ?string $tenant_id = null): array {
+        // Handle empty input
+        if (empty($tables)) {
+            return [];
+        }
+
+        // Select database connection based on tenant_id
+        if ($tenant_id !== null) {
+            DB::getConnection($tenant_id);
+        }
+
+        // Fetch all foreign key relationships
+        $all_rels = Schema::getRelations(null, false, $tenant_id);
+
+        // Initialize dependencies: table => [tables it depends on]
         $dependencies = [];
-        
-        // Construir las dependencias
         foreach ($tables as $table) {
-            $schema = get_schema($table, $tenant_id);
-            $fks = $schema['fks'];
-            $deps = [];
-        
-            // Identificar tablas referenciadas por las FKs
-            $rels = $schema['relationships'] ?? [];
-            foreach ($rels as $related_table => $relations) {
-                foreach ($relations as $relation) {
-                    // Extraer la columna FK de $relation[1] (ej. 'courses.category_id' -> 'category_id')
-                    list($fk_table, $fk_column) = explode('.', $relation[1]);
-                    // Verificar que la FK pertenece a la tabla actual y está en $fks
-                    if ($fk_table === $table && in_array($fk_column, $fks) && in_array($related_table, $tables)) {
-                        $deps[] = $related_table;
+            $dependencies[$table] = [];
+        }
+
+        // Build dependency graph
+        foreach ($all_rels as $to_tb => $rels) {
+            foreach ($rels as $rel) {
+                $from_tb = explode('.', $rel['from'])[0]; // Table with the foreign key
+                $to_tb = explode('.', $rel['to'])[0];     // Referenced table
+                // Include only relationships between tables in $tables, ignore self-references
+                if (in_array($from_tb, $tables) && in_array($to_tb, $tables) && $from_tb !== $to_tb) {
+                    $dependencies[$from_tb][] = $to_tb;
+                }
+            }
+        }
+
+        // Remove duplicates from dependency lists
+        foreach ($dependencies as $tb => $deps) {
+            $dependencies[$tb] = array_unique($deps);
+        }
+
+        // Build dependents: table => [tables that depend on it]
+        $dependents = [];
+        foreach ($dependencies as $tb => $deps) {
+            foreach ($deps as $dep) {
+                if (!isset($dependents[$dep])) {
+                    $dependents[$dep] = [];
+                }
+                $dependents[$dep][] = $tb;
+            }
+        }
+
+        // Initialize incoming dependency counts
+        $incoming = [];
+        foreach ($tables as $table) {
+            $incoming[$table] = count($dependencies[$table]);
+        }
+
+        // Queue tables with no dependencies
+        $queue = [];
+        foreach ($tables as $table) {
+            if ($incoming[$table] === 0) {
+                $queue[] = $table;
+            }
+        }
+
+        $order = [];
+        // Process the queue
+        while (!empty($queue)) {
+            $table = array_shift($queue);
+            $order[] = $table;
+
+            // Update dependents
+            if (isset($dependents[$table])) {
+                foreach ($dependents[$table] as $dependent) {
+                    $incoming[$dependent]--;
+                    if ($incoming[$dependent] === 0) {
+                        $queue[] = $dependent;
                     }
                 }
             }
-            $dependencies[$table] = array_unique($deps);
         }
-        
-        // Realizar ordenamiento topológico
-        $order = [];
-        $visited = [];
-        
-        function topologicalSort($table, &$dependencies, &$order, &$visited) {
-            if (isset($visited[$table])) return;
-            $visited[$table] = true;
-        
-            foreach ($dependencies[$table] ?? [] as $dep) {
-                topologicalSort($dep, $dependencies, $order, $visited);
+
+        // Check for cycles
+        foreach ($incoming as $tb => $count) {
+            if ($count > 0) {
+                throw new \Exception("Cyclic dependency detected involving table '$tb'");
             }
-            $order[] = $table;
         }
-        
-        foreach ($tables as $table) {
-            topologicalSort($table, $dependencies, $order, $visited);
-        }
-        
+
         return $order;
     }
 }
