@@ -591,8 +591,8 @@ class MakeCommand implements ICommand
     }
 
     function interface($name, ...$opt) {
-        $core = false;
-    
+        $core  = false;
+
         // Detectar opción --core
         foreach ($opt as $o) {
             if (preg_match('/^(--core|-c)$/', $o)) {
@@ -642,10 +642,10 @@ class MakeCommand implements ICommand
             $classInfo = \simplerest\core\libs\Reflector::getClassInfo($className);
             $methods = $classInfo['methods'];
     
-            // Generar firmas de métodos públicos no estáticos
+            // Generar firmas de métodos públicos
             foreach ($methods as $method) {
-                if ($method['visibility'] !== 'public' || $method['is_static']) {
-                    continue; // Solo métodos públicos no estáticos
+                if ($method['visibility'] !== 'public' /* || $method['is_static'] */ ) {
+                    continue; 
                 }
     
                 $params = [];
@@ -673,8 +673,7 @@ class MakeCommand implements ICommand
         }
     
         $unignore = false;
-        $remove = false;
-        $force = false;
+        $remove = false;        
         $strict = false;
         $lowercase = false;
     
@@ -710,7 +709,7 @@ class MakeCommand implements ICommand
         if ($remove) {
             $this->write($dest_path, '', $protected, true);
             return;
-        }
+        } 
     
         // Cargar y personalizar la plantilla
         $data = file_get_contents($template_path);
