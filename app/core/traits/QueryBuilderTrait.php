@@ -3745,6 +3745,8 @@ trait QueryBuilderTrait
 					$data[$this->createdAt] = datetime();
 				}
 
+				// dd($data); //
+
 				$ret = $this->executeInsert($data);
 
 				if ($useTransaction) {
