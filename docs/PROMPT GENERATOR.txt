@@ -1,0 +1,90 @@
+PROMPT GENERATOR
+================
+
+# Posibilidad de incluir archivos y directorios
+
+{
+    "description":"some text",
+    "files":[
+        "D:\\laragon\\www\\simplerest\\app\\controllers\\SignatureTestController.php",
+        "D:\\Desktop\\PROMPT GENERATOR\\"
+    ],
+    "notes":""
+}
+
+# Posibilidad de incluir archivos desde peticiones HTTP
+
+Esto es util para archivos como HTML, CSS y Javascript
+
+{
+	"title": "Prueba de Generador de prompt para ChatGTP",
+	"description": "Analiza estos archivos y dime que hacen",
+	"files": [      
+        "http://relmotor.lan/wp-content/plugins/relmotor-central/app/shortcodes/relmotor/assets/js/search-engine.js?ver=1.1.151",		
+        "D:\\laragon\\www\\simplerest\\app\\controllers\\api\\Prompts.php"
+	],
+	"notes": "Gracias!"
+}
+
+# Forma extendida de incluir archivos
+
+Esta forma habilita funcionalidades de reduccion de codigo, posibilidad de espeecificar que archivos o carpetas incluir o excluir en base a patrones glob, etc
+
+{
+    "description": "Intento debuguear una query pero el flag $exec de la clase Model cambia de false a true inesperadamente",
+    "files": [
+        {
+            "path": "D:\\laragon\\www\\simplerest\\app\\core\\Model.php"
+        },
+        {
+            "path": "D:\\laragon\\www\\simplerest\\app\\core\\traits\\QueryBuilderTrait.php"
+        },
+        {
+            "path": "D:\\laragon\\www\\simplerest\\app\\core\\traits\\SubResourceHandler.php"
+        },
+        {
+            "path": "D:\\laragon\\www\\simplerest\\app\\core\\traits\\InsertWithSubResourcesTrait.php"
+        },
+        {
+            "path": "D:\\laragon\\www\\simplerest\\app\\controllers\\TestInsertController.php"
+        }
+    ],
+    "notes": "\n"
+}
+
+# Posibilidad de excluir funciones de clases PHP para recucir codigo
+
+{
+	"title": "Prueba de Generador de prompt",
+	"description": "Analiza estos archivos y dime que hacen",
+	"files": [
+        {
+            "path":"D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php",
+            "allowed_functions": [
+                "__construct",
+                "exec", 
+                "exec_messages", 
+                "getContent"
+            ]
+        }
+	],
+	"notes": "Gracias!",
+    "mode_simulate": false
+}
+
+# Incluir y/o excluir archivos y directorios
+
+{
+    "title": "Prueba de Generador de prompt",
+    "description": "Analiza estos archivos y dime que hacen",
+    "files": [
+        {
+            "path": "C:\\Python310\\Lib\\site-packages\\facebook_page_scraper",
+            "include": ["*.py"],
+            "exclude": ["*_test.py", "__pycache__"]
+        }
+    ],
+    "notes": "Gracias!",
+    "mode_simulate": false
+}
+
