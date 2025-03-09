@@ -4,8 +4,9 @@ TODO SimpleRest
 - Implemenar insert() a nivel de Model con SubRecursos
 
 http://simplerest.lan/prompt_generator#chat-427
-
 http://simplerest.lan/demos/model/test_insert_struct
+D:\laragon\www\simplerest\app\controllers\TestInsertController.php
+D:\laragon\www\simplerest\app\core\traits\InsertWithSubResourcesTrait.php
 
 
 - Diferencias ?
