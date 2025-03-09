@@ -38,7 +38,7 @@ class CodeReducer
             (new CodeReducer())->reduce($file, ['tb_prefix'])
         );   
     */
-    public function reduce($sourceCode, array $functionsToKeep = [], array $functionsToExclude = [], $language = 'php') {
+    public function reduceCode($sourceCode, array $functionsToKeep = [], array $functionsToExclude = [], $language = 'php') {
         // Si no se especifican funciones a mantener, mantener todas por defecto
         if (empty($functionsToKeep)) {
             $functionsToKeep = ['*'];

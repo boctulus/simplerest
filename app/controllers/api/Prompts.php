@@ -4,12 +4,13 @@ namespace simplerest\controllers\api;
 
 use simplerest\core\libs\Url;
 use simplerest\core\libs\Files;
+use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
+use simplerest\core\libs\CodeReducer;
+use simplerest\core\libs\PHPParser; 
 use simplerest\controllers\MyApiController;
 use simplerest\core\exceptions\NotFileButDirectoryException;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\PHPParser; // Importar PHPParser
 
 class Prompts extends MyApiController
 {
@@ -19,6 +20,9 @@ class Prompts extends MyApiController
     static protected $hidden = [];
 
     static protected $hide_in_response = false;
+
+    // Parser a utilizar (PHPParser genera menos tokens solo funciona sobre clases de momento)
+    static protected $parser = CodeReducer::class;
 
     function __construct()
     {
@@ -67,10 +71,11 @@ class Prompts extends MyApiController
                 try {
                     // Intentar leer el contenido si es un archivo
                     $content = Files::getContent($path, $base_path);
-                    if ($allowed_functions !== null) {
-                        $parser = new PHPParser();
-                        $content = $parser->reduceCode($content, $allowed_functions);
+                    if ($allowed_functions !== null) {                        
+                        $parser_instance = new static::$parser();
+                        $content = $parser_instance->reduceCode($content, $allowed_functions);                        
                     }
+
                     $data['content'][$path] = $content;
                 } catch (NotFileButDirectoryException $e) {
                     // Manejar directorios
