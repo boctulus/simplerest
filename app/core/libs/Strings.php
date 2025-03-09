@@ -2196,6 +2196,13 @@ class Strings
 		return (unserialize($str) !== false);
 	}
 
+	static function isBinaryString(string $content, int $checkLength = 1024): bool {
+		$sample = substr($content, 0, $checkLength); // Tomar solo los primeros bytes
+	
+		// Verificar si hay caracteres no imprimibles
+		return preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', $sample) > 0;
+	}	
+
 	static function enumerateWithLetters(int $value, bool $starting_by_zero = true){
 		return chr($value + 97 + ($starting_by_zero == false ? -1 : 0));
 	}

@@ -16,45 +16,73 @@ class Prompts extends MyApiController
 {
     static protected $soft_delete = true;
     static protected $connect_to = [];
-
     static protected $hidden = [];
-
     static protected $hide_in_response = false;
-
-    // Parser a utilizar (PHPParser genera menos tokens solo funciona sobre clases de momento)
+    static protected $include_binary_files = false;
+    static protected $max_size = 50000;
     static protected $parser = CodeReducer::class;
 
     function __construct()
-    {
+    {        
         parent::__construct();
+    }
+
+    protected function reduceFileContent($content, $allowed_functions, $interface_replacement) {
+        $functionsToKeep = $allowed_functions ?? ['*'];
+        
+        $replace_with_interface = [];
+        $interface_replacement_exclusion_list = [];
+        
+        if ($interface_replacement !== null) {
+            $include = $interface_replacement['include'] ?? ['*'];
+            $exclude = $interface_replacement['exclude'] ?? [];
+            
+            if (!is_array($include)) {
+                throw new \Exception("interface_replacements.include must be an array");
+            }
+            if (!is_array($exclude)) {
+                throw new \Exception("interface_replacement.exclude must be an array");
+            }
+            
+            if ($include !== ['*']) {
+                $replace_with_interface = $include;
+            }
+            $interface_replacement_exclusion_list = $exclude;
+        }
+        
+        $parser_instance = new static::$parser();
+        return $parser_instance->reduceCode(
+            $content,
+            $functionsToKeep,
+            [],
+            $replace_with_interface,
+            $interface_replacement_exclusion_list
+        );
     }
 
     protected function onPostingAfterCheck($id, array &$data)
     {
-        // Máximo número de archivos a cargar de un directorio
         $max_files = 100;
-
         $data['content'] = [];
         $base_path = $data['base_path'] ?? null;
-
-        // Eliminar duplicados en files, preservando la estructura
         $data['files'] = array_unique($data['files'], SORT_REGULAR);
 
         try {
-            foreach ($data['files'] as $file_item) {
-                // Determinar si es string o array y extraer propiedades
+            foreach ($data['files'] as $file_item) {    
+                // dd($file_item, 'FILE ITEM'); //            
                 if (is_string($file_item)) {
                     $path = $file_item;
-                    $include = ['*.*']; // Por defecto, incluir todos
+                    $include = ['*.*'];
                     $exclude = [];
                     $allowed_functions = null;
+                    $interface_replacement = null;
                 } elseif (is_array($file_item) && isset($file_item['path'])) {
                     $path = $file_item['path'];
                     $include = $file_item['include'] ?? ['*.*'];
                     $exclude = $file_item['exclude'] ?? [];
                     $allowed_functions = $file_item['allowed_functions'] ?? null;
+                    $interface_replacement = $file_item['interface_replacement'] ?? null;
 
-                    // Validar que include y exclude sean arrays
                     if (!is_array($include)) {
                         throw new \Exception("include must be an array");
                     }
@@ -69,54 +97,59 @@ class Prompts extends MyApiController
                 }
 
                 try {
-                    // Intentar leer el contenido si es un archivo
+                    // dd($base_path, 'BASE PATH'); //
+
                     $content = Files::getContent($path, $base_path);
-                    if ($allowed_functions !== null) {                        
-                        $parser_instance = new static::$parser();
-                        $content = $parser_instance->reduceCode($content, $allowed_functions);                        
-                    }
+                    // dd($content, 'CONTENT BEFORE'); //
+
+                    $content = $this->reduceFileContent($content, $allowed_functions, $interface_replacement);
+                    // dd($content, 'CONTENT REDUCED'); //
 
                     $data['content'][$path] = $content;
                 } catch (NotFileButDirectoryException $e) {
-                    // Manejar directorios
                     if ($base_path !== null && !Files::isAbsolutePath($path)) {
                         $dir_path = Files::addTrailingSlash($base_path) . DIRECTORY_SEPARATOR . Files::removeFirstSlash($path);
                     } else {
                         $dir_path = $path;
                     }
 
-                    // Obtener archivos según los patrones de include
                     $files = [];
                     foreach ($include as $pattern) {
                         $pattern_files = Files::recursiveGlob($dir_path . DIRECTORY_SEPARATOR . $pattern);
                         $files = array_merge($files, $pattern_files);
                     }
-                    $files = array_unique($files); // Eliminar duplicados
+                    $files = array_unique($files);
 
-                    // Aplicar exclusiones
                     foreach ($exclude as $exclude_pattern) {
                         $exclude_files = Files::recursiveGlob($dir_path . DIRECTORY_SEPARATOR . $exclude_pattern);
                         $files = array_diff($files, $exclude_files);
                     }
 
-                    // Verificar límite de archivos
                     if (count($files) > $max_files) {
                         throw new \Exception("So many files to read");
                     }
 
-                    // Leer el contenido de cada archivo
+                    // dd($files);
+
+                    // Filtrar solo archivos, excluyendo directorios
+                    // $files = array_filter($files, 'is_file');
+
                     foreach ($files as $file) {
-                        $content = file_get_contents($file);
-                        if ($allowed_functions !== null) {
-                            $parser = new PHPParser();
-                            $content = $parser->reduceCode($content, $allowed_functions);
+                        // dd($file, 'FILE');
+
+                        if (is_dir($file)){
+                            continue;
                         }
+
+                        $content = Files::readOrFail($file);
+                        $content = $this->reduceFileContent($content, $allowed_functions, $interface_replacement);
                         $data['content'][$file] = $content;
                     }
                 }
             }
+            // dd($data, 'DATA');
         } catch (\Exception $e) {
-            $this->response(['error' => ['message' => $e->getMessage()]], 400);
+            error($e->getMessage(), 400);
             return;
         }
     }

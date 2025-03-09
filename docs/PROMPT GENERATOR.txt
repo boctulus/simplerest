@@ -103,3 +103,45 @@ POST /api/v1/prompts
     "mode_simulate": false
 }
 
+
+# Posibilidad de truncar el body de funciones y metodos
+
+Incluir funciones a truncar
+
+POST /api/v1/prompts
+
+Ej:
+
+{
+    "title": "Prueba de Generador de prompt",
+    "description": "Analiza estos archivos y dime que hacen",
+    "files": [
+        {
+            "path": "D:\\laragon\\www\\simplerest\\app\\core\\helpers\\db.php",
+            "interface_replacement": {
+                "include": [ "inSchema" ]
+            }            
+        },
+        {
+            "path": "D:\\laragon\\www\\simplerest\\app\\core\\Model.php"
+        },        
+    ],
+    "notes": "Gracias!",
+    "mode_simulate": false
+}
+
+Excluir funciones / metodos a truncar
+
+Ej:
+
+POST /api/v1/prompts
+
+{
+    "description":"Test",
+    "files":[
+        {
+            "path":"C:\\Python310\\Lib\\site-packages\\facebook_page_scraper",
+            "exclude": ["*.pyc"]
+        }
+    ],"notes":""
+}

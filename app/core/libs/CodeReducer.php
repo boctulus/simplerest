@@ -9,6 +9,12 @@ namespace simplerest\core\libs;
 */
 class CodeReducer 
 {  
+    protected $remove_all_comments = false;
+
+    function removeComments(bool $flag){
+        $this->remove_all_comments = $flag;
+    }
+
     /*
         Reduce el código fuente manteniendo solo las funciones/métodos especificados.
         
@@ -18,7 +24,7 @@ class CodeReducer
         @param string $language Lenguaje del código (por ahora solo "php", extensible a "js" o "python")
         @return string Código reducido
 
-        Para excluir funciones
+        # Para excluir funciones
 
         Ej:
 
@@ -26,9 +32,10 @@ class CodeReducer
 
         dd(
             (new CodeReducer())->reduce($file, [], ['tb_prefix'])
-        );    
+        );
 
-        Para incluir funciones
+
+        # Para incluir funciones
 
         Ej:
 
@@ -37,6 +44,28 @@ class CodeReducer
         dd(
             (new CodeReducer())->reduce($file, ['tb_prefix'])
         );   
+
+
+        # Truncar el body de funciones especificadas
+
+        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+
+        Ej:
+
+        dd(
+            (new CodeReducer())->reduceCode($file, [], [], ['sayHello', 'sayBye'])
+        ); 
+
+
+        # Truncar el body de todas las funciones excepto las especificadas
+
+        Ej:
+
+        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+
+        dd(
+            (new CodeReducer())->reduceCode($file, [], [], [], ['sayHello', 'sayBye'])
+        );  
     */
     public function reduceCode(
         $sourceCode, 
@@ -146,9 +175,80 @@ class CodeReducer
             $result .= substr($sourceCode, $lastEnd);
         }
     
+        if ($this->remove_all_comments){
+            $result = Strings::removeMultiLineComments($result);
+        }
+
         return $result;
     }
     
+    public function reduceClass($sourceCode, array $methodsToKeep) {
+        // Paso 1: Extraer el contenido hasta el cuerpo de la clase
+        if (!preg_match('/^(.*?class\s+\w+.*?\{)/s', $sourceCode, $matches)) {
+            throw new \Exception("No se pudo encontrar la declaración de clase");
+        }
+        
+        $header = $matches[1];
+        $classBodyStart = strlen($header);
+        
+        // Paso 2: Encontrar todos los métodos en la clase
+        $methodPattern = '/^\s*((?:public|private|protected|static)*\s+function\s+(\w+)\s*\(.*?\).*?\{(?:[^{}]++|(?R))*\})/sm';
+        preg_match_all($methodPattern, substr($sourceCode, $classBodyStart), $methodMatches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+        
+        $methods = [];
+        foreach ($methodMatches as $match) {
+            $methodCode = $match[1][0];
+            $methodName = $match[2][0];
+            $position = $classBodyStart + $match[1][1];
+            $length = strlen($methodCode);
+            
+            $methods[] = [
+                'name' => $methodName,
+                'code' => $methodCode,
+                'start' => $position,
+                'end' => $position + $length,
+                'keep' => in_array($methodName, $methodsToKeep)
+            ];
+        }
+        
+        // Paso 3: Ordenar métodos por posición
+        usort($methods, function($a, $b) {
+            return $a['start'] - $b['start'];
+        });
+        
+        // Paso 4: Reconstruir el código manteniendo solo los métodos deseados
+        $result = $header;
+        $lastEnd = $classBodyStart;
+        $replacedAny = false;
+        
+        foreach ($methods as $method) {
+            // Agregar código entre el último método y éste
+            if ($method['start'] > $lastEnd) {
+                $result .= substr($sourceCode, $lastEnd, $method['start'] - $lastEnd);
+            }
+            
+            if ($method['keep']) {
+                $result .= $method['code'];
+                $replacedAny = false;
+            } else {
+                if (!$replacedAny) {
+                    $result .= "    // ...\n";
+                    $replacedAny = true;
+                }
+            }
+            
+            $lastEnd = $method['end'];
+        }
+        
+        // Agregar el resto del código después del último método
+        $result .= substr($sourceCode, $lastEnd);
+
+        if ($this->remove_all_comments){
+            $result = Strings::removeMultiLineComments($result);
+        }
+        
+        return $result;
+    }
     
     
 }
