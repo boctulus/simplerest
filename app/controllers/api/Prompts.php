@@ -19,12 +19,37 @@ class Prompts extends MyApiController
     static protected $hidden = [];
     static protected $hide_in_response = false;
     static protected $include_binary_files = false;
+    static protected $max_files = 100;
     static protected $max_size = 50000;
     static protected $parser = CodeReducer::class;
 
     function __construct()
     {        
         parent::__construct();
+    }
+
+    protected function shouldIncludeFile($file_path) {
+        // Verificar si el archivo existe y no es un directorio
+        if (!file_exists($file_path) || is_dir($file_path)) {
+            return false;
+        }
+        
+        // Verificar tamaño del archivo
+        $file_size = filesize($file_path);
+        if ($file_size > static::$max_size) {
+            return false;
+        }
+        
+        // Verificar si es binario (solo si no se permiten binarios)
+        if (!static::$include_binary_files) {
+            // Leer solo una muestra del archivo (primeros 1024 bytes)
+            $sample = file_get_contents($file_path, false, null, 0, 1024);
+            if (Strings::isBinaryString($sample)) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     protected function reduceFileContent($content, $allowed_functions, $interface_replacement) {
@@ -61,8 +86,7 @@ class Prompts extends MyApiController
     }
 
     protected function onPostingAfterCheck($id, array &$data)
-    {
-        $max_files = 100;
+    {        
         $data['content'] = [];
         $base_path = $data['base_path'] ?? null;
         $data['files'] = array_unique($data['files'], SORT_REGULAR);
@@ -96,14 +120,9 @@ class Prompts extends MyApiController
                     throw new \Exception("Invalid file item");
                 }
 
-                try {
-                    // dd($base_path, 'BASE PATH'); //
-
+                try {                    
                     $content = Files::getContent($path, $base_path);
-                    // dd($content, 'CONTENT BEFORE'); //
-
-                    $content = $this->reduceFileContent($content, $allowed_functions, $interface_replacement);
-                    // dd($content, 'CONTENT REDUCED'); //
+                    $content = $this->reduceFileContent($content, $allowed_functions, $interface_replacement);                    
 
                     $data['content'][$path] = $content;
                 } catch (NotFileButDirectoryException $e) {
@@ -125,7 +144,7 @@ class Prompts extends MyApiController
                         $files = array_diff($files, $exclude_files);
                     }
 
-                    if (count($files) > $max_files) {
+                    if (count($files) > static::$max_files) {
                         throw new \Exception("So many files to read");
                     }
 
@@ -141,9 +160,15 @@ class Prompts extends MyApiController
                             continue;
                         }
 
+                        if (!$this->shouldIncludeFile($file)) {
+                            $data['ignored'][] = $file;
+                            continue;
+                        }
+
                         $content = Files::readOrFail($file);
                         $content = $this->reduceFileContent($content, $allowed_functions, $interface_replacement);
                         $data['content'][$file] = $content;
+                        $data['included'][] = $file;
                     }
                 }
             }
