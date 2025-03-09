@@ -1095,7 +1095,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         $this->instance = $this->getModelInstance();
 
-        if (isset($data['mode_simulate']) && !filter_var($data['mode_simulate'], FILTER_VALIDATE_BOOLEAN)) {
+        if (isset($data['mode_simulate']) && in_array($data['mode_simulate'], ['1', 'true', 'on'])) {
             $executionMode = Model::EXECUTION_MODE_SIMULATE;
             unset($data['mode_simulate']);
         } else {
