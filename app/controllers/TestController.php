@@ -12,12 +12,30 @@ class TestController extends Controller
 {
     function __construct() { parent::__construct(); }
 
-    function index()
+    function test_include()
     {
         $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
 
         dd(
-            (new CodeReducer())->reduce($file, ['tb_prefix'])
+            (new CodeReducer())->reduceCode($file, ['sayBye'])
+        );                   
+    }
+
+    function test_exclude()
+    {
+        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+
+        dd(
+            (new CodeReducer())->reduceCode($file, [], ['tb_prefix'])
+        );                   
+    }
+
+    function test_interface_replacement()
+    {
+        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+
+        dd(
+            (new CodeReducer())->reduceCode($file, [], [], ['sayHello', 'sayBye'])
         );                   
     }
 }
