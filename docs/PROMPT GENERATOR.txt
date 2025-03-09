@@ -145,3 +145,28 @@ POST /api/v1/prompts
         }
     ],"notes":""
 }
+
+# Deshabilitar el guardado en base de datos
+
+Enviando "mode_simulate" en true
+
+Ej:
+
+{
+    "title": "Prueba de Generador de prompt",
+    "description": "Analiza estos archivos y dime que hacen",
+    "files": [
+        {
+            "path": "D:\\laragon\\www\\simplerest\\app\\core\\helpers\\db.php",
+            "interface_replacement": {
+                "include": [ "*" ],
+                "exclude": [ "inSchema" ]
+            }            
+        },
+        {
+            "path": "D:\\laragon\\www\\simplerest\\app\\core\\Model.php"
+        }
+    ],
+    "notes": "Gracias!",
+    "mode_simulate": true
+}

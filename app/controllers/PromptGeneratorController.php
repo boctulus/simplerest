@@ -29,9 +29,17 @@ class PromptGeneratorController extends Controller
         # Toastr  ---> usar para avisar cuando un Prompt fue generado con exito
         js_file(ASSETS_PATH . 'third_party/toastr/toastr.min.js');
 
-        view('prompt_generator/index.php', [
-            'title' => 'Generador de Prompt'
-        ], 'templates/tpl_bt5.php');                  
+        if (($_GET['fw'] ?? '') == 'alpine'){
+            view('prompt_generator/alpine_version.php', [
+                'title' => 'Generador de Prompt'
+            ], 'templates/tpl_alpine-tailwind.php'); 
+        } else {
+            view('prompt_generator/index.php', [
+                'title' => 'Generador de Prompt'
+            ], 'templates/tpl_bt5.php');          
+        }
+
+                
     }
 
 }
