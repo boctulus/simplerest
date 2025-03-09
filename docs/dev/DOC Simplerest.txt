@@ -441,6 +441,56 @@ Ej:
 				/db_az
 
 
+
+# Solucion al problema de distintos "componentes" o "modulos" usando los mismos nombres de tablas
+
+Quizas podramos tener dos "modulos" que quieran usar el mismo nombre de tabla en la base de datos para la misma base de datos.
+
+Una opcion obvia es usar algun prefijo en las tabla.
+
+Advertencia 
+
+Podria intentarse hacer usando databases.php para crear un  "alias" de la conexion principal a base de datos pero usando 'tb_prefix':
+
+	'main-2' => [
+		'host'		=> env('DB_HOST', '127.0.0.1'),
+		'port'		=> env('DB_PORT'),
+		'driver' 	=> env('DB_CONNECTION'),
+		'db_name' 	=> env('DB_NAME'),
+		'user'		=> env('DB_USERNAME'), 
+		'pass'		=> env('DB_PASSWORD'),
+		'charset'	=> 'utf8',
+		'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',  // not-implemented
+		'pdo_options' => [
+			\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+			\PDO::ATTR_EMULATE_PREPARES => false
+		],
+		'tb_prefix'  => 'pr_',
+	],
+
+Luego la migracion podria podria obtener la conexion con su alias:
+
+Ej:
+
+	class CreatePromptsTb implements IMigration
+	{
+		protected $table = 'prompts'; 
+
+		function __construct()
+		{
+			DB::getConnection('main-2');  // referencia a la conexion
+		}
+
+		// ..
+	}
+
+El detalle (bug) es que la migracio falla sileciosamente cuando la tabla ya existe o sea en algun lado se verifica la existencia de la tabla SIN el prefijo y si lo tiene se asume ya existe y aborta sin generar advertencia [!]
+
+	$ php com migrations migrate --dir=prompts --to=main-2
+
+Luego al crear schemas, models y api controllers no habria problema.
+
+
 # Variables de entorno
 
 Se ofrece la clase Env con la finalidad de poder acceder a variables de entorno (del archivo .env) como alternativa al paquete Dotenv
