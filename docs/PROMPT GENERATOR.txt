@@ -3,6 +3,8 @@ PROMPT GENERATOR
 
 # Posibilidad de incluir archivos y directorios
 
+POST /api/v1/prompts
+
 {
     "description":"some text",
     "files":[
@@ -12,9 +14,16 @@ PROMPT GENERATOR
     "notes":""
 }
 
+# Recuperacion de prompts
+
+GET /api/v1/prompts?page=1
+
+
 # Posibilidad de incluir archivos desde peticiones HTTP
 
 Esto es util para archivos como HTML, CSS y Javascript
+
+POST /api/v1/prompts
 
 {
 	"title": "Prueba de Generador de prompt para ChatGTP",
@@ -29,6 +38,8 @@ Esto es util para archivos como HTML, CSS y Javascript
 # Forma extendida de incluir archivos
 
 Esta forma habilita funcionalidades de reduccion de codigo, posibilidad de espeecificar que archivos o carpetas incluir o excluir en base a patrones glob, etc
+
+POST /api/v1/prompts
 
 {
     "description": "Intento debuguear una query pero el flag $exec de la clase Model cambia de false a true inesperadamente",
@@ -54,6 +65,8 @@ Esta forma habilita funcionalidades de reduccion de codigo, posibilidad de espee
 
 # Posibilidad de excluir funciones de clases PHP para recucir codigo
 
+POST /api/v1/prompts
+
 {
 	"title": "Prueba de Generador de prompt",
 	"description": "Analiza estos archivos y dime que hacen",
@@ -73,6 +86,8 @@ Esta forma habilita funcionalidades de reduccion de codigo, posibilidad de espee
 }
 
 # Incluir y/o excluir archivos y directorios
+
+POST /api/v1/prompts
 
 {
     "title": "Prueba de Generador de prompt",
