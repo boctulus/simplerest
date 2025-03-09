@@ -33,20 +33,30 @@ class Prompts extends MyApiController
         $data['content'] = [];
         $base_path = $data['base_path'] ?? null;
 
-        // Eliminar duplicados en files, preservando la estructura (strings u objetos)
+        // Eliminar duplicados en files, preservando la estructura
         $data['files'] = array_unique($data['files'], SORT_REGULAR);
 
         try {
-
             foreach ($data['files'] as $file_item) {
-                // Determinar si es string o array (objeto)
+                // Determinar si es string o array y extraer propiedades
                 if (is_string($file_item)) {
                     $path = $file_item;
+                    $include = ['*.*']; // Por defecto, incluir todos
+                    $exclude = [];
                     $allowed_functions = null;
                 } elseif (is_array($file_item) && isset($file_item['path'])) {
                     $path = $file_item['path'];
+                    $include = $file_item['include'] ?? ['*.*'];
+                    $exclude = $file_item['exclude'] ?? [];
                     $allowed_functions = $file_item['allowed_functions'] ?? null;
-                    // Validar que allowed_functions sea un array si está presente
+
+                    // Validar que include y exclude sean arrays
+                    if (!is_array($include)) {
+                        throw new \Exception("include must be an array");
+                    }
+                    if (!is_array($exclude)) {
+                        throw new \Exception("exclude must be an array");
+                    }
                     if ($allowed_functions !== null && !is_array($allowed_functions)) {
                         throw new \Exception("allowed_functions must be an array");
                     }
@@ -55,7 +65,7 @@ class Prompts extends MyApiController
                 }
 
                 try {
-                    // Intentar leer el contenido del archivo
+                    // Intentar leer el contenido si es un archivo
                     $content = Files::getContent($path, $base_path);
                     if ($allowed_functions !== null) {
                         $parser = new PHPParser();
@@ -70,11 +80,26 @@ class Prompts extends MyApiController
                         $dir_path = $path;
                     }
 
-                    $files = Files::recursiveGlob($dir_path . DIRECTORY_SEPARATOR . '*.*');
+                    // Obtener archivos según los patrones de include
+                    $files = [];
+                    foreach ($include as $pattern) {
+                        $pattern_files = Files::recursiveGlob($dir_path . DIRECTORY_SEPARATOR . $pattern);
+                        $files = array_merge($files, $pattern_files);
+                    }
+                    $files = array_unique($files); // Eliminar duplicados
+
+                    // Aplicar exclusiones
+                    foreach ($exclude as $exclude_pattern) {
+                        $exclude_files = Files::recursiveGlob($dir_path . DIRECTORY_SEPARATOR . $exclude_pattern);
+                        $files = array_diff($files, $exclude_files);
+                    }
+
+                    // Verificar límite de archivos
                     if (count($files) > $max_files) {
                         throw new \Exception("So many files to read");
                     }
 
+                    // Leer el contenido de cada archivo
                     foreach ($files as $file) {
                         $content = file_get_contents($file);
                         if ($allowed_functions !== null) {
@@ -85,9 +110,7 @@ class Prompts extends MyApiController
                     }
                 }
             }
-
         } catch (\Exception $e) {
-            // Asegura que los errores se devuelvan correctamente
             $this->response(['error' => ['message' => $e->getMessage()]], 400);
             return;
         }
