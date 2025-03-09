@@ -1,7 +1,11 @@
 .git/
+.codegpt/
+.vscode/
 *.zip
 *.rar
 *.tar
+*.bat
+*.ps1
 uploads/
 logs/
 tmp/
@@ -11,3 +15,4 @@ winpush.bat
 __releases/
 test-*.php
 test_*.php
+
