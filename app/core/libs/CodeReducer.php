@@ -38,14 +38,21 @@ class CodeReducer
             (new CodeReducer())->reduce($file, ['tb_prefix'])
         );   
     */
-    public function reduceCode($sourceCode, array $functionsToKeep = [], array $functionsToExclude = [], array $replace_with_interface = []) {
+    public function reduceCode(
+        $sourceCode, 
+        array $functionsToKeep = [], 
+        array $functionsToExclude = [], 
+        array $replace_with_interface = [], 
+        array $interface_replacement_exclusion_list = []
+    ) {
         // Si $functionsToKeep está vacío, asumimos que queremos mantener todas las funciones
         if (empty($functionsToKeep)) {
             $functionsToKeep = ['*'];
         }
 
         // Patrón para detectar funciones globales
-        $functionPattern = '/function\s+(\w+)\s*\(.*?\)\s*\{(?:[^{}]++|(?R))*\}/s';
+        $functionPattern = '/(?:(?:public|protected|private|static|final)\s+)*function\s+(\w+)\s*\(.*?\)\s*\{(?:[^{}]++|(?R))*\}/s';
+
         preg_match_all($functionPattern, $sourceCode, $functionMatches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
 
         // Almacenar información de las funciones
@@ -92,17 +99,34 @@ class CodeReducer
             }
 
             if (in_array($func, $toKeep)) {
+                // Verificar si la función está en $replace_with_interface
                 if (in_array($func['name'], $replace_with_interface)) {
-                    // Extraer la firma de la función y reemplazar su cuerpo
-                    $signaturePattern = '/(function\s+\w+\s*\(.*?\))\s*\{/s';
-                    if (preg_match($signaturePattern, $func['code'], $signatureMatch)) {
-                        $signature = $signatureMatch[1];
-                        $result .= $signature . " { /* ya implementado */ }";
+                    // Si $interface_replacement_exclusion_list no está vacío, solo las funciones listadas ahí se mantienen completas
+                    if (!empty($interface_replacement_exclusion_list)) {
+                        if (in_array($func['name'], $interface_replacement_exclusion_list)) {
+                            $result .= $func['code']; // Mantener la función completa
+                        } else {
+                            // Extraer la firma y reemplazar el cuerpo
+                            $signaturePattern = '/(function\s+\w+\s*\(.*?\))\s*\{/s';
+                            if (preg_match($signaturePattern, $func['code'], $signatureMatch)) {
+                                $signature = $signatureMatch[1];
+                                $result .= $signature . " { /* ya implementado */ }";
+                            } else {
+                                $result .= $func['code']; // Si falla el parseo, mantener el original
+                            }
+                        }
                     } else {
-                        $result .= $func['code']; // Si falla el parseo, mantener el original
+                        // Si $interface_replacement_exclusion_list está vacío, reemplazar todas en $replace_with_interface
+                        $signaturePattern = '/(function\s+\w+\s*\(.*?\))\s*\{/s';
+                        if (preg_match($signaturePattern, $func['code'], $signatureMatch)) {
+                            $signature = $signatureMatch[1];
+                            $result .= $signature . " { /* ya implementado */ }";
+                        } else {
+                            $result .= $func['code'];
+                        }
                     }
                 } else {
-                    $result .= $func['code']; // Mantener la función completa
+                    $result .= $func['code']; // Mantener la función completa si no está en $replace_with_interface
                 }
             }
 
@@ -117,67 +141,5 @@ class CodeReducer
         return $result;
     }
     
-    public function reduceClass($sourceCode, array $methodsToKeep) {
-        // Paso 1: Extraer el contenido hasta el cuerpo de la clase
-        if (!preg_match('/^(.*?class\s+\w+.*?\{)/s', $sourceCode, $matches)) {
-            throw new \Exception("No se pudo encontrar la declaración de clase");
-        }
-        
-        $header = $matches[1];
-        $classBodyStart = strlen($header);
-        
-        // Paso 2: Encontrar todos los métodos en la clase
-        $methodPattern = '/^\s*((?:public|private|protected|static)*\s+function\s+(\w+)\s*\(.*?\).*?\{(?:[^{}]++|(?R))*\})/sm';
-        preg_match_all($methodPattern, substr($sourceCode, $classBodyStart), $methodMatches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
-        
-        $methods = [];
-        foreach ($methodMatches as $match) {
-            $methodCode = $match[1][0];
-            $methodName = $match[2][0];
-            $position = $classBodyStart + $match[1][1];
-            $length = strlen($methodCode);
-            
-            $methods[] = [
-                'name' => $methodName,
-                'code' => $methodCode,
-                'start' => $position,
-                'end' => $position + $length,
-                'keep' => in_array($methodName, $methodsToKeep)
-            ];
-        }
-        
-        // Paso 3: Ordenar métodos por posición
-        usort($methods, function($a, $b) {
-            return $a['start'] - $b['start'];
-        });
-        
-        // Paso 4: Reconstruir el código manteniendo solo los métodos deseados
-        $result = $header;
-        $lastEnd = $classBodyStart;
-        $replacedAny = false;
-        
-        foreach ($methods as $method) {
-            // Agregar código entre el último método y éste
-            if ($method['start'] > $lastEnd) {
-                $result .= substr($sourceCode, $lastEnd, $method['start'] - $lastEnd);
-            }
-            
-            if ($method['keep']) {
-                $result .= $method['code'];
-                $replacedAny = false;
-            } else {
-                if (!$replacedAny) {
-                    $result .= "    // ...\n";
-                    $replacedAny = true;
-                }
-            }
-            
-            $lastEnd = $method['end'];
-        }
-        
-        // Agregar el resto del código después del último método
-        $result .= substr($sourceCode, $lastEnd);
-        
-        return $result;
-    }
+    
 }

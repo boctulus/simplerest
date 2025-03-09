@@ -17,7 +17,7 @@ class TestController extends Controller
         $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
 
         dd(
-            (new CodeReducer())->reduceCode($file, ['sayBye'])
+            (new CodeReducer())->reduceCode($file, ['sayBye', 'in_schema', 'doSomething'])
         );                   
     }
 
@@ -26,7 +26,7 @@ class TestController extends Controller
         $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
 
         dd(
-            (new CodeReducer())->reduceCode($file, [], ['tb_prefix'])
+            (new CodeReducer())->reduceCode($file, [], ['tb_prefix', 'in_schema'])
         );                   
     }
 
@@ -36,6 +36,15 @@ class TestController extends Controller
 
         dd(
             (new CodeReducer())->reduceCode($file, [], [], ['sayHello', 'sayBye'])
+        );                   
+    }
+
+    function test_interface_replacement_2()
+    {
+        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+
+        dd(
+            (new CodeReducer())->reduceCode($file, [], [], [], ['sayHello', 'sayBye'])
         );                   
     }
 }
