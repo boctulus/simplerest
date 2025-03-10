@@ -22,15 +22,18 @@ class PromptGeneratorController extends Controller
     {
         css_file(VIEWS_PATH . 'prompt_generator/css/index.css');
 
+        # JQuery para Toastr (?)
+        js_file('third_party/jquery/3.3.1/jquery.min.js');
+
         # Sweet Alert 
         css_file('third_party/sweetalert2/sweetalert2.min.css');
         js_file('third_party/sweetalert2/sweetalert.js');
 
         # Toastr  ---> usar para avisar cuando un Prompt fue generado con exito
-        js_file(ASSETS_PATH . 'third_party/toastr/toastr.min.js');
+        js_file('third_party/toastr/toastr.min.js');
 
         if (($_GET['fw'] ?? '') == 'alpine'){
-            view('prompt_generator/alpine_version.php', [
+            view('prompt_generator/index_alpine.php', [
                 'title' => 'Generador de Prompt'
             ], 'templates/tpl_alpine-tailwind.php'); 
         } else {
