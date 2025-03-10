@@ -118,7 +118,7 @@ class Response
         }
     }
 
-    function code(int $http_code, string $msg = NULL)
+    function code(int $http_code, string $msg = '')
     {
         static::$http_code_msg = $msg;
         static::$http_code = $http_code;
