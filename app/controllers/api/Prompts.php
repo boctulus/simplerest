@@ -168,7 +168,7 @@ class Prompts extends MyApiController
                         $content = Files::readOrFail($file);
                         $content = $this->reduceFileContent($content, $allowed_functions, $interface_replacement);
                         $data['content'][$file] = $content;
-                        $data['included'][] = $file;
+                        $data['included'][] = Files::replaceSlashes($file);
                     }
                 }
             }
