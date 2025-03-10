@@ -1,4 +1,4 @@
-<div class="relative mt-4 mb-6 w-full md:w-auto flex-grow">
+<div class="relative mt-6 mb-8 w-full md:w-auto flex-grow">
     <input 
         type="text" 
         x-model="searchQuery" 

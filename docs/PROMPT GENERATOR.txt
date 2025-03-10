@@ -152,6 +152,8 @@ Enviando "mode_simulate" en true
 
 Ej:
 
+POST /api/v1/prompts
+
 {
     "title": "Prueba de Generador de prompt",
     "description": "Analiza estos archivos y dime que hacen",
