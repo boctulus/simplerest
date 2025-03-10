@@ -40,94 +40,20 @@ function promptGenerator() {
             });
 
             // Asegurarse de que las librerías necesarias estén cargadas
-            this.loadExternalLibraries();
-        },
-
-        // Cargar librerías externas necesarias (SweetAlert2 y Toastr)
-        loadExternalLibraries() {
-            // Cargar SweetAlert2 si no está ya cargada
-            if (typeof Swal === 'undefined') {
-                const sweetAlertScript = document.createElement('script');
-                sweetAlertScript.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
-                document.head.appendChild(sweetAlertScript);
-            }
-
-            // Cargar Toastr si no está ya cargada
-            if (typeof toastr === 'undefined') {
-                // Cargar CSS de Toastr
-                const toastrCss = document.createElement('link');
-                toastrCss.rel = 'stylesheet';
-                toastrCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css';
-                document.head.appendChild(toastrCss);
-
-                // Cargar jQuery (requerido por Toastr)
-                const jqueryScript = document.createElement('script');
-                jqueryScript.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
-                jqueryScript.onload = function() {
-                    // Cargar Toastr después de jQuery
-                    const toastrScript = document.createElement('script');
-                    toastrScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js';
-                    toastrScript.onload = function() {
-                        // Configurar Toastr
-                        toastr.options = {
-                            closeButton: true,
-                            progressBar: true,
-                            positionClass: "toast-top-right",
-                            timeOut: 3000
-                        }
-                    };
-                    document.head.appendChild(toastrScript);
-                };
-                document.head.appendChild(jqueryScript);
-            }
+            loadExternalLibraries();
         },
 
         // Métodos para el buscador de prompts
         searchPrompts() {
-            if (!this.searchQuery.trim()) {
-                this.searchResults = [];
-                return;
-            }
-
-            // Mostrar el loader
-            this.loading = true;
-
-            // Simular una búsqueda con delay
-            setTimeout(() => {
-                const query = this.searchQuery.toLowerCase();
-                const allPrompts = this.getSavedPrompts();
-
-                this.searchResults = allPrompts.filter(prompt => {
-                    const description = (prompt.description || '').toLowerCase();
-                    const notes = (prompt.notes || '').toLowerCase();
-                    const paths = prompt.filePaths ? prompt.filePaths.map(f => f.path.toLowerCase()).join(' ') : '';
-
-                    return description.includes(query) ||
-                        notes.includes(query) ||
-                        paths.includes(query);
-                });
-
-                // Ocultar el loader
-                this.loading = false;
-
-                if (this.searchResults.length === 0) {
-                    toastr.info('No se encontraron resultados que coincidan con tu búsqueda');
-                }
-            }, 500);
+            return searchPromptsImpl(this);
         },
 
         loadPrompt(id) {
-            window.location.hash = `#chat-${id}`;
-            this.loadFromHash();
-            this.searchResults = [];
-            this.searchQuery = '';
-            toastr.success('Prompt cargado con éxito');
+            return loadPromptImpl(this, id);
         },
 
         formatDate(dateString) {
-            if (!dateString) return 'Fecha desconocida';
-            const date = new Date(dateString);
-            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            return formatDateImpl(dateString);
         },
 
         // Métodos para manipular rutas
@@ -327,230 +253,6 @@ function promptGenerator() {
             });
         },
 
-        copyToClipboard() {
-            if (!this.generatedPrompt.trim()) {
-                Swal.fire({
-                    title: 'Advertencia',
-                    text: 'No hay contenido para copiar',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            // Usar la API moderna del portapapeles si está disponible
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(this.generatedPrompt)
-                    .then(() => {
-                        toastr.success('El prompt ha sido copiado al portapapeles');
-                        this.showPromptOptions = false;
-                    })
-                    .catch(err => {
-                        console.error('Error al copiar: ', err);
-                        this.fallbackCopyToClipboard();
-                    });
-            } else {
-                this.fallbackCopyToClipboard();
-            }
-        },
-
-        fallbackCopyToClipboard() {
-            // Método de respaldo para navegadores que no soportan la API Clipboard
-            const textarea = document.createElement('textarea');
-            textarea.value = this.generatedPrompt;
-            textarea.style.position = 'fixed';
-            document.body.appendChild(textarea);
-            textarea.select();
-
-            try {
-                document.execCommand('copy');
-                toastr.success('El prompt ha sido copiado al portapapeles');
-            } catch (err) {
-                console.error('Error al copiar: ', err);
-                Swal.fire({
-                    title: 'Error',
-                    text: 'No se pudo copiar al portapapeles',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-
-            document.body.removeChild(textarea);
-            this.showPromptOptions = false;
-        },
-
-        // Métodos para navegación entre prompts guardados
-        prevPrompt() {
-            // Get all saved prompts
-            const savedPrompts = this.getSavedPrompts();
-            if (savedPrompts.length === 0) {
-                Swal.fire({
-                    title: 'Información',
-                    text: 'No hay prompts guardados para navegar',
-                    icon: 'info',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            // Mostrar loader
-            this.loading = true;
-
-            setTimeout(() => {
-                // Find current index or default to last item
-                let currentIndex = -1;
-                const currentHash = window.location.hash;
-                if (currentHash.startsWith('#chat-')) {
-                    const currentId = currentHash.split('-')[1];
-                    currentIndex = savedPrompts.findIndex(p => p.id === currentId);
-                }
-
-                if (currentIndex <= 0) {
-                    // Wrap around to the end if at beginning
-                    currentIndex = savedPrompts.length - 1;
-                } else {
-                    currentIndex--;
-                }
-
-                // Navigate to the previous prompt
-                const prevPrompt = savedPrompts[currentIndex];
-                window.location.hash = `#chat-${prevPrompt.id}`;
-                this.loadFromHash();
-
-                // Ocultar loader
-                this.loading = false;
-
-                toastr.info(`Navegando: prompt ${currentIndex + 1} de ${savedPrompts.length}`);
-            }, 400);
-        },
-
-        nextPrompt() {
-            // Get all saved prompts
-            const savedPrompts = this.getSavedPrompts();
-            if (savedPrompts.length === 0) {
-                Swal.fire({
-                    title: 'Información',
-                    text: 'No hay prompts guardados para navegar',
-                    icon: 'info',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            // Mostrar loader
-            this.loading = true;
-
-            setTimeout(() => {
-                // Find current index or default to -1 (before first item)
-                let currentIndex = -1;
-                const currentHash = window.location.hash;
-                if (currentHash.startsWith('#chat-')) {
-                    const currentId = currentHash.split('-')[1];
-                    currentIndex = savedPrompts.findIndex(p => p.id === currentId);
-                }
-
-                if (currentIndex >= savedPrompts.length - 1 || currentIndex === -1) {
-                    // Wrap around to the beginning if at end
-                    currentIndex = 0;
-                } else {
-                    currentIndex++;
-                }
-
-                // Navigate to the next prompt
-                const nextPrompt = savedPrompts[currentIndex];
-                window.location.hash = `#chat-${nextPrompt.id}`;
-                this.loadFromHash();
-
-                // Ocultar loader
-                this.loading = false;
-
-                toastr.info(`Navegando: prompt ${currentIndex + 1} de ${savedPrompts.length}`);
-            }, 400);
-        },
-
-        // Helper method to get all saved prompts sorted by timestamp
-        getSavedPrompts() {
-            const prompts = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('chat-')) {
-                    try {
-                        const promptData = JSON.parse(localStorage.getItem(key));
-                        if (promptData && promptData.id) {
-                            prompts.push(promptData);
-                        }
-                    } catch (e) {
-                        console.error('Error parsing saved prompt:', e);
-                    }
-                }
-            }
-
-            // Sort by timestamp (newest first)
-            return prompts.sort((a, b) => {
-                return new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
-            });
-        },
-
-        executeWithOption(option) {
-            if (!this.generatedPrompt.trim()) {
-                Swal.fire({
-                    title: 'Advertencia',
-                    text: 'Primero debes generar un prompt para ejecutarlo',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            this.executeWith = option;
-            this.showExecuteOptions = false;
-
-            // Mostrar spinner
-            this.loading = true;
-
-            // En una implementación real, aquí iría la lógica para enviar a ChatGPT o Claude
-            console.log(`Ejecutando con ${option}:`, this.generatedPrompt);
-
-            // Simular una petición Ajax
-            setTimeout(() => {
-                // Ocultar spinner
-                this.loading = false;
-
-                // Mostrar notificación de éxito
-                toastr.success(`El prompt ha sido enviado a ${option}`);
-            }, 1500);
-        },
-
-        // Add method to save the current form as a new prompt
-        saveAsNewPrompt() {
-            // Mostrar spinner
-            this.loading = true;
-
-            setTimeout(() => {
-                const formId = Date.now().toString(36) + Math.random().toString(36).substring(2);
-
-                const formState = {
-                    id: formId,
-                    description: this.description,
-                    notes: this.notes,
-                    filePaths: this.filePaths.map(file => ({
-                        path: file.path,
-                        disabled: file.disabled,
-                        allowedFunctions: file.allowedFunctions
-                    })),
-                    timestamp: new Date().toISOString()
-                };
-
-                localStorage.setItem(`chat-${formId}`, JSON.stringify(formState));
-                window.location.hash = `#chat-${formId}`;
-
-                // Ocultar spinner
-                this.loading = false;
-
-                toastr.success('El prompt ha sido guardado con un nuevo ID');
-            }, 700);
-        },
-
         generatePrompt() {
             // Verificar si hay rutas de archivos habilitadas
             const enabledPaths = this.filePaths.filter(file => !file.disabled && file.path.trim());
@@ -620,140 +322,20 @@ function promptGenerator() {
             }, 1000);
         },
 
-        // Operaciones con el prompt generado
-        togglePromptOptions() {
-            this.showPromptOptions = !this.showPromptOptions;
-        },
-
-        toggleFullscreen() {
-            const textarea = document.getElementById('generatedPrompt');
-
-            if (!document.fullscreenElement) {
-                if (textarea.requestFullscreen) {
-                    textarea.requestFullscreen();
-                } else if (textarea.mozRequestFullScreen) {
-                    textarea.mozRequestFullScreen();
-                } else if (textarea.webkitRequestFullscreen) {
-                    textarea.webkitRequestFullscreen();
-                } else if (textarea.msRequestFullscreen) {
-                    textarea.msRequestFullscreen();
-                }
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-            }
-
-            this.showPromptOptions = false;
-        },
-
-        // Opciones de ejecución
-        toggleExecuteOptions() {
-            this.showExecuteOptions = !this.showExecuteOptions;
-        },
-
-        // Gestión del formulario
-        newForm() {
-            Swal.fire({
-                title: '¿Crear nuevo prompt?',
-                text: 'Se borrará el formulario actual',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, crear nuevo',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.clearFormWithoutConfirmation();
-                    toastr.success('Nuevo formulario creado');
-                }
-            });
-        },
-
-        clearFormWithoutConfirmation() {
-            this.description = '';
-            this.notes = '';
-            this.generatedPrompt = '';
-            this.filePaths = [];
-            this.addFilePath();
-            localStorage.removeItem('currentForm');
-            history.pushState('', document.title, window.location.pathname);
-        },
-
-        // Persistencia
-        saveFormToLocalStorage() {
-            const formState = {
-                description: this.description,
-                notes: this.notes,
-                filePaths: this.filePaths.map(file => ({
-                    path: file.path,
-                    disabled: file.disabled,
-                    allowedFunctions: file.allowedFunctions
-                }))
-            };
-
-            localStorage.setItem('currentForm', JSON.stringify(formState));
-
-            // Si hay un ID en el hash, también guardar con ese ID
-            const currentHash = window.location.hash;
-            if (currentHash.startsWith('#chat-')) {
-                const formId = currentHash.split('-')[1];
-                localStorage.setItem(`chat-${formId}`, JSON.stringify({
-                    ...formState,
-                    id: formId,
-                    timestamp: new Date().toISOString()
-                }));
-            }
-        },
-
-        loadFromHash() {
-            // Mostrar spinner al cargar
-            this.loading = true;
-
-            setTimeout(() => {
-                const currentHash = window.location.hash;
-                let savedForm;
-
-                if (currentHash.startsWith('#chat-')) {
-                    const formId = currentHash.split('-')[1];
-                    savedForm = JSON.parse(localStorage.getItem(`chat-${formId}`));
-                } else {
-                    savedForm = JSON.parse(localStorage.getItem('currentForm'));
-                }
-
-                if (savedForm) {
-                    this.description = savedForm.description || '';
-                    this.notes = savedForm.notes || '';
-
-                    // Cargar rutas de archivo
-                    if (Array.isArray(savedForm.filePaths)) {
-                        this.filePaths = savedForm.filePaths.map(file => ({
-                            id: 'file-' + Date.now() + Math.random().toString(36).substring(2),
-                            path: file.path || '',
-                            disabled: file.disabled || false,
-                            allowedFunctions: file.allowedFunctions || '',
-                            showFunctions: false,
-                            showDropdown: false,
-                            selected: false
-                        }));
-                    }
-
-                    // Asegurar que siempre haya al menos una ruta
-                    if (this.filePaths.length === 0) {
-                        this.addFilePath();
-                    }
-                }
-
-                // Ocultar spinner después de cargar
-                this.loading = false;
-            }, 300);
-        }
+        // Method references to utility functions that have been moved to separate files
+        prevPrompt() { return prevPromptImpl(this); },
+        nextPrompt() { return nextPromptImpl(this); },
+        getSavedPrompts() { return getSavedPromptsImpl(); },
+        copyToClipboard() { return copyToClipboardImpl(this); },
+        fallbackCopyToClipboard() { return fallbackCopyToClipboardImpl(this); },       
+        executeWithOption(option) { return executeWithOptionImpl(this, option); },
+        togglePromptOptions() { togglePromptOptionsImpl(this); },
+        toggleFullscreen() { toggleFullscreenImpl(this); },
+        toggleExecuteOptions() { return toggleExecuteOptionsImpl(this); },
+        newForm() { return newFormImpl(this); },
+        clearFormWithoutConfirmation() { return clearFormWithoutConfirmationImpl(this); },
+        saveFormToLocalStorage() { return saveFormToLocalStorageImpl(this); },
+        loadFromHash() { return loadFromHashImpl(this); },
+        saveAsNewPrompt() { return saveAsNewPromptImpl(this); }
     };
 }
