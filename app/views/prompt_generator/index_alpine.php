@@ -10,5 +10,10 @@
 </div>
 
 <?php
+    /*
+        <script src="components/storage_utils.js"></script>
+        <script src="components/ui_utils.js"></script>
+        <script src="components/toast_config.js"></script>
+    */
     js_file(VIEWS_PATH . 'prompt_generator/components/prompt_generator.js');
 ?>
