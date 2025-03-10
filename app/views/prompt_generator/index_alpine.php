@@ -9,11 +9,10 @@
     <?php include_once 'partials/generated_prompt_section.php'; ?>
 </div>
 
+<!-- Include all components -->
 <?php
-    /*
-        <script src="components/storage_utils.js"></script>
-        <script src="components/ui_utils.js"></script>
-        <script src="components/toast_config.js"></script>
-    */
+    js_file(VIEWS_PATH . 'prompt_generator/components/storage_utils.js');
+    js_file(VIEWS_PATH . 'prompt_generator/components/ui_utils.js');
+    js_file(VIEWS_PATH . 'prompt_generator/components/toast_config.js');
     js_file(VIEWS_PATH . 'prompt_generator/components/prompt_generator.js');
 ?>
