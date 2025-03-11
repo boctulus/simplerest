@@ -9,7 +9,7 @@ use simplerest\core\controllers\Controller;
 use simplerest\core\traits\TimeExecutionTrait;
 use simplerest\core\controllers\ConsoleController;
 
-class PowerController extends Controller
+class PowerController extends ConsoleController
 {
     public function __construct()
     {

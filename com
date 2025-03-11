@@ -1,11 +1,13 @@
 #!/usr/bin/env php
 <?php
 
+use simplerest\core\ConsoleRouter;
 use simplerest\core\FrontController;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Env;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
+
 
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
@@ -83,10 +85,12 @@ if (count($args) > 0){
    }
 }
 
-
 if ($routing){
-   FrontController::resolve();
+   // FrontController::resolve();
 }
+     
+ConsoleRouter::resolve();
+ 
  	
 
 

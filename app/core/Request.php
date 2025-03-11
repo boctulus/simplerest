@@ -23,7 +23,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
     protected static $headers;
     protected static $accept_encoding;
     protected static $content_type;
-    protected static $instance = NULL;
+    protected static $instance;
 
     protected        $as_object = true;
 
@@ -137,7 +137,7 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
             static::$instance = new static();
         }
         
-        return static::$instance;
+        return self::$instance; // cambio de static a self 11-mar-2025
     }
 
     function getRaw(){
