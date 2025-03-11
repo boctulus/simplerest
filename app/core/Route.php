@@ -354,4 +354,55 @@ class Route
         }
         return httpProtocol() . '://' . $_SERVER['SERVER_NAME'] . '/' . static::$aliases[$name]['uri'];
     }
+
+    public static function fromArray(array $routes) {
+        // Definizione dei verbi HTTP supportati
+        $supportedVerbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+        
+        foreach ($routes as $routeKey => $callback) {
+            // Se il formato della chiave contiene ":", significa che è specificato un verbo
+            if (strpos($routeKey, ':') !== false) {
+                list($verb, $uri) = explode(':', $routeKey, 2);
+                $verb = strtoupper(trim($verb));
+                $uri  = trim($uri, '/');
+                
+                // Se il verbo è supportato, chiama il metodo di registrazione corrispondente
+                if (in_array($verb, $supportedVerbs)) {
+                    switch ($verb) {
+                        case 'GET':
+                            self::get($uri, $callback);
+                            break;
+                        case 'POST':
+                            self::post($uri, $callback);
+                            break;
+                        case 'PUT':
+                            self::put($uri, $callback);
+                            break;
+                        case 'PATCH':
+                            self::patch($uri, $callback);
+                            break;
+                        case 'DELETE':
+                            self::delete($uri, $callback);
+                            break;
+                        case 'OPTIONS':
+                            self::options($uri, $callback);
+                            break;
+                    }
+                } else {
+                    // Se il verbo specificato non è riconosciuto, registra per tutti i verbi supportati
+                    foreach ($supportedVerbs as $v) {
+                        call_user_func([__CLASS__, strtolower($v)], $uri, $callback);
+                    }
+                }
+            } else {
+                // Se non viene specificato alcun verbo, registra la rotta per tutti i verbi supportati
+                $uri = trim($routeKey, '/');
+                foreach ($supportedVerbs as $v) {
+                    call_user_func([__CLASS__, strtolower($v)], $uri, $callback);
+                }
+            }
+        }
+        return static::getInstance();
+    }
+    
 }

@@ -1046,7 +1046,6 @@ El Router tiene la enorme ventaja de permitir filtrar los requests por su verbo 
 
 El router se habilitan desde el archivo config/config.php y se configura desde /config/routes.php
 
-
 Actualmente el orden en que se definen las rutas es importante ..... (es algo que debe corregirse).
 
 Esta obligandose a ir de lo especifico a lo general.
@@ -1067,6 +1066,138 @@ Ej:
 		$content = "Panel de Admin";
 		render($content);
 	});
+
+
+# Router
+
+Introducción
+
+El sistema de enrutamiento permite definir rutas de manera flexible utilizando una sintaxis simplificada. Este manual cubre la estructura y el uso de las rutas, incluyendo el método Route::fromArray() para registrar múltiples rutas de manera eficiente.
+
+Definición de Rutas
+
+Las rutas pueden definirse utilizando los métodos estándar o con el nuevo método fromArray().
+
+Métodos estándar
+
+Se pueden registrar rutas utilizando los métodos get(), post(), put(), patch(), delete(), y options().
+
+	Route::get('/usuario/{id}', 'UserController@show');
+	Route::post('/producto', 'ProductController@store');
+
+Uso de Route::fromArray()
+
+El método fromArray() permite definir múltiples rutas en un solo llamado.
+
+Formato del Array
+
+Cada entrada del array debe seguir el formato:
+
+	'VERB:/ruta' => 'Controlador@metodo' (para una ruta con verbo específico)
+
+	'/ruta' => 'Controlador@metodo' (para todos los verbos soportados)
+
+Ejemplo
+
+	Route::fromArray([
+		'GET:/speed_check' => 'boctulus\relmotor_central\controllers\SpeedCheck@index',
+		'POST:/producto' => 'ProductController@store',
+		'/ping' => 'SystemController@ping' // Se registrará en GET, POST, PUT, PATCH, DELETE, OPTIONS
+	]);
+
+Rutas con parametros
+
+	Route::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
+
+Grupos de rutas
+
+	Route::group('admin', function() {
+		Route::get('dashboard', 'DumbController@dashboard');
+		Route::get('settings', 'DumbController@settings');
+	});
+
+Funciones anonimas 
+
+Route::get('system/info/gettext', function(){
+	if ( false === function_exists('gettext') ) {
+		echo "You do not have the gettext library installed with PHP.";
+		exit(1);
+	}
+});
+
+
+# Route de consola
+
+ConsoleRouter es un componente que permite ejecutar comandos PHP desde la línea de comandos, facilitando la creación de scripts de automatización y la ejecución de tareas administrativas.
+
+Uso Básico
+
+Para ejecutar un comando, use la sintaxis:
+
+	php com {comando} [argumentos]
+
+Ej:
+
+	php com hello
+
+Salida esperada:
+
+	Hello, world!
+	
+
+Manejo de Parámetros
+
+Se pueden pasar argumentos a los comandos de la siguiente manera:
+
+	php com math sum 10 20
+
+Si el controlador MathController tiene el método sum, este recibirá los argumentos 10 y 20.
+
+Ej:
+
+	class MathController {
+		function sum($a, $b) {
+			return $a + $b;
+		}
+	}
+
+	Salida esperada:
+
+	30
+
+
+Controladores en carpetas
+
+Los controladores pueden organizarse en subcarpetas dentro de controllers. Para ejecutar un comando en una carpeta, use:
+
+	php com demos\date test_gfg5
+
+Esto ejecutará el método test_gfg5 dentro de Demos\DateController.
+
+
+Uso de alias y métodos dinámicos
+
+Un controlador puede aceptar distintos formatos de entrada usando __call. Ejemplo en WhatsappController:
+
+	function __call($name, $arguments) {
+		if (is_numeric($name)) {
+			return $this->_link($name, ...$arguments);
+		}
+	}
+
+Esto permite comandos como:
+
+	php com whatsapp '+8613662320140'
+
+
+Errores Comunes y Soluciones
+
+- Comando no encontrado: Verifique que el nombre del controlador y el método sean correctos.
+
+- Argumentos incorrectos: Revise la documentación del comando y asegúrese de pasar los valores correctos.
+
+- Espacios en argumentos: Use comillas si el argumento contiene espacios.
+
 
 ### Resource Controller:
 

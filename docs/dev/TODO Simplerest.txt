@@ -1,13 +1,30 @@
 TODO SimpleRest
 ===============
 
+- Route deberia permitir que funciones anonimas acepten parametros. Chequear
+
+- Router para la línea de comandos ("route console") podria aceptar funciones anonimas:
+
+Ej:
+
+  ConsoleRouter::set('sql-query', function () {
+    \DB::statement('some query');
+  });
+
+o 
+
+  ConsoleRouter::set('sql-query', function () {
+    \DB::statement('your query');
+  })->describe('Execute SQL query');
+
+
+
 - Implemenar insert() a nivel de Model con SubRecursos
 
 http://simplerest.lan/prompt_generator#chat-427
 http://simplerest.lan/demos/model/test_insert_struct
 D:\laragon\www\simplerest\app\controllers\TestInsertController.php
 D:\laragon\www\simplerest\app\core\traits\InsertWithSubResourcesTrait.php
-
 
 - Diferencias ?
 
@@ -926,8 +943,6 @@ https://code-boxx.com/move-files-php/
     para estimar TimeZone Gap
 
 - Poder exportar rutas del FrontController en formato que puedan usarse en el Router (GET::xxxxxxxx, dado que el segundo es mas performante y seguro). Usar solo el FrontController en desarrollo.
-
-- Admitir parametros en routes del Router.
 
 - Testing de APIs: internas y externas.
 
@@ -2307,15 +2322,6 @@ Ej:
 Ej:
 
   DB::table('products')->find(1356)->first()
-
-
-- Crear un router para la línea de comandos ("route console") y así poder prescindir del FrontController
-
-Ej:
-
-  Artisan::command('sql-query', function () {
-    \DB::statement('your query');
-  })->describe('Execute SQL query')
 
 
 - Permitir crear "módulos" para agrupar modelos, schemas, vistas, controladores, assets, rutas, migraciones, seeds, middlewares, traducciones,...
