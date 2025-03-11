@@ -11,15 +11,15 @@ require_once __DIR__ . '/app.php';
 
 use simplerest\core\libs\Config;
 use simplerest\core\ConsoleRouter;
-use simplerest\core\Route;
+use simplerest\core\WebRouter;
 use simplerest\core\FrontController;
 
 $cfg = Config::get();
 
 if ($cfg['web_router']){        
     include __DIR__ . '/config/routes.php';
-    Route::compile();
-    Route::resolve();
+    WebRouter::compile();
+    WebRouter::resolve();
 } 
 
 if ($cfg['console_router']){        

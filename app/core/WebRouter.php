@@ -18,7 +18,7 @@ use simplerest\core\libs\Url;
     Implementar un manejador de excepciones que capture el error CLASS_NOT_FOUND y devuelva una respuesta más clara (ej. "Ruta no encontrada" en lugar de "Internal error").
 */
 
-class Route 
+class WebRouter
 {
     protected static $routes       = [];
     protected static $params;
@@ -87,8 +87,8 @@ class Route
     /**
      * Metodo per raggruppare rotte con un prefisso comune.
      * Esempio:
-     *   Route::group('admin', function() {
-     *       Route::get('dashboard', 'AdminController@dashboard');
+     *   WebRouter::group('admin', function() {
+     *       WebRouter::get('dashboard', 'AdminController@dashboard');
      *   });
      */
     public static function group(string $prefix, callable $callback) {
