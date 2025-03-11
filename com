@@ -86,10 +86,18 @@ if (count($args) > 0){
 }
 
 if ($routing){
-   // FrontController::resolve();
+   $cfg = Config::get();
+
+   if ($cfg['front_controller']){  
+      FrontController::resolve();
+   }
+
+   if ($cfg['console_router']){  
+      ConsoleRouter::resolve();
+   }
 }
      
-ConsoleRouter::resolve();
+
  
  	
 
