@@ -13,5 +13,11 @@
             </div>
         </div>
     </div>
-    <textarea id="generatedPrompt" x-model="generatedPrompt" class="w-full p-2 border rounded h-32" readonly></textarea>
+    
+    <textarea 
+    id="generatedPrompt" 
+    x-model="generatedPrompt" 
+    x-text="generatedPrompt" 
+    class="w-full p-2 border rounded h-32" 
+    readonly></textarea>
 </div>
