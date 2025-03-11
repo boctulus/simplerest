@@ -14,6 +14,17 @@ Route::post('api-test/cors',  'CorsTesterController@post');
 // Route::put('api-test/cors',  'CorsTesterController');
 // Route::delete('api-test/cors',  'CorsTesterController');
 
+// Si intentara con otro verbo fallaria --ok
+Route::delete('api-test/r1',  'DumbController@test_r1');
+
+// Rutas con parametros --ok
+Route::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
+
+// Grupos --ok
+Route::group('admin', function() {
+    Route::get('dashboard', 'DumbController@dashboard');
+    Route::get('settings', 'DumbController@settings');
+});
 
 Route::get('testx', function(){
 	// echo '<pre>';
