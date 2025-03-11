@@ -739,7 +739,7 @@ si se intenta acceder a una dirección del tipo /admin/* se redireciona al login
 
 Es fácil comprobarlo creando una ruta como esta:
 
-	Route::get('admin/una-pagina', function(){
+	WebRouter::get('admin/una-pagina', function(){
 		$content = "Pagina de acceso restringido";
 		render($content);
 	});
@@ -1018,29 +1018,29 @@ Es posible configurar el uso del Front Controller y/o del Router. El primero es 
 El Router tiene la enorme ventaja de permitir filtrar los requests por su verbo HTTP:
 
 	# ruta: /calc/sum/4/5
-	Route::get('calc/sum', function($a, $b){
+	WebRouter::get('calc/sum', function($a, $b){
 		return "La suma de $a y $b da ". ($a + $b);
 	})->where(['a' => '[0-9]+', 'b' =>'[0-9]+']);
 
 	# ruta: /saludador/sp/hi/Juan/Carlos/44
-	Route::get('saludador/sp/hi/', function($nombre, $apellido, $edad){
+	WebRouter::get('saludador/sp/hi/', function($nombre, $apellido, $edad){
 		return "Hola ". ($edad > 30 ? 'Sr. ' : '') . "$nombre $apellido";
 	})->where(['edad' => '[0-9]+', 'nombre' =>'[a-zA-Z]+', 'apellido' =>'[a-zA-Z]+']);
 
 	# ruta: /saludador/en/hi/Juan/Carlos/44
-	Route::get('saludador/en/hi/', function($nombre, $apellido, $edad){
+	WebRouter::get('saludador/en/hi/', function($nombre, $apellido, $edad){
 		return "Hello ". ($edad > 30 ? 'Mr. ' : '') . "$apellido $nombre";
 	})->where(['edad' => '[0-9]+', 'nombre' =>'[a-zA-Z]+', 'apellido' =>'[a-zA-Z]+']);
 
 	# ruta: /tonterias
-	Route::get('tonterias',  'DumbController');
+	WebRouter::get('tonterias',  'DumbController');
 
 	# ruta: /chatbot/hi
-	Route::get('chatbot/hi', 'DumbController@hi')
+	WebRouter::get('chatbot/hi', 'DumbController@hi')
 	->where(['name' => '[a-zA-Z]+']);  // <-- where() no implementado con controladores !
 
 	# ruta: /cosas/67
-	Route::delete('cosas', function($id){
+	WebRouter::delete('cosas', function($id){
 		return "Deleting cosa con id = $id";
 	});
 
@@ -1052,17 +1052,17 @@ Esta obligandose a ir de lo especifico a lo general.
 
 Ej:
 
-	Route::get('admin/una-pagina', function(){
+	WebRouter::get('admin/una-pagina', function(){
 		$content = "Pagina (de acceso restringido)";
 		render($content);
 	});
 
-	Route::get('admin/pagina-dos', function(){
+	WebRouter::get('admin/pagina-dos', function(){
 		$content = "Pagina dos (de acceso restringido)";
 		render($content);
 	});
 
-	Route::get('admin', function(){
+	WebRouter::get('admin', function(){
 		$content = "Panel de Admin";
 		render($content);
 	});
@@ -1072,7 +1072,7 @@ Ej:
 
 Introducción
 
-El sistema de enrutamiento permite definir rutas de manera flexible utilizando una sintaxis simplificada. Este manual cubre la estructura y el uso de las rutas, incluyendo el método Route::fromArray() para registrar múltiples rutas de manera eficiente.
+El sistema de enrutamiento permite definir rutas de manera flexible utilizando una sintaxis simplificada. Este manual cubre la estructura y el uso de las rutas, incluyendo el método WebRouter::fromArray() para registrar múltiples rutas de manera eficiente.
 
 Definición de Rutas
 
@@ -1082,10 +1082,10 @@ Métodos estándar
 
 Se pueden registrar rutas utilizando los métodos get(), post(), put(), patch(), delete(), y options().
 
-	Route::get('/usuario/{id}', 'UserController@show');
-	Route::post('/producto', 'ProductController@store');
+	WebRouter::get('/usuario/{id}', 'UserController@show');
+	WebRouter::post('/producto', 'ProductController@store');
 
-Uso de Route::fromArray()
+Uso de WebRouter::fromArray()
 
 El método fromArray() permite definir múltiples rutas en un solo llamado.
 
@@ -1099,7 +1099,7 @@ Cada entrada del array debe seguir el formato:
 
 Ejemplo
 
-	Route::fromArray([
+	WebRouter::fromArray([
 		'GET:/speed_check' => 'boctulus\relmotor_central\controllers\SpeedCheck@index',
 		'POST:/producto' => 'ProductController@store',
 		'/ping' => 'SystemController@ping' // Se registrará en GET, POST, PUT, PATCH, DELETE, OPTIONS
@@ -1107,18 +1107,18 @@ Ejemplo
 
 Rutas con parametros
 
-	Route::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
+	WebRouter::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
 
 Grupos de rutas
 
-	Route::group('admin', function() {
-		Route::get('dashboard', 'DumbController@dashboard');
-		Route::get('settings', 'DumbController@settings');
+	WebRouter::group('admin', function() {
+		WebRouter::get('dashboard', 'DumbController@dashboard');
+		WebRouter::get('settings', 'DumbController@settings');
 	});
 
 Funciones anonimas 
 
-Route::get('system/info/gettext', function(){
+WebRouter::get('system/info/gettext', function(){
 	if ( false === function_exists('gettext') ) {
 		echo "You do not have the gettext library installed with PHP.";
 		exit(1);
@@ -10689,7 +10689,7 @@ Luego a fin de poder usar el shortcode se crearia un controller:
 
 O desde una ruta:
 
-	Route::get("tax_calc", function() {
+	WebRouter::get("tax_calc", function() {
 		set_template('templates/tpl_bt3.php');          
 		render('RackQuoterShortcode::get());
 	});
@@ -20474,9 +20474,9 @@ Pasos:
 
 routes/api.php | routes
 
-Route::resource('addresses', App\Http\Controllers\AddressController::class);
-Route::resource('cart_items', App\Http\Controllers\CartItemController::class);
-Route::resource('carts', App\Http\Controllers\CartController::class);
+WebRouter::resource('addresses', App\Http\Controllers\AddressController::class);
+WebRouter::resource('cart_items', App\Http\Controllers\CartItemController::class);
+WebRouter::resource('carts', App\Http\Controllers\CartController::class);
 ...
 
 

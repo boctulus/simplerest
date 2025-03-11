@@ -3334,7 +3334,7 @@ Inclusive debe funcionar con rutas:
       }
   }
 
-  Route::get('say-hi-3', function(SimpleClass $simpleClass)
+  WebRouter::get('say-hi-3', function(SimpleClass $simpleClass)
   {
       return $simpleClass->sayHi();
   });
@@ -3411,7 +3411,7 @@ También se pueden auto-injectar cuando son muy simples. Ej:
       }
   }
 
-  Route::get('get-cake-1', function(Cake1 $cake1) {
+  WebRouter::get('get-cake-1', function(Cake1 $cake1) {
       return $cake1->get();
   });
 
@@ -5230,8 +5230,8 @@ Además de expresiones regulares aceptar constantes como:
 
 Es necesario poder especificar el namespace del Controller porque podría no estar en la raiz del directorio app/controllers. Laravel provee varias formas:
 
-  Route::get('/user', 'App\Http\Controllers\UserController@index']); 
-  Route::get('/user', [App\Http\Controllers\UserController::class, 'index']);  
+  WebRouter::get('/user', 'App\Http\Controllers\UserController@index']); 
+  WebRouter::get('/user', [App\Http\Controllers\UserController::class, 'index']);  
 
 https://laravel.com/docs/8.x/upgrade#routing
 https://medium.com/@litvinjuan/how-to-fix-target-class-does-not-exist-in-laravel-8-f9e28b79f8b4 
@@ -5244,7 +5244,7 @@ https://medium.com/@litvinjuan/how-to-fix-target-class-does-not-exist-in-laravel
 	 /api/photos/{photo_id}/comments
 
 */	 
-Route::resource('photos.comments', App\Http\Controllers\PhotoController::class);
+WebRouter::resource('photos.comments', App\Http\Controllers\PhotoController::class);
 
 - Listado de rutas como en Laravel
   
@@ -7848,7 +7848,7 @@ https://blog.discord.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f
       //
   }
 
-  Route::get('/', function (Service $service) {
+  WebRouter::get('/', function (Service $service) {
       die(get_class($service));
   });
 
@@ -7857,7 +7857,7 @@ In this example, hitting your application's / route will automatically resolve t
 
   use Illuminate\Http\Request;
 
-  Route::get('/', function (Request $request) {
+  WebRouter::get('/', function (Request $request) {
       // ...
   });
 

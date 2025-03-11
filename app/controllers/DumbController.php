@@ -123,7 +123,7 @@ use simplerest\core\libs\ZipManager;
 use simplerest\core\Model;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\core\Route;
+use simplerest\core\WebRouter;
 use simplerest\core\View;
 use simplerest\libs\ArbitrageCalculator;
 use simplerest\libs\Cake;
@@ -1183,12 +1183,12 @@ class DumbController extends Controller
     function test_route()
     {
         /*
-        Route::get('dumbo/kalc', function(){
+        WebRouter::get('dumbo/kalc', function(){
             echo 'Hello from Kalc!';
         })->name('dumbo.kalc');
         
         
-        Route::get('has_table', 'DumbController@has_table')
+        WebRouter::get('has_table', 'DumbController@has_table')
         ->name('dumbo.has_table');
         */
 
@@ -4384,7 +4384,7 @@ class DumbController extends Controller
     /*
         Esto podría funcionar con el Router
 
-        Route::get('/user/{id}', DumbController::class);
+        WebRouter::get('/user/{id}', DumbController::class);
 
         Eso habilitaria: /dumb/6 
     */

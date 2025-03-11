@@ -8,8 +8,6 @@ use simplerest\core\libs\Env;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\Strings;
 
-
-
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 
 /*
@@ -64,7 +62,7 @@ if (count($args) > 0){
    $comm_files   = Files::glob(COMMANDS_PATH, '*Command.php');
 
    foreach ($comm_files as $file){
-      $_name      = Strings::matchOrFail(Files::convertSlashes($file, '/'), '|/([a-zA-Z0-9_]+)Command.php|');
+      $_name = Strings::matchOrFail(Files::convertSlashes($file, '/'), '|/([a-zA-Z0-9_]+)Command.php|');
       
       if ($name != $_name){
          continue;
