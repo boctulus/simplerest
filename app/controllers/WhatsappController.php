@@ -60,14 +60,16 @@ class WhatsappController extends Controller
         return ($this->phones[$alias]); 
     }
 
-    function index($alias = null)
-    {
-        if (!empty($alias)){
-            $phone = $this->phones[$alias];
-            return $this->_link($phone);
+    function index($alias = null) { 
+        
+        if (!empty($alias)) { 
+            // Si el alias existe en $phones, se usa el valor asociado; de lo contrario, se asume que es un número de teléfono directo. 
+        
+            $phone = isset($this->phones[$alias]) ? $this->phones[$alias] : $alias; 
+            return $this->_link($phone); 
         }
-
-        return $this->_link();            
+        
+        return $this->_link(); 
     }
 
     /*

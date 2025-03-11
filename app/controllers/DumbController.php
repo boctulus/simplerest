@@ -656,7 +656,8 @@ class DumbController extends Controller
     function inc($val)
     {
         $res = (float) $val + 1;
-        response()->send($res);
+        // response()->send($res);
+        return $res;
     }
 
     function inc2($val)
@@ -1196,21 +1197,34 @@ class DumbController extends Controller
     }
 
     function test_r1(){
-        dd(__METHOD__);
+        return __METHOD__;
     }
 
     function test_r2($user_id){
-        dd(__METHOD__);
+        return __METHOD__;
         dd($user_id, 'user');
     }
 
     function dashboard(){
-        dd(__METHOD__);
+        return __METHOD__;
     }
 
     function settings(){
-        dd(__METHOD__);
+        return __METHOD__;
     }
+
+    function speedcheck(){
+        return __METHOD__;
+    }
+
+    function post_price(){
+        return __METHOD__;
+    }
+
+    function some_route(){
+        return __METHOD__;
+    }
+
 
     function curl()
     {

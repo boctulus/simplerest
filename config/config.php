@@ -21,9 +21,10 @@ return [
 
 	'base_url' => '',   
 
-	'router' => true,
-	'front_controller' => true,
-	
+	'web_router'       => true,
+	'console_router'   => true,
+	'front_controller' => true, 
+ 	
 	/*
 		urls start with /api/ if remove_api_slug is set to false
 	*/	
