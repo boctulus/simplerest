@@ -26,6 +26,7 @@ Route::group('admin', function() {
     Route::get('settings', 'DumbController@settings');
 });
 
+// Funciones anonimas --ok
 Route::get('testx', function(){
 	// echo '<pre>';
 	// print_r(get_loaded_extensions());
@@ -36,6 +37,16 @@ Route::get('testx', function(){
 		exit(1);
 	}
 });
+
+// Rutas desde array --ok
+Route::fromArray([ 
+    // rutas 
+
+    'GET:/speed_check' => 'DumbController@speedcheck',
+    'POST:/products/prices'  => 'DumbController@post_price',
+	# '/some/route' => 'DumbController@some_route',
+    // ...
+]);
 
 Route::get("tax_calc", function() use ($route) {
 	set_template('templates/tpl_bt3.php');          

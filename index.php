@@ -9,16 +9,21 @@
 
 require_once __DIR__ . '/app.php';
 
-use simplerest\core\Route;
 use simplerest\core\libs\Config;
+use simplerest\core\ConsoleRouter;
+use simplerest\core\Route;
 use simplerest\core\FrontController;
 
 $cfg = Config::get();
 
-if ($cfg['router']){        
+if ($cfg['web_router']){        
     include __DIR__ . '/config/routes.php';
     Route::compile();
     Route::resolve();
+} 
+
+if ($cfg['console_router']){        
+    ConsoleRouter::resolve();
 } 
 
 if ($cfg['front_controller']){        
