@@ -1,5 +1,11 @@
 // Functions for UI interactions and manipulations
 
+function parseFunctionsImpl(text) {
+    return text.split(/[\n, ]+/)
+        .map(f => f.trim())
+        .filter(f => f);
+}
+
 function loadExternalLibraries() {
     // Cargar SweetAlert2 si no está ya cargada
     if (typeof Swal === 'undefined') {
@@ -19,11 +25,11 @@ function loadExternalLibraries() {
         // Cargar jQuery (requerido por Toastr)
         const jqueryScript = document.createElement('script');
         jqueryScript.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
-        jqueryScript.onload = function() {
+        jqueryScript.onload = function () {
             // Cargar Toastr después de jQuery
             const toastrScript = document.createElement('script');
             toastrScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js';
-            toastrScript.onload = function() {
+            toastrScript.onload = function () {
                 // Configurar Toastr
                 toastr.options = {
                     closeButton: true,
@@ -222,7 +228,6 @@ function newFormImpl(context) {
 }
 
 function prevPromptImpl(context) {
-    // Get all saved prompts
     const savedPrompts = context.getSavedPrompts();
     if (savedPrompts.length === 0) {
         Swal.fire({
@@ -234,39 +239,44 @@ function prevPromptImpl(context) {
         return;
     }
 
-    // Mostrar loader
     context.loading = true;
+    return new Promise(resolve => {
+        setTimeout(() => {
+            let currentIndex = -1;
+            const currentHash = window.location.hash;
+            if (currentHash.startsWith('#chat-')) {
+                const currentId = currentHash.split('-')[1];
+                currentIndex = savedPrompts.findIndex(p => p.id === currentId);
+            }
 
-    setTimeout(() => {
-        // Find current index or default to last item
-        let currentIndex = -1;
-        const currentHash = window.location.hash;
-        if (currentHash.startsWith('#chat-')) {
-            const currentId = currentHash.split('-')[1];
-            currentIndex = savedPrompts.findIndex(p => p.id === currentId);
-        }
+            currentIndex = (currentIndex <= 0) ? savedPrompts.length - 1 : currentIndex - 1;
 
-        if (currentIndex <= 0) {
-            // Wrap around to the end if at beginning
-            currentIndex = savedPrompts.length - 1;
-        } else {
-            currentIndex--;
-        }
+            const prevPrompt = savedPrompts[currentIndex];
+            window.location.hash = `#chat-${prevPrompt.id}`;
 
-        // Navigate to the previous prompt
-        const prevPrompt = savedPrompts[currentIndex];
-        window.location.hash = `#chat-${prevPrompt.id}`;
-        context.loadFromHash();
+            // Actualizar propiedades reactivas
+            context.description = prevPrompt.description || '';
+            context.notes = prevPrompt.notes || '';
 
-        // Ocultar loader
-        context.loading = false;
+            // Verificar que filePaths sea un array antes de mapear
+            context.filePaths = Array.isArray(prevPrompt.filePaths) ? prevPrompt.filePaths.map((file, idx) => ({
+                id: `file-${Date.now()}-${idx}`,
+                path: file.path || '',
+                disabled: file.disabled || false,
+                allowedFunctions: file.allowedFunctions || '',
+                showFunctions: false,
+                showDropdown: false,
+                selected: false
+            })) : [];
 
-        toastr.info(`Navegando: prompt ${currentIndex + 1} de ${savedPrompts.length}`);
-    }, 400);
+            context.loading = false;
+            toastr.info(`Navegando: prompt ${currentIndex + 1} de ${savedPrompts.length}`);
+            resolve();
+        }, 400);
+    });
 }
 
 function nextPromptImpl(context) {
-    // Get all saved prompts
     const savedPrompts = context.getSavedPrompts();
     if (savedPrompts.length === 0) {
         Swal.fire({
@@ -278,33 +288,39 @@ function nextPromptImpl(context) {
         return;
     }
 
-    // Mostrar loader
     context.loading = true;
+    return new Promise(resolve => {
+        setTimeout(() => {
+            let currentIndex = -1;
+            const currentHash = window.location.hash;
+            if (currentHash.startsWith('#chat-')) {
+                const currentId = currentHash.split('-')[1];
+                currentIndex = savedPrompts.findIndex(p => p.id === currentId);
+            }
 
-    setTimeout(() => {
-        // Find current index or default to -1 (before first item)
-        let currentIndex = -1;
-        const currentHash = window.location.hash;
-        if (currentHash.startsWith('#chat-')) {
-            const currentId = currentHash.split('-')[1];
-            currentIndex = savedPrompts.findIndex(p => p.id === currentId);
-        }
+            currentIndex = (currentIndex >= savedPrompts.length - 1) ? 0 : currentIndex + 1;
 
-        if (currentIndex >= savedPrompts.length - 1 || currentIndex === -1) {
-            // Wrap around to the beginning if at end
-            currentIndex = 0;
-        } else {
-            currentIndex++;
-        }
+            const nextPrompt = savedPrompts[currentIndex];
+            window.location.hash = `#chat-${nextPrompt.id}`;
 
-        // Navigate to the next prompt
-        const nextPrompt = savedPrompts[currentIndex];
-        window.location.hash = `#chat-${nextPrompt.id}`;
-        context.loadFromHash();
+            // Actualizar propiedades reactivas
+            context.description = nextPrompt.description || '';
+            context.notes = nextPrompt.notes || '';
 
-        // Ocultar loader
-        context.loading = false;
+            // Verificar que filePaths sea un array antes de mapear
+            context.filePaths = Array.isArray(nextPrompt.filePaths) ? nextPrompt.filePaths.map((file, idx) => ({
+                id: `file-${Date.now()}-${idx}`,
+                path: file.path || '',
+                disabled: file.disabled || false,
+                allowedFunctions: file.allowedFunctions || '',
+                showFunctions: false,
+                showDropdown: false,
+                selected: false
+            })) : [];
 
-        toastr.info(`Navegando: prompt ${currentIndex + 1} de ${savedPrompts.length}`);
-    }, 400);
+            context.loading = false;
+            toastr.info(`Navegando: prompt ${currentIndex + 1} de ${savedPrompts.length}`);
+            resolve();
+        }, 400);
+    });
 }
