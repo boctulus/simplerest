@@ -1,7 +1,7 @@
 // Functions for handling local storage operations
 
 function getSavedPromptsImpl() {
-    const prompts = [];
+    let prompts = [];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key.startsWith('chat-')) {
@@ -16,10 +16,38 @@ function getSavedPromptsImpl() {
         }
     }
 
-    // Sort by timestamp (newest first)
-    return prompts.sort((a, b) => {
-        return new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
-    });
+    // Si no hay prompts en localStorage, cargar desde el backend
+    if (prompts.length === 0) {
+        $.ajax({
+            url: '/api/v1/prompts?page=1',
+            type: 'GET',
+            success: function(response) {
+                if (response.data && response.data.prompts) {
+                    response.data.prompts.forEach(prompt => {
+                        const formState = {
+                            id: prompt.id,
+                            description: prompt.description || '',
+                            notes: prompt.notes || '',
+                            filePaths: prompt.files ? prompt.files.map(file => ({
+                                path: file.path || '',
+                                disabled: file.disabled || false,
+                                allowedFunctions: file.allowedFunctions || ''
+                            })) : [],
+                            timestamp: prompt.timestamp || new Date().toISOString()
+                        };
+                        localStorage.setItem(`chat-${prompt.id}`, JSON.stringify(formState));
+                        prompts.push(formState);
+                    });
+                }
+            },
+            error: function(xhr) {
+                console.error('Error loading prompts from backend:', xhr);
+            },
+            async: false // Para mantener simplicidad, aunque no es ideal
+        });
+    }
+
+    return prompts.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
 }
 
 function saveFormToLocalStorageImpl(context) {
@@ -48,44 +76,40 @@ function saveFormToLocalStorageImpl(context) {
 }
 
 function loadFromHashImpl(context) {
-    // Mostrar spinner al cargar
     context.loading = true;
-
     setTimeout(() => {
         const currentHash = window.location.hash;
         let savedForm;
 
+        console.log(currentHash, 'currentHash'); //
+
         if (currentHash.startsWith('#chat-')) {
             const formId = currentHash.split('-')[1];
+            console.log(formId, 'formId'); //
+
             savedForm = JSON.parse(localStorage.getItem(`chat-${formId}`));
         } else {
             savedForm = JSON.parse(localStorage.getItem('currentForm'));
         }
 
+        console.log(savedForm); //
+
         if (savedForm) {
             context.description = savedForm.description || '';
             context.notes = savedForm.notes || '';
-
-            // Cargar rutas de archivo
-            if (Array.isArray(savedForm.filePaths)) {
-                context.filePaths = savedForm.filePaths.map(file => ({
-                    id: 'file-' + Date.now() + Math.random().toString(36).substring(2),
-                    path: file.path || '',
-                    disabled: file.disabled || false,
-                    allowedFunctions: file.allowedFunctions || '',
-                    showFunctions: false,
-                    showDropdown: false,
-                    selected: false
-                }));
-            }
-
-            // Asegurar que siempre haya al menos una ruta
+            context.filePaths = savedForm.filePaths.map((file, index) => ({
+                id: 'file-' + Date.now() + index, // Generar ID único
+                path: file.path || '',
+                disabled: file.disabled || false,
+                allowedFunctions: file.allowedFunctions || '',
+                showFunctions: false,
+                showDropdown: false,
+                selected: false
+            }));
             if (context.filePaths.length === 0) {
                 context.addFilePath();
             }
         }
-
-        // Ocultar spinner después de cargar
         context.loading = false;
     }, 300);
 }

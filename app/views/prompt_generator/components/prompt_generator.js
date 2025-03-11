@@ -254,9 +254,8 @@ function promptGenerator() {
         },
 
         generatePrompt() {
-            // Verificar si hay rutas de archivos habilitadas
             const enabledPaths = this.filePaths.filter(file => !file.disabled && file.path.trim());
-
+            
             if (enabledPaths.length === 0) {
                 Swal.fire({
                     title: 'Advertencia',
@@ -266,60 +265,81 @@ function promptGenerator() {
                 });
                 return;
             }
-
-            // Mostrar loader para simular la generación
+            
             this.loading = true;
+            
+            const parseFunctions = (text) => {
+                return text.split(/[\n, ]+/)
+                    .map(f => f.trim())
+                    .filter(f => f);
+            };
+            
+            const data = {
+                description: this.description,
+                files: enabledPaths.map(file => ({
+                    path: file.path,
+                    allowed_functions: parseFunctions(file.allowedFunctions)
+                })),
+                notes: this.notes
+            };
+            
+            $.ajax({
+                url: '/api/v1/prompts',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                // success: (response) => { ... }
+                success: (response) => {
+                    console.log('API Response:', response);
 
-            // Simulamos la generación del prompt (en una implementación real, esto haría una petición al servidor)
-            setTimeout(() => {
-                let promptText = '';
+                    let promptContent = "";
 
-                // Agregar introducción
-                if (this.description.trim()) {
-                    promptText += `${this.description}\n\n`;
-                }
+                    // 1. Agregar descripción del textarea
+                    promptContent += this.description + "\n\n";
 
-                // Agregar rutas de archivos habilitadas
-                enabledPaths.forEach(file => {
-                    const extension = file.path.split('.').pop().toLowerCase();
-                    const language = {
-                        'php': 'php',
-                        'js': 'javascript',
-                        'css': 'css',
-                        'html': 'html',
-                        'json': 'json'
-                    } [extension] || '';
+                    // 2. Procesar archivos de la respuesta
+                    if (response.data && response.data.files) {
+                        response.data.files.forEach(file => {
+                            promptContent += `// Ruta: ${file.path}\n${file.content}\n\n`;
+                        });
+                    }
 
-                    promptText += `/* Ruta: ${file.path} */\n\`\`\`${language}\n[Contenido del archivo ${file.path}]\n\`\`\`\n\n`;
-                });
+                    // 3. Agregar notas finales del textarea
+                    promptContent += this.notes;
 
-                // Agregar notas finales
-                if (this.notes.trim()) {
-                    promptText += `// Notas finales\n${this.notes}\n`;
-                }
-
-                this.generatedPrompt = promptText;
-
-                // Ocultar loader
-                this.loading = false;
-
-                // Simular éxito o fallo de manera aleatoria (para demostración)
-                // En tu código real, aquí verificarías el resultado real
-                const success = true; // Harcodear éxito según lo solicitado
-
-                if (success) {
-                    // Mostrar notificación Toastr en caso de éxito
-                    toastr.success('El prompt ha sido generado correctamente');
-                } else {
-                    // Mostrar SweetAlert en caso de error
+                    this.generatedPrompt = promptContent;
+                    this.loading = false;
+                    toastr.success('Prompt generado correctamente');
+                    
+                    const id = response.data?.id || Date.now().toString();
+                    window.location.hash = `#chat-${id}`;
+                    this.saveFormToLocalStorage();
+                },
+                error: (xhr) => {
+                    this.loading = false;
+                    let errorMessage = 'Error desconocido';
+                    if (xhr.responseJSON?.error) {
+                        errorMessage = xhr.responseJSON.error.message || xhr.responseJSON.error.detail;
+                    }
+                    
                     Swal.fire({
-                        title: 'Error',
-                        text: 'Hubo un problema al generar el prompt. Por favor intenta nuevamente.',
+                        title: `Error ${xhr.status}`,
+                        html: `<div class="text-left">
+                            <b>Mensaje:</b> ${errorMessage}<br>
+                            <b>Tipo:</b> ${xhr.responseJSON?.error?.type || 'N/A'}<br>
+                            <b>Código:</b> ${xhr.responseJSON?.error?.code || 'N/A'}
+                        </div>`,
                         icon: 'error',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'Reintentar',
+                        cancelButtonText: 'Cerrar',
+                        showCancelButton: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.generatePrompt();
+                        }
                     });
                 }
-            }, 1000);
+            });
         },
 
         // Method references to utility functions that have been moved to separate files
