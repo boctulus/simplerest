@@ -3,7 +3,7 @@
 use simplerest\core\libs\CorsHandler;
 use simplerest\core\libs\Url;
 use simplerest\core\Response;
-use simplerest\core\Route;
+use simplerest\core\WebRouter;
 
 if (!function_exists('cors')){
     function cors(){
@@ -16,7 +16,7 @@ if (!function_exists('cors')){
 }
 
 function route(string $name){
-    return Route::getRouteByName($name);
+    return WebRouter::getRouteByName($name);
 }
 
 function httpProtocol(){

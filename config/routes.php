@@ -1,33 +1,33 @@
 <?php
 
-use simplerest\core\Route;
+use simplerest\core\WebRouter;
 use simplerest\libs\Debug;
 use simplerest\core\libs\Mail;
 use simplerest\core\libs\System;
 use simplerest\core\libs\Logger;
 use simplerest\shortcodes\tax_calc\TaxCalcShortcode;
 
-$route = Route::getInstance();
+$route = WebRouter::getInstance();
 
-Route::get('api-test/cors',  'CorsTesterController@get');
-Route::post('api-test/cors',  'CorsTesterController@post');
-// Route::put('api-test/cors',  'CorsTesterController');
-// Route::delete('api-test/cors',  'CorsTesterController');
+WebRouter::get('api-test/cors',  'CorsTesterController@get');
+WebRouter::post('api-test/cors',  'CorsTesterController@post');
+// WebRouter::put('api-test/cors',  'CorsTesterController');
+// WebRouter::delete('api-test/cors',  'CorsTesterController');
 
 // Si intentara con otro verbo fallaria --ok
-Route::delete('api-test/r1',  'DumbController@test_r1');
+WebRouter::delete('api-test/r1',  'DumbController@test_r1');
 
 // Rutas con parametros --ok
-Route::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
+WebRouter::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
 
 // Grupos --ok
-Route::group('admin', function() {
-    Route::get('dashboard', 'DumbController@dashboard');
-    Route::get('settings', 'DumbController@settings');
+WebRouter::group('admin', function() {
+    WebRouter::get('dashboard', 'DumbController@dashboard');
+    WebRouter::get('settings', 'DumbController@settings');
 });
 
 // Funciones anonimas --ok
-Route::get('testx', function(){
+WebRouter::get('testx', function(){
 	// echo '<pre>';
 	// print_r(get_loaded_extensions());
 	// echo '</pre>';	
@@ -39,7 +39,7 @@ Route::get('testx', function(){
 });
 
 // Rutas desde array --ok
-Route::fromArray([ 
+WebRouter::fromArray([ 
     // rutas 
 
     'GET:/speed_check' => 'DumbController@speedcheck',
@@ -48,12 +48,12 @@ Route::fromArray([
     // ...
 ]);
 
-Route::get("tax_calc", function() use ($route) {
+WebRouter::get("tax_calc", function() use ($route) {
 	set_template('templates/tpl_bt3.php');          
 	render(TaxCalcShortcode::get());
 });
 
-Route::get('mem', function(){
+WebRouter::get('mem', function(){
 	dd(System::getMemoryLimit(), 'Memory limit');
 	dd(System::getMemoryUsage(), 'Memory usage');
 	dd(System::getMemoryUsage(true), 'Memory usage (real)');
@@ -62,7 +62,7 @@ Route::get('mem', function(){
 	dd(System::getMemoryPeakUsage(true), 'Memory peak usage (real)');
 });
 
-Route::get('git/pull', function(){
+WebRouter::get('git/pull', function(){
 	dd(
 		System::execAtRoot("git pull")
 	);
@@ -71,17 +71,17 @@ Route::get('git/pull', function(){
 /*
 	Penosamente no hay para la consola
 */
-Route::get('revolut', function(){
+WebRouter::get('revolut', function(){
 	return "http://revolut.me/boctulus";
 });
 
-Route::post('api/v1/save_demo', function(){
+WebRouter::post('api/v1/save_demo', function(){
 	$req = request()->as_array()->getBody();
 	
 	Logger::dd($req);
 });
 
-Route::get('api/v1/cool',  'DumbAuthController@super_cool_action');
+WebRouter::get('api/v1/cool',  'DumbAuthController@super_cool_action');
 
 /*
 	Actualmente el orden es importante...... 
@@ -90,7 +90,7 @@ Route::get('api/v1/cool',  'DumbAuthController@super_cool_action');
 	Esta obligandose a ir de lo especifico a lo general
 */
 
-Route::get('admin/migrate', function(){
+WebRouter::get('admin/migrate', function(){
 	chdir(ROOT_PATH);
 	
 	exec("php com migrations migrate", $output_lines, $res_code);
@@ -103,7 +103,7 @@ Route::get('admin/migrate', function(){
 });
 
 
-Route::get('admin/test_smtp', function(){
+WebRouter::get('admin/test_smtp', function(){
 	Mail::debug(4);
 	Mail::setMailer('ovh');
 
@@ -121,18 +121,18 @@ Route::get('admin/test_smtp', function(){
 });
 
 
-Route::get('admin/una-pagina', function(){
+WebRouter::get('admin/una-pagina', function(){
 	$content = "Pagina (de acceso restringido)";
 	render($content);
 });
 
-Route::get('admin/pagina-dos', function(){
+WebRouter::get('admin/pagina-dos', function(){
 	$content = "Pagina dos (de acceso restringido)";
 	render($content);
 });
 
 
-//Route::get('admin', function(){
+//WebRouter::get('admin', function(){
 //	$content = "Panel de Admin";
 //	render($content);
 //});
