@@ -8,20 +8,34 @@ use simplerest\core\libs\Msg;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Url;
 
+/*
+    @author Pablo Bozzolo
+
+    TO-DO
+
+    Manejar mejor los casos en los que la ruta no coincide con el patrón definido en where(), devolviendo un error más claro antes de que el framework intente cargar un controlador inexistente.
+
+    Implementar un manejador de excepciones que capture el error CLASS_NOT_FOUND y devuelva una respuesta más clara (ej. "Ruta no encontrada" en lugar de "Internal error").
+*/
+
 class Route 
 {
-    protected static $routes    = [];
+    protected static $routes       = [];
     protected static $params;
-    protected static $current   = [];
+    protected static $current      = [];
     protected static $instance;
-    protected static $wheres    = [];
-    protected static $ck_params = [];
-    protected static $ctrls     = [];
+    protected static $wheres       = [];
+    protected static $ck_params    = [];
+    protected static $ctrls        = [];
     protected static $current_verb;
     protected static $current_uri;
-    protected static $aliases   = [];
-    protected static $v_aliases = [];
-
+    protected static $aliases      = [];
+    protected static $v_aliases    = [];
+    
+    // Nuove proprietà per il supporto di parametri dinamici e gruppi
+    protected static $routePatterns  = []; // [verb][uri] => regex pattern
+    protected static $routeParamNames = []; // [verb][uri] => array di nomi dei parametri
+    protected static $groupPrefix    = '';
 
     protected function __construct() { }
 
@@ -50,12 +64,11 @@ class Route
                 $res->error(Msg::MALFORMED_URL, 400); 
             }
                 
-    
             $_params = explode('/', $path);
     
             if (empty($_params[0]))  
                 array_shift($_params);
-        }else{
+        } else {
             $_params = array_slice($argv, 1);
         }
 
@@ -63,12 +76,28 @@ class Route
         Request::getInstance()->setParams($_params);
     }
 
-    static function getInstance(){
+    public static function getInstance(){
         if(static::$instance == NULL){
             static::setup();
             static::$instance = new static();
         }
         return static::$instance;
+    }
+
+    /**
+     * Metodo per raggruppare rotte con un prefisso comune.
+     * Esempio:
+     *   Route::group('admin', function() {
+     *       Route::get('dashboard', 'AdminController@dashboard');
+     *   });
+     */
+    public static function group(string $prefix, callable $callback) {
+        $previousPrefix = static::$groupPrefix;
+        static::$groupPrefix = trim($previousPrefix, '/') . '/' . trim($prefix, '/');
+        static::$groupPrefix = trim(static::$groupPrefix, '/');
+        $callback();
+        static::$groupPrefix = $previousPrefix;
+        return static::getInstance();
     }
 
     public static function resolve()
@@ -77,31 +106,24 @@ class Route
             return;
         }
 
-        //dd(static::$routes, 'ROUTEs');
-        //dd(static::$wheres, 'WHEREs');
-        //dd(static::$ck_params, 'CK PARAMS');
-
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $path = preg_replace('/(.*)\/index.php/', '/', $path);
         $path = trim($path, '/');
                 
         $req_method = $_SERVER['REQUEST_METHOD'] ?? NULL;
         
-        // cli 
         if ($req_method == NULL){
-            // return;
+            // CLI o metodo non definito
         }
 
         if (!isset(static::$routes[$req_method])){
             return;
         }
         
-
+        // Verifica alias di URL esatto
         if (isset(static::$v_aliases[$req_method][$path])){
             $uri  = static::$v_aliases[$req_method][$path];
-
             $ck   = static::$routes[$req_method][$uri];    
-
             $args = static::$params;
 
             if (is_callable($ck)){                
@@ -110,120 +132,93 @@ class Route
             } else {
                 [$class_name, $method] = static::$ctrls[$req_method][$uri];
                 $controller_obj = new $class_name();
-
                 $data = call_user_func_array([$controller_obj, $method], $args);
                 Response::getInstance()->send($data);
             }
-
+            return;
         } else {
             $callbacks = static::$routes[$req_method];
 
             foreach($callbacks as $uri => $ck)
             {              
-                $slugs = explode('/', $uri);
-                //dd($slugs, 'slugs');
-
-                $cs = count($slugs); 
-                if (count(static::$params) <  $cs){
-                    continue; //
-                }
-
-                //echo "URI: $uri <p/>";
-                $found = 0;
-                foreach ($slugs as $k => $sl){
-                    //echo "Buscando $sl .. <br/>";
-                    if (!isset(static::$params[$k]) ||  static::$params[$k] != $sl){
-                        //dd( isset(static::$params[$k]), " => isset in params[$k]");
-                        //dd(["params[$k" => static::$params[$k], 'slug' => $sl]);
-                        continue 2;
+                $args = [];
+                // Se la rotta è dinamica (contiene parametri nominati)
+                if (isset(static::$routePatterns[$req_method][$uri])) {
+                    $pattern = static::$routePatterns[$req_method][$uri];
+                    if (preg_match($pattern, $path, $matches)) {
+                        array_shift($matches); // rimuove il match completo
+                        $args = $matches;
+                    } else {
+                        continue;
                     }
-
-                    $found++;
-                    if ($found == $cs){
-                        break;
+                } else {
+                    // Matching letterale per rotte statiche (esistente logica)
+                    $slugs = explode('/', $uri);
+                    if (count(static::$params) < count($slugs)){
+                        continue;
                     }
-                    //dd("Encontrados $found segmentos de un total de $cs", 'found');
-                }
-            
-
-                // chequear
-                $args = array_slice(static::$params, $cs);
-
-                //var_dump(count(static::$ck_params[$req_method][$uri]));
-                //var_dump(count($args));
-
-
-                if (isset(static::$ck_params[$req_method][$uri])){  /// *
-                    if (count(static::$ck_params[$req_method][$uri]) > count($args)){
-                        throw new \Exception("Expecting ". count(static::$ck_params[$req_method][$uri]). ' params but '. count($args). ' was given');
+    
+                    $found = 0;
+                    foreach ($slugs as $k => $sl){
+                        if (!isset(static::$params[$k]) || static::$params[$k] != $sl){
+                            continue 2;
+                        }
+                        $found++;
+                        if ($found == count($slugs)){
+                            break;
+                        }
                     }
-
-                    if (isset(static::$wheres[$req_method][$uri])){
-                        $vars = static::$ck_params[$req_method][$uri];
-                    
-                        foreach ($vars as $ix => $var){
-                            $w_vars = array_keys(static::$wheres[$req_method][$uri]);
-
-                            if (!in_array($var, $w_vars)){
-                                throw new \InvalidArgumentException("Parameter '$var' is required for $req_method on '$uri'");
+                    $args = array_slice(static::$params, count($slugs));
+    
+                    if (isset(static::$ck_params[$req_method][$uri])){
+                        if (count(static::$ck_params[$req_method][$uri]) > count($args)){
+                            throw new \Exception("Expecting " . count(static::$ck_params[$req_method][$uri]) . ' params but ' . count($args) . ' was given');
+                        }
+    
+                        if (isset(static::$wheres[$req_method][$uri])){
+                            $vars = static::$ck_params[$req_method][$uri];
+                            foreach ($vars as $ix => $var){
+                                $w_vars = array_keys(static::$wheres[$req_method][$uri]);
+                                if (!in_array($var, $w_vars)){
+                                    throw new \InvalidArgumentException("Parameter '$var' is required for $req_method on '$uri'");
+                                }
+                                $reg = static::$wheres[$req_method][$uri][$var];
+                                if (preg_match("/^($reg)$/", $args[$ix]) !== 1){                        
+                                    throw new \InvalidArgumentException("Parameter '$var' should match '" . static::$wheres[$req_method][$uri][$var] . "' expression. Given '{$args[$ix]}'");         
+                                }
                             }
-
-                            //var_dump($args[$ix]);
-                            
-                            $reg = static::$wheres[$req_method][$uri][$var];
-                            if (preg_match("/^($reg)$/", $args[$ix]) !== 1){                        
-                                throw new \InvalidArgumentException("Parameter '$var' should match '".static::$wheres[$req_method][$uri][$var]. "' expresion. Given '{$args[$ix]}'");         
-                            }
-
-                            //dd(static::$wheres[$req_method][$uri][$var], "regex for $var. Given '{$args[$ix]}'");
                         }
                     }
                 }
 
-                
-                //dd($args, 'args');
-                //dd($uri, 'uri'); 
-                //dd($ck, 'ck');
-
-                if (is_callable($ck)){                
+                if (is_callable($ck)){
                     $data = $ck(...$args);
                     Response::getInstance()->send($data);
                 } else {
                     [$class_name, $method] = static::$ctrls[$req_method][$uri];
                     $controller_obj = new $class_name();
-
                     $data = call_user_func_array([$controller_obj, $method], $args);
                     Response::getInstance()->send($data);
                 }
 
                 response()->flush();
-
                 exit;
             }
-            
         }
-
-        
     }
 
     public static function compile()
     {   
         foreach (static::$routes as $verb => $callbacks){
             foreach($callbacks as $uri => $ck){
-                // anonymus functions
+                // Per funzioni anonime
                 if (is_callable($ck)){
                     $r = new \ReflectionFunction($ck);
-                    
                     foreach ($r->getParameters() as $p){
                         static::$ck_params[$verb][$uri][] = $p->name;                        
-                    };
-
-                    //dd(static::$ck_params[$verb][$uri], "CK PARAMS : [$verb][$uri]");
+                    }
                 } else {
-                    //dd($ck, "\$ck");
-
                     $namespace = Strings::contains('\\', $ck) ? '' : 'simplerest\\controllers\\';
-
                     $pos = strpos($ck, '@');
                     if ($pos === false){
                         $ctrl = $ck;
@@ -232,35 +227,52 @@ class Route
                         $ctrl = substr($ck, 0, $pos);
                         $method = substr($ck, $pos+1);
                     }
-
+    
                     $class_name = "{$namespace}{$ctrl}";
                     if (!class_exists($class_name)){
                         throw new \InvalidArgumentException("Controller class $class_name not found");  
                     }
-
                     if (!method_exists($class_name, $method)){
                         throw new \InvalidArgumentException("Method $method was not found in $class_name"); 
                     }
                                         
                     static::$ctrls[$verb][$uri] = [$class_name, $method];
-                    //dd(static::$ctrls);                    
-                }   
+                }
+    
+                // Se la rotta contiene parametri dinamici (placeholder {param})
+                if (strpos($uri, '{') !== false) {
+                    $pattern = preg_replace_callback('/\{(\w+)\}/', function($matches) use ($verb, $uri) {
+                        $param = $matches[1];
+                        if (isset(static::$wheres[$verb][$uri][$param])) {
+                            return '(' . static::$wheres[$verb][$uri][$param] . ')';
+                        }
+                        return '([^/]+)';
+                    }, $uri);
+    
+                    static::$routePatterns[$verb][$uri] = '#^' . $pattern . '$#';
+    
+                    // Estrai i nomi dei parametri
+                    preg_match_all('/\{(\w+)\}/', $uri, $paramMatches);
+                    static::$routeParamNames[$verb][$uri] = $paramMatches[1];
+                }
             }
         }
     }
 
     /*
-     Register
-    */
-
+     * Register where
+     */
     public static function where($arr){
-        //dd([$arr, static::$current], 'where register');
         static::$wheres[static::$current[0]][static::$current[1]] = $arr;
         return static::getInstance();
     }
 
+    // Modifica nei metodi di registrazione per gestire il prefisso di gruppo
     public static function get(string $uri, $callback){
         $uri = Strings::rTrim('/', $uri);
+        if(static::$groupPrefix !== ''){
+            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
+        }
         static::$current_verb = 'GET';
         static::$current_uri = $uri;
         static::$current = ['GET', $uri];
@@ -268,27 +280,11 @@ class Route
         return static::getInstance();
     }
 
-    public static function name(string $name){
-        static::$aliases[$name] = [
-            'verb' => static::$current_verb,
-            'uri'  => static::$current_uri
-        ];
-
-        static::$v_aliases[static::$current_verb][$name] = static::$current_uri;
-
-        return static::getInstance();
-    }
-
-    public static function getRouteByName(string $name){
-        if (php_sapi_name() == 'cli'){
-            return;
-        }
-
-        return httpProtocol() . '://' . $_SERVER['SERVER_NAME'] . '/' . static::$aliases[$name]['uri'];
-    }
-
     public static function post(string $uri, $callback){
         $uri = Strings::rTrim('/', $uri);
+        if(static::$groupPrefix !== ''){
+            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
+        }
         static::$current_verb = 'POST';
         static::$current_uri = $uri;
         static::$current = ['POST', $uri];
@@ -298,6 +294,9 @@ class Route
 
     public static function put(string $uri, $callback){
         $uri = Strings::rTrim('/', $uri);
+        if(static::$groupPrefix !== ''){
+            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
+        }
         static::$current_verb = 'PUT';
         static::$current = ['PUT', $uri];
         static::$routes['PUT'][$uri] = $callback;
@@ -306,6 +305,9 @@ class Route
 
     public static function patch(string $uri, $callback){
         $uri = Strings::rTrim('/', $uri);
+        if(static::$groupPrefix !== ''){
+            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
+        }
         static::$current_verb = 'PATCH';
         static::$current_uri = $uri;
         static::$current = ['PATCH', $uri];
@@ -315,6 +317,9 @@ class Route
 
     public static function delete(string $uri, $callback){
         $uri = Strings::rTrim('/', $uri);
+        if(static::$groupPrefix !== ''){
+            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
+        }
         static::$current_verb = 'DELETE';
         static::$current_uri = $uri;
         static::$current = ['DELETE', $uri];
@@ -324,6 +329,9 @@ class Route
     
     public static function options(string $uri, $callback){
         $uri = Strings::rTrim('/', $uri);
+        if(static::$groupPrefix !== ''){
+            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
+        }
         static::$current_verb = 'OPTIONS';
         static::$current_uri = $uri;
         static::$current = ['OPTIONS', $uri];
@@ -331,5 +339,19 @@ class Route
         return static::getInstance();
     }
 
-}
+    public static function name(string $name){
+        static::$aliases[$name] = [
+            'verb' => static::$current_verb,
+            'uri'  => static::$current_uri
+        ];
+        static::$v_aliases[static::$current_verb][$name] = static::$current_uri;
+        return static::getInstance();
+    }
 
+    public static function getRouteByName(string $name){
+        if (php_sapi_name() == 'cli'){
+            return;
+        }
+        return httpProtocol() . '://' . $_SERVER['SERVER_NAME'] . '/' . static::$aliases[$name]['uri'];
+    }
+}
