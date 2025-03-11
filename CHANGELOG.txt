@@ -49,3 +49,4 @@
 [2025-03-11 14:28:15]	0.8.12	Automatic update
 [2025-03-11 22:49:06]	0.8.12	Router mejorado, ahora soporta parametros y grupos
 [2025-03-12 00:48:58]	0.8.12	ConsoleRouter mejorado
+[2025-03-12 01:06:57]	0.8.12	Automatic update
