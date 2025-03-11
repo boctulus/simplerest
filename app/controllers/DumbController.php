@@ -1179,7 +1179,6 @@ class DumbController extends Controller
         dd($index, 'INDEX');
     }
 
-
     function test_route()
     {
         /*
@@ -1194,6 +1193,23 @@ class DumbController extends Controller
 
         //dd(route('dumbo.has_table'), 'URL');
         //dd(route('dumbo.kalc'), 'URL');
+    }
+
+    function test_r1(){
+        dd(__METHOD__);
+    }
+
+    function test_r2($user_id){
+        dd(__METHOD__);
+        dd($user_id, 'user');
+    }
+
+    function dashboard(){
+        dd(__METHOD__);
+    }
+
+    function settings(){
+        dd(__METHOD__);
     }
 
     function curl()
