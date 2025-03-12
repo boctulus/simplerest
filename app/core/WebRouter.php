@@ -56,10 +56,6 @@ class WebRouter
                 $path = substr($path, strlen($config['base_url']));
             }   
     
-            if (Strings::contains('/api/', $path) || in_array(strtolower(request()->method()),['post', 'put', 'patch'] )){
-                $res->encode();
-            }
-
             if ($path === false || ! Url::urlCheck($_SERVER['REQUEST_URI']) ){
                 $res->error(Msg::MALFORMED_URL, 400); 
             }
@@ -126,13 +122,16 @@ class WebRouter
             $ck   = static::$routes[$req_method][$uri];    
             $args = static::$params;
 
-            if (is_callable($ck)){                
+            if (is_callable($ck)){
+                // Se la rotta es una closure, la ejecuto directamente.
                 $data = $ck(...$args);
                 Response::getInstance()->send($data);
             } else {
+                // Rotta che richiama un controller.
                 [$class_name, $method] = static::$ctrls[$req_method][$uri];
                 $controller_obj = new $class_name();
                 $data = call_user_func_array([$controller_obj, $method], $args);
+
                 Response::getInstance()->send($data);
             }
             return;
@@ -195,10 +194,42 @@ class WebRouter
                     $data = $ck(...$args);
                     Response::getInstance()->send($data);
                 } else {
-                    [$class_name, $method] = static::$ctrls[$req_method][$uri];
+                    [ $class_name, $method ] = static::$ctrls[$req_method][$uri];
                     $controller_obj = new $class_name();
                     $data = call_user_func_array([$controller_obj, $method], $args);
+
+                    // Inizio blocco middleware.
+                    $middlewares = include CONFIG_PATH . 'middlewares.php';
+                    
+                    // dd($middlewares, 'MIDS');
+                    // dd($class_name, 'CONTROLLER');
+                    // dd($method, 'ACTION');
+
                     Response::getInstance()->send($data);
+
+                    /*
+                        Middlewares
+                    */
+
+                    foreach($middlewares as $injectable => $mids){
+                        $_i = explode('@', $injectable);
+                        $_class_name = $_i[0];
+                        if (!is_array($mids)){
+                            $mids = [ $mids ];
+                        }
+                        foreach ($mids as $mid){
+                            $_method = $_i[1] ?? 'index';
+                            if ($class_name == $_class_name && ($_method == '__all__' || $method == $_method)){
+                                if (!class_exists($mid)){
+                                    Response::getInstance()->error("Middleware '$mid' not found", 404, "Internal error - controller class $class_name not found");
+                                }
+                                $mid_obj = new $mid();
+                                $mid_obj->handle();
+                            }
+                        }
+                    }
+                    // Fine blocco middleware.
+
                 }
 
                 response()->flush();
