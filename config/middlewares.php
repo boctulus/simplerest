@@ -9,8 +9,8 @@ use simplerest\middlewares\InyectarUsername;
 */
 
 return [
-    'simplerest\controllers\MyAuthController@login' => InyectarUsername::class,
-    // 'simplerest\controllers\TestController@mid' => InyectarSaludo::class,
+    // 'simplerest\controllers\MyAuthController@login' => InyectarUsername::class,
+    'simplerest\controllers\TestController@mid' => InyectarSaludo::class,
     // 'simplerest\controllers\TestController' => InyectarSaludo::class,
     // 'simplerest\controllers\MyAuthController@login' =>  InyectarInfoEmpresa::class
 ];

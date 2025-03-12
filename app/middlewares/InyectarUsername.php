@@ -9,8 +9,8 @@ use simplerest\core\libs\Strings;
 
 class InyectarUsername extends Middleware
 {  
-    function handle(?callable $next = null){
-        $res = $this->res->get();
+    function handle(){
+        $res = response()->get();        
 
         /*
             Se espera el resultado pueda ser un JSON en este caso
@@ -29,6 +29,6 @@ class InyectarUsername extends Middleware
 
         $res['data']['username'] = $uname;
 
-        $this->res->set($res);
+        response()->set($res);
     }
 }
