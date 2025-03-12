@@ -13,7 +13,7 @@ class __NAME__ extends Middleware
         parent::__construct();
     }
 
-    function handle(?callable $next = null){
+    function handle(){
         $res = $this->res->get();
 
         // ...

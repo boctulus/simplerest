@@ -1255,24 +1255,18 @@ Ej:
 	namespace simplerest\middlewares;
 
 	use simplerest\core\Middleware;
+	use simplerest\core\libs\Strings;
 
 	class InyectarSaludo extends Middleware
 	{   
-		function __construct()
-		{
-			parent::__construct();
-		}
-
-		function handle(?callable $next = null){
-			$data = $this->res->get();
+		function handle(){
+			$data = response()->get();
 
 			if (is_string($data)){
 				if (Strings::startsWith('Hello ', $data)){
-					$this->res->set(preg_replace('/Hello (.*)/', "Hello happy $1", $data,1));
+					response()->set(preg_replace('/Hello (.*)/', "Hello happy $1", $data,1));
 				}
 			}
-
-			//$next($this->req, $this->res);
 		}
 	}
 
@@ -1295,7 +1289,6 @@ Ej:
 
 	return [
 		'simplerest\controllers\FiltersController@__all__' => RestrictContentRoleBased::class,
-
 
 Registrar varios Middleware(s) para el mismo controller
 

@@ -48,6 +48,8 @@ WebRouter::fromArray([
     // ...
 ]);
 
+WebRouter::get('test-mid',  'TestController@mid');
+
 WebRouter::get("tax_calc", function() use ($route) {
 	set_template('templates/tpl_bt3.php');          
 	render(TaxCalcShortcode::get());

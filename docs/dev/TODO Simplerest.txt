@@ -18,6 +18,17 @@ o
   })->describe('Execute SQL query');
 
 
+- Al procesar middlewares esta fallando cuando no se especifica el action con @
+
+# http://simplerest.lan/prompt_generator#chat-579
+
+return [    
+    // Funciona
+    'simplerest\controllers\TestController@mid' => InyectarSaludo::class,
+
+    // NO funciona
+    'simplerest\controllers\TestController' => InyectarSaludo::class,
+];
 
 - Implemenar insert() a nivel de Model con SubRecursos
 

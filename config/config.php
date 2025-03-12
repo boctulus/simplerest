@@ -23,7 +23,7 @@ return [
 
 	'web_router'       => true,
 	'console_router'   => true,
-	'front_controller' => true, 
+	'front_controller' => false, 
  	
 	/*
 		urls start with /api/ if remove_api_slug is set to false

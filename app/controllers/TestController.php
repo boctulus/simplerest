@@ -12,6 +12,10 @@ class TestController extends Controller
 {
     function __construct() { parent::__construct(); }
 
+    function mid(){
+        return "Hello World!";        
+    }
+
     function test_include()
     {
         $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
