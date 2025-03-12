@@ -273,14 +273,14 @@ class FrontController
 
             // Devolver algo desde un controlador sería equivalente a enviarlo como respuesta
             $res->set($data);     
-        }
-        
+        } 
 
         /*
             Middlewares
         */
 
-        //dd($class_name, 'Controller');
+        // dd($class_name, 'Controller');
+        // dd($middlewares);
 
         foreach($middlewares as $injectable => $mids){
             $_i = explode('@', $injectable);

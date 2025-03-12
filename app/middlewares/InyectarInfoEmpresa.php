@@ -12,8 +12,8 @@ class InyectarInfoEmpresa extends Middleware
         parent::__construct();
     }
 
-    function handle(?callable $next = null){
-        $data  = $this->res;
+    function handle(){
+        $data = response()->get();
         
         if (isset($data['data']["db_access"]) && !empty($data['data']["db_access"])){
        
@@ -29,7 +29,7 @@ class InyectarInfoEmpresa extends Middleware
             }
        
             $data['data']['info_empresas'] = $info_empresas;
-            $this->res->set($data);
+            response()->set($data);
         }
 
     }

@@ -18,7 +18,7 @@ abstract class Middleware
         }
     }
 
-    function handle(?callable $next = null){
+    function handle(){
     
     }
 }
