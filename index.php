@@ -10,7 +10,7 @@
 require_once __DIR__ . '/app.php';
 
 use simplerest\core\libs\Config;
-use simplerest\core\ConsoleRouter;
+use simplerest\core\CliRouter;
 use simplerest\core\WebRouter;
 use simplerest\core\FrontController;
 
@@ -23,7 +23,7 @@ if ($cfg['web_router']){
 } 
 
 if ($cfg['console_router']){        
-    ConsoleRouter::resolve();
+    CliRouter::resolve();
 } 
 
 if ($cfg['front_controller']){        

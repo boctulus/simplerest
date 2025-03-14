@@ -1,22 +1,27 @@
 TODO SimpleRest
 ===============
 
+# Router
+
+- Listado de rutas como en Laravel
+  
+  php artisan route:list
+
 - Route deberia permitir que funciones anonimas acepten parametros. Chequear
 
 - Router para la línea de comandos ("route console") podria aceptar funciones anonimas:
 
 Ej:
 
-  ConsoleRouter::set('sql-query', function () {
+  CliRouter::set('sql-query', function () {
     \DB::statement('some query');
   });
 
 o 
 
-  ConsoleRouter::set('sql-query', function () {
+  CliRouter::set('sql-query', function () {
     \DB::statement('your query');
   })->describe('Execute SQL query');
-
 
 - Al procesar middlewares esta fallando cuando no se especifica el action con @
 
@@ -4376,19 +4381,15 @@ prev, next no tienen aparentemente nada que ver con la paginación (?)
 https://netflix.github.io/genie/docs/3.0.0/rest/  
 
 
-- Cómo se paginan los sub-recursos anidados en HATEOAS ? 
+- Cómo se paginan los sub-recursos anidados? 
 
   Muestro los primeros N? últimos N? por qué criterio los ordeno? (order by)
 
 
-- Implementar búsquedas complejas como en Magento (sino estuvieran cubiertas por HATEOAS)
+- Implementar búsquedas complejas como en Magento
 
 https://devdocs.magento.com/guides/v2.4/rest/performing-searches.html#logical-or-search
 
-
-- Proveer en el modelo un método para ejecutar raw queries como en Laravel o CI
-
-https://fideloper.com/laravel-raw-queries
 
 - Debería el módulo de autenticación incluir la parte de registro? en Laravel existe un RegisterController aunque el problema que le veo es que tendría que cambiar las rutas porque hoy el registro está en el AuthController en /v1/api/auth y entonces estaría en donde? la ventaja de tener un RegisterController sería hooks específicos como BeforeRegister y AfterRgister
 
@@ -5236,33 +5237,6 @@ Además de expresiones regulares aceptar constantes como:
   Float
   Boolean
   UUID
-
-- Router:
-
-Es necesario poder especificar el namespace del Controller porque podría no estar en la raiz del directorio app/controllers. Laravel provee varias formas:
-
-  WebRouter::get('/user', 'App\Http\Controllers\UserController@index']); 
-  WebRouter::get('/user', [App\Http\Controllers\UserController::class, 'index']);  
-
-https://laravel.com/docs/8.x/upgrade#routing
-https://medium.com/@litvinjuan/how-to-fix-target-class-does-not-exist-in-laravel-8-f9e28b79f8b4 
-
-- Evaluar generar rutas como
-
-/*
-	 habilita una rutas como
-
-	 /api/photos/{photo_id}/comments
-
-*/	 
-WebRouter::resource('photos.comments', App\Http\Controllers\PhotoController::class);
-
-- Listado de rutas como en Laravel
-  
-  php artisan route:list
-
-
-- Serializar Route !!!!!!
 
 - Re-escribir Response y .... evitar usar custom headers !
 
