@@ -53,3 +53,4 @@
 [2025-03-12 07:42:01]	0.8.12	Rename de Route a WebRouter
 [2025-03-12 10:18:20]	0.8.12	Middleware funcionando en WebRouter
 [2025-03-14 17:25:34]	0.8.12	Automatic update
+[2025-03-14 22:02:36]	0.8.12	SiteMap

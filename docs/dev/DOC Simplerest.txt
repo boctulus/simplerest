@@ -20668,9 +20668,54 @@ PostmanGenerator::generate();
 - Los endpoints personalizados pueden tener cuerpo y headers específicos
 - La colección se guarda en formato JSON compatible con Postman
 
-## 🤝 Contribuir
+# SiteMap Class
 
-Para contribuir a esta clase:
-1. Asegúrate de seguir las convenciones de código existentes
-2. Documenta cualquier nuevo método o funcionalidad
-3. Actualiza este manual si agregas nuevas características
+La clase SiteMap permite generar automáticamente un sitemap en formato XML
+
+Métodos Principales
+	
+	setExclusions(array $patterns): void
+	Permite definir rutas o patrones de rutas que deben ser excluidos del sitemap.
+
+Parámetros:
+
+	$patterns (array): Lista de rutas o patrones que deben excluirse.
+
+Se pueden usar comodines (*) para excluir rutas dinámicas.
+
+Ejemplo de uso:
+
+	$sitemap->setExclusions(['sitemap', 'admin/*']);
+	
+Esto excluirá la ruta exacta /sitemap y todas las rutas que comiencen con /admin/, como /admin/dashboard o /admin/settings.
+
+	generateXML(): string
+
+Genera el sitemap en formato XML.
+
+Retorno:
+
+(string): XML del sitemap listo para ser consumido por buscadores como Google.
+
+Ejemplo de uso en un enrutador:
+
+	WebRouter::get('sitemap', function(){
+		$sitemap = new SiteMap();
+		$sitemap->fromRouter();
+		$sitemap->setExclusions(['sitemap', 'admin/*']);
+		$xml     = $sitemap->generateXML();
+
+		header('Content-Type: application/xml');
+		return $xml;
+	});
+
+o ...
+
+	WebRouter::get('sitemap', function(){
+	$sitemap = new SiteMap();
+	$sitemap->fromRouter(['sitemap', 'admin/*']);	
+	$xml     = $sitemap->generateXML();
+
+	header('Content-Type: application/xml');
+	return $xml;
+});
