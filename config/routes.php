@@ -1,14 +1,25 @@
 <?php
 
 use simplerest\controllers\DumbController;
+use simplerest\core\libs\Logger;
+use simplerest\core\libs\Mail;
+use simplerest\core\libs\SiteMap;
+use simplerest\core\libs\System;
 use simplerest\core\WebRouter;
 use simplerest\libs\Debug;
-use simplerest\core\libs\Mail;
-use simplerest\core\libs\System;
-use simplerest\core\libs\Logger;
 use simplerest\shortcodes\tax_calc\TaxCalcShortcode;
 
+
 $route = WebRouter::getInstance();
+
+WebRouter::get('sitemap', function(){
+	$sitemap = new SiteMap();
+	$sitemap->fromRouter(['sitemap', 'admin/*']);	
+	$xml     = $sitemap->generateXML();
+
+	header('Content-Type: application/xml');
+	return $xml;
+});
 
 WebRouter::get('api-test/cors',  'CorsTesterController@get');
 WebRouter::post('api-test/cors',  'CorsTesterController@post');
@@ -28,22 +39,18 @@ WebRouter::get('increment_a/{num}', 'simplerest\controllers\folder\SomeControlle
 WebRouter::get('increment_b/{num}', 'simplerest\controllers\folder\SomeController@inc3')->where(['num' => '[0-9]+']);
 
 // Grupos --ok
-WebRouter::group('admin', function() {
+WebRouter::group('admin', function() {	
     WebRouter::get('dashboard', 'DumbController@dashboard');
     WebRouter::get('settings', 'DumbController@settings');
 });
 
 // Funciones anonimas --ok
-WebRouter::get('testx', function(){
-	// echo '<pre>';
-	// print_r(get_loaded_extensions());
-	// echo '</pre>';	
-
-	if ( false === function_exists('gettext') ) {
-		echo "You do not have the gettext library installed with PHP.";
-		exit(1);
-	}
+WebRouter::get('git/pull', function(){
+	dd(
+		System::execAtRoot("git pull")
+	);
 });
+
 
 // Rutas desde array --ok
 WebRouter::fromArray([ 
@@ -60,8 +67,6 @@ WebRouter::fromArray([
 */
 WebRouter::get('test-mid',  'TestController@mid');
 
-
-
 WebRouter::get("tax_calc", function() use ($route) {
 	set_template('templates/tpl_bt3.php');          
 	render(TaxCalcShortcode::get());
@@ -74,12 +79,6 @@ WebRouter::get('mem', function(){
 
 	dd(System::getMemoryPeakUsage(), 'Memory peak usage');
 	dd(System::getMemoryPeakUsage(true), 'Memory peak usage (real)');
-});
-
-WebRouter::get('git/pull', function(){
-	dd(
-		System::execAtRoot("git pull")
-	);
 });
 
 /*
