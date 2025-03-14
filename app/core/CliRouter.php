@@ -12,7 +12,7 @@ use simplerest\core\libs\Strings;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\VarDump;
 
-class ConsoleRouter 
+class CliRouter 
 {
     protected static $instance;
     
