@@ -656,8 +656,7 @@ class DumbController extends Controller
     function inc($val)
     {
         $res = (float) $val + 1;
-        // response()->send($res);
-        return $res;
+        response()->send($res);
     }
 
     function inc2($val)
