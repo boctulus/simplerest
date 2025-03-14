@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-use simplerest\core\ConsoleRouter;
+use simplerest\core\CliRouter;
 use simplerest\core\FrontController;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Env;
@@ -91,7 +91,7 @@ if ($routing){
    }
 
    if ($cfg['console_router']){  
-      ConsoleRouter::resolve();
+      CliRouter::resolve();
    }
 }
      

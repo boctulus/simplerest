@@ -156,7 +156,7 @@ class Response
         return static::getInstance();
     }
 
-    function send($data, int $http_code = NULL){
+    function send($data, $http_code = NULL){
         if ($http_code >= 400) {
             return $this->error($data, $http_code);
         }
@@ -232,7 +232,7 @@ class Response
     }
 
     // send as JSON
-    function sendJson($data, int $http_code = null, ?string $error_msg = null){
+    function sendJson($data, $http_code = null, ?string $error_msg = null){
         $http_code = $http_code != null ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
         
         self::$to_be_encoded = true; 
@@ -322,7 +322,7 @@ class Response
         exit;
     }
 
-    function set($data){
+    function set($data){        
         static::$data = $data;
         return static::$instance; 
     }
@@ -357,6 +357,8 @@ class Response
     function flush(){
         // print_r(['Memory usage'=> System::getMemoryUsage()]);
         // print_r("<br>");
+
+        // var_dump(static::$data);
 
         if (self::$to_be_encoded){
             static::$data = $this->do_encode(static::$data);

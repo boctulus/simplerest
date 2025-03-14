@@ -1,5 +1,6 @@
 <?php
 
+use simplerest\controllers\DumbController;
 use simplerest\core\WebRouter;
 use simplerest\libs\Debug;
 use simplerest\core\libs\Mail;
@@ -19,6 +20,12 @@ WebRouter::delete('api-test/r1',  'DumbController@test_r1');
 
 // Rutas con parametros --ok
 WebRouter::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
+
+// Inclusion de namespace
+WebRouter::get('increment/{num}', 'simplerest\controllers\folder\SomeController@inc2')->where(['num' => '[0-9]+']);
+
+WebRouter::get('increment_a/{num}', 'simplerest\controllers\folder\SomeController@inc')->where(['num' => '[0-9]+']);
+WebRouter::get('increment_b/{num}', 'simplerest\controllers\folder\SomeController@inc3')->where(['num' => '[0-9]+']);
 
 // Grupos --ok
 WebRouter::group('admin', function() {
@@ -48,7 +55,12 @@ WebRouter::fromArray([
     // ...
 ]);
 
+/*
+	Soporte de Middlewares en WebRouter --ok
+*/
 WebRouter::get('test-mid',  'TestController@mid');
+
+
 
 WebRouter::get("tax_calc", function() use ($route) {
 	set_template('templates/tpl_bt3.php');          

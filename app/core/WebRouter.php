@@ -45,7 +45,7 @@ class WebRouter
         $config = Config::get();
 
         if (php_sapi_name() != 'cli'){
-            $res = Response::getInstance();
+            $res = response();
     
             $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $path = preg_replace('/(.*)\/index.php/', '/', $path);
@@ -115,6 +115,8 @@ class WebRouter
         if (!isset(static::$routes[$req_method])){
             return;
         }
+
+        $res = Response::getInstance(); 
         
         // Verifica alias di URL esatto
         if (isset(static::$v_aliases[$req_method][$path])){
@@ -125,16 +127,21 @@ class WebRouter
             if (is_callable($ck)){
                 // Se la rotta es una closure, la ejecuto directamente.
                 $data = $ck(...$args);
-                Response::getInstance()->send($data);
+                $res->set($data);
             } else {
                 // Rotta che richiama un controller.
                 [$class_name, $method] = static::$ctrls[$req_method][$uri];
                 $controller_obj = new $class_name();
                 $data = call_user_func_array([$controller_obj, $method], $args);
 
-                Response::getInstance()->send($data);
+                $res->set($data);
             }
-            return;
+
+            if (!headers_sent()){
+                $res->flush();
+            }
+            exit;
+
         } else {
             $callbacks = static::$routes[$req_method];
 
@@ -192,12 +199,18 @@ class WebRouter
 
                 if (is_callable($ck)){
                     $data = $ck(...$args);
-                    Response::getInstance()->send($data);
+                    $res->set($data);
                 } else {
                     [ $class_name, $method ] = static::$ctrls[$req_method][$uri];
                     $controller_obj = new $class_name();
-                    $data = call_user_func_array([$controller_obj, $method], $args);
 
+                    // dd(get_class($controller_obj));
+                    // dd($method);
+                    // dd($args);
+
+                    $data = call_user_func_array([$controller_obj, $method], $args);                    
+                    $data = $data ?? response()->get();
+                    
                     // Inizio blocco middleware.
                     $middlewares = include CONFIG_PATH . 'middlewares.php';
                     
@@ -205,7 +218,7 @@ class WebRouter
                     // dd($class_name, 'CONTROLLER');
                     // dd($method, 'ACTION');
 
-                    Response::getInstance()->send($data);
+                    $res->set($data);
 
                     /*
                         Middlewares
@@ -221,7 +234,7 @@ class WebRouter
                             $_method = $_i[1] ?? 'index';
                             if ($class_name == $_class_name && ($_method == '__all__' || $method == $_method)){
                                 if (!class_exists($mid)){
-                                    Response::getInstance()->error("Middleware '$mid' not found", 404, "Internal error - controller class $class_name not found");
+                                    $res->error("Middleware '$mid' not found", 404, "Internal error - controller class $class_name not found");
                                 }
                                 $mid_obj = new $mid();
                                 $mid_obj->handle();
@@ -229,10 +242,11 @@ class WebRouter
                         }
                     }
                     // Fine blocco middleware.
+                }          
 
+                if (!headers_sent()){
+                    $res->flush();
                 }
-
-                response()->flush();
                 exit;
             }
         }

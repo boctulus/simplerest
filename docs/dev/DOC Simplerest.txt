@@ -1128,7 +1128,7 @@ WebRouter::get('system/info/gettext', function(){
 
 # Route de consola
 
-ConsoleRouter es un componente que permite ejecutar comandos PHP desde la línea de comandos, facilitando la creación de scripts de automatización y la ejecución de tareas administrativas.
+CliRouter es un componente que permite ejecutar comandos PHP desde la línea de comandos, facilitando la creación de scripts de automatización y la ejecución de tareas administrativas.
 
 Uso Básico
 
@@ -20467,9 +20467,9 @@ Pasos:
 
 routes/api.php | routes
 
-WebRouter::resource('addresses', App\Http\Controllers\AddressController::class);
-WebRouter::resource('cart_items', App\Http\Controllers\CartItemController::class);
-WebRouter::resource('carts', App\Http\Controllers\CartController::class);
+Route::resource('addresses', App\Http\Controllers\AddressController::class);
+Route::resource('cart_items', App\Http\Controllers\CartItemController::class);
+Route::resource('carts', App\Http\Controllers\CartController::class);
 ...
 
 
