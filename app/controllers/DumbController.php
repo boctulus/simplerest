@@ -105,6 +105,7 @@ use simplerest\core\libs\Reflector;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\SendinBlue;
 use simplerest\core\libs\SimpleCrypt;
+use simplerest\core\libs\SiteMap;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\StratoScraper;
 use simplerest\core\libs\Strings;
@@ -123,8 +124,8 @@ use simplerest\core\libs\ZipManager;
 use simplerest\core\Model;
 use simplerest\core\Request;
 use simplerest\core\Response;
-use simplerest\core\WebRouter;
 use simplerest\core\View;
+use simplerest\core\WebRouter;
 use simplerest\libs\ArbitrageCalculator;
 use simplerest\libs\Cake;
 use simplerest\libs\Foo2;
@@ -12040,5 +12041,30 @@ class DumbController extends Controller
         dd($result);
     }
 
+    function test_sitemap_gen(){
+        $sitemap = new SiteMap();
+
+        // Cargar rutas del router
+        $sitemap->fromRouter(['admin/*', 'api/*']);
+
+        // Excluir rutas con placeholders
+        $sitemap->excludePlaceholdedRoutes();
+
+        // Añadir URLs manualmente
+        $sitemap->add('https://example.com/pagina-importante', '2025-03-10');
+        $sitemap->add('https://example.com/otra-pagina');
+
+        // O agregar desde un array
+        $sitemap->fromArray([
+            'https://example.com/pagina1',
+            ['loc' => 'https://example.com/pagina2', 'lastmod' => '2025-02-28']
+        ]);
+
+        // Generar y mostrar el sitemap
+        $sitemap->output();
+
+        // O guardar a un archivo
+        $sitemap->saveToFile(ETC_PATH . 'sitemap.xml');
+    }
     
 }   // end class

@@ -5,7 +5,11 @@ namespace simplerest\core\libs;
 use \ReflectionClass;
 use simplerest\core\WebRouter;
 use simplerest\core\libs\Config;
+use simplerest\core\exceptions\NotImplementedException;
 
+/*
+    @author Pablo Bozzolo
+*/
 class SiteMap
 {
     /*  
@@ -22,6 +26,24 @@ class SiteMap
     protected $exclusions = [];
 
     /**
+     * Array de URLs manuales añadidas al sitemap
+     */
+    protected $customUrls = [];
+
+    /**
+     * Fecha por defecto para lastmod si no se proporciona
+     */
+    protected $defaultDate;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->defaultDate = date('Y-m-d');
+    }
+
+    /**
      * Carica le rotte dal WebRouter utilizzando Reflection.
      */
     public function fromRouter($exclusions = [])
@@ -35,6 +57,27 @@ class SiteMap
         if (!empty($exclusions)){
             $this->exclusions = $exclusions;
         }
+
+        return $this;
+    }
+
+    /**
+     * Añade URLs manuales al sitemap desde un array
+     * 
+     * @param array $urls Array de URLs a añadir
+     * @return self
+     */
+    public function fromArray(array $urls): self
+    {
+        foreach ($urls as $url) {
+            if (is_string($url)) {
+                $this->add($url);
+            } elseif (is_array($url) && isset($url['loc'])) {
+                $lastmod = $url['lastmod'] ?? null;
+                $this->add($url['loc'], $lastmod);
+            }
+        }
+        return $this;
     }
 
     /**
@@ -53,13 +96,15 @@ class SiteMap
      * Genera un XML conforme allo standard sitemap.
      * Considera solo le rotte GET.
      *
+     * @param bool $includeXmlHeader Incluir cabecera XML
      * @return string XML formattato della sitemap
      */
-    public function generateXML(): string
+    public function generateXML(bool $includeXmlHeader = true): string
     {
         // Creazione della struttura XML base per lo sitemap.
+        $xmlHeader = $includeXmlHeader ? '<?xml version="1.0" encoding="UTF-8"?>' : '';
         $xml = new \SimpleXMLElement(
-            '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>'
+            $xmlHeader . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>'
         );
 
         // Ottiene la base URL dalla configurazione.
@@ -69,7 +114,7 @@ class SiteMap
         // Se la base URL non è assoluta, la compongo utilizzando protocollo e host.
         if (!preg_match('/^https?:\/\//', $baseUrl)) {
             $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
-            $host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'];
+            $host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '';
             $baseUrl = $protocol . '://' . $host . $baseUrl;
         }
 
@@ -95,6 +140,17 @@ class SiteMap
                 // Costruisce l'URL completo, gestendo eventuali slash duplicati.
                 $loc = $baseUrl . '/' . ltrim($uri, '/');
                 $url->addChild('loc', htmlspecialchars($loc));
+                $url->addChild('lastmod', $this->defaultDate);
+            }
+        }
+
+        // Añadir URLs personalizadas
+        foreach ($this->customUrls as $customUrl) {
+            $url = $xml->addChild('url');
+            $url->addChild('loc', htmlspecialchars($customUrl['loc']));
+            
+            if (!empty($customUrl['lastmod'])) {
+                $url->addChild('lastmod', $customUrl['lastmod']);
             }
         }
 
@@ -107,41 +163,74 @@ class SiteMap
     }
 
     /**
-     * Aggiunge manualmente delle rotte al SiteMap.
+     * Esclude dal sitemap le rotte che contengono placeholder, ad esempio {id} o {num}.
      *
-     * Il formato dell'array deve essere:
-     * [
-     *    "VERBO:/uri" => callback,
-     *    "/altra/uri" => callback // in questo caso si assume GET come verbo
-     * ]
-     *
-     * @param array $routes Array di rotte da aggiungere
      * @return self
      */
-    public function fromArray(array $routes): self
+    public function excludePlaceholdedRoutes(): self
     {
-        $supportedVerbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
-
-        foreach ($routes as $routeKey => $callback) {
-            if (strpos($routeKey, ':') !== false) {
-                list($verb, $uri) = explode(':', $routeKey, 2);
-                $verb = strtoupper(trim($verb));
-                $uri  = trim($uri, '/');
-            } else {
-                $verb = 'GET';
-                $uri  = trim($routeKey, '/');
-            }
-
-            if (in_array($verb, $supportedVerbs)) {
-                if (!isset($this->routes[$verb])) {
-                    $this->routes[$verb] = [];
-                }
-                // Aggiunge la rotta solo se non esiste già.
-                if (!isset($this->routes[$verb][$uri])) {
-                    $this->routes[$verb][$uri] = $callback;
+        if (isset($this->routes['GET'])) {
+            foreach ($this->routes['GET'] as $uri => $callback) {
+                if (strpos($uri, '{') !== false || strpos($uri, '}') !== false) {
+                    unset($this->routes['GET'][$uri]);
                 }
             }
         }
         return $this;
+    }
+
+    /**
+     * Aggiunge manualmente una URL al SiteMap.
+     *
+     * @param string $url URL completa para añadir al sitemap
+     * @param string|null $lastmod Fecha de última modificación en formato YYYY-MM-DD
+     * @return self
+     */
+    public function add(string $url, ?string $lastmod = null): self
+    {
+        $this->customUrls[] = [
+            'loc' => $url,
+            'lastmod' => $lastmod ?? $this->defaultDate
+        ];
+        
+        return $this;
+    }
+
+    /**
+     * Establece la fecha por defecto para lastmod
+     * 
+     * @param string $date Fecha en formato YYYY-MM-DD
+     * @return self
+     */
+    public function setDefaultDate(string $date): self
+    {
+        $this->defaultDate = $date;
+        return $this;
+    }
+
+    /**
+     * Guarda el sitemap en un archivo
+     * 
+     * @param string $filePath Ruta completa donde guardar el archivo
+     * @return bool Éxito o fracaso de la operación
+     */
+    public function saveToFile(string $filePath): bool
+    {
+        $xml = $this->generateXML();
+        return file_put_contents($filePath, $xml) !== false;
+    }
+
+    /**
+     * Envía cabeceras XML y el contenido del sitemap
+     * 
+     * @return void
+     */
+    public function output(): void
+    {
+        if (!headers_sent()) {
+            header('Content-Type: application/xml; charset=utf-8');
+        }
+        
+        echo $this->generateXML();
     }
 }
