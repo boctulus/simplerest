@@ -12,14 +12,17 @@ use simplerest\shortcodes\tax_calc\TaxCalcShortcode;
 
 $route = WebRouter::getInstance();
 
-WebRouter::get('sitemap', function(){
+WebRouter::get('sitemap.xml', function(){
 	$sitemap = new SiteMap();
-	$sitemap->fromRouter(['sitemap', 'admin/*']);	
+	$sitemap->fromRouter(['sitemap.xml', 'admin/*']);	
+	$sitemap->excludePlaceholdedRoutes(); //
 	$xml     = $sitemap->generateXML();
 
 	header('Content-Type: application/xml');
 	return $xml;
 });
+
+// ...
 
 WebRouter::get('api-test/cors',  'CorsTesterController@get');
 WebRouter::post('api-test/cors',  'CorsTesterController@post');
