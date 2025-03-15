@@ -9,15 +9,7 @@ TODO SimpleRest
 
 - Route deberia permitir que funciones anonimas acepten parametros. Chequear
 
-- Router para la línea de comandos ("route console") podria aceptar funciones anonimas:
-
-Ej:
-
-  CliRouter::set('sql-query', function () {
-    \DB::statement('some query');
-  });
-
-o 
+- Consierar agregar describe() para poder describir funciones anonimas de los routers al listar (como haria Laravel)
 
   CliRouter::set('sql-query', function () {
     \DB::statement('your query');
