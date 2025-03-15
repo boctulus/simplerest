@@ -56,3 +56,4 @@
 [2025-03-14 22:02:36]	0.8.12	SiteMap
 [2025-03-15 20:13:57]	0.8.12	Clase SiteMap mejorada
 [2025-03-15 21:23:21]	0.8.12	WebRouterCommand
+[2025-03-15 23:17:50]	0.8.12	Automatic update
