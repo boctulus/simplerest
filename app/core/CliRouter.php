@@ -5,13 +5,20 @@ namespace simplerest\core;
 use simplerest\core\api\v1\ApiController;
 use simplerest\core\controllers\ConsoleController;
 use simplerest\core\libs\Cli;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Files;
 use simplerest\core\libs\Msg;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Url;
 use simplerest\core\libs\VarDump;
 
+/*
+    El funcionamiento "base" es el de un FrontController para la terminal
+
+    TO-DO
+
+    - Que procese config/cli_routes.php, "similar" a como hace WebRouter con config/routes.php
+
+    - Soporte para funciones anonimas.
+*/
 class CliRouter 
 {
     protected static $instance;
@@ -54,11 +61,8 @@ class CliRouter
         $controller = new $className();
         
         // Determina la acción
-        if (isset($params[1])) {
-            // Puedes ampliar esta lista o directamente comprobar con method_exists()
-            $explicitMethods = ['help', 'getPhone', 'index', 'tinyurl', 'to', 'calc', 'report', 'save', 'list'];
-            
-            if (in_array($params[1], $explicitMethods) || method_exists($controller, $params[1])) {
+        if (isset($params[1])) {            
+            if (method_exists($controller, $params[1])) {
                 $action = $params[1];
                 $actionParams = array_slice($params, 2);
             } else {
