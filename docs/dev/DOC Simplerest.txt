@@ -20670,52 +20670,42 @@ PostmanGenerator::generate();
 
 # SiteMap Class
 
-La clase SiteMap permite generar automáticamente un sitemap en formato XML
+La clase SiteMap permite generar archivos sitemap XML para tu aplicación web basados en las rutas definidas en el WebRouter o añadidas manualmente.
 
-Métodos Principales
-	
-	setExclusions(array $patterns): void
-	Permite definir rutas o patrones de rutas que deben ser excluidos del sitemap.
+Uso Básico
 
-Parámetros:
+	$sitemap = new SiteMap();
+	$sitemap->fromRouter()          // Cargar rutas del WebRouter
+			->excludePlaceholdedRoutes()  // Excluir rutas con parámetros dinámicos 
+			->add('https://example.com/pagina-custom')  // Añadir URL manual
+			->output();  // Mostrar el sitemap con cabeceras XML
 
-	$patterns (array): Lista de rutas o patrones que deben excluirse.
+Ejemplo completo:
 
-Se pueden usar comodines (*) para excluir rutas dinámicas.
+	$sitemap = new SiteMap();
+	$sitemap->setDefaultDate('2025-03-15')
+	->fromRouter(['admin/*', 'private/*'])
+	->excludePlaceholdedRoutes()
+	->add('https://example.com/pagina-importante', '2025-03-10')
+	->fromArray([
+		'https://example.com/pagina1',
+		['loc' => 'https://example.com/pagina2', 'lastmod' => '2025-02-28']
+	])
+	->saveToFile('sitemap.xml');
 
-Ejemplo de uso:
+En routes.php podria tenerse esto:
 
-	$sitemap->setExclusions(['sitemap', 'admin/*']);
-	
-Esto excluirá la ruta exacta /sitemap y todas las rutas que comiencen con /admin/, como /admin/dashboard o /admin/settings.
-
-	generateXML(): string
-
-Genera el sitemap en formato XML.
-
-Retorno:
-
-(string): XML del sitemap listo para ser consumido por buscadores como Google.
-
-Ejemplo de uso en un enrutador:
-
-	WebRouter::get('sitemap', function(){
+	WebRouter::get('sitemap.xml', function(){
 		$sitemap = new SiteMap();
-		$sitemap->fromRouter();
-		$sitemap->setExclusions(['sitemap', 'admin/*']);
+		$sitemap->fromRouter(['sitemap.xml', 'admin/*']);	
+		$sitemap->excludePlaceholdedRoutes(); //
 		$xml     = $sitemap->generateXML();
 
 		header('Content-Type: application/xml');
 		return $xml;
 	});
 
-o ...
 
-	WebRouter::get('sitemap', function(){
-	$sitemap = new SiteMap();
-	$sitemap->fromRouter(['sitemap', 'admin/*']);	
-	$xml     = $sitemap->generateXML();
+Resto de documentación:  
 
-	header('Content-Type: application/xml');
-	return $xml;
-});
+https://claude.ai/chat/509c8834-215a-4077-ac30-a3380a20af1d
