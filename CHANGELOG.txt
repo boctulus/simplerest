@@ -59,3 +59,4 @@
 [2025-03-15 23:17:50]	0.8.12	Automatic update
 [2025-03-16 22:13:07]	0.8.12	CliRouter acepta funciones anonimas
 [2025-03-16 23:25:25]	0.8.12	Soporte basico de CliRouter completo
+[2025-03-16 23:31:20]	0.8.12	Automatic update
