@@ -72,26 +72,69 @@ class CliRouter
         */
         $key = $params[0];
 
-        // dd($key, 'key');
-        // dd($params, 'params');
+        // dd($key, 'key');        
         // dd(static::$routes, 'routes');
 
         if (isset(static::$routes[$key])) {
-            if (is_callable(static::$routes[$key])){
-                $params = array_slice($params, 1);
+            $params = array_slice($params, 1);
+
+            // dd($params, 'params');
+            if (is_callable(static::$routes[$key])) {                
                 $cb     = static::$routes[$key];
                 $result = $cb(...$params);
 
+                response()->set($result)->flush();
+            } else {
+                $ck = static::$routes[$key];
+
+                $namespace = Strings::contains('\\', $ck) ? '' : 'simplerest\\controllers\\';
+                $pos = strpos($ck, '@');
+
+                if ($pos === false){
+                    $ctrl = $ck;
+                    $method = 'index';
+                } else {
+                    $ctrl = substr($ck, 0, $pos);
+                    $method = substr($ck, $pos+1);
+                }
+
+                $class_name = "{$namespace}{$ctrl}";
+                if (!class_exists($class_name)){
+                    throw new \InvalidArgumentException("Controller class $class_name not found");  
+                }
+                if (!method_exists($class_name, $method)){
+                    throw new \InvalidArgumentException("Method $method was not found in $class_name"); 
+                }
+                                        
+                // dd([$class_name, $method]);
+
+                // Instanciar el controlador
+                $instance = new $class_name();
+
+                // Verificar si el método es invocable
+                if (!is_callable([$instance, $method])) {
+                    throw new \InvalidArgumentException("Method $method in $class_name is not callable");
+                }
+
+                // Ejecutar el método con los parámetros
+                $result = call_user_func_array([$instance, $method], $params);
+
+                // Retornar o manejar la respuesta según sea necesario
                 response()->set($result)->flush();
             }
         }
         
         try {
+            if (!isset($result)){                
+                $namespace = 'simplerest\\controllers\\';
 
-            if (!isset($result)){
+                // dd(static::$routes, 'routes');
+                // dd($key, 'key');
+                // dd($params, 'params');
+
                 // Determina el controlador
                 $controllerName = $key;
-                $namespace = 'simplerest\\controllers\\';
+               
                 $className = $namespace . ucfirst($controllerName) . 'Controller';
                 
                 if (!class_exists($className)) {
@@ -247,56 +290,7 @@ class CliRouter
      */
     public static function compile()
     {   
-        // dd(static::$routes, 'routes'); //
-
-        foreach (static::$routes as $verb => $callbacks){
-            foreach($callbacks as $uri => $ck){
-                // Per funzioni anonime
-                if (is_callable($ck)){
-                    $r = new \ReflectionFunction($ck);
-                    foreach ($r->getParameters() as $p){
-                        static::$ck_params[$verb][$uri][] = $p->name;                        
-                    }
-                } else {
-                    $namespace = Strings::contains('\\', $ck) ? '' : 'simplerest\\controllers\\';
-                    $pos = strpos($ck, '@');
-                    if ($pos === false){
-                        $ctrl = $ck;
-                        $method = 'index';
-                    } else {
-                        $ctrl = substr($ck, 0, $pos);
-                        $method = substr($ck, $pos+1);
-                    }
-    
-                    $class_name = "{$namespace}{$ctrl}";
-                    if (!class_exists($class_name)){
-                        throw new \InvalidArgumentException("Controller class $class_name not found");  
-                    }
-                    if (!method_exists($class_name, $method)){
-                        throw new \InvalidArgumentException("Method $method was not found in $class_name"); 
-                    }
-                                        
-                    static::$ctrls[$verb][$uri] = [$class_name, $method];
-                }
-    
-                // Se la rotta contiene parametri dinamici (placeholder {param})
-                if (strpos($uri, '{') !== false) {
-                    $pattern = preg_replace_callback('/\{(\w+)\}/', function($matches) use ($verb, $uri) {
-                        $param = $matches[1];
-                        if (isset(static::$wheres[$verb][$uri][$param])) {
-                            return '(' . static::$wheres[$verb][$uri][$param] . ')';
-                        }
-                        return '([^/]+)';
-                    }, $uri);
-    
-                    static::$routePatterns[$verb][$uri] = '#^' . $pattern . '$#';
-    
-                    // Estrai i nomi dei parametri
-                    preg_match_all('/\{(\w+)\}/', $uri, $paramMatches);
-                    static::$routeParamNames[$verb][$uri] = $paramMatches[1];
-                }
-            }
-        }
+        // nothing
     }
 
 }

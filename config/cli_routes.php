@@ -7,6 +7,7 @@ use simplerest\core\libs\Logger;
 // Inicializar el router
 $route = CliRouter::getInstance();
 
+
 // funciones anonimas sin parametros --ok
 CliRouter::command('version', function() {
     return 'SimpleRest Framework v1.0.0';
@@ -17,8 +18,16 @@ CliRouter::command('pow', function($num, $exp) {
     return pow($num, $exp);
 });
 
+// ok
+CliRouter::command('dbdriver', 'simplerest\controllers\DumbController@db_driver');
+
+// ok -- en este caso se pasan parametros a inc2()
+CliRouter::command('plus_1', 'simplerest\controllers\DumbController@inc2');
+
 // mas...
 
+// CliRouter::command('increment/{num}', 'simplerest\controllers\folder\SomeController@inc2')
+// ->where(['num' => '[0-9]+']);
 
 // // Comandos con parámetros y restricciones
 // CliRouter::command('migrations {action}', 'MigrationsController@handle')
