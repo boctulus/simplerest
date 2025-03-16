@@ -199,7 +199,7 @@ class DumbController extends Controller
         );
     }
 
-    function testx()
+    function db_driver()
     {
         DB::getConnection();
 
