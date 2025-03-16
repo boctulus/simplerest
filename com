@@ -91,6 +91,7 @@ if ($routing){
    }
 
    if ($cfg['console_router']){  
+      include CONFIG_PATH . 'cli_routes.php';
       CliRouter::resolve();
    }
 }

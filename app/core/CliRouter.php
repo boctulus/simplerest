@@ -15,14 +15,34 @@ use simplerest\core\libs\VarDump;
 
     TO-DO
 
-    - Que procese config/cli_routes.php, "similar" a como hace WebRouter con config/routes.php
+    - Que procese cli_routes.php, "similar" a como hace WebRouter con routes.php
 
     - Soporte para funciones anonimas.
+
+    http://simplerest.lan/prompt_generator#chat-594
 */
 class CliRouter 
 {
+    protected static $routes       = [];
+    protected static $params;
+    protected static $current      = [];
     protected static $instance;
+    protected static $wheres       = [];
+    protected static $ck_params    = [];
+    protected static $ctrls        = [];
+    protected static $current_verb;
+    protected static $current_uri;
+    protected static $aliases      = [];
+    protected static $v_aliases    = [];    
     
+    // Nuove proprietà per il supporto di parametri dinamici e gruppi
+    protected static $routePatterns  = []; // [verb][uri] => regex pattern
+    protected static $routeParamNames = []; // [verb][uri] => array di nomi dei parametri
+    protected static $groupPrefix    = '';
+    
+    protected static $current_command;
+
+
     protected function __construct() { }
 
     public static function getInstance(){
@@ -43,39 +63,61 @@ class CliRouter
         
         // Si no se proporciona ningún comando, muestra instrucciones
         if (empty($params)) {
-            dd("Uso: php com <controller> [action] [argumentos]");
+            dd("Uso: php com {controller} [action] [argumentos]");
             return;
         }
-        
-        // Determina el controlador
-        $controllerName = $params[0];
-        $namespace = 'simplerest\\controllers\\';
-        $className = $namespace . ucfirst($controllerName) . 'Controller';
-        
-        if (!class_exists($className)) {
-            dd("Error: Controlador '$className' no encontrado.");
-            return;
-        }
-        
-        // Instancia el controlador
-        $controller = new $className();
-        
-        // Determina la acción
-        if (isset($params[1])) {            
-            if (method_exists($controller, $params[1])) {
-                $action = $params[1];
-                $actionParams = array_slice($params, 2);
-            } else {
-                $action = 'index';
-                $actionParams = array_slice($params, 1);
+
+        /*
+            Si ejecuto "php com pow 2 8" entonces $key == 'pow'
+        */
+        $key = $params[0];
+
+        // dd($key, 'key');
+        // dd($params, 'params');
+        // dd(static::$routes, 'routes');
+
+        if (isset(static::$routes[$key])) {
+            if (is_callable(static::$routes[$key])){
+                $params = array_slice($params, 1);
+                $cb     = static::$routes[$key];
+                $result = $cb(...$params);
+
+                response()->set($result)->flush();
             }
-        } else {
-            $action = 'index';
-            $actionParams = [];
         }
         
         try {
-            $result = call_user_func_array([$controller, $action], $actionParams);
+
+            if (!isset($result)){
+                // Determina el controlador
+                $controllerName = $key;
+                $namespace = 'simplerest\\controllers\\';
+                $className = $namespace . ucfirst($controllerName) . 'Controller';
+                
+                if (!class_exists($className)) {
+                    dd("Error: Controlador '$className' no encontrado.");
+                    return;
+                }
+                
+                // Instancia el controlador
+                $controller = new $className();
+                
+                // Determina la acción
+                if (isset($params[1])) {            
+                    if (method_exists($controller, $params[1])) {
+                        $action = $params[1];
+                        $actionParams = array_slice($params, 2);
+                    } else {
+                        $action = 'index';
+                        $actionParams = array_slice($params, 1);
+                    }
+                } else {
+                    $action = 'index';
+                    $actionParams = [];
+                }
+
+                $result = call_user_func_array([$controller, $action], $actionParams);
+            }           
 
             if ($result !== null) {
                 /*
@@ -140,4 +182,121 @@ class CliRouter
             dd("Error durante la ejecución del comando: " . $e->getMessage());
         }
     }
+
+    /*
+
+        Metodos sin probar de implementacion pendiente    !!!
+
+    */
+
+    /**
+     * Registra un comando CLI.
+     */
+    public static function command(string $cmd, $callback) {
+        $$cmd = trim($cmd);
+
+        if (static::$groupPrefix !== '') {
+            $cmd = trim(static::$groupPrefix, ':') . ':' . $cmd;
+        }
+
+        static::$current_command =$cmd;
+        static::$current = ['command', $cmd];
+        static::$routes[$cmd] = $callback;
+
+        return static::getInstance();
+    }
+
+    /**
+     * Método para agrupar comandos con un prefijo común.
+     */
+    public static function group(string $prefix, callable $callback) {
+        $previousPrefix = static::$groupPrefix;
+        static::$groupPrefix = trim($previousPrefix, ':') . ':' . trim($prefix, ':');
+        static::$groupPrefix = trim(static::$groupPrefix, ':');
+        $callback();
+        static::$groupPrefix = $previousPrefix;
+        return static::getInstance();
+    }
+
+    /**
+     * Define restricciones para los parámetros del comando.
+     */
+    public static function where(array $arr) {
+        static::$wheres[static::$current[0]][static::$current[1]] = $arr;
+        return static::getInstance();
+    }
+
+    /**
+     * Define un alias para el comando.
+     */
+    public static function alias(string $name) {
+        static::$aliases[$name] = static::$current_command;
+        return static::getInstance();
+    }
+
+    /**
+     * Define un nombre descriptivo para el comando.
+     */
+    public static function name(string $name) {
+        static::$aliases[$name] = static::$current_command;
+        return static::getInstance();
+    }
+
+    /**
+     * Procesa las rutas CLI definidas.
+     */
+    public static function compile()
+    {   
+        // dd(static::$routes, 'routes'); //
+
+        foreach (static::$routes as $verb => $callbacks){
+            foreach($callbacks as $uri => $ck){
+                // Per funzioni anonime
+                if (is_callable($ck)){
+                    $r = new \ReflectionFunction($ck);
+                    foreach ($r->getParameters() as $p){
+                        static::$ck_params[$verb][$uri][] = $p->name;                        
+                    }
+                } else {
+                    $namespace = Strings::contains('\\', $ck) ? '' : 'simplerest\\controllers\\';
+                    $pos = strpos($ck, '@');
+                    if ($pos === false){
+                        $ctrl = $ck;
+                        $method = 'index';
+                    } else {
+                        $ctrl = substr($ck, 0, $pos);
+                        $method = substr($ck, $pos+1);
+                    }
+    
+                    $class_name = "{$namespace}{$ctrl}";
+                    if (!class_exists($class_name)){
+                        throw new \InvalidArgumentException("Controller class $class_name not found");  
+                    }
+                    if (!method_exists($class_name, $method)){
+                        throw new \InvalidArgumentException("Method $method was not found in $class_name"); 
+                    }
+                                        
+                    static::$ctrls[$verb][$uri] = [$class_name, $method];
+                }
+    
+                // Se la rotta contiene parametri dinamici (placeholder {param})
+                if (strpos($uri, '{') !== false) {
+                    $pattern = preg_replace_callback('/\{(\w+)\}/', function($matches) use ($verb, $uri) {
+                        $param = $matches[1];
+                        if (isset(static::$wheres[$verb][$uri][$param])) {
+                            return '(' . static::$wheres[$verb][$uri][$param] . ')';
+                        }
+                        return '([^/]+)';
+                    }, $uri);
+    
+                    static::$routePatterns[$verb][$uri] = '#^' . $pattern . '$#';
+    
+                    // Estrai i nomi dei parametri
+                    preg_match_all('/\{(\w+)\}/', $uri, $paramMatches);
+                    static::$routeParamNames[$verb][$uri] = $paramMatches[1];
+                }
+            }
+        }
+    }
+
 }

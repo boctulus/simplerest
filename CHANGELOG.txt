@@ -57,3 +57,4 @@
 [2025-03-15 20:13:57]	0.8.12	Clase SiteMap mejorada
 [2025-03-15 21:23:21]	0.8.12	WebRouterCommand
 [2025-03-15 23:17:50]	0.8.12	Automatic update
+[2025-03-16 22:13:07]	0.8.12	CliRouter acepta funciones anonimas

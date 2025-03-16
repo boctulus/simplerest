@@ -1,13 +1,19 @@
 TODO SimpleRest
 ===============
 
+- Crear script "copy" desde el core de SimpleRest al de Adoon u otro.
+
+Debe chequear origen y destino sean el mismo framework
+
+Algo como:
+
+  php com cp_core {dest-root} [ --force ]
+  php com cp_file {rel or absolute path} {dest-root} [ --force ] [ --backup ]
+
+Por defecto copiaria solo archivos mas nuevos pero con --force seria de cualquier fecha.
+
+
 # Router
-
-- Listado de rutas como en Laravel
-  
-  php artisan route:list
-
-- Route deberia permitir que funciones anonimas acepten parametros. Chequear
 
 - Consierar agregar describe() para poder describir funciones anonimas de los routers al listar (como haria Laravel)
 
@@ -629,10 +635,14 @@ Ej:
 
 	Assets::load('jquery')
 	Assets::load('jquery', 3.6)
-	Assets::load(Assets::JQuery)
-	Assets::load(Assets::JQuery, 3.6)
-	Assets::load(Assets::JQuery, '3.*')		// podria ser 3.x o 3.* o seguir la nomenclatura de Composer
+	Assets::load(Assets::JQUERY)
+	Assets::load(Assets::JQUERY, 3.6)
+	Assets::load(Assets::JQUERY, '3.*')		// podria ser 3.x o 3.* o seguir la nomenclatura de Composer
 
+Combinar con algo como Assets::setDirectory('public/assets')
+
+Poder definir que archivos .js y .css se cargarian por ejemplo con Assets::load('jquery') y con Assets::load('jquery', 3.6) quizas basado en algun tipo de convencion de carpetas y "modulos" que definan eso para cada caso.
+ 
 - Deberia poder usarse un identificador que prevenga de cargarlo dos veces
 
 Como en Wordpress y compatible con WordPress
