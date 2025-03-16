@@ -1144,7 +1144,6 @@ Salida esperada:
 
 	Hello, world!
 	
-
 Manejo de Parámetros
 
 Se pueden pasar argumentos a los comandos de la siguiente manera:
@@ -1165,29 +1164,52 @@ Ej:
 
 	30
 
-
 Controladores en carpetas
 
 Los controladores pueden organizarse en subcarpetas dentro de controllers. Para ejecutar un comando en una carpeta, use:
 
-	php com demos\date test_gfg5
+	php com folder\class_name action
 
-Esto ejecutará el método test_gfg5 dentro de Demos\DateController.
+Esto ejecutará el método action dentro de folder\{CassName}Controller.
 
 
-Uso de alias y métodos dinámicos
+Diferencia con FrontController
 
-Un controlador puede aceptar distintos formatos de entrada usando __call. Ejemplo en WhatsappController:
+Mientras tanto CliRouter como FrontController pueden ejecutar asi:
 
-	function __call($name, $arguments) {
-		if (is_numeric($name)) {
-			return $this->_link($name, ...$arguments);
-		}
-	}
+	php com folder\calc inc 7
 
-Esto permite comandos como:
+solo FrontController puede hacerlo asi:
 
-	php com whatsapp '+8613662320140'
+	php com folder calc inc 7
+
+O sea el FrontController tiene no necesita la "\"
+
+
+Archivo config/cli_routes.php
+
+CliRouter procesa el archivo cli_routes.php de forma similar a como WebRouter procesa routes.php
+
+Ej:
+	
+	CliRouter::command('dbdriver', 'simplerest\controllers\DumbController@db_driver');
+	CliRouter::command('adder', 'simplerest\controllers\Calculator@add');
+
+Funciones anonimas
+
+De forma similar al WebRouter, el CliRouter acepta funciones anonimas en el config/cli_routes.php
+
+Ej:
+
+	// Funcion anonima sin parametros 
+	CliRouter::command('version', function() {
+		return 'SimpleRest Framework v1.0.0';
+	});
+
+	// Funcion anonima con parametros
+	CliRouter::command('pow', function($num, $exp) {
+		return pow($num, $exp);
+	});
 
 
 Errores Comunes y Soluciones
