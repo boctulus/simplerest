@@ -56,6 +56,10 @@ class OpenFacturaSDK implements IOpenFactura
             ]);
     }
 
+    public function getClient(){
+        return $this->apiClient;
+    }
+
     /**
      * Configura el tiempo de expiración de la caché para las peticiones.
      *
@@ -88,7 +92,7 @@ class OpenFacturaSDK implements IOpenFactura
         });
 
         if ($idempotencyKey) {
-            $this->apiClient->setHeader('Idempotency-Key', $idempotencyKey);
+            $this->apiClient->addHeader('Idempotency-Key', $idempotencyKey);
         }
 
         $response = $this->apiClient
@@ -97,7 +101,7 @@ class OpenFacturaSDK implements IOpenFactura
             ->data();
 
         if ($idempotencyKey) {
-            $this->apiClient->unsetHeader('Idempotency-Key');
+            $this->apiClient->removeHeader('Idempotency-Key');
         }
 
         return $response;
