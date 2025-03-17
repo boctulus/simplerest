@@ -154,17 +154,3 @@ WebRouter::get('admin/pagina-dos', function(){
 //});
 
 
-
-/*
-	Si hubiera rutas de consola podria crear comandos y ejecutarlos asi:
-
-	php com get_path_public
-
-	<-- que devolveria PUBLIC_PATH
-
-	Actualmente necesitaria crear un controlador y el comando ser'ia mas largo innecesariamente
-*/
-
-/*
-	See routes.php.example
-*/
