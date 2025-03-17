@@ -1,0 +1,53 @@
+
+# Sandbox = false con API KEY de desarrollo
+
+PS C:\xampp\htdocs\simplerest> php com OpenFacturaSDKTest testEmitirDTE
+--| response
+{"error":{"message":"Usuario no está registrado en la empresa","code":"OF-03"}}
+
+
+# El RUT del receptor se envia pero no lo considera valido (Ej: 12345678-9)
+
+PS C:\xampp\htdocs\simplerest> php com OpenFacturaSDKTest testEmitirDTE
+--| response
+{
+    "error": {
+        "message": "Faltan campos obligatorios en el DTE",
+        "code": "OF-02",
+        "details": [
+            {
+                "field": "RUTRecep",
+                "issue": "Requerido"
+            }
+        ]
+    }
+}
+
+# Falta fecha de emision
+
+--| response
+{
+    "error": {
+        "message": "Validación de Campos",
+        "code": "OF-10",
+        "details": [
+            {
+                "field": "FchEmis",
+                "issue": "Debe Indicar FchEmis"
+            }
+        ]
+    }
+}
+
+
+# Todo puede estar correcto y dar error
+
+ php com OpenFacturaSDKTest testEmitirDTE
+ 
+--| response
+{
+    "error": {
+        "message": "CAF vencidos solicitando nuevos (2023-06-08), reintente más tarde",
+        "code": "OF-07"
+    }
+}
