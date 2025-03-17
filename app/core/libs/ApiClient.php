@@ -292,6 +292,13 @@ class ApiClient
         return $this;
     }
 
+    function removeHeader($key){
+        if (isset($this->req_headers[$key])) {
+            unset($this->req_headers[$key]);
+        }
+        return $this;
+    }
+
     /*
         Ejecuta un callback cuano $cond es verdadero
     */
