@@ -18,14 +18,15 @@ CliRouter::command('pow', function($num, $exp) {
     return pow($num, $exp);
 });
 
-// ok
+// Comandos con controladores
 CliRouter::command('dbdriver', 'simplerest\controllers\DumbController@db_driver');
 
-// ok -- en este caso se pasan parametros a inc2()
+// Comandos con controladores -- en este caso se pasan parametros sin validacion
 CliRouter::command('plus_1', 'simplerest\controllers\DumbController@inc2');
 
-// mas...
+// mas... aun sin soporte
 
+// // Comandos con controladores -- en este caso se pasan parametros con validacion
 // CliRouter::command('increment/{num}', 'simplerest\controllers\folder\SomeController@inc2')
 // ->where(['num' => '[0-9]+']);
 
@@ -33,29 +34,11 @@ CliRouter::command('plus_1', 'simplerest\controllers\DumbController@inc2');
 // CliRouter::command('migrations {action}', 'MigrationsController@handle')
 //     ->where(['action' => 'migrate|rollback|status|reset']);
 
-// // Comandos con controladores
-// CliRouter::command('make:controller {name}', 'GeneratorController@makeController')
-//     ->where(['name' => '[A-Za-z0-9_]+']);
-
-// CliRouter::command('make:model {name}', 'GeneratorController@makeModel')
-//     ->where(['name' => '[A-Za-z0-9_]+']);
-
-// // Comandos con funciones anónimas
-// CliRouter::command('git:pull', function() {
-//     return System::execAtRoot("git pull");
-// });
-
-// CliRouter::command('cache:clear', function() {
-//     $cacheDir = STORAGE_PATH . 'cache';
-//     System::execAtRoot("rm -rf $cacheDir/*");
-//     return "Cache cleared successfully.";
-// });
-
 // // Comandos con nombres descriptivos
 // CliRouter::command('route:list', 'RouteController@listRoutes')
 //     ->name('routes.list');
 
-// // Comandos con alias
+// //Comandos con alias
 // CliRouter::command('serve', function() {
 //     $port = 8000;
 //     $host = 'localhost';
@@ -88,18 +71,6 @@ CliRouter::command('plus_1', 'simplerest\controllers\DumbController@inc2');
 //     file_put_contents($envFile, $content);
 //     return "Environment variable {$key} set to {$value}";
 // });
-
-// // Comandos para tareas específicas del sistema
-// CliRouter::command('logs:clear', function() {
-//     System::execAtRoot("rm -f " . STORAGE_PATH . "logs/*.log");
-//     return "Logs cleared successfully.";
-// });
-
-// // Comandos utilitarios
-// CliRouter::command('get_path_public', function() {
-//     return PUBLIC_PATH;
-// });
-
 
 // Compilar todas las rutas CLI
 CliRouter::compile();
