@@ -158,6 +158,8 @@ class MakeCommand implements ICommand
 
         make model medios_transporte --no-schema --from:az
 
+        make dto {name} [ --dir= ]
+
         make widget [ --include-js | --js ]
 
         make command myCommand
@@ -484,9 +486,6 @@ class MakeCommand implements ICommand
         }
     }
 
-    /*
-        Sin probar si respeta --dir=
-    */
     function dto($name, ...$opt) 
     {
         $dir = null;
@@ -501,8 +500,8 @@ class MakeCommand implements ICommand
             }
         }
 
-        $namespace = $this->namespace . '\\DTOs' . ($dir ? '\\'.$dir : '');
-        $dest_path = DTO_PATH . Files::convertSlashes($dir, Files::WIN_DIR_SLASH) ;
+        $namespace = $this->namespace . '\\DTOs' . ($dir ? '\\'. str_replace('/', '\\', $dir) : '');
+        $dest_path = DTO_PATH . Files::convertSlashes($dir, Files::WIN_DIR_SLASH) . DIRECTORY_SEPARATOR ;
         $template_path = self::TEMPLATES . 'DTO.php';
         $prefix = '';
         $subfix = '';  
