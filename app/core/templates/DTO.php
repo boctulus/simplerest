@@ -2,7 +2,6 @@
 
 namespace __NAMESPACE__;
 
-trait __NAME__
-{
-     
+class __NAME__ {
+    // ..
 }

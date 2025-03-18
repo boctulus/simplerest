@@ -1,16 +1,16 @@
 <?php
 
-use simplerest\core\interfaces\ICommand;
-use simplerest\core\libs\Config;
 use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
 use simplerest\core\libs\Files;
-use simplerest\core\libs\i18n\Translate;
-use simplerest\core\libs\PHPLexicalAnalyzer;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
+use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
+use simplerest\core\interfaces\ICommand;
+use simplerest\core\libs\i18n\Translate;
 use simplerest\core\traits\CommandTrait;
+use simplerest\core\libs\PHPLexicalAnalyzer;
 
 class MakeCommand implements ICommand 
 {   
@@ -19,6 +19,7 @@ class MakeCommand implements ICommand
     const TEMPLATES = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR;
 
     const MODEL_TEMPLATE  = self::TEMPLATES . 'Model.php';
+    const DTO_TEMPLATE  = self::TEMPLATES . 'DTO.php';
     const MODEL_NO_SCHEMA_TEMPLATE  = self::TEMPLATES . 'ModelWithoutSchema.php';
     const SCHEMA_TEMPLATE = self::TEMPLATES . 'Schema.php';
     const MIGRATION_TEMPLATE = self::TEMPLATES . 'Migration.php'; 
@@ -430,7 +431,7 @@ class MakeCommand implements ICommand
         $data = str_replace('__NAME__', $prefix . $this->camel_case .  $subfix , $data);
 
         if (!is_null($namespace)){
-            $data = str_replace('__NAMESPACE', $namespace, $data);
+            $data = str_replace('__NAMESPACE__', $namespace, $data);
         }
 
         if ($strict){
@@ -481,6 +482,32 @@ class MakeCommand implements ICommand
         } catch (\Exception $e){
             throw new \Exception("Acl generation fails. Detail: " . $e->getMessage());
         }
+    }
+
+    /*
+        Sin probar si respeta --dir=
+    */
+    function dto($name, ...$opt) 
+    {
+        $dir = null;
+        foreach ($opt as $o){
+            if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o) || Strings::startsWith('--folder=', $o) || Strings::startsWith('--folder:', $o) ){
+                // Convert windows directory separator into *NIX
+                $o = str_replace('\\', '/', $o);
+    
+                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z0-9A-ZñÑ_\-/]+)$~', $o, $matches)){
+                    $dir = $matches[2];
+                }
+            }
+        }
+
+        $namespace = $this->namespace . '\\DTOs' . ($dir ? '\\'.$dir : '');
+        $dest_path = DTO_PATH . Files::convertSlashes($dir, Files::WIN_DIR_SLASH) ;
+        $template_path = self::TEMPLATES . 'DTO.php';
+        $prefix = '';
+        $subfix = '';  
+
+        $this->generic($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
     }
 
     function page($name, ...$opt) {
@@ -714,7 +741,7 @@ class MakeCommand implements ICommand
         // Cargar y personalizar la plantilla
         $data = file_get_contents($template_path);
         $data = str_replace('__NAME__', $prefix . $this->camel_case . $subfix, $data);
-        $data = str_replace('__NAMESPACE__', $namespace, $data);
+        $data = str_replace('// namespace __NAMESPACE__;', "namespace $namespace;", $data);
         $data = str_replace('// __METHODS__', $methodsCode, $data);
     
         if ($strict) {
@@ -2582,7 +2609,7 @@ class MakeCommand implements ICommand
         $packageSlug = strtolower(str_replace(' ', '-', preg_replace('/[^a-zA-Z0-9]+/', '-', $packageName)));
     
         if (empty($authorSlug) || empty($packageSlug)) {
-            StdOut::error("Author and package name are required.");
+            StdOut::print("Author and package name are required.");
             return;
         }
     
@@ -2590,7 +2617,7 @@ class MakeCommand implements ICommand
         $packagePath = $basePath . "{$authorSlug}/{$packageSlug}/";
     
         if (file_exists($packagePath)) {
-            StdOut::warning("Package already exists at: $packagePath");
+            StdOut::print("Package already exists at: $packagePath");
             return;
         }
     
@@ -2598,7 +2625,7 @@ class MakeCommand implements ICommand
         foreach ($directories as $dir) {
             $path = $packagePath . $dir;
             if (!mkdir($path, 0755, true) && !is_dir($path)) {
-                StdOut::error("Failed to create directory: $path");
+                StdOut::print("Failed to create directory: $path");
                 return;
             }
         }
@@ -2613,7 +2640,7 @@ class MakeCommand implements ICommand
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     
             file_put_contents($composerJsonPath, $composerContent);
-            StdOut::info("composer.json created at: $composerJsonPath");
+            StdOut::print("composer.json created at: $composerJsonPath");
         }
     
         // Generar namespace basado en autor y nombre del package (PascalCase)
@@ -2632,14 +2659,14 @@ class MakeCommand implements ICommand
                     // Reemplazar placeholders __NAME__ y __NAMESPACE__
                     $updatedContent = str_replace(['__NAME__', '__NAMESPACE__'], [ucfirst($packageName), $namespace], $content);
                     file_put_contents($destinationFile, $updatedContent);
-                    StdOut::info("Copied and updated template to: $destinationFile");
+                    StdOut::print("Copied and updated template to: $destinationFile");
                 } else {
-                    StdOut::warning("Failed to read template: $template");
+                    StdOut::print("Failed to read template: $template");
                 }
             }
         }
     
-        StdOut::success("Package created successfully at: $packagePath");
+        StdOut::print("Package created successfully at: $packagePath");
     }
     
     /**

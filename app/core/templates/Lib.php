@@ -1,6 +1,6 @@
 <?php
 
-namespace __NAMESPACE;
+namespace __NAMESPACE__;
 
 use simplerest\core\libs\Strings;
 

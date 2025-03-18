@@ -283,7 +283,10 @@ class ApiClient
     }
 
     function addHeader($key, $value){
-        $this->req_headers[$key] = $value;
+        if ($value != null){
+            $this->req_headers[$key] = $value;
+        }
+       
         return $this;
     }
 
