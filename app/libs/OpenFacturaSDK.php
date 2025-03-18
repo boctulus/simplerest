@@ -19,7 +19,7 @@ use simplerest\interfaces\IOpenFactura;
 
     - emitirDTE: Emisión de DTEs con soporte para opciones de respuesta (response), campos personalizados (custom), envío de email (sendEmail) y clave de idempotencia (Idempotency-Key).
     - getDTEStatus: Consulta del estado de un DTE por token.
-    - anularDTE52: Anulación de guías de despacho electrónicas (DTE tipo 52).
+    - anularGuiaDespacho: Anulación de guías de despacho electrónicas (DTE tipo 52).
     - getCompanyInfo: Obtención de información de la empresa.
     - Métodos adicionales como getTaxpayer, getOrganization, getOrganizationDocuments,...
 
@@ -31,6 +31,24 @@ use simplerest\interfaces\IOpenFactura;
         $this->apiClient->setHeader('Idempotency-Key', $idempotencyKey);
 
     La cabecera se elimina después de la solicitud, evitando interferencias en futuras peticiones.    
+
+    Tipos de DTE
+
+    33: Factura Electrónica
+    39: Boleta Electrónica
+    34: Factura Electrónica Exenta
+    41: Boleta Electrónica Exenta
+    56: Nota de Débito Electrónica
+    61: Nota de Crédito Electrónica
+    52: Guía de Despacho Electrónica
+    110: Factura de Exportación Electrónica
+    111: Nota de Débito de Exportación Electrónica
+    112: Nota de Crédito de Exportación Electrónica
+    46: Factura de Compra Electrónica
+
+    https://docsapi-openfactura.haulmer.com/
+    https://www.openfactura.cl/factura-electronica/api/
+    https://www.sii.cl/factura_electronica/formato_dte.pdf
 }
 */
 class OpenFacturaSDK implements IOpenFactura
@@ -126,7 +144,7 @@ class OpenFacturaSDK implements IOpenFactura
      * @param string $fecha Fecha de emisión (formato AAAA-MM-DD).
      * @return mixed Respuesta de la API.
      */
-    public function anularDTE52($folio, $fecha) {
+    public function anularGuiaDespacho($folio, $fecha) {
         $body = [
             'Dte' => 52,
             'Folio' => $folio,
@@ -135,7 +153,7 @@ class OpenFacturaSDK implements IOpenFactura
 
         return $this->apiClient
             ->setBody($body, true)
-            ->request($this->base_url . '/v2/dte/anularDTE52', 'POST')
+            ->request($this->base_url . '/v2/dte/anularGuiaDespacho', 'POST')
             ->data();
     }
 
@@ -334,5 +352,7 @@ class OpenFacturaSDK implements IOpenFactura
             ->get($this->base_url . '/v2/status')
             ->data();
     }    
+
+    
 }   
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace __NAMESPACE;
+namespace __NAMESPACE__;
 
 class __NAME__ extends \Exception {
     public function __construct($message = null, $code = 0, \Throwable $previous = null) {
