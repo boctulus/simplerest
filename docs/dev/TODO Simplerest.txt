@@ -74,8 +74,19 @@ if (count($pivotParts) > 2) {
 
 pero bien podria estar usando el inflector de CakePHP y no necesariamente el de Doctrine.
 
+- En migraciones,con --simulate idealmente ejecutaria las migraciones ya sea en una transaccion con ROLLBACK o bien con "tablas temporales"
+
+  migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --fresh ] [ --retry ] [ --ignore ] [ --make= ] [ --debug ]
+
+https://chatgpt.com/c/67da814a-e66c-800d-ba78-f573a930b22d
 
 - Al ejecutar "migrations migrate" deberia ser posible combinar --dir= + --to + --file= 
+
+- Con "Tablas Temporales" seria posible hacer "php com make migration --from_dto={archivo.php} --update
+
+O sea podria ejecutar todas las migraciones en tablas temporales, conocer la estructura final, comparar con la del DTO y en base a eso escribir automaticamente la migracion para que la estructura que esta en el DTO se vuelque a la DB
+
+https://chatgpt.com/c/67da814a-e66c-800d-ba78-f573a930b22d
 
 - Terminar de implementar de forma concistente los EXECUTION_MODE_* en el resto de metodos como delete(), etc..
 
@@ -425,6 +436,27 @@ y de hecho pareciera que Url::cache() no tiene utilidad, hoy al menos.
         ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES";
     $result = $mysqli->query($sql);
 
+  php com sql import --file= [ --to={db_connection} ]
+  
+- Comando de busqueda y listado de migraciones
+
+  // Busca migraciones por el nombre del archivo o clase o metadescripcion
+  
+  php com migrations list
+  php com migrations list --contains="{algun string}" <-- equivale a "list"
+  php com migrations find "{algun string}"
+
+- Crear migraciones desde CSV y DTO 
+
+  php com make migration --from_dto --dir={directory}  [ --to={db_connection} ]
+  php com make migration --from_dto --file={ruta_rel}\SomeDTO.php  [ --to={db_connection} ]
+  php com make migration --from_dto={ruta_rel}\SomeDTO.php} [ --to={db_connection} ]
+
+  php com make migration --from_csv --dir={directory} [ --to={db_connection} ]
+  php com make migration --from_csv --file={ruta_rel}\some_file.csv [ --to={db_connection} ]
+  php com make migration --from_csv={file.csv} [ --to={db_connection} ]
+
+
 - Para Validator implementar validacion de datos anidados. 
 
 https://chat.openai.com/c/a81cd27c-0a3a-40c8-be43-9cdfdbb10c83
@@ -457,18 +489,6 @@ Ej:
 <-- notar "detalle.*"   
 
 - Seeders
-
-- Comando de busqueda y listado de migraciones
-
-  // Busca migraciones por el nombre del archivo o clase o metadescripcion
-  
-  php com migrations list
-  php com migrations list --contains="{algun string}" <-- equivale a "list"
-  php com migrations find "{algun string}"
-
-- CSV a migraciones
-
-com make migration --from_csv={file.csv} [ --to= ]
 
 - Interfaz (PSH por "PHP SHell) para ejecutar controller/actions de forma remota para SR/SW como:
 
@@ -1779,20 +1799,13 @@ Basicamente el --toField= o sea el --reference= debe poder eliminarse (ser opcio
 
 - Sintaxis *alternativa* para crear una migración que cree una relacion entre tablas:
 
-  make migration table1 --toTable:{table2} [ --fk={fk_name} ] --mul=1:1
+  make migration [ {name} ] --fromTable:{table1} --toTable:{table2} [ --fk={fk_name} ] --mul=1:1
 
-  make migration table1 --toTable:{table2} [ --fk={fk_name} ] --mul=1:n
+  make migration [ {name} ] --fromTable:{table1} --toTable:{table2} [ --fk={fk_name} ] --mul=1:n
 
-  make migration table1 --toTable:{table2} --multiplicty=n:m [ --table={nonbre_puente}
-
-  o...
-
-  make migration --fromTable:{table1} --toTable:{table2} [ --fk={fk_name} ] --mul=1:1
-
-  make migration --fromTable:{table1} --toTable:{table2} [ --fk={fk_name} ] --mul=1:n
-
-  make migration --from_Table:{table1} --toTable:{table2} --multiplicty=n:m [ --table={nonbre_puente} ]
+  make migration [ {name} ] --from_Table:{table1} --toTable:{table2} --mul=n:m [ --pivot={nonbre_tabla} ]
  
+
 Las principales diferencias son:
 
 1) Ahora solo se nombran las tablas y el nombre de la FK (opcional) y de acuerdo a la mutiplicidad se crea la FK en una tabla o en la otra.
@@ -1800,12 +1813,12 @@ Las principales diferencias son:
 2) Es posible crear la tabla puente (intermediaria) con esta sintaxis algo que antes *no* era posible.
 
 
-- Estar'ia *faltando* poder especificar que una FK es nullable en migraciones "inline"
+- Estaria *faltando* poder especificar que una FK es nullable en migraciones "inline"
 
 Ej:
 
-  make migration foo --fromField=user_id [ --nullable ] --toTable=users
-  make migration table1 --toTable:{table2} [ --fk={fk_name} ] --mul=1:1 --nullable
+  make migration {name} --fromField=user_id [ --nullable ] --toTable=users
+  make migration {name} --toTable:{table2} [ --fk={fk_name} ] --mul=1:1 --nullable
   etc
 
 - Investigar algolia / typesense / meilisearch y Elastic Search.
