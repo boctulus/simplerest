@@ -989,7 +989,7 @@ class DB
 					// https://stackoverflow.com/a/36724762/980631
 					$type = \PDO::PARAM_LOB;  // 3
 				elseif(is_array($val)){
-					throw new SqlException("The value for WHERE can not be an array!");				
+					throw new SqlException("Expected simple type. Found array.");				
 				}else {
 					throw new SqlException("Unsupported type: " . var_export($val, true));
 				}	
