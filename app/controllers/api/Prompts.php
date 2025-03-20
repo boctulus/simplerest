@@ -7,7 +7,7 @@ use simplerest\core\libs\Files;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\PHPParser;
+use simplerest\core\libs\CustomTags;
 use simplerest\core\libs\CodeReducer; 
 use simplerest\controllers\MyApiController;
 use simplerest\core\exceptions\NotFileButDirectoryException;
@@ -87,7 +87,27 @@ class Prompts extends MyApiController
 
     protected function onPostingAfterCheck($id, array &$data)
     {        
-        // dd($data['description']);
+        if (!empty($data['description'])){
+            CustomTags::register('dir', function($params) {
+                $path      = $params['path'] ?? '';
+                $pattern   = $params['pattern'] ?? '*.*';
+                $recursive = (bool) ($params['recursive'] ?? false);
+            
+                if (!is_dir($path)) {
+                    throw new \Exception("Invalid directory path: $path");
+                }
+            
+                $files = $recursive 
+                    ? Files::recursiveGlob($path . DIRECTORY_SEPARATOR . $pattern) 
+                    : Files::glob($path, $pattern);
+            
+                $files = Strings::enclose($files);
+            
+                return '[ ' . implode(', ' .PHP_EOL, $files) . ' ]';
+            });
+
+            $data['description'] = CustomTags::replace($data['description']);
+        }
 
         $data['content'] = [];
         $base_path = $data['base_path'] ?? null;

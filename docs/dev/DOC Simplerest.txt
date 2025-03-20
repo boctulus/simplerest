@@ -20810,3 +20810,38 @@ Resulado:
 
 			)
 	)
+
+Los custom tags se pueden reemplazar por el resultado de la aplicacion de un callback registrado para cada uno.
+
+Ej:
+
+	// Registro de un callback para el tag "dir".
+	CustomTags::register('dir', function($params) {
+		$path      = $params['path'] ?? '';
+		$pattern   = $params['pattern'] ?? '*.*';
+		$recursive = (bool) ($params['recursive'] ?? false);
+	
+		if (!is_dir($path)) {
+			throw new \Exception("Invalid directory path: $path");
+		}
+	
+		$files = $recursive 
+			? Files::recursiveGlob($path . DIRECTORY_SEPARATOR . $pattern) 
+			: Files::glob($path, $pattern);
+	
+		return implode(PHP_EOL, $files);
+	});
+
+	// Registro de un callback para el tag "calc".
+	CustomTags::register('calc', function($params) {
+		// logica
+	});
+
+	// Cadena de ejemplo que contiene múltiples tags.
+	$input = 'Los calculos son [calc op=(50,34,676) operation="mul"] y [calc op=(56676,67) operation="div"]. Revisa el directorio [dir path="C:\\xampp\\htdocs\\simplerest\\logs"]. Dame el resultado en un JSON.';
+
+	// Reemplaza los tags en la cadena.
+	$result = CustomTags::render($input);
+
+	// Muestra el resultado.
+	dd($result);
