@@ -7,8 +7,8 @@ use simplerest\core\libs\Files;
 use simplerest\core\libs\Logger;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\CodeReducer;
-use simplerest\core\libs\PHPParser; 
+use simplerest\core\libs\PHPParser;
+use simplerest\core\libs\CodeReducer; 
 use simplerest\controllers\MyApiController;
 use simplerest\core\exceptions\NotFileButDirectoryException;
 
@@ -87,6 +87,8 @@ class Prompts extends MyApiController
 
     protected function onPostingAfterCheck($id, array &$data)
     {        
+        // dd($data['description']);
+
         $data['content'] = [];
         $base_path = $data['base_path'] ?? null;
         $data['files'] = array_unique($data['files'], SORT_REGULAR);

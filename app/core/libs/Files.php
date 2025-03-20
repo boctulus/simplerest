@@ -668,7 +668,7 @@ class Files
 		$com_files = static::glob(COMMANDS_PATH, '*Command.php')
 		$entries   = static::glob($content_dir, '*', GLOB_ONLYDIR, '__MACOSX');
 	*/
-	static function glob(string $path, string $pattern, $flags = 0, $exclude = null){
+	static function glob(string $path, string $pattern, $flags = 0, $exclude = []){
 		$last_char = Strings::lastChar($path);
 
 		if ($last_char != '/' && $last_char != '\\'){
@@ -699,10 +699,26 @@ class Files
 	}
 
 	// https://stackoverflow.com/a/17161106/980631
-	static function recursiveGlob($pattern, $flags = 0) {
+	static function recursiveGlob($pattern, $flags = 0, $exclude = []) 
+	{
 		$files = glob($pattern, $flags); 
+		
 		foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
 			$files = array_merge($files, static::recursiveGlob($dir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
+		}
+
+		if (!empty($exclude)){
+			if (!is_array($exclude)){
+				$exclude = [ $exclude ];
+			}
+
+			foreach ($files as $ix => $entry){
+				$filename = basename($entry);
+				
+				if (in_array($filename, $exclude)){
+					unset($files[$ix]);
+				}
+			}
 		}
 
 		foreach ($files as $ix => $f){

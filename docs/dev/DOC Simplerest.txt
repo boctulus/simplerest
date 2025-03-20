@@ -20731,3 +20731,48 @@ En routes.php podria tenerse esto:
 Resto de documentación:  
 
 https://claude.ai/chat/509c8834-215a-4077-ac30-a3380a20af1d
+
+
+# Custom Tags
+
+https://chatgpt.com/c/67dbc83e-2390-800d-9ee7-5f7e4752cdb1
+
+El framework provee un parser mas o menos similar al de WordPress para parsing de "shortcodes".
+
+	Ej:
+
+	$input     = '[dir path="C:\\xampp\\htdocs\\simplerest\\logs"]';
+	$parsedTag = CustomTags::parse($input);
+	dd($parsedTag);
+
+Resultado:
+
+	Array
+	(
+		[name] => dir
+		[params] => Array
+			(
+				[path] => C:\xampp\htdocs\simplerest\logs
+			)
+	)
+
+	Ej:
+
+	$input     = '[calc op=[7,8] operation="mul"]';
+	$parsedTag = CustomTags::parse($input);
+	dd($parsedTag);
+
+Resultado:
+
+	Array
+	(
+		[name] => calc
+		[params] => Array
+			(
+				[op] => [7,8]
+				[operation] => mul
+			)
+
+	)
+
+A difierencia del de WordPress los tags no son del tipo que requiere "cierre".
