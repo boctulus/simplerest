@@ -20758,7 +20758,7 @@ Resultado:
 
 	Ej:
 
-	$input     = '[calc op=[7,8] operation="mul"]';
+	$input     = '[calc op=(7,8) operation="mul"]';
 	$parsedTag = CustomTags::parse($input);
 	dd($parsedTag);
 
@@ -20769,10 +20769,44 @@ Resultado:
 		[name] => calc
 		[params] => Array
 			(
-				[op] => [7,8]
+				[op] => (7,8)
 				[operation] => mul
 			)
 
 	)
 
 A difierencia del de WordPress los tags no son del tipo que requiere "cierre".
+
+## Procesamiento de mutiples tags
+
+Ej:
+
+	$input     = 'Ejecuta estos calculos [calc op=(50,34,676) operation="mul"] y [calc op=(56676,67) operation="div"]. Dame el resultado en un JSON';
+	dd(CustomTags::parseAll($input));
+
+Resulado:
+
+	Array
+	(
+		[0] => Array
+			(
+				[name] => calc
+				[params] => Array
+					(
+						[op] => (50,34,676)
+						[operation] => mul
+					)
+
+			)
+
+		[1] => Array
+			(
+				[name] => calc
+				[params] => Array
+					(
+						[op] => (56676,67)
+						[operation] => div
+					)
+
+			)
+	)
