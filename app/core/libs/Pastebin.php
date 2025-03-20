@@ -12,7 +12,7 @@ namespace simplerest\core\libs;
     Ghostbin: Ghostbin is another popular pastebin-like service that offers an API. It allows you to create, retrieve, and delete pastes. Ghostbin pastes can be public or password-protected.
 */
 
-class PastebinLike
+class Pastebin
 {   
 
     /*
