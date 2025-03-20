@@ -12075,13 +12075,20 @@ class DumbController extends Controller
         );
     }
 
-    function test_custom_tags(){
-        $input     = '[dir path="C:\\xampp\\htdocs\\simplerest\\logs"]';
-        $parsedTag = CustomTags::parse($input);
-        dd($parsedTag);
+    function test_custom_tags(){                
+        // Procesa comillas dobles
+        // // // // // // $str = 'analiza estos archivos y dime que hacen. considera los logs en [dir path="c:\\xampp\\htdocs\\simplerest\\logs"]';
+        // // // // // // dd(customtags::parse($str));
 
-        $input     = '[calc op=[7,8] operation="mul"]';
-        $parsedTag = CustomTags::parse($input);
-        dd($parsedTag);
+        // // // // // // // procesa comillas simples
+        // // // // // // $str = "analiza estos archivos y dime que hacen. considera los logs en [dir path='c:\\xampp\\htdocs\\simplerest\\logs']";
+        // // // // // // dd(customtags::parse($str));
+
+        // // // // // // $input     = 'ejecuta este calculo [calc op=(7,8,5.2) operation="mul"] y dame el resultado en un json';
+        // // // // // // dd(customTags::parse($input));
+
+        $input     = 'Ejecuta estos calculos [calc op=(50,34,676) operation="mul"] y [calc op=(56676,67) operation="div"]. Dame el resultado en un JSON';
+        dd(CustomTags::parseAll($input));
+        
     }
 }   // end class
