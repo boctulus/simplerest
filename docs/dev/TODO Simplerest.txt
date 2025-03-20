@@ -1,6 +1,8 @@
 TODO SimpleRest
 ===============
 
+- Considerar eliminar uso de constantes como "const EXECUTION_MODE_NORMAL" ya que solo funcionn desde PHP 8.2
+
 - Crear script "copy" desde el core de SimpleRest al de Adoon u otro.
 
 Debe chequear origen y destino sean el mismo framework
