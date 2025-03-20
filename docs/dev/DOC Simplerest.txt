@@ -452,7 +452,7 @@ Advertencia
 
 Podria intentarse hacer usando databases.php para crear un  "alias" de la conexion principal a base de datos pero usando 'tb_prefix':
 
-	'main-2' => [
+	'main' => [
 		'host'		=> env('DB_HOST', '127.0.0.1'),
 		'port'		=> env('DB_PORT'),
 		'driver' 	=> env('DB_CONNECTION'),
@@ -478,7 +478,7 @@ Ej:
 
 		function __construct()
 		{
-			DB::getConnection('main-2');  // referencia a la conexion
+			DB::getConnection('main');  // referencia a la conexion
 		}
 
 		// ..

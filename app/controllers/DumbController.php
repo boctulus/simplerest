@@ -17,7 +17,6 @@ use PhpParser\Node\Scalar\MagicConst\File;
 use simplerest\controllers\api\Products;
 use simplerest\controllers\api\TblPersona;
 use simplerest\core\api\v1\ApiController;
-;
 use simplerest\core\Container;
 
 use simplerest\core\controllers\Controller;
@@ -12065,6 +12064,14 @@ class DumbController extends Controller
 
         // O guardar a un archivo
         $sitemap->saveToFile(ETC_PATH . 'sitemap.xml');
+    } 
+
+    function list_files(){
+        $dir = 'C:\xampp\htdocs\simplerest\app\migrations';
+        $pattern = '*.php';
+
+        dd(
+            Files::recursiveGlob("$dir\\$pattern")
+        );
     }
-    
 }   // end class
