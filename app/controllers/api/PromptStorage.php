@@ -20,7 +20,7 @@ class PromptStorage extends MyApiController
 
     function __construct()
     {       
-        DB::getConnection('main-2');        
+        DB::getConnection('main');        
         parent::__construct();
     }        
 } 

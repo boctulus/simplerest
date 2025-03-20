@@ -70,3 +70,4 @@
 [2025-03-19 07:45:41]	0.8.12	Automatic update
 [2025-03-19 18:32:53]	0.8.12	Automatic update
 [2025-03-20 14:09:09]	0.8.12	SQLException ahora extiende a \Exception en vez de a PDOException
+[2025-03-20 14:39:34]	0.8.12	Automatic update

@@ -1,10 +1,10 @@
 <?php
 
-use simplerest\core\interfaces\IMigration;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
+use simplerest\core\libs\Schema;
+use simplerest\core\libs\Factory;
+use simplerest\core\interfaces\IMigration;
 
 class CreatePromptsTb implements IMigration
 {
@@ -12,7 +12,7 @@ class CreatePromptsTb implements IMigration
 
     function __construct()
     {
-        DB::getConnection('main-2');
+        DB::getConnection('main');
     }
 
     /**
