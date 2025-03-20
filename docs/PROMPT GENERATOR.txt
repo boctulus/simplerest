@@ -172,3 +172,25 @@ POST /api/v1/prompts
     "notes": "Gracias!",
     "mode_simulate": true
 }
+
+# Parsing de directorios en descripción
+
+    Ej:
+
+    {
+        "title": "Prueba de Generador de prompt",
+        "description": "Analiza estos archivos y dime que hacen. Considera los logs en [dir path='C:\\xampp\\htdocs\\simplerest\\logs']",
+        "files": [
+            {
+                "path": "C:\\xampp\\htdocs\\simplerest\\app\\core\\helpers\\db.php",
+                "interface_replacement": {
+                    "include": [ "inSchema" ]
+                }            
+            },
+            {
+                "path": "C:\\xampp\\htdocs\\simplerest\\app\\core\\Model.php"
+            }
+        ],
+        "notes": "Gracias!",
+        "mode_simulate": false
+    }
