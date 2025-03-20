@@ -22,11 +22,11 @@ class PastebinLike
     static function getLink(string $str)
     {    
         // pruebo 
-        $link = PastebinLike::sendToSprunge($str);
+        $link = static::sendToSprunge($str);
 
         // pruebo con otro servicio
         if (empty($link)){
-            $link = PastebinLike::sendToIx($str);
+            $link = static::sendToIx($str);
         }
 
         // Si todo falla
