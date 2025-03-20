@@ -702,7 +702,7 @@ class Files
 	static function recursiveGlob($pattern, $flags = 0) {
 		$files = glob($pattern, $flags); 
 		foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
-			$files = array_merge($files, static::recursiveGlob($dir.'/'.basename($pattern), $flags));
+			$files = array_merge($files, static::recursiveGlob($dir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
 		}
 
 		foreach ($files as $ix => $f){
