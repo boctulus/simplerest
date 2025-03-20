@@ -211,8 +211,7 @@ class MakeCommand implements ICommand
 
         # Acl file
 
-        make acl
-        make acl [ --debug ]
+        make acl [ -f ] [ --debug ]
 
 
         # Pages

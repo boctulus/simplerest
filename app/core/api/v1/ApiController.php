@@ -8,9 +8,9 @@ use simplerest\core\Model;
 use simplerest\libs\Debug;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Url;
+use simplerest\core\libs\Time;
 use simplerest\core\libs\Files;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Time;  
+use simplerest\core\libs\Arrays;  
 use simplerest\core\libs\Factory;
 use simplerest\core\libs\Strings;
 use simplerest\core\libs\Validator;
@@ -1062,10 +1062,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         } catch (InvalidValidationException $e) { 
             response()->error('Validation Error', 400, json_decode($e->getMessage()));
         } catch (SqlException $e) { 
-            response()->error('SQL Exception', 500, Strings::isJSON($e->getMessage()) ? json_decode($e->getMessage()) : '', __METHOD__); 
+            response()->error('SQL Exception', 500, $e->getMessage(), __METHOD__); 
         } catch (\PDOException $e) {    
-            $db = DB::getCurrentDB();
-            response()->error('PDO Exception', 500, $e->getMessage(). ' - '. $this->instance->getLog() . " - database: '{$db}' - table: '{$this->instance->getTableName()}'"); 
+            response()->error('SQL Exception', 500, $e->getMessage(), __METHOD__); 
         } catch (\Exception $e) {
             response()->error($e->getMessage());
         }	    

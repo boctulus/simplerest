@@ -26,9 +26,9 @@ trait QueryBuilderTrait
 	 * Estados de ejecución para las operaciones de escritura
 	 */
 
-	const EXECUTION_MODE_NORMAL   = 0;     // Ejecución normal
+	const EXECUTION_MODE_NORMAL   = 0;    // Ejecución normal
 	const EXECUTION_MODE_SIMULATE = 1;   // Simular operación (no realiza cambios en BD)
-	const EXECUTION_MODE_PREVIEW  = 2;    // Obtener SQL y valores que se ejecutarían
+	const EXECUTION_MODE_PREVIEW  = 2;   // Obtener SQL y valores que se ejecutarían
 
 	const DECIMAL_AS_STRING = false; // false = sin comillas (default), true = con comillas
 
