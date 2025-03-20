@@ -47,7 +47,8 @@ class MetadataParser
         }
     }
 
-    static function getMetadata(string $str, $attrs){
+    // Get metadata in WordPress format-like
+    static function get(string $str, $attrs){
         if (strlen($str) <= 255 && Strings::contains(DIRECTORY_SEPARATOR, $str)){
             $str = Files::getContent($str);
         }
