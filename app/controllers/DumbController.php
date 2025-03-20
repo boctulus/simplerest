@@ -38,7 +38,7 @@ use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
 use simplerest\core\libs\code_cleaner\AngularCleaner;
 
 use simplerest\core\libs\code_cleaner\BootstrapCleaner;
-use simplerest\core\libs\CodeReducer;
+use simplerest\core\libs\CustomTags;
 use simplerest\core\libs\Config;
 use simplerest\core\libs\Cookie;
 use simplerest\core\libs\CookieJar;
@@ -47,7 +47,7 @@ use simplerest\core\libs\CronJobMananger;
 
 use simplerest\core\libs\CSS;
 
-use simplerest\core\libs\CSSUtils;;
+use simplerest\core\libs\CSSUtils;
 
 use simplerest\core\libs\DatabaseBackup;
 use simplerest\core\libs\Date;
@@ -12073,5 +12073,15 @@ class DumbController extends Controller
         dd(
             Files::recursiveGlob("$dir\\$pattern")
         );
+    }
+
+    function test_custom_tags(){
+        $input     = '[dir path="C:\\xampp\\htdocs\\simplerest\\logs"]';
+        $parsedTag = CustomTags::parse($input);
+        dd($parsedTag);
+
+        $input     = '[calc op=[7,8] operation="mul"]';
+        $parsedTag = CustomTags::parse($input);
+        dd($parsedTag);
     }
 }   // end class
