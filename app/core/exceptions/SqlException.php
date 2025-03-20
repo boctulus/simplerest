@@ -10,20 +10,31 @@ use simplerest\core\libs\Logger;
     https://www.php.net/manual/en/language.exceptions.extending.php
 
 */
-class SqlException extends \PDOException {
-    public function __construct($message = null, $code = 0) {
-        parent::__construct($message, $code);
 
-        $this->sendNotifications($message, $code);
+class SqlException extends \Exception {
+    protected $query;
+    protected $data;
+
+    public function __construct($message, $code = 0, $query = null, $data = [], ?\Throwable $previous = null) {
+        parent::__construct($message, $code, $previous);
+
+        $this->query = $query;
+        $this->data = $data;
+
         $this->logError($message, $code);
     }
 
-    protected function sendNotifications($message = null, $code = 0) {
-        // send some notifications here
+
+    public function getQuery() {
+        return $this->query;
+    }
+
+    public function getData() {
+        return $this->data;
     }
 
     protected function logError($message = null, $code = 0) {
-        // do some logging here
         Logger::logError($message);
     }
 }
+
