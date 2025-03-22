@@ -591,10 +591,10 @@ class MigrationsCommand implements ICommand
                 ->where(['filename' => $filename])
                 ->delete();
 
-                //dd(DB::getLog()); ///
+                // dd($m->getLog()); ///
 
                 if (empty($aff)){
-                    StdOut::print("There was an error rolling back '$filename' because it was not found in `migrations` table\r\n");
+                    StdOut::print("There was a rolling back $filename.\r\n");
                 }
             }
 

@@ -8,6 +8,8 @@ use simplerest\core\libs\DB;
 
 class EmailNotifications implements IMigration
 {
+    protected $table = 'email_notifications';
+
     /**
 	* Run migration.
     *
@@ -15,37 +17,23 @@ class EmailNotifications implements IMigration
     */
     public function up()
     {
-        get_default_connection();
-
-        DB::statement("
-        CREATE TABLE IF NOT EXISTS `email_notifications` (
-            `id` int(11) NOT NULL,
-            `from_addr` varchar(320) DEFAULT NULL,
-            `from_name` varchar(80) DEFAULT NULL,
-            `to_addr` varchar(320) NOT NULL,
-            `to_name` varchar(80) DEFAULT NULL,
-            `cc_addr` varchar(320) DEFAULT NULL,
-            `cc_name` varchar(80) DEFAULT NULL,
-            `bcc_addr` varchar(320) DEFAULT NULL,
-            `bcc_name` varchar(80) DEFAULT NULL,
-            `replyto_addr` varchar(320) DEFAULT NULL,
-            `subject` varchar(80) NOT NULL,
-            `body` text,
-            `sent_at` datetime DEFAULT NULL,
-            `created_at` datetime NOT NULL,
-            `deleted_at` datetime DEFAULT NULL
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-        ");
-
-        DB::statement("
-        ALTER TABLE `email_notifications`
-            ADD PRIMARY KEY (`id`);
-        ");
-
-        DB::statement("
-        ALTER TABLE `email_notifications`
-        MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-        ");
+        $sc = new Schema($this->table);
+        $sc->id()->auto(); 
+        $sc->varchar('from_addr', 320)->nullable();
+        $sc->varchar('from_name', 80)->nullable();
+        $sc->varchar('to_addr', 320);
+        $sc->varchar('to_name', 80)->nullable();
+        $sc->varchar('cc_addr', 320)->nullable();
+        $sc->varchar('cc_name', 80)->nullable();
+        $sc->varchar('bcc_addr', 320)->nullable();
+        $sc->varchar('bcc_name', 80)->nullable();
+        $sc->varchar('replyto_addr', 320)->nullable();
+        $sc->varchar('subject', 80);
+        $sc->text('body')->nullable();
+        $sc->datetime('sent_at')->nullable();
+        $sc->datetime('created_at');
+        $sc->datetime('deleted_at')->nullable();
+        $sc->create();
     }
 
     /**
@@ -57,8 +45,7 @@ class EmailNotifications implements IMigration
     {
         ### DOWN
 
-        $sc = new Schema('email_notifications');
-        $sc->dropTableIfExists();
+        Schema::dropIfExists($this->table);
     }
 }
 
