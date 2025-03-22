@@ -164,7 +164,7 @@ class MakeCommand implements ICommand
 
         make command myCommand
              
-        make migration {name} [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ] [ --strict ] [ --remove ]
+        make migration [ {name} ] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ] [ --strict ] [ --remove ]
 
         make any Something  [--schema | -s] [--force | -f] [ --unignore | -u ]
                             [--model | -m] [--force | -f] [ --unignore | -u ]
@@ -230,6 +230,10 @@ class MakeCommand implements ICommand
         make migration --class_name=Filesss --table=files --to:main --dir='test\sub3'
         make migration --dir=test --to=az --table=boletas --class_name=BoletasDropNullable
         make migration brands --dir=giglio --to=giglio --create
+
+        Anonymous migrations
+
+        make migration --table=foobar
 
 
         # Inline migrations
@@ -2100,11 +2104,16 @@ class MakeCommand implements ICommand
                 }
             }
         }
-              
+
+        // Si no se especifica class_name, usar clase anónima
+        if (empty($class_name) && empty($name)) {
+            $file = str_replace('class __NAME__ implements IMigration', 'return new class implements IMigration', $file);
+            $file = trim($file) . ';';
+        }
 
         $file = str_replace('__NAME__', $this->camel_case, $file); 
         $file = str_replace('__TB_NAME__', $tb_name, $file);
-
+        
         if (!empty($dir)){
             $path .= "$dir/";
             Files::mkDir($path);
