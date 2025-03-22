@@ -7505,6 +7505,23 @@ Un "CREATE TABLE" dentro de una migración:
 	}
 	
 
+Metodos de clase versus estaticos para Schema
+
+Las instancias de Schema requieren de los metodos create() o alter() para ejecutar cambios sobre la estructura de tablas.
+
+Ej:
+
+	$sc = new Schema('email_notifications');
+	$sc->dropTable()->alter();
+
+Por otro lado, los metods estaticos aplican los cambios de forma inmediata.
+
+Ej:
+
+	Schema::dropIfExists('email_notifications');
+
+Claves foraneas
+
 De Laravel se hereda la sintaxis 
 
 	->foreign()
