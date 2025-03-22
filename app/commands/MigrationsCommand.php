@@ -1,13 +1,15 @@
 <?php
 
 use simplerest\core\interfaces\ICommand;
-use simplerest\core\traits\CommandTrait;
+use simplerest\core\interfaces\IMigration;
+use simplerest\core\libs\Config;
 use simplerest\core\libs\DB;
 use simplerest\core\libs\Files;
 use simplerest\core\libs\PHPLexicalAnalyzer;
 use simplerest\core\libs\Schema;
 use simplerest\core\libs\StdOut;
 use simplerest\core\libs\Strings;
+use simplerest\core\traits\CommandTrait;
 
 class MigrationsCommand implements ICommand 
 {
@@ -131,7 +133,7 @@ class MigrationsCommand implements ICommand
                 }                
 
                 if (!is_dir($path)){
-                    throw new \Exception("Directory $path doesn't exist");
+                    throw new \Exception("Directory $path not found");
                 }
             }
         } // end foreach
@@ -209,7 +211,7 @@ class MigrationsCommand implements ICommand
             $class_name_mg = PHPLexicalAnalyzer::getClassNameByFileName($full_path_mg);
 
             if (!class_exists($class_name_mg)){
-                throw new \Exception ("Class '$class_name_mg' doesn't exist in $filename_mg");
+                throw new \Exception ("Class '$class_name_mg' not found in $filename_mg");
             }
 
             StdOut::print("Migrating '$filename_mg'\r\n");
@@ -261,6 +263,7 @@ class MigrationsCommand implements ICommand
 
             $full_path = $path . '/'. trim($filename);
             $full_path = realpath($full_path);
+            $migration = include $full_path;
 
             $simulation = false;
             if (in_array('--simulate', $opt) || in_array('--simulation', $opt) || in_array('simulate', $opt) || in_array('simulation', $opt)){
@@ -272,15 +275,32 @@ class MigrationsCommand implements ICommand
                 dd("Processing: $full_path [...]");
             }
 
-            require_once $full_path;
+            if ($migration instanceof IMigration) {
+                // Es una migración anónima
+                $migrationInstance = $migration;
+            } else {
+                // Es una migración con clase nombrada
+                $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
+                if (!class_exists($class_name)) {
+                    throw new \Exception("Class '$class_name' not found in $filename");
+                }
 
-            $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
+                if (!class_exists($class_name)){
+                    StdOut::print("Class '$class_name' not found in $filename");
+                    exit;
+                }
 
-            if (!class_exists($class_name)){
-                throw new \Exception ("Class '$class_name' doesn't exist in $filename");
+                require_once $full_path;
+
+                $migrationInstance = new $class_name();                
             }
 
             StdOut::print("Migrating '$filename'\r\n");
+
+            if (!method_exists($migrationInstance, 'up')){
+                StdOut::print("Method up() is missing. Impossible to migrate $filename\r\n");
+                exit(1);
+            }
 
             if (!$simulation){
                 if (!empty($to_db)){
@@ -292,7 +312,7 @@ class MigrationsCommand implements ICommand
                 try {
                     DB::disableForeignKeyConstraints();
 
-                    (new $class_name())->up();
+                    $migrationInstance->up();
                     
                     DB::commit(); 
 
@@ -431,7 +451,7 @@ class MigrationsCommand implements ICommand
                     }                
     
                     if (!file_exists($path)){
-                        throw new \Exception("Directory $path doesn't exist");
+                        throw new \Exception("Directory $path not found");
                     }
                 }
 
@@ -510,23 +530,36 @@ class MigrationsCommand implements ICommand
             $full_path = preg_replace('#/+#','/',$full_path);
            
             if (!file_exists($full_path)){
-                StdOut::print("File '$full_path' doesn't exist");
+                StdOut::print("File '$full_path' not found");
                 exit;   
             }
 
-            require_once $full_path;
-            
-            $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
+            $migration = include $full_path;
 
-            if (!class_exists($class_name)){
-                StdOut::print("Class '$class_name' doesn't exist in $filename");
-                exit;
+            if ($migration instanceof IMigration) {
+                // Es una migración anónima
+                $migrationInstance = $migration;
+            } else {
+                // Es una migración con clase nombrada
+                $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
+                if (!class_exists($class_name)) {
+                    throw new \Exception("Class '$class_name' not found in $filename");
+                }
+
+                if (!class_exists($class_name)){
+                    StdOut::print("Class '$class_name' not found in $filename");
+                    exit;
+                }
+
+                require_once $full_path;
+
+                $migrationInstance = new $class_name();                
             }
 
             StdOut::print("Rolling back '$filename'\r\n");
 
-            if (!method_exists($class_name, 'down')){
-                StdOut::print("Method down() is not present. Impossible to rollback $filename\r\n");
+            if (!method_exists($migrationInstance, 'down')){
+                StdOut::print("Method down() is missing. Impossible to rollback $filename\r\n");
                 exit(1);
             }
 
@@ -537,7 +570,7 @@ class MigrationsCommand implements ICommand
 
                 try {
                     DB::disableForeignKeyConstraints();
-                    (new $class_name())->down();
+                    $migrationInstance->down();
                 } finally {
                     DB::enableForeignKeyConstraints();
                 }    
@@ -790,6 +823,113 @@ class MigrationsCommand implements ICommand
         }
     }
 
+    /*
+        TO-DO
+
+        Cuando se busque con --table= tambien debe buscarse por los substrings Schema('{nombre de la tabla}') 
+        y Schema("{nombre de la tabla}") y devolver cualqueir coincidencia
+
+        Ej:
+
+        php com migrations list --table=timezone 
+
+        deberia hacer match si en los metodos up() or down() hubiera algo como:
+
+            public function up()
+            {
+                $sc = new Schema('timezones');
+                $sc
+                    ->id()->auto()
+                    ->varchar('city', 80)->unique()
+                    ->varchar('gmt', 6);
+
+                $sc->create();		
+            }
+    */
+    function list(...$opt) {
+        // Inicializar variables para los filtros
+        $dir = null;
+        $table = null;
+        $contains = null;
+    
+        // Parsear opciones de la línea de comandos
+        foreach ($opt as $o) {
+            if (Strings::startsWith('--dir=', $o)) {
+                $dir = substr($o, 6);
+            } elseif (Strings::startsWith('--table=', $o)) {
+                $table = substr($o, 8);
+            } elseif (Strings::startsWith('--contains=', $o)) {
+                $contains = substr($o, 11);
+            }
+        }
+    
+        // Determinar la ruta de las migraciones
+        $path = $dir ? MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $dir : MIGRATIONS_PATH;
+    
+        // Verificar si el directorio existe
+        if (!is_dir($path)) {
+            throw new \Exception("Directory $path not found");
+        }
+    
+        // Obtener la lista de archivos de migración
+        $files = [];
+        foreach (new \DirectoryIterator($path) as $fileInfo) {
+            if ($fileInfo->isDot() || $fileInfo->isDir()) continue;
+            $filename = $fileInfo->getFilename();
+            if (Strings::startsWith('.', $filename) || $fileInfo->getExtension() != 'php') continue;
+            $files[] = $filename;
+        }
+    
+        // Procesar cada archivo para obtener información relevante
+        $migrations = [];
+        foreach ($files as $filename) {
+            $full_path = $path . DIRECTORY_SEPARATOR . $filename;
+            $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
+            $file_content = file_get_contents($full_path);
+    
+            // Buscar la propiedad $table en el archivo
+            $table_value = null;
+            if (preg_match('/\$table\s*=\s*[\'"]([^\'"]+)[\'"]/', $file_content, $matches)) {
+                $table_value = $matches[1];
+            }
+    
+            $migrations[] = [
+                'filename' => $filename,
+                'class_name' => $class_name,
+                'table' => $table_value
+            ];
+        }
+    
+        // Aplicar filtros
+        $filtered_migrations = $migrations;
+    
+        // Filtro por --table
+        if ($table !== null) {
+            $filtered_migrations = array_filter($filtered_migrations, function($mig) use ($table) {
+                return $mig['table'] !== null && (str_contains($mig['table'], $table) || $mig['table'] === $table);
+            });
+        }
+    
+        // Filtro por --contains
+        if ($contains !== null) {
+            $filtered_migrations = array_filter($filtered_migrations, function($mig) use ($contains) {
+                return str_contains($mig['filename'], $contains) ||
+                       str_contains($mig['class_name'], $contains) ||
+                       ($mig['table'] !== null && str_contains($mig['table'], $contains));
+            });
+        }
+    
+        // Mostrar resultados
+        if (empty($filtered_migrations)) {
+            echo "No migrations found matching the criteria.\n";
+        } else {
+            foreach ($filtered_migrations as $mig) {
+                $table_str = $mig['table'] ? " (Table: {$mig['table']})" : '';
+                echo "{$mig['filename']} - {$mig['class_name']}{$table_str}\n";
+            }
+        }
+    }
+
     function help($name = null, ...$args){
         $str = <<<STR
         migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ]         
@@ -798,7 +938,7 @@ class MigrationsCommand implements ICommand
         migrations rollback --to={some_db_conn} [ --dir= ] [ --file= ] [ --step=={N} | --all] [ --simulate ]
         migrations fresh [ --dir= ] [ --file= ] --to=some_db_conn [ --force ] [ --migrate ]
         migrations redo --to={some_db_conn} [ --dir= ] [ --file= ] [ --simulate ]
-
+        migrations list [ --dir={directorio} ] [ --table={nombre de la tabla} ] [ --contains={substring} ]
 
         Examples:
 
@@ -855,6 +995,11 @@ class MigrationsCommand implements ICommand
         migrations migrate --make=schema,model
         migrations migrate --fresh --to:main --force --make=schema
 
+        migrations list
+        migrations list --dir=edu
+        migrations list --dir=edu --table=tags
+        migrations list --dir=edu --contains=tag
+        
 
         Inline migrations
         

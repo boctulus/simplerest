@@ -837,6 +837,17 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
+	function orderByAsc(string $field)
+	{	
+		$this->order = array_merge($this->order, [$field, 'ASC']);
+		return $this;
+	}
+
+	function orderByDesc(string $field)
+	{	
+		$this->order = array_merge($this->order, [$field, 'DESC']);
+		return $this;
+	}
 
 	function reorder()
 	{
@@ -845,7 +856,7 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function take(int $limit = null)
+	function take($limit = null)
 	{
 		if ($limit !== null) {
 			$this->limit = $limit;
@@ -854,12 +865,12 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function limit(int $limit = null)
+	function limit($limit = null)
 	{
 		return $this->take($limit);
 	}
 
-	function offset(int $n = null)
+	function offset($n = null)
 	{
 		if ($n !== null) {
 			$this->offset = $n;
@@ -868,7 +879,7 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function skip(int $n = null)
+	function skip($n = null)
 	{
 		return $this->offset($n);
 	}

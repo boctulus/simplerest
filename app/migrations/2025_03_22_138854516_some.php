@@ -6,8 +6,14 @@ use simplerest\core\libs\Schema;
 use simplerest\core\Model;
 use simplerest\core\libs\DB;
 
-class Timezones implements IMigration
+return new class implements IMigration
 {
+    protected $table = 'some';
+
+    function __construct(){
+        ### CONSTRUCTOR
+    }
+
     /**
 	* Run migration.
     *
@@ -15,13 +21,17 @@ class Timezones implements IMigration
     */
     public function up()
     {
-        $sc = new Schema('timezones');
-        $sc
-            ->id()->auto()
-            ->varchar('city', 80)->unique()
-            ->varchar('gmt', 6);
+        ### UP
 
-		$sc->create();		
+        $sc = new Schema($this->table);
+
+        $sc
+        ->integer('id')->auto()->pri()
+        // ->varchar('name')
+		// ...
+        ->datetimes();
+
+        $sc->create();
     }
 
     /**
@@ -31,7 +41,10 @@ class Timezones implements IMigration
     */
     public function down()
     {
-        Schema::dropIfExists('timezones');
+        ### DOWN
+
+        Schema::dropIfExists($this->table);
     }
-}
+};
+
 

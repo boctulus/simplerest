@@ -47,5 +47,18 @@ class EmailNotifications implements IMigration
         MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
         ");
     }
+
+    /**
+	* Run undo migration.
+    *
+    * @return void
+    */
+    public function down()
+    {
+        ### DOWN
+
+        $sc = new Schema('email_notifications');
+        $sc->dropTableIfExists();
+    }
 }
 

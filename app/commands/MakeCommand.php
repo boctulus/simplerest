@@ -22,7 +22,7 @@ class MakeCommand implements ICommand
     const DTO_TEMPLATE  = self::TEMPLATES . 'DTO.php';
     const MODEL_NO_SCHEMA_TEMPLATE  = self::TEMPLATES . 'ModelWithoutSchema.php';
     const SCHEMA_TEMPLATE = self::TEMPLATES . 'Schema.php';
-    const MIGRATION_TEMPLATE = self::TEMPLATES . 'Migration.php'; 
+    const MIGRATION_TEMPLATE = self::TEMPLATES . 'Migration.php';     
     const MIGRATION_TEMPLATE_CREATE = self::TEMPLATES . 'Migration_New.php'; 
     const API_TEMPLATE = self::TEMPLATES . 'ApiRestfulController.php';
     const SERVICE_PROVIDER_TEMPLATE = self::TEMPLATES . 'ServiceProvider.php'; 
