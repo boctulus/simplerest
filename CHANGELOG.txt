@@ -78,3 +78,4 @@
 [2025-03-20 21:00:13]	0.8.12	Automatic update
 [2025-03-20 21:31:52]	0.8.12	Automatic update
 [2025-03-22 09:07:27]	0.8.12	Soporte parcial de clases anonimas en migraciones (no se crean con make)
+[2025-03-22 09:16:47]	0.8.12	Soporte completo de migraciones sobre clases anonimas
