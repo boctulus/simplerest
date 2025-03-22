@@ -41,8 +41,7 @@ class Queue implements IMigration
     {
         ### DOWN
 
-        $sc = new Schema('queue');
-        $sc->dropTableIfExists();
+        Schema::dropIfExists('queue');
     }
 }
 
