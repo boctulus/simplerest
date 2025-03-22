@@ -438,15 +438,10 @@ y de hecho pareciera que Url::cache() no tiene utilidad, hoy al menos.
         ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES";
     $result = $mysqli->query($sql);
 
-  php com sql import --file= [ --to={db_connection} ]
-  
-- Comando de busqueda y listado de migraciones
+  php com sql import --file= --table= [ --to={db_connection} ]
 
-  // Busca migraciones por el nombre del archivo o clase o metadescripcion
+La tabla debe existir y ser compatible. Ver la propuesta de "php com make migration --from_csv"
   
-  php com migrations list
-  php com migrations list --contains="{algun string}" <-- equivale a "list"
-  php com migrations find "{algun string}"
 
 - Crear migraciones desde CSV y DTO 
 
@@ -2136,18 +2131,6 @@ Esto re-haria las ultimas dos migraciones ejecutadas. Por defecto el step seria 
     */
   }
 
-- Implementar "make command {nombre_comando} --method=xxxx" 
-
-en /commands/make
-
-  trait ViewCommand 
-  {
-    function view(){
-      // ....
-    }
-  } 
-  
-Estos comandos serian como de Artisan en el sentido de que permitirian des-agregar MakeControllerBase.
 
 - Incluir la definición exacta del campo en el motor de base de datos en los schemas. Ej:
 
@@ -4328,13 +4311,8 @@ https://www.baeldung.com/java-dto-pattern
 
 - Verificar funcionamiento con NGINX y AppServ (Apache para Windows)
 
-
 - Dar soporte multi-tenant con API KEYs (en vez de usar el Payload, leer directo de la DB el "db access"):
 
-- Crear comandos "make" para:
-
-  exceptions [ -- core ]
-  middlewares 
 
 [ HATEOAS ]
 
@@ -4890,7 +4868,7 @@ https://laravel.com/docs/8.x/migrations#squashing-migrations
 
 - Anonymous Migrations  
 
-  return new class extends Migration
+  return new class implements IMigration
   {
       //
   };

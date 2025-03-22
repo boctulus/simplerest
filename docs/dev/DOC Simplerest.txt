@@ -7403,6 +7403,27 @@ public function up()
 }
 
 
+Listar y buscar migraciones
+
+Se pueden listar y listar con filtros archivos de migraciones:
+
+  // Lista todas las migraciones
+  php com migrations list
+
+  // Lista todas las migraciones en un directorio
+  php com migrations list --dir={directorio}
+  
+  // Busca migraciones donde como propiedad de clase este definida $table y coincida o se encuentre el substring table('{nombre de la tabla}')
+  php com migrations list --table={nombre de la tabla}
+
+  // Busca el substring en el nombre de las migraciones, nombre de la clase o de la tabla
+  php com migrations list --contains={substring}
+  
+  En general,
+
+  php com migrations list [ --table={tabla} ] [ --contains={substring} ] [ --dir={directorio} ]
+
+
 # Schema Builder 
 
 Básicamente hay dos grandes funcionalidades que residen en la clase Schema: crear tablas y alterarlas.
