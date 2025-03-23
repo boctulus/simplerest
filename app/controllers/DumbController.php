@@ -3283,6 +3283,26 @@ class DumbController extends Controller
         dd(Files::recursiveGlob(ROOT_PATH . '/*.php'));
     }
 
+    function list_files(){
+        $dir = MIGRATIONS_PATH;
+        $pattern = '*.php';
+
+        dd(
+            Files::recursiveGlob($dir . DIRECTORY_SEPARATOR . $pattern)
+        );
+    }
+
+    function list_files_complex_pattern(){
+        $dir = 'D:\Android\pos\MyPOS';
+        $pattern = '*.java|*.xml';
+
+        dd(
+            Files::recursiveGlob($dir . DIRECTORY_SEPARATOR . $pattern, 0, [
+                'D:\Android\pos\MyPOS\app\build\*'
+            ])
+        );
+    }
+
     function test_mkdir_ignore()
     {
         dd(Files::mkDir('/home/feli/Desktop/UPDATE/config'));
@@ -12065,15 +12085,6 @@ class DumbController extends Controller
         // O guardar a un archivo
         $sitemap->saveToFile(ETC_PATH . 'sitemap.xml');
     } 
-
-    function list_files(){
-        $dir = 'C:\xampp\htdocs\simplerest\app\migrations';
-        $pattern = '*.php';
-
-        dd(
-            Files::recursiveGlob("$dir\\$pattern")
-        );
-    }
 
     function test_custom_tags(){                
         // Procesa comillas dobles
