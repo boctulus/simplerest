@@ -3294,7 +3294,7 @@ class DumbController extends Controller
 
     function list_files_complex_pattern(){
         $dir = 'D:\Android\pos\MyPOS';
-        $pattern = '*.java|*.xml';
+        $pattern = '*.java|*.xml|*.gradle|*.properties';
 
         dd(
             Files::recursiveGlob($dir . DIRECTORY_SEPARATOR . $pattern, 0, [

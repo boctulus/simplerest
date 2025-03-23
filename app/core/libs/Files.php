@@ -698,6 +698,23 @@ class Files
 		return $entries;
 	}
 
+	/*
+		Recursively search for files matching a pattern in a directory and its subdirectories.
+		Optionally, exclude files matching any of the exclude patterns.
+		Optionally, combine multiple patterns using pipe "|".
+
+		Ej:
+
+			$dir = 'D:\Android\pos\MyPOS';
+			$pattern = '*.java|*.xml|*.gradle|*.properties';
+
+			dd(
+				Files::recursiveGlob($dir . DIRECTORY_SEPARATOR . $pattern, 0, [
+					'D:\Android\pos\MyPOS\app\build\*'
+				])
+			);
+	*/
+
 	static function recursiveGlob($pattern, $flags = 0, $exclude = [])
 	{
 		// Separate directory and file pattern
@@ -727,23 +744,29 @@ class Files
 
 		// Recursive search in subdirectories
 		foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT | GLOB_BRACE) as $subDir) {
-			$files = array_merge($files, static::recursiveGlob($subDir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
+			$files = array_merge($files, static::recursiveGlob($subDir . DIRECTORY_SEPARATOR . basename($pattern), $flags, $exclude));
 		}
 
-		// Exclude specified files if any
+		// Exclude files matching any of the exclude patterns (using fnmatch)
 		if (!empty($exclude)) {
 			if (!is_array($exclude)) {
 				$exclude = [$exclude];
 			}
 			foreach ($files as $ix => $entry) {
-				$filename = basename($entry);
-				if (in_array($filename, $exclude)) {
-					unset($files[$ix]);
+				// Normalize file path: convert both forward and backward slashes to "/"
+				$normalizedEntry = str_replace(['\\', '/'], '/', $entry);
+				foreach ($exclude as $exPattern) {
+					// Normalize exclusion pattern
+					$normalizedExPattern = str_replace(['\\', '/'], '/', $exPattern);
+					if (fnmatch($normalizedExPattern, $normalizedEntry)) {
+						unset($files[$ix]);
+						break;
+					}
 				}
 			}
 		}
 
-		// Remove unnecessary slashes from file paths and convert them to the correct format
+		// Remove unnecessary slashes from file paths
 		foreach ($files as $ix => $f) {
 			$files[$ix] = static::removeUnnecessarySlashes($f);
 			$files[$ix] = static::convertSlashes($files[$ix]);
@@ -751,6 +774,7 @@ class Files
 
 		return $files;
 	}
+
 
 
 	/*
