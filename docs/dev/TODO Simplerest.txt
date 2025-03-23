@@ -1,8 +1,6 @@
 TODO SimpleRest
 ===============
 
-
-
 - Considerar eliminar o limitar el uso de static para evitar problemas de concurrencia
 
 https://chatgpt.com/c/67de47f8-88c0-800d-b555-dd7ef8722e5f

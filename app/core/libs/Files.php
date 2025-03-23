@@ -698,35 +698,60 @@ class Files
 		return $entries;
 	}
 
-	// https://stackoverflow.com/a/17161106/980631
-	static function recursiveGlob($pattern, $flags = 0, $exclude = []) 
+	static function recursiveGlob($pattern, $flags = 0, $exclude = [])
 	{
-		$files = glob($pattern, $flags); 
-		
-		foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT|GLOB_BRACE) as $dir) {
-			$files = array_merge($files, static::recursiveGlob($dir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
+		// Separate directory and file pattern
+		$lastSeparatorPos = strrpos($pattern, DIRECTORY_SEPARATOR);
+		if ($lastSeparatorPos !== false) {
+			$dir = substr($pattern, 0, $lastSeparatorPos + 1);
+			$filePattern = substr($pattern, $lastSeparatorPos + 1);
+		} else {
+			$dir = '';
+			$filePattern = $pattern;
 		}
 
-		if (!empty($exclude)){
-			if (!is_array($exclude)){
-				$exclude = [ $exclude ];
+		// If multiple patterns are provided (using pipe "|"), split and merge results
+		if (strpos($filePattern, '|') !== false) {
+			$files = [];
+			$subPatterns = explode('|', $filePattern);
+			foreach ($subPatterns as $subPat) {
+				// Recursively call the function with each sub-pattern combined with the directory
+				$files = array_merge($files, self::recursiveGlob($dir . $subPat, $flags, $exclude));
 			}
+			// Remove duplicate entries and return the result
+			return array_unique($files);
+		}
 
-			foreach ($files as $ix => $entry){
+		// Process single pattern as in the original function
+		$files = glob($pattern, $flags);
+
+		// Recursive search in subdirectories
+		foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT | GLOB_BRACE) as $subDir) {
+			$files = array_merge($files, static::recursiveGlob($subDir . DIRECTORY_SEPARATOR . basename($pattern), $flags));
+		}
+
+		// Exclude specified files if any
+		if (!empty($exclude)) {
+			if (!is_array($exclude)) {
+				$exclude = [$exclude];
+			}
+			foreach ($files as $ix => $entry) {
 				$filename = basename($entry);
-				
-				if (in_array($filename, $exclude)){
+				if (in_array($filename, $exclude)) {
 					unset($files[$ix]);
 				}
 			}
 		}
 
-		foreach ($files as $ix => $f){
+		// Remove unnecessary slashes from file paths and convert them to the correct format
+		foreach ($files as $ix => $f) {
 			$files[$ix] = static::removeUnnecessarySlashes($f);
-		}	
+			$files[$ix] = static::convertSlashes($files[$ix]);
+		}
 
 		return $files;
 	}
+
 
 	/*
 		@param $dir directorio a escanear
