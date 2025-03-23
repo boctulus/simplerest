@@ -1,6 +1,12 @@
 TODO SimpleRest
 ===============
 
+
+
+- Considerar eliminar o limitar el uso de static para evitar problemas de concurrencia
+
+https://chatgpt.com/c/67de47f8-88c0-800d-b555-dd7ef8722e5f
+
 - Considerar eliminar uso de constantes como "const EXECUTION_MODE_NORMAL" ya que solo funcionn desde PHP 8.2
 
 - Crear script "copy" desde el core de SimpleRest al de Adoon u otro.
@@ -4845,7 +4851,16 @@ https://github.com/leocavalcante/kafka-phplayground
 
 [ MIGRATIONS ]
 
-- Migraciones *sin* el método down() <-- el estado anterior se obtiene del historial de migraciones.
+- Poder definir "dependencias" de una migracion de forma que no tengan que ejecutarse en el orden estricto alfabetico de los archivos
+
+  // Django
+  class Migration(migrations.Migration):
+
+    dependencies = [
+        ('app_name', '0001_squashed'),
+    ]
+
+- Migraciones *sin* el método down() <-- se podria inferir
 
 - Poder especificar el campo en vez del nombre de la FK para su remoción
 
@@ -4863,15 +4878,10 @@ https://github.com/leocavalcante/kafka-phplayground
 - Squashing Migrations
 
 https://laravel.com/docs/8.x/migrations#squashing-migrations
+https://www.reddit.com/r/django/comments/osoxkz/squashing_five_years_worth_of_database_migrations/
 
-- Sería genial poder hacer Squashing Migrations sobre toda una carpeta o sub-carpeta (módulo) y luego poder generar un Store Procedure basado en "migración aplastada" (unificada). Se podría llamar "combianación o unificación"
 
-- Anonymous Migrations  
-
-  return new class implements IMigration
-  {
-      //
-  };
+Sería genial poder hacer Squashing Migrations sobre toda una carpeta o sub-carpeta (módulo) y luego poder generar un Store Procedure basado en "migración aplastada" (unificada). Se podría llamar "combianación o unificación"
 
 
 - Mecanismo para evitar dejar fuera de línea una API Restful:
