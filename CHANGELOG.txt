@@ -81,3 +81,4 @@
 [2025-03-22 09:16:47]	0.8.12	Soporte completo de migraciones sobre clases anonimas
 [2025-03-22 13:09:57]	0.8.12	Automatic update
 [2025-03-23 09:13:15]	0.8.12	Automatic update
+[2025-03-23 10:39:10]	0.8.12	Automatic update
