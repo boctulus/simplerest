@@ -971,6 +971,24 @@ class Strings
 	}
 
 	/*
+		Similar a explode() pero con varios separadores
+
+		Ej:
+
+		dd(Strings::split('a,b,c,d', ',')); // ['a', 'b', 'c', 'd']
+        dd(Strings::split('a,b|c,d', ',', '|')); // ['a', 'b', 'c', 'd']
+	*/
+	static function split(string $str, ...$separators){
+		$first = array_shift($separators);
+
+		foreach ($separators as $ix => $sep){
+			$str = str_replace($sep, $first, $str);
+		}
+		
+		return explode($first, $str);
+	}
+
+	/*
 		Returns false if fails
 
 		@param 	string|array 	$pattern

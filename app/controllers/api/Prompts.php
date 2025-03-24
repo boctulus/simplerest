@@ -92,18 +92,46 @@ class Prompts extends MyApiController
                 $path      = $params['path'] ?? '';
                 $pattern   = $params['pattern'] ?? '*.*';
                 $recursive = (bool) ($params['recursive'] ?? false);
+                $exclude   = $params['exclude'] ?? null;
             
                 if (!is_dir($path)) {
                     throw new \Exception("Invalid directory path: $path");
                 }
             
                 $files = $recursive 
-                    ? Files::recursiveGlob($path . DIRECTORY_SEPARATOR . $pattern) 
+                    ? Files::recursiveGlob($path . DIRECTORY_SEPARATOR . $pattern, 0, $exclude) 
                     : Files::glob($path, $pattern);
-            
+    
                 $files = Strings::enclose($files);
             
                 return '[ ' . implode(', ' .PHP_EOL, $files) . ' ]';
+            });
+
+            // Registro di un callback per il tag "android-dir".
+            // Esempio di utilizzo: [android-dir root="D:\Android\pos\MyPOS" pattern="*.java|*.xml" recursive="true"]
+            CustomTags::register('android', function($params) {
+                // Otteniamo il percorso base dal parametro "root"
+                $path = $params['root'] ?? $params['path'] ?? '';
+                // Impostiamo il pattern di default
+                $pattern = $params['pattern'] ?? '*.*';
+                // Impostiamo il valore di recursive di default a true
+                $recursive = isset($params['recursive']) ? (bool) $params['recursive'] : true;
+                // Possibilità di escludere determinati file o directory
+                $exclude = $params['exclude'] ?? null;
+
+                if (!is_dir($path)) {
+                    throw new \Exception("Percorso di directory non valido: $path");
+                }
+
+                // Otteniamo i file, usando recursiveGlob o glob in base al flag recursive
+                $files = $recursive 
+                    ? Files::recursiveGlob($path . DIRECTORY_SEPARATOR . $pattern, 0, $exclude) 
+                    : Files::glob($path, $pattern);
+
+                // Formattiamo l'array dei file
+                $files = Strings::enclose($files);
+                
+                return '[ ' . implode(', ' . PHP_EOL, $files) . ' ]';
             });
 
             $data['description'] = CustomTags::replace($data['description']);
