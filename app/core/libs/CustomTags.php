@@ -43,7 +43,7 @@ class CustomTags {
         if (preg_match('/^\[(.+?)\]$/', $input, $matches)) {
             $content = $matches[1];
             // Extrae el nombre del tag y el resto de la cadena (parámetros)
-            if (preg_match('/^(\w+)\s*(.*)$/', $content, $matches)) {
+            if (preg_match('/^([\w\-]+)\s*(.*)$/', $content, $matches)) {
                 $result["name"] = $matches[1];
                 $paramsString = $matches[2];
                 
