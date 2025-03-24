@@ -494,10 +494,7 @@ class MakeCommand implements ICommand
         $dir = null;
         foreach ($opt as $o){
             if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o) || Strings::startsWith('--folder=', $o) || Strings::startsWith('--folder:', $o) ){
-                // Convert windows directory separator into *NIX
-                $o = str_replace('\\', '/', $o);
-    
-                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z0-9A-ZñÑ_\-/]+)$~', $o, $matches)){
+                if (preg_match('/^--(dir|folder)[=|:]([a-z0-9A-ZñÑ_\.-\/\\\\]+)$/', $o, $matches)){
                     $dir = $matches[2];
                 }
             }
@@ -1856,10 +1853,7 @@ class MakeCommand implements ICommand
             } 
 
             if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o) || Strings::startsWith('--folder=', $o) || Strings::startsWith('--folder:', $o) ){
-                // Convert windows directory separator into *NIX
-                $o = str_replace('\\', '/', $o);
-
-                if (preg_match('~^--(dir|directory|folder)[=|:]([a-z0-9A-ZñÑ_\-/]+)$~', $o, $matches)){
+                if (preg_match('/^--(dir|folder)[=|:]([a-z0-9A-ZñÑ_\.-\/\\\\]+)$/', $o, $matches)){
                     $dir= $matches[2];
                 }
             }
@@ -2510,10 +2504,7 @@ class MakeCommand implements ICommand
             }
 
             if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o)){
-                // Convert windows directory separator into *NIX
-                $o = str_replace('\\', '/', $o);
-
-                if (preg_match('~^--(dir)[=:]([a-z:0-9A-ZñÑ_\-/]+)$~', $o, $matches)){
+                if (preg_match('/^--(dir|folder)[=|:]([a-z0-9A-ZñÑ_\.-\/\\\\]+)$/', $o, $matches)){
                     $dir = $matches[2] . '/';
                 }
             }
