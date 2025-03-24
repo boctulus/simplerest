@@ -175,6 +175,10 @@ POST /api/v1/prompts
 
 # Parsing de directorios en descripción
 
+Soporte para los shortcodes [dir] y [android]
+
+Con [dir]
+
     Ej:
 
     {
@@ -194,3 +198,18 @@ POST /api/v1/prompts
         "notes": "Gracias!",
         "mode_simulate": false
     }
+
+Con [android] se parsean custom tag como ...
+
+Ej:
+
+    [android root="D:\Android\pos\MyPOS" pattern="*.java|*.xml" recursive="true"]
+
+
+Las ventajas de usar [android] por sobre [dir] para un proyecto de Android son:
+
+    . Incluye archivos .java,.xml,...
+    . Excluye la carpeta build
+    . Por defecto el scanning es recursivo
+
+

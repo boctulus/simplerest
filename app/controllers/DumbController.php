@@ -3263,9 +3263,19 @@ class DumbController extends Controller
         dd(Files::normalize('c:\windows\\system32'));
     }
 
+    function test_split(){
+        dd(Strings::split('a,b,c,d', ',')); // ['a', 'b', 'c', 'd']
+        dd(Strings::split('a,b|c,d', ',', '|')); // ['a', 'b', 'c', 'd']
+    }
+
     function test_glob()
     {
-        dd(glob('*.zip'));
+        dd(Files::glob(ROOT_PATH, '*.zip'));
+    }
+
+    function test_glob_2()
+    {
+        dd(Files::glob(ROOT_PATH, '*.zip|*.txt'));
     }
 
     function test_abs_path()
@@ -12088,15 +12098,15 @@ class DumbController extends Controller
 
     function test_custom_tags(){                
         // Procesa comillas dobles
-        // // // // // // $str = 'analiza estos archivos y dime que hacen. considera los logs en [dir path="c:\\xampp\\htdocs\\simplerest\\logs"]';
-        // // // // // // dd(customtags::parse($str));
+        // $str = 'analiza estos archivos y dime que hacen. considera los logs en [dir path="c:\\xampp\\htdocs\\simplerest\\logs"]';
+        // dd(customtags::parse($str));
 
-        // // // // // // // procesa comillas simples
-        // // // // // // $str = "analiza estos archivos y dime que hacen. considera los logs en [dir path='c:\\xampp\\htdocs\\simplerest\\logs']";
-        // // // // // // dd(customtags::parse($str));
+        // // procesa comillas simples
+        // $str = "analiza estos archivos y dime que hacen. considera los logs en [dir path='c:\\xampp\\htdocs\\simplerest\\logs']";
+        // dd(customtags::parse($str));
 
-        // // // // // // $input     = 'ejecuta este calculo [calc op=(7,8,5.2) operation="mul"] y dame el resultado en un json';
-        // // // // // // dd(customTags::parse($input));
+        // $input     = 'ejecuta este calculo [calc op=(7,8,5.2) operation="mul"] y dame el resultado en un json';
+        // dd(customTags::parse($input));
 
         // $input     = 'Ejecuta estos calculos [calc op=(50,34,676) operation="mul"] y [calc op=(56676,67) operation="div"]. Dame el resultado en un JSON';
         // dd(CustomTags::parseAll($input));
@@ -12136,13 +12146,14 @@ class DumbController extends Controller
             $path      = $params['path'] ?? '';
             $pattern   = $params['pattern'] ?? '*.*';
             $recursive = (bool) ($params['recursive'] ?? false);
+            $exclude   = $params['exclude'] ?? null;
         
             if (!is_dir($path)) {
                 throw new \Exception("Invalid directory path: $path");
             }
         
             $files = $recursive 
-                ? Files::recursiveGlob($path . DIRECTORY_SEPARATOR . $pattern) 
+                ? Files::recursiveGlob($path . DIRECTORY_SEPARATOR . $pattern, 0, $exclude) 
                 : Files::glob($path, $pattern);
 
             $files = Strings::enclose($files);
@@ -12151,7 +12162,50 @@ class DumbController extends Controller
         });
 
         // Cadena de ejemplo que contiene múltiples tags.
-        $input = 'Los calculos son [calc op=(50,34,676) operation="mul"] y [calc op=(56676,67) operation="div"]. Revisa el directorio [dir path="C:\\xampp\\htdocs\\simplerest\\logs"]. Dame el resultado en un JSON.';
+        // $input = 'Los calculos son [calc op=(50,34,676) operation="mul"] y [calc op=(56676,67) operation="div"]. Revisa el directorio [dir path="C:\\xampp\\htdocs\\simplerest\\logs"]. Dame el resultado en un JSON.';
+
+        // // Reemplaza los tags en la cadena.
+        // $result = CustomTags::render($input);
+
+        // // Muestra el resultado.
+        // dd($result);
+
+        // Cadena de ejemplo que contiene múltiples tags.
+        // $input = 'Revisa el directorio [dir path="D:\Android\pos\MyPOS" recursive=true pattern="*.java|*.jar"]. Gracias.';
+
+        // // Reemplaza los tags en la cadena.
+        // $result = CustomTags::render($input);
+
+        // // Muestra el resultado.
+        // dd($result);
+
+        // Registro di un callback per il tag "android-dir".
+        CustomTags::register('android-dir', function($params) {
+            // Otteniamo il percorso base dal parametro "root"
+            $path = $params['root'] ?? '';
+            // Impostiamo il pattern di default
+            $pattern = $params['pattern'] ?? '*.*';
+            // Impostiamo il valore di recursive di default a true
+            $recursive = isset($params['recursive']) ? (bool) $params['recursive'] : true;
+            // Possibilità di escludere determinati file o directory
+            $exclude = $params['exclude'] ?? null;
+
+            if (!is_dir($path)) {
+                throw new \Exception("Percorso di directory non valido: $path");
+            }
+
+            // Otteniamo i file, usando recursiveGlob o glob in base al flag recursive
+            $files = $recursive 
+                ? Files::recursiveGlob($path . DIRECTORY_SEPARATOR . $pattern, 0, $exclude) 
+                : Files::glob($path, $pattern);
+
+            // Formattiamo l'array dei file
+            $files = Strings::enclose($files);
+            
+            return '[ ' . implode(', ' . PHP_EOL, $files) . ' ]';
+        });
+
+        $input = 'Controlla il percorso [android-dir root="D:\Android\pos\MyPOS" recursive=true pattern="*.java|*.jar"]. Grazie.';
 
         // Reemplaza los tags en la cadena.
         $result = CustomTags::render($input);

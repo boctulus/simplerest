@@ -540,6 +540,10 @@ class Files
 		Convierte todos los slashes de la ruta a los apropiados o especificados
 	*/
 	static function convertSlashes($path, $to_slash = null){
+		if (empty($path)){
+			return $path;
+		}
+		
 		if ($to_slash === null){
 			$to_slash = DIRECTORY_SEPARATOR;
 		}
@@ -667,41 +671,64 @@ class Files
 		$zips      = static::glob($ori, '*.zip');
 		$com_files = static::glob(COMMANDS_PATH, '*Command.php')
 		$entries   = static::glob($content_dir, '*', GLOB_ONLYDIR, '__MACOSX');
-	*/
-	static function glob(string $path, string $pattern, $flags = 0, $exclude = []){
-		$last_char = Strings::lastChar($path);
 
-		if ($last_char != '/' && $last_char != '\\'){
+		Soporta multiples patrones separados por "|" o ";"
+
+		Ej:
+
+		dd(Files::glob(ROOT_PATH, '*.zip|*.txt'));
+	*/
+	static function glob(string $path, string $pattern, $flags = 0, $exclude = []) {
+		$last_char = Strings::lastChar($path);
+		if ($last_char != '/' && $last_char != '\\') {
 			$path .= DIRECTORY_SEPARATOR;
 		}
-
-		$entries = glob($path . $pattern, $flags);
-
-		if (!empty($exclude)){
-			if (!is_array($exclude)){
-				$exclude = [ $exclude ];
+		
+		$results = [];
+		
+		// Se il pattern contiene separatori multipli "|" o ";".
+		if (Strings::containsAny(['|', ';'], $pattern)) {
+			// Dividiamo il pattern in sotto-pattern.
+			$subPatterns = Strings::split($pattern, '|', ';');
+			foreach ($subPatterns as $subPat) {
+				// Uniamo il path con il sotto-pattern e richiamiamo glob() ricorsivamente.
+				$res = self::glob($path, trim($subPat), $flags, $exclude);
+				$results = array_merge($results, $res);
 			}
-
-			foreach ($entries as $ix => $entry){
-				$filename = basename($entry);
-				
-				if (in_array($filename, $exclude)){
-					unset($entries[$ix]);
+			// Rimuoviamo duplicati se presenti.
+			$results = array_unique($results);
+		} else {
+			// Pattern singolo: usiamo la funzione glob() standard.
+			$entries = glob($path . $pattern, $flags);
+			
+			// Filtriamo eventuali file da escludere.
+			if (!empty($exclude)) {
+				if (!is_array($exclude)) {
+					$exclude = [ $exclude ];
+				}
+				foreach ($entries as $ix => $entry) {
+					$filename = basename($entry);
+					if (in_array($filename, $exclude)) {
+						unset($entries[$ix]);
+					}
 				}
 			}
+			// Normalizziamo i path con realpath().
+			foreach ($entries as $ix => $entry) {
+				$entries[$ix] = realpath($entry);
+				$entries[$ix]   = static::convertSlashes($entries[$ix]);
+			}
+			$results = $entries;
 		}
-
-		foreach ($entries as $ix => $entry){
-			$entries[$ix] = realpath($entry);
-		}
-
-		return $entries;
+		
+		return $results;
 	}
+	
 
 	/*
 		Recursively search for files matching a pattern in a directory and its subdirectories.
 		Optionally, exclude files matching any of the exclude patterns.
-		Optionally, combine multiple patterns using pipe "|".
+		Optionally, combine multiple patterns using pipe "|" or semicolon ";".
 
 		Ej:
 
@@ -728,9 +755,9 @@ class Files
 		}
 
 		// If multiple patterns are provided (using pipe "|"), split and merge results
-		if (strpos($filePattern, '|') !== false) {
+		if (Strings::containsAny(['|', ';'], $filePattern)) {
 			$files = [];
-			$subPatterns = explode('|', $filePattern);
+			$subPatterns = Strings::split($filePattern, '|', ';');
 			foreach ($subPatterns as $subPat) {
 				// Recursively call the function with each sub-pattern combined with the directory
 				$files = array_merge($files, self::recursiveGlob($dir . $subPat, $flags, $exclude));
@@ -738,6 +765,8 @@ class Files
 			// Remove duplicate entries and return the result
 			return array_unique($files);
 		}
+
+		
 
 		// Process single pattern as in the original function
 		$files = glob($pattern, $flags);
@@ -774,8 +803,6 @@ class Files
 
 		return $files;
 	}
-
-
 
 	/*
 		@param $dir directorio a escanear

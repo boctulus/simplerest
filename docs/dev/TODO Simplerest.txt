@@ -1,6 +1,24 @@
 TODO SimpleRest
 ===============
 
+- En los commandos de tipo ICommand, habilitar el "modo interactivo" con --interactive o -I lo que iria guiando al usuario con preguntas => definir esas preguntas
+
+Tambien podria con --menu lanzarse un menu
+
+- En FileCommand poder usar "plugins" o "extensiones"
+
+Ej:
+
+En vez de 
+
+  php com file list D:\Android\pos\MyPOS --recursive --pattern='*.java|*.xml|*.gradle|*.properties|*.jar' --exclude='D:\Android\pos\MyPOS\app\build\*'
+
+poder hacer simplemente:
+
+  php com file list plugin=android
+
+Eso cargaria por defecto los parametros de arriba.
+
 - Considerar eliminar o limitar el uso de static para evitar problemas de concurrencia
 
 https://chatgpt.com/c/67de47f8-88c0-800d-b555-dd7ef8722e5f
