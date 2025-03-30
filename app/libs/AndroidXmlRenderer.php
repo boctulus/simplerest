@@ -4,19 +4,22 @@ namespace simplerest\libs;
 
 use simplerest\core\libs\Strings;
 
-/*
-    https://claude.ai/chat/dfe4885d-cb8a-46a6-b9d2-894044faac10
-*/
-
 class AndroidXmlRenderer
 {
     // Propiedades estáticas para configurar el viewport
-    public static $viewportWidth = 360; // Ancho del viewport en dp
-    public static $viewportHeight = 640; // Alto del viewport en dp
-    public static $orientation = 'portrait'; // Orientación (portrait o landscape)
-
-    // Colores predefinidos (simulación de recursos Android)
-    private static $colors = [
+    public static $viewportWidth = 360;
+    public static $viewportHeight = 640;
+    public static $orientation = 'portrait'; // 'portrait' o 'landscape'
+    
+    // Ruta raíz del proyecto Android
+    private static $rootPath = null;
+    
+    // Cache para recursos cargados
+    private static $colorCache = [];
+    private static $drawableCache = [];
+    
+    // Colores predefinidos (fallback)
+    private static $predefinedColors = [
         'white' => '#FFFFFF',
         'black' => '#333333',
         'red' => '#FF5555',
@@ -28,27 +31,51 @@ class AndroidXmlRenderer
         'gray' => '#CCCCCC'
     ];
 
-    // Drawables simulados
-    private static $drawables = [
-        'ic_lock' => '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z" fill="white"/>
-        </svg>',
-        'slider_track' => '<div style="height: 4px; background-color: rgba(255,255,255,0.3); border-radius: 2px;"></div>',
-        'custom_button_red' => 'background-color: #FF5555;',
-        'custom_button_orange' => 'background-color: #FFA500;',
-        'custom_button_black' => 'background-color: #666666;',
-        'custom_button_blue' => 'background-color: #2196F3;',
-        'custom_button_green' => 'background-color: #4CAF50;',
-        'custom_button_purple' => 'background-color: #9C27B0;'
-    ];
-
+    /**
+     * Establece la ruta raíz del proyecto Android
+     * 
+     * @param string $path Ruta al directorio raíz del proyecto Android
+     * @return void
+     */
+    public static function setRootPath($path)
+    {
+        self::$rootPath = rtrim($path, '/\\');
+        
+        // Limpiar caché al cambiar la ruta
+        self::$colorCache = [];
+        self::$drawableCache = [];
+    }
+    
+    /**
+     * Renderiza una vista Android por su nombre
+     * 
+     * @param string $viewName Nombre de la vista (sin extensión)
+     * @return string HTML renderizado
+     */
+    public static function render($viewName)
+    {
+        if (self::$rootPath === null) {
+            return "Error: Root path not set. Call AndroidXmlRenderer::setRootPath() first.";
+        }
+        
+        // Construir la ruta completa al archivo de la vista
+        $viewPath = self::$rootPath . '/app/src/main/res/layout/' . $viewName . '.xml';
+        
+        if (!file_exists($viewPath)) {
+            return "Error: View file not found: $viewPath";
+        }
+        
+        $xmlString = file_get_contents($viewPath);
+        return self::renderXml($xmlString);
+    }
+    
     /**
      * Renderiza un string XML de Android a HTML/CSS
      * 
      * @param string $xmlString Contenido del archivo XML de Android
      * @return string HTML renderizado
      */
-    public static function render($xmlString)
+    public static function renderXml($xmlString)
     {
         // Cargar el XML
         $xml = simplexml_load_string($xmlString);
@@ -66,6 +93,298 @@ class AndroidXmlRenderer
         $output .= self::getFooter();
 
         return $output;
+    }
+    
+    /**
+     * Carga un color desde los recursos del proyecto
+     * 
+     * @param string $colorName Nombre del color (sin @color/)
+     * @return string Valor del color o null si no se encuentra
+     */
+    private static function loadColorResource($colorName)
+    {
+        // Verificar si ya está en caché
+        if (isset(self::$colorCache[$colorName])) {
+            return self::$colorCache[$colorName];
+        }
+        
+        if (self::$rootPath === null) {
+            return null;
+        }
+        
+        // Buscar en los archivos colors.xml
+        $colorFiles = [
+            self::$rootPath . '/app/src/main/res/values/colors.xml',
+            self::$rootPath . '/app/src/main/res/values-night/colors.xml'
+        ];
+        
+        foreach ($colorFiles as $file) {
+            if (file_exists($file)) {
+                $xml = simplexml_load_file($file);
+                if ($xml) {
+                    foreach ($xml->color as $color) {
+                        $name = (string)$color['name'];
+                        if ($name === $colorName) {
+                            $value = (string)$color;
+                            self::$colorCache[$colorName] = $value;
+                            return $value;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Si no se encuentra, buscar en los colores predefinidos
+        return isset(self::$predefinedColors[$colorName]) ? self::$predefinedColors[$colorName] : null;
+    }
+    
+    /**
+     * Carga un drawable desde los recursos del proyecto
+     * 
+     * @param string $drawableName Nombre del drawable (sin @drawable/)
+     * @return string Contenido del drawable o null si no se encuentra
+     */
+    private static function loadDrawableResource($drawableName)
+    {
+        // Verificar si ya está en caché
+        if (isset(self::$drawableCache[$drawableName])) {
+            return self::$drawableCache[$drawableName];
+        }
+        
+        if (self::$rootPath === null) {
+            return null;
+        }
+        
+        // Posibles extensiones y directorios para buscar
+        $extensions = ['.xml', '.png', '.jpg', '.svg'];
+        $directories = [
+            self::$rootPath . '/app/src/main/res/drawable/',
+            self::$rootPath . '/app/src/main/res/drawable-hdpi/',
+            self::$rootPath . '/app/src/main/res/drawable-mdpi/',
+            self::$rootPath . '/app/src/main/res/drawable-xhdpi/',
+            self::$rootPath . '/app/src/main/res/drawable-xxhdpi/',
+            self::$rootPath . '/app/src/main/res/drawable-xxxhdpi/'
+        ];
+        
+        // Buscar el archivo drawable
+        foreach ($directories as $dir) {
+            foreach ($extensions as $ext) {
+                $path = $dir . $drawableName . $ext;
+                if (file_exists($path)) {
+                    $content = file_get_contents($path);
+                    
+                    // Si es XML, procesarlo como shape drawable
+                    if ($ext === '.xml') {
+                        return self::processDrawableXml($content, $drawableName);
+                    }
+                    
+                    // Si es una imagen, convertirla a base64
+                    $imageType = substr($ext, 1); // Quitar el punto
+                    if ($imageType === 'svg') {
+                        $imageType = 'svg+xml';
+                    }
+                    
+                    $base64 = base64_encode($content);
+                    $drawable = 'background-image: url("data:image/' . $imageType . ';base64,' . $base64 . '"); ';
+                    $drawable .= 'background-repeat: no-repeat; background-position: center; background-size: contain; ';
+                    
+                    self::$drawableCache[$drawableName] = $drawable;
+                    return $drawable;
+                }
+            }
+        }
+        
+        // Si el drawable empieza con "custom_button_", generar un estilo CSS
+        if (strpos($drawableName, 'custom_button_') === 0) {
+            $color = substr($drawableName, 13); // Extraer color (red, blue, etc.)
+            $colorValue = self::loadColorResource($color) ?: self::$predefinedColors[$color] ?? '#666666';
+            $drawable = 'background-color: ' . $colorValue . '; ';
+            self::$drawableCache[$drawableName] = $drawable;
+            return $drawable;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Procesa un archivo XML de drawable 
+     * 
+     * @param string $xmlContent Contenido XML del drawable
+     * @param string $drawableName Nombre del drawable
+     * @return string Estilo CSS o HTML para el drawable
+     */
+    private static function processDrawableXml($xmlContent, $drawableName)
+    {
+        $xml = simplexml_load_string($xmlContent);
+        if (!$xml) {
+            return null;
+        }
+        
+        $rootElement = $xml->getName();
+        
+        // Manejar diferentes tipos de drawables
+        switch ($rootElement) {
+            case 'shape':
+                return self::processShapeDrawable($xml);
+                
+            case 'vector':
+                // Convertir vector a SVG
+                $svgContent = self::convertVectorToSvg($xml);
+                $svgBase64 = base64_encode($svgContent);
+                $drawable = 'background-image: url("data:image/svg+xml;base64,' . $svgBase64 . '"); ';
+                $drawable .= 'background-repeat: no-repeat; background-position: center; background-size: contain; ';
+                return $drawable;
+                
+            case 'selector':
+                // Para selectores, usamos el primer item (estado normal)
+                if (isset($xml->item[0]) && isset($xml->item[0]['drawable'])) {
+                    $itemDrawable = (string)$xml->item[0]['drawable'];
+                    return self::getDrawable($itemDrawable);
+                }
+                break;
+                
+            case 'layer-list':
+                // Para layer-list, usamos el último item (capa superior)
+                $items = $xml->item;
+                $lastItem = end($items);
+                if (isset($lastItem['drawable'])) {
+                    $itemDrawable = (string)$lastItem['drawable'];
+                    return self::getDrawable($itemDrawable);
+                }
+                break;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Procesa un drawable de tipo shape
+     * 
+     * @param SimpleXMLElement $xml Elemento XML del shape
+     * @return string Estilo CSS para el shape
+     */
+    private static function processShapeDrawable($xml)
+    {
+        $style = '';
+        
+        // Forma
+        $shape = isset($xml['shape']) ? (string)$xml['shape'] : 'rectangle';
+        
+        // Color de fondo (solid)
+        $solid = $xml->solid;
+        if ($solid && isset($solid['android:color'])) {
+            $color = (string)$solid['android:color'];
+            $style .= 'background-color: ' . self::resolveColor($color) . '; ';
+        }
+        
+        // Bordes (stroke)
+        $stroke = $xml->stroke;
+        if ($stroke) {
+            $width = isset($stroke['android:width']) ? (string)$stroke['android:width'] : '1dp';
+            $color = isset($stroke['android:color']) ? (string)$stroke['android:color'] : '#000000';
+            $style .= 'border: ' . self::convertDimension($width) . ' solid ' . self::resolveColor($color) . '; ';
+        }
+        
+        // Esquinas redondeadas
+        $corners = $xml->corners;
+        if ($corners) {
+            if (isset($corners['android:radius'])) {
+                $radius = (string)$corners['android:radius'];
+                $style .= 'border-radius: ' . self::convertDimension($radius) . '; ';
+            } else {
+                // Radios específicos
+                $attrs = [
+                    'android:topLeftRadius', 
+                    'android:topRightRadius', 
+                    'android:bottomLeftRadius', 
+                    'android:bottomRightRadius'
+                ];
+                $radii = [];
+                
+                foreach ($attrs as $attr) {
+                    $radii[] = isset($corners[$attr]) ? self::convertDimension((string)$corners[$attr]) : '0';
+                }
+                
+                if (count(array_unique($radii)) === 1 && $radii[0] !== '0') {
+                    $style .= 'border-radius: ' . $radii[0] . '; ';
+                } else if (count(array_filter($radii, function($r) { return $r !== '0'; })) > 0) {
+                    $style .= 'border-radius: ' . implode(' ', $radii) . '; ';
+                }
+            }
+        }
+        
+        // Gradiente
+        $gradient = $xml->gradient;
+        if ($gradient) {
+            $type = isset($gradient['android:type']) ? (string)$gradient['android:type'] : 'linear';
+            $startColor = isset($gradient['android:startColor']) ? self::resolveColor((string)$gradient['android:startColor']) : '#000000';
+            $endColor = isset($gradient['android:endColor']) ? self::resolveColor((string)$gradient['android:endColor']) : '#FFFFFF';
+            $angle = isset($gradient['android:angle']) ? (int)(string)$gradient['android:angle'] : 0;
+            
+            // Convertir ángulo a dirección CSS
+            $direction = 'to bottom';
+            if ($angle === 0) $direction = 'to right';
+            else if ($angle === 45) $direction = 'to bottom right';
+            else if ($angle === 90) $direction = 'to bottom';
+            else if ($angle === 135) $direction = 'to bottom left';
+            else if ($angle === 180) $direction = 'to left';
+            else if ($angle === 225) $direction = 'to top left';
+            else if ($angle === 270) $direction = 'to top';
+            else if ($angle === 315) $direction = 'to top right';
+            
+            if ($type === 'linear') {
+                $style .= 'background: linear-gradient(' . $direction . ', ' . $startColor . ', ' . $endColor . '); ';
+            } else if ($type === 'radial') {
+                $style .= 'background: radial-gradient(circle, ' . $startColor . ', ' . $endColor . '); ';
+            }
+        }
+        
+        // Padding
+        $padding = $xml->padding;
+        if ($padding) {
+            $attrs = ['android:left', 'android:top', 'android:right', 'android:bottom'];
+            $values = [];
+            
+            foreach ($attrs as $attr) {
+                $values[$attr] = isset($padding[$attr]) ? self::convertDimension((string)$padding[$attr]) : '0';
+            }
+            
+            if (count(array_unique($values)) === 1) {
+                $style .= 'padding: ' . $values['android:top'] . '; ';
+            } else {
+                $style .= 'padding: ' . $values['android:top'] . ' ' . $values['android:right'] . ' ' 
+                       . $values['android:bottom'] . ' ' . $values['android:left'] . '; ';
+            }
+        }
+        
+        return $style;
+    }
+    
+    /**
+     * Convierte un vector drawable a SVG
+     * 
+     * @param SimpleXMLElement $xml Elemento XML del vector
+     * @return string Contenido SVG
+     */
+    private static function convertVectorToSvg($xml)
+    {
+        $width = isset($xml['android:viewportWidth']) ? (string)$xml['android:viewportWidth'] : '24';
+        $height = isset($xml['android:viewportHeight']) ? (string)$xml['android:viewportHeight'] : '24';
+        
+        $svg = '<svg width="' . $width . '" height="' . $height . '" viewBox="0 0 ' . $width . ' ' . $height . '" xmlns="http://www.w3.org/2000/svg">';
+        
+        // Procesar paths
+        foreach ($xml->path as $path) {
+            $d = isset($path['android:pathData']) ? (string)$path['android:pathData'] : '';
+            $fill = isset($path['android:fillColor']) ? self::resolveColor((string)$path['android:fillColor']) : 'none';
+            $stroke = isset($path['android:strokeColor']) ? self::resolveColor((string)$path['android:strokeColor']) : 'none';
+            $strokeWidth = isset($path['android:strokeWidth']) ? (string)$path['android:strokeWidth'] : '1';
+            
+            $svg .= '<path d="' . $d . '" fill="' . $fill . '" stroke="' . $stroke . '" stroke-width="' . $strokeWidth . '"/>';
+        }
+        
+        $svg .= '</svg>';
+        return $svg;
     }
 
     /**
@@ -620,8 +939,8 @@ class AndroidXmlRenderer
             // Si es custom_button_X, tratarlo como background-color
             if (strpos($drawableName, 'custom_button_') === 0) {
                 $color = substr($drawableName, 13); // Extraer color (red, blue, etc.)
-                return isset(self::$colors[$color])
-                    ? 'background-color: ' . self::$colors[$color] . '; '
+                return isset(self::$predefinedColors[$color])
+                    ? 'background-color: ' . self::$predefinedColors[$color] . '; '
                     : 'background-color: #666666; ';
             }
 
@@ -680,13 +999,13 @@ class AndroidXmlRenderer
         // Para colores del sistema Android
         if (preg_match('/@android:color\/(.+)/', $colorRef, $matches)) {
             $colorName = $matches[1];
-            return isset(self::$colors[$colorName]) ? self::$colors[$colorName] : '#000000';
+            return isset(self::$predefinedColors[$colorName]) ? self::$predefinedColors[$colorName] : '#000000';
         }
 
         // Para colores de la app
         if (preg_match('/@color\/(.+)/', $colorRef, $matches)) {
             $colorName = $matches[1];
-            return isset(self::$colors[$colorName]) ? self::$colors[$colorName] : '#000000';
+            return isset(self::$predefinedColors[$colorName]) ? self::$predefinedColors[$colorName] : '#000000';
         }
 
         return $colorRef;
