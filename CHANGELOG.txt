@@ -88,3 +88,4 @@
 [2025-03-24 09:12:22]	0.8.12	Files::glob() ahora soporta multiples patrones
 [2025-03-30 14:18:57]	0.8.12	AndroidXmlRenderer en grado de prototipo
 [2025-03-30 21:30:23]	0.8.12	AndroidXmlRenderer con soporte de mas controles
+[2025-03-30 21:47:33]	0.8.12	AndroidXmlRenderer mejorado

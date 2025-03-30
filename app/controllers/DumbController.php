@@ -12215,14 +12215,19 @@ class DumbController extends Controller
         dd($result);
     }
 
-    function test_android_render_1(){        
-        $view_path = 'C:\Users\jayso\StudioProjects\DarkCalc\app\src\main\res\layout\keyboard.xml'; // ok         
+    function test_android_render_1(){
+        $project_path = 'C:\Users\jayso\StudioProjects\DarkCalc'; 
+        $view_path    = 'keyboard'; // app\src\main\res\layout\keyboard.xml
+
+        AndroidXmlRenderer::setRootPath($project_path);         
         echo AndroidXmlRenderer::render($view_path);
     }
 
     function test_android_render_2(){
-        // $view_path = '';                
-        $view_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS\app\src\main\res\layout\screen_unlock.xml';
+        $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+        $view_path = 'screen_unlock'; 
+
+        AndroidXmlRenderer::setRootPath($project_path);         
         echo AndroidXmlRenderer::render($view_path);
     }
 
