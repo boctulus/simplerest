@@ -1,4 +1,10 @@
 /*
+    Transients.js
+    
+    Esta clase permite almacenar datos en localStorage o sessionStorage con un tiempo de vida (TTL) específico.
+
+    @author Pablo Bozzolo
+    
     // Uso:
 
     // Instanciar con localStorage

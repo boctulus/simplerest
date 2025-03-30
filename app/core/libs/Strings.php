@@ -15,23 +15,36 @@ class Strings
 	const CAMELCASE_FILTER = 'cm';
 
 	// Mapa de reemplazo para caracteres problemáticos comunes
-	const REPLACE_CHARMAP = [
+	const UTF8_WRONG_CHARMAP_EQ = [
 		'Ã³' => 'ó',
 		'Ã“' => 'Ó',
-		'Ã‰' => 'É', 'Ã©' => 'é',
-		'Ã' => 'Á', 'Ã¡' => 'á',
-		'Ã•' => 'Õ', 'Ãµ' => 'õ',
-		'Ãš' => 'Ú', 'Ãº' => 'ú',
-		"Ã'" => 'Ñ', 'Ã±' => 'ñ',
-		'Ã„' => 'Ä', 'Ã¤' => 'ä',
-		'Ã–' => 'Ö', 'Ã¶' => 'ö',
-		'Ãœ' => 'Ü', 'Ã¼' => 'ü',
+		'Ã‰' => 'É', 
+		'Ã©' => 'é',
+		'Ã' => 'Á', 
+		'Ã¡' => 'á',
+		'Ã•' => 'Õ', 
+		'Ãµ' => 'õ',
+		'Ãš' => 'Ú', 
+		'Ãº' => 'ú',
+		"Ã'" => 'Ñ', 
+		'Ã±' => 'ñ',
+		'Ã„' => 'Ä', 
+		'Ã¤' => 'ä',
+		'Ã–' => 'Ö', 
+		'Ã¶' => 'ö',
+		'Ãœ' => 'Ü', 
+		'Ã¼' => 'ü',
 		'ÃŸ' => 'ß',
 		'â‚¬' => '€',
-		'Â' => '', 'Â°' => '°', 'Âº' => 'º', 'Â²' => '²', 'Â³' => '³',
+		'Â' => '', 
+		'Â°' => '°', 
+		'Âº' => 'º', 
+		'Â²' => '²', 
+		'Â³' => '³',
 		'Ãƒ' => 'Ã',
-		'ÃO' => 'ÍO',  // Añadido para manejar casos como "ENVÍO"	
-		'Á­' => 'í',  // Añadido para manejar el caso de "quÁ­micos"	
+		'ÃO' => 'ÍO',  
+		'Á­' => 'í', 
+		'Ã' => 'Á', 
 	];
 	
 	static $regex = [
@@ -82,6 +95,11 @@ class Strings
             throw new \InvalidArgumentException("Input must be a string or an array of strings.");
         }
     }
+
+	// Alias de toCase()
+	static function convertCase($filter, $input){
+		return static::toCase($filter, $input);
+	}
 
 	static function replaceNonAllowedChars($input, $allowedCharsRegex = 'a-z0-9-', $replace = '-', $case_sensitive = false) {
         // Añade la bandera 'i' para hacer la expresión regular insensible a mayúsculas y minúsculas si $case_sensitive es false
@@ -2258,7 +2276,7 @@ class Strings
 		}
 
 		// Aplicar reemplazos
-		$fixed = strtr($str, self::REPLACE_CHARMAP);
+		$fixed = strtr($str, self::UTF8_WRONG_CHARMAP_EQ);
 		
 
 		// Asegurarse de que el resultado esté en UTF-8
@@ -2287,7 +2305,7 @@ class Strings
 			$str = iconv($detected_encoding, $target . '//TRANSLIT', $str);
 		}
 
-		$replaceMap = $replaceMap ?? self::REPLACE_CHARMAP;
+		$replaceMap = $replaceMap ?? self::UTF8_WRONG_CHARMAP_EQ;
 		$fixed = strtr($str, $replaceMap);
 
 		if (!mb_check_encoding($fixed, $target)) {
