@@ -2222,7 +2222,7 @@ La primera forma implica determinar el nombre de la clase y el namespace a fin d
   $filename   = Strings::last($path, '/');
   $class_name = Strings::beforeLast($filename, '.php'); 
 
-  $class_name_full = "\\Boctulus\Boctulus\\Simplerest\\Schemas\\$conn_id\\" . $class_name;
+  $class_name_full = "\\Boctulus\\Simplerest\\Schemas\\$conn_id\\" . $class_name;
   include $path;
 
   $schema = $class_name_full::get();
