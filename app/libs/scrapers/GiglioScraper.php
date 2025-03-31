@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\libs\scrapers;
+namespace Boctulus\Simplerest\Libs\Scrapers;
 
-use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\JsonLd;
-use simplerest\core\libs\ProductScraper;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Url;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\JsonLd;
+use Boctulus\Simplerest\Core\Libs\ProductScraper;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Url;
 
 class GiglioScraper /* extends ProductScraper */
 {

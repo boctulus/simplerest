@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\models\main;
+namespace Boctulus\Simplerest\Models\main;
 
 use MakeCommand;
-use simplerest\core\libs\DB;
-use simplerest\models\MyModel;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\StdOut;
-use simplerest\schemas\main\TblBaseDatosSchema;
-use simplerest\controllers\MigrationsController;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Schemas\main\TblBaseDatosSchema;
+use Boctulus\Simplerest\Controllers\MigrationsController;
 
 
 class TblBaseDatosModel extends MyModel

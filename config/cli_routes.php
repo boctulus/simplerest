@@ -1,8 +1,8 @@
 <?php
 
-use simplerest\core\CliRouter;
-use simplerest\core\libs\System;
-use simplerest\core\libs\Logger;
+use Boctulus\Simplerest\Core\CliRouter;
+use Boctulus\Simplerest\Core\Libs\System;
+use Boctulus\Simplerest\Core\Libs\Logger;
 
 // Inicializar el router
 $route = CliRouter::getInstance();
@@ -19,15 +19,15 @@ CliRouter::command('pow', function($num, $exp) {
 });
 
 // Comandos con controladores
-CliRouter::command('dbdriver', 'simplerest\controllers\DumbController@db_driver');
+CliRouter::command('dbdriver', 'Boctulus\Simplerest\Controllers\DumbController@db_driver');
 
 // Comandos con controladores -- en este caso se pasan parametros sin validacion
-CliRouter::command('plus_1', 'simplerest\controllers\DumbController@inc2');
+CliRouter::command('plus_1', 'Boctulus\Simplerest\Controllers\DumbController@inc2');
 
 // mas... aun sin soporte
 
 // // Comandos con controladores -- en este caso se pasan parametros con validacion
-// CliRouter::command('increment/{num}', 'simplerest\controllers\folder\SomeController@inc2')
+// CliRouter::command('increment/{num}', 'Boctulus\Simplerest\Controllers\folder\SomeController@inc2')
 // ->where(['num' => '[0-9]+']);
 
 // // Comandos con parámetros y restricciones

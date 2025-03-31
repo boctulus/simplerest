@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 use \ReflectionClass;
-use simplerest\core\WebRouter;
-use simplerest\core\libs\Config;
-use simplerest\core\exceptions\NotImplementedException;
+use Boctulus\Simplerest\Core\WebRouter;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\exceptions\NotImplementedException;
 
 /*
     @author Pablo Bozzolo

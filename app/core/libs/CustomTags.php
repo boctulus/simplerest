@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 class CustomTags {
     // Array para almacenar los callbacks registrados por nombre de tag.
@@ -20,13 +20,13 @@ class CustomTags {
      * Realiza el parsing de un tag individual.
      *
      * Ejemplo de input:
-     * [dir path="C:\\xampp\\htdocs\\simplerest\\logs"]
+     * [dir path="C:\\xampp\\htdocs\\Boctulus\\Simplerest\\logs"]
      *
      * Retorna:
      * [
      *     "name"   => "dir",
      *     "params" => [
-     *         "path" => "C:\\xampp\\htdocs\\simplerest\\logs"
+     *         "path" => "C:\\xampp\\htdocs\\Boctulus\\Simplerest\\logs"
      *     ]
      * ]
      *

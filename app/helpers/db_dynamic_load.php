@@ -1,7 +1,7 @@
 <?php
 
-use simplerest\core\libs\Env;
-use simplerest\core\Model;
+use Boctulus\Simplerest\Core\Libs\Env;
+use Boctulus\Simplerest\Core\Model;
 
 #include_once __DIR__ . '/debug.php';
 

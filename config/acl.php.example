@@ -1,7 +1,7 @@
 <?php
 
-use boctulus\grained_acl\Acl;
-use simplerest\libs\Debug;
+use Boctulus\Simplerest\GrainedACL\Acl;
+use Boctulus\Simplerest\libs\Debug;
 
 
 $acl_cache = false;

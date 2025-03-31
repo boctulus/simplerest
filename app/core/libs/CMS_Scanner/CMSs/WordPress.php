@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\core\libs\CMS_Scanner\CMSs;
+namespace Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs;
 
-use simplerest\core\libs\HTML;
-use simplerest\core\libs\XML;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\HTML;
+use Boctulus\Simplerest\Core\Libs\XML;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class WordPress
 {

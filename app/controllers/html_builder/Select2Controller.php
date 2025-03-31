@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers\html_builder;
+namespace Boctulus\Simplerest\Controllers\html_builder;
 
-use simplerest\core\View;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\View;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class Select2Controller extends Controller
 {

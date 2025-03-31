@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\traits;
+namespace Boctulus\Simplerest\Core\traits;
 
 trait CommandTrait {
     public function handle($args) {

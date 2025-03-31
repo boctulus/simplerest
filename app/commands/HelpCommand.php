@@ -1,10 +1,10 @@
 <?php
 
-use simplerest\core\interfaces\ICommand;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Strings;
-use simplerest\core\traits\CommandTrait;
+use Boctulus\Simplerest\Core\Interfaces\ICommand;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Traits\CommandTrait;
 
 /*
     php com help {comando}

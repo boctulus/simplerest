@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\core\api\v1;
+namespace Boctulus\Simplerest\Core\api\v1;
 
-use simplerest\controllers\MyApiController; 
-use simplerest\core\libs\FileUploader;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
-use simplerest\core\Acl;
+use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Libs\FileUploader;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Acl;
 
 class Files extends MyApiController
 { 

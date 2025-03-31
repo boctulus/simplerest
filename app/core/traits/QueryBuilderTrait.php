@@ -1,22 +1,22 @@
 <?php
 
-namespace simplerest\core\traits;
+namespace Boctulus\Simplerest\Core\traits;
 
-use simplerest\core\exceptions\ColumnTableNotFoundException;
-use simplerest\core\exceptions\InvalidValidationException;
-use simplerest\core\exceptions\SchemaException;
-use simplerest\core\exceptions\SqlException;
-use simplerest\core\interfaces\ITransformer;
-use simplerest\core\interfaces\IValidator;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Paginator;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ValidationRules;
-use simplerest\core\libs\Validator;
-use simplerest\core\Model;
+use Boctulus\Simplerest\Core\exceptions\ColumnTableNotFoundException;
+use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\exceptions\SchemaException;
+use Boctulus\Simplerest\Core\exceptions\SqlException;
+use Boctulus\Simplerest\Core\Interfaces\ITransformer;
+use Boctulus\Simplerest\Core\Interfaces\IValidator;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Paginator;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\Model;
 
 trait QueryBuilderTrait
 {

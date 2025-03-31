@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\Model;
-use simplerest\models\MyModel;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\Strings;
-use simplerest\core\exceptions\SqlException;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\exceptions\SqlException;
 
 class DB 
 {

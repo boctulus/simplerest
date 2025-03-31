@@ -1,7 +1,7 @@
 <?php
 
-use simplerest\core\interfaces\IMigration;
-use simplerest\core\libs\Schema;
+use Boctulus\Simplerest\Core\Interfaces\IMigration;
+use Boctulus\Simplerest\Core\Libs\Schema;
 
 class Prompts implements IMigration
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
 use Exception;
-use simplerest\core\libs\Factory;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class FacebookController extends Controller
 {

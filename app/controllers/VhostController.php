@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Strings;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 /*
     Este controlador podria ser parte del comando make

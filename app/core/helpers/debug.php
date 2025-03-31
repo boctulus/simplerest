@@ -1,7 +1,7 @@
 <?php
 
-use simplerest\core\libs\Config;
-use simplerest\core\libs\VarDump;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\VarDump;
 
 function show_debug_trace(bool $status = true){
     VarDump::showTrace($status);

@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers\demos;
+namespace Boctulus\Simplerest\Controllers\demos;
 
-use simplerest\core\libs\Strings;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 /*
     Ajustar nomenclatura a esta misma test_{nombre de metodo snake-case}

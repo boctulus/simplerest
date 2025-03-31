@@ -1,16 +1,16 @@
 <?php
 
-namespace simplerest\core\api\v1;
+namespace Boctulus\Simplerest\Core\api\v1;
 
-use simplerest\controllers\MyApiController;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\DB;
-use simplerest\libs\Debug;
-use simplerest\core\libs\Validator;
-use simplerest\core\exceptions\InvalidValidationException;
-use simplerest\core\libs\Url;
+use Boctulus\Simplerest\Controllers\MyApiController;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Libs\Debug;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Libs\Url;
 
 
 class TrashCan extends MyApiController
@@ -31,8 +31,8 @@ class TrashCan extends MyApiController
         $this->model_name = ucfirst($entity) . 'Model';
         $this->table_name = strtolower($entity);
 
-        $this->model    = 'simplerest\\models\\'. $this->model_name;
-        $api_ctrl = '\simplerest\\controllers\\api\\' . ucfirst($entity);
+        $this->model    = 'Boctulus\\Simplerest\\Models\\'. $this->model_name;
+        $api_ctrl = '\Boctulus\Boctulus\\Simplerest\\Controllers\\api\\' . ucfirst($entity);
         
         if (!class_exists($api_ctrl)){
             error("Entity $entity not found", 404);

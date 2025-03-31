@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\interfaces;
+namespace Boctulus\Simplerest\interfaces;
 
 interface IOpenFactura {
     public function __construct($apiKey, $sandbox = false);

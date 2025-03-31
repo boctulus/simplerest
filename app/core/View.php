@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\core;
+namespace Boctulus\Simplerest\Core;
 
-use simplerest\core\libs\Cache;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\FileCache;
-use simplerest\core\traits\ExceptionHandler;
+use Boctulus\Simplerest\Core\Libs\Cache;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\FileCache;
+use Boctulus\Simplerest\Core\Traits\ExceptionHandler;
 
 class View
 {
@@ -139,7 +139,7 @@ class View
         return $content;
     }
 
-    static function destroyCache(string $view_path) : bool {
+    static function destroyCache(string $view_path) {
         $cached_path = CACHE_PATH . 'views/'. str_replace(['\\', '/'], '__dir__',  $view_path);
 
         return Files::delete($cached_path);

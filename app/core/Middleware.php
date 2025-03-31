@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core;
+namespace Boctulus\Simplerest\Core;
 
 abstract class Middleware 
 {   

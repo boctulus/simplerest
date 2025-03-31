@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\core\libs\HtmlBuilder;
+namespace Boctulus\Simplerest\Core\Libs\HtmlBuilder;
 
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
 
 /*
     @author Pablo Bozzolo <boctulus@gmail.com>

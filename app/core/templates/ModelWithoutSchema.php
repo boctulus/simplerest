@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\models;
+namespace Boctulus\Simplerest\Models;
 
-use simplerest\models\MyModel;
+use Boctulus\Simplerest\Models\MyModel;
 ### IMPORTS
 
 class __NAME__ extends MyModel

@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\models\main;
+namespace Boctulus\Simplerest\Models\main;
 
-use simplerest\models\MyModel;
-use simplerest\core\libs\ValidationRules;
-use simplerest\schemas\main\ApiKeysSchema;
-use simplerest\core\traits\Uuids;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
+use Boctulus\Simplerest\Schemas\main\ApiKeysSchema;
+use Boctulus\Simplerest\Core\Traits\Uuids;
 
 class ApiKeysModel extends MyModel
 { 

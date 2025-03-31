@@ -1,16 +1,16 @@
 <?php
 
-namespace simplerest\libs\scrapers;
+namespace Boctulus\Simplerest\Libs\Scrapers;
 
-use simplerest\core\Model;
-use simplerest\core\libs\Dom;
-use simplerest\core\libs\Url;
-use simplerest\core\libs\XML;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\ProductScraper;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\Dom;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\XML;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\ProductScraper;
 
 /*
     Ya solo es posible scrapearlo con "Web Driver"

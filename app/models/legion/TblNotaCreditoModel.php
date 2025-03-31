@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\legion;
+namespace Boctulus\Simplerest\Models\legion;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\legion\TblNotaCreditoSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\legion\TblNotaCreditoSchema;
 
 class TblNotaCreditoModel extends MyModel
 {

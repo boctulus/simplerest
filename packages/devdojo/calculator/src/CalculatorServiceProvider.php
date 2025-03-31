@@ -1,8 +1,8 @@
 <?php
 
-namespace devdojo\calculator;
+namespace Devdojo\Calculator;
 
-use simplerest\core\ServiceProvider;
+use Boctulus\Simplerest\Core\ServiceProvider;
 
 class CalculatorServiceProvider extends ServiceProvider
 {

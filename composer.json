@@ -19,8 +19,7 @@
       "php":">=7.4,<8.4",
       "firebase/php-jwt": "^6.0",
       "vlucas/phpdotenv": "^5.2",
-      "boctulus/api-client": "@dev",
-      "boctulus/shopifyconnector": "@dev",
+      "simplerest/shopifyconnector": "@dev",
 		"nikic/php-parser": "^5.4",
 		"doctrine/inflector": "^2.0"
    },
@@ -34,24 +33,15 @@
    },
    "autoload":{
       "psr-4":{
-         "simplerest\\":"app/",
-         "devdojo\\calculator\\":"packages/devdojo/calculator/src",
-         "boctulus\\grained_acl\\":"packages/boctulus/grained_acl/src",
-         "boctulus\\basic_acl\\":"packages/boctulus/basic_acl/src",
-         "boctulus\\hello_world\\":"vendor/boctulus/hello_world/src"         
+         "Boctulus\\Simplerest\\":"app/",         
+         "Boctulus\\Simplerest\\FineGrainedACL\\":"packages/simplerest/fine-grained-acl/src",
+         "Boctulus\\Simplerest\\BasicACL\\":"packages/simplerest/basic-acl/src"       
       }
    },
-   "repositories": [
+   "repositories": [    
     {
         "type": "path",
-        "url": "packages/boctulus/api-client",
-        "options": {
-            "symlink": true
-        }
-    },
-    {
-        "type": "path",
-        "url": "packages/boctulus/shopifyconnector",
+        "url": "packages/simplerest/shopifyconnector",
         "options": {
             "symlink": true
         }

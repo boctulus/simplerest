@@ -9,10 +9,10 @@
 
 require_once __DIR__ . '/app.php';
 
-use simplerest\core\libs\Config;
-use simplerest\core\CliRouter;
-use simplerest\core\WebRouter;
-use simplerest\core\FrontController;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\CliRouter;
+use Boctulus\Simplerest\Core\WebRouter;
+use Boctulus\Simplerest\Core\FrontController;
 
 $cfg = Config::get();
 

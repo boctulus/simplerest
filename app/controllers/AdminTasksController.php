@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
 use MigrationsCommand;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\System;
-use simplerest\core\traits\TimeExecutionTrait;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\System;
+use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
 
 class AdminTasksController extends Controller
 {

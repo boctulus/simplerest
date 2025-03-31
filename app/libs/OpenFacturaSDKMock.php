@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\interfaces\IOpenFactura;
+use Boctulus\Simplerest\interfaces\IOpenFactura;
 
 class OpenFacturaSDKMock implements IOpenFactura
 {

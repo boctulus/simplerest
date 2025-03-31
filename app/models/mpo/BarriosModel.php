@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\models\mpp;
+namespace Boctulus\Simplerest\Models\mpp;
 
-use simplerest\models\MyModel;
-use simplerest\schemas\mpp\TBL_BARRIOSSchema; //
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\mpp\TBL_BARRIOSSchema; //
 
 class BarriosModel extends MyModel
 {

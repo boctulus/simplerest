@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\interfaces;
+namespace Boctulus\Simplerest\Core\Interfaces;
 
 /*
     Similar a Countable pero count() es static

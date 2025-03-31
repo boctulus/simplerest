@@ -4,7 +4,7 @@
     @author Pablo Bozzolo <boctulus@gmail.com>
 */
 
-use simplerest\core\libs\i18n\Translate;
+use Boctulus\Simplerest\Core\Libs\i18n\Translate;
   
 /*
     https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language

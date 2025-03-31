@@ -1,5 +1,5 @@
 <?php
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;

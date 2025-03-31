@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Date;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\TimeZone;
-use simplerest\core\controllers\Controller;
-use simplerest\models\main\TimezonesModel;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Date;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\TimeZone;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Models\main\TimezonesModel;
 
 
 class TimeController extends Controller

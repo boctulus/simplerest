@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\pages\admin;
+namespace Boctulus\Simplerest\pages\admin;
 
-use simplerest\abstracts\pages\Page;
+use Boctulus\Simplerest\abstracts\pages\Page;
 
 class Calc extends Page
 {

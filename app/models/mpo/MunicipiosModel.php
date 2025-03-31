@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\mpo;
+namespace Boctulus\Simplerest\Models\mpo;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\mpo\MunicipiosSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\mpo\MunicipiosSchema;
 
 class MunicipiosModel extends MyModel
 {

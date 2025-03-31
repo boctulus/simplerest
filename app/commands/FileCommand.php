@@ -1,10 +1,10 @@
 <?php
 
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Strings;
-use simplerest\core\interfaces\ICommand;
-use simplerest\core\traits\CommandTrait;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Interfaces\ICommand;
+use Boctulus\Simplerest\Core\Traits\CommandTrait;
 
 class FileCommand implements ICommand 
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core;
+namespace Boctulus\Simplerest\Core;
 
 /*
     Contenedor de dependencias
@@ -8,8 +8,8 @@ namespace simplerest\core;
     @author Bozzolo Pablo <boctulus>
 */
 
-use simplerest\core\libs\Reflector;
-use simplerest\core\libs\Config;
+use Boctulus\Simplerest\Core\Libs\Reflector;
+use Boctulus\Simplerest\Core\Libs\Config;
 
 class Container 
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 /*
     https://stackoverflow.com/a/2932200/980631

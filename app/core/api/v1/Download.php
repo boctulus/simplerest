@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\core\api\v1;
+namespace Boctulus\Simplerest\Core\api\v1;
 
-use simplerest\core\Acl;
-use simplerest\core\api\v1\ResourceController;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\api\v1\ResourceController;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\DB;
 
 
 class Download extends ResourceController

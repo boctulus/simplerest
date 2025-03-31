@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\models\az;
+namespace Boctulus\Simplerest\Models\az;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\az\ApiKeysSchema;
-use simplerest\core\traits\Uuids;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\az\ApiKeysSchema;
+use Boctulus\Simplerest\Core\Traits\Uuids;
 
 class ApiKeysModel extends MyModel
 {

@@ -1,10 +1,10 @@
 <?php
 
-use simplerest\core\interfaces\IAcl;
-use simplerest\core\interfaces\IAuth;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\HtmlBuilder\Tag;
-use simplerest\core\Request;
+use Boctulus\Simplerest\Core\Interfaces\IAcl;
+use Boctulus\Simplerest\Core\Interfaces\IAuth;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Request;
 
 function tag(string $name) : Tag {
     return new Tag($name);

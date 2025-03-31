@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\exceptions;
+namespace Boctulus\Simplerest\Core\exceptions;
 
-use simplerest\core\libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Logger;
 
 /*
     En teoria deberia ser manejado por el ExceptionHandler

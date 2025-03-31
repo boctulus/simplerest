@@ -1,9 +1,9 @@
 <?php
 
-use simplerest\core\interfaces\IMigration;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Schema;
+use Boctulus\Simplerest\Core\Interfaces\IMigration;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Schema;
 
 class UserTbPermissionsCreation implements IMigration
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
 
 class Url
 {

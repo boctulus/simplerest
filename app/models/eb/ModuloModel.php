@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\eb;
+namespace Boctulus\Simplerest\Models\eb;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\eb\ModuloSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\eb\ModuloSchema;
 
 class ModuloModel extends MyModel
 {

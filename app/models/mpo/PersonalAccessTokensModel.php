@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\mpo;
+namespace Boctulus\Simplerest\Models\mpo;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\mpo\PersonalAccessTokensSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\mpo\PersonalAccessTokensSchema;
 
 class PersonalAccessTokensModel extends MyModel
 {

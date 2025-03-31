@@ -1,8 +1,8 @@
 <?php
 
-use simplerest\core\libs\Env;
-use simplerest\core\libs\Mail;
-use simplerest\core\libs\Paginator;
+use Boctulus\Simplerest\Core\Libs\Env;
+use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Core\Libs\Paginator;
 
 
 require_once __DIR__ . '/constants.php';
@@ -11,7 +11,7 @@ return [
 	'app_url'   => Env::get('APP_URL'),
 	'app_name'  => Env::get('APP_NAME'),
 	'app_env'   => Env::get('APP_ENV'),
-	'namespace' => 'simplerest',	
+	'namespace' => 'Boctulus\Simplerest',	
 
 	/*
 		For a sub-foder in /var/www/html just set as
@@ -236,10 +236,9 @@ return [
 		Service Providers
 	*/
 
-	'providers' => [
-		devdojo\calculator\CalculatorServiceProvider::class,
-		boctulus\grained_acl\GrainedAclServiceProvider::class,
-		//boctulus\basic_acl\BasicAclServiceProvider::class
+	'providers' => [		
+		Boctulus\Simplerest\FineGrainedACL\FineGrainedAclServiceProvider::class,
+		//Boctulus\Simplerest\BasicACL\BasicAclServiceProvider::class
 		// ...
 		//boctulus\hello_world\HelloServiceProvider::class
 	],
@@ -249,7 +248,7 @@ return [
 		Cache
 	*/
 
-	'cache_driver' => simplerest\core\libs\DBCache::class,
+	'cache_driver' => Boctulus\Simplerest\Core\Libs\DBCache::class,
 
 	'var_dump_separators' => [
 		'start' => '--| ',

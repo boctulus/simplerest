@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\exceptions;
+namespace Boctulus\Simplerest\Core\exceptions;
 
 class InvalidValidationException extends \InvalidArgumentException {
 

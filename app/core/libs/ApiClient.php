@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Utils;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\FileCache;
-use simplerest\core\libs\Memoization;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\Utils;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\FileCache;
+use Boctulus\Simplerest\Core\Libs\Memoization;
 
 /*
     @author Pablo Bozzolo

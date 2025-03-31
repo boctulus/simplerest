@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\Zip;
+use Boctulus\Simplerest\Core\Libs\Zip;
 
 class Update
 {

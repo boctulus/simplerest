@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers\demos;
+namespace Boctulus\Simplerest\Controllers\demos;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Strings;
-use simplerest\core\controllers\Controller;
-use simplerest\libs\LaravelApiGenerator;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Libs\LaravelApiGenerator;
 
 class LaravelApiGenController extends Controller
 {
@@ -59,7 +59,7 @@ class LaravelApiGenController extends Controller
                             \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
                         };",
                         "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
-                            \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
+                            \$ctrl_file = \Boctulus\Simplerest\Core\Libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
                         };"
                     ]
                 ];
@@ -187,7 +187,7 @@ class LaravelApiGenController extends Controller
                             \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
                         };",
                         "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
-                            \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
+                            \$ctrl_file = \Boctulus\Simplerest\Core\Libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
                         };"
                     ]
                 ];

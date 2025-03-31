@@ -1,11 +1,11 @@
 <?php
 
-use simplerest\core\View;
-use simplerest\core\libs\HtmlBuilder\Tag;
-use simplerest\core\libs\HtmlBuilder\AdminLte;
+use Boctulus\Simplerest\Core\View;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\AdminLte;
 
 
-Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
+Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\AdminLte::class);
 
 AdminLte::macro('salutor', function ($name, $adj, Array $att = []) {
     $str_att = AdminLte::attributes($att);

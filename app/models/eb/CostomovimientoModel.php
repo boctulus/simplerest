@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\eb;
+namespace Boctulus\Simplerest\Models\eb;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\eb\CostomovimientoSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\eb\CostomovimientoSchema;
 
 class CostomovimientoModel extends MyModel
 {

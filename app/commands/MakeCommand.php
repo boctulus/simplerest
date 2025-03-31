@@ -1,16 +1,16 @@
 <?php
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\StdOut;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Strings;
-use simplerest\core\interfaces\ICommand;
-use simplerest\core\libs\i18n\Translate;
-use simplerest\core\traits\CommandTrait;
-use simplerest\core\libs\PHPLexicalAnalyzer;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Interfaces\ICommand;
+use Boctulus\Simplerest\Core\Libs\i18n\Translate;
+use Boctulus\Simplerest\Core\Traits\CommandTrait;
+use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
 
 class MakeCommand implements ICommand 
 {   
@@ -291,7 +291,7 @@ class MakeCommand implements ICommand
 
         Ex:
 
-        make interface OpenFactura --from=D:\laragon\www\simplerest\app\libs\OpenFacturaSDK.php
+        make interface OpenFactura --from=D:\laragon\www\Boctulus\Simplerest\app\libs\OpenFacturaSDK.php
 
         # Mixed examples
         
@@ -665,7 +665,7 @@ class MakeCommand implements ICommand
     
             // Usar Reflector para obtener información de la clase
             require_once CORE_PATH . 'libs' . DIRECTORY_SEPARATOR . 'Reflector.php';
-            $classInfo = \simplerest\core\libs\Reflector::getClassInfo($className);
+            $classInfo = \Boctulus\Simplerest\Core\Libs\Reflector::getClassInfo($className);
             $methods = $classInfo['methods'];
     
             // Generar firmas de métodos públicos
@@ -1299,7 +1299,7 @@ class MakeCommand implements ICommand
         $current = DB::getCurrentConnectionId(true);
 
         if ($current == Config::get()['db_connection_default']){
-            $file = str_replace('namespace simplerest\schemas', 'namespace simplerest\schemas' . "\\$current", $file);
+            $file = str_replace('namespace Boctulus\Simplerest\Schemas', 'namespace Boctulus\Simplerest\Schemas' . "\\$current", $file);
 
             Files::mkDir(SCHEMA_PATH . $current);
             $dest_path = SCHEMA_PATH . "$current/". $filename;
@@ -1310,7 +1310,7 @@ class MakeCommand implements ICommand
             if ($group){
                 $current = $group;
                 
-                $file = str_replace('namespace simplerest\schemas', 'namespace simplerest\schemas' . "\\$current", $file);
+                $file = str_replace('namespace Boctulus\Simplerest\Schemas', 'namespace Boctulus\Simplerest\Schemas' . "\\$current", $file);
                 Files::mkDir(SCHEMA_PATH . $current);
                 $dest_path = SCHEMA_PATH . "$current/". $filename;;
             } else {
@@ -1694,7 +1694,7 @@ class MakeCommand implements ICommand
         
         $folder = '';
         if ($current == Config::get()['db_connection_default']){
-            $file = str_replace('namespace simplerest\models', 'namespace simplerest\models' . "\\$current", $file);
+            $file = str_replace('namespace Boctulus\Simplerest\Models', 'namespace Boctulus\Simplerest\Models' . "\\$current", $file);
 
             Files::mkDir(MODELS_PATH . $current);
             $dest_path = MODELS_PATH . "$current/". $filename;
@@ -1705,7 +1705,7 @@ class MakeCommand implements ICommand
             if ($group){
                 $current = $group;
                 
-                $file = str_replace('namespace simplerest\models', 'namespace simplerest\models' . "\\$current", $file);
+                $file = str_replace('namespace Boctulus\Simplerest\Models', 'namespace Boctulus\Simplerest\Models' . "\\$current", $file);
                 Files::mkDir(MODELS_PATH . $current);
                 $dest_path = MODELS_PATH . "$current/". $filename;
             } else {
@@ -1727,14 +1727,14 @@ class MakeCommand implements ICommand
 
         if (!$no_check || $schemaless){
             if (!$schemaless){
-                $imports[] = "use simplerest\schemas\\$folder{$this->camel_case}Schema;";
+                $imports[] = "use Boctulus\Simplerest\Schemas\\$folder{$this->camel_case}Schema;";
             }
         
             Strings::replace('__SCHEMA_CLASS__', "{$this->camel_case}Schema", $file); 
 
             $uuid = $this->getUuid();
             if ($uuid){
-                $imports[] = 'use simplerest\core\traits\Uuids;';
+                $imports[] = 'use Boctulus\Simplerest\Core\Traits\Uuids;';
                 $traits[] = 'use Uuids;';      
             }
 
@@ -2537,7 +2537,7 @@ class MakeCommand implements ICommand
         TO-DO
 
         - Crear funcion general makeScafolding()
-        - Usar makeScafolding() en widget(), shortcode(), package() y otras
+        - Usar makeScafolding() en widget(), module(), package() y otras
     */
     function widget(string $name, ...$opt) {
         $dir = WIDGETS_PATH . $name;

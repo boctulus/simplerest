@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\core;
+namespace Boctulus\Simplerest\Core;
 
-use simplerest\core\api\v1\ApiController;
-use simplerest\core\controllers\ConsoleController;
-use simplerest\core\libs\Cli;
-use simplerest\core\libs\Msg;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Url;
-use simplerest\core\libs\VarDump;
+use Boctulus\Simplerest\Core\api\v1\ApiController;
+use Boctulus\Simplerest\Core\Controllers\ConsoleController;
+use Boctulus\Simplerest\Core\Libs\Cli;
+use Boctulus\Simplerest\Core\Libs\Msg;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\VarDump;
 
 /*
     El funcionamiento "base" es el de un FrontController para la terminal
@@ -87,7 +87,7 @@ class CliRouter
             } else {
                 $ck = static::$routes[$key];
 
-                $namespace = Strings::contains('\\', $ck) ? '' : 'simplerest\\controllers\\';
+                $namespace = Strings::contains('\\', $ck) ? '' : 'Boctulus\\Simplerest\\Controllers\\';
                 $pos = strpos($ck, '@');
 
                 if ($pos === false){
@@ -126,7 +126,7 @@ class CliRouter
         
         try {
             if (!isset($result)){                
-                $namespace = 'simplerest\\controllers\\';
+                $namespace = 'Boctulus\\Simplerest\\Controllers\\';
 
                 // dd(static::$routes, 'routes');
                 // dd($key, 'key');

@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers\api;
+namespace Boctulus\Simplerest\Controllers\api;
 
-use simplerest\controllers\MyApiController; 
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Libs\DB;
 
 class TblEps extends MyApiController
 { 

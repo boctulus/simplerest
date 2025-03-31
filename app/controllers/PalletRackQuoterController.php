@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
-use simplerest\shortcodes\rack_quoter\RackQuoterShortcode;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Modules\rack_quoter\RackQuoterShortcode;
 
 class PalletRackQuoterController extends Controller
 {

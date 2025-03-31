@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\legion;
+namespace Boctulus\Simplerest\Models\legion;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\legion\TblComprasDetalleSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\legion\TblComprasDetalleSchema;
 
 class TblComprasDetalleModel extends MyModel
 {

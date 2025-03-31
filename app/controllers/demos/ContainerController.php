@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\controllers\demos;
+namespace Boctulus\Simplerest\Controllers\demos;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\Container;
-use simplerest\core\libs\Factory;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Container;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class ContainerController extends Controller
 {
@@ -49,7 +49,7 @@ class ContainerController extends Controller
 
     function test_container4()
     {
-        Container::bind('car', \simplerest\libs\Car::class);
+        Container::bind('car', \Boctulus\Simplerest\Libs\Car::class);
 
         $o = Container::makeWith('car', ['color' => 'blue', 'max_speed' => 200]);
         print_r($o->run());

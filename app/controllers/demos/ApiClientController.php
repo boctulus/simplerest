@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers\demos;
+namespace Boctulus\Simplerest\Controllers\demos;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use simplerest\core\libs\Url;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\ApiClient;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class ApiClientController extends Controller
 {

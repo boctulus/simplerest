@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\libs\OpenFacturaSDK;
-use simplerest\libs\OpenFacturaSDKMock;
+use Boctulus\Simplerest\Libs\OpenFacturaSDK;
+use Boctulus\Simplerest\Libs\OpenFacturaSDKMock;
 
 class OpenFacturaSDKFactory
 {

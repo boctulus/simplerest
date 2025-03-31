@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 /*
 	Funciona con form-data
@@ -31,9 +31,9 @@ namespace simplerest\core\libs;
         }
 */
 
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Numbers;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Numbers;
 
 class FileUploader
 {

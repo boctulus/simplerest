@@ -4,46 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd8ee0192e1eff68f12ead804c6b74c1",
+    "content-hash": "89acc29a9f397839bc108d0e2bea6780",
     "packages": [
-        {
-            "name": "boctulus/api-client",
-            "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "packages/boctulus/api-client",
-                "reference": "b13a25f530692b07d53310d76cf5c952840acd5c"
-            },
-            "require": {
-                "php": ">=7.4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Boctulus\\ApiClient\\": "src/"
-                }
-            },
-            "description": "Portable API Client",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
-        },
-        {
-            "name": "boctulus/shopifyconnector",
-            "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "packages/boctulus/shopifyconnector",
-                "reference": "a726ef40720093c760db376445887b3389adc39b"
-            },
-            "type": "library",
-            "description": "Package ShopifyConnector by boctulus",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
-        },
         {
             "name": "doctrine/inflector",
             "version": "2.0.10",
@@ -392,6 +354,21 @@
                 }
             ],
             "time": "2024-07-20T21:41:07+00:00"
+        },
+        {
+            "name": "simplerest/shopifyconnector",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "packages/simplerest/shopifyconnector",
+                "reference": "16bb7af229c86b632f2a35277548d8f97d594e4d"
+            },
+            "type": "library",
+            "description": "Package ShopifyConnector by boctulus",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -2287,8 +2264,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "boctulus/api-client": 20,
-        "boctulus/shopifyconnector": 20
+        "simplerest/shopifyconnector": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

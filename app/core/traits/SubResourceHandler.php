@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace simplerest\core\traits;
+namespace Boctulus\Simplerest\Core\traits;
 
 use Doctrine\Inflector\InflectorFactory;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\Strings;
-use simplerest\core\Model;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Model;
 
 /*
     SimpleRest

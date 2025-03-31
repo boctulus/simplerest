@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\libs\i18n;
+namespace Boctulus\Simplerest\Core\Libs\i18n;
 
-use simplerest\core\libs\i18n\POParser;
+use Boctulus\Simplerest\Core\Libs\i18n\POParser;
 
 /**
  * Alternative gettext translator of PHPTAL

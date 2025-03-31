@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\schemas\laravelshopify;
+namespace Boctulus\Simplerest\Schemas\laravelshopify;
 
-use simplerest\core\interfaces\ISchema;
+use Boctulus\Simplerest\Core\Interfaces\ISchema;
 
 ### IMPORTS
 

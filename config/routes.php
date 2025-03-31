@@ -1,13 +1,13 @@
 <?php
 
-use simplerest\controllers\DumbController;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Mail;
-use simplerest\core\libs\SiteMap;
-use simplerest\core\libs\System;
-use simplerest\core\WebRouter;
-use simplerest\libs\Debug;
-use simplerest\shortcodes\tax_calc\TaxCalcShortcode;
+use Boctulus\Simplerest\Controllers\DumbController;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Core\Libs\SiteMap;
+use Boctulus\Simplerest\Core\Libs\System;
+use Boctulus\Simplerest\Core\WebRouter;
+use Boctulus\Simplerest\Libs\Debug;
+use Boctulus\Simplerest\Modules\TaxCalc\TaxCalc;
 
 
 $route = WebRouter::getInstance();
@@ -36,10 +36,10 @@ WebRouter::delete('api-test/r1',  'DumbController@test_r1');
 WebRouter::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
 
 // Inclusion de namespace
-WebRouter::get('increment/{num}', 'simplerest\controllers\folder\SomeController@inc2')->where(['num' => '[0-9]+']);
+WebRouter::get('increment/{num}', 'Boctulus\Simplerest\Controllers\folder\SomeController@inc2')->where(['num' => '[0-9]+']);
 
-WebRouter::get('increment_a/{num}', 'simplerest\controllers\folder\SomeController@inc')->where(['num' => '[0-9]+']);
-WebRouter::get('increment_b/{num}', 'simplerest\controllers\folder\SomeController@inc3')->where(['num' => '[0-9]+']);
+WebRouter::get('increment_a/{num}', 'Boctulus\Simplerest\Controllers\folder\SomeController@inc')->where(['num' => '[0-9]+']);
+WebRouter::get('increment_b/{num}', 'Boctulus\Simplerest\Controllers\folder\SomeController@inc3')->where(['num' => '[0-9]+']);
 
 // Grupos --ok
 WebRouter::group('admin', function() {	
@@ -72,7 +72,7 @@ WebRouter::get('test-mid',  'TestController@mid');
 
 WebRouter::get("tax_calc", function() use ($route) {
 	set_template('templates/tpl_bt3.php');          
-	render(TaxCalcShortcode::get());
+	render(TaxCalc::get());
 });
 
 WebRouter::get('mem', function(){

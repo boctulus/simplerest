@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\legion;
+namespace Boctulus\Simplerest\Models\legion;
 
-use simplerest\models\MyModel;
-use simplerest\core\libs\ValidationRules;
-use simplerest\schemas\legion\TblFrecuenciaSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
+use Boctulus\Simplerest\Schemas\legion\TblFrecuenciaSchema;
 
 class TblFrecuenciaModel extends MyModel
 { 

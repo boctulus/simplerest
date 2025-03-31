@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\WooCommerceApiClient;
+use Boctulus\Simplerest\Core\Libs\WooCommerceApiClient;
 
 class WooCommerce {
     protected $client;

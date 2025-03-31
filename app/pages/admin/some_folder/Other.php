@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\pages\admin\some_folder;
+namespace Boctulus\Simplerest\pages\admin\some_folder;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
 
 class Other
 {

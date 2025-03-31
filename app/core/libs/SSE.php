@@ -4,7 +4,7 @@
     @author  Pablo Bozzolo boctulus@gmail.com
 */
 
-namespace boctulus\SW\core\libs;
+namespace Boctulus\Simplerest\SW\core\libs;
 
 /*
 	Author: boctulus

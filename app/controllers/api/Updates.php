@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\controllers\api;
+namespace Boctulus\Simplerest\Controllers\api;
 
 global $api_version;
 
@@ -9,7 +9,7 @@ global $api_version;
 */
 
 if ($api_version == 'v1'){
-    class Updates extends \simplerest\core\api\v1\Files { 
+    class Updates extends \Boctulus\Simplerest\Core\api\v1\Files { 
         public $model_name = 'UpdatesModel';
 
     }

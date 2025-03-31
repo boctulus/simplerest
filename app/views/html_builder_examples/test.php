@@ -6,13 +6,13 @@
 
 <?php
 
-use simplerest\core\libs\HtmlBuilder\AdminLte;
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
-use simplerest\core\libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\AdminLte;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
 
 
-Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
-//Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\AdminLte::class);
+Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
+//Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\AdminLte::class);
 
 css_file('third_party/adminlte/dist/css/adminlte.css');
 

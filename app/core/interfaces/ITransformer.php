@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\interfaces;
+namespace Boctulus\Simplerest\Core\Interfaces;
 
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 interface ITransformer {
     function transform(object $user, Controller $controller = NULL);

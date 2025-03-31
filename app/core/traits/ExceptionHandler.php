@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\traits;
+namespace Boctulus\Simplerest\Core\traits;
 
-use simplerest\core\libs\Config;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Url;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Url;
 
 trait ExceptionHandler
 {

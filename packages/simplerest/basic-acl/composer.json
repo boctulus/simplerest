@@ -1,0 +1,19 @@
+{
+    "name": "simplerest/basic-acl",
+    "description": "Basic ACL for SimpleRest",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "boctulus",
+            "email": "boctulus@gmail.com"
+        }
+    ],
+    "keywords": ["simplerest", "acl", "basic"],
+    "require": {},
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    }
+}

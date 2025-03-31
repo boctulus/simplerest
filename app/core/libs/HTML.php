@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\XML;
-use simplerest\core\libs\Url;
+use Boctulus\Simplerest\Core\Libs\XML;
+use Boctulus\Simplerest\Core\Libs\Url;
 
 class HTML extends XML
 {

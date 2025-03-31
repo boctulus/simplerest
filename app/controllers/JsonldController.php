@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ApiClient;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\JsonLd;
-use simplerest\libs\scrapers\GiglioScraper;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\JsonLd;
+use Boctulus\Simplerest\Libs\Scrapers\GiglioScraper;
 
 class JsonldController extends Controller
 {       

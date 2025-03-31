@@ -1,7 +1,7 @@
 <?php
 
-use simplerest\core\libs\i18n\Translate;
-use simplerest\core\libs\Config;
+use Boctulus\Simplerest\Core\Libs\i18n\Translate;
+use Boctulus\Simplerest\Core\Libs\Config;
 
 // App bootstraping
 

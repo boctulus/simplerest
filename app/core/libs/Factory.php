@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\Config;
-use simplerest\controllers\MyAuthController;
-use simplerest\core\libs\Validator;
-use simplerest\core\Acl;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\interfaces\IAcl;
-use simplerest\core\interfaces\IValidator;
-use simplerest\core\interfaces\IAuth;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Controllers\MyAuthController;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Interfaces\IAcl;
+use Boctulus\Simplerest\Core\Interfaces\IValidator;
+use Boctulus\Simplerest\Core\Interfaces\IAuth;
 
 /*
 	Usar el Container de dependencias en vez de seguir creando factories !

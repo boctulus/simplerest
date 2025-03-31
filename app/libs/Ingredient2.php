@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class Ingredient2
 {

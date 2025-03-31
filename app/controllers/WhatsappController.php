@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Strings;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 
 class WhatsappController extends Controller

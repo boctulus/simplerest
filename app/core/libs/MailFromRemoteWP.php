@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\Logger;
-use simplerest\core\interfaces\IMail;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Interfaces\IMail;
 
 /*  
     Ej:

@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\Logger;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class InflatorController extends Controller
 {
@@ -27,7 +27,7 @@ class InflatorController extends Controller
                 (
                     [id] => 1696
                     [queue] => procesar_cat
-                    [object] => O:46:"boctulus\SW\background\tasks\ProcesarCategoria":0:{}
+                    [object] => O:46:"boctulus\SW\Background\Tasks\ProcesarCategoria":0:{}
                     [params] => a:1:{i:0;s:171:"a:3:{s:4:"slug";s:39:"/bambino/abbigliamento-bimba/pantalone/";s:4:"name";s:9:"Pantaloni";s:4:"link";s:61:"https://www.giglio.com/bambino/abbigliamento-bimba/pantalone/";}";}
                     [created_at] => 0000-00-00 00:00:00
                 )
