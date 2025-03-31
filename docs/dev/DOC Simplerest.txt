@@ -902,14 +902,14 @@ La clase MyApiController en /app/controllers es la responsable de seleccionar la
 Cuando sea necesario crear una nueva versión de la API, deberá agregarse al MyApiController algo como:
 
 	if ($api_version == 'v2'){
-		class MyApiController extends \Boctulus\Simplerest\Core\api\v2\ApiController {}
+		class MyApiController extends \Boctulus\Simplerest\Core\API\v2\ApiController {}
 		return;
 	}
 
 Debe hacerse lo mismo en MyAuthController.php 
 
 	if ($api_version == 'v2'){
-    	class AuthController extends \Boctulus\Simplerest\Core\api\v1\AuthController {}
+    	class AuthController extends \Boctulus\Simplerest\Core\API\v1\AuthController {}
     	return;
 	}
 
@@ -7109,7 +7109,7 @@ Files es un tipo de ApiController -versionado- y se puede "extender" fácilmente
 	*/
 
 	if ($api_version == 'v1'){
-		class Files extends \Boctulus\Simplerest\Core\api\v1\Files { }
+		class Files extends \Boctulus\Simplerest\Core\API\v1\Files { }
 		return;
 	};
 
@@ -7133,7 +7133,7 @@ Crear un endpoint especializado en la descarga de otro tipo de archivos (de otra
 	namespace Boctulus\Simplerest\Controllers;
 
 	// Estoy usando siempre la misma versión de las APIs
-	use Boctulus\Simplerest\Core\api\v1\Download;
+	use Boctulus\Simplerest\Core\API\v1\Download;
 
 	class DownloadController extends Download
 	{
@@ -7150,7 +7150,7 @@ También podríamos querer usar un "alias" para "get" específicamente para la d
 	namespace Boctulus\Simplerest\Controllers;
 
 	// Estoy usando siempre la misma versión de las APIs
-	use Boctulus\Simplerest\Core\api\v1\Download;
+	use Boctulus\Simplerest\Core\API\v1\Download;
 
 	class DownloadController extends Download
 	{

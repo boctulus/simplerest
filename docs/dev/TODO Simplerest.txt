@@ -5406,7 +5406,7 @@ https://www.sourcefuse.com/blog/rest-api-best-practices/
     Stack trace:
     #0 C:\xampp\htdocs\az\app\core\api\v1\ApiController.php(688): Boctulus\Simplerest\Core\Model-&gt;orderBy('cost')
     #1 [internal function
-    ]: Boctulus\Simplerest\Core\api\v1\ApiController-&gt;get()
+    ]: Boctulus\Simplerest\Core\API\v1\ApiController-&gt;get()
     #2 C:\xampp\htdocs\az\app\core\FrontController.php(162): call_user_func_array(Array, Array)
     #3 C:\xampp\htdocs\az\public\index.php(11): Boctulus\Simplerest\Core\FrontController: :resolve()
     #4 {main
