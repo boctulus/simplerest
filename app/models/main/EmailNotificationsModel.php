@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\models\main;
+namespace Boctulus\Simplerest\Models\main;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\main\EmailNotificationsSchema;
-use simplerest\core\libs\Mails;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Files;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\main\EmailNotificationsSchema;
+use Boctulus\Simplerest\Core\Libs\Mails;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
 
 class EmailNotificationsModel extends MyModel
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use simplerest\core\libs\XML;
-use simplerest\core\Response;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Factory;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Libs\XML;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class TestManejoController extends Controller
 {
@@ -54,7 +54,7 @@ class TestManejoController extends Controller
     */
     function scrape()
     {  
-        $html = Files::getContent('D:\www\simplerest\etc\practicatest\1.html');
+        $html = Files::getContent('D:\www\Boctulus\Simplerest\etc\practicatest\1.html');
     
         $dom   = XML::getDocument($html);
         $xpath = new \DOMXPath($dom);

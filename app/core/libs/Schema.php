@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\Model;
-use simplerest\libs\Debug;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\VarDump;
-use simplerest\core\exceptions\EmptySchemaException;
-use simplerest\core\exceptions\TableAlreadyExistsException;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Libs\Debug;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\VarDump;
+use Boctulus\Simplerest\Core\exceptions\EmptySchemaException;
+use Boctulus\Simplerest\Core\exceptions\TableAlreadyExistsException;
 
 /*
 	Schema Builder

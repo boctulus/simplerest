@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\WebController;
+use Boctulus\Simplerest\Core\Controllers\WebController;
 
 class HomeController extends WebController
 {

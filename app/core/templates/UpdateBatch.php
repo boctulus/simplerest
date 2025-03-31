@@ -1,9 +1,9 @@
 <?php
 
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Strings;
-use simplerest\core\interfaces\IUpdateBatch;
-use simplerest\controllers\MigrationsController;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Interfaces\IUpdateBatch;
+use Boctulus\Simplerest\Controllers\MigrationsController;
 
 /*
     Run batches

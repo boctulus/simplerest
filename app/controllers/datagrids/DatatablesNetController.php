@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\controllers\datagrids;
+namespace Boctulus\Simplerest\Controllers\datagrids;
 
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 use
     DataTables\Database,
     DataTables\Editor,

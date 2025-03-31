@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\schemas\az;
+namespace Boctulus\Simplerest\Schemas\az;
 
-use simplerest\core\interfaces\ISchema;
+use Boctulus\Simplerest\Core\Interfaces\ISchema;
 
 ### IMPORTS
 

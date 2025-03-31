@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Paginator;
-use simplerest\core\libs\FileUploader;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Paginator;
+use Boctulus\Simplerest\Core\Libs\FileUploader;
 
 /*
     Deberia encapsularse con el "shortcode" csv_importer

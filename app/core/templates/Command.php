@@ -1,8 +1,8 @@
 <?php
 
-use simplerest\core\libs\Strings;
-use simplerest\core\interfaces\ICommand;
-use simplerest\core\traits\CommandTrait;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Interfaces\ICommand;
+use Boctulus\Simplerest\Core\Traits\CommandTrait;
 
 class __NAME__Command implements ICommand 
 {

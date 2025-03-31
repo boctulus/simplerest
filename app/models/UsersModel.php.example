@@ -1,16 +1,16 @@
 <?php
 
-namespace simplerest\models;
+namespace Boctulus\Simplerest\Models;
 
-use simplerest\core\Model;
-use simplerest\libs\ValidationRules;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\libs\ValidationRules;
 
 /*
 	La ruta depende del nombre de la conexión por defecto o sea será algo como:
 
-	simplerest\schemas\{nombre_conexion_default}\UsersSchema
+	Boctulus\Simplerest\Schemas\{nombre_conexion_default}\UsersSchema
 */
-use simplerest\schemas\legion\main\UsersSchema;  
+use Boctulus\Simplerest\Schemas\legion\main\UsersSchema;  
 
 class UsersModel extends Model
  { 	

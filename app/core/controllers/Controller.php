@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\core\controllers;
+namespace Boctulus\Simplerest\Core\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Config;
-use simplerest\core\traits\ExceptionHandler;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Traits\ExceptionHandler;
 
 abstract class Controller
 {

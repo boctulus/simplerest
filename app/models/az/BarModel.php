@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\models\az;
+namespace Boctulus\Simplerest\Models\az;
 
-use simplerest\models\MyModel;
-use simplerest\core\libs\ValidationRules;
-use simplerest\schemas\az\BarSchema;
-use simplerest\core\traits\Uuids;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
+use Boctulus\Simplerest\Schemas\az\BarSchema;
+use Boctulus\Simplerest\Core\Traits\Uuids;
 
 class BarModel extends MyModel
 { 

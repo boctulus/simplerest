@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\Request;
-use simplerest\core\libs\OneSignal;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Libs\OneSignal;
 
 class OneSignalTesterController extends Controller
 {

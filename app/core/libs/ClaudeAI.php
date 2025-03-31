@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\interfaces\AIChat;
-use simplerest\core\exceptions\NotImplementedException;
+use Boctulus\Simplerest\Core\Interfaces\AIChat;
+use Boctulus\Simplerest\Core\exceptions\NotImplementedException;
 
 /*
     Ej:

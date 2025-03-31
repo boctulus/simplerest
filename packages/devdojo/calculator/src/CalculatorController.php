@@ -1,12 +1,12 @@
 <?php
 
-namespace devdojo\calculator;
+namespace Devdojo\Calculator;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\DB;
 
 class CalculatorController extends Controller
 {

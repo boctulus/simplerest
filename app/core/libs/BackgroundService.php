@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\Model;
+use Boctulus\Simplerest\Core\Model;
 
 abstract class BackgroundService
 {

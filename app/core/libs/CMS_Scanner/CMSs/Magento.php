@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\libs\CMS_Scanner\CMSs;
+namespace Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs;
 
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class Magento
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\core;
+namespace Boctulus\Simplerest\Core;
 
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Msg;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Url;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Msg;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Url;
 
 /*
     @author Pablo Bozzolo
@@ -263,7 +263,7 @@ class WebRouter
                         static::$ck_params[$verb][$uri][] = $p->name;                        
                     }
                 } else {
-                    $namespace = Strings::contains('\\', $ck) ? '' : 'simplerest\\controllers\\';
+                    $namespace = Strings::contains('\\', $ck) ? '' : 'Boctulus\\Simplerest\\Controllers\\';
                     $pos = strpos($ck, '@');
                     if ($pos === false){
                         $ctrl = $ck;

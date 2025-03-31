@@ -1,9 +1,9 @@
 <?php
 
-use simplerest\core\libs\CorsHandler;
-use simplerest\core\libs\Url;
-use simplerest\core\Response;
-use simplerest\core\WebRouter;
+use Boctulus\Simplerest\Core\Libs\CorsHandler;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\WebRouter;
 
 if (!function_exists('cors')){
     function cors(){

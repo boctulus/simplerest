@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\models\main;
+namespace Boctulus\Simplerest\Models\main;
 
-use simplerest\models\MyModel;
-use simplerest\core\Model;
-use simplerest\core\libs\ValidationRules;
-use simplerest\schemas\main\TblScritpTablasSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
+use Boctulus\Simplerest\Schemas\main\TblScritpTablasSchema;
 
 class TblScritpTablasModel extends MyModel
 { 

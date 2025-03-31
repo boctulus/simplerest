@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\controllers\demos;
+namespace Boctulus\Simplerest\Controllers\demos;
 
-use simplerest\core\libs\Reflector;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Reflector;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class ReflectorController extends Controller
 {
     function test_refl()
     {
-        dd(Reflector::getConstructor(\simplerest\core\libs\ApiClient::class));
+        dd(Reflector::getConstructor(\Boctulus\Simplerest\Core\Libs\ApiClient::class));
     }
 }
 

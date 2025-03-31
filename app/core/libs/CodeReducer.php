@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 /*
     Clase sencilla para reducir el código PHP manteniendo solo los métodos deseados
@@ -28,7 +28,7 @@ class CodeReducer
 
         Ej:
 
-        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+        $file = Files::getContent("D:\\laragon\\www\\Boctulus\\Simplerest\\etc\\test.php");
 
         dd(
             (new CodeReducer())->reduce($file, [], ['tb_prefix'])
@@ -39,7 +39,7 @@ class CodeReducer
 
         Ej:
 
-        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+        $file = Files::getContent("D:\\laragon\\www\\Boctulus\\Simplerest\\etc\\test.php");
 
         dd(
             (new CodeReducer())->reduce($file, ['tb_prefix'])
@@ -48,7 +48,7 @@ class CodeReducer
 
         # Truncar el body de funciones especificadas
 
-        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+        $file = Files::getContent("D:\\laragon\\www\\Boctulus\\Simplerest\\etc\\test.php");
 
         Ej:
 
@@ -61,7 +61,7 @@ class CodeReducer
 
         Ej:
 
-        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+        $file = Files::getContent("D:\\laragon\\www\\Boctulus\\Simplerest\\etc\\test.php");
 
         dd(
             (new CodeReducer())->reduceCode($file, [], [], [], ['sayHello', 'sayBye'])

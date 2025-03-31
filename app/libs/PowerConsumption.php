@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Cli;
-use simplerest\core\libs\Date;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Cli;
+use Boctulus\Simplerest\Core\Libs\Date;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class PowerConsumption {
     const MAX_CONSUMPTION =  300;

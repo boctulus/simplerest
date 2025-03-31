@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\interfaces;
+namespace Boctulus\Simplerest\Core\Interfaces;
 
 interface IDbAccess {
     public function getDbAccess($user_id);

@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\core;
+namespace Boctulus\Simplerest\Core;
 
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Strings;
-use simplerest\core\interfaces\Arrayable;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Interfaces\Arrayable;
 
 /*
     Correcciones necesarias !!

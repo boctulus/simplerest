@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ApiClient;
-use simplerest\interfaces\IOpenFactura;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\interfaces\IOpenFactura;
 
 /*
     SDK para OpenFactura

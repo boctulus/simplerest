@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\ConsoleController;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\StdOut;
-use simplerest\core\libs\Update;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Obfuscator;
+use Boctulus\Simplerest\Core\Controllers\ConsoleController;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Core\Libs\Update;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Obfuscator;
 
 /*
     Arma el update para su distribución

@@ -1,10 +1,10 @@
 <?php
 
-use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\DB;
-use simplerest\core\Model;
-use simplerest\core\libs\Url;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\Url;
 
 /*
     Returns BASE_URL to be used in the FrontEnd

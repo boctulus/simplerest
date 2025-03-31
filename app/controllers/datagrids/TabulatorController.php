@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers\datagrids;
+namespace Boctulus\Simplerest\Controllers\datagrids;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\Request;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Request;
 
 class TabulatorController extends Controller
 {

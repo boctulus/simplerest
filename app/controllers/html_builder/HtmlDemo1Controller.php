@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\controllers\html_builder;
+namespace Boctulus\Simplerest\Controllers\html_builder;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\DB;
 
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
-use simplerest\core\libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
 
 
 /*
@@ -26,7 +26,7 @@ class HtmlDemo1Controller extends Controller
 
     function index()
     {  
-        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Html::class);
+        Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Html::class);
 
         $html = tag('inputText')->value('Pablo');
         
@@ -36,7 +36,7 @@ class HtmlDemo1Controller extends Controller
     function t2(){
         //css_file('css/html_builder/steps/steps.css'); 	
 
-        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+        Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
 
         $html = tag('div')->content([
             tag('steps')->max(4)->current(3),
@@ -54,7 +54,7 @@ class HtmlDemo1Controller extends Controller
     */
     function note_r()
     {
-        // Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+        // Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
 
         // $html = tag('note')
         // ->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing
@@ -110,7 +110,7 @@ class HtmlDemo1Controller extends Controller
 
     function select2_r()
     {   
-        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+        Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
 
         /*
             Select 2

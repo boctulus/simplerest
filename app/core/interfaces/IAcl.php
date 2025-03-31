@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\interfaces;
+namespace Boctulus\Simplerest\Core\Interfaces;
 
 interface IAcl {
     function addRole(string $role_name, $role_id = null);

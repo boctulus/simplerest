@@ -3,8 +3,8 @@
     
 <?php	
 
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
-use simplerest\core\libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
 
 css_file('css/login/login.css');
 	

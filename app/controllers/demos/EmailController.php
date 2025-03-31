@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\controllers\demos;
+namespace Boctulus\Simplerest\Controllers\demos;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Mail;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\SendinBlue;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\SendinBlue;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class EmailController extends Controller
 {

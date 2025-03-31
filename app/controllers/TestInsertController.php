@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\VarDump;
-use simplerest\core\Model;
-use simplerest\core\traits\SubResourceHandler;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\VarDump;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
 
 class TestInsertController extends Controller
 {

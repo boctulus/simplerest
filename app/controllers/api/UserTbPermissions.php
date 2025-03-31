@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\controllers\api;
+namespace Boctulus\Simplerest\Controllers\api;
 
-use simplerest\controllers\MyApiController; 
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Validator;
-use simplerest\core\exceptions\InvalidValidationException;
-use simplerest\core\Acl;
+use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Acl;
 
 class UserTbPermissions extends MyApiController
 {   

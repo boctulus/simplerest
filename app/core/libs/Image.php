@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class Image
 {

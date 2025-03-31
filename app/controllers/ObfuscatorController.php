@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
 use PhpParser\Node\Scalar\MagicConst\Dir;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\Obfuscator;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Obfuscator;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class ObfuscatorController extends Controller
 {

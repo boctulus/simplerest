@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\controllers\honeys;
+namespace Boctulus\Simplerest\Controllers\honeys;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ApiClient;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 /*
     http://ws.honeysplace.com/ws/xml/honeysinventoryv2_0.xml - XML Data Feed

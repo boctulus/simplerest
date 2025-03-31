@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\packages;
+namespace Boctulus\Simplerest\packages;
 
 class __NAME__ 
 {

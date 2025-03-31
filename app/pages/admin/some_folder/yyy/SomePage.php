@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\pages\admin\xxx\yyy;
+namespace Boctulus\Simplerest\pages\admin\xxx\yyy;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
 
 class SomePage
 {

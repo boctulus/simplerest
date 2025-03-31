@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\libs\i18n;
+namespace Boctulus\Simplerest\Core\Libs\i18n;
 
-use simplerest\core\libs\Files;
+use Boctulus\Simplerest\Core\Libs\Files;
 
 /**
  * Gettext's po file parser.

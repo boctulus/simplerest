@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Files;
-use simplerest\traits\DbAccess;
+use Boctulus\Simplerest\Core\controllers\Controller;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\traits\DbAccess;
 
 global $api_version;
 
@@ -21,7 +21,7 @@ if (substr($api_version, 0, 1) != 'v' || !is_numeric(substr($api_version, 1))){
 */
 
 if ($api_version == 'v1'){
-    class AuthController extends \simplerest\core\api\v1\AuthController {}
+    class AuthController extends \Boctulus\Simplerest\Core\api\v1\AuthController {}
 }
 
 /*

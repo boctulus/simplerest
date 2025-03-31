@@ -1,8 +1,8 @@
 <?php
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
-use simplerest\core\interfaces\ICommand;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Interfaces\ICommand;
 
 class MysqlLogCommand implements ICommand 
 {

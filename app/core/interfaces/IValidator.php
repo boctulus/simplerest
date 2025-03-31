@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\interfaces;
+namespace Boctulus\Simplerest\Core\Interfaces;
 
 interface IValidator {
     function validate(array $data, array $rules, $fillables = null, $not_fillables = null);

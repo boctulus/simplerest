@@ -1,28 +1,28 @@
 <?php
 
-namespace simplerest\core\api\v1;
+namespace Boctulus\Simplerest\Core\api\v1;
 
 use PDO;
-use simplerest\core\Acl;  
-use simplerest\core\Model;
-use simplerest\libs\Debug;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Time;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Arrays;  
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Validator;
-use simplerest\core\interfaces\IApi;
-use simplerest\core\interfaces\IAuth;
-use simplerest\core\FoldersAclExtension;
-use simplerest\core\exceptions\SqlException;
-use simplerest\core\interfaces\ISubResources;
+use Boctulus\Simplerest\Core\Acl;  
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Libs\Debug;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\Time;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Arrays;  
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\Interfaces\IApi;
+use Boctulus\Simplerest\Core\Interfaces\IAuth;
+use Boctulus\Simplerest\Core\FoldersAclExtension;
+use Boctulus\Simplerest\Core\exceptions\SqlException;
+use Boctulus\Simplerest\Core\Interfaces\ISubResources;
 
-use simplerest\core\api\v1\ResourceController;
-use simplerest\core\traits\SubResourceHandler;
-use simplerest\core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\api\v1\ResourceController;
+use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
+use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
 
 abstract class ApiController extends ResourceController implements IApi, ISubResources
 {

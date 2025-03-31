@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\core\libs\Env;
+use Boctulus\Simplerest\Core\Libs\Env;
 
 if (!function_exists('env')){
     function env(string $key, $default_value = null){

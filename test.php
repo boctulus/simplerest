@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\TemporaryExceptionHandler;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\TemporaryExceptionHandler;
 
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');

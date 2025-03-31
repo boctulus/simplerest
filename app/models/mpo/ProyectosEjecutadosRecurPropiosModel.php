@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\mpo;
+namespace Boctulus\Simplerest\Models\mpo;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\mpo\ProyectosEjecutadosRecurPropiosSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\mpo\ProyectosEjecutadosRecurPropiosSchema;
 
 class ProyectosEjecutadosRecurPropiosModel extends MyModel
 {

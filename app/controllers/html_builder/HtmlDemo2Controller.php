@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers\html_builder;
+namespace Boctulus\Simplerest\Controllers\html_builder;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\Time;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Time;
 
 class HtmlDemo2Controller extends Controller
 {

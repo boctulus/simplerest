@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\models\main;
+namespace Boctulus\Simplerest\Models\main;
 
-use simplerest\models\MyModel;
-use simplerest\schemas\main\OptionsSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\main\OptionsSchema;
 
 class OptionsModel extends MyModel
 {

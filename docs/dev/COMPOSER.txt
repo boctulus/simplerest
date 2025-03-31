@@ -20,7 +20,7 @@ COMPOSER
     "autoload": {
           "psr-4": {
               "simplerest\\": "app/",
-              "boctulus\\hello_world\\": "packages/boctulus/hello_world/src"
+              "boctulus\\hello_world\\": "packages/boctulus/simplerest/hello_world/src"
           }
     },
 
@@ -49,7 +49,7 @@ e ir a
 
 Ej:
 
-  https://packagist.org/packages/boctulus/hello_world 
+  https://packagist.org/packages/boctulus/simplerest/hello_world 
 
 y presionar el boton [Update] 
 
@@ -68,7 +68,7 @@ Antes:
   "autoload": {
         "psr-4": {
             "simplerest\\": "app/",
-            "boctulus\\hello_world\\": "packages/boctulus/hello_world/src" 
+            "boctulus\\hello_world\\": "packages/boctulus/simplerest/hello_world/src" 
         }
   },
 

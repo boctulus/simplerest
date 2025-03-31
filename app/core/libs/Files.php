@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\libs;
 
-use simplerest\core\exceptions\FileNotFoundException;
-use simplerest\core\exceptions\NotFileButDirectoryException;
-use simplerest\core\exceptions\UnreadableFileException;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\SortedIterator;
-use simplerest\core\libs\System;
+use Boctulus\Simplerest\Core\exceptions\FileNotFoundException;
+use Boctulus\Simplerest\Core\exceptions\NotFileButDirectoryException;
+use Boctulus\Simplerest\Core\exceptions\UnreadableFileException;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\SortedIterator;
+use Boctulus\Simplerest\Core\Libs\System;
 
 class Files 
 {

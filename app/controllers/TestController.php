@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\CodeReducer;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Files;
-use simplerest\core\traits\TimeExecutionTrait;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\CodeReducer;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
 
 class TestController extends Controller
 {
@@ -18,7 +18,7 @@ class TestController extends Controller
 
     function test_include()
     {
-        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+        $file = Files::getContent("D:\\laragon\\www\\Boctulus\\Simplerest\\etc\\test.php");
 
         dd(
             (new CodeReducer())->reduceCode($file, ['sayBye', 'in_schema', 'doSomething'])
@@ -27,7 +27,7 @@ class TestController extends Controller
 
     function test_exclude()
     {
-        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+        $file = Files::getContent("D:\\laragon\\www\\Boctulus\\Simplerest\\etc\\test.php");
 
         dd(
             (new CodeReducer())->reduceCode($file, [], ['tb_prefix', 'in_schema'])
@@ -36,7 +36,7 @@ class TestController extends Controller
 
     function test_interface_replacement()
     {
-        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+        $file = Files::getContent("D:\\laragon\\www\\Boctulus\\Simplerest\\etc\\test.php");
 
         dd(
             (new CodeReducer())->reduceCode($file, [], [], ['sayHello', 'sayBye'])
@@ -45,7 +45,7 @@ class TestController extends Controller
 
     function test_interface_replacement_2()
     {
-        $file = Files::getContent("D:\\laragon\\www\\simplerest\\etc\\test.php");
+        $file = Files::getContent("D:\\laragon\\www\\Boctulus\\Simplerest\\etc\\test.php");
 
         dd(
             (new CodeReducer())->reduceCode($file, [], [], [], ['sayHello', 'sayBye'])

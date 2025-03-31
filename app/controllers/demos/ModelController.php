@@ -1,21 +1,21 @@
 <?php
 
-namespace simplerest\controllers\demos;
+namespace Boctulus\Simplerest\Controllers\demos;
 
 use ReflectionClass;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Paginator;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Validator;
-use simplerest\core\libs\VarDump;
-use simplerest\core\Model;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\models\az\AutomovilesModel;
-use simplerest\models\az\BarModel;
-use simplerest\models\az\ProductsModel;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Paginator;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\Libs\VarDump;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Models\az\AutomovilesModel;
+use Boctulus\Simplerest\Models\az\BarModel;
+use Boctulus\Simplerest\Models\az\ProductsModel;
 
 class ModelController extends Controller
 {
@@ -352,7 +352,7 @@ class ModelController extends Controller
         //$this->is_admin = true;
 
 
-        $t = new \simplerest\transformers\UsersTransformer();
+        $t = new \Boctulus\Simplerest\transformers\UsersTransformer();
 
         $rows = DB::table('users')
             ->registerTransformer($t, $this)
@@ -363,7 +363,7 @@ class ModelController extends Controller
 
     function transform_and_output_mutator()
     {
-        $t = new \simplerest\transformers\UsersTransformer();
+        $t = new \Boctulus\Simplerest\transformers\UsersTransformer();
 
         $rows = DB::table('users')
             ->registerOutputMutator('username', function ($str) {
@@ -377,7 +377,7 @@ class ModelController extends Controller
 
     function transform2()
     {
-        $t = new \simplerest\transformers\ProductsTransformer();
+        $t = new \Boctulus\Simplerest\transformers\ProductsTransformer();
 
         $rows = DB::table('products')
             ->where(['size' => '2L'])
@@ -3238,7 +3238,7 @@ class ModelController extends Controller
             ->where(['belongs_to', 90])
             ->groupBy(['size']);
 
-        $main = new \simplerest\core\Model(true);
+        $main = new \Boctulus\Simplerest\Core\Model(true);
         $res = $main
             ->fromRaw("({$sub->toSql()}) as sub")
             ->mergeBindings($sub)

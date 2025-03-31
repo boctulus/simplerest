@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\background\tasks;
+namespace Boctulus\Simplerest\Background\Tasks;
 
-use simplerest\core\libs\Task;
+use Boctulus\Simplerest\Core\Libs\Task;
 
 class TestTask extends Task
 { 

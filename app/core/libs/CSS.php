@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 use Sabberworm\CSS\Parser;
-use simplerest\core\libs\XML;
-use simplerest\core\libs\Strings;
-use simplerest\traits\BootstrapTrait;
+use Boctulus\Simplerest\Core\Libs\XML;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\traits\BootstrapTrait;
 
 class CSS
 {
@@ -30,10 +30,10 @@ class CSS
 
         Array
         (
-            [0] => D:\www\simplerest\public\assets\practicatest.cl\basic.min.css
-            [1] => D:\www\simplerest\public\assets\practicatest.cl\style.themed.css
-            [2] => D:\www\simplerest\public\assets\practicatest.cl\fontawesome.css
-            [3] => D:\www\simplerest\public\assets\practicatest.cl\brands.css
+            [0] => D:\www\Boctulus\Simplerest\public\assets\practicatest.cl\basic.min.css
+            [1] => D:\www\Boctulus\Simplerest\public\assets\practicatest.cl\style.themed.css
+            [2] => D:\www\Boctulus\Simplerest\public\assets\practicatest.cl\fontawesome.css
+            [3] => D:\www\Boctulus\Simplerest\public\assets\practicatest.cl\brands.css
         )
 
         Usando $if_callback() se puede filtrar dada una condicion dentro del string

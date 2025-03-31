@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 /*
     Pablo Bozzolo < boctulus@gmail.com >
@@ -8,10 +8,10 @@ namespace simplerest\core\libs;
     Wrapper sobre https://github.com/pk-fr/yakpro-po
 */
 
-use simplerest\core\libs\Files;
-use simplerest\core\libs\StdOut;
-use simplerest\core\libs\Update;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Core\Libs\Update;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class Obfuscator
 {

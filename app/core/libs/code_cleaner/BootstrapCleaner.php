@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\libs\code_cleaner;
+namespace Boctulus\Simplerest\Core\Libs\code_cleaner;
 
 class BootstrapCleaner
 {

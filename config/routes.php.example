@@ -1,7 +1,7 @@
 <?php
 
-use simplerest\core\Route;
-use simplerest\libs\Debug;
+use Boctulus\Simplerest\Core\Route;
+use Boctulus\Simplerest\libs\Debug;
 
 $route = Route::getInstance();
 

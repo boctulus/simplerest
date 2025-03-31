@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers\test_apis;
+namespace Boctulus\Simplerest\Controllers\test_apis;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Paginator;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Time;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Paginator;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Time;
 
 class RelmotorController extends Controller
 {

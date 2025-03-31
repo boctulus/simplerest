@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\controllers\api;
+namespace Boctulus\Simplerest\Controllers\api;
 
-use simplerest\controllers\MyApiController; 
+use Boctulus\Simplerest\Controllers\MyApiController; 
 
 class Baz2 extends MyApiController
 { 

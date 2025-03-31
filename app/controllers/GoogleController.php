@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
 use Exception;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\DB;
-use simplerest\models\UsersModel;
-use simplerest\models\UserRolesModel;
-use simplerest\models\RolesModel;
-use simplerest\libs\Debug;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Models\UsersModel;
+use Boctulus\Simplerest\Models\UserRolesModel;
+use Boctulus\Simplerest\Models\RolesModel;
+use Boctulus\Simplerest\Libs\Debug;
 
 class GoogleController extends Controller
 {

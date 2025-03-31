@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\CronJob;
-use simplerest\core\libs\Date;
-use simplerest\core\libs\PHPLexicalAnalyzer;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\CronJob;
+use Boctulus\Simplerest\Core\Libs\Date;
+use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 /*
     Para debugging

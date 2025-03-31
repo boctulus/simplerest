@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\tests\Unit;
+namespace Boctulus\Simplerest\tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use simplerest\core\libs\i18n\Translate;
-use simplerest\core\libs\Files;
+use Boctulus\Simplerest\Core\Libs\i18n\Translate;
+use Boctulus\Simplerest\Core\Libs\Files;
 
 class TranslateTest extends TestCase
 {

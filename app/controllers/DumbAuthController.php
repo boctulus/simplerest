@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\api\v1\ResourceController;
-use simplerest\core\Acl;
+use Boctulus\Simplerest\Core\api\v1\ResourceController;
+use Boctulus\Simplerest\Core\Acl;
 
 class DumbAuthController extends ResourceController
 {

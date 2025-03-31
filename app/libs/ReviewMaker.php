@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\interfaces\AIChat;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Interfaces\AIChat;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 /*
     Ej de uso:

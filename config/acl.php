@@ -1,8 +1,8 @@
 <?php
 
-use boctulus\grained_acl\Acl;
-use simplerest\core\libs\Config;
-use simplerest\libs\Debug;
+use Boctulus\Simplerest\FineGrainedACL\Acl;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Libs\Debug;
 
 
 

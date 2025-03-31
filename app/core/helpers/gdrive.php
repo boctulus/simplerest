@@ -1,8 +1,8 @@
 <?php
 
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\GoogleDrive;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\GoogleDrive;
 
 /*
     Terminar Cache 

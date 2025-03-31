@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
 
 class WPAmelia extends ApiClient
 {

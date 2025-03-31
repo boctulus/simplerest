@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\az;
+namespace Boctulus\Simplerest\Models\az;
 
-use simplerest\models\MyModel;
-use simplerest\core\libs\ValidationRules;
-use simplerest\schemas\az\Baz2Schema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
+use Boctulus\Simplerest\Schemas\az\Baz2Schema;
 
 class Baz2Model extends MyModel
 { 

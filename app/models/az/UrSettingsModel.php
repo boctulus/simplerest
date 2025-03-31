@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\az;
+namespace Boctulus\Simplerest\Models\az;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\az\UrSettingsSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\az\UrSettingsSchema;
 
 class UrSettingsModel extends MyModel
 {

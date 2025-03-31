@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\DB;
-use simplerest\core\traits\TimeExecutionTrait;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
 
 /*
     https://chatgpt.com/c/66f277ae-259c-8004-95a5-a3a9f37cb7fd
