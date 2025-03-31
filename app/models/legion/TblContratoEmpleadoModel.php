@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\legion;
+namespace Boctulus\Simplerest\Models\legion;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\legion\TblContratoEmpleadoSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\legion\TblContratoEmpleadoSchema;
 
 class TblContratoEmpleadoModel extends MyModel
 {

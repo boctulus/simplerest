@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 /*
     Sin ensayar

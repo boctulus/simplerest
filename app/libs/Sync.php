@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\interfaces\IProcessable;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Files;
+use Boctulus\Simplerest\Core\Interfaces\IProcessable;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Files;
 
 class Sync implements IProcessable
 {

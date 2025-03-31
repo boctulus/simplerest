@@ -1,18 +1,18 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\JobQueue;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\JobQueue;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class YtController extends Controller
 {
     function download(string $url)
     {
         $queue = new JobQueue("yt");
-	    $queue->dispatch(\simplerest\background\tasks\YtDownloadTask::class, $url);   
+	    $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\YtDownloadTask::class, $url);   
     }
 
     function start(int $workers = 1){

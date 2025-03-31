@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\controllers\api;
+namespace Boctulus\Simplerest\Controllers\api;
 
-use simplerest\core\libs\Mail;
-use simplerest\core\libs\Logger;
-use simplerest\controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Controllers\MyApiController; 
 
 class EmailNotifications extends MyApiController
 { 

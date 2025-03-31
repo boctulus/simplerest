@@ -8,7 +8,7 @@ POST /api/v1/prompts
 {
     "description":"some text",
     "files":[
-        "D:\\laragon\\www\\simplerest\\app\\controllers\\SignatureTestController.php",
+        "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\controllers\\SignatureTestController.php",
         "D:\\Desktop\\PROMPT GENERATOR\\"
     ],
     "notes":""
@@ -30,7 +30,7 @@ POST /api/v1/prompts
 	"description": "Analiza estos archivos y dime que hacen",
 	"files": [      
         "http://relmotor.lan/wp-content/plugins/relmotor-central/app/shortcodes/relmotor/assets/js/search-engine.js?ver=1.1.151",		
-        "D:\\laragon\\www\\simplerest\\app\\controllers\\api\\Prompts.php"
+        "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\controllers\\api\\Prompts.php"
 	],
 	"notes": "Gracias!"
 }
@@ -45,19 +45,19 @@ POST /api/v1/prompts
     "description": "Intento debuguear una query pero el flag $exec de la clase Model cambia de false a true inesperadamente",
     "files": [
         {
-            "path": "D:\\laragon\\www\\simplerest\\app\\core\\Model.php"
+            "path": "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\Model.php"
         },
         {
-            "path": "D:\\laragon\\www\\simplerest\\app\\core\\traits\\QueryBuilderTrait.php"
+            "path": "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\traits\\QueryBuilderTrait.php"
         },
         {
-            "path": "D:\\laragon\\www\\simplerest\\app\\core\\traits\\SubResourceHandler.php"
+            "path": "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\traits\\SubResourceHandler.php"
         },
         {
-            "path": "D:\\laragon\\www\\simplerest\\app\\core\\traits\\InsertWithSubResourcesTrait.php"
+            "path": "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\traits\\InsertWithSubResourcesTrait.php"
         },
         {
-            "path": "D:\\laragon\\www\\simplerest\\app\\controllers\\TestInsertController.php"
+            "path": "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\controllers\\TestInsertController.php"
         }
     ],
     "notes": "\n"
@@ -72,7 +72,7 @@ POST /api/v1/prompts
 	"description": "Analiza estos archivos y dime que hacen",
 	"files": [
         {
-            "path":"D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php",
+            "path":"D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\libs\\ClaudeAI.php",
             "allowed_functions": [
                 "__construct",
                 "exec", 
@@ -117,13 +117,13 @@ Ej:
     "description": "Analiza estos archivos y dime que hacen",
     "files": [
         {
-            "path": "D:\\laragon\\www\\simplerest\\app\\core\\helpers\\db.php",
+            "path": "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\helpers\\db.php",
             "interface_replacement": {
                 "include": [ "inSchema" ]
             }            
         },
         {
-            "path": "D:\\laragon\\www\\simplerest\\app\\core\\Model.php"
+            "path": "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\Model.php"
         },        
     ],
     "notes": "Gracias!",
@@ -159,14 +159,14 @@ POST /api/v1/prompts
     "description": "Analiza estos archivos y dime que hacen",
     "files": [
         {
-            "path": "D:\\laragon\\www\\simplerest\\app\\core\\helpers\\db.php",
+            "path": "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\helpers\\db.php",
             "interface_replacement": {
                 "include": [ "*" ],
                 "exclude": [ "inSchema" ]
             }            
         },
         {
-            "path": "D:\\laragon\\www\\simplerest\\app\\core\\Model.php"
+            "path": "D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\Model.php"
         }
     ],
     "notes": "Gracias!",
@@ -183,16 +183,16 @@ Con [dir]
 
     {
         "title": "Prueba de Generador de prompt",
-        "description": "Analiza estos archivos y dime que hacen. Considera los logs en [dir path='C:\\xampp\\htdocs\\simplerest\\logs']",
+        "description": "Analiza estos archivos y dime que hacen. Considera los logs en [dir path='C:\\xampp\\htdocs\\Boctulus\\Simplerest\\logs']",
         "files": [
             {
-                "path": "C:\\xampp\\htdocs\\simplerest\\app\\core\\helpers\\db.php",
+                "path": "C:\\xampp\\htdocs\\Boctulus\\Simplerest\\app\\core\\helpers\\db.php",
                 "interface_replacement": {
                     "include": [ "inSchema" ]
                 }            
             },
             {
-                "path": "C:\\xampp\\htdocs\\simplerest\\app\\core\\Model.php"
+                "path": "C:\\xampp\\htdocs\\Boctulus\\Simplerest\\app\\core\\Model.php"
             }
         ],
         "notes": "Gracias!",

@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 /*
     @author Pablo Bozzolo < boctulus@gmail.com >
@@ -13,7 +13,7 @@ namespace simplerest\core\libs;
     o agregar nuevas palabras
 */
 
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class LangDetector
 {

@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\core\libs\Date;
+use Boctulus\Simplerest\Core\Libs\Date;
 
 function datetime(string $format = 'Y-m-d H:i:s', $timezone = null){
     return Date::datetime($format, $timezone);

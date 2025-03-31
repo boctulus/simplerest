@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\transformers;
+namespace Boctulus\Simplerest\transformers;
 
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
-class ProductsTransformer implements \simplerest\core\interfaces\ITransformer
+class ProductsTransformer implements \Boctulus\Simplerest\Core\Interfaces\ITransformer
 {
-	public function transform(object $product, Controller $controller = NULL)
+	public function transform(object $product, $controller = NULL)
     {
         return [
 			'id' => $product->id,

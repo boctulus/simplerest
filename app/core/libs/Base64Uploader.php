@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Files;
-use simplerest\libs\Debug;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Libs\Debug;
 
 class Base64Uploader
 {

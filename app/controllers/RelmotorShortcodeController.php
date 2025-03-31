@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\DB;
-use simplerest\shortcodes\relmotor\RelmotorShortcode;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Modules\Relmotor\Relmotor;
 
 class RelmotorShortcodeController extends Controller
 {
@@ -17,7 +17,7 @@ class RelmotorShortcodeController extends Controller
     function index()
     {
         set_template('templates/tpl_bt5.php');
-        new RelmotorShortcode();
+        new Relmotor();
     }
 }
 

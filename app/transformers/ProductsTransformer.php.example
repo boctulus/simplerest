@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\transformers;
+namespace Boctulus\Simplerest\transformers;
 
-use simplerest\core\Controller;
+use Boctulus\Simplerest\Core\Controller;
 
-class ProductsTransformer implements \simplerest\core\interfaces\ITransformer
+class ProductsTransformer implements \Boctulus\Simplerest\Core\Interfaces\ITransformer
 {
 	public function transform(object $product, Controller $controller = NULL)
     {

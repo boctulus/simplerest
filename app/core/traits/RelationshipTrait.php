@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\core\traits;
+namespace Boctulus\Simplerest\Core\traits;
 
-use simplerest\core\exceptions\SchemaException;
-use simplerest\core\exceptions\SqlException;
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Core\exceptions\SchemaException;
+use Boctulus\Simplerest\Core\exceptions\SqlException;
+use Boctulus\Simplerest\Core\Libs\DB;
 
 trait RelationshipTrait 
 {   

@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\libs\HaulmerSignatureSDK;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Libs\HaulmerSignatureSDK;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 /*
     Flujo:

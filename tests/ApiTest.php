@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\tests;
+namespace Boctulus\Simplerest\tests;
 
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
@@ -15,11 +15,11 @@ if (php_sapi_name() != "cli"){
 require_once __DIR__ . '/../app.php';
 
 use PHPUnit\Framework\TestCase;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
-use simplerest\core\Model;
-use simplerest\core\traits\UnitTestCaseSQLTrait;
-use simplerest\core\libs\Validator;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Traits\UnitTestCaseSQLTrait;
+use Boctulus\Simplerest\Core\Libs\Validator;
 
 
 define('HOST', $config['APP_URL']);

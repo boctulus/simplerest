@@ -1,16 +1,16 @@
 <?php
 
-namespace simplerest\core\api\v1;
+namespace Boctulus\Simplerest\Core\api\v1;
 
-use simplerest\controllers\MyApiController;
-use simplerest\core\libs\Factory;
-use simplerest\core\Acl;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\DB;
-use simplerest\libs\Debug;
-use simplerest\core\libs\Validator;
-use simplerest\core\exceptions\InvalidValidationException;
-use simplerest\core\libs\Url;
+use Boctulus\Simplerest\Controllers\MyApiController;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Libs\Debug;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Libs\Url;
 
 
 class Collections extends MyApiController

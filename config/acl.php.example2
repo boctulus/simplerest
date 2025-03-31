@@ -1,7 +1,7 @@
 <?php
 
-use boctulus\grained_acl\Acl;
-use simplerest\core\libs\Files;
+use Boctulus\Simplerest\GrainedACL\Acl;
+use Boctulus\Simplerest\Core\Libs\Files;
 
 
 // debería leerse de archivo

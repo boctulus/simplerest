@@ -902,14 +902,14 @@ La clase MyApiController en /app/controllers es la responsable de seleccionar la
 Cuando sea necesario crear una nueva versión de la API, deberá agregarse al MyApiController algo como:
 
 	if ($api_version == 'v2'){
-		class MyApiController extends \simplerest\core\api\v2\ApiController {}
+		class MyApiController extends \Boctulus\Simplerest\Core\api\v2\ApiController {}
 		return;
 	}
 
 Debe hacerse lo mismo en MyAuthController.php 
 
 	if ($api_version == 'v2'){
-    	class AuthController extends \simplerest\core\api\v1\AuthController {}
+    	class AuthController extends \Boctulus\Simplerest\Core\api\v1\AuthController {}
     	return;
 	}
 
@@ -992,7 +992,7 @@ Para demostrar como ejecutar un controlador desde la linea de comandos ejemplifi
 
 	<?php
 
-	namespace simplerest\controllers;
+	namespace Boctulus\Simplerest\Controllers;
 
 	class DumbController extends Controller
 	{
@@ -1192,8 +1192,8 @@ CliRouter procesa el archivo cli_routes.php de forma similar a como WebRouter pr
 
 Ej:
 	
-	CliRouter::command('dbdriver', 'simplerest\controllers\DumbController@db_driver');
-	CliRouter::command('adder', 'simplerest\controllers\Calculator@add');
+	CliRouter::command('dbdriver', 'Boctulus\Simplerest\Controllers\DumbController@db_driver');
+	CliRouter::command('adder', 'Boctulus\Simplerest\Controllers\Calculator@add');
 
 Funciones anonimas
 
@@ -1274,10 +1274,10 @@ Ej:
 
 	<?php
 
-	namespace simplerest\middlewares;
+	namespace Boctulus\Simplerest\middlewares;
 
-	use simplerest\core\Middleware;
-	use simplerest\core\libs\Strings;
+	use Boctulus\Simplerest\Core\Middleware;
+	use Boctulus\Simplerest\Core\Libs\Strings;
 
 	class InyectarSaludo extends Middleware
 	{   
@@ -1296,7 +1296,7 @@ Ej:
 
 	return [
 		// ...
-		'simplerest\controllers\TestController@mid' => InyectarSaludo::class,
+		'Boctulus\Simplerest\Controllers\TestController@mid' => InyectarSaludo::class,
 		// ...
 	];
 
@@ -1310,7 +1310,7 @@ Ej:
 	*/
 
 	return [
-		'simplerest\controllers\FiltersController@__all__' => RestrictContentRoleBased::class,
+		'Boctulus\Simplerest\Controllers\FiltersController@__all__' => RestrictContentRoleBased::class,
 
 Registrar varios Middleware(s) para el mismo controller
 
@@ -1425,10 +1425,10 @@ Veamos el caso de (a) vs (b)
 
 	<?php
 
-	namespace simplerest\models\az;
+	namespace Boctulus\Simplerest\Models\az;
 
-	use simplerest\models\MyModel;
-	use simplerest\schemas\az\AutomovilesSchema;
+	use Boctulus\Simplerest\Models\MyModel;
+	use Boctulus\Simplerest\Schemas\az\AutomovilesSchema;
 
 	class AutomovilesModel extends MyModel
 	{
@@ -1455,10 +1455,10 @@ Ahora si quisieramos hacer lo mismo sin schema, debemos comentar la linea que in
 
 	<?php
 
-	namespace simplerest\models\az;
+	namespace Boctulus\Simplerest\Models\az;
 
-	use simplerest\models\MyModel;
-	// use simplerest\schemas\az\AutomovilesSchema;
+	use Boctulus\Simplerest\Models\MyModel;
+	// use Boctulus\Simplerest\Schemas\az\AutomovilesSchema;
 
 	class AutomovilesModel extends MyModel
 	{
@@ -3571,7 +3571,7 @@ Transformers
 
 otro ejemplo:
 
-	$t = new \simplerest\transformers\ProductsTransformer();
+	$t = new \Boctulus\Simplerest\transformers\ProductsTransformer();
 
 	$rows = DB::table('products')
 	->where(['size'=>'2L'])
@@ -3581,7 +3581,7 @@ otro ejemplo:
 
 Son combinables transformers con output mutators:
 
-	$t = new \simplerest\transformers\UsersTransformer();
+	$t = new \Boctulus\Simplerest\transformers\UsersTransformer();
 
 	$rows = DB::table('users')
 	->registerOutputMutator('username', function($str){ return strtoupper($str); })
@@ -3782,7 +3782,7 @@ Ej:
 
 Como si fueran pocas funciones de debug existe el método Model::getLog()
 
-	$model = new \simplerest\core\Model($conn);
+	$model = new \Boctulus\Simplerest\Core\Model($conn);
 	$res = $model->create(['name' => 'Jhon', 'age' => 32]);
 	dd($model->getLog());
 	
@@ -4271,7 +4271,7 @@ El método registerInputMutator() acepta 3 parámetros:
 
 El procedimiento es registrar los mutators para cada campo del modelo que los requiera. Otro uso de input mutators es para utilizar UUIDs donde dentro de un Trait podemos tener la funcionalidad de generar el uuid:
 
-	namespace simplerest\traits;
+	namespace Boctulus\Simplerest\traits;
 
 	trait Uuids
 	{
@@ -4292,10 +4292,10 @@ El procedimiento es registrar los mutators para cada campo del modelo que los re
 En el modelo donde queremos implementar el uuid, debemos declar el campo como string, importamos y hacemos el "use" del Trait:
 
 	<?php
-	namespace simplerest\models;
+	namespace Boctulus\Simplerest\Models;
 
-	use simplerest\core\Model;
-	use simplerest\traits\Uuids;
+	use Boctulus\Simplerest\Core\Model;
+	use Boctulus\Simplerest\traits\Uuids;
 
 	class BarModel extends Model 
 	{ 
@@ -4386,7 +4386,7 @@ Es posible acceder a propiedades del controller que invocó al transformer, ejem
 
 Y ahora en un Controller paso $this como segundo parámetro a registerTransformer() para brindar acceso a las propieades del controlador:
 
-	$t = new \simplerest\transformers\UsersTransformer();
+	$t = new \Boctulus\Simplerest\transformers\UsersTransformer();
 
 	$rows = DB::table('users')
 	->registerTransformer($t, $this)
@@ -4398,7 +4398,7 @@ En el ejemplo si el controller tiene un campo is_admin (como sucede con los reso
  
 Mutators y transformers pueden usarse juntos, ej:
 
-	$t = new \simplerest\transformers\UsersTransformer();
+	$t = new \Boctulus\Simplerest\transformers\UsersTransformer();
 
 	$rows = DB::table('users')
 	->registerOutputMutator('username', function($str){ return strtoupper($str); })
@@ -4556,7 +4556,7 @@ DB::dbLogStart('/path/to/logfile.log'); // Registrar en un archivo
 Ej:
 
 # Ruta absoluta
-DB::dbLogStart('D:\laragon\www\simplerest\logs\db.log'); // log start
+DB::dbLogStart('D:\laragon\www\Boctulus\Simplerest\logs\db.log'); // log start
 
 
 # Hooks en APIs
@@ -4604,10 +4604,10 @@ Ej:
 
 	<?php
 
-	namespace simplerest\controllers\api;
+	namespace Boctulus\Simplerest\Controllers\api;
 
-	use simplerest\controllers\MyApiController; 
-	use simplerest\core\libs\Files;
+	use Boctulus\Simplerest\Controllers\MyApiController; 
+	use Boctulus\Simplerest\Core\Libs\Files;
 
 	class Prompts extends MyApiController
 	{ 
@@ -4729,7 +4729,7 @@ Ej:
 		"description": "Analiza estos archivos y dime que hacen",
 		"files": [
 			"http://relmotor.lan/wp-content/plugins/relmotor-central/app/shortcodes/relmotor/assets/js/search-engine.js?ver=1.1.151",
-			"D:\\laragon\\www\\simplerest\\app\\controllers\\api\\Prompts.php"
+			"D:\\laragon\\www\\Boctulus\\Simplerest\\app\\controllers\\api\\Prompts.php"
 		],
 		"notes": "Gracias!"
 	}
@@ -5277,7 +5277,7 @@ Ej:
 		array (
 			0 => 
 			array (
-			'path' => 'D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php',
+			'path' => 'D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\libs\\ClaudeAI.php',
 			'allowed_functions' => 
 			array (
 				0 => '__construct',
@@ -5359,7 +5359,7 @@ Ej:
 		array (
 			0 => 
 			array (
-			'path' => 'D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php',
+			'path' => 'D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\libs\\ClaudeAI.php',
 			'allowed_functions' => 
 			array (
 				0 => '__construct',
@@ -6264,7 +6264,7 @@ getTbPermissions() y getSpPermissions() no ofrecen resultados necesariamente act
 
 hasPermission() es el método con la misión de poder contestar de forma simple y definitiva si un usuario tiene o no permisos sobre un registro.
 
-Para el caso del paquete boctulus\grained_acl se implementan adicionalmente getFreshTbPermissions() y getFreshSpPermissions() que garantizan resultados "frescos" porque acceden directamente a la base de datos.
+Para el caso del paquete Boctulus\Simplerest\FineGrainedACL se implementan adicionalmente getFreshTbPermissions() y getFreshSpPermissions() que garantizan resultados "frescos" porque acceden directamente a la base de datos.
 
 Actualmente isHigherRole() y hasRoleOrHigher() están implementados en base a el árbol genealógico de roles y no compara permisos lo cual ofrece uh resultado que puede no ser exacto y solo lo será si existe una sola rama sin derivaciones en el árbol genealógico entre los roles a comparar.
 
@@ -6480,7 +6480,7 @@ Ej: <pseudocódigo>
             return;
         }
 
-        $token = \simplerest\libs\Factory::request()->getQuery('token');
+        $token = \Boctulus\Simplerest\Libs\Factory::request()->getQuery('token');
     
         // decodificar token y si es válido proseguir
         
@@ -7100,7 +7100,7 @@ Files es un tipo de ApiController -versionado- y se puede "extender" fácilmente
 
 	<?php
 
-	namespace simplerest\controllers\api;
+	namespace Boctulus\Simplerest\Controllers\api;
 
 	global $api_version;
 
@@ -7109,7 +7109,7 @@ Files es un tipo de ApiController -versionado- y se puede "extender" fácilmente
 	*/
 
 	if ($api_version == 'v1'){
-		class Files extends \simplerest\core\api\v1\Files { }
+		class Files extends \Boctulus\Simplerest\Core\api\v1\Files { }
 		return;
 	};
 
@@ -7130,10 +7130,10 @@ Crear un endpoint especializado en la descarga de otro tipo de archivos (de otra
 
 	<?php
 
-	namespace simplerest\controllers;
+	namespace Boctulus\Simplerest\Controllers;
 
 	// Estoy usando siempre la misma versión de las APIs
-	use simplerest\core\api\v1\Download;
+	use Boctulus\Simplerest\Core\api\v1\Download;
 
 	class DownloadController extends Download
 	{
@@ -7147,10 +7147,10 @@ También podríamos querer usar un "alias" para "get" específicamente para la d
 
 	<?php
 
-	namespace simplerest\controllers;
+	namespace Boctulus\Simplerest\Controllers;
 
 	// Estoy usando siempre la misma versión de las APIs
-	use simplerest\core\api\v1\Download;
+	use Boctulus\Simplerest\Core\api\v1\Download;
 
 	class DownloadController extends Download
 	{
@@ -7301,7 +7301,7 @@ Nota: no se recomienda ignorar los schemas ya que si bien se puede hacer un "uni
 
 Ej:
 
-	Fatal error: Uncaught Error: Class '\simplerest\\schemas\main\FilesSchema' not found
+	Fatal error: Uncaught Error: Class '\Boctulus\\Simplerest\\schemas\main\FilesSchema' not found
  
 
 # Migrations
@@ -7969,11 +7969,11 @@ genera:
 
 	<?php
 
-	use simplerest\core\interfaces\IMigration;
-	use simplerest\libs\Factory;
-	use simplerest\libs\Schema;
-	use simplerest\core\Model;
-	use simplerest\libs\DB;
+	use Boctulus\Simplerest\Core\Interfaces\IMigration;
+	use Boctulus\Simplerest\Libs\Factory;
+	use Boctulus\Simplerest\Libs\Schema;
+	use Boctulus\Simplerest\Core\Model;
+	use Boctulus\Simplerest\Libs\DB;
 
 	class Bar implements IMigration
 	{
@@ -8023,11 +8023,11 @@ Ej:
 
 	<?php
 
-	use simplerest\core\interfaces\IMigration;
-	use simplerest\libs\Factory;
-	use simplerest\libs\Schema;
-	use simplerest\core\Model;
-	use simplerest\libs\DB;
+	use Boctulus\Simplerest\Core\Interfaces\IMigration;
+	use Boctulus\Simplerest\Libs\Factory;
+	use Boctulus\Simplerest\Libs\Schema;
+	use Boctulus\Simplerest\Core\Model;
+	use Boctulus\Simplerest\Libs\DB;
 
 	class NombreTabla implements IMigration
 	{
@@ -8331,7 +8331,7 @@ Si el archivo de migracion esta en una carpeta, es necesario usar --dir= aunque 
 
 Ej:
 
-	$ php com migrations redo --file=D:\www\simplerest\app\migrations\prompt_generator\2024_09_25_123512006_prompts.php --to=main --dir=prompt_generator
+	$ php com migrations redo --file=D:\www\Boctulus\Simplerest\app\migrations\prompt_generator\2024_09_25_123512006_prompts.php --to=main --dir=prompt_generator
 
 En el ejemplo a pesar de que claramente la ruta en --file incluye a el subdirectorio "prompt_generator", se necesita incluir --dir=prompt_generator
 
@@ -9622,7 +9622,7 @@ Los paquetes deben registrarse en config.php agregándose a $providers[]
 	*/
 
 	'providers' => [
-		devdojo\calculator\CalculatorServiceProvider::class,
+		Devdojo\calculator\CalculatorServiceProvider::class,
 		// ...
     ],
 
@@ -9688,7 +9688,7 @@ packages/
 	"repositories": [
         {
             "type": "path",
-            "url": "packages/boctulus/api-client",   // <--- nuestro paquete
+            "url": "packages/boctulus/simplerest/api-client",   // <--- nuestro paquete
             "options": {
                 "symlink": true
             }
@@ -9707,7 +9707,7 @@ El mapeo de PSR-4
 	"autoload": {
 		"psr-4": {
 			"App\\": "app/",
-			"Boctulus\\ApiClient\\": "packages/boctulus/api-client/src/"			
+			"Boctulus\\ApiClient\\": "packages/boctulus/simplerest/api-client/src/"			
 		}
 	},
 
@@ -10532,10 +10532,10 @@ Para poder utilizarlas es necesario incluir el Trait PagesTrait.
 
 Ej:
 
-	namespace simplerest\controllers;
+	namespace Boctulus\Simplerest\Controllers;
 
-	use simplerest\core\traits\PagesTrait;
-	use simplerest\controllers\MyController;
+	use Boctulus\Simplerest\Core\Traits\PagesTrait;
+	use Boctulus\Simplerest\Controllers\MyController;
 
 	class AdminController extends Controller
 	{    
@@ -10565,10 +10565,10 @@ Ej:
 
 	<?php
 
-	namespace simplerest\pages\admin;
+	namespace Boctulus\Simplerest\pages\admin;
 
-	use simplerest\core\libs\DB;
-	use simplerest\core\Request;
+	use Boctulus\Simplerest\Core\Libs\DB;
+	use Boctulus\Simplerest\Core\Request;
 
 	class Tabulator /* extends Page */
 	{
@@ -10586,9 +10586,9 @@ Ej:
 
 	<?php
 
-	namespace simplerest\pages\admin;
+	namespace Boctulus\Simplerest\pages\admin;
 
-	use simplerest\core\libs\DB;
+	use Boctulus\Simplerest\Core\Libs\DB;
 
 	class Tabulator /* extends Page */
 	{
@@ -10634,7 +10634,7 @@ Un ejemplo de una pagina que acepta un numero variable de argumentos es una simp
 
 	<?php
 
-	namespace simplerest\pages\admin;
+	namespace Boctulus\Simplerest\pages\admin;
 
 	class Calc /* extends Page */
 	{
@@ -10681,10 +10681,10 @@ Ej:
 
 	<?php
 
-	namespace simplerest\controllers;
+	namespace Boctulus\Simplerest\Controllers;
 
-	use simplerest\core\traits\PagesTrait;
-	use simplerest\controllers\MyController;
+	use Boctulus\Simplerest\Core\Traits\PagesTrait;
+	use Boctulus\Simplerest\Controllers\MyController;
 
 	class AdminController extends Controller
 	{    
@@ -10713,7 +10713,7 @@ Dentro de la carpeta del shortcode se debe crear un archivo .php que actua como 
 
 	<?php
 
-	namespace simplerest\shortcodes\rack_quoter;
+	namespace Boctulus\Simplerest\shortcodes\rack_quoter;
 
 	class RackQuoterShortcode
 	{
@@ -11018,7 +11018,7 @@ El driver por defecto a utiliza para transientes se define en el config/config.p
 
 Ej:
 
-	'default_driver' => simplerest\core\libs\DBCache::class,
+	'default_driver' => Boctulus\Simplerest\Core\Libs\DBCache::class,
 
 Podria cambiarse por ejemplo a FileCache::class
 
@@ -11804,7 +11804,7 @@ Ej:
 
 # Leer un recurso
 
-	use simplerest\libs\Url;
+	use Boctulus\Simplerest\Libs\Url;
 
 	// ...
 
@@ -12816,7 +12816,7 @@ Forma de uso
 
 # Mocking 
 
-$ php com make interface OpenFactura --from=D:\laragon\www\simplerest\app\libs\OpenFacturaSDK.php
+$ php com make interface OpenFactura --from=D:\laragon\www\Boctulus\Simplerest\app\libs\OpenFacturaSDK.php
 
 Eso nos genera una interfaz con todos los metodos publicos
 
@@ -13189,10 +13189,10 @@ La clase ExceptionHandler mejora las excepciones agrgeando un trace detallado y 
 
 # Sin handler
 
-Fatal error: Uncaught Exception: Test exception in D:\www\simplerest\test.php:17
+Fatal error: Uncaught Exception: Test exception in D:\www\Boctulus\Simplerest\test.php:17
 Stack trace:
 #0 {main}
-  thrown in D:\www\simplerest\test.php on line 17
+  thrown in D:\www\Boctulus\Simplerest\test.php on line 17
 
 # Con handler
 
@@ -13201,10 +13201,10 @@ Array
 (
     [0] => Array
         (
-            [file] => D:\www\simplerest\test.php
+            [file] => D:\www\Boctulus\Simplerest\test.php
             [line] => 25
             [function] => exception_handler
-            [class] => simplerest\core\libs\TemporaryExceptionHandler
+            [class] => Boctulus\Simplerest\Core\Libs\TemporaryExceptionHandler
             [type] => ->
             [args] => Array
                 (
@@ -13213,7 +13213,7 @@ Array
                             [message] => Test exception
                             [prev] =>
                             [code] => 0
-                            [file] => D:\www\simplerest\test.php
+                            [file] => D:\www\Boctulus\Simplerest\test.php
                             [line] => 22
                             [trace] => Array
                                 (
@@ -13235,7 +13235,7 @@ En el caso (no recomendo) de querer ejecutar scripts por fuera de controladores 
 
 	<?php declare(strict_types=1);
 
-	use simplerest\core\libs\TemporaryExceptionHandler;
+	use Boctulus\Simplerest\Core\Libs\TemporaryExceptionHandler;
 
 	ini_set('display_errors', '1');
 	ini_set('display_startup_errors', '1');
@@ -13264,7 +13264,7 @@ Otra posibilidad es instanciar TemporaryExceptionHandler:
 
 	<?php declare(strict_types=1);
 
-	use simplerest\core\libs\TemporaryExceptionHandler;
+	use Boctulus\Simplerest\Core\Libs\TemporaryExceptionHandler;
 
 	ini_set('display_errors', '1');
 	ini_set('display_startup_errors', '1');
@@ -13300,7 +13300,7 @@ Puede servir para:
 
 Ej:
     
-	$html        = Files::getContent('D:\www\simplerest\etc\practicatest\1.html');
+	$html        = Files::getContent('D:\www\Boctulus\Simplerest\etc\practicatest\1.html');
     $css_classes = CSS::getCSSClasses($html); // array
 	
 
@@ -13629,7 +13629,7 @@ Ej:
 
 	$url_ay = Strings::lines($urls, true, true);
 
-	Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
+	Files::download($url_ay, MODULES_PATH . "tax_calc/assets/js");
 
 
 # Casting
@@ -13692,7 +13692,7 @@ Ej:
 
 Y la salida sería:
 
-	D:\www\simplerest\app\core\helpers\debug.php:21
+	D:\www\Boctulus\Simplerest\app\core\helpers\debug.php:21
 
 	HERE
 
@@ -14448,7 +14448,7 @@ El contenedor permite crear instancias únicas de las clases mediante el método
 
 En caso de que nuestra clase tenga parámetros y se los querramos pasar o sean requeridos podemos hacerlo usando el segundo parámetro de make() o makeWith()
 
-	Container::bind('car', \simplerest\libs\Car::class);
+	Container::bind('car', \Boctulus\Simplerest\Libs\Car::class);
 
 	$o = Container::makeWith('car', ['color' => 'blue', 'max_speed' => 200]);
 	print_r($o->run());
@@ -14647,7 +14647,7 @@ La cola de tareas es una forma eficiente de reducir los tiempos de respuesta de 
 
 Un caso de uso es el envio de correos, seria algo como:
 	
-	$queue->dispatch(\simplerest\background\tasks\SendWelcomeEmail::class, $user);
+	$queue->dispatch(\Boctulus\Simplerest\Background\Tasks\SendWelcomeEmail::class, $user);
 
 Estas tareas se almacenan en /app/jobs/tasks
 
@@ -14685,26 +14685,26 @@ Ej:
 Ej:
 
 	$queue = new JobQueue("q1");
-	$queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+	$queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
 
 Varias tareas se pueden asignar bajo un mismo "job queue"
 
 Ej:
 
 	$queue = new JobQueue("q1");
-	$queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-	$queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-	$queue->dispatch(\simplerest\background\tasks\OtraTask::class);
-	$queue->dispatch(\simplerest\background\tasks\OtraTask::class);
+	$queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+	$queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+	$queue->dispatch(\Boctulus\Simplerest\Background\Tasks\OtraTask::class);
+	$queue->dispatch(\Boctulus\Simplerest\Background\Tasks\OtraTask::class);
 
 Se pueden pasar parametros a las colas
 
 Ej:
 
 	$queue = new JobQueue("q2");
-	$queue->dispatch(\simplerest\background\tasks\DosTask::class, '1 - Juan', 39);
-	$queue->dispatch(\simplerest\background\tasks\DosTask::class, '2 - Maria', 21);
-	$queue->dispatch(\simplerest\background\tasks\DosTask::class, '3 - Felipito', 10);
+	$queue->dispatch(\Boctulus\Simplerest\Background\Tasks\DosTask::class, '1 - Juan', 39);
+	$queue->dispatch(\Boctulus\Simplerest\Background\Tasks\DosTask::class, '2 - Maria', 21);
+	$queue->dispatch(\Boctulus\Simplerest\Background\Tasks\DosTask::class, '3 - Felipito', 10);
 
 Se pueden crear cuantas colas se necesiten diferenciándose por el nombre que llevan.
 
@@ -15209,7 +15209,7 @@ Lo anterior renderizará algo como:
 
 En PHP 8.1+ es posible hacer lo siguiente:
 
-	Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+	Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
 
 	$html = tag('note')
 	->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit ...	soluta porro?')
@@ -15520,7 +15520,7 @@ Importante:
 
 Ej:
 
-	Tag::registerBuilder(\simplerest\core\libs\Bt5Form::class);
+	Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\Bt5Form::class);
 
 Nota:
 
@@ -15530,8 +15530,8 @@ Ej:
 
 	<?php
 
-	use simplerest\core\libs\Bt5Form; 
-	use simplerest\core\libs\Tag;
+	use Boctulus\Simplerest\Core\Libs\Bt5Form; 
+	use Boctulus\Simplerest\Core\Libs\Tag;
 	?>
 
 	<div class = "row mt-5">
@@ -19402,7 +19402,7 @@ Ej:
 
 	<?php
 
-	use simplerest\core\libs\BootstrapPaginator;
+	use Boctulus\Simplerest\Core\Libs\BootstrapPaginator;
 
 	?>
 
@@ -19924,7 +19924,7 @@ No todos los modelos se han ensayado.
 
 Ejemplo de generacion de imagenes:
 
-	use simplerest\core\libs\ChatGPT;
+	use Boctulus\Simplerest\Core\Libs\ChatGPT;
 
 	// Configuración de la API key
 	$api_key = 'tu_api_key_aqui';
@@ -19961,7 +19961,7 @@ Ejemplo de analisis de imagenes
 
 function analyzeImage($imagePath) 
 {
-    use simplerest\core\libs\ChatGPT;
+    use Boctulus\Simplerest\Core\Libs\ChatGPT;
 
     // Configuración de la API key
     $api_key = 'tu_api_key_aqui';
@@ -20144,8 +20144,8 @@ Ej:
 
 	<?php
 
-	use simplerest\core\libs\DB;
-	use simplerest\interfaces\ICommand;
+	use Boctulus\Simplerest\Core\Libs\DB;
+	use Boctulus\Simplerest\interfaces\ICommand;
 
 	class MysqlLogCommand implements ICommand 
 	{
@@ -20779,7 +20779,7 @@ El framework provee un parser mas o menos similar al de WordPress para parsing d
 
 	Ej:
 
-	$input     = '[dir path="C:\\xampp\\htdocs\\simplerest\\logs"]';
+	$input     = '[dir path="C:\\xampp\\htdocs\\Boctulus\\Simplerest\\logs"]';
 	$parsedTag = CustomTags::parse($input);
 	dd($parsedTag);
 
@@ -20790,7 +20790,7 @@ Resultado:
 		[name] => dir
 		[params] => Array
 			(
-				[path] => C:\xampp\htdocs\simplerest\logs
+				[path] => C:\xampp\htdocs\Boctulus\Simplerest\logs
 			)
 	)
 
@@ -20876,7 +20876,7 @@ Ej:
 	});
 
 	// Cadena de ejemplo que contiene múltiples tags.
-	$input = 'Los calculos son [calc op=(50,34,676) operation="mul"] y [calc op=(56676,67) operation="div"]. Revisa el directorio [dir path="C:\\xampp\\htdocs\\simplerest\\logs"]. Dame el resultado en un JSON.';
+	$input = 'Los calculos son [calc op=(50,34,676) operation="mul"] y [calc op=(56676,67) operation="div"]. Revisa el directorio [dir path="C:\\xampp\\htdocs\\Boctulus\\Simplerest\\logs"]. Dame el resultado en un JSON.';
 
 	// Reemplaza los tags en la cadena.
 	$result = CustomTags::render($input);

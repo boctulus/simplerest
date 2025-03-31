@@ -1,18 +1,18 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use simplerest\core\libs\Env;
-use simplerest\core\Response;
-use simplerest\core\libs\HTTP;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\System;
-use simplerest\core\libs\Strings;
-use simplerest\shortcodes\robot\Robot;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\Logger;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Libs\Env;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\HTTP;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\System;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Modules\robot\Robot;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Logger;
 
 class RobotController extends Controller
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\main;
+namespace Boctulus\Simplerest\Models\main;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\main\UpdateTasksSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\main\UpdateTasksSchema;
 
 class UpdateTasksModel extends MyModel
 {

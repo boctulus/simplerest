@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\Url; 
-use simplerest\core\libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Url; 
+use Boctulus\Simplerest\Core\Libs\Logger;
 
 // Dumper
 class VarDump

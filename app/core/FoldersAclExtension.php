@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\core;
+namespace Boctulus\Simplerest\Core;
 
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
-use simplerest\libs\Debug;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Libs\Debug;
 
 // mover a ServiceProvider
 

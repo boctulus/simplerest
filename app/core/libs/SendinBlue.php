@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 use GuzzleHttp;
-use simplerest\core\interfaces\IMail;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\StdOut;
-use simplerest\libs\SendinBlue\Client\Api\TransactionalEmailsApi;
-use simplerest\libs\SendinBlue\Client\Configuration;
-use simplerest\libs\SendinBlue\Client\Model\SendSmtpEmail;
+use Boctulus\Simplerest\Core\Interfaces\IMail;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Libs\SendinBlue\Client\Api\TransactionalEmailsApi;
+use Boctulus\Simplerest\Libs\SendinBlue\Client\Configuration;
+use Boctulus\Simplerest\Libs\SendinBlue\Client\Model\SendSmtpEmail;
 
 class SendinBlue extends MailBase implements IMail
 {

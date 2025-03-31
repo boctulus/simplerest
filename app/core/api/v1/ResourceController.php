@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\core\api\v1;
+namespace Boctulus\Simplerest\Core\api\v1;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\interfaces\IAuth;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Interfaces\IAuth;
 
 
 abstract class ResourceController extends Controller

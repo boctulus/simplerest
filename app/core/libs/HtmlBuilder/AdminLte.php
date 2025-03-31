@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\core\libs\HtmlBuilder;
+namespace Boctulus\Simplerest\Core\Libs\HtmlBuilder;
 
-use simplerest\controllers\api\M;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Controllers\api\M;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 /*
     Re-implementar:

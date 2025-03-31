@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\models\legion;
+namespace Boctulus\Simplerest\Models\legion;
 
-use simplerest\models\MyModel;
-use simplerest\core\Model;
-use simplerest\core\libs\ValidationRules;
-use simplerest\schemas\legion\TblCuentaContableSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
+use Boctulus\Simplerest\Schemas\legion\TblCuentaContableSchema;
 
 class TblCuentaContableModel extends MyModel
 { 

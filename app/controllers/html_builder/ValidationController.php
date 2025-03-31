@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\controllers\html_builder;
+namespace Boctulus\Simplerest\Controllers\html_builder;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\DB;
 
 class ValidationController extends Controller
 {
@@ -30,8 +30,8 @@ class ValidationController extends Controller
     }
 
     function v3(){
-        \simplerest\core\libs\HtmlBuilder\Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Html::class);
-        \simplerest\core\libs\HtmlBuilder\Bt5Form::setIdAsName();
+        \Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Html::class);
+        \Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::setIdAsName();
 
         $req = true;
 

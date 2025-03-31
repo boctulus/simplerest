@@ -1,7 +1,7 @@
 <?php
 
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 function config($key = null){
     return Config::get($key);

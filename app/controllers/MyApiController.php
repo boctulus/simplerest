@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\interfaces\IApi;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Interfaces\IApi;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
-use simplerest\core\traits\SubResourcesV1;
-use simplerest\core\traits\SubResourceHandler;
-use simplerest\traits\SubResourcesV3;
+use Boctulus\Simplerest\Core\Traits\SubResourcesV1;
+use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
+use Boctulus\Simplerest\traits\SubResourcesV3;
 
 global $api_version;
 
@@ -22,7 +22,7 @@ if (!isset($api_version[0]) || $api_version[0] != 'v' || !is_numeric(substr($api
 */
 
 if ($api_version == 'v1'){
-    class MyApiController extends \simplerest\core\api\v1\ApiController {
+    class MyApiController extends \Boctulus\Simplerest\Core\api\v1\ApiController {
         use SubResourceHandler;
     }
     return;

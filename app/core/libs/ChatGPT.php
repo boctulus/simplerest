@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\interfaces\AIChat;
+use Boctulus\Simplerest\Core\Interfaces\AIChat;
 
 
 /*

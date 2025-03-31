@@ -1,10 +1,10 @@
 <?php
 
-use simplerest\core\View;
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\View;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 /*
     Una diferencia importante entre js_file() / css_file() con las de SW

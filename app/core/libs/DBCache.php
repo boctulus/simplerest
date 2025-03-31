@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\interfaces\ICache;
-use simplerest\core\libs\Cache;
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Core\Interfaces\ICache;
+use Boctulus\Simplerest\Core\Libs\Cache;
+use Boctulus\Simplerest\Core\Libs\DB;
 
 class DBCache extends Cache
 {

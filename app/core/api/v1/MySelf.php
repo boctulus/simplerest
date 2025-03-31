@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\core\api\v1;
+namespace Boctulus\Simplerest\Core\api\v1;
 
-use simplerest\controllers\MyApiController; 
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Config;
-use simplerest\core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
 
 class MySelf extends MyApiController 
 {  

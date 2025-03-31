@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\core\libs\CronJob;
+use Boctulus\Simplerest\Core\Libs\CronJob;
 
 class __NAME__ extends CronJob
 {

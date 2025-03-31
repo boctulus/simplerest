@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\Url;
-use simplerest\core\libs\ApiClient;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class MoneyController extends Controller
 {

@@ -1,18 +1,24 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\libs;
 
-use simplerest\core\Request;
-use simplerest\core\libs\XML;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Libs\XML;
 
 class Strings 
 {	
-	const UPPERCASE_FILTER = 'up';
-	const LOWERCASE_FILTER = 'lo';
-	const UCFIRST_FILTER   = 'uc';
-	const UCWORDS_FILTER   = 'uw';
-	const SNAKECASE_FILTER = 'sn';
-	const CAMELCASE_FILTER = 'cm';
+	const UPPERCASE  = 'up'; // Ej: HELLO WORLD
+	const LOWERCASE  = 'lo'; // Ej: hello world
+	const UCFIRST    = 'uc'; // Ej: Hello world
+	const UCWORDS    = 'uw'; // Ej: Hello World
+	const SNAKECASE  = 'sn'; // Ej: hello_world
+	const CAMELCASE  = 'cm'; // Ej: helloWorld
+	const KEBABCASE  = 'kb'; // Ej: hello-world
+	const PASCALCASE = 'pc'; // Ej: HelloWorld
+	const TRAINCASE  = 'tc'; // Ej: HELLO-WORLD
+	const MACROCASE  = 'mc'; // Ej: HELLO_WORLD
+	const DOTCASE    = 'dc'; // Ej: hello.world
+	const FLATCASE   = 'fc'; // Ej: helloworld	
 
 	// Mapa de reemplazo para caracteres problemáticos comunes
 	const UTF8_WRONG_CHARMAP_EQ = [
@@ -64,24 +70,26 @@ class Strings
 		$stringExample = "HELLO WORLD";
 		$arrayExample = ["HELLO", "WORLD"];
 
-		dd(Strings::toCase(Strings::LOWERCASE_FILTER, $stringExample)); // "hello world"
-		dd(Strings::toCase(Strings::LOWERCASE_FILTER, $arrayExample)); // ["hello", "world"]
+		dd(Strings::toCase(Strings::LOWERCASE, $stringExample)); // "hello world"
+		dd(Strings::toCase(Strings::LOWERCASE, $arrayExample)); // ["hello", "world"]
 	*/
 	static function toCase($filter, $input){
         $applyFilter = function(string $str) use ($filter) {
             switch ($filter){
-                case static::UPPERCASE_FILTER :
+                case static::UPPERCASE :
                     return strtoupper($str);
-                case static::LOWERCASE_FILTER :
+                case static::LOWERCASE :
                     return strtolower($str);
-                case static::UCFIRST_FILTER :
+                case static::UCFIRST :
                     return ucfirst($str);
-                case static::UCWORDS_FILTER :
+                case static::UCWORDS :
                     return ucwords($str);
-                case static::CAMELCASE_FILTER :
+                case static::CAMELCASE :
                     return static::snakeToCamel($str);
-                case static::SNAKECASE_FILTER :
+                case static::SNAKECASE :
                     return static::toSnakeCase($str);
+				case static::KEBABCASE :
+						return static::toKebabCase($str);
                 default:
                     throw new \InvalidArgumentException("Invalid filter type");
             }
@@ -1216,6 +1224,25 @@ class Strings
         
         // Se reemplazan espacios por "_"
         $str = str_replace(' ', '_', $str);
+        
+        return $str;
+    }
+
+	/*
+		Convierte un string a kebab-case (lowercase-with-dashes)
+	*/
+	static function toKebabCase(string $str) : string {
+        // Se convierte todo a minúsculas
+        $str = strtolower($str);
+        
+        // Se elimina cualquier caracter no-alfanumérico excepto espacios
+        $str = preg_replace('/[^a-z0-9\s]/', '', $str);
+        
+        // Se reemplazan espacios múltiples por uno solo
+        $str = preg_replace('/\s+/', ' ', $str);
+        
+        // Se reemplazan espacios por "_"
+        $str = str_replace(' ', '-', $str);
         
         return $str;
     }

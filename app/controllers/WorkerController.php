@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\System;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\System;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class WorkerController extends Controller
 {

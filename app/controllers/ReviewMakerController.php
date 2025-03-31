@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Files;
-use simplerest\libs\ReviewMaker;
-use simplerest\core\libs\ChatGPT;
-use simplerest\core\libs\Strings;
-use simplerest\core\controllers\Controller;
-use simplerest\core\traits\TimeExecutionTrait;
-use simplerest\core\controllers\ConsoleController;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Libs\ReviewMaker;
+use Boctulus\Simplerest\Core\Libs\ChatGPT;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
+use Boctulus\Simplerest\Core\Controllers\ConsoleController;
 
 class ReviewMakerController extends Controller
 {

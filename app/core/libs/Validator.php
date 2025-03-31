@@ -1,10 +1,10 @@
 <?php // declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\i18n\Translate;
-use simplerest\core\interfaces\IValidator;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\i18n\Translate;
+use Boctulus\Simplerest\Core\Interfaces\IValidator;
 
 /*
     Validador de campos de formulario

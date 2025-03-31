@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\middlewares;
+namespace Boctulus\Simplerest\middlewares;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Files;
-use simplerest\core\Middleware;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Middleware;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class InyectarUsername extends Middleware
 {  

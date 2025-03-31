@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\core\libs\code_cleaner;
+namespace Boctulus\Simplerest\Core\Libs\code_cleaner;
 
-use simplerest\core\libs\CSS;
-use simplerest\core\libs\HTML;
-use simplerest\core\libs\Files;
+use Boctulus\Simplerest\Core\Libs\CSS;
+use Boctulus\Simplerest\Core\Libs\HTML;
+use Boctulus\Simplerest\Core\Libs\Files;
 
 class AngularCleaner
 {

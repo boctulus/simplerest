@@ -1,7 +1,7 @@
 <?php
 
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\DB;
-use simplerest\core\Model;
-use simplerest\core\libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\Factory;
 

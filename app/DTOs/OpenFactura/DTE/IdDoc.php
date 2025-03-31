@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\DTOs\OpenFactura\DTE;
+namespace Boctulus\Simplerest\DTOs\OpenFactura\DTE;
 
 class IdDoc {
     public int $TipoDTE;

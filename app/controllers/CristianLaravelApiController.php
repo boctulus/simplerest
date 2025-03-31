@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\PostmanGenerator;
-use simplerest\core\libs\Strings;
-use simplerest\core\traits\TimeExecutionTrait;
-use simplerest\libs\LaravelApiGenerator;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\PostmanGenerator;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
+use Boctulus\Simplerest\Libs\LaravelApiGenerator;
 
 /*
     Pasos:
@@ -239,7 +239,7 @@ class CristianLaravelApiController extends Controller
     //                     \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
     //                 };",
     //                 "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
-    //                     \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
+    //                     \$ctrl_file = \Boctulus\Simplerest\Core\Libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
     //                 };"
     //             ]
     //         ];
@@ -302,7 +302,7 @@ class CristianLaravelApiController extends Controller
     //                     \$ctrl_file = str_replace('__FIELD_BORRADO__', \$campo_borrado, \$ctrl_file);
     //                 };",
     //                 "if (!isset(\$campo_habilitado) || empty(\$campo_habilitado)){
-    //                     \$ctrl_file = \simplerest\core\libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
+    //                     \$ctrl_file = \Boctulus\Simplerest\Core\Libs\Strings::removeSubstring('// INI:__FN_HABILITAR__', '// END:__FN_HABILITAR__', \$ctrl_file);
     //                 };"
     //             ]
     //         ];

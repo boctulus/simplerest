@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers\api;
+namespace Boctulus\Simplerest\Controllers\api;
 
-use simplerest\core\libs\DB;
-use simplerest\controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Controllers\MyApiController; 
 
 class PromptStorage extends MyApiController
 { 

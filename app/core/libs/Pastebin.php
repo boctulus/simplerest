@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 /*
     GitHub Gist: GitHub Gist is a service provided by GitHub that allows you to share code snippets, text, and more. It has an API that you can use to programmatically create and retrieve Gists. Gists can be either public or private.

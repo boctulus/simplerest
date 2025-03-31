@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers\demos;
+namespace Boctulus\Simplerest\Controllers\demos;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Validator;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\ValidationRules;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
 
 class ValidatorController extends Controller
 {    
@@ -450,7 +450,7 @@ class ValidatorController extends Controller
             array (
               0 => 
               array (
-                'path' => 'D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php',
+                'path' => 'D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\libs\\ClaudeAI.php',
                 'allowed_functions' => 
                 array (
                   0 => '__construct',
@@ -529,7 +529,7 @@ class ValidatorController extends Controller
             array (
               0 => 
               array (
-                'path' => 'D:\\laragon\\www\\simplerest\\app\\core\\libs\\ClaudeAI.php',
+                'path' => 'D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\libs\\ClaudeAI.php',
                 'allowed_functions' => 
                 array (
                   0 => '__construct',

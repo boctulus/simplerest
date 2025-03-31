@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\models\edu;
+namespace Boctulus\Simplerest\Models\edu;
 
-use simplerest\models\MyModel;
-use simplerest\schemas\edu\CourseDetailsSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\edu\CourseDetailsSchema;
 
 class CourseDetailsModel extends MyModel
 {

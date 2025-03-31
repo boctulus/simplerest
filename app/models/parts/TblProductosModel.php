@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\models\parts;
+namespace Boctulus\Simplerest\Models\parts;
 
-use simplerest\models\MyModel;
-use simplerest\schemas\parts\TblProductosSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\parts\TblProductosSchema;
 
 class TblProductosModel extends MyModel
 {

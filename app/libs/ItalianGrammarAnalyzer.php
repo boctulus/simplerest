@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\libs\Strings;
-use simplerest\libs\GrammarAnalyzer;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Libs\GrammarAnalyzer;
 
 /*
     Esbozo de analizador gramatical

@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\core;
+namespace Boctulus\Simplerest\Core;
 
-use simplerest\core\exceptions\SchemaException;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\DB;
-use simplerest\core\traits\ExceptionHandler;
-use simplerest\core\traits\InsertWithSubResourcesTrait;
-// use simplerest\core\traits\RelationshipTrait;
-use simplerest\core\traits\QueryBuilderTrait;
-use simplerest\core\traits\SubResourceHandler;
+use Boctulus\Simplerest\Core\exceptions\SchemaException;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Traits\ExceptionHandler;
+use Boctulus\Simplerest\Core\Traits\InsertWithSubResourcesTrait;
+// use Boctulus\Simplerest\Core\Traits\RelationshipTrait;
+use Boctulus\Simplerest\Core\Traits\QueryBuilderTrait;
+use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
 
 class Model 
 {	

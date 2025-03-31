@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\models\az;
+namespace Boctulus\Simplerest\Models\az;
 
-use simplerest\models\MyModel;
-use simplerest\core\Model;
-use simplerest\core\libs\ValidationRules;
-use simplerest\schemas\main\UserRolesSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
+use Boctulus\Simplerest\Schemas\main\UserRolesSchema;
 
 class UserRolesModel extends MyModel
 { 

@@ -1,7 +1,7 @@
 <?php
 
-use simplerest\core\libs\CronJob;
-use simplerest\core\libs\Logger;
+use Boctulus\Simplerest\Core\Libs\CronJob;
+use Boctulus\Simplerest\Core\Libs\Logger;
 
 class XCronJob extends CronJob
 {

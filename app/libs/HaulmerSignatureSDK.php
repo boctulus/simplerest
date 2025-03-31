@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
 use Boctulus\ApiClient\ApiClientFallback;
 
 /*

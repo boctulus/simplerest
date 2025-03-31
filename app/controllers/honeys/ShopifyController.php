@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\controllers\honeys;
+namespace Boctulus\Simplerest\Controllers\honeys;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Shopify;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Shopify;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 /*
     Para hacer pruebas con WebHooks es posible usar NgrOk

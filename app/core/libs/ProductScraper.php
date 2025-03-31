@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\ApiClient;
-use simplerest\core\exceptions\NotImplementedException;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\exceptions\NotImplementedException;
 
 /*
     Scraper base preparado para:

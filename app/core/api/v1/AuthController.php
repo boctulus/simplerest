@@ -1,24 +1,24 @@
 <?php
 
-namespace simplerest\core\api\v1;
+namespace Boctulus\Simplerest\Core\api\v1;
 
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use simplerest\core\Acl;
-use simplerest\core\controllers\Controller;
-use simplerest\core\exceptions\InvalidValidationException;
-use simplerest\core\interfaces\IAuth;
-use simplerest\core\interfaces\IDbAccess;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
+use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Interfaces\IAuth;
+use Boctulus\Simplerest\Core\Interfaces\IDbAccess;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Factory;
 
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Validator;
-use simplerest\core\Request;
-use simplerest\core\Response;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
 
 
 class AuthController extends Controller implements IAuth

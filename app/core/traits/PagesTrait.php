@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\core\traits;
+namespace Boctulus\Simplerest\Core\traits;
 
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 trait PagesTrait
 {

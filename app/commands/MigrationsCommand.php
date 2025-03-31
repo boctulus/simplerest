@@ -1,15 +1,15 @@
 <?php
 
-use simplerest\core\interfaces\ICommand;
-use simplerest\core\interfaces\IMigration;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\PHPLexicalAnalyzer;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\StdOut;
-use simplerest\core\libs\Strings;
-use simplerest\core\traits\CommandTrait;
+use Boctulus\Simplerest\Core\Interfaces\ICommand;
+use Boctulus\Simplerest\Core\Interfaces\IMigration;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Traits\CommandTrait;
 
 class MigrationsCommand implements ICommand 
 {
