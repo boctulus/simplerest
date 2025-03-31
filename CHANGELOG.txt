@@ -92,3 +92,4 @@
 [2025-03-31 11:45:53]	0.8.12	Automatic update
 [2025-03-31 18:05:49]	0.8.12	Renombrado masivo de namespaces
 [2025-03-31 18:08:15]	0.8.12	Fix namespace
+[2025-03-31 19:00:25]	0.8.12	Fix sobre ApiController
