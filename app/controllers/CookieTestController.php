@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
 
-use simplerest\core\libs\Cookie;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\CookieJar;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Cookie;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\CookieJar;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class CookieTestController extends Controller
 {

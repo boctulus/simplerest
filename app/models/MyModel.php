@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\models;
+namespace Boctulus\Simplerest\Models;
 
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\DB;
 
 class MyModel extends Model 
 {

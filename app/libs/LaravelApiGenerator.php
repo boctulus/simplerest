@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Date;
-use simplerest\core\libs\Files;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Date;
+use Boctulus\Simplerest\Core\Libs\Files;
 
 /*
     Pablo Bozzolo <boctulus@gmail.com>
@@ -309,7 +309,7 @@ class LaravelApiGenerator
             $seeder_file    = $seeder_template;
             $seeder_4f_file = $seeder_for_factory_temp;
 
-            $class_name_full = "\\simplerest\\schemas\\$conn_id\\" . $__class_name;
+            $class_name_full = "\\Boctulus\Boctulus\\Simplerest\\Schemas\\$conn_id\\" . $__class_name;
             include $path;
 
             $schema = $class_name_full::get();

@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\interfaces\IVehicle;
+use Boctulus\Simplerest\interfaces\IVehicle;
 
 class Car implements IVehicle
 {

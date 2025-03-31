@@ -1,9 +1,9 @@
 <?php
 
-use simplerest\core\libs\StdOut;
-use simplerest\core\libs\System;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\ApacheWebServer;
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Core\Libs\System;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\ApacheWebServer;
 
 
 /*

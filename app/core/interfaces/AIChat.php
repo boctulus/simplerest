@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\interfaces;
+namespace Boctulus\Simplerest\Core\Interfaces;
 
 interface AIChat {
     function setParams(Array $arr);

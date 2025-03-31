@@ -8,10 +8,10 @@
 	<div class="col-xs-12   col-sm-8 offset-sm-2    col-md-6 offset-md-3    col-lg-4 offset-lg-4">
 		<?php
 
-        use simplerest\core\libs\HtmlBuilder\Bt5Form;
-        use simplerest\core\libs\HtmlBuilder\Tag;
+        use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form;
+        use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
 
-        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+        Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
 
         Bt5Form::setIdAsName();
         

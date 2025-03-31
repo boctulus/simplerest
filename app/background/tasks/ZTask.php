@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\background\tasks;
+namespace Boctulus\Simplerest\Background\Tasks;
 
-use simplerest\core\libs\Task;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Task;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class ZTask extends Task
 { 

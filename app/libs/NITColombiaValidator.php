@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
 /*
     Si carece de digito verificador (longitud == 9) podria ser valido 

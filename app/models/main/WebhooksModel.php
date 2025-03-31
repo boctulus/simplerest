@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\models\main;
+namespace Boctulus\Simplerest\Models\main;
 
-use simplerest\models\MyModel;
-use simplerest\schemas\main\WebhooksSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\main\WebhooksSchema;
 
 class WebhooksModel extends MyModel
 {

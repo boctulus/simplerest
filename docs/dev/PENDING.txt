@@ -1,28 +1,28 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\Controller;
-use simplerest\core\Request;
-use simplerest\libs\Factory;
-use simplerest\libs\Debug;
-use simplerest\libs\DB;
-use simplerest\core\Model;
-use simplerest\models\BarModel;
-use simplerest\models\UsersModel;
-use simplerest\models\ProductsModel;
-use simplerest\models\UserRolesModel;
+use Boctulus\Simplerest\Core\Controller;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Libs\Factory;
+use Boctulus\Simplerest\Libs\Debug;
+use Boctulus\Simplerest\Libs\DB;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Models\BarModel;
+use Boctulus\Simplerest\Models\UsersModel;
+use Boctulus\Simplerest\Models\ProductsModel;
+use Boctulus\Simplerest\Models\UserRolesModel;
 use PHPMailer\PHPMailer\PHPMailer;
-use simplerest\libs\Utils;
-use simplerest\libs\Strings;
-use simplerest\libs\Validator;
+use Boctulus\Simplerest\Libs\Utils;
+use Boctulus\Simplerest\Libs\Strings;
+use Boctulus\Simplerest\Libs\Validator;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
-use simplerest\libs\Files;
-use simplerest\libs\Time;
-use simplerest\core\Schema;
-//use simplerest\models\CablesModel;
+use Boctulus\Simplerest\Libs\Files;
+use Boctulus\Simplerest\Libs\Time;
+use Boctulus\Simplerest\Core\Schema;
+//use Boctulus\Simplerest\Models\CablesModel;
 
 
 class DumbController extends Controller
@@ -293,7 +293,7 @@ class DumbController extends Controller
         //$this->is_admin = true;
 
 
-        $t = new \simplerest\transformers\UsersTransformer();
+        $t = new \Boctulus\Simplerest\transformers\UsersTransformer();
 
         $rows = DB::table('users')
         ->registerTransformer($t, $this)
@@ -303,7 +303,7 @@ class DumbController extends Controller
     }
 
     function transform_and_output_mutator(){
-        $t = new \simplerest\transformers\UsersTransformer();
+        $t = new \Boctulus\Simplerest\transformers\UsersTransformer();
 
         $rows = DB::table('users')
         ->registerOutputMutator('username', function($str){ return strtoupper($str); })
@@ -314,7 +314,7 @@ class DumbController extends Controller
     }
 
     function transform2(){
-        $t = new \simplerest\transformers\ProductsTransformer();
+        $t = new \Boctulus\Simplerest\transformers\ProductsTransformer();
 
         $rows = DB::table('products')
         ->where(['size'=>'2L'])
@@ -1506,7 +1506,7 @@ class DumbController extends Controller
         ->where(['belongs_to', 90])
         ->groupBy(['size']);
 
-        $main = new \simplerest\core\Model(true);
+        $main = new \Boctulus\Simplerest\Core\Model(true);
         $res = $main
         ->fromRaw("({$sub->toSql()}) as sub")
         ->mergeBindings($sub)
@@ -1757,7 +1757,7 @@ class DumbController extends Controller
         DB::setConnection('db2');       
         $conn = DB::getConnection();
 
-        $m = new \simplerest\models\ProductsModel($conn);
+        $m = new \Boctulus\Simplerest\Models\ProductsModel($conn);
     }
 
     /*

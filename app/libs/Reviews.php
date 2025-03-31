@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 abstract class Reviews
 {

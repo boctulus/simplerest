@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\libs\Date;
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Core\Libs\Date;
+use Boctulus\Simplerest\Core\Libs\DB;
 
 /*
     Calculo de fecha-hora teniendo en cuenta zonas horarias

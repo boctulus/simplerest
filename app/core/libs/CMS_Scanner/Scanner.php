@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\core\libs\CMS_Scanner;
+namespace Boctulus\Simplerest\Core\Libs\CMS_Scanner;
 
-use simplerest\core\exceptions\NotImplementedException;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ApiClient;
+use Boctulus\Simplerest\Core\exceptions\NotImplementedException;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
 
 /*
     mutawp.com                      // WordPress

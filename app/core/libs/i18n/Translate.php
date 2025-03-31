@@ -1,18 +1,18 @@
 <?php
 
-namespace simplerest\core\libs\i18n;
+namespace Boctulus\Simplerest\Core\Libs\i18n;
 
 /*
     @author Pablo Bozzolo <boctulus@gmail.com>
 */
 
-use simplerest\core\Container;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\StdOut;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\i18n\POParser;
-use simplerest\core\libs\System;
+use Boctulus\Simplerest\Core\Container;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\i18n\POParser;
+use Boctulus\Simplerest\Core\Libs\System;
 
 /*
     Ver mejores soluciones que la clase POParse que estoy usando como:

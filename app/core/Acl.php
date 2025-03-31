@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\core;
+namespace Boctulus\Simplerest\Core;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Files;
-use simplerest\core\interfaces\IAcl;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Interfaces\IAcl;
 
 abstract class Acl implements IAcl
 {

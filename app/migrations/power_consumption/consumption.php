@@ -1,10 +1,10 @@
 <?php
 
-use simplerest\core\interfaces\IMigration;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Schema;
-use simplerest\core\Model;
+use Boctulus\Simplerest\Core\Interfaces\IMigration;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Model;
 
 class PowerConsumption implements IMigration
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
-use simplerest\libs\PowerConsumption;
-use simplerest\core\controllers\Controller;
-use simplerest\core\traits\TimeExecutionTrait;
-use simplerest\core\controllers\ConsoleController;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Libs\PowerConsumption;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
+use Boctulus\Simplerest\Core\Controllers\ConsoleController;
 
 class PowerController extends ConsoleController
 {

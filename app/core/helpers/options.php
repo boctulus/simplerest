@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\core\libs\Options;
+use Boctulus\Simplerest\Core\Libs\Options;
 
 /**
  * Retrieves the value of a given key from the options table.

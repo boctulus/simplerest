@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\pages\admin;
+namespace Boctulus\Simplerest\pages\admin;
 
-use simplerest\core\libs\DB;
+use Boctulus\Simplerest\Core\Libs\DB;
 
 class Tabulator /* extends Page */
 {

@@ -2,10 +2,10 @@
 
 namespace __NAMESPACE__;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\DB;
-use simplerest\core\traits\TimeExecutionTrait;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
 
 class __NAME__ extends Controller
 {

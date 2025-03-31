@@ -1,6 +1,6 @@
 # Configuración
-$sourceDir = "D:\laragon\www\simplerest\app\core"
-$packageDir = "D:\laragon\www\simplerest\packages\boctulus\api_client\src"
+$sourceDir = "D:\laragon\www\Boctulus\Simplerest\app\core"
+$packageDir = "D:\laragon\www\Boctulus\Simplerest\packages\boctulus\api_client\src"
 $sedPath = "C:\Program Files\Git\usr\bin\sed.exe"  # Asegúrate de tener GNU sed instalado
 
 # Archivos a copiar (rutas relativas a $sourceDir)

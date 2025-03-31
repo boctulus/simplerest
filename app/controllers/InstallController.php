@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\Model;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\System;
-use simplerest\core\controllers\ConsoleController;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Libs\System;
+use Boctulus\Simplerest\Core\Controllers\ConsoleController;
 
 class InstallController extends ConsoleController
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\traits;
+namespace Boctulus\Simplerest\Core\traits;
 
-use simplerest\core\libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Logger;
 
 trait TimeExecutionTrait
 {

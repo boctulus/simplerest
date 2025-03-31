@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\models\parts;
+namespace Boctulus\Simplerest\Models\parts;
 
-use simplerest\models\MyModel;
-use simplerest\schemas\parts\PartNumbersSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\parts\PartNumbersSchema;
 
 class PartNumbersModel extends MyModel
 {

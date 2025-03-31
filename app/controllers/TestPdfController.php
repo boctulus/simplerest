@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\libs\ProductPDF;
-use simplerest\core\libs\Strings;
-use simplerest\core\controllers\Controller;
-use simplerest\core\traits\TimeExecutionTrait;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Libs\ProductPDF;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
 
 class TestPdfController extends Controller
 {

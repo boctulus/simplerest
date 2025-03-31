@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\controllers;
+namespace Boctulus\Simplerest\Core\Controllers;
 
 class ConsoleController extends Controller
 {

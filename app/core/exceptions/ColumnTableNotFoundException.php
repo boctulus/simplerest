@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\exceptions;
+namespace Boctulus\Simplerest\Core\exceptions;
 
 class ColumnTableNotFoundException extends \Exception {
     public function __construct($message = null, $code = 0, \Throwable $previous = null) {

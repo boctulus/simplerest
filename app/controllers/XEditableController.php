@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
-use simplerest\core\libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
 
 class XEditableController extends Controller
 {
@@ -44,7 +44,7 @@ class XEditableController extends Controller
 
     function index()
     {
-        //  Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+        //  Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
 
         // $html = tag('inputText')->value(microtime());
         

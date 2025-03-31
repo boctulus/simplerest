@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\az;
+namespace Boctulus\Simplerest\Models\az;
 
 
-use simplerest\models\MyModel;
-use simplerest\schemas\az\TestxSchema;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\az\TestxSchema;
 
 class TestxModel extends MyModel
 {

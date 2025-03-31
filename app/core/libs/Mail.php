@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
-use simplerest\core\interfaces\IMail;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Logger;
+use Boctulus\Simplerest\Core\Interfaces\IMail;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Logger;
 
 /*
   Cambiar algunos métodos a de intancia a fin de poder usar métodos encadenados

@@ -1,15 +1,15 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\api\v1\AuthController;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Files;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\traits\DbAccess;
+use Boctulus\Simplerest\Core\api\v1\AuthController;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\traits\DbAccess;
 
 /*
     Aquí puede usar los hooks disponibles

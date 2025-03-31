@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\ApiClient;
-use simplerest\libs\OpenFacturaSDKFactory;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Libs\OpenFacturaSDKFactory;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 /*
     https://grok.com/chat/f4a3da3e-9861-42c8-b4b1-99e360c1bebe

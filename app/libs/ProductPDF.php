@@ -1,8 +1,9 @@
 <?php
 
-namespace simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
-use simplerest\core\libs\PdfBase;
+use Boctulus\Simplerest\Core\Libs\PdfBase;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 /*
     Ej de uso:

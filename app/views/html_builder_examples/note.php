@@ -2,9 +2,9 @@
 
 <?php
 
-use simplerest\core\libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
 
-Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
 
 // $html = tag('note')
 // ->text('<strong>!!! Note secondary:</strong> Lorem, ipsum dolor sit amet consectetur adipisicing

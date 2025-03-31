@@ -2,7 +2,7 @@
 
 namespace __NAMESPACE__;
 
-use simplerest\pages\Page;
+use Boctulus\Simplerest\pages\Page;
 
 class __NAME__ extends Page
 {

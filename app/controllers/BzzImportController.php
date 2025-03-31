@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\VarDump;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\VarDump;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class BzzImportController extends Controller
 {

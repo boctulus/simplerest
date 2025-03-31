@@ -1,14 +1,14 @@
 <?php
 
-namespace simplerest\controllers\demos;
+namespace Boctulus\Simplerest\Controllers\demos;
 
-use simplerest\core\libs\DB;
-use simplerest\core\Request;
-use simplerest\core\libs\XML;
-use simplerest\core\Response;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Factory;
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Libs\XML;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class XMLController extends Controller
 {
@@ -95,7 +95,7 @@ class XMLController extends Controller
 
     function test_html_replace_2(){
         // example of how to modify HTML contents
-        require_once THIRD_PARTY_PATH . '/simple_html_dom_parser/simple_html_dom.php';
+        require_once MODULES_PATH . '/simple-html-dom-parser/SimpleHtmlDomParser.php';
 
         Logger::truncate();
 

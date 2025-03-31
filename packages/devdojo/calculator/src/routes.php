@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\core\WebRouter;
+use Boctulus\Simplerest\Core\WebRouter;
 
 WebRouter::get('calculator', function(){
 	echo 'Hello from the calculator package!';
@@ -11,7 +11,7 @@ WebRouter::get('calculator', function(){
 */
 
 // http://az.lan/add/60/7
-WebRouter::get('add', 'devdojo\calculator\CalculatorController@add');
+WebRouter::get('add', 'Devdojo\Calculator\CalculatorController@add');
 
 // http://az.lan/subtract/60/7
-WebRouter::get('subtract', 'devdojo\calculator\CalculatorController@subtract');
+WebRouter::get('subtract', 'Devdojo\Calculator\CalculatorController@subtract');

@@ -1,6 +1,6 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 /*
     Importar los archivos necesarios desde el plugin

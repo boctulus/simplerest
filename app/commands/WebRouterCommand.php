@@ -1,8 +1,8 @@
 <?php
 
-use simplerest\core\WebRouter;
-use simplerest\core\libs\Strings;
-use simplerest\core\interfaces\ICommand;
+use Boctulus\Simplerest\Core\WebRouter;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Interfaces\ICommand;
 
 class WebRouterCommand implements ICommand 
 {
@@ -116,7 +116,7 @@ class WebRouterCommand implements ICommand
                 $action = $ctrls[$method][$uri][1];
                 
                 // Acortar el nombre del controlador para mejor visualización
-                $shortController = Strings::after($controller, 'simplerest\\controllers\\');
+                $shortController = Strings::after($controller, 'Boctulus\\Simplerest\\Controllers\\');
                 if ($shortController === false) {
                     $shortController = Strings::after($controller, '\\controllers\\');
                     if ($shortController === false) {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 /*
     Reflector

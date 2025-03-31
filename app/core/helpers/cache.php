@@ -1,6 +1,6 @@
 <?php
 
-use simplerest\core\libs\Config;
+use Boctulus\Simplerest\Core\Libs\Config;
 
 /*
     Implementacion de transientes

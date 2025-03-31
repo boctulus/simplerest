@@ -2,7 +2,7 @@
 
 namespace __NAMESPACE__;
 
-use simplerest\core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class __NAME__
 {

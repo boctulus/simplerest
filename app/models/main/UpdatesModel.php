@@ -1,10 +1,10 @@
 <?php
 
-namespace simplerest\models\main;
+namespace Boctulus\Simplerest\Models\main;
 
-use simplerest\models\MyModel;
-use simplerest\schemas\main\UpdatesSchema;
-use simplerest\core\traits\Uuids;
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\main\UpdatesSchema;
+use Boctulus\Simplerest\Core\Traits\Uuids;
 
 class UpdatesModel extends MyModel
 {

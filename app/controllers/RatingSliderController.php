@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
-use simplerest\core\controllers\Controller;
-use simplerest\shortcodes\star_rating\StarRatingShortcode;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Modules\StarRating\StarRating;
 
 class RatingSliderController extends Controller
 {
@@ -17,7 +17,7 @@ class RatingSliderController extends Controller
         Test de shortcode
     */
     function rating_slider(){        
-        $sc = new StarRatingShortcode();
+        $sc = new StarRating();
 
         render($sc->rating_slider());
     }
@@ -27,7 +27,7 @@ class RatingSliderController extends Controller
     */
     function rating_table()
     {
-        $sc = new StarRatingShortcode();
+        $sc = new StarRating();
 
         render($sc->rating_table());
     }

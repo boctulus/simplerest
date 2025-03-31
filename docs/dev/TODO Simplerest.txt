@@ -1,9 +1,7 @@
 TODO SimpleRest
 ===============
 
-- Renombrar "shortcodes" como "modules", tambien en ./app/
-
-- Que opinas de si en mi framework permito crear "modules" con estructura MVC interna en ./app/modules y creo un comando para crear un paquete en ./packages similar a los de Laravel a partir de un module?
+- Los "modules" via comando "com" deben poder convertise paquetes en ./packages similar a los de Laravel a partir de un module.
 
 Eso me permitiria evitar tanta configuracion supongo dentro "modules" y no tener que pasar por Composer.
 
@@ -57,18 +55,18 @@ Por defecto copiaria solo archivos mas nuevos pero con --force seria de cualquie
 
 return [    
     // Funciona
-    'simplerest\controllers\TestController@mid' => InyectarSaludo::class,
+    'Boctulus\Simplerest\Controllers\TestController@mid' => InyectarSaludo::class,
 
     // NO funciona
-    'simplerest\controllers\TestController' => InyectarSaludo::class,
+    'Boctulus\Simplerest\Controllers\TestController' => InyectarSaludo::class,
 ];
 
 - Implemenar insert() a nivel de Model con SubRecursos
 
 http://simplerest.lan/prompt_generator#chat-427
 http://simplerest.lan/demos/model/test_insert_struct
-D:\laragon\www\simplerest\app\controllers\TestInsertController.php
-D:\laragon\www\simplerest\app\core\traits\InsertWithSubResourcesTrait.php
+D:\laragon\www\Boctulus\Simplerest\app\controllers\TestInsertController.php
+D:\laragon\www\Boctulus\Simplerest\app\core\traits\InsertWithSubResourcesTrait.php
 
 - Diferencias ?
 
@@ -154,7 +152,7 @@ En "location" se podria incluir {$file}:$line donde se genera la excepcion o err
 
 - En la generacion de Schemas revisa este caso:
 
-D:\laragon\www\simplerest\app\schemas\laravelshopify\ProductsSchema.php
+D:\laragon\www\Boctulus\Simplerest\app\schemas\laravelshopify\ProductsSchema.php
 
     'id_name'			=> 'id',
 
@@ -339,23 +337,23 @@ https://dataedo.com/blog/how-to-document-rest-api-project-written-in-php-using-s
 
 - Resolver problemas con COMPOSER JSON !!!
 
-Class simplerest\controllers\Angular2JqueryController located in D:/www/simplerest/app\controllers\Angular2jqueryController.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\controllers\demos\ImaginatorTest located in D:/www/simplerest/app\controllers\demos\ImaginatorTestController.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\controllers\OneSignalTesterController located in D:/www/simplerest/app\controllers\demos\OneSignalTesterController.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\controllers\TestImportCsvController located in D:/www/simplerest/app\controllers\ImportCsvController.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\abstracts\pages\Page located in D:/www/simplerest/app\core\abstracts\Page.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\controllers\api\__NAME__ located in D:/www/simplerest/app\core\templates\ApiRestfulController.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\middlewares\__NAME__ located in D:/www/simplerest/app\core\templates\Middleware.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\models\__NAME__ located in D:/www/simplerest/app\core\templates\Model-no-schema.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\models\__NAME__ located in D:/www/simplerest/app\core\templates\Model.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\schemas\__NAME__ located in D:/www/simplerest/app\core\templates\Schema.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\providers\__NAME__ located in D:/www/simplerest/app\core\templates\ServiceProvider.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\core\libs\SystemConstants located in D:/www/simplerest/app\core\templates\SystemConstants.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\background\tasks\__NAME__ located in D:/www/simplerest/app\core\templates\Task.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\models\legion\TblCotizacionDetalleModel located in D:/www/simplerest/app\models\legion\TblCotizacionDetalleModel[1].php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\models\legion\TblUnidadMedidaModel located in D:/www/simplerest/app\models\legion\TblUnidadMedidaModel[1].php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\models\mpp\BarriosModel located in D:/www/simplerest/app\models\mpo\BarriosModel.php does not comply with psr-4 autoloading standard. Skipping.
-Class simplerest\pages\admin\xxx\yyy\SomePage located in D:/www/simplerest/app\pages\admin\some_folder\yyy\SomePage.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\Controllers\Angular2JqueryController located in D:/www/simplerest/app\controllers\Angular2jqueryController.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\Controllers\demos\ImaginatorTest located in D:/www/simplerest/app\controllers\demos\ImaginatorTestController.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\Controllers\OneSignalTesterController located in D:/www/simplerest/app\controllers\demos\OneSignalTesterController.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\Controllers\TestImportCsvController located in D:/www/simplerest/app\controllers\ImportCsvController.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\abstracts\pages\Page located in D:/www/simplerest/app\core\abstracts\Page.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\Controllers\api\__NAME__ located in D:/www/simplerest/app\core\templates\ApiRestfulController.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\middlewares\__NAME__ located in D:/www/simplerest/app\core\templates\Middleware.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\models\__NAME__ located in D:/www/simplerest/app\core\templates\Model-no-schema.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\models\__NAME__ located in D:/www/simplerest/app\core\templates\Model.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\Schemas\__NAME__ located in D:/www/simplerest/app\core\templates\Schema.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\providers\__NAME__ located in D:/www/simplerest/app\core\templates\ServiceProvider.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\Core\Libs\SystemConstants located in D:/www/simplerest/app\core\templates\SystemConstants.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\Background\Tasks\__NAME__ located in D:/www/simplerest/app\core\templates\Task.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\models\legion\TblCotizacionDetalleModel located in D:/www/simplerest/app\models\legion\TblCotizacionDetalleModel[1].php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\models\legion\TblUnidadMedidaModel located in D:/www/simplerest/app\models\legion\TblUnidadMedidaModel[1].php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\models\mpp\BarriosModel located in D:/www/simplerest/app\models\mpo\BarriosModel.php does not comply with psr-4 autoloading standard. Skipping.
+Class Boctulus\Simplerest\pages\admin\xxx\yyy\SomePage located in D:/www/simplerest/app\pages\admin\some_folder\yyy\SomePage.php does not comply with psr-4 autoloading standard. Skipping.
 Class PHPTAL_Php_Attribute_PHPTAL_ID located in D:/www/simplerest/vendor/phptal/phptal/classes\PHPTAL\Php\Attribute\PHPTAL\Id.php does not comply with psr-0 autoloading standard. Skipping.
 Class PHPTAL_Php_Attribute_PHPTAL_TALES located in D:/www/simplerest/vendor/phptal/phptal/classes\PHPTAL\Php\Attribute\PHPTAL\Tales.php does not comply with psr-0 auto
 
@@ -393,7 +391,7 @@ https://claude.ai/chat/442c1c97-413c-4fe0-adb3-3f1af9f5d591
 
 - Modificar el composer.json y reemplazar masivamente:
 
-  simplerest\
+  Boctulus\Simplerest\
   Simplerest\
 
 <-- hacerlo con tiempo y luego de pushear porque puede romper todo.
@@ -2198,9 +2196,9 @@ Actualmente debe hacerse con selectRaw()
 
   <?php
 
-  namespace simplerest\schemas\mpo;
+  namespace Boctulus\Simplerest\Schemas\mpo;
 
-  use simplerest\core\interfaces\ISchema;
+  use Boctulus\Simplerest\Core\Interfaces\ISchema;
 
   class CertificacionesQueEmiteOrgComunalSchema implements ISchema
   { 
@@ -2224,7 +2222,7 @@ La primera forma implica determinar el nombre de la clase y el namespace a fin d
   $filename   = Strings::last($path, '/');
   $class_name = Strings::beforeLast($filename, '.php'); 
 
-  $class_name_full = "\\simplerest\\schemas\\$conn_id\\" . $class_name;
+  $class_name_full = "\\Boctulus\Boctulus\\Simplerest\\Schemas\\$conn_id\\" . $class_name;
   include $path;
 
   $schema = $class_name_full::get();
@@ -5404,13 +5402,13 @@ https://www.sourcefuse.com/blog/rest-api-best-practices/
 
     http://az.lan/api/v1/products?orderBy=cost  <-- es incorrecto 
 
-    <b>Fatal error</b>:  Uncaught TypeError: Argument 1 passed to simplerest\core\Model: :orderBy() must be of the type array, string given, called in C:\xampp\htdocs\az\app\core\api\v1\ApiController.php on line 688 and defined in C:\xampp\htdocs\az\app\core\Model.php: 352
+    <b>Fatal error</b>:  Uncaught TypeError: Argument 1 passed to Boctulus\Simplerest\Core\Model: :orderBy() must be of the type array, string given, called in C:\xampp\htdocs\az\app\core\api\v1\ApiController.php on line 688 and defined in C:\xampp\htdocs\az\app\core\Model.php: 352
     Stack trace:
-    #0 C:\xampp\htdocs\az\app\core\api\v1\ApiController.php(688): simplerest\core\Model-&gt;orderBy('cost')
+    #0 C:\xampp\htdocs\az\app\core\api\v1\ApiController.php(688): Boctulus\Simplerest\Core\Model-&gt;orderBy('cost')
     #1 [internal function
-    ]: simplerest\core\api\v1\ApiController-&gt;get()
+    ]: Boctulus\Simplerest\Core\api\v1\ApiController-&gt;get()
     #2 C:\xampp\htdocs\az\app\core\FrontController.php(162): call_user_func_array(Array, Array)
-    #3 C:\xampp\htdocs\az\public\index.php(11): simplerest\core\FrontController: :resolve()
+    #3 C:\xampp\htdocs\az\public\index.php(11): Boctulus\Simplerest\Core\FrontController: :resolve()
     #4 {main
     }
       thrown in <b>C:\xampp\htdocs\az\app\core\Model.php</b> on line <b>352</b><br />
@@ -7934,7 +7932,7 @@ a..
 - Reemplazar inSchema : en vez de instanciar el modelo para luego tener que instanciar el Schema correspondiente, tener un schema con solo propiedades estáticas y accederlo directamente saltando al modelo.
 
   Antes:    $books_reviews->inSchema(['campo'])
-  Debe ser: in_array('campo', simplerest\\schemas\BookReviewsSchema::attr)
+  Debe ser: in_array('campo', Boctulus\\Simplerest\\schemas\BookReviewsSchema::attr)
 
   O mejor con un helper
 
@@ -7942,7 +7940,7 @@ a..
 
 Claramente lo siguiente debe dejarse de hacer:
 
-    use simplerest\schemas\BooksSchema;                  
+    use Boctulus\Simplerest\Schemas\BooksSchema;                  
 
     class BooksModel extends Model
     { 

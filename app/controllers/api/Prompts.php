@@ -1,16 +1,16 @@
 <?php
 
-namespace simplerest\controllers\api;
+namespace Boctulus\Simplerest\Controllers\api;
 
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\CustomTags;
-use simplerest\core\libs\CodeReducer; 
-use simplerest\controllers\MyApiController;
-use simplerest\core\exceptions\NotFileButDirectoryException;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\CustomTags;
+use Boctulus\Simplerest\Core\Libs\CodeReducer; 
+use Boctulus\Simplerest\Controllers\MyApiController;
+use Boctulus\Simplerest\Core\exceptions\NotFileButDirectoryException;
 
 class Prompts extends MyApiController
 {

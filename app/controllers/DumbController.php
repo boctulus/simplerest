@@ -1,9 +1,9 @@
 <?php
 
-namespace simplerest\controllers;
+namespace Boctulus\Simplerest\Controllers;
 
 use Boctulus\ApiClient\ApiClientFallback;
-use Boctulus\ApiClient\Helpers\Curl;
+use Boctulus\Simplerest\Core\Libs\Curl;
 use Doctrine\Inflector\InflectorFactory;
 
 use Endroid\QrCode\Builder\Builder;
@@ -14,145 +14,145 @@ use Endroid\QrCode\Label\Font\NotoSans;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use MakeCommand;
 use PhpParser\Node\Scalar\MagicConst\File;
-use simplerest\controllers\api\Products;
-use simplerest\controllers\api\TblPersona;
-use simplerest\core\api\v1\ApiController;
-use simplerest\core\Container;
+use Boctulus\Simplerest\Controllers\api\Products;
+use Boctulus\Simplerest\Controllers\api\TblPersona;
+use Boctulus\Simplerest\Core\api\v1\ApiController;
+use Boctulus\Simplerest\Core\Container;
 
-use simplerest\core\controllers\Controller;
+use Boctulus\Simplerest\Core\Controllers\Controller;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
-use simplerest\core\libs\ApacheWebServer;
-use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\Base64Uploader;
+use Boctulus\Simplerest\Core\Libs\ApacheWebServer;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Base64Uploader;
 
-use simplerest\core\libs\Cache;
-use simplerest\core\libs\ChatGPT;
-use simplerest\core\libs\ClaudeAI;
+use Boctulus\Simplerest\Core\Libs\Cache;
+use Boctulus\Simplerest\Core\Libs\ChatGPT;
+use Boctulus\Simplerest\Core\Libs\ClaudeAI;
 
-use simplerest\core\libs\CMS_Scanner\CMSs\WordPress;
-use simplerest\core\libs\CMS_Scanner\Scanner as CMSScanner;
+use Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs\WordPress;
+use Boctulus\Simplerest\Core\Libs\CMS_Scanner\Scanner as CMSScanner;
 
-use simplerest\core\libs\code_cleaner\AngularCleaner;
+use Boctulus\Simplerest\Core\Libs\code_cleaner\AngularCleaner;
 
-use simplerest\core\libs\code_cleaner\BootstrapCleaner;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Cookie;
-use simplerest\core\libs\CookieJar;
-use simplerest\core\libs\CronJobMananger;
+use Boctulus\Simplerest\Core\Libs\code_cleaner\BootstrapCleaner;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Cookie;
+use Boctulus\Simplerest\Core\Libs\CookieJar;
+use Boctulus\Simplerest\Core\Libs\CronJobMananger;
 
-use simplerest\core\libs\CSS;
+use Boctulus\Simplerest\Core\Libs\CSS;
 
-use simplerest\core\libs\CSSUtils;
+use Boctulus\Simplerest\Core\Libs\CSSUtils;
 
-use simplerest\core\libs\CustomTags;
+use Boctulus\Simplerest\Core\Libs\CustomTags;
 
-use simplerest\core\libs\DatabaseBackup;
-use simplerest\core\libs\Date;
+use Boctulus\Simplerest\Core\Libs\DatabaseBackup;
+use Boctulus\Simplerest\Core\Libs\Date;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\DBCache;
-use simplerest\core\libs\DomCrawler;
-use simplerest\core\libs\EasyHTMLTable;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\DBCache;
+use Boctulus\Simplerest\Core\Libs\DomCrawler;
+use Boctulus\Simplerest\Core\Libs\EasyHTMLTable;
 
-use simplerest\core\libs\EmailTemplate;
+use Boctulus\Simplerest\Core\Libs\EmailTemplate;
 
-use simplerest\core\libs\Env;
-use simplerest\core\libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Env;
+use Boctulus\Simplerest\Core\Libs\Factory;
 
-use simplerest\core\libs\FileCache;
-use simplerest\core\libs\FileMemoization;
-use simplerest\core\libs\FileMemoizationV2;
-use simplerest\core\libs\Files;
-use simplerest\core\libs\FileUploader;
-use simplerest\core\libs\GitHub;
-use simplerest\core\libs\GoogleDrive;
+use Boctulus\Simplerest\Core\Libs\FileCache;
+use Boctulus\Simplerest\Core\Libs\FileMemoization;
+use Boctulus\Simplerest\Core\Libs\FileMemoizationV2;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\FileUploader;
+use Boctulus\Simplerest\Core\Libs\GitHub;
+use Boctulus\Simplerest\Core\Libs\GoogleDrive;
 
-use simplerest\core\libs\GoogleMaps;
-use simplerest\core\libs\GrokAI;
-use simplerest\core\libs\Hardware;
+use Boctulus\Simplerest\Core\Libs\GoogleMaps;
+use Boctulus\Simplerest\Core\Libs\GrokAI;
+use Boctulus\Simplerest\Core\Libs\Hardware;
 
-use simplerest\core\libs\HTML as HTMLTools;
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
-use simplerest\core\libs\HtmlBuilder\Form;
-use simplerest\core\libs\HtmlBuilder\Html;
-use simplerest\core\libs\HtmlBuilder\Tag;
-use simplerest\core\libs\i18n\AlternativeGetTextTranslator;
-use simplerest\core\libs\i18n\POParser;
+use Boctulus\Simplerest\Core\Libs\HTML as HTMLTools;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Form;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Html;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Libs\i18n\AlternativeGetTextTranslator;
+use Boctulus\Simplerest\Core\Libs\i18n\POParser;
 
-use simplerest\core\libs\i18n\Translate;
-use simplerest\core\libs\InMemoryCache;
-use simplerest\core\libs\JobQueue;
-use simplerest\core\libs\LangDetector;
-use simplerest\core\libs\Logger;
-use simplerest\core\libs\Mail;
-use simplerest\core\libs\MailFromRemoteWP;
-use simplerest\core\libs\MediaType;
-use simplerest\core\libs\Memoization;
-use simplerest\core\libs\Messurements;
-use simplerest\core\libs\Obfuscator;
-use simplerest\core\libs\Paginator;
-use simplerest\core\libs\Parallex;
-use simplerest\core\libs\PHPLexicalAnalyzer;
+use Boctulus\Simplerest\Core\Libs\i18n\Translate;
+use Boctulus\Simplerest\Core\Libs\InMemoryCache;
+use Boctulus\Simplerest\Core\Libs\JobQueue;
+use Boctulus\Simplerest\Core\Libs\LangDetector;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Core\Libs\MailFromRemoteWP;
+use Boctulus\Simplerest\Core\Libs\MediaType;
+use Boctulus\Simplerest\Core\Libs\Memoization;
+use Boctulus\Simplerest\Core\Libs\Messurements;
+use Boctulus\Simplerest\Core\Libs\Obfuscator;
+use Boctulus\Simplerest\Core\Libs\Paginator;
+use Boctulus\Simplerest\Core\Libs\Parallex;
+use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
 
-use simplerest\core\libs\PHPParser;
-use simplerest\core\libs\PostmanGenerator;
-use simplerest\core\libs\RandomGenerator;
-use simplerest\core\libs\Reflector;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\SendinBlue;
-use simplerest\core\libs\SimpleCrypt;
-use simplerest\core\libs\SiteMap;
-use simplerest\core\libs\StdOut;
-use simplerest\core\libs\StratoScraper;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\System;
-use simplerest\core\libs\Task;
-use simplerest\core\libs\Time;
-use simplerest\core\libs\Update;
-use simplerest\core\libs\Url;
-use simplerest\core\libs\Utils;
-use simplerest\core\libs\ValidationRules;
-use simplerest\core\libs\Validator;
-use simplerest\core\libs\VarDump;
-use simplerest\core\libs\WooCommerceApiClient;
-use simplerest\core\libs\XML;
-use simplerest\core\libs\ZipManager;
-use simplerest\core\Model;
-use simplerest\core\Request;
-use simplerest\core\Response;
-use simplerest\core\View;
-use simplerest\core\WebRouter;
-use simplerest\libs\AndroidXmlRenderer;
-use simplerest\libs\ArbitrageCalculator;
-use simplerest\libs\Cake;
-use simplerest\libs\Foo2;
-use simplerest\libs\Foo;
-use simplerest\libs\HaulmerSignatureSDK;
-use simplerest\libs\Ingredient1;
-use simplerest\libs\Ingredient2;
-use simplerest\libs\ItalianGrammarAnalyzer;
-use simplerest\libs\ItalianReviews;
-use simplerest\libs\LaravelApiGenerator;
-use simplerest\libs\NITColombiaValidator;
-use simplerest\libs\Reviews;
-use simplerest\libs\RibiSOAP;
-use simplerest\libs\scrapers\AmazonScraper;
-use simplerest\libs\scrapers\Curiosite;
-use simplerest\libs\scrapers\LeroyMerlinScraper;
-use simplerest\libs\scrapers\MaisonsScraper;
-use simplerest\libs\Sync;
-use simplerest\models\az\AutomovilesModel;
-use simplerest\models\az\BarModel;
-use simplerest\models\az\ProductsModel;
-use simplerest\shortcodes\ciudades_cl\CiudadesCLShortcode;
-use simplerest\shortcodes\countdown\CountDownShortcode;
-use simplerest\shortcodes\csv_importer\ImporterShortcode;
-use simplerest\shortcodes\eat_leaf\EatLeaf;
-use simplerest\shortcodes\progress_bar\ProgressShortcode;
-use simplerest\shortcodes\star_rating\StarRatingShortcode;
+use Boctulus\Simplerest\Core\Libs\PHPParser;
+use Boctulus\Simplerest\Core\Libs\PostmanGenerator;
+use Boctulus\Simplerest\Core\Libs\RandomGenerator;
+use Boctulus\Simplerest\Core\Libs\Reflector;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Libs\SendinBlue;
+use Boctulus\Simplerest\Core\Libs\SimpleCrypt;
+use Boctulus\Simplerest\Core\Libs\SiteMap;
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Core\Libs\StratoScraper;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\System;
+use Boctulus\Simplerest\Core\Libs\Task;
+use Boctulus\Simplerest\Core\Libs\Time;
+use Boctulus\Simplerest\Core\Libs\Update;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\Utils;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\Libs\VarDump;
+use Boctulus\Simplerest\Core\Libs\WooCommerceApiClient;
+use Boctulus\Simplerest\Core\Libs\XML;
+use Boctulus\Simplerest\Core\Libs\ZipManager;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\View;
+use Boctulus\Simplerest\Core\WebRouter;
+use Boctulus\Simplerest\Libs\AndroidXmlRenderer;
+use Boctulus\Simplerest\Libs\ArbitrageCalculator;
+use Boctulus\Simplerest\Libs\Cake;
+use Boctulus\Simplerest\Libs\Foo2;
+use Boctulus\Simplerest\Libs\Foo;
+use Boctulus\Simplerest\Libs\HaulmerSignatureSDK;
+use Boctulus\Simplerest\Libs\Ingredient1;
+use Boctulus\Simplerest\Libs\Ingredient2;
+use Boctulus\Simplerest\Libs\ItalianGrammarAnalyzer;
+use Boctulus\Simplerest\Libs\ItalianReviews;
+use Boctulus\Simplerest\Libs\LaravelApiGenerator;
+use Boctulus\Simplerest\Libs\NITColombiaValidator;
+use Boctulus\Simplerest\Libs\Reviews;
+use Boctulus\Simplerest\Libs\RibiSOAP;
+use Boctulus\Simplerest\Libs\Scrapers\AmazonScraper;
+use Boctulus\Simplerest\Libs\Scrapers\Curiosite;
+use Boctulus\Simplerest\Libs\Scrapers\LeroyMerlinScraper;
+use Boctulus\Simplerest\Libs\Scrapers\MaisonsScraper;
+use Boctulus\Simplerest\Libs\Sync;
+use Boctulus\Simplerest\Models\az\AutomovilesModel;
+use Boctulus\Simplerest\Models\az\BarModel;
+use Boctulus\Simplerest\Models\az\ProductsModel;
+use Boctulus\Simplerest\Modules\CiudadesCL\CiudadesCLShortcode;
+use Boctulus\Simplerest\Modules\Countdown\CountDown;
+use Boctulus\Simplerest\Modules\CSVImporter\ImporterShortcode;
+use Boctulus\Simplerest\Modules\EatLeaf\EatLeaf;
+use Boctulus\Simplerest\Modules\ProgressBar\ProgressShortcode;
+use Boctulus\Simplerest\Modules\StarRating\StarRating;
 use Spatie\ArrayToXml\ArrayToXml;
 use stdClass;
 use Symfony\Component\DomCrawler\Crawler;
@@ -3842,21 +3842,21 @@ class DumbController extends Controller
     /*
         Debo agregar si no existe como primer use
 
-        use simplerest\models\MyModel;
+        use Boctulus\Simplerest\Models\MyModel;
     */
     function test_sc()
     {
         $path = '/home/www/simplerest/app/models/BoletasModel.php';
         $file = file_get_contents($path);
 
-        if (!Strings::contains('use simplerest\models\MyModel;', $file)) {
+        if (!Strings::contains('use Boctulus\Simplerest\Models\MyModel;', $file)) {
             $lines = explode(PHP_EOL, $file);
 
             foreach ($lines as $ix => $line) {
                 $line = trim($line);
 
                 if (Strings::startsWith('use ', $line)) {
-                    $lines[$ix] = 'use simplerest\models\MyModel;' . PHP_EOL . $line;
+                    $lines[$ix] = 'use Boctulus\Simplerest\Models\MyModel;' . PHP_EOL . $line;
                     break;
                 }
             }
@@ -4388,7 +4388,7 @@ class DumbController extends Controller
 
     function test_unserialize()
     {
-        $s_object = 'O:29:"simplerest\background\tasks\DosTask":0:{}';
+        $s_object = 'O:29:"simplerest\Background\Tasks\DosTask":0:{}';
         $s_params = 'a:2:{i:0;s:4:"Juan";i:1;i:39;}';
 
         $o = unserialize($s_object);
@@ -4460,7 +4460,7 @@ class DumbController extends Controller
 
     function test_container4()
     {
-        Container::bind('car', \simplerest\libs\Car::class);
+        Container::bind('car', \Boctulus\Simplerest\Libs\Car::class);
 
         $o = Container::makeWith('car', ['color' => 'blue', 'max_speed' => 200]);
         print_r($o->run());
@@ -4518,7 +4518,7 @@ class DumbController extends Controller
 
     function test_tag()
     {
-        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+        Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
 
         //Form::pretty();
 
@@ -6736,7 +6736,7 @@ class DumbController extends Controller
 
     function test_cached_form()
     {
-        Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Bt5Form::class);
+        Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
 
         $content = Files::getFromTempFile('my_component.html');
 
@@ -6993,7 +6993,7 @@ class DumbController extends Controller
 
     function debug_api_client_exec()
     {
-        $data = include 'D:\www\simplerest\logs\api_debug.php';
+        $data = include 'D:\www\Boctulus\Simplerest\logs\api_debug.php';
 
         dd($data);
 
@@ -7307,7 +7307,7 @@ class DumbController extends Controller
 
     function debug_api_client_exec_2()
     {
-        $data = include 'D:\www\simplerest\logs\api_debug.php';
+        $data = include 'D:\www\Boctulus\Simplerest\logs\api_debug.php';
 
         dd($data);
 
@@ -9304,11 +9304,11 @@ class DumbController extends Controller
 
     function test_replacer_2()
     {
-        $code = file_get_contents('D:\www\simplerest\app\shortcodes\rack_quoter\views\racks_copy-ok.php');
+        $code = file_get_contents('D:\www\Boctulus\Simplerest\app\shortcodes\rack_quoter\views\racks_copy-ok.php');
 
         $code = HTML::insertTranslator($code);
 
-        file_put_contents('D:\www\simplerest\app\shortcodes\rack_quoter\views\racks.php', $code);
+        file_put_contents('D:\www\Boctulus\Simplerest\app\shortcodes\rack_quoter\views\racks.php', $code);
     }
 
     function test_feet_inch_conversion()
@@ -9529,35 +9529,35 @@ class DumbController extends Controller
     function test_dispatch_q1()
     {
         $queue = new JobQueue("q1");
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
-        $queue->dispatch(\simplerest\background\tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\UnaTask::class);
 
-        $queue->dispatch(\simplerest\background\tasks\ZTask::class);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\ZTask::class);
 
-        // $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
-        // $queue->dispatch(\simplerest\background\tasks\OtraTask::class);
+        // $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\OtraTask::class);
+        // $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\OtraTask::class);
     }
 
     function test_worker_factory_q1()
@@ -9592,9 +9592,9 @@ class DumbController extends Controller
     function test_dispatch_q2()
     {
         $queue = new JobQueue("q2");
-        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '1 - Juan', 39);
-        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '2 - Maria', 21);
-        $queue->dispatch(\simplerest\background\tasks\DosTask::class, '3 - Felipito', 10);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\DosTask::class, '1 - Juan', 39);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\DosTask::class, '2 - Maria', 21);
+        $queue->dispatch(\Boctulus\Simplerest\Background\Tasks\DosTask::class, '3 - Felipito', 10);
     }
 
 
@@ -9644,7 +9644,7 @@ class DumbController extends Controller
 
         $url_ay = Strings::lines($urls, true, true);
 
-        Files::download($url_ay, SHORTCODES_PATH . "tax_calc/assets/js");
+        Files::download($url_ay, MODULES_PATH . "tax_calc/assets/js");
     }
 
 
@@ -9653,7 +9653,7 @@ class DumbController extends Controller
     */
     function rating_slider()
     {
-        $sc = new StarRatingShortcode();
+        $sc = new StarRating();
 
         render($sc->rating_slider());
     }
@@ -9663,7 +9663,7 @@ class DumbController extends Controller
     */
     function rating_table()
     {
-        $sc = new StarRatingShortcode();
+        $sc = new StarRating();
 
         render($sc->rating_table());
     }
@@ -9709,7 +9709,7 @@ class DumbController extends Controller
     */
     function countdown()
     {
-        $sc = new CountDownShortcode();
+        $sc = new Countdown();
 
         render($sc->counter());
     }
@@ -9757,7 +9757,7 @@ class DumbController extends Controller
 
     function test_function_parser()
     {
-        $code = file_get_contents('D:\www\simplerest\app\core\libs\PHPLexicalAnalyzer.php');
+        $code = file_get_contents('D:\www\Boctulus\Simplerest\app\core\libs\PHPLexicalAnalyzer.php');
 
         dd(
             PHPLexicalAnalyzer::getFunctionNames($code)
@@ -10615,7 +10615,7 @@ class DumbController extends Controller
     function test_chatgpt_vision()
     {
         $chat = new ChatGPT();
-        $imagePath = 'D:\\www\\simplerest\\etc\\chatgpt-vision-test-gallery\\persona.jpg';
+        $imagePath = 'D:\\www\\Boctulus\\Simplerest\\etc\\chatgpt-vision-test-gallery\\persona.jpg';
         $res = $chat->analyzeImage($imagePath);
 
         if ($res === false){
@@ -11780,7 +11780,7 @@ class DumbController extends Controller
         // Verificar que el archivo haya devuelto el array
         if (is_array($curl_constants)) {
             // Ruta del archivo PHP a generar
-            $filePath = 'D:\laragon\www\simplerest\packages\boctulus\api-client\src\Constants\Curl.php';
+            $filePath = 'D:\laragon\www\Boctulus\Simplerest\packages\boctulus\api-client\src\Constants\Curl.php';
             
             // Abrir el archivo para escribir las definiciones
             $file = fopen($filePath, 'w');
@@ -11830,138 +11830,138 @@ class DumbController extends Controller
         ], 'RES');
     }
 
-    function test_apiclient_fallback()
-    {
-        $url    = 'https://osx86project.org/';
+    // function test_apiclient_fallback()
+    // {
+    //     $url    = 'https://osx86project.org/';
 
-        $client = new ApiClientFallback($url);
+    //     $client = new ApiClientFallback($url);
 
-        $res = $client->disableSSL()
-            ->followLocations()
-            // ->cache(5)
-            ->get()
-            ->getResponse();
+    //     $res = $client->disableSSL()
+    //         ->followLocations()
+    //         // ->cache(5)
+    //         ->get()
+    //         ->getResponse();
 
-        if ($res === null) {
-            dd("RES is NULL");
-            return;
-        }
+    //     if ($res === null) {
+    //         dd("RES is NULL");
+    //         return;
+    //     }
         
-        dd([    
-            $res
-        ], 'RES');
-    }
+    //     dd([    
+    //         $res
+    //     ], 'RES');
+    // }
 
-    function test_apiclient_fallback_2()
-    {
-        $client = new ApiClientFallback();
-        $client->useInvokeWebRequest(); // Activar modo PowerShell
+    // function test_apiclient_fallback_2()
+    // {
+    //     $client = new ApiClientFallback();
+    //     $client->useInvokeWebRequest(); // Activar modo PowerShell
 
-        // Configurar la URL
-        $client->setUrl('https://api.haulmer.dev/v2.0/partners/signature/generate');
-        // $client->debug(true);
+    //     // Configurar la URL
+    //     $client->setUrl('https://api.haulmer.dev/v2.0/partners/signature/generate');
+    //     // $client->debug(true);
 
-        // Headers
-        $headers = [
-            'apikey' => 'cebc90896c0445599e6d2269b9f89c8f',
-            'Content-Type' => 'application/json'
-        ];
+    //     // Headers
+    //     $headers = [
+    //         'apikey' => 'cebc90896c0445599e6d2269b9f89c8f',
+    //         'Content-Type' => 'application/json'
+    //     ];
 
-        // Body (como array para que se encodee automáticamente)
-        $body = [
-            "period" => 1,
-            "email" => "email@correo.com"
-        ];
+    //     // Body (como array para que se encodee automáticamente)
+    //     $body = [
+    //         "period" => 1,
+    //         "email" => "email@correo.com"
+    //     ];
 
-        // Configurar el cuerpo y habilitar encoding
-        $client->setBody($body, true); // Segundo parámetro = encode_body = true
+    //     // Configurar el cuerpo y habilitar encoding
+    //     $client->setBody($body, true); // Segundo parámetro = encode_body = true
 
-        // Hacer la petición POST (sin pasar $body nuevamente)
-        $response = $client->post(null, $body, $headers); // <- ¡Body viene de setBody()!
+    //     // Hacer la petición POST (sin pasar $body nuevamente)
+    //     $response = $client->post(null, $body, $headers); // <- ¡Body viene de setBody()!
 
-        // Debug
-        dd("STATUS: " . $response->status());
-        dd("ERROR: " . ($response->error() ?? 'Ninguno'));
+    //     // Debug
+    //     dd("STATUS: " . $response->status());
+    //     dd("ERROR: " . ($response->error() ?? 'Ninguno'));
         
-        dd($response->data(), 'RESPONSE');
+    //     dd($response->data(), 'RESPONSE');
         
-        // dd([    
-        //     $response
-        // ], 'RES');
-    }
+    //     // dd([    
+    //     //     $response
+    //     // ], 'RES');
+    // }
 
-    function jsonplaceholder_test_get(){
-        $client = new ApiClientFallback();
+    // function jsonplaceholder_test_get(){
+    //     $client = new ApiClientFallback();
 
-        $client
-        ->setHeaders([
-            "Content-type" => "application/json"
-        ])
-        ->get("https://jsonplaceholder.typicode.com/posts/1");
+    //     $client
+    //     ->setHeaders([
+    //         "Content-type" => "application/json"
+    //     ])
+    //     ->get("https://jsonplaceholder.typicode.com/posts/1");
 
-        $res = $client->getResponse();
+    //     $res = $client->getResponse();
 
-        dd($client->status(), 'STATUS');
-        dd($client->error(), 'ERROR');
-        dd($client
-        ->decode()
-        ->data(), 'DATA');
-    }
+    //     dd($client->status(), 'STATUS');
+    //     dd($client->error(), 'ERROR');
+    //     dd($client
+    //     ->decode()
+    //     ->data(), 'DATA');
+    // }
 
-    function jsonplaceholder_test_post(){
-        $client = new ApiClientFallback();
+    // function jsonplaceholder_test_post(){
+    //     $client = new ApiClientFallback();
 
-        $body = [
-            "title" => "foo",
-            "body" => "bar",
-            "userId" => 999
-        ];
+    //     $body = [
+    //         "title" => "foo",
+    //         "body" => "bar",
+    //         "userId" => 999
+    //     ];
         
-        $client
-        ->setHeaders([
-            "Content-type" => "application/json"
-        ])
-        ->setBody($body)
-        ->post("https://jsonplaceholder.typicode.com/posts");
+    //     $client
+    //     ->setHeaders([
+    //         "Content-type" => "application/json"
+    //     ])
+    //     ->setBody($body)
+    //     ->post("https://jsonplaceholder.typicode.com/posts");
 
-        $res = $client->getResponse();
+    //     $res = $client->getResponse();
 
-        // dd($client->status(), 'STATUS');
-        // dd($client->error(), 'ERROR');
-        dd($client
-        //->decode()
-        ->data(), 'DATA');
-    }
+    //     // dd($client->status(), 'STATUS');
+    //     // dd($client->error(), 'ERROR');
+    //     dd($client
+    //     //->decode()
+    //     ->data(), 'DATA');
+    // }
 
-    function test_apiclient_fallback_cache()
-    {
-        $url    = base_url() . '/dumb/now';
+    // function test_apiclient_fallback_cache()
+    // {
+    //     $url    = base_url() . '/dumb/now';
 
-        $client = new ApiClientFallback($url);
+    //     $client = new ApiClientFallback($url);
 
-        $res = $client->disableSSL()
-            ->followLocations()
-            ->cache(3)
-            ->get()
-            ->getResponse(false);
+    //     $res = $client->disableSSL()
+    //         ->followLocations()
+    //         ->cache(3)
+    //         ->get()
+    //         ->getResponse(false);
 
-        if ($res === null) {
-            dd("RES is NULL");
-            return;
-        }
+    //     if ($res === null) {
+    //         dd("RES is NULL");
+    //         return;
+    //     }
 
-        if ($res['http_code'] != 200) {
-            dd("HTTP CODE is " . $res['http_code']);
-            return;
-        }
+    //     if ($res['http_code'] != 200) {
+    //         dd("HTTP CODE is " . $res['http_code']);
+    //         return;
+    //     }
 
-        $html = $res['data'];
+    //     $html = $res['data'];
 
-        dd([
-            'realtime' => file_get_contents($url),
-            'cached'   => $html
-        ]);
-    }
+    //     dd([
+    //         'realtime' => file_get_contents($url),
+    //         'cached'   => $html
+    //     ]);
+    // }
 
     function test_curl_conversion(){
         // Ejemplo de uso:
@@ -12035,7 +12035,7 @@ class DumbController extends Controller
     }
 
     function test_reduce_php_code(){
-        $code = Files::getContent('D:\laragon\www\simplerest\app\core\libs\ClaudeAI.php');
+        $code = Files::getContent('D:\laragon\www\Boctulus\Simplerest\app\core\libs\ClaudeAI.php');
 
         $parser = new PHPParser();
 
@@ -12099,11 +12099,11 @@ class DumbController extends Controller
 
     function test_custom_tags(){                
         // Procesa comillas dobles
-        // $str = 'analiza estos archivos y dime que hacen. considera los logs en [dir path="c:\\xampp\\htdocs\\simplerest\\logs"]';
+        // $str = 'analiza estos archivos y dime que hacen. considera los logs en [dir path="c:\\xampp\\htdocs\\Boctulus\\Simplerest\\logs"]';
         // dd(customtags::parse($str));
 
         // // procesa comillas simples
-        // $str = "analiza estos archivos y dime que hacen. considera los logs en [dir path='c:\\xampp\\htdocs\\simplerest\\logs']";
+        // $str = "analiza estos archivos y dime que hacen. considera los logs en [dir path='c:\\xampp\\htdocs\\Boctulus\\Simplerest\\logs']";
         // dd(customtags::parse($str));
 
         // $input     = 'ejecuta este calculo [calc op=(7,8,5.2) operation="mul"] y dame el resultado en un json';
@@ -12163,7 +12163,7 @@ class DumbController extends Controller
         });
 
         // Cadena de ejemplo que contiene múltiples tags.
-        // $input = 'Los calculos son [calc op=(50,34,676) operation="mul"] y [calc op=(56676,67) operation="div"]. Revisa el directorio [dir path="C:\\xampp\\htdocs\\simplerest\\logs"]. Dame el resultado en un JSON.';
+        // $input = 'Los calculos son [calc op=(50,34,676) operation="mul"] y [calc op=(56676,67) operation="div"]. Revisa el directorio [dir path="C:\\xampp\\htdocs\\Boctulus\\Simplerest\\logs"]. Dame el resultado en un JSON.';
 
         // // Reemplaza los tags en la cadena.
         // $result = CustomTags::render($input);

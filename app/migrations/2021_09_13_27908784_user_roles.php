@@ -1,9 +1,9 @@
 <?php
 
-use simplerest\core\interfaces\IMigration;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\Schema;
-use simplerest\core\libs\System;
+use Boctulus\Simplerest\Core\Interfaces\IMigration;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Libs\System;
 use users;
 
 class UserRoles implements IMigration

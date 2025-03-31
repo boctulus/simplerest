@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use simplerest\core\interfaces\ICache;
+use Boctulus\Simplerest\Core\Interfaces\ICache;
 
 /*
     Cache que expira cuando termina el request

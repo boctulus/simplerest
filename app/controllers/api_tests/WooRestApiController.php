@@ -1,11 +1,11 @@
 <?php
 
-namespace simplerest\controllers\api_tests;
+namespace Boctulus\Simplerest\Controllers\api_tests;
 
-use simplerest\core\libs\DB;
-use simplerest\core\libs\WooCommerceApiClient;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\WooCommerceApiClient;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\Arrays;
 
 /*
     Creacion de credenciales para Basic Auth en la REST API de WooCommerce

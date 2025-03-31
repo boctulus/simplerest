@@ -1,8 +1,8 @@
 <?php
 
-namespace simplerest\models\az;
+namespace Boctulus\Simplerest\Models\az;
 
-use simplerest\models\MyModel;
+use Boctulus\Simplerest\Models\MyModel;
 
 
 class MediosTransporteModel extends MyModel

@@ -1,10 +1,10 @@
 <?php
 
-use simplerest\core\libs\HtmlBuilder\Bt5Form;
-use simplerest\core\libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
 
 
-Tag::registerBuilder(\simplerest\core\libs\HtmlBuilder\Html::class);
+Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Html::class);
 
 Bt5Form::setIdAsName();
 

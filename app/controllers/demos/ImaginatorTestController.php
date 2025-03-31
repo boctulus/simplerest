@@ -1,12 +1,12 @@
 <?php
 
-namespace simplerest\controllers\demos;
+namespace Boctulus\Simplerest\Controllers\demos;
 
-use simplerest\core\libs\Factory;
-use simplerest\core\libs\Imaginator;
-use simplerest\core\libs\Messurements as M;
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\StdOut;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Imaginator;
+use Boctulus\Simplerest\Core\Libs\Messurements as M;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\StdOut;
 
 class ImaginatorTestController extends Controller
 {
@@ -374,7 +374,7 @@ class ImaginatorTestController extends Controller
     function render_datasheet(){
         $im = new Imaginator();
 
-        $im->loadImage(SHORTCODES_PATH ."rack_quoter/assets/img/datasheet_blank.jpeg");
+        $im->loadImage(MODULES_PATH ."rack_quoter/assets/img/datasheet_blank.jpeg");
 
         $im->createColor('black', 0,0,0);
         $im->createColor('white', 255,255,255);

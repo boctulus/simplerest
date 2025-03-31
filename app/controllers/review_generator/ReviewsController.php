@@ -1,17 +1,17 @@
 <?php
 
-namespace simplerest\controllers\review_generator;
+namespace Boctulus\Simplerest\Controllers\review_generator;
 
-use simplerest\core\controllers\Controller;
-use simplerest\core\libs\ApiClient;
-use simplerest\core\libs\ChatGPT;
-use simplerest\core\libs\Config;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\RandomGenerator;
-use simplerest\core\libs\Strings;
-use simplerest\libs\ItalianGrammarAnalyzer;
-use simplerest\libs\ItalianReviews;
-use simplerest\shortcodes\star_rating\StarRatingShortcode;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\ChatGPT;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\RandomGenerator;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Libs\ItalianGrammarAnalyzer;
+use Boctulus\Simplerest\Libs\ItalianReviews;
+use Boctulus\Simplerest\Modules\StarRating\StarRating;
 
 
 class ReviewsController extends Controller
@@ -55,7 +55,7 @@ class ReviewsController extends Controller
         Test de shortcode
     */
     function rating_slider(){        
-        $sc = new StarRatingShortcode();
+        $sc = new StarRating();
 
         render($sc->rating_slider());
     }
@@ -65,7 +65,7 @@ class ReviewsController extends Controller
     */
     function rating_table()
     {
-        $sc = new StarRatingShortcode();
+        $sc = new StarRating();
 
         render($sc->rating_table());
     }
@@ -92,7 +92,7 @@ class ReviewsController extends Controller
     }
 
     function parse(){
-        $path = 'D:\www\simplerest\etc\py-review-generator\answers.php';
+        $path = 'D:\www\Boctulus\Simplerest\etc\py-review-generator\answers.php';
         $rows = include $path;
 
         foreach ($rows as $ix => $row){

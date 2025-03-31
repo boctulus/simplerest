@@ -1,13 +1,13 @@
 <?php
 
-namespace simplerest\core\traits;
+namespace Boctulus\Simplerest\Core\traits;
 
-use simplerest\core\exceptions\InvalidValidationException;
-use simplerest\core\libs\Arrays;
-use simplerest\core\libs\DB;
-use simplerest\core\libs\Strings;
-use simplerest\core\libs\Validator;
-use simplerest\core\Model;
+use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\Model;
 
 /*
     Trait a integrarse en Model de Query Builder    
