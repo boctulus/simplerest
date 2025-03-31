@@ -4,6 +4,22 @@ namespace simplerest\libs;
 
 use simplerest\core\libs\Strings;
 
+/*
+    TO-DO
+
+    - Sacar CSS en archivo aparte
+    - Verificar realmente renderiza bien los drawables
+    - Soporte resto de layouts
+    - Soporte resto de elementos (ImageButton, etc.)
+    - Cargar colors.xml desde el proyecto Android usando loadColorResource()
+    - Cargar strings.xml desde el proyecto Android
+    - Soporte de dimensiones (dp, sp, etc.)
+    - Soporte para <include> de layouts
+    - Soporte para <merge> de layouts
+
+    https://claude.ai/chat/dfe4885d-cb8a-46a6-b9d2-894044faac10
+    https://claude.ai/chat/ac020888-33c1-4333-ab2a-e71b2600c8ed
+*/
 class AndroidXmlRenderer
 {
     // Propiedades estáticas para configurar el viewport
@@ -17,6 +33,7 @@ class AndroidXmlRenderer
     // Cache para recursos cargados
     private static $colorCache = [];
     private static $drawableCache = [];
+    private static $drawables = [];
     
     // Colores predefinidos (fallback)
     private static $predefinedColors = [
@@ -192,15 +209,6 @@ class AndroidXmlRenderer
                     return $drawable;
                 }
             }
-        }
-        
-        // Si el drawable empieza con "custom_button_", generar un estilo CSS
-        if (strpos($drawableName, 'custom_button_') === 0) {
-            $color = substr($drawableName, 13); // Extraer color (red, blue, etc.)
-            $colorValue = self::loadColorResource($color) ?: self::$predefinedColors[$color] ?? '#666666';
-            $drawable = 'background-color: ' . $colorValue . '; ';
-            self::$drawableCache[$drawableName] = $drawable;
-            return $drawable;
         }
         
         return null;

@@ -1,6 +1,12 @@
 TODO SimpleRest
 ===============
 
+- Renombrar "shortcodes" como "modules", tambien en ./app/
+
+- Que opinas de si en mi framework permito crear "modules" con estructura MVC interna en ./app/modules y creo un comando para crear un paquete en ./packages similar a los de Laravel a partir de un module?
+
+Eso me permitiria evitar tanta configuracion supongo dentro "modules" y no tener que pasar por Composer.
+
 - En los commandos de tipo ICommand, habilitar el "modo interactivo" con --interactive o -I lo que iria guiando al usuario con preguntas => definir esas preguntas
 
 Tambien podria con --menu lanzarse un menu
@@ -355,8 +361,6 @@ Class PHPTAL_Php_Attribute_PHPTAL_TALES located in D:/www/simplerest/vendor/phpt
 
 - Generar archivo Constants para las rutas de archivo compatible con la implemetación de SW.
 
-- Renombrar "shortcodes" como "modules", tambien en ./app/
-
 - Permitir que "assets" se accedan directamente dentro de  modulos o packages y que ejecutando un "buid script" se desplieguen en ./public/assets y modifiquen dinamicamente las referencias.
 
 https://chatgpt.com/c/66fb5fee-dc08-800d-9d47-bd337cf0c0b6
@@ -682,7 +686,7 @@ Combinar con algo como Assets::setDirectory('public/assets')
 
 Poder definir que archivos .js y .css se cargarian por ejemplo con Assets::load('jquery') y con Assets::load('jquery', 3.6) quizas basado en algun tipo de convencion de carpetas y "modulos" que definan eso para cada caso.
  
-- Deberia poder usarse un identificador que prevenga de cargarlo dos veces
+- Deberia poder usarse un identificador que prevenga de cargar un asset .js o .css dos veces
 
 Como en Wordpress y compatible con WordPress
 
@@ -719,13 +723,13 @@ http://acmeextension.com/integrate-twig-with-codeigniter/
 
 Ej:
 
-  class basicBT3 extends Template {
+  class basicBT5 extends Template {
     protected $tpl = 'basictpl.php';
   }
 
 Y luego otra template lo podria extender
 
-  class miTpl extends basicBT3 {
+  class miTpl extends basicBT5 {
     protected $tpl = 'mi_tpl.php';
   }
 
@@ -6546,6 +6550,8 @@ The register() method should only be used for, you guessed it, registering servi
 
 
 - Implementar un "vendor:publish" para los ServiceProviders !!!!!!!!!!
+
+https://chatgpt.com/c/67ea0d2b-ee1c-800d-98c2-5afabf8b771c
 
 > php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
 
