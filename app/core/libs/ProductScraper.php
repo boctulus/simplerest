@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Core\Libs;
 
 use Boctulus\Simplerest\Core\Libs\ApiClient;
-use Boctulus\Simplerest\Core\exceptions\NotImplementedException;
+use Boctulus\Simplerest\Core\Exceptions\NotImplementedException;
 
 /*
     Scraper base preparado para:

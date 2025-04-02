@@ -16,7 +16,7 @@ use MakeCommand;
 use PhpParser\Node\Scalar\MagicConst\File;
 use Boctulus\Simplerest\Controllers\api\Products;
 use Boctulus\Simplerest\Controllers\api\TblPersona;
-use Boctulus\Simplerest\Core\api\v1\ApiController;
+use Boctulus\Simplerest\Core\API\v1\ApiController;
 use Boctulus\Simplerest\Core\Container;
 
 use Boctulus\Simplerest\Core\Controllers\Controller;
@@ -149,9 +149,9 @@ use Boctulus\Simplerest\Models\az\BarModel;
 use Boctulus\Simplerest\Models\az\ProductsModel;
 use Boctulus\Simplerest\Modules\CiudadesCL\CiudadesCLShortcode;
 use Boctulus\Simplerest\Modules\Countdown\CountDown;
-use Boctulus\Simplerest\Modules\CSVImporter\ImporterShortcode;
+use Boctulus\Simplerest\Modules\CSVImporter\Importer;
 use Boctulus\Simplerest\Modules\EatLeaf\EatLeaf;
-use Boctulus\Simplerest\Modules\ProgressBar\ProgressShortcode;
+use Boctulus\Simplerest\Modules\ProgressBar\Progress;
 use Boctulus\Simplerest\Modules\StarRating\StarRating;
 use Spatie\ArrayToXml\ArrayToXml;
 use stdClass;
@@ -183,6 +183,20 @@ class DumbController extends Controller
     function info()
     {
         phpinfo();
+    }
+
+    function test000(){
+        dd(
+            get_model_name('prompts')
+        );
+    }
+
+    function basic_get(){
+        DB::getConnection();
+
+        dd(
+            DB::table('sp_permissions')->get()
+        );
     }
 
     function get_rand_str()
@@ -10168,13 +10182,13 @@ class DumbController extends Controller
 
     function test_progress()
     {
-        $pr = new ProgressShortcode();
+        $pr = new Progress();
         render($pr->index());
     }
 
     function test_importer_progress()
     {
-        $pr = new ImporterShortcode();
+        $pr = new Importer();
         render($pr->index());
     }
 
@@ -10651,8 +10665,8 @@ class DumbController extends Controller
         $stringExample = "HELLO WORLD";
         $arrayExample = ["HELLO", "WORLD"];
 
-        dd(Strings::toCase(Strings::LOWERCASE_FILTER, $stringExample)); // "hello world"
-        dd(Strings::toCase(Strings::LOWERCASE_FILTER, $arrayExample)); // ["hello", "world"]
+        dd(Strings::toCase(Strings::LOWERCASE, $stringExample)); // "hello world"
+        dd(Strings::toCase(Strings::LOWERCASE, $arrayExample)); // ["hello", "world"]
     }
 
     /*  
@@ -10680,7 +10694,7 @@ class DumbController extends Controller
             'Ni', 'Ke', 'Cha', 'Ne', 'Di', 'Or', 'Za', 'Ra', 'Pr', 'Da', 'Next', 'Pu', 'Ma', 'Ga', 'Ma', 'O', 'Me', 'As', 'Ic', 'Pu', 'Ma', 'Old', 'Na', 'Di', 'Es', 'Gap', 'Gap', 'Fur', 'La', 'GAP', 'Sis', 'Le', 'tod', 'Tis', 'Sot', 'Lac', 'Os', 'Top', 'Sh', 'Op', 'Al', 'Do', 'Oa', 'K', 'Le', 'Jim', 'My', 'Choo', 'Fos', 'Sil', 'Pa', 'Ta', 'Go', 'New', 'Look', 'Es', 'Ca', 'Ca', 'Vall', 'Li', 'Sa', 'Swat', 'Ch', 'Te', 'Da', 'Ba', 'Ka'            
         ];
 
-        $syllables = Strings::toCase(Strings::LOWERCASE_FILTER, $syllables);
+        $syllables = Strings::toCase(Strings::LOWERCASE, $syllables);
 
         // Eliminar duplicados
         $syllables_unique = array_unique($syllables);

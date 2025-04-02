@@ -7,7 +7,7 @@ use Boctulus\Simplerest\Models\MyModel;
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Libs\Strings;
-use Boctulus\Simplerest\Core\exceptions\SqlException;
+use Boctulus\Simplerest\Core\Exceptions\SqlException;
 
 class DB 
 {

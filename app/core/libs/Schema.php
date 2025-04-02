@@ -8,8 +8,8 @@ use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\VarDump;
-use Boctulus\Simplerest\Core\exceptions\EmptySchemaException;
-use Boctulus\Simplerest\Core\exceptions\TableAlreadyExistsException;
+use Boctulus\Simplerest\Core\Exceptions\EmptySchemaException;
+use Boctulus\Simplerest\Core\Exceptions\TableAlreadyExistsException;
 
 /*
 	Schema Builder

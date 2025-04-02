@@ -1,13 +1,13 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\api\v1;
+namespace Boctulus\Simplerest\Core\API\v1;
 
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Boctulus\Simplerest\Core\Acl;
 use Boctulus\Simplerest\Core\Controllers\Controller;
-use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 use Boctulus\Simplerest\Core\Interfaces\IAuth;
 use Boctulus\Simplerest\Core\Interfaces\IDbAccess;
 use Boctulus\Simplerest\Core\Libs\Config;

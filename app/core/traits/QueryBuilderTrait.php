@@ -2,10 +2,10 @@
 
 namespace Boctulus\Simplerest\Core\traits;
 
-use Boctulus\Simplerest\Core\exceptions\ColumnTableNotFoundException;
-use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
-use Boctulus\Simplerest\Core\exceptions\SchemaException;
-use Boctulus\Simplerest\Core\exceptions\SqlException;
+use Boctulus\Simplerest\Core\Exceptions\ColumnTableNotFoundException;
+use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Exceptions\SchemaException;
+use Boctulus\Simplerest\Core\Exceptions\SqlException;
 use Boctulus\Simplerest\Core\Interfaces\ITransformer;
 use Boctulus\Simplerest\Core\Interfaces\IValidator;
 use Boctulus\Simplerest\Core\Libs\Arrays;

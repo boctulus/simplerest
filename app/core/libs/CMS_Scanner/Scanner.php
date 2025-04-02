@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Core\Libs\CMS_Scanner;
 
-use Boctulus\Simplerest\Core\exceptions\NotImplementedException;
+use Boctulus\Simplerest\Core\Exceptions\NotImplementedException;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\ApiClient;
 

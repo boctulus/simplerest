@@ -309,7 +309,7 @@ class LaravelApiGenerator
             $seeder_file    = $seeder_template;
             $seeder_4f_file = $seeder_for_factory_temp;
 
-            $class_name_full = "\\Boctulus\Boctulus\\Simplerest\\Schemas\\$conn_id\\" . $__class_name;
+            $class_name_full = "\\Boctulus\\Simplerest\\Schemas\\$conn_id\\" . $__class_name;
             include $path;
 
             $schema = $class_name_full::get();

@@ -1,13 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Boctulus\Simplerest\Core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
-use Boctulus\Simplerest\Core\exceptions\FileNotFoundException;
-use Boctulus\Simplerest\Core\exceptions\NotFileButDirectoryException;
-use Boctulus\Simplerest\Core\exceptions\UnreadableFileException;
 use Boctulus\Simplerest\Core\Libs\Logger;
-use Boctulus\Simplerest\Core\Libs\SortedIterator;
 use Boctulus\Simplerest\Core\Libs\System;
+use Boctulus\Simplerest\Core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\SortedIterator;
+use Boctulus\Simplerest\Core\Exceptions\FileNotFoundException;
+use Boctulus\Simplerest\Core\Exceptions\UnreadableFileException;
+use Boctulus\Simplerest\Core\Exceptions\NotFileButDirectoryException;
 
 class Files 
 {
@@ -1865,7 +1866,7 @@ class Files
 		return ($bytes > 0);
 	}
 
-	static function dump($object, string $path = null, $append = false){
+	static function dump($object, $path = null, $append = false){
 		if (is_dir($path)){
 			$path = static::trimTrailingSlash($path) . DIRECTORY_SEPARATOR . 'dump.txt';
 		} else {
@@ -1874,10 +1875,12 @@ class Files
 			}	
 		}
 
+		$str = Strings::dump($object);
+
 		if ($append){
-			static::writeOrFail($path, var_export($object,  true) . "\n", FILE_APPEND);
+			Files::writeOrFail($path,  $str . "\n", FILE_APPEND);
 		} else {
-			static::writeOrFail($path, var_export($object,  true) . "\n");
+			Files::writeOrFail($path,  $str . "\n");
 		}		
 	}
 
