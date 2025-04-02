@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Core;
 
-use Boctulus\Simplerest\Core\exceptions\SchemaException;
+use Boctulus\Simplerest\Core\Exceptions\SchemaException;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Traits\ExceptionHandler;

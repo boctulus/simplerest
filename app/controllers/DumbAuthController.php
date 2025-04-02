@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Controllers;
 
-use Boctulus\Simplerest\Core\api\v1\ResourceController;
+use Boctulus\Simplerest\Core\API\v1\ResourceController;
 use Boctulus\Simplerest\Core\Acl;
 
 class DumbAuthController extends ResourceController

@@ -22,7 +22,7 @@ if (!isset($api_version[0]) || $api_version[0] != 'v' || !is_numeric(substr($api
 */
 
 if ($api_version == 'v1'){
-    class MyApiController extends \Boctulus\Simplerest\Core\api\v1\ApiController {
+    class MyApiController extends \Boctulus\Simplerest\Core\API\v1\ApiController {
         use SubResourceHandler;
     }
     return;

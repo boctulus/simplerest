@@ -5,7 +5,7 @@ namespace Boctulus\Simplerest\Core\Libs;
 use \ReflectionClass;
 use Boctulus\Simplerest\Core\WebRouter;
 use Boctulus\Simplerest\Core\Libs\Config;
-use Boctulus\Simplerest\Core\exceptions\NotImplementedException;
+use Boctulus\Simplerest\Core\Exceptions\NotImplementedException;
 
 /*
     @author Pablo Bozzolo

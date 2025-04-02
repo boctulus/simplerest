@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\api\v1;
+namespace Boctulus\Simplerest\Core\API\v1;
 
 use Boctulus\Simplerest\Controllers\MyApiController;
 use Boctulus\Simplerest\Core\Libs\Factory;
@@ -9,7 +9,7 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Libs\Debug;
 use Boctulus\Simplerest\Core\Libs\Validator;
-use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 use Boctulus\Simplerest\Core\Libs\Url;
 
 
