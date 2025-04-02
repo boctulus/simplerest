@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\api\v1;
+namespace Boctulus\Simplerest\Core\API\v1;
 
 use Boctulus\Simplerest\Controllers\MyApiController;
 use Boctulus\Simplerest\Core\Libs\Factory;
@@ -32,7 +32,7 @@ class TrashCan extends MyApiController
         $this->table_name = strtolower($entity);
 
         $this->model    = 'Boctulus\\Simplerest\\Models\\'. $this->model_name;
-        $api_ctrl = '\Boctulus\Boctulus\\Simplerest\\Controllers\\api\\' . ucfirst($entity);
+        $api_ctrl = '\Boctulus\\Simplerest\\Controllers\\API\\' . ucfirst($entity);
         
         if (!class_exists($api_ctrl)){
             error("Entity $entity not found", 404);

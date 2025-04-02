@@ -9,7 +9,7 @@ global $api_version;
 */
 
 if ($api_version == 'v1'){
-    class Files extends \Boctulus\Simplerest\Core\api\v1\Files { }
+    class Files extends \Boctulus\Simplerest\Core\API\v1\Files { }
     return;
 };
 

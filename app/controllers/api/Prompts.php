@@ -10,7 +10,7 @@ use Boctulus\Simplerest\Core\Libs\ApiClient;
 use Boctulus\Simplerest\Core\Libs\CustomTags;
 use Boctulus\Simplerest\Core\Libs\CodeReducer; 
 use Boctulus\Simplerest\Controllers\MyApiController;
-use Boctulus\Simplerest\Core\exceptions\NotFileButDirectoryException;
+use Boctulus\Simplerest\Core\Exceptions\NotFileButDirectoryException;
 
 class Prompts extends MyApiController
 {

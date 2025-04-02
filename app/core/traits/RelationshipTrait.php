@@ -2,8 +2,8 @@
 
 namespace Boctulus\Simplerest\Core\traits;
 
-use Boctulus\Simplerest\Core\exceptions\SchemaException;
-use Boctulus\Simplerest\Core\exceptions\SqlException;
+use Boctulus\Simplerest\Core\Exceptions\SchemaException;
+use Boctulus\Simplerest\Core\Exceptions\SqlException;
 use Boctulus\Simplerest\Core\Libs\DB;
 
 trait RelationshipTrait 

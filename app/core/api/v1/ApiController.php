@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\api\v1;
+namespace Boctulus\Simplerest\Core\API\v1;
 
 use PDO;
 use Boctulus\Simplerest\Core\Acl;  
@@ -17,12 +17,12 @@ use Boctulus\Simplerest\Core\Libs\Validator;
 use Boctulus\Simplerest\Core\Interfaces\IApi;
 use Boctulus\Simplerest\Core\Interfaces\IAuth;
 use Boctulus\Simplerest\Core\FoldersAclExtension;
-use Boctulus\Simplerest\Core\exceptions\SqlException;
+use Boctulus\Simplerest\Core\Exceptions\SqlException;
 use Boctulus\Simplerest\Core\Interfaces\ISubResources;
 
-use Boctulus\Simplerest\Core\api\v1\ResourceController;
+use Boctulus\Simplerest\Core\API\v1\ResourceController;
 use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
-use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 
 abstract class ApiController extends ResourceController implements IApi, ISubResources
 {
@@ -76,7 +76,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         }else {
             if ($this->table_name != null){            
                 $this->model_name = implode(array_map('ucfirst',explode('_', $this->table_name))) . 'Model';
-            } elseif (preg_match('/([A-Z][a-z0-9_]*[A-Z]*[a-z0-9_]*[A-Z]*[a-z0-9_]*[A-Z]*[a-z0-9_]*)/', get_called_class(), $matchs)){
+            } elseif (preg_match('/([^\\\]+)$/', get_called_class(), $matchs)){
                 $this->model_name = $matchs[1] . 'Model';
                 $this->table_name = Strings::camelToSnake($matchs[1]);
             } else {
@@ -84,7 +84,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             }  
         }
 
-        
         $instance = $this->getModelInstance();
 
         // todavia sin uso pero la idea es verificar si el campo esta protegido desde aca

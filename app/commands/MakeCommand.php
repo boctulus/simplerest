@@ -163,6 +163,10 @@ class MakeCommand implements ICommand
         make widget [ --include-js | --js ]
 
         make command myCommand
+
+        make module myModule [--force | -f] [ --remove ]
+
+        make module myWidget [--force | -f] [ --remove ]
              
         make migration [ {name} ] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ] [ --strict ] [ --remove ]
 
@@ -2532,64 +2536,138 @@ class MakeCommand implements ICommand
 
         echo implode(PHP_EOL, $lines);
     }
+    
+    /**
+     * Crea una estructura de directorios basada en un array de nombres de directorios.
+     *
+     * @param array $directories Lista de directorios a crear (relativos al $basePath)
+     * @param string $basePath Directorio base donde se crearán los directorios
+     * @param array $options Opciones como '-f' o '--force' para forzar la creación
+     * @return void
+     */
+    protected function makeScafolding(array $directories, string $basePath, array $options = []) : bool
+    {
+        $force  = in_array('-f', $options) || in_array('--force', $options);
+        $remove = in_array('--remove', $options) || in_array('--delete', $options) || in_array('-r', $options) || in_array('-d', $options);
 
-    /*
-        TO-DO
-
-        - Crear funcion general makeScafolding()
-        - Usar makeScafolding() en widget(), module(), package() y otras
-    */
-    function widget(string $name, ...$opt) {
-        $dir = WIDGETS_PATH . $name;
-
-        $name = Strings::toSnakeCase($name);
-
-        $js     = false;
-        $remove = false;
-        foreach ($opt as $o){ 
-            if (preg_match('/^(--remove|--delete|--erase)$/', $o)){
-                $remove = true;
-                break;
-            }
-
-            if (preg_match('/^(--js|--javascript|--include-js)$/', $o)){
-                $js = true;
-            }
+        // Solo verifico que no haya que crear nada
+        if ($remove) {            
+            return false;
         }
 
-        if ($remove){
-            $ok = Files::rmDirOrFail($dir, true);    
-
-            if (!$ok) {
-                throw new \Exception("Delete of $dir has failed");
-            } else {
-                StdOut::print("Directory `$dir` was deleted\r\n");
+        foreach ($directories as $dir) {
+            $fullPath = $basePath . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $dir);
+            if (is_dir($fullPath) && !$force) {
+                StdOut::print("Directory '$fullPath' already exists. Use -f or --force to overwrite.");
+                continue;
             }
+            
+            Files::mkDirOrFail($fullPath);
+        }
 
+        return true;
+    }
+
+    function widget(string $name, ...$opt) {
+        $dir    = WIDGETS_PATH . $name;
+        $force  = in_array('-f', $opt) || in_array('--force', $opt);
+        $js     = in_array('--js', $opt) || in_array('--include-js', $opt);
+        $remove = in_array('--remove', $opt) || in_array('--delete', $opt) || in_array('-r', $opt) || in_array('-d', $opt);    
+    
+        if ($remove) {
+            Files::rmDirOrFail($dir, true);
+            StdOut::print("Directory `$dir` was deleted");
+            return;
+        }
+    
+        $directories = ['']; // Directorio raíz
+
+        if ($js) {
+            $directories[] = 'js';
+        }
+
+        $this->makeScafolding($directories, $dir, $opt);
+    
+        // Crear archivos
+        $files = [
+            'styles.css' => '/* Widget styles */'
+        ];
+
+        if ($js) {
+            $files["js/$name.js"] = '// Widget JS';
+        }
+
+        foreach ($files as $file => $content) {
+            $filePath = $dir . DIRECTORY_SEPARATOR . $file;
+            if (!file_exists($filePath) || $force) {
+                file_put_contents($filePath, $content);
+                StdOut::print("$filePath was created");
+            }
+        }
+    }
+
+    /**
+     * Crea un nuevo módulo con una estructura similar a "Relmotor".
+     *
+     * @param string $name Nombre del módulo a crear
+     * @param string ...$opt Opciones como '-f' o '--force'
+     * @return void
+     */
+    public function module(string $name, ...$opt): void
+    {
+        $basePath = MODULES_PATH . $name;
+
+        $remove = in_array('--remove', $opt) || in_array('--delete', $opt) || in_array('-r', $opt) || in_array('-d', $opt);  
+
+        if ($remove) {
+            Files::rmDirOrFail($basePath, true);
+            StdOut::print("Directory `$basePath` was deleted");
             return;
         }
 
-        if (!is_dir($dir)){
-            if (Files::mkDirOrFail($dir)){
-                dd("$dir was created");
-            }
+        // Verificar si el directorio raíz existe y manejar la opción -f
+        if (is_dir($basePath) && !in_array('-f', $opt) && !in_array('--force', $opt)) {
+            StdOut::print("Module '$name' already exists. Use -f or --force to overwrite.");
+            return;
         }
 
-        $file_path = "$dir" . DIRECTORY_SEPARATOR ."styles.css";
-        $exists    = file_exists($file_path);
+        // Estructura de directorios basada en "Relmotor"
+        $directories = [
+            'assets/css',
+            'assets/img',
+            'assets/js',
+            'assets/third_party',
+            'config',
+            'libs',
+            'views',
+        ];
 
-        if (Files::touch($file_path)){
-            dd("$file_path was " . (!$exists ? 'created' : 'touched'));
+        // Crear los directorios usando makeScafolding
+        $this->makeScafolding($directories, $basePath, $opt);
+
+        // Lista de archivos a incluir
+        $files = [
+            "$name.php" => '<?php // Main module file',            
+            'config/config.php' => '<?php // Configuration file',            
+        ];
+
+        // Crear los archivos
+        $force = in_array('-f', $opt) || in_array('--force', $opt);
+        foreach ($files as $file => $content) {
+            $filePath = $basePath . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $file);
+            $dir = dirname($filePath);
+            if (!is_dir($dir)) {
+                Files::mkDirOrFail($dir);
+            }
+            if (file_exists($filePath) && !$force) {
+                StdOut::print("File '$filePath' already exists. Use -f or --force to overwrite.");
+                continue;
+            }
+            file_put_contents($filePath, $content);
+            StdOut::print("Created file: $filePath");
         }
 
-        if ($js){
-            $file_path = "$dir" . DIRECTORY_SEPARATOR ."$name.js";
-            $exists    = file_exists($file_path);
-
-            if (Files::touch($file_path)){
-                dd("$file_path was " . (!$exists ? 'created' : 'touched'));
-            }
-        }                
+        StdOut::print("Module '$name' created successfully at '$basePath'.");
     }
 
     function command($name, ...$opt) {
@@ -2642,7 +2720,7 @@ class MakeCommand implements ICommand
         }
     
         // Generar namespace basado en autor y nombre del package (PascalCase)
-        $namespace = ucfirst(self::toPascalCase($authorSlug)) . "\\" . ucfirst(self::toPascalCase($packageSlug));
+        $namespace = ucfirst(Strings::toPascalCase($authorSlug)) . "\\" . ucfirst(Strings::toPascalCase($packageSlug));
     
         $templateFiles = [
             self::SERVICE_PROVIDER_TEMPLATE => 'src/ServiceProvider.php',
@@ -2666,15 +2744,5 @@ class MakeCommand implements ICommand
     
         StdOut::print("Package created successfully at: $packagePath");
     }
-    
-    /**
-     * Helper to convert kebab-case or snake_case to PascalCase
-     */
-    protected static function toPascalCase(string $value): string
-    {
-        return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $value)));
-    }
-    
-
     
 } 
