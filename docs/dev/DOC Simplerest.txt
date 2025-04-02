@@ -560,7 +560,7 @@ Ej:
         $prefix = '';
         $subfix = 'Controller';  
 
-        $this->generic($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
+        $this->renderTemplate($name, $prefix, $subfix, $namespace, $dest_path, $template_path, ...$opt);
     }
 
 Con "make" puede por ejemplo generar un archivo de controlador:
