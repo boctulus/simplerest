@@ -20239,7 +20239,7 @@ $this->renderTemplate($name, $prefix, $subfix, $dest_path, $template_path, $name
    ```
    - Elimina `MyControllerController.php` si existe.
 
-# makeScafolding
+# makeScaffolding
 
 ## description
 
@@ -20248,7 +20248,7 @@ Crea una estructura de directorios para scaffoldings y soporta opciones como `--
 ## usage
 
 ```php
-$this->makeScafolding($directories, $basePath, $options);
+$this->makeScaffolding($directories, $basePath, $options);
 ```
 
 ## parameters
@@ -20261,12 +20261,12 @@ $this->makeScafolding($directories, $basePath, $options);
 
 - 1. **Crear estructura de módulo:**
    ```php
-   $this->makeScafolding(['assets/css', 'config'], MODULES_PATH . 'myModule', ['--force']);
+   $this->makeScaffolding(['assets/css', 'config'], MODULES_PATH . 'myModule', ['--force']);
    ```
    - Crea `assets/css` y `config` en `myModule`, sobrescribiendo si es necesario.
 - 2. **Eliminar estructura:**
    ```php
-   $this->makeScafolding(['assets/css', 'config'], MODULES_PATH . 'myModule', ['--remove']);
+   $this->makeScaffolding(['assets/css', 'config'], MODULES_PATH . 'myModule', ['--remove']);
    ```
    - Elimina los subdirectorios especificados si existen.
 
