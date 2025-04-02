@@ -6,7 +6,7 @@ use Boctulus\Simplerest\Models\MyModel;
 use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Libs\StdOut;
 use Boctulus\Simplerest\Core\Libs\Strings;
-use Boctulus\Simplerest\Core\exceptions\SqlException;
+use Boctulus\Simplerest\Core\Exceptions\SqlException;
 use Boctulus\Simplerest\Core\Libs\Config;
 
 /*
@@ -369,7 +369,7 @@ function get_model_namespace($tenant_id = null){
         }
     }
 
-    return '\\Boctulus\Boctulus\\Simplerest\\Models\\' . $extra;
+    return '\\Boctulus\\Simplerest\\Models\\' . $extra;
 }
 
 function get_model_name($table_name, $tenant_id = null){
@@ -389,11 +389,11 @@ function get_model_name($table_name, $tenant_id = null){
         }
     }
 
-    return '\\Boctulus\Boctulus\\Simplerest\\Models\\' . $extra . Strings::snakeToCamel($table_name). 'Model';
+    return '\\Boctulus\\Simplerest\\Models\\' . $extra . Strings::snakeToCamel($table_name). 'Model';
 }
 
 function get_api_namespace($resource_name){
-    return '\\Boctulus\Boctulus\\Simplerest\\Controllers\\api\\' . Strings::snakeToCamel($resource_name);
+    return '\\Boctulus\\Simplerest\\Controllers\\API\\' . Strings::snakeToCamel($resource_name);
 }
 
 function get_user_model_name(){
@@ -467,7 +467,7 @@ function get_schema_name($table_name, $tenant_id = null){
         }
     }
 
-    return '\\Boctulus\Boctulus\\Simplerest\\Schemas\\' . $extra . Strings::snakeToCamel($table_name). 'Schema';
+    return '\\Boctulus\\Simplerest\\Schemas\\' . $extra . Strings::snakeToCamel($table_name). 'Schema';
 }
 
 function has_schema($table_name, $tenant_id = null){

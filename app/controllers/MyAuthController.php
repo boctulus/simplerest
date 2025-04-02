@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Controllers;
 
-use Boctulus\Simplerest\Core\api\v1\AuthController;
+use Boctulus\Simplerest\Core\API\v1\AuthController;
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Factory;

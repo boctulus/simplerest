@@ -9,7 +9,17 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 
     - Sacar CSS en archivo aparte
     - Verificar realmente renderiza bien los drawables
-    - Soporte resto de layouts
+    - Soporte de todos los layouts relevantes:
+
+        LinearLayout    -- ok
+        RelativeLayout
+        ConstraintLayout
+        FrameLayout
+        TableLayout
+        GridLayout
+        CoordinatorLayout
+        RecyclerView
+
     - Soporte resto de elementos (ImageButton, etc.)
     - Cargar colors.xml desde el proyecto Android usando loadColorResource()
     - Cargar strings.xml desde el proyecto Android
@@ -19,6 +29,11 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 
     https://claude.ai/chat/dfe4885d-cb8a-46a6-b9d2-894044faac10
     https://claude.ai/chat/ac020888-33c1-4333-ab2a-e71b2600c8ed
+    https://chatgpt.com/c/67ec9477-5bb8-800d-a589-13df91e4937a
+
+    # Seria posible convertir de Android XML a Elementor y viceversa
+
+    https://chatgpt.com/c/67ec063b-4330-800d-a1af-6b06da604d41
 */
 class AndroidXmlRenderer
 {

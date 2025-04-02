@@ -1,9 +1,9 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\api\v1;
+namespace Boctulus\Simplerest\Core\API\v1;
 
 use Boctulus\Simplerest\Core\Acl;
-use Boctulus\Simplerest\Core\api\v1\ResourceController;
+use Boctulus\Simplerest\Core\API\v1\ResourceController;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\DB;
 

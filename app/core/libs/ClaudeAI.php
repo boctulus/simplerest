@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Core\Libs;
 
 use Boctulus\Simplerest\Core\Interfaces\AIChat;
-use Boctulus\Simplerest\Core\exceptions\NotImplementedException;
+use Boctulus\Simplerest\Core\Exceptions\NotImplementedException;
 
 /*
     Ej:

@@ -89,7 +89,9 @@ class Strings
                 case static::SNAKECASE :
                     return static::toSnakeCase($str);
 				case static::KEBABCASE :
-						return static::toKebabCase($str);
+					return static::toKebabCase($str);
+				case static::PASCALCASE :
+					return static::toPascalCase($str);
                 default:
                     throw new \InvalidArgumentException("Invalid filter type");
             }
@@ -1282,6 +1284,11 @@ class Strings
 		}
 
         return implode('',array_map('ucfirst',explode('_', $str)));
+    }
+
+	protected static function toPascalCase(string $value): string
+    {
+        return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $value)));
     }
 
 	static function isAllCaps(string $str){
@@ -2653,6 +2660,18 @@ class Strings
         $output .= str_repeat('    ', $indent) . "]";
         return $output;
     }
+
+	/*
+		Formatea de forma similar a var_export() pero evita escaping de comillas simples
+
+		Utilizada en Files::dump()
+	*/
+	static function dump($object){		
+		$str = trim(var_export($object,  true), "'");
+		$str = str_replace("\'", "'", $str);
+
+		return $str;
+	}
 
 }
 
