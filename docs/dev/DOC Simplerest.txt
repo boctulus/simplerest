@@ -20195,6 +20195,81 @@ Ej:
 			dd($str);
 		}
 	} 
+
+
+El trait MakeCommand viene con varios metodos utiles para crear nuevos comandos:
+
+# renderTemplate
+
+## description
+
+Método utilitario para crear archivos a partir de plantillas con opciones de personalización.
+
+## usage
+
+```php
+$this->renderTemplate($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
+```
+
+## parameters
+
+- - `$name`: Nombre base del archivo (ej. `my_controller`).
+- - `$prefix`: Prefijo opcional para la clase (ej. `I` para interfaces).
+- - `$subfix`: Sufijo para la clase (ej. `Controller`).
+- - `$dest_path`: Ruta base donde se guardará el archivo.
+- - `$template_path`: Ruta de la plantilla a utilizar.
+- - `$namespace`: Namespace opcional para la clase.
+- - `...$opt`: Opciones como `--force`, `--unignore`, `--strict`, `--remove`.
+
+## examples
+
+- 1. **Crear un controlador:**
+   ```php
+   $this->renderTemplate('my_controller', '', 'Controller', CONTROLLERS_PATH, self::TEMPLATES . 'Controller.php', $this->namespace . '\\controllers', '--force');
+   ```
+   - Genera `MyControllerController.php` en `CONTROLLERS_PATH`.
+- 2. **Crear una interfaz:**
+   ```php
+   $this->renderTemplate('my_interface', 'I', '', INTERFACE_PATH, self::INTERFACE_TEMPLATE, $this->namespace . '\\interfaces', '--strict');
+   ```
+   - Genera `IMyInterface.php` con `declare(strict_types=1);`.
+- 3. **Eliminar un archivo:**
+   ```php
+   $this->renderTemplate('my_controller', '', 'Controller', CONTROLLERS_PATH, self::TEMPLATES . 'Controller.php', $this->namespace . '\\controllers', '--remove');
+   ```
+   - Elimina `MyControllerController.php` si existe.
+
+# makeScafolding
+
+## description
+
+Crea una estructura de directorios para scaffoldings y soporta opciones como `--force` y `--remove`.
+
+## usage
+
+```php
+$this->makeScafolding($directories, $basePath, $options);
+```
+
+## parameters
+
+- - `$directories`: Array de subdirectorios a crear (ej. `['assets/css', 'config']`).
+- - `$basePath`: Directorio base donde se crearán los subdirectorios.
+- - `$options`: Opciones como `--force`, `--remove`.
+
+## examples
+
+- 1. **Crear estructura de módulo:**
+   ```php
+   $this->makeScafolding(['assets/css', 'config'], MODULES_PATH . 'myModule', ['--force']);
+   ```
+   - Crea `assets/css` y `config` en `myModule`, sobrescribiendo si es necesario.
+- 2. **Eliminar estructura:**
+   ```php
+   $this->makeScafolding(['assets/css', 'config'], MODULES_PATH . 'myModule', ['--remove']);
+   ```
+   - Elimina los subdirectorios especificados si existen.
+
 	
 
 # Clase ReviewMaker  <--- sacar como package fuera del framework 
