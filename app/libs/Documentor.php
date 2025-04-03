@@ -6,8 +6,7 @@ use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Libs\Strings;
 
 /*
-    Generar excepciones, etc
-    
+    MarkDown documenter
 */
 class Documentor
 {
@@ -15,18 +14,18 @@ class Documentor
      * Lee un archivo JSON y genera MarkDown a partir del mismo.
      *
      * @param string $filePath Ruta del archivo JSON.
-     * @return string El contenido convertido a Markdown o mensaje de error.
+     * @return string El contenido convertido a Markdown
      */
     public static function fromJSONtoMarkDown($filePath) {
         if (!file_exists($filePath)) {
-            return "Archivo no encontrado: " . $filePath;
+            throw new \InvalidArgumentException("File not found: " . $filePath);
         }
         
         $jsonContent = file_get_contents($filePath);
         $data = json_decode($jsonContent, true);
         
         if ($data === null) {
-            return "JSON inválido.";
+            throw new \InvalidArgumentException("Invalid JSON");
         }
         
         // Convertir el array a Markdown usando una función recursiva
@@ -69,16 +68,6 @@ class Documentor
         }
         
         return $markdown;
-    }
-
-    /**
-     * Determina si un array es asociativo.
-     *
-     * @param array $arr Array a verificar.
-     * @return bool True si es asociativo, false si es indexado.
-     */
-    private static function isAssociativeArray(array $arr) {
-        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 }
 

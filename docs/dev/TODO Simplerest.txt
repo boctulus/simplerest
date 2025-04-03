@@ -1,7 +1,11 @@
 TODO SimpleRest
 ===============
 
+- Sacar por fuera de "app" todo aquello que no tenga "namespaces" como archivos de migraciones a ./database/migrations
+
 - Los "modules" via comando "com" deben poder convertise paquetes en ./packages similar a los de Laravel a partir de un module.
+
+    modules <---> packages (conversion bidireccional)
 
 Eso me permitiria evitar tanta configuracion supongo dentro "modules" y no tener que pasar por Composer.
 

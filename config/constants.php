@@ -51,13 +51,11 @@ if (!defined('CORE_LIBS_PATH'))
 if (!defined('CORE_HELPERS_PATH'))
     define('CORE_HELPERS_PATH', CORE_PATH  . 'helpers' . DIRECTORY_SEPARATOR);
 
-if (!defined('TEMPLATES_PATH'))
-	define('TEMPLATES_PATH', CORE_PATH  . 'templates' . DIRECTORY_SEPARATOR);
+if (!defined('CLASS_TEMPLATES_PATH'))
+	define('CLASS_TEMPLATES_PATH', CORE_PATH  . 'templates' . DIRECTORY_SEPARATOR);
 
-// added 22-01-2024
 if (!defined('CORE_EXCEPTIONS_PATH'))
 	define('CORE_EXCEPTIONS_PATH', CORE_PATH  . 'exceptions' . DIRECTORY_SEPARATOR);
-
 
 if (!defined('MODELS_PATH'))
     define('MODELS_PATH', APP_PATH . 'models'. DIRECTORY_SEPARATOR);   
@@ -80,12 +78,18 @@ if (!defined('TASKS_PATH')){
     define('TASKS_PATH', APP_PATH . 'background/tasks' . DIRECTORY_SEPARATOR);
 }
 
-if (!defined('COMMANDS_PATH')){  // --------------------------------------------------------- new
+if (!defined('COMMANDS_PATH')){
     define('COMMANDS_PATH', APP_PATH . 'commands' . DIRECTORY_SEPARATOR);
 }
 
+if (!defined('DATABASE_PATH'))
+    define('DATABASE_PATH', ROOT_PATH . 'database'. DIRECTORY_SEPARATOR);  
+
 if (!defined('MIGRATIONS_PATH'))
-    define('MIGRATIONS_PATH', APP_PATH . 'migrations'. DIRECTORY_SEPARATOR);   
+    define('MIGRATIONS_PATH', DATABASE_PATH . 'migrations'. DIRECTORY_SEPARATOR);   
+
+if (!defined('SEEDERS_PATH'))
+    define('SEEDERS_PATH', DATABASE_PATH . 'seeders'. DIRECTORY_SEPARATOR);   
 
 if (!defined('ETC_PATH'))
     define('ETC_PATH', ROOT_PATH . 'etc'. DIRECTORY_SEPARATOR);     
