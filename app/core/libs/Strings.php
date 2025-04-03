@@ -1286,7 +1286,7 @@ class Strings
         return implode('',array_map('ucfirst',explode('_', $str)));
     }
 
-	protected static function toPascalCase(string $value): string
+	static function toPascalCase(string $value): string
     {
         return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $value)));
     }
