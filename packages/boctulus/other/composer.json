@@ -1,0 +1,18 @@
+{
+    "name": "boctulus/other",
+    "description": "Package Other by boctulus",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\Other\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Boctulus\\Other\\ServiceProvider"
+            ]
+        }
+    },
+    "require": {}
+}
