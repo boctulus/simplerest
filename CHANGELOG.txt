@@ -107,3 +107,4 @@
 [2025-04-03 16:48:04]	0.8.12	Command `file list` reparado
 [2025-04-03 17:05:41]	0.8.12	Command file mejorado
 [2025-04-03 17:54:24]	0.8.12	FileCommand en revision (inestable desde el commint anterior)
+[2025-04-03 18:26:25]	0.8.12	FileCommand revisado
