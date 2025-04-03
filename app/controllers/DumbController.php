@@ -125,9 +125,10 @@ use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Response;
 use Boctulus\Simplerest\Core\View;
 use Boctulus\Simplerest\Core\WebRouter;
-use Boctulus\Simplerest\Libs\AndroidXmlRenderer;
+use Boctulus\Simplerest\Modules\AndroidEngine\src\Libs\AndroidXmlRenderer;
 use Boctulus\Simplerest\Libs\ArbitrageCalculator;
 use Boctulus\Simplerest\Libs\Cake;
+use Boctulus\Simplerest\libs\Documentor;
 use Boctulus\Simplerest\Libs\Foo2;
 use Boctulus\Simplerest\Libs\Foo;
 use Boctulus\Simplerest\Libs\HaulmerSignatureSDK;
@@ -243,6 +244,34 @@ class DumbController extends Controller
     static function get_rand_hex()
     {
         return Strings::randomHexaString(6);
+    }
+
+    function check_is_assoc(){
+        dd(
+            Arrays::isAssoc([
+                'a' => 4,
+                5
+            ])
+        );
+
+        dd(
+            Arrays::isAssoc([
+                'a' => 4,
+                7
+            ], true)
+        );
+
+        dd(
+            Arrays::isAssoc([
+                5, 'May'
+            ])
+        );
+
+        dd(
+            Arrays::isAssoc([               
+                7, new stdClass()
+            ], true)
+        );
     }
 
     function test_db()
@@ -12227,6 +12256,16 @@ class DumbController extends Controller
 
         // Muestra el resultado.
         dd($result);
+    }
+
+
+    function test_documentor(){
+        $file = 'documentation_ej1.json';
+
+        dd(
+            Documentor::fromJSONtoMarkDown(ETC_PATH . $file)
+            , 'MarkDown'
+        );
     }
 
     function test_android_render_1(){

@@ -246,25 +246,31 @@ class Arrays
  
     /*
         Solo se es no-asociativo si ninguna key es no-numerica
+
+        Deberia chequear cual opcion es realmente mas rapida
     */
-    static function isNonAssoc(array $arr)
+    static function isNonAssoc(array $arr, $fast_way = false)
     {
-        $keys = array_keys($arr);
+        if ($fast_way){
+            $keys = array_keys($arr);
 
-        foreach($keys as $key){
-            if (!is_int($key)){
-                return false;
-            }
-        }		
+            foreach($keys as $key){
+                if (!is_int($key)){
+                    return false;
+                }
+            }		
 
-        return true;
+            return true;
+        } else {
+            return array_keys($arr) === range(0, count($arr) - 1);
+        }
     }
 
     /*
         Un array es asociativo con que al menos una key sea un string
     */
-    static function isAssoc(array $arr){
-        return !static::isNonAssoc($arr);
+    static function isAssoc(array $arr, $fast_way = false){
+        return !static::isNonAssoc($arr, $fast_way);
     }
 
     /**
