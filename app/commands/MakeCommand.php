@@ -2570,193 +2570,7 @@ class MakeCommand implements ICommand
         echo implode(PHP_EOL, $lines);
     }
 
-    /**
-     * Crea una estructura de directorios basada en un array de nombres de directorios.
-     *
-     * @param array $directories Lista de directorios a crear (relativos al $basePath)
-     * @param string $basePath Directorio base donde se crearán los directorios
-     * @param array $options Opciones como '-f' o '--force' para forzar la creación
-     * @return void
-     */
-    protected function makeScaffolding(array $directories, string $basePath, array $options = []): bool
-    {
-        $force  = in_array('-f', $options) || in_array('--force', $options);
-        $remove = in_array('--remove', $options) || in_array('--delete', $options) || in_array('-r', $options) || in_array('-d', $options);
-
-        // Solo verifico que no haya que crear nada
-        if ($remove) {
-            return false;
-        }
-
-        foreach ($directories as $dir) {
-            $fullPath = $basePath . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $dir);
-            if (is_dir($fullPath) && !$force) {
-                StdOut::print("Directory '$fullPath' already exists. Use -f or --force to overwrite.");
-                continue;
-            }
-
-            Files::mkDirOrFail($fullPath);
-        }
-
-        return true;
-    }
-
-    /**
-     * Crea un nuevo módulo con una estructura similar a "Relmotor" y copia plantillas si existen.
-     *
-     * @param string $name Nombre del módulo a crear
-     * @param string ...$opt Opciones como '-f' o '--force'
-     * @return void
-     */
-    public function module(string $name, ...$opt): void
-    {
-        $basePath = MODULES_PATH . $name;
-
-        $remove = in_array('--remove', $opt) || in_array('--delete', $opt) || in_array('-r', $opt) || in_array('-d', $opt);
-
-        if ($remove) {
-            Files::rmDirOrFail($basePath, true);
-            StdOut::print("Directory `$basePath` was deleted");
-            return;
-        }
-
-        // Verificar si el directorio raíz existe y manejar la opción -f
-        if (is_dir($basePath) && !in_array('-f', $opt) && !in_array('--force', $opt)) {
-            StdOut::print("Module '$name' already exists. Use -f or --force to overwrite.");
-            return;
-        }
-
-        // Estructura de directorios basada en "Relmotor"
-        $directories = [
-            'assets/css',
-            'assets/img',
-            'assets/js',
-            'assets/third_party',
-            'config',
-            'src/Libs',
-            'src/Models',
-            'src/Controllers',
-            'src/Middlewares',
-            'src/Interfaces',
-            'src/Helpers',
-            'src/Traits',
-            'views',            
-            'database/migrations',
-            'database/seeders',
-            'tests'
-        ];
-
-        // Crear los directorios usando makeScaffolding
-        $this->makeScaffolding($directories, $basePath, $opt);
-
-        // Verificar si existe una carpeta de plantillas para este módulo
-        $pascalName = Strings::toPascalCase(__FUNCTION__);
-        $templateDir = CLASS_TEMPLATES_PATH . $pascalName;
-
-        // dd($templateDir, '$templateDir'); exit; //
-
-        if (is_dir($templateDir)) {
-            // Copiar y parsear archivos desde la carpeta de plantillas
-            $this->copyAndParseTemplates($templateDir, $basePath, $name, $opt);
-        } else {
-            // Si no existe la carpeta de plantillas, crear archivos por defecto
-            $files = [
-                "$name.php" => '<?php // Main module file',
-                'config/config.php' => '<?php return []; // Configuration file',
-            ];
-
-            $force = in_array('-f', $opt) || in_array('--force', $opt);
-            foreach ($files as $file => $content) {
-                $filePath = $basePath . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $file);
-                $dir = dirname($filePath);
-                if (!is_dir($dir)) {
-                    Files::mkDirOrFail($dir);
-                }
-                if (file_exists($filePath) && !$force) {
-                    StdOut::print("File '$filePath' already exists. Use -f or --force to overwrite.");
-                    continue;
-                }
-                file_put_contents($filePath, $content);
-                StdOut::print("Created file: $filePath");
-            }
-        }
-
-        StdOut::print("Module '$name' created successfully at '$basePath'.");
-    }
-
-    /*
-        TO-DO
-        
-        Implementar de forma similar a module() usando makeScaffolding() y copyAndParseTemplates()
-    */
-    protected function package(string $packageName, $author = '', $destination = null): void
-    {
-        // Normalizar nombres a kebab-case para los directorios
-        $authorSlug  = strtolower(str_replace(' ', '-', preg_replace('/[^a-zA-Z0-9]+/', '-', $author)));
-        $packageSlug = strtolower(str_replace(' ', '-', preg_replace('/[^a-zA-Z0-9]+/', '-', $packageName)));
-
-        if (empty($authorSlug) || empty($packageSlug)) {
-            StdOut::print("Author and package name are required.");
-            return;
-        }
-
-        $basePath = $destination ?: PACKAGES_PATH;
-        $packagePath = $basePath . "{$authorSlug}/{$packageSlug}/";
-
-        if (file_exists($packagePath)) {
-            StdOut::print("Package already exists at: $packagePath");
-            return;
-        }
-
-        $directories = ['src', 'config', 'tests', 'resources'];
-        foreach ($directories as $dir) {
-            $path = $packagePath . $dir;
-            if (!mkdir($path, 0755, true) && !is_dir($path)) {
-                StdOut::print("Failed to create directory: $path");
-                return;
-            }
-        }
-
-        $composerJsonPath = $packagePath . 'composer.json';
-        if (!file_exists($composerJsonPath)) {
-            $composerContent = json_encode([
-                "name" => "{$authorSlug}/{$packageSlug}",
-                "description" => "Package {$packageName} by {$author}",
-                "type" => "library",
-                "require" => new stdClass()
-            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
-            file_put_contents($composerJsonPath, $composerContent);
-            StdOut::print("composer.json created at: $composerJsonPath");
-        }
-
-        // Generar namespace basado en autor y nombre del package (PascalCase)
-        $namespace = ucfirst(Strings::toPascalCase($authorSlug)) . "\\" . ucfirst(Strings::toPascalCase($packageSlug));
-
-        $templateFiles = [
-            self::SERVICE_PROVIDER_TEMPLATE => 'src/ServiceProvider.php',
-            self::INTERFACE_TEMPLATE => 'src/ExampleInterface.php',
-        ];
-
-        foreach ($templateFiles as $template => $destinationPath) {
-            $destinationFile = $packagePath . $destinationPath;
-            if (file_exists($template)) {
-                $content = file_get_contents($template);
-                if ($content !== false) {
-                    // Reemplazar placeholders __NAME__ y __NAMESPACE__
-                    $updatedContent = str_replace(['__NAME__', '__NAMESPACE__'], [ucfirst($packageName), $namespace], $content);
-                    file_put_contents($destinationFile, $updatedContent);
-                    StdOut::print("Copied and updated template to: $destinationFile");
-                } else {
-                    StdOut::print("Failed to read template: $template");
-                }
-            }
-        }
-
-        StdOut::print("Package created successfully at: $packagePath");
-    }
-
-    /**
+     /**
      * Copia y parsea archivos desde una carpeta de plantillas al directorio del módulo.
      *
      * @param string $templateDir Directorio de las plantillas
@@ -2808,6 +2622,241 @@ class MakeCommand implements ICommand
             file_put_contents($destFile, $content);
             StdOut::print("Created file: $destFile");
         }
+    }
+
+    /**
+     * Crea una estructura de directorios basada en un array de nombres de directorios.
+     *
+     * @param array $directories Lista de directorios a crear (relativos al $basePath)
+     * @param string $basePath Directorio base donde se crearán los directorios
+     * @param array $options Opciones como '-f' o '--force' para forzar la creación
+     * @return void
+     */
+    protected function makeScaffolding(array $directories, string $basePath, array $options = []): bool
+    {
+        $force  = in_array('-f', $options) || in_array('--force', $options);
+        $remove = in_array('--remove', $options) || in_array('--delete', $options) || in_array('-r', $options) || in_array('-d', $options);
+
+        // Solo verifico que no haya que crear nada
+        if ($remove) {
+            return false;
+        }
+
+        foreach ($directories as $dir) {
+            $fullPath = $basePath . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $dir);
+            if (is_dir($fullPath) && !$force) {
+                StdOut::print("Directory '$fullPath' already exists. Use -f or --force to overwrite.");
+                continue;
+            }
+
+            Files::mkDirOrFail($fullPath);
+        }
+
+        return true;
+    }
+
+    /**
+     * Crea un nuevo módulo y copia plantillas si existen.
+     *
+     * @param string $name Nombre del módulo a crear
+     * @param string ...$opt Opciones como '-f' o '--force'
+     * @return void
+     */
+    public function module(string $name, ...$opt): void
+    {
+        $basePath = MODULES_PATH . $name;
+
+        $remove = in_array('--remove', $opt) || in_array('--delete', $opt) || in_array('-r', $opt) || in_array('-d', $opt);
+
+        if ($remove) {
+            Files::rmDirOrFail($basePath, true);
+            StdOut::print("Directory `$basePath` was deleted");
+            return;
+        }
+
+        // Verificar si el directorio raíz existe y manejar la opción -f
+        if (is_dir($basePath) && !in_array('-f', $opt) && !in_array('--force', $opt)) {
+            StdOut::print("Module '$name' already exists. Use -f or --force to overwrite.");
+            return;
+        }
+
+        $directories = [
+            'assets/css',
+            'assets/img',
+            'assets/js',
+            'assets/third_party',
+            'config',
+            'src/Libs',
+            'src/Models',
+            'src/Controllers',
+            'src/Middlewares',
+            'src/Interfaces',
+            'src/Helpers',
+            'src/Traits',
+            'views',            
+            'database/migrations',
+            'database/seeders',
+            'logs',
+            'etc', // similar to Laravel's resources
+            'tests'
+        ];
+
+        // Crear los directorios usando makeScaffolding
+        $this->makeScaffolding($directories, $basePath, $opt);
+
+        // Verificar si existe una carpeta de plantillas para este módulo
+        $pascalName = Strings::toPascalCase(__FUNCTION__);
+        $templateDir = CLASS_TEMPLATES_PATH . $pascalName;
+
+        // dd($templateDir, '$templateDir'); exit; //
+
+        if (is_dir($templateDir)) {
+            // Copiar y parsear archivos desde la carpeta de plantillas
+            $this->copyAndParseTemplates($templateDir, $basePath, $name, $opt);
+        } else {
+            // Si no existe la carpeta de plantillas, crear archivos por defecto
+            $files = [
+                "$name.php" => '<?php // Main module file',
+                'config/config.php' => '<?php return []; // Configuration file',
+            ];
+
+            $force = in_array('-f', $opt) || in_array('--force', $opt);
+            foreach ($files as $file => $content) {
+                $filePath = $basePath . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $file);
+                $dir = dirname($filePath);
+                if (!is_dir($dir)) {
+                    Files::mkDirOrFail($dir);
+                }
+                if (file_exists($filePath) && !$force) {
+                    StdOut::print("File '$filePath' already exists. Use -f or --force to overwrite.");
+                    continue;
+                }
+                file_put_contents($filePath, $content);
+                StdOut::print("Created file: $filePath");
+            }
+        }
+
+        StdOut::print("Module '$name' created successfully at '$basePath'.");
+    }
+
+    /**
+     * Crea un nuevo "package" y copia plantillas si existen.
+     *     
+     */
+    protected function package(string $packageName, $author = '', $destination = null, ...$opt): void
+    {
+        // Normalizar nombres a kebab-case para los directorios
+        $authorSlug  = strtolower(str_replace(' ', '-', preg_replace('/[^a-zA-Z0-9]+/', '-', $author)));
+        $packageSlug = strtolower(str_replace(' ', '-', preg_replace('/[^a-zA-Z0-9]+/', '-', $packageName)));
+
+        if (empty($authorSlug) || empty($packageSlug)) {
+            StdOut::print("Author and package name are required.");
+            return;
+        }
+
+        $basePath = $destination ?: PACKAGES_PATH;
+        $packagePath = $basePath . "{$authorSlug}/{$packageSlug}/";
+
+        if (file_exists($packagePath)) {
+            StdOut::print("Package already exists at: $packagePath");
+            return;
+        }
+
+        $directories = [
+            'assets/css',
+            'assets/img',
+            'assets/js',
+            'assets/third_party',
+            'config',
+            'src/Libs',
+            'src/Models',
+            'src/Controllers',
+            'src/Middlewares',
+            'src/Interfaces',
+            'src/Helpers',
+            'src/Traits',
+            'views',            
+            'database/migrations',
+            'database/seeders',
+            'etc', // similar to Laravel's resources
+            'tests'
+        ];
+
+        // Crear los directorios usando makeScaffolding
+        $this->makeScaffolding($directories, $packagePath, $opt);
+
+        // Generar el namespace basado en autor y nombre del paquete (en PascalCase)
+        $namespace = ucfirst(Strings::toPascalCase($authorSlug)) . "\\" . ucfirst(Strings::toPascalCase($packageSlug));
+
+        $composerJsonPath = $packagePath . 'composer.json';
+        if (!file_exists($composerJsonPath)) {
+            $composerContent = json_encode([
+                "name"        => "{$authorSlug}/{$packageSlug}",
+                "description" => "Package {$packageName} by {$author}",
+                "type"        => "library",
+                "autoload"    => [
+                    "psr-4" => [
+                        $namespace . "\\" => "src/"
+                    ]
+                ],
+                "extra"       => [
+                    "simplerest" => [
+                        "providers" => [
+                            $namespace . "\\ServiceProvider"
+                        ]
+                    ]
+                ],
+                "require"     => new stdClass()
+            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+            file_put_contents($composerJsonPath, $composerContent);
+            StdOut::print("composer.json created at: $composerJsonPath");
+        }
+
+        // Crear archivo README.md básico si no existe
+        $readmePath = $packagePath . 'README.md';
+        if (!file_exists($readmePath)) {
+            $readmeContent = "# {$packageName}\n\nPackage {$packageName} by {$author}.\n";
+            file_put_contents($readmePath, $readmeContent);
+            StdOut::print("README.md created at: $readmePath");
+        }
+
+        // Crear archivo LICENSE básico (MIT por defecto) si no existe
+        $licensePath = $packagePath . 'LICENSE';
+        if (!file_exists($licensePath)) {
+            $licenseContent = "MIT License\n\nCopyright (c) " . date('Y') . " {$author}\n\n" .
+                "Permission is hereby granted, free of charge, to any person obtaining a copy\n" .
+                "of this software and associated documentation files (the \"Software\"), to deal\n" .
+                "in the Software without restriction, including without limitation the rights\n" .
+                "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n" .
+                "copies of the Software, and to permit persons to whom the Software is\n" .
+                "furnished to do so, subject to the following conditions:\n\n" .
+                "[...]\n";
+            file_put_contents($licensePath, $licenseContent);
+            StdOut::print("LICENSE created at: $licensePath");
+        }
+
+        $templateFiles = [
+            self::SERVICE_PROVIDER_TEMPLATE => 'src/ServiceProvider.php',
+            self::INTERFACE_TEMPLATE => 'src/ExampleInterface.php',
+        ];
+
+        foreach ($templateFiles as $template => $destinationPath) {
+            $destinationFile = $packagePath . $destinationPath;
+            if (file_exists($template)) {
+                $content = file_get_contents($template);
+                if ($content !== false) {
+                    // Reemplazar placeholders __NAME__ y __NAMESPACE__
+                    $updatedContent = str_replace(['__NAME__', '__NAMESPACE__'], [ucfirst($packageName), $namespace], $content);
+                    file_put_contents($destinationFile, $updatedContent);
+                    StdOut::print("Copied and updated template to: $destinationFile");
+                } else {
+                    StdOut::print("Failed to read template: $template");
+                }
+            }
+        }
+
+        StdOut::print("Package created successfully at: $packagePath");
     }
 
     function widget(string $name, ...$opt)

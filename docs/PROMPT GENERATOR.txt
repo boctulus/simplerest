@@ -177,7 +177,7 @@ POST /api/v1/prompts
 
 Soporte para los shortcodes [dir] y [android]
 
-Con [dir]
+Con [dir] se puede parsear en la descripción algo como [dir path='D:\laragon\www\simplerest\logs']
 
     Ej:
 
