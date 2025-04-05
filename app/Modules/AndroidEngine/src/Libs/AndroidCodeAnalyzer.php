@@ -834,53 +834,62 @@ class AndroidCodeAnalyzer
     }
 
     /**
-     * Busca la Activity en el AndroidManifest.xml
-     * 
-     * @param string $activityFullName Nombre completo de la Activity (con paquete)
-     * @return array Referencias encontradas en el manifest
-     */
-    private function findActivityInManifest($activityFullName)
-    {
-        $references = [];
+ * Busca la Activity en el AndroidManifest.xml
+ * 
+ * @param string $activityFullName Nombre completo de la Activity (con paquete)
+ * @return array Referencias encontradas en el manifest
+ */
+private function findActivityInManifest($activityFullName)
+{
+    $references = [];
 
-        $manifestPaths = [
-            $this->rootPath . '/app/src/main/AndroidManifest.xml',
-            $this->rootPath . '/AndroidManifest.xml'
-        ];
+    $manifestPaths = [
+        $this->rootPath . '/app/src/main/AndroidManifest.xml',
+        $this->rootPath . '/AndroidManifest.xml'
+    ];
 
-        foreach ($manifestPaths as $manifestPath) {
-            if (file_exists($manifestPath)) {
-                $content = file_get_contents($manifestPath);
-                if ($content === false) continue;
+    foreach ($manifestPaths as $manifestPath) {
+        if (file_exists($manifestPath)) {
+            $content = file_get_contents($manifestPath);
+            if ($content === false) continue;
 
-                // Buscar la activity en el manifest (con o sin paquete completo)
-                $activityName = substr($activityFullName, strrpos($activityFullName, '.') + 1);
-
-                if (preg_match_all('/\<activity[^>]*android:name="\.?' . preg_quote($activityName) . '"|android:name="' . preg_quote($activityFullName) . '"[^>]*\>/', $content, $matches)) {
-                    foreach ($matches[0] as $match) {
+            // Buscar la activity en el manifest (con o sin paquete completo)
+            $activityName = substr($activityFullName, strrpos($activityFullName, '.') + 1);
+            
+            // Primero extraer todas las definiciones de activity para analizar cada una individualmente
+            preg_match_all('/<activity[^>]*>(.*?)<\/activity>/s', $content, $activityBlocks);
+            
+            foreach ($activityBlocks[0] as $index => $activityBlock) {
+                // Verificar si esta actividad corresponde a la que estamos buscando
+                if (preg_match('/android:name="\.?' . preg_quote($activityName) . '"|android:name="' . preg_quote($activityFullName) . '"/', $activityBlock)) {
+                    // Agregar referencia de declaración
+                    preg_match('/<activity[^>]*android:name="[^"]*"[^>]*>/', $activityBlock, $activityTag);
+                    if (!empty($activityTag[0])) {
                         $references[] = [
                             'source' => 'AndroidManifest.xml',
                             'type' => 'declaration',
-                            'context' => trim($match)
+                            'context' => trim($activityTag[0])
+                        ];
+                    }
+                    
+                    // Verificar si es la actividad principal (MAIN y LAUNCHER)
+                    if (preg_match('/<action android:name="android.intent.action.MAIN"/', $activityBlock) &&
+                        preg_match('/<category android:name="android.intent.category.LAUNCHER"/', $activityBlock)) {
+                        $references[] = [
+                            'source' => 'AndroidManifest.xml',
+                            'type' => 'main_activity',
+                            'context' => 'Esta es la actividad principal (MAIN/LAUNCHER)'
                         ];
                     }
                 }
-
-                // Verificar si es la actividad principal (MAIN y LAUNCHER)
-                if (preg_match('/<activity[^>]*android:name="\.?' . preg_quote($activityName) . '"|android:name="' . preg_quote($activityFullName) . '"[^>]*>.*?<action android:name="android.intent.action.MAIN".*?<category android:name="android.intent.category.LAUNCHER"/s', $content)) {
-                    $references[] = [
-                        'source' => 'AndroidManifest.xml',
-                        'type' => 'main_activity',
-                        'context' => 'Esta es la actividad principal (MAIN/LAUNCHER)'
-                    ];
-                }
-
-                break; // Solo necesitamos un manifest
             }
+            
+            break; // Solo necesitamos un manifest
         }
-
-        return $references;
     }
+
+    return $references;
+}
 
     /**
      * Busca la Activity en archivos de menú (XML)
