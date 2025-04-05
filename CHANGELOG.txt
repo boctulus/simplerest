@@ -110,3 +110,4 @@
 [2025-04-03 18:26:25]	0.8.12	FileCommand revisado
 [2025-04-05 11:22:09]	0.8.12	AndroidCodeAnalyzer en progreso
 [2025-04-05 11:46:54]	0.8.12	getBuildFeatures ahora considera archivos .kts
+[2025-04-05 15:05:22]	0.8.12	AndroidCodeAnalyzer mejorado (stable)
