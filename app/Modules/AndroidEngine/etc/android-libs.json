@@ -1,0 +1,207 @@
+{
+   "categories":[
+      {
+         "name":"Fundamentos",
+         "description":"Librerías que proveen utilidades básicas para mejorar la legibilidad y compatibilidad de la aplicación.",
+         "libraries":[
+            {
+               "name":"Android KTX",
+               "description":"Conjunto de extensiones que hacen el código más legible y conciso.",
+               "namespaces":[
+                  "androidx.core"
+               ]
+            },
+            {
+               "name":"AppCompat",
+               "description":"Asegura la compatibilidad de la aplicación con Material Design y versiones anteriores de Android.",
+               "namespaces":[
+                  "androidx.appcompat"
+               ]
+            }
+         ]
+      },
+      {
+         "name":"Arquitectura",
+         "description":"Librerías que facilitan la estructura, manejo de datos y gestión del ciclo de vida en la aplicación.",
+         "libraries":[
+            {
+               "name":"Room",
+               "description":"Manejo y creación de bases de datos locales.",
+               "namespaces":[
+                  "androidx.room"
+               ]
+            },
+            {
+               "name":"Lifecycles",
+               "description":"Facilita la gestión del ciclo de vida de actividades y fragmentos.",
+               "namespaces":[
+                  "androidx.lifecycle"
+               ]
+            },
+            {
+               "name":"LiveData",
+               "description":"Permite gestionar y observar flujos de datos de forma reactiva.",
+               "namespaces":[
+                  "androidx.lifecycle.LiveData"
+               ]
+            },
+            {
+               "name":"ViewModel",
+               "description":"Almacena y gestiona datos para la interfaz de usuario, facilitando su compartición entre componentes.",
+               "namespaces":[
+                  "androidx.lifecycle.ViewModel"
+               ]
+            }
+         ]
+      },
+      {
+         "name":"Interfaz de Usuario (UI)",
+         "description":"Componentes y herramientas para el diseño y animación de la interfaz de usuario.",
+         "libraries":[
+            {
+               "name":"Animations & Transitions",
+               "description":"Permite la implementación de animaciones y transiciones entre pantallas.",
+               "namespaces":[
+                  "androidx.transition"
+               ]
+            },
+            {
+               "name":"Fragment",
+               "description":"Componente reutilizable para la construcción de interfaces de usuario.",
+               "namespaces":[
+                  "androidx.fragment.app"
+               ]
+            },
+            {
+               "name":"Layout & Widgets",
+               "description":"Conjunto de componentes y widgets para diseñar la interfaz de usuario.",
+               "namespaces":[
+                  "android.widget"
+               ]
+            }
+         ]
+      },
+      {
+         "name":"Terceros",
+         "description":"Librerías de terceros que aportan funcionalidades adicionales como manejo de imágenes, inyección de dependencias y permisos.",
+         "libraries":[
+            {
+               "name":"Glide",
+               "description":"Carga y manipulación eficiente de imágenes.",
+               "namespaces":[
+                  "com.bumptech.glide"
+               ]
+            },
+            {
+               "name":"Kotlin Coroutines",
+               "description":"Manejo de operaciones asíncronas de forma sencilla y eficiente.",
+               "namespaces":[
+                  "kotlinx.coroutines"
+               ]
+            },
+            {
+               "name":"Dagger-Hilt",
+               "description":"Realiza la inyección de dependencias de forma sencilla.",
+               "namespaces":[
+                  "dagger.hilt"
+               ]
+            },
+            {
+               "name":"SharedPreferences",
+               "description":"Permite el almacenamiento persistente de pequeños datos.",
+               "namespaces":[
+                  "android.content.SharedPreferences"
+               ]
+            },
+            {
+               "name":"Barcode Scanner",
+               "description":"Utilizada para escanear códigos de barras.",
+               "namespaces":[
+                  "barcodescanner.CaptureActivity"
+               ]
+            }
+         ]
+      },
+      {
+         "name":"Firebase",
+         "description":"Servicios de Firebase para monitoreo, reporte de fallos y configuración remota.",
+         "libraries":[
+            {
+               "name":"Crashlytics",
+               "description":"Monitoreo y reporte de fallos en la aplicación.",
+               "namespaces":[
+                  "com.google.firebase.crashlytics"
+               ]
+            },
+            {
+               "name":"Remote Config",
+               "description":"Permite configurar parámetros de la aplicación de forma remota.",
+               "namespaces":[
+                  "com.google.firebase.remoteconfig"
+               ]
+            }
+         ]
+      },
+      {
+         "name":"Jetpack & Modern Android",
+         "description":"Librerías modernas que potencian la experiencia de desarrollo y la creación de interfaces declarativas.",
+         "libraries":[
+            {
+               "name":"DataStore Preferences",
+               "description":"Almacenamiento de datos de configuración y tokens de usuario.",
+               "namespaces":[
+                  "androidx.datastore.preferences"
+               ]
+            },
+            {
+               "name":"Compose",
+               "description":"Sistema de UI declarativo para construir interfaces de usuario.",
+               "namespaces":[
+                  "androidx.compose.runtime"
+               ]
+            },
+            {
+               "name":"Compose Navigation",
+               "description":"Sistema de navegación para aplicaciones construidas con Compose.",
+               "namespaces":[
+                  "androidx.navigation.compose"
+               ]
+            },
+            {
+               "name":"Accompanist Pager",
+               "description":"Facilita la implementación de paginadores y pestañas en Compose.",
+               "namespaces":[
+                  "com.google.accompanist.pager"
+               ]
+            }
+         ]
+      },
+      {
+         "name":"Otras Utilidades",
+         "description":"Librerías adicionales que ofrecen funcionalidades complementarias para la aplicación.",
+         "libraries":[
+            {
+               "name":"Retrofit",
+               "description":"Facilita las conexiones de red y llamadas a APIs.",
+               "namespaces":[
+                  "retrofit2.Retrofit"
+               ]
+            },
+            {
+               "name":"In App Update",
+               "description":"Permite implementar actualizaciones urgentes en la aplicación.",
+               "namespaces":[
+                  "com.google.android.play.core.appupdate"
+               ]
+            },
+            {
+               "name":"Easy Permission",
+               "description":"Facilita la gestión de permisos en la aplicación.",
+               "namespaces":[
+                  "pub.devrel.easypermissions"
+               ]
+            }
+         ]
+      }
+   ]
+}

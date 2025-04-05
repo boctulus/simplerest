@@ -767,8 +767,6 @@ class Files
 			return array_unique($files);
 		}
 
-		
-
 		// Process single pattern as in the original function
 		$files = glob($pattern, $flags);
 
