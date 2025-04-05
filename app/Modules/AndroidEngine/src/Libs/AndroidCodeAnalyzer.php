@@ -2,54 +2,11 @@
 
 namespace Boctulus\Simplerest\Modules\AndroidEngine\src\Libs;
 
+use Boctulus\Simplerest\Core\Libs\XML;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\libs\Documentor;
 use Boctulus\Simplerest\Core\Libs\Strings;
 
-/*
-    TODO:
-
-    - Determinar la orientación de la pantalla (portrait o landscape)
-
-        . Orientación Default para la Aplicación
-
-            <application
-                android:screenOrientation="landscape"
-                android:label="@string/app_name">
-                <!-- Otras configuraciones -->
-            </application>
-
-        . Orientación por Activity
-
-            <activity android:name=".MainActivity"
-                    android:screenOrientation="landscape">
-                <!-- Otras configuraciones -->
-            </activity>
-
-        . Listar res/values relacionados:
-
-            res/layout/: Para el diseño en orientación vertical.
-            res/layout-land/: Para el diseño en orientación horizontal.
-            res/values/: Para valores generales.
-            res/values-land/: Para valores específicos cuando la orientación sea horizontal.
-            etc 
-
-    - Listar colores (nombres) con sus valores (de colors.xml)
-
-    - Listar strings (de strings.xml)
-
-    - Listar drawables )
-
-    - Listar permisos de AndroidManifest
-
-    - Listar buildFeatures
-
-        android {
-            ...
-            buildFeatures {
-                dataBinding true
-            }
-        }
-
-*/
 
 class AndroidCodeAnalyzer
 {
@@ -60,6 +17,10 @@ class AndroidCodeAnalyzer
 
     // Cola de errores/advertencias
     private static $errors = [];
+
+    const ERROR_SEVERITY   = 'error';
+    const WARNING_SEVERITY = 'warning';
+    const INFO_SEVERITY    = 'info';
 
     /**
      * Establece la ruta raíz del proyecto Android
@@ -86,8 +47,15 @@ class AndroidCodeAnalyzer
      * @param string $message Mensaje de error
      * @return void
      */
-    private static function addError($message)
+    private static function addError($message, $severity = 'error')
     {
+        if (is_string($message)) {
+            $message = [
+                'type' => $severity,
+                'text' => $message
+            ];
+        }
+
         self::$errors[] = $message;
     }
 
@@ -140,7 +108,7 @@ class AndroidCodeAnalyzer
         }
 
         // Si no se encuentra una orientación explícita
-        self::addError("No se encontró una orientación explícita en el AndroidManifest.xml");
+        self::addError("No se encontró una orientación explícita en el AndroidManifest.xml", self::WARNING_SEVERITY);
         self::$orientation = null;
         return null;
     }
@@ -161,7 +129,7 @@ class AndroidCodeAnalyzer
         } elseif (in_array($orientation, $landscapeValues)) {
             return 'landscape';
         } else {
-            self::addError("Valor de orientación desconocido: $orientation");
+            self::addError("Valor de orientación desconocido: $orientation", self::WARNING_SEVERITY);
             return 'portrait'; // Default a portrait como fallback
         }
     }
@@ -198,7 +166,7 @@ class AndroidCodeAnalyzer
         if (is_dir($layoutPath)) {
             $result['layout'] = self::scanDirectory($layoutPath);
         } else {
-            self::addError("No se encontró el directorio layout");
+            self::addError("No se encontró el directorio layout", self::INFO_SEVERITY);
         }
 
         // Verificar y listar archivos de layout landscape
@@ -206,7 +174,7 @@ class AndroidCodeAnalyzer
         if (is_dir($layoutLandPath)) {
             $result['layout-land'] = self::scanDirectory($layoutLandPath);
         } else {
-            self::addError("No se encontró el directorio layout-land");
+            self::addError("No se encontró el directorio layout-land", self::INFO_SEVERITY);
         }
 
         // Verificar y listar archivos de values estándar
@@ -214,7 +182,7 @@ class AndroidCodeAnalyzer
         if (is_dir($valuesPath)) {
             $result['values'] = self::scanDirectory($valuesPath);
         } else {
-            self::addError("No se encontró el directorio values");
+            self::addError("No se encontró el directorio values", self::WARNING_SEVERITY);
         }
 
         // Verificar y listar archivos de values landscape
@@ -222,7 +190,7 @@ class AndroidCodeAnalyzer
         if (is_dir($valuesLandPath)) {
             $result['values-land'] = self::scanDirectory($valuesLandPath);
         } else {
-            self::addError("No se encontró el directorio values-land");
+            self::addError("No se encontró el directorio values-land", self::INFO_SEVERITY);
         }
 
         return $result;
@@ -266,7 +234,7 @@ class AndroidCodeAnalyzer
         if (!file_exists($colorsPath)) {
             $colorsPath = self::$rootPath . '/res/values/colors.xml';
             if (!file_exists($colorsPath)) {
-                throw new \Exception("No se encontró el archivo colors.xml");
+                throw new \Exception("No se encontró el archivo colors.xml", self::WARNING_SEVERITY);
             }
         }
 
@@ -281,7 +249,7 @@ class AndroidCodeAnalyzer
                 $colors[$match[1]] = $match[2];
             }
         } else {
-            self::addError("No se encontraron definiciones de colores en colors.xml");
+            self::addError("No se encontraron definiciones de colores en colors.xml", self::INFO_SEVERITY);
         }
 
         return $colors;
@@ -318,7 +286,7 @@ class AndroidCodeAnalyzer
                 $strings[$match[1]] = $match[2];
             }
         } else {
-            self::addError("No se encontraron definiciones de strings en strings.xml");
+            self::addError("No se encontraron definiciones de strings en strings.xml", self::INFO_SEVERITY);
         }
 
         return $strings;
@@ -485,5 +453,107 @@ class AndroidCodeAnalyzer
         }
 
         return $features;
+    }
+
+    /**
+     * Convierte XML a Markdown en un formato amigable y simple para layouts Android
+     * 
+     * @param string $xml Contenido XML
+     * @param bool $include_ids Si es true, incluye los IDs entre corchetes
+     * @return string Markdown formateado
+     */
+    static function xmlToMarkdown(string $xml, bool $include_ids = false)
+    {
+        // Carga el XML como DOM
+        $dom = new \DOMDocument();
+        libxml_use_internal_errors(true); // Suprimir errores XML
+        $dom->loadXML($xml);
+        libxml_clear_errors();
+
+        $markdown = "# Layout XML\n\n";
+
+        // Procesar el nodo raíz
+        if ($dom->documentElement) {
+            $markdown .= self::processDomNode($dom->documentElement, 0, $include_ids);
+        }
+
+        return $markdown;
+    }
+
+    /**
+     * Procesa recursivamente un nodo DOM y lo convierte a Markdown
+     * 
+     * @param \DOMNode $node Nodo DOM a procesar
+     * @param int $depth Nivel de profundidad actual para la indentación
+     * @param bool $include_ids Si es true, incluye los IDs en la salida
+     * @return string Markdown para este nodo y sus hijos
+     */
+    private static function processDomNode($node, $depth = 0, $include_ids = false)
+    {
+        $indent = str_repeat("  ", $depth);
+        $markdown = "";
+
+        // Solo procesar nodos de elemento
+        if ($node->nodeType !== XML_ELEMENT_NODE) {
+            return $markdown;
+        }
+
+        // Obtener el nombre del nodo (eliminar el namespace si existe)
+        $nodeName = $node->localName ?: $node->nodeName;
+
+        // Comenzar la sección del elemento
+        $markdown .= "{$indent}- **{$nodeName}**";
+
+        // Verificar si tiene ID y agregarlo si se solicita
+        if ($include_ids) {
+            // Buscar todos los atributos
+            if ($node->hasAttributes()) {
+                foreach ($node->attributes as $attr) {
+                    $attrName = $attr->nodeName;
+                    $attrValue = $attr->nodeValue;
+
+                    // Verificar si es un atributo ID (con o sin namespace)
+                    if ($attrName === 'android:id' || $attrName === 'id' || substr($attrName, -3) === ':id') {
+                        $cleanId = self::cleanId($attrValue);
+                        $markdown .= " [id:{$cleanId}]";
+                        break;
+                    }
+                }
+            }
+        }
+
+        $markdown .= "\n";
+
+        // Procesar nodos hijos
+        if ($node->hasChildNodes()) {
+            foreach ($node->childNodes as $child) {
+                if ($child->nodeType === XML_ELEMENT_NODE) {
+                    $markdown .= self::processDomNode($child, $depth + 1, $include_ids);
+                }
+            }
+        }
+
+        return $markdown;
+    }
+
+    /**
+     * Lee un archivo XML y lo convierte a Markdown
+     * 
+     * @param string $file_path Ruta al archivo XML
+     * @param bool $include_ids Si es true, incluye los IDs en el resultado
+     * @return string Markdown formateado o mensaje de error
+     */
+    static function markdown(string $file_path, bool $include_ids = false)
+    {
+        if (!file_exists($file_path)) {
+            return "Error: El archivo `$file_path` no existe";
+        }
+
+        $xml = file_get_contents($file_path);
+        if ($xml === false) {
+            return "Error: No se pudo leer el archivo `$file_path`";
+        }
+
+        return static::xmlToMarkdown($xml, $include_ids);
     }
 }
