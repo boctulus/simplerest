@@ -23,31 +23,12 @@ class AndroidCodeAnalyzer
     const INFO_SEVERITY    = 'info';
 
     /**
-     * Establece la ruta raíz del proyecto Android
-     * 
-     * @param string $path Ruta al directorio raíz del proyecto Android
-     * @return void
-     */
-    public static function setRootPath($path)
-    {
-        self::$rootPath = rtrim($path, '/\\');
-    }
-
-    /**
-     * Limpia un ID de Android (quita @+id/ o @id/)
-     */
-    private static function cleanId($id)
-    {
-        return preg_replace('/^@(\+)?id\//', '', $id);
-    }
-
-    /**
      * Añade un error/advertencia a la cola
      * 
      * @param string $message Mensaje de error
      * @return void
      */
-    private static function addError($message, $severity = 'error')
+    private static function addError($message, $severity = 'info')
     {
         if (is_string($message)) {
             $message = [
@@ -67,6 +48,25 @@ class AndroidCodeAnalyzer
     public static function getErrors()
     {
         return self::$errors;
+    }
+
+    /**
+     * Establece la ruta raíz del proyecto Android
+     * 
+     * @param string $path Ruta al directorio raíz del proyecto Android
+     * @return void
+     */
+    public static function setRootPath($path)
+    {
+        self::$rootPath = rtrim($path, '/\\');
+    }
+
+    /**
+     * Limpia un ID de Android (quita @+id/ o @id/)
+     */
+    private static function cleanId($id)
+    {
+        return preg_replace('/^@(\+)?id\//', '', $id);
     }
 
     /**
