@@ -3322,6 +3322,16 @@ class DumbController extends Controller
         dd(Files::glob(ROOT_PATH, '*.zip|*.txt'));
     }
 
+    function test_glob_rec()
+    {
+        dd(Files::recursiveGlob(ROOT_PATH . DIRECTORY_SEPARATOR . '*.zip'));
+    }
+
+    function test_glob_rec_2()
+    {
+        dd(Files::recursiveGlob(ROOT_PATH . DIRECTORY_SEPARATOR . '*.zip|*.txt'));
+    }
+
     function test_abs_path()
     {
         dd(Files::getAbsolutePath("docs/x.txt"));
