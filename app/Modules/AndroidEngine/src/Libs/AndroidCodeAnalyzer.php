@@ -46,8 +46,14 @@ class AndroidCodeAnalyzer
      * 
      * @return array Lista de errores/advertencias
      */
-    public function getErrors()
+    public function getErrors($severity = null)
     {
+        if ($severity !== null) {
+            return array_filter($this->errors, function ($error) use ($severity) {
+                return $error['type'] === $severity;
+            });
+        }        
+        // Si no se especifica severidad, devuelve todos los errores
         return $this->errors;
     }
 
@@ -827,6 +833,17 @@ class AndroidCodeAnalyzer
             // Solo agregamos la clave 'references' si hay alguna referencia no vacía
             if (!empty($references)) {
                 $activity['references'] = $references;
+            }
+        }
+
+        // Revisar actividades sin referencias y generar advertencias
+        foreach ($activities as $activity) {
+            if (!isset($activity['references']) || empty($activity['references'])) {
+                $this->addError(
+                    "La actividad '{$activity['name']}' no tiene referencias en el proyecto. " .
+                    "Posible código no utilizado o actividad sin registrar.", 
+                    self::WARNING_SEVERITY
+                );
             }
         }
 
