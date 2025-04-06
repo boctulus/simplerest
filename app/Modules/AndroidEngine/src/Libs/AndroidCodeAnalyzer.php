@@ -6,30 +6,42 @@ use Boctulus\Simplerest\Core\Libs\Files;
 
 /*
     Análisis de código Android
+
+
+    Al recuperar errores se pueden usar mascara de bits para filtrar los errores
+
+    Ej:
+
+        $analyzer->getErrors(AndroidCodeAnalyzer::SEVERITY_WARNING | AndroidCodeAnalyzer::SEVERITY_DEBUG)
 */
 
 class AndroidCodeAnalyzer
 {
-    public $orientation; // 'portrait' o 'landscape'
-
-    // Ruta raíz del proyecto Android
+    public  $orientation; // 'portrait' o 'landscape'
     private $rootPath = null;
-
-    // Cola de errores/advertencias
     private $errors = [];
 
-    const ERROR_SEVERITY   = 'error';
-    const WARNING_SEVERITY = 'warning';
-    const INFO_SEVERITY    = 'info';
-    const DEBUG_SEVERITY   = 'debug';
+    const SEVERITY_ERROR   = 1;   // 0001
+    const SEVERITY_WARNING = 2;   // 0010
+    const SEVERITY_INFO    = 4;   // 0100
+    const SEVERITY_DEBUG   = 8;   // 1000
+
+    // Mapeo de constantes a sus nombres legibles
+    private static $severityText = [
+        self::SEVERITY_ERROR   => 'ERROR',
+        self::SEVERITY_WARNING => 'WARNING',
+        self::SEVERITY_INFO    => 'INFO',
+        self::SEVERITY_DEBUG   => 'DEBUG'
+    ];
 
     /**
-     * Añade un error/advertencia a la cola
-     * 
-     * @param string $message Mensaje de error
+     * Añade un error/advertencia a la cola.
+     *
+     * @param string|array $message Mensaje de error o array con información
+     * @param int $severity Severidad del error (por defecto SEVERITY_INFO)
      * @return void
      */
-    private function addError($message, $severity = 'info')
+    private function addError($message, int $severity = self::SEVERITY_INFO)
     {
         if (is_string($message)) {
             $message = [
@@ -37,24 +49,48 @@ class AndroidCodeAnalyzer
                 'text' => $message
             ];
         }
-
         $this->errors[] = $message;
     }
 
     /**
-     * Obtiene todos los errores/advertencias acumulados
-     * 
-     * @return array Lista de errores/advertencias
+     * Función auxiliar para convertir una máscara de bits a un string legible.
+     *
+     * @param int $bitmask Máscara de severidades.
+     * @return string Nombres legibles de las severidades.
+     */
+    private static function getSeverityNames(int $bitmask): string
+    {
+        $names = [];
+        foreach (self::$severityText as $key => $text) {
+            if ($bitmask & $key) {
+                $names[] = $text;
+            }
+        }
+        // Si solo hay un valor, devolverlo como string; si hay varios, concatenarlos con '|'
+        return count($names) === 1 ? $names[0] : implode('|', $names);
+    }
+
+    /**
+     * Obtiene todos los errores/advertencias acumulados.
+     * Si se proporciona una máscara de severidad, devuelve sólo los errores
+     * que coincidan con alguno de los tipos indicados.
+     *
+     * @param int|null $severity Máscara de severidades a filtrar.
+     * @return array Lista de errores/advertencias con nombres legibles.
      */
     public function getErrors($severity = null)
     {
+        $filtered = $this->errors;
         if ($severity !== null) {
-            return array_filter($this->errors, function ($error) use ($severity) {
-                return $error['type'] === $severity;
+            $filtered = array_filter($this->errors, function ($error) use ($severity) {
+                return ($error['type'] & $severity) !== 0;
             });
-        }        
-        // Si no se especifica severidad, devuelve todos los errores
-        return $this->errors;
+        }
+        // Convertir la severidad numérica a un string legible
+        foreach ($filtered as &$error) {
+            $error['type'] = self::getSeverityNames($error['type']);
+        }
+        return $filtered;
     }
 
     /**
@@ -115,7 +151,7 @@ class AndroidCodeAnalyzer
         }
 
         // Si no se encuentra una orientación explícita
-        static::addError("No se encontró una orientación explícita en el AndroidManifest.xml", static::WARNING_SEVERITY);
+        static::addError("No se encontró una orientación explícita en el AndroidManifest.xml", static::SEVERITY_WARNING);
         $this->orientation = null;
         return null;
     }
@@ -136,7 +172,7 @@ class AndroidCodeAnalyzer
         } elseif (in_array($orientation, $landscapeValues)) {
             return 'landscape';
         } else {
-            static::addError("Valor de orientación desconocido: $orientation", static::WARNING_SEVERITY);
+            static::addError("Valor de orientación desconocido: $orientation", static::SEVERITY_WARNING);
             return 'portrait'; // Default a portrait como fallback
         }
     }
@@ -173,7 +209,7 @@ class AndroidCodeAnalyzer
         if (is_dir($layoutPath)) {
             $result['layout'] = static::scanDirectory($layoutPath);
         } else {
-            static::addError("No se encontró el directorio layout", static::INFO_SEVERITY);
+            static::addError("No se encontró el directorio layout", static::SEVERITY_INFO);
         }
 
         // Verificar y listar archivos de layout landscape
@@ -181,7 +217,7 @@ class AndroidCodeAnalyzer
         if (is_dir($layoutLandPath)) {
             $result['layout-land'] = static::scanDirectory($layoutLandPath);
         } else {
-            static::addError("No se encontró el directorio layout-land", static::INFO_SEVERITY);
+            static::addError("No se encontró el directorio layout-land", static::SEVERITY_INFO);
         }
 
         // Verificar y listar archivos de values estándar
@@ -189,7 +225,7 @@ class AndroidCodeAnalyzer
         if (is_dir($valuesPath)) {
             $result['values'] = static::scanDirectory($valuesPath);
         } else {
-            static::addError("No se encontró el directorio values", static::WARNING_SEVERITY);
+            static::addError("No se encontró el directorio values", static::SEVERITY_WARNING);
         }
 
         // Verificar y listar archivos de values landscape
@@ -197,7 +233,7 @@ class AndroidCodeAnalyzer
         if (is_dir($valuesLandPath)) {
             $result['values-land'] = static::scanDirectory($valuesLandPath);
         } else {
-            static::addError("No se encontró el directorio values-land", static::INFO_SEVERITY);
+            static::addError("No se encontró el directorio values-land", static::SEVERITY_INFO);
         }
 
         return $result;
@@ -241,7 +277,7 @@ class AndroidCodeAnalyzer
         if (!file_exists($colorsPath)) {
             $colorsPath = $this->rootPath . '/res/values/colors.xml';
             if (!file_exists($colorsPath)) {
-                throw new \Exception("No se encontró el archivo colors.xml", static::WARNING_SEVERITY);
+                throw new \Exception("No se encontró el archivo colors.xml", static::SEVERITY_WARNING);
             }
         }
 
@@ -256,7 +292,7 @@ class AndroidCodeAnalyzer
                 $colors[$match[1]] = $match[2];
             }
         } else {
-            static::addError("No se encontraron definiciones de colores en colors.xml", static::INFO_SEVERITY);
+            static::addError("No se encontraron definiciones de colores en colors.xml", static::SEVERITY_INFO);
         }
 
         return $colors;
@@ -293,7 +329,7 @@ class AndroidCodeAnalyzer
                 $strings[$match[1]] = $match[2];
             }
         } else {
-            static::addError("No se encontraron definiciones de strings en strings.xml", static::INFO_SEVERITY);
+            static::addError("No se encontraron definiciones de strings en strings.xml", static::SEVERITY_INFO);
         }
 
         return $strings;
@@ -535,12 +571,12 @@ class AndroidCodeAnalyzer
         ];
 
         if (in_array($elementName, $mustHaveIdElements) || preg_match('/(Button|Input)$/', $elementName)) {
-            return [true, static::WARNING_SEVERITY];
+            return [true, static::SEVERITY_WARNING];
         } elseif (in_array($elementName, $shouldHaveIdElements) || preg_match('/(Layout|View)$/', $elementName)) {
-            return [true, static::INFO_SEVERITY];
+            return [true, static::SEVERITY_INFO];
         }
 
-        return [false, static::INFO_SEVERITY];
+        return [false, static::SEVERITY_INFO];
     }
 
     /**
@@ -711,11 +747,11 @@ class AndroidCodeAnalyzer
         // Usamos el método de Files para buscar archivos .java y .kt recursivamente
         $sourcePath = $this->rootPath . '/app/src/main/java';
 
-        $this->addError("Buscando archivos fuente en: {$sourcePath}", self::DEBUG_SEVERITY);
+        $this->addError("Buscando archivos fuente en: {$sourcePath}", self::SEVERITY_DEBUG);
 
         // Verificar si el directorio existe
         if (!is_dir($sourcePath)) {
-            $this->addError("El directorio de código fuente no existe: {$sourcePath}", self::ERROR_SEVERITY);
+            $this->addError("El directorio de código fuente no existe: {$sourcePath}", self::SEVERITY_ERROR);
             return [];
         }
 
@@ -723,11 +759,11 @@ class AndroidCodeAnalyzer
         $files = Files::recursiveGlob($sourcePath . DIRECTORY_SEPARATOR . '*.kt|*.java');
 
         if (empty($files)) {
-            $this->addError("No se encontraron archivos .kt o .java en {$sourcePath}", self::WARNING_SEVERITY);
+            $this->addError("No se encontraron archivos .kt o .java en {$sourcePath}", self::SEVERITY_WARNING);
             return [];
         }
 
-        $this->addError("Encontrados " . count($files) . " archivos .kt y .java", self::DEBUG_SEVERITY);
+        $this->addError("Encontrados " . count($files) . " archivos .kt y .java", self::SEVERITY_DEBUG);
 
         $activities = [];
 
@@ -735,7 +771,7 @@ class AndroidCodeAnalyzer
         foreach ($files as $file) {
             $content = file_get_contents($file);
             if ($content === false) {
-                $this->addError("No se pudo leer el archivo: {$file}", self::WARNING_SEVERITY);
+                $this->addError("No se pudo leer el archivo: {$file}", self::SEVERITY_WARNING);
                 continue;
             }
 
@@ -760,7 +796,7 @@ class AndroidCodeAnalyzer
                         'fullName' => $packageName . '.' . $activityName
                     ];
 
-                    $this->addError("Activity encontrada: {$activityName} en {$file}", self::DEBUG_SEVERITY);
+                    $this->addError("Activity encontrada: {$activityName} en {$file}", self::SEVERITY_DEBUG);
                 }
             }
             // Patrón para Activities en Java
@@ -782,13 +818,13 @@ class AndroidCodeAnalyzer
                         'fullName' => $packageName . '.' . $activityName
                     ];
 
-                    $this->addError("Activity encontrada: {$activityName} en {$file}", self::DEBUG_SEVERITY);
+                    $this->addError("Activity encontrada: {$activityName} en {$file}", self::SEVERITY_DEBUG);
                 }
             }
         }
 
         if (empty($activities)) {
-            $this->addError("No se encontraron Activities en ninguno de los archivos analizados", self::WARNING_SEVERITY);
+            $this->addError("No se encontraron Activities en ninguno de los archivos analizados", self::SEVERITY_WARNING);
         }
 
         return $activities;
@@ -842,7 +878,7 @@ class AndroidCodeAnalyzer
                 $this->addError(
                     "La actividad '{$activity['name']}' no tiene referencias en el proyecto. " .
                     "Posible código no utilizado o actividad sin registrar.", 
-                    self::WARNING_SEVERITY
+                    self::SEVERITY_WARNING
                 );
             }
         }
