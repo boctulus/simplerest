@@ -9543,16 +9543,38 @@ class DumbController extends Controller
         dd($pid, 'pid');
     }
 
-    function _4(){
+    function test_log_error(){
+        // El erorr tambien va a ser enviado a ./logs/log.txt por usar VarDump::log()
         VarDump::log();
    
         try {
-            for ($i=0; $i<5; $i++){  
-                dd($i, 'i');
-                sleep(1);
+            for ($i=5; $i>-1; $i--){  
+                dd((10/$i-5), 'Result');
             }
-        } catch (\Exception $e){
+        } catch (\Throwable $e) {
+            // Envia error a ./logs/errors.txt
             Logger::logError($e->getMessage());
+        }
+    }
+
+    function test_show()
+    {   
+        Logger::debug();
+        Logger::show('Hola mundo', 'Texto de prueba');
+        Logger::show('Probando 1,2,3', 'Texto de debug', Logger::SEVERITY_DEBUG);
+        Logger::showError('Error de prueba', Logger::SEVERITY_ERROR);
+    }
+
+    function test_show_error()
+    {   
+        Logger::debug();     
+
+        try {
+            for ($i=5; $i>-1; $i--){  
+                Logger::show((10/$i-5), 'Result');
+            }
+        } catch (\Throwable $e) { // Captura tanto Exception como Error
+            Logger::showError($e->getMessage(), Logger::SEVERITY_ERROR);
         }
     }
 
@@ -9814,6 +9836,17 @@ class DumbController extends Controller
 
         dd(
             PHPLexicalAnalyzer::getFunctionNames($code)
+        );
+    }
+
+    function test_function_parser_conversor()
+    {
+        $code = file_get_contents('D:\laragon\www\simplerest\app\Modules\AndroidEngine\src\Libs\AndroidCodeAnalyzer.php');
+
+        $parser = new PHPParser();
+
+        dd(
+            $parser->convertStaticToNonStatic($code)
         );
     }
 
@@ -12268,12 +12301,11 @@ class DumbController extends Controller
         dd($result);
     }
 
-
     function test_documentor(){
         $file = 'documentation_ej1.json';
 
         dd(
-            Documentor::fromJSONtoMarkDown(ETC_PATH . $file)
+            Documentor::fromJSONFileToMarkDown(ETC_PATH . $file)
             , 'MarkDown'
         );
     }

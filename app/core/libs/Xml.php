@@ -230,7 +230,7 @@ class XML
         @author Eaten by a Grue 
         https://stackoverflow.com/users/1767412/eaten-by-a-grue
     */
-    static function toArray($xml) {
+    static function toArray(string $xml) {
         $previous_value = libxml_use_internal_errors(true);
 
         $dom = new \DOMDocument('1.0', 'UTF-8');

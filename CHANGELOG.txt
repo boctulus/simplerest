@@ -117,3 +117,4 @@
 [2025-04-06 08:01:54]	0.8.12	AndroidCodeAnalyzer mejorado reporte de activities y errores
 [2025-04-06 08:21:09]	0.8.12	AndroidCodeAnalyzer mejorado reporte de errores
 [2025-04-06 09:51:53]	0.8.12	Logger mejorado
+[2025-04-08 22:44:27]	0.8.12	Refactoring
