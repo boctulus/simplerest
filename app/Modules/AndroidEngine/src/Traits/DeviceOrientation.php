@@ -7,6 +7,7 @@ use Boctulus\Simplerest\Core\Traits\ErrorReporting;
 Trait DeviceOrientation 
 {
     use ErrorReporting;
+    use FilesTrait;
     
     /**
      * Determina la orientación predeterminada de la aplicación
@@ -103,7 +104,7 @@ Trait DeviceOrientation
         // Verificar y listar archivos de layout estándar
         $layoutPath = $resourcesPath . '/layout';
         if (is_dir($layoutPath)) {
-            $result['layout'] = static::scanDirectory($layoutPath);
+            $result['layout'] = $this->scanDirectory($layoutPath);
         } else {
             static::addError("No se encontró el directorio layout", static::SEVERITY_INFO);
         }
@@ -111,7 +112,7 @@ Trait DeviceOrientation
         // Verificar y listar archivos de layout landscape
         $layoutLandPath = $resourcesPath . '/layout-land';
         if (is_dir($layoutLandPath)) {
-            $result['layout-land'] = static::scanDirectory($layoutLandPath);
+            $result['layout-land'] = $this->scanDirectory($layoutLandPath);
         } else {
             static::addError("No se encontró el directorio layout-land", static::SEVERITY_INFO);
         }
@@ -119,7 +120,7 @@ Trait DeviceOrientation
         // Verificar y listar archivos de values estándar
         $valuesPath = $resourcesPath . '/values';
         if (is_dir($valuesPath)) {
-            $result['values'] = static::scanDirectory($valuesPath);
+            $result['values'] = $this->scanDirectory($valuesPath);
         } else {
             static::addError("No se encontró el directorio values", static::SEVERITY_WARNING);
         }
@@ -127,7 +128,7 @@ Trait DeviceOrientation
         // Verificar y listar archivos de values landscape
         $valuesLandPath = $resourcesPath . '/values-land';
         if (is_dir($valuesLandPath)) {
-            $result['values-land'] = static::scanDirectory($valuesLandPath);
+            $result['values-land'] = $this->scanDirectory($valuesLandPath);
         } else {
             static::addError("No se encontró el directorio values-land", static::SEVERITY_INFO);
         }
