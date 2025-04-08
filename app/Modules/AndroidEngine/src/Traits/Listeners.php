@@ -42,7 +42,7 @@ Trait Listeners
     function getViewListeners()
     {
         $listeners = [];
-        $files = $this->getSourceFiles(['*.java', '*.kt']);
+        $files = $this->findCodeFiles();
 
         foreach ($files as $file) {
             $content = file_get_contents($file);
@@ -204,7 +204,7 @@ Trait Listeners
     function getViewBindingListeners()
     {
         $listeners = [];
-        $files = $this->getSourceFiles(['*.java', '*.kt']);
+        $files = $this->findCodeFiles();
 
         foreach ($files as $file) {
             $content = file_get_contents($file);
