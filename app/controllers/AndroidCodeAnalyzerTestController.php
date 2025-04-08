@@ -22,11 +22,18 @@ class AndroidCodeAnalyzerTestController extends Controller
      */
     function test_getDefaultOrientation() {
         $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+
+        $an = new AndroidCodeAnalyzer();
         
-        AndroidCodeAnalyzer::setRootPath($project_path);         
+        $an->setRootPath($project_path);         
         // Output
         dd(
-            AndroidCodeAnalyzer::getDefaultOrientation()
+            $an->getDefaultOrientation()
+        );
+
+        // Output errores
+        dd(
+            $an->getErrors()
         );
     }
 
@@ -35,11 +42,13 @@ class AndroidCodeAnalyzerTestController extends Controller
      */
     function test_getOrientationLayoutResources() {
         $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+
+        $an = new AndroidCodeAnalyzer();
         
-        AndroidCodeAnalyzer::setRootPath($project_path);         
+        $an->setRootPath($project_path);         
         // Output
         dd(
-            AndroidCodeAnalyzer::getOrientationLayoutResources()
+            $an->getOrientationLayoutResources()
         );
     }
 
@@ -48,11 +57,13 @@ class AndroidCodeAnalyzerTestController extends Controller
      */
     function test_getColors() {
         $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+
+        $an = new AndroidCodeAnalyzer();
         
-        AndroidCodeAnalyzer::setRootPath($project_path);         
+        $an->setRootPath($project_path);         
         // Output
         dd(
-            AndroidCodeAnalyzer::getColors()
+            $an->getColors()
         );
     }
 
@@ -61,11 +72,13 @@ class AndroidCodeAnalyzerTestController extends Controller
      */
     function test_getStrings() {
         $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+
+        $an = new AndroidCodeAnalyzer();
         
-        AndroidCodeAnalyzer::setRootPath($project_path);         
+        $an->setRootPath($project_path);         
         // Output
         dd(
-            AndroidCodeAnalyzer::getStrings()
+            $an->getStrings()
         );
     }
 
@@ -74,11 +87,13 @@ class AndroidCodeAnalyzerTestController extends Controller
      */
     function test_getDrawables() {
         $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+
+        $an = new AndroidCodeAnalyzer();
         
-        AndroidCodeAnalyzer::setRootPath($project_path);         
+        $an->setRootPath($project_path);         
         // Output
         dd(
-            AndroidCodeAnalyzer::getDrawables()
+            $an->getDrawables()
         );
     }
 
@@ -87,11 +102,13 @@ class AndroidCodeAnalyzerTestController extends Controller
      */
     function test_getPermissions() {
         $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
-        
-        AndroidCodeAnalyzer::setRootPath($project_path);         
+
+        $an = new AndroidCodeAnalyzer();
+
+        $an->setRootPath($project_path);         
         // Output
         dd(
-            AndroidCodeAnalyzer::getPermissions()
+            $an->getPermissions()
         );
     }
 
@@ -100,11 +117,13 @@ class AndroidCodeAnalyzerTestController extends Controller
      */
     function test_getBuildFeatures() {
         $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+
+        $an = new AndroidCodeAnalyzer();
         
-        AndroidCodeAnalyzer::setRootPath($project_path);         
+        $an->setRootPath($project_path);         
         // Output
         dd(
-            AndroidCodeAnalyzer::getBuildFeatures()
+            $an->getBuildFeatures()
         );
     }
 
@@ -113,17 +132,125 @@ class AndroidCodeAnalyzerTestController extends Controller
      */
     function test_getErrors() {
         $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+
+        $an = new AndroidCodeAnalyzer();
         
-        AndroidCodeAnalyzer::setRootPath($project_path);
+        $an->setRootPath($project_path);
         
         // Ejecutar algunos métodos para generar posibles errores
-        AndroidCodeAnalyzer::getDefaultOrientation();
-        AndroidCodeAnalyzer::getOrientationLayoutResources();
+        $an->getDefaultOrientation();
+        $an->getOrientationLayoutResources();
         
         // Output
         dd(
-            AndroidCodeAnalyzer::getErrors()
+            $an->getErrors()
         );
     }
+
+    function test_md(){
+        $path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS\app\src\main\res\layout\screen_sales_calc.xml';
+
+        $an = new AndroidCodeAnalyzer();
+
+        dd($an->markdown(
+            $path, false
+        ), 'Markdown');
+
+        $an = new AndroidCodeAnalyzer();
+
+        dd($an->markdown(
+            $path, true
+        ), 'Markdown only IDs');
+
+        // Output errores
+        dd(
+            $an->getErrors()
+        );
+    }
+
+    
+    /**
+     * Prueba para el método findAllXmlIds
+     */
+    function test_findAllXmlIds() {
+        $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+        
+        $analyzer = new AndroidCodeAnalyzer();
+        $analyzer->setRootPath($project_path);         
+        // Output
+        dd(
+            $analyzer->findAllXmlIds()
+        );
+    }
+
+    /**
+     * Prueba para el método listActivities
+     */
+    function test_listActivities() {
+        $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+        
+        $analyzer = new AndroidCodeAnalyzer();
+        $analyzer->setRootPath($project_path);         
+        // Output
+        dd(
+            $analyzer->listActivities()
+        );
+    }
+
+    /**
+     * Prueba para el método listActivitiesWithReferences
+     */
+    function test_listActivitiesWithReferences() {
+        $project_path = 'C:\Users\jayso\AndroidStudioProjects\FriendlyPOS'; 
+        
+        $analyzer = new AndroidCodeAnalyzer();
+        $analyzer->setRootPath($project_path);
+
+        $activities = $analyzer->listActivitiesWithReferences();
+        
+        // Resultado        
+        dd($activities, "Activities encontradas");
+
+        // Errores y mensajes de depuración
+        dd($analyzer->getErrors(AndroidCodeAnalyzer::SEVERITY_WARNING), "Errores y mensajes de depuración");
+    }
+
+
+    function test_listener_analisis(){
+        // En alguna parte donde se use el analizador:
+        $analyzer = new AndroidCodeAnalyzer();
+        $analyzer->setRootPath('C:\Users\jayso\AndroidStudioProjects\FriendlyPOS');
+        $analyzer->setExcludePaths(['C:\Users\jayso\AndroidStudioProjects\FriendlyPOS\app\build\*']);
+
+        // Obtener todos los event listeners que usan findViewById
+        $viewListeners = $analyzer->getViewListeners();
+
+        // Obtener todos los event listeners que usan ViewBinding
+        $viewBindingListeners = $analyzer->getViewBindingListeners();
+
+        dd($viewListeners, "ViewListeners encontrados");
+        dd($viewBindingListeners, "ViewBindingListeners encontrados");
+        dd($analyzer->getErrors(), "Errores encontrados");
+    }
+
+    function test_listener_analisis_1(){
+        // En alguna parte donde se use el analizador:
+        $analyzer = new AndroidCodeAnalyzer();
+        $analyzer->setRootPath('C:\Users\jayso\StudioProjects\DarkCalc');
+        $analyzer->setExcludePaths(['C:\Users\jayso\StudioProjects\DarkCalc\app\build\*']);
+
+        // Obtener todos los event listeners que usan findViewById
+        $viewListeners = $analyzer->getViewListeners();
+
+        // Obtener todos los event listeners que usan ViewBinding
+        $viewBindingListeners = $analyzer->getViewBindingListeners();
+
+        dd($viewListeners, "ViewListeners encontrados");
+        dd($viewBindingListeners, "ViewBindingListeners encontrados");
+        dd($analyzer->getErrors(), "Errores encontrados");
+    }
+
+
 }
+
 

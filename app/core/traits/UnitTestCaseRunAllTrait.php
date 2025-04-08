@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\traits;
+namespace Boctulus\Simplerest\Core\Traits;
 
 
 trait UnitTestCaseRunAllTrait

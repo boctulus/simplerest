@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Boctulus\Simplerest\Core\traits;
+namespace Boctulus\Simplerest\Core\Traits;
 
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
