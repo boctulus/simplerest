@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Boctulus\Simplerest\Core\traits;
+namespace Boctulus\Simplerest\Core\Traits;
 
 use Doctrine\Inflector\InflectorFactory;
 use Boctulus\Simplerest\Core\Libs\DB;

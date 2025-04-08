@@ -3,6 +3,7 @@
 namespace Boctulus\Simplerest\Core\Libs;;
 
 use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Traits\ErrorReporting;
 
 /*
 	Idealmente implementar PSR 3 logger
@@ -24,7 +25,8 @@ class Logger
 	static protected $debug       = false;
 	static protected $trace       = false; 
 
-	
+	use ErrorReporting; // Trait para manejar errores y advertencias
+
 	static function debug(bool $debug = true){
 		static::$debug = $debug;
 	}
@@ -61,7 +63,7 @@ class Logger
         }
 
         return ($full_path ? LOGS_PATH : '') . static::$logfile;
-    }
+}
     
     static function truncate($log_file = null){
         Files::writeOrFail(LOGS_PATH . ($log_file ?? static::getLogFilename()), '');
@@ -81,7 +83,7 @@ class Logger
 		return Files::readOrFail($path);
     }
 
-	static function log($data,  $path = null, $append = true, bool $datetime = true, bool $extra_cr = false)
+	static protected function _log($data,  $path = null, $append = true, bool $datetime = true, bool $extra_cr = false, $severity = null)
 	{
 		$custom_path = true;
 		$append      = $append ?? true;
@@ -100,6 +102,11 @@ class Logger
 
 		if (is_array($data) || is_object($data)){
 			$data = json_encode($data, JSON_UNESCAPED_SLASHES);
+		}
+
+		$severity_str = '';
+		if ($severity !== null){
+			$severity_str = '[SEVERITY: ' . static::$severityText[$severity] . '] ';
 		}
 
 		$extra = '';
@@ -125,15 +132,32 @@ class Logger
 				$prefix = date('[d-M-Y H:i:s e]') . ' ';
 			}	
 
+			$prefix .= $severity_str;
+
 			error_log($prefix . $data . ($mode == 3 ? PHP_EOL : '') . ($extra_cr ? PHP_EOL : "") , $mode, $path);
 		} else {
 			$prefix = '';
 			if ($datetime){
 				$prefix = date('[d-M-Y H:i:s e]') . ' ';
 			}			
+
+			$prefix .= $severity_str;
 			
 			return Files::writeOrFail($path, $prefix . $data . "\n" . ($extra_cr ? "\n" : ""),  $append ? FILE_APPEND : 0);
 		}
+	}
+
+	static function log($data,  $path = null, $append = true, bool $datetime = true, bool $extra_cr = false)
+	{
+		return static::_log($data, $path, $append, $datetime, $extra_cr);
+	}
+
+	static function logError($error){
+		if ($error instanceof \Exception){
+			$error = $error->getMessage();
+		}
+
+		static::log($error, static::$err_logfile);
 	}
 
 	static function dd($data, $msg = '', bool $append = true){
@@ -145,12 +169,44 @@ class Logger
 		static::log([$msg => $data], null, $append);
 	}
 
-	static function logError($error){
+	static function show($data, $msg = '', $severity = null, bool $append = true){
+		if ($severity === null){
+			$severity = static::getInfoLevel();
+		}
+
+		if (empty($msg)){
+			static::_log($data, null, $append, true, false, $severity);
+			return;
+		}
+
+		static::_log(
+			[$msg => $data],
+			null, 
+			$append, 
+			true, 
+			false, 
+			$severity
+		);
+	}
+	
+
+	static function showError($error, $severity = null, bool $append = true){
+		if ($severity === null){
+			$severity = static::getInfoLevel();
+		}
+		
 		if ($error instanceof \Exception){
 			$error = $error->getMessage();
 		}
 
-		static::log($error, static::$err_logfile);
+		static::_log(
+			$error, 
+			static::$err_logfile, 
+			$append, 
+			true, 
+			false, 
+			$severity
+		);
 	}
 
 	static function logSQL(string $sql_str){
