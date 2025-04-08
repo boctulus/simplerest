@@ -11,12 +11,18 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 class Documentor
 {
     /**
-     * Lee un archivo JSON y genera MarkDown a partir del mismo.
+     * Convierte un array a formato Markdown.
      *
-     * @param string $filePath Ruta del archivo JSON.
-     * @return string El contenido convertido a Markdown
-     */
-    public static function fromJSONtoMarkDown($filePath) {
+     * @param array $data Datos a convertir.
+     * @return string Markdown generado.
+     */    
+    public static function fromJSONtoMarkDown(array $data) {      
+        
+        // Convertir el array a Markdown usando una función recursiva
+        return self::convertToMarkdown($data);
+    }
+
+    public static function fromJSONFileToMarkDown($filePath) {
         if (!file_exists($filePath)) {
             throw new \InvalidArgumentException("File not found: " . $filePath);
         }
@@ -27,10 +33,9 @@ class Documentor
         if ($data === null) {
             throw new \InvalidArgumentException("Invalid JSON");
         }
-        
-        // Convertir el array a Markdown usando una función recursiva
-        return self::convertToMarkdown($data);
-    }
+
+        return self::fromJSONtoMarkDown($data);
+    }   
 
     /**
      * Función recursiva para convertir un array a formato Markdown.

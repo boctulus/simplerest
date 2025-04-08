@@ -29,7 +29,7 @@ class DocCommand implements ICommand {
         }
 
         // Llamar a la función de conversión a Markdown
-        $result = Documentor::fromJSONtoMarkDown($path);
+        $result = Documentor::fromJSONFileToMarkDown($path);
         dd($result, 'MarkDown');
     }
 
@@ -56,7 +56,7 @@ class DocCommand implements ICommand {
             return;
         }
 
-        $result = Documentor::fromJSONtoMarkDown($path);
+        $result = Documentor::fromJSONFileToMarkDown($path);
         dd($result, 'MarkDown');
     }
 

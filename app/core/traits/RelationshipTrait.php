@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\traits;
+namespace Boctulus\Simplerest\Core\Traits;
 
 use Boctulus\Simplerest\Core\Exceptions\SchemaException;
 use Boctulus\Simplerest\Core\Exceptions\SqlException;

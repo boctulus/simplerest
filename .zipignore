@@ -1,6 +1,7 @@
 .git/
 .codegpt/
 .vscode/
+.idea/
 *.zip
 *.rar
 *.tar
