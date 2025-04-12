@@ -6,6 +6,15 @@ use Boctulus\Simplerest\Core\Traits\ErrorReporting;
 
 /*
     RELEVO DE EVENT LISTENERS
+
+    TO-DO
+
+    - Mejorar el reconocimiento de event listeners. Falla casi por completo con:
+
+    C:\Users\jayso\StudioProjects\DarkCalc\app\src\main\java\com\boctulus\pc\recalc
+
+    PROMPT:
+    http://simplerest.lan/prompt_generator#chat-722
 */
 
 Trait Listeners

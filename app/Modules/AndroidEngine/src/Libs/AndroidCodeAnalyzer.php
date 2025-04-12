@@ -3,27 +3,19 @@
 namespace Boctulus\Simplerest\Modules\AndroidEngine\src\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Files;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Activities;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Gradle;
 use Boctulus\Simplerest\Core\Traits\ErrorReporting;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Fragments;
+use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Activities;
 use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\AndroidManifest;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Resources\Values;
 use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\DeviceOrientation;
+use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Fragments;
+use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Gradle;
 use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Listeners;
 use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Resources\Drawables;
+use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Resources\Values;
+use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\XMLLayouts;
 
 /*
     Análisis de código Android
-
-    TO-DO
-
-    - Mejorar el reconocimiento de event listeners. Falla casi por completo con:
-
-    C:\Users\jayso\StudioProjects\DarkCalc\app\src\main\java\com\boctulus\pc\recalc
-
-    PROMPT:
-    http://simplerest.lan/prompt_generator#chat-722
 */
 
 class AndroidCodeAnalyzer
@@ -34,14 +26,16 @@ class AndroidCodeAnalyzer
     private $errors = [];
 
     use AndroidManifest; // Trait para manejar el AndroidManifest.xml   
-    use Gradle; // Trait para manejar archivos de gradle
-    use ErrorReporting; // Trait para manejar errores y advertencias    
+    use Gradle; // Trait para manejar archivos de gradle       
     use DeviceOrientation; // Trait para detectar la orientación de la aplicación
     use Values; // Trait para manejar valores de recursos (strings, colors, etc.)
     use Drawables; // Trait para manejar drawables
     use Activities; // Trait para manejar Activities
     use Listeners; // Trait para detectar listeners
     use Fragments; // Trait para detectar fragmentos
+    use XMLLayouts; // Trait para manejo de Layouts
+
+    use ErrorReporting; // Trait para manejar errores y advertencias 
 
     /**
      * Establece la ruta raíz del proyecto Android

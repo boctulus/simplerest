@@ -3,6 +3,7 @@
 namespace Boctulus\Simplerest\Modules\AndroidEngine\src\Traits;
 
 use Boctulus\Simplerest\Core\Traits\ErrorReporting;
+use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\FilesTrait;
 
 Trait DeviceOrientation 
 {

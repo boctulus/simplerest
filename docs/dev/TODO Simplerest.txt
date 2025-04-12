@@ -1,6 +1,13 @@
 TODO SimpleRest
 ===============
 
+- Es necesario poder parsear shortcodes en "PROMPT (Notas finales)"
+
+Ej:
+
+[android root="C:\Users\jayso\AndroidStudioProjects\FriendlyPOS" pattern="*.kt|*.xml" recursive="true"]
+
+
 - Hacer que el FronController pueda ejecutar controladores definidos en distintos modulos (idealmente si los modulos estan "registrados")
 
 - Poder crear Controller(s), Model(s), etc dentro de cada modulo simplemente pasando a "make" el nombre del modulo:
