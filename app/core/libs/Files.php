@@ -803,9 +803,33 @@ class Files
 		return $files;
 	}
 
+ 	/**
+     * Escanea un directorio y devuelve una lista de archivos
+     * 
+     * @param string $directory Ruta del directorio a escanear
+     * @return array Lista de archivos
+     */
+    static function scanDirectory($directory)
+    {
+        $files = [];
+
+        if ($handle = opendir($directory)) {
+            while (false !== ($file = readdir($handle))) {
+                if ($file != "." && $file != "..") {
+                    $files[] = $file;
+                }
+            }
+            closedir($handle);
+        }
+
+        return $files;
+    }    
+
 	/*
-		@param $dir directorio a escanear
-		@paran $discard_dir descartar o no directorios de la lista resultante
+		Escanea un directorio de forma recursiva y devuelve una lista de archivos
+
+		@param string $dir directorio a escanear
+		@param bool $discard_dir descartar o no directorios de la lista resultante
 	*/
 	static function deepScan(string $dir, bool $discard_dirs = false) {
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir), \RecursiveIteratorIterator::SELF_FIRST );
@@ -1948,6 +1972,19 @@ class Files
 			}
 		}
 	}
+
+	/**
+     * Extrae el nombre de la clase de un archivo
+     */
+    static function extractClassName($file, $content)
+    {
+        $className = basename($file);
+        // Extraer el nombre de la clase del contenido
+        if (preg_match('/\b(?:class|interface|object)\s+([A-Za-z0-9_]+)/', $content, $matches)) {
+            $className = $matches[1];
+        }
+        return $className;
+    }
 }   
 
 

@@ -21,7 +21,7 @@ class View
 
     protected $config;
 
-    function __construct(string $view_path, array $vars  = null, ?string $layout = null, int $expiration_time = 0)
+    function __construct(string $view_path, $vars  = null, ?string $layout = null, int $expiration_time = 0)
     {
 		$this->config = Config::get();
 
