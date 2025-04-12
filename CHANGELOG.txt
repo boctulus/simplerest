@@ -119,3 +119,4 @@
 [2025-04-06 09:51:53]	0.8.12	Logger mejorado
 [2025-04-08 22:44:27]	0.8.12	Refactoring
 [2025-04-08 23:03:28]	0.8.12	Refactoring completo
+[2025-04-12 20:47:46]	0.8.12	generateReusableComponent() inestable

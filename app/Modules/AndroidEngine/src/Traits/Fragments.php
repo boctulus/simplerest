@@ -5,14 +5,15 @@ namespace Boctulus\Simplerest\Modules\AndroidEngine\src\Traits;
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Traits\ErrorReporting;
 
-Trait Fragments
-{    
+trait Fragments
+{
     private $rootPath;
     private $excludePaths = [];
     private $errors = [];
 
     use ErrorReporting;
-    
+    use Activities; // Trait para manejar Activities
+
     /**
      * Lista todos los fragmentos del proyecto
      * 
@@ -191,10 +192,12 @@ Trait Fragments
                     if ($content === false) continue;
 
                     // Buscar el fragmento en el layout (como tag <fragment> o clase)
-                    if (preg_match('/<fragment[^>]*android:name="[^"]*' . preg_quote($fragmentName) . '"/', $content) ||
+                    if (
+                        preg_match('/<fragment[^>]*android:name="[^"]*' . preg_quote($fragmentName) . '"/', $content) ||
                         preg_match('/<fragment[^>]*class="[^"]*' . preg_quote($fragmentName) . '"/', $content) ||
-                        preg_match('/<' . preg_quote($fragmentName) . '[^>]*>/', $content)) {
-                        
+                        preg_match('/<' . preg_quote($fragmentName) . '[^>]*>/', $content)
+                    ) {
+
                         // Extraer el ID del fragmento si está disponible
                         $fragmentId = null;
                         if (preg_match('/android:id="@\+?id\/([^"]+)"/', $content, $idMatch)) {
@@ -225,7 +228,7 @@ Trait Fragments
     private function findFragmentInCode($fragmentFullName, $fragmentName)
     {
         $references = [];
-        
+
         // Rutas donde buscar código fuente
         $sourcePaths = [
             $this->rootPath . '/app/src/main/java',
@@ -285,8 +288,10 @@ Trait Fragments
                                 $refType = 'import';
                             } elseif (strpos($lineContent, 'new') !== false) {
                                 $refType = 'instantiation';
-                            } elseif (strpos($lineContent, 'replace') !== false || 
-                                    strpos($lineContent, 'add') !== false) {
+                            } elseif (
+                                strpos($lineContent, 'replace') !== false ||
+                                strpos($lineContent, 'add') !== false
+                            ) {
                                 $refType = 'transaction';
                             } elseif (strpos($lineContent, 'navigate') !== false) {
                                 $refType = 'navigation';
@@ -295,8 +300,10 @@ Trait Fragments
                             // Evitar duplicados en el mismo archivo
                             $isDuplicate = false;
                             foreach ($references as $ref) {
-                                if ($ref['source'] === str_replace($this->rootPath, '', $file) && 
-                                    $ref['type'] === $refType) {
+                                if (
+                                    $ref['source'] === str_replace($this->rootPath, '', $file) &&
+                                    $ref['type'] === $refType
+                                ) {
                                     $isDuplicate = true;
                                     break;
                                 }
@@ -361,7 +368,7 @@ Trait Fragments
                     if (preg_match_all('/<action[^>]*app:destination="@id\/([^"]+)"/', $content, $matches, PREG_SET_ORDER)) {
                         foreach ($matches as $match) {
                             $destinationId = $match[1];
-                            
+
                             // Buscar si este destino corresponde al fragmento
                             if (preg_match('/<fragment[^>]*android:id="@\+?id\/' . preg_quote($destinationId) . '"[^>]*android:name="[^"]*' . preg_quote($fragmentName) . '"/', $content)) {
                                 $references[] = [
@@ -378,5 +385,80 @@ Trait Fragments
         }
 
         return $references;
+    }
+
+    /**
+     * Lista todas las Activities del proyecto incluyendo fragmentos enlazados --no parece funcionar [!]
+     * 
+     * @param bool $includeFragments Si true, incluye información sobre fragmentos enlazados
+     * @return array Lista de Activities con información adicional
+     * @throws \Exception Si no se encuentra la carpeta de código Java/Kotlin
+     */
+    public function listActivitiesWithFragments()
+    {
+        // Primero obtenemos todas las activities con sus referencias básicas
+        $activities = $this->listActivitiesWithReferences();
+
+        // Obtenemos todos los fragmentos con sus referencias
+        $fragments = $this->listFragmentsWithReferences();
+
+        // Mapeamos los fragmentos a las activities donde se usan
+        foreach ($activities as &$activity) {
+            $linkedFragments = [];
+
+            foreach ($fragments as $fragment) {
+                $isLinked = false;
+
+                // Verificar si el fragmento está vinculado a esta actividad en código
+                if (isset($fragment['references']['code'])) {
+                    foreach ($fragment['references']['code'] as $codeRef) {
+                        // Si la referencia proviene de un archivo que contiene el nombre de la actividad
+                        if (strpos($codeRef['source'], $activity['name']) !== false) {
+                            $isLinked = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Verificar si el fragmento está vinculado en layouts utilizados por esta actividad
+                // (Esta es una aproximación, idealmente necesitaríamos analizar setContentView o inflateLayout)
+                if (!$isLinked && isset($fragment['references']['layouts'])) {
+                    // Buscar en el código de la actividad para ver qué layouts infla
+                    $activityFile = $this->rootPath . $activity['path'];
+                    if (file_exists($activityFile)) {
+                        $activityContent = file_get_contents($activityFile);
+                        if ($activityContent !== false) {
+                            foreach ($fragment['references']['layouts'] as $layoutRef) {
+                                $layoutName = basename($layoutRef['source'], '.xml');
+                                // Buscar setContentView(R.layout.layoutName) o inflate(...R.layout.layoutName...)
+                                if (
+                                    preg_match('/setContentView\s*\(\s*R\.layout\.' . $layoutName . '\s*\)/', $activityContent) ||
+                                    preg_match('/inflate\s*\([^)]*R\.layout\.' . $layoutName . '\s*[,)]/', $activityContent)
+                                ) {
+                                    $isLinked = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Si el fragmento está vinculado a esta actividad, añadirlo a la lista
+                if ($isLinked) {
+                    $linkedFragments[] = [
+                        'name' => $fragment['name'],
+                        'fullName' => $fragment['fullName'],
+                        'hasReferences' => isset($fragment['references'])
+                    ];
+                }
+            }
+
+            // Solo añadir la lista de fragmentos si hay alguno enlazado
+            if (!empty($linkedFragments)) {
+                $activity['linkedFragments'] = $linkedFragments;
+            }
+        }
+
+        return $activities;
     }
 }
