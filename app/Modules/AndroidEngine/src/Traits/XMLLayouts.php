@@ -49,10 +49,10 @@ Trait XmlLayouts
      */
     function generateReusableComponent(string $viewPath, string $viewId, string $componentName): array
     {
-        // Normalizar el ID quitando @id/ o @+id/
+        // Normalizar el ID eliminando prefijos como @+id/ o @id/
         $cleanViewId = preg_replace('/^@(\+)?id\//', '', $viewId);
 
-        // Determinar la ruta completa
+        // Determinar la ruta completa del archivo XML
         $rootPath = property_exists($this, 'rootPath') ? $this->rootPath : null;
         if ($rootPath && !preg_match('/^[A-Z]:\\\\/', $viewPath) && !preg_match('/^\//', $viewPath)) {
             $viewPath = rtrim($rootPath, '/\\') . DIRECTORY_SEPARATOR . ltrim($viewPath, '/\\');
@@ -64,9 +64,9 @@ Trait XmlLayouts
         }
 
         // Leer el contenido del archivo XML
-        $xmlContent = Files::getContent($viewPath);
+        $xmlContent = file_get_contents($viewPath);
         $dom = new \DOMDocument();
-        libxml_use_internal_errors(true);
+        libxml_use_internal_errors(true); // Suprimir errores de parseo para manejarlos manualmente
         $dom->loadXML($xmlContent);
         libxml_clear_errors();
 
@@ -74,8 +74,9 @@ Trait XmlLayouts
             throw new \Exception("El archivo XML en '$viewPath' es inválido o está vacío.");
         }
 
-        // Buscar la vista con el ID especificado
+        // Buscar la vista con el ID especificado usando XPath
         $xpath = new \DOMXPath($dom);
+        $xpath->registerNamespace('android', 'http://schemas.android.com/apk/res/android');
         $query = sprintf("//*[@android:id='@+id/%s' or @android:id='@id/%s']", $cleanViewId, $cleanViewId);
         $nodes = $xpath->query($query);
 
@@ -85,34 +86,25 @@ Trait XmlLayouts
 
         $targetNode = $nodes->item(0);
 
-        // Determinar las líneas de la vista original
-        $xmlLines = explode("\n", $xmlContent);
-        $lineStart = $lineEnd = 1;
-        $nodeString = $dom->saveXML($targetNode);
-        $nodeLines = explode("\n", $nodeString);
-        $nodeLineCount = count($nodeLines);
-
-        // Aproximar las líneas buscando el ID en el contenido
-        $idPattern = sprintf('android:id="@(\+)?id/%s"', preg_quote($cleanViewId, '/'));
-        foreach ($xmlLines as $index => $line) {
-            if (preg_match("/$idPattern/", $line)) {
-                $lineStart = $index + 1;
-                $lineEnd = $lineStart + $nodeLineCount - 1;
-                break;
-            }
-        }
-
-        // Crear el componente XML
+        // Crear el documento XML para el componente reutilizable
         $componentDom = new \DOMDocument('1.0', 'utf-8');
         $componentDom->formatOutput = true;
         $importedNode = $componentDom->importNode($targetNode, true);
         $componentDom->appendChild($importedNode);
 
-        // Modificar el nodo para hacerlo reutilizable
+        // Copiar namespaces del nodo raíz original al componente
+        $root = $dom->documentElement;
+        foreach ($root->attributes as $attr) {
+            if (strpos($attr->nodeName, 'xmlns:') === 0) {
+                $importedNode->setAttribute($attr->nodeName, $attr->nodeValue);
+            }
+        }
+
+        // Ajustar atributos para el componente reutilizable
         $importedNode->setAttribute('android:layout_width', 'match_parent');
         $importedNode->setAttribute('android:layout_height', 'match_parent');
 
-        // Eliminar atributos específicos del contexto
+        // Lista de atributos a eliminar para generalizar el componente
         $attributesToRemove = [
             'app:layout_constraintTop_toTopOf',
             'app:layout_constraintTop_toBottomOf',
@@ -139,40 +131,44 @@ Trait XmlLayouts
             }
         }
 
-        // Conservar namespaces necesarios
-        $namespaces = [
-            'xmlns:android' => 'http://schemas.android.com/apk/res/android',
-            'xmlns:app' => 'http://schemas.android.com/apk/res-auto',
-            'xmlns:tools' => 'http://schemas.android.com/tools',
-        ];
-        
-        // Conservar los namespaces presentes en el XML original
-        foreach ($namespaces as $ns => $uri) {
-            if (preg_match('/' . preg_quote($ns, '/') . '=/', $xmlContent)) {
-                $importedNode->setAttribute($ns, $uri);
-            }
-        }
-        
         // Generar el XML del componente
         $componentXml = '<?xml version="1.0" encoding="utf-8"?>' . "\n";
         $componentXml .= $componentDom->saveXML($componentDom->documentElement);
 
-        // Generar el código <include>
+        // Generar el código <include> con los atributos de constraints originales
+        $includeAttributes = [];
+        foreach ($attributesToRemove as $attr) {
+            if ($targetNode->hasAttribute($attr) && strpos($attr, 'app:layout_constraint') === 0) {
+                $includeAttributes[] = sprintf('%s="%s"', $attr, $targetNode->getAttribute($attr));
+            }
+        }
         $includeXml = sprintf(
             '<include layout="@layout/%s" android:layout_width="0dp" android:layout_height="0dp" %s />',
             $componentName,
-            implode(' ', array_map(
-                fn($attr) => sprintf('%s="%s"', $attr, $targetNode->getAttribute($attr)),
-                array_filter(
-                    $attributesToRemove,
-                    fn($attr) => $targetNode->hasAttribute($attr) && strpos($attr, 'app:layout_constraint') === 0
-                )
-            ))
+            implode(' ', $includeAttributes)
         );
 
-        // Formatear el replace
-        $replace = sprintf('%s:%d-%d', basename($viewPath), $lineStart, $lineEnd);
+        // Calcular las líneas aproximadas para el reemplazo
+        $xmlLines = explode("\n", $xmlContent);
+        $lineStart = $lineEnd = 1;
+        $idPattern = sprintf('android:id="@(\+)?id\/%s"', preg_quote($cleanViewId, '/'));
+        foreach ($xmlLines as $index => $line) {
+            if (preg_match("/$idPattern/", $line)) {
+                $lineStart = $index + 1;
+                // Estimar el fin buscando el cierre del tag
+                for ($i = $index; $i < count($xmlLines); $i++) {
+                    if (strpos($xmlLines[$i], '</') !== false || strpos($xmlLines[$i], '/>') !== false) {
+                        $lineEnd = $i + 1;
+                        break;
+                    }
+                }
+                break;
+            }
+        }
 
+        $replace = sprintf('%s', basename($viewPath));
+
+        // Devolver el resultado como un array
         return [
             'component' => $componentXml,
             'include' => $includeXml,
