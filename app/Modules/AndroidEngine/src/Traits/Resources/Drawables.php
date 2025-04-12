@@ -34,7 +34,7 @@ Trait Drawables
 
         // Buscar en drawable básico
         if (is_dir($drawablePath)) {
-            $drawables['drawable'] = Files::scanDirectory($drawablePath);
+            $drawables['drawable'] = $this->scanDirectory($drawablePath);
         }
 
         // Buscar en otros directorios drawable-*
@@ -42,7 +42,7 @@ Trait Drawables
         if ($handle = opendir($resourcesPath)) {
             while (false !== ($dir = readdir($handle))) {
                 if (preg_match('/^drawable-/', $dir) && is_dir($resourcesPath . '/' . $dir)) {
-                    $drawables[$dir] = Files::scanDirectory($resourcesPath . '/' . $dir);
+                    $drawables[$dir] = $this->scanDirectory($resourcesPath . '/' . $dir);
                 }
             }
             closedir($handle);
