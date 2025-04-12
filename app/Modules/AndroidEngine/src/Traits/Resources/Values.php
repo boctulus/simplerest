@@ -5,6 +5,9 @@ namespace Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Resources;
 use Boctulus\Simplerest\Core\Traits\ErrorReporting;
 use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\XML;
 
+/*
+    La deteccion de keys duplicadas a veces falla    
+*/
 Trait Values 
 {
     use ErrorReporting;
@@ -38,6 +41,9 @@ Trait Values
         $colors = [];
         if (preg_match_all('/<color\s+name="([^"]+)">([^<]+)<\/color>/', $content, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
+                if (isset($colors[$match[1]])){
+                    static::addError("La clave '{$match[1]}' está duplicada en colors.xml", static::SEVERITY_ERROR);
+                }
                 $colors[$match[1]] = $match[2];
             }
         } else {
@@ -75,6 +81,10 @@ Trait Values
         $strings = [];
         if (preg_match_all('/<string\s+name="([^"]+)"(?:[^>]*)>([^<]+)<\/string>/', $content, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
+                if (isset($strings[$match[1]])){
+                    static::addError("La clave '{$match[1]}' está duplicada en strings.xml", static::SEVERITY_ERROR);
+                }
+
                 $strings[$match[1]] = $match[2];
             }
         } else {
