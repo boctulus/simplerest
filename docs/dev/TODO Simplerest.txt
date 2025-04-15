@@ -1,12 +1,18 @@
 TODO SimpleRest
 ===============
 
+- Convertir Config en su version sin uso de "static" y usar el contenedor de dependencias inversas para usarlo obteniendo un singleton.
+
+- Crear clase ValConfig como "Snapshot" (copia inmutable profunda) de Config. Otro nombre mas largo seria ImmutableConfig
+
+https://chat.deepseek.com/a/chat/s/a8417cf5-7be3-4a5a-8eaa-71f0f61e286f
+http://simplerest.lan/prompt_generator#chat-784
+
 - Es necesario poder parsear shortcodes en "PROMPT (Notas finales)"
 
 Ej:
 
 [android root="C:\Users\jayso\AndroidStudioProjects\FriendlyPOS" pattern="*.kt|*.xml" recursive="true"]
-
 
 - Hacer que el FronController pueda ejecutar controladores definidos en distintos modulos (idealmente si los modulos estan "registrados")
 

@@ -72,6 +72,11 @@ class AndroidCodeAnalyzerTestController extends Controller
         dd(
             $an->getColors()
         );
+
+        // Output Errors
+        dd(
+            $an->getErrors(), 'Errors'
+        );
     }
 
     /**
@@ -87,6 +92,11 @@ class AndroidCodeAnalyzerTestController extends Controller
         // Output
         dd(
             $an->getStrings()
+        );
+
+        // Output Errors
+        dd(
+            $an->getErrors(), 'Errors'
         );
     }
 
@@ -155,7 +165,7 @@ class AndroidCodeAnalyzerTestController extends Controller
 
         // Output
         dd(
-            $an->getErrors()
+            $an->getErrors(), 'Errors'
         );
     }
 

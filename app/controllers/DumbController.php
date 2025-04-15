@@ -2,161 +2,162 @@
 
 namespace Boctulus\Simplerest\Controllers;
 
-use Boctulus\ApiClient\ApiClientFallback;
-use Boctulus\Simplerest\Core\Libs\Curl;
-use Doctrine\Inflector\InflectorFactory;
-
-use Endroid\QrCode\Builder\Builder;
-use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
-use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
-use Endroid\QrCode\Label\Font\NotoSans;
-use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use stdClass;
 use MakeCommand;
-use PhpParser\Node\Scalar\MagicConst\File;
-use Boctulus\Simplerest\Controllers\api\Products;
-use Boctulus\Simplerest\Controllers\api\TblPersona;
-use Boctulus\Simplerest\Core\API\v1\ApiController;
-use Boctulus\Simplerest\Core\Container;
+use Boctulus\Simplerest\Libs\Foo;
 
-use Boctulus\Simplerest\Core\Controllers\Controller;
+use Spatie\ArrayToXml\ArrayToXml;
+use Boctulus\Simplerest\Core\View;
+use Boctulus\Simplerest\Libs\Cake;
+use Boctulus\Simplerest\Libs\Foo2;
+use Boctulus\Simplerest\Libs\Sync;
+use Boctulus\Simplerest\Core\Model;
+use Endroid\QrCode\Builder\Builder;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Libs\Reviews;
+use Endroid\QrCode\Encoding\Encoding;
+use Boctulus\Simplerest\Core\Libs\CSS;
+
+use Boctulus\Simplerest\Core\Libs\Env;
 //use GuzzleHttp\Client;
 //use Guzzle\Http\Message\Request;
 //use Symfony\Component\Uid\Uuid;
-use Boctulus\Simplerest\Core\Libs\ApacheWebServer;
-use Boctulus\Simplerest\Core\Libs\ApiClient;
-use Boctulus\Simplerest\Core\Libs\Arrays;
-use Boctulus\Simplerest\Core\Libs\Base64Uploader;
+use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Libs\XML;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Libs\RibiSOAP;
 
-use Boctulus\Simplerest\Core\Libs\Cache;
-use Boctulus\Simplerest\Core\Libs\ChatGPT;
-use Boctulus\Simplerest\Core\Libs\ClaudeAI;
-
-use Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs\WordPress;
-use Boctulus\Simplerest\Core\Libs\CMS_Scanner\Scanner as CMSScanner;
-
-use Boctulus\Simplerest\Core\Libs\code_cleaner\AngularCleaner;
-
-use Boctulus\Simplerest\Core\Libs\code_cleaner\BootstrapCleaner;
-use Boctulus\Simplerest\Core\Libs\Config;
-use Boctulus\Simplerest\Core\Libs\Cookie;
-use Boctulus\Simplerest\Core\Libs\CookieJar;
-use Boctulus\Simplerest\Core\Libs\CronJobMananger;
-
-use Boctulus\Simplerest\Core\Libs\CSS;
-
-use Boctulus\Simplerest\Core\Libs\CSSUtils;
-
-use Boctulus\Simplerest\Core\Libs\CustomTags;
-
-use Boctulus\Simplerest\Core\Libs\DatabaseBackup;
+use Boctulus\Simplerest\Core\Container;
+use Boctulus\Simplerest\Core\Libs\Curl;
 use Boctulus\Simplerest\Core\Libs\Date;
 
-use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Core\Libs\DBCache;
-use Boctulus\Simplerest\Core\Libs\DomCrawler;
-use Boctulus\Simplerest\Core\Libs\EasyHTMLTable;
-
-use Boctulus\Simplerest\Core\Libs\EmailTemplate;
-
-use Boctulus\Simplerest\Core\Libs\Env;
-use Boctulus\Simplerest\Core\Libs\Factory;
-
-use Boctulus\Simplerest\Core\Libs\FileCache;
-use Boctulus\Simplerest\Core\Libs\FileMemoization;
-use Boctulus\Simplerest\Core\Libs\FileMemoizationV2;
-use Boctulus\Simplerest\Core\Libs\Files;
-use Boctulus\Simplerest\Core\Libs\FileUploader;
-use Boctulus\Simplerest\Core\Libs\GitHub;
-use Boctulus\Simplerest\Core\Libs\GoogleDrive;
-
-use Boctulus\Simplerest\Core\Libs\GoogleMaps;
-use Boctulus\Simplerest\Core\Libs\GrokAI;
-use Boctulus\Simplerest\Core\Libs\Hardware;
-
-use Boctulus\Simplerest\Core\Libs\HTML as HTMLTools;
-use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form;
-use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Form;
-use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Html;
-use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
-use Boctulus\Simplerest\Core\Libs\i18n\AlternativeGetTextTranslator;
-use Boctulus\Simplerest\Core\Libs\i18n\POParser;
-
-use Boctulus\Simplerest\Core\Libs\i18n\Translate;
-use Boctulus\Simplerest\Core\Libs\InMemoryCache;
-use Boctulus\Simplerest\Core\Libs\JobQueue;
-use Boctulus\Simplerest\Core\Libs\LangDetector;
-use Boctulus\Simplerest\Core\Libs\Logger;
 use Boctulus\Simplerest\Core\Libs\Mail;
-use Boctulus\Simplerest\Core\Libs\MailFromRemoteWP;
-use Boctulus\Simplerest\Core\Libs\MediaType;
-use Boctulus\Simplerest\Core\Libs\Memoization;
-use Boctulus\Simplerest\Core\Libs\Messurements;
-use Boctulus\Simplerest\Core\Libs\Obfuscator;
-use Boctulus\Simplerest\Core\Libs\Paginator;
-use Boctulus\Simplerest\Core\Libs\Parallex;
-use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
-
-use Boctulus\Simplerest\Core\Libs\PHPParser;
-use Boctulus\Simplerest\Core\Libs\PostmanGenerator;
-use Boctulus\Simplerest\Core\Libs\RandomGenerator;
-use Boctulus\Simplerest\Core\Libs\Reflector;
-use Boctulus\Simplerest\Core\Libs\Schema;
-use Boctulus\Simplerest\Core\Libs\SendinBlue;
-use Boctulus\Simplerest\Core\Libs\SimpleCrypt;
-use Boctulus\Simplerest\Core\Libs\SiteMap;
-use Boctulus\Simplerest\Core\Libs\StdOut;
-use Boctulus\Simplerest\Core\Libs\StratoScraper;
-use Boctulus\Simplerest\Core\Libs\Strings;
-use Boctulus\Simplerest\Core\Libs\System;
 use Boctulus\Simplerest\Core\Libs\Task;
+
 use Boctulus\Simplerest\Core\Libs\Time;
-use Boctulus\Simplerest\Core\Libs\Update;
-use Boctulus\Simplerest\Core\Libs\Url;
-use Boctulus\Simplerest\Core\Libs\Utils;
-use Boctulus\Simplerest\Core\Libs\ValidationRules;
-use Boctulus\Simplerest\Core\Libs\Validator;
-use Boctulus\Simplerest\Core\Libs\VarDump;
-use Boctulus\Simplerest\Core\Libs\WooCommerceApiClient;
-use Boctulus\Simplerest\Core\Libs\XML;
-use Boctulus\Simplerest\Core\Libs\ZipManager;
-use Boctulus\Simplerest\Core\Model;
-use Boctulus\Simplerest\Core\Request;
-use Boctulus\Simplerest\Core\Response;
-use Boctulus\Simplerest\Core\View;
+
 use Boctulus\Simplerest\Core\WebRouter;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Libs\AndroidXmlRenderer;
-use Boctulus\Simplerest\Libs\ArbitrageCalculator;
-use Boctulus\Simplerest\Libs\Cake;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Boctulus\Simplerest\Core\Libs\Cache;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Utils;
+
 use Boctulus\Simplerest\libs\Documentor;
-use Boctulus\Simplerest\Libs\Foo2;
-use Boctulus\Simplerest\Libs\Foo;
-use Boctulus\Simplerest\Libs\HaulmerSignatureSDK;
+
+use Doctrine\Inflector\InflectorFactory;
+
+use Boctulus\ApiClient\ApiClientFallback;
+
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Config;
+
+use Boctulus\Simplerest\Core\Libs\Cookie;
+use Boctulus\Simplerest\Core\Libs\GitHub;
+use Boctulus\Simplerest\Core\Libs\GrokAI;
+use Boctulus\Simplerest\Core\Libs\Logger;
+
+use Boctulus\Simplerest\Core\Libs\Schema;
+
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Core\Libs\System;
+
+use Boctulus\Simplerest\Core\Libs\Update;
 use Boctulus\Simplerest\Libs\Ingredient1;
 use Boctulus\Simplerest\Libs\Ingredient2;
-use Boctulus\Simplerest\Libs\ItalianGrammarAnalyzer;
-use Boctulus\Simplerest\Libs\ItalianReviews;
-use Boctulus\Simplerest\Libs\LaravelApiGenerator;
-use Boctulus\Simplerest\Libs\NITColombiaValidator;
-use Boctulus\Simplerest\Libs\Reviews;
-use Boctulus\Simplerest\Libs\RibiSOAP;
-use Boctulus\Simplerest\Libs\Scrapers\AmazonScraper;
-use Boctulus\Simplerest\Libs\Scrapers\Curiosite;
-use Boctulus\Simplerest\Libs\Scrapers\LeroyMerlinScraper;
-use Boctulus\Simplerest\Libs\Scrapers\MaisonsScraper;
-use Boctulus\Simplerest\Libs\Sync;
-use Boctulus\Simplerest\Models\az\AutomovilesModel;
-use Boctulus\Simplerest\Models\az\BarModel;
-use Boctulus\Simplerest\Models\az\ProductsModel;
-use Boctulus\Simplerest\Modules\CiudadesCL\CiudadesCLShortcode;
-use Boctulus\Simplerest\Modules\Countdown\CountDown;
-use Boctulus\Simplerest\Modules\CSVImporter\Importer;
-use Boctulus\Simplerest\Modules\EatLeaf\EatLeaf;
-use Boctulus\Simplerest\Modules\ProgressBar\Progress;
-use Boctulus\Simplerest\Modules\StarRating\StarRating;
-use Spatie\ArrayToXml\ArrayToXml;
-use stdClass;
 use Symfony\Component\DomCrawler\Crawler;
+use Boctulus\Simplerest\Core\Libs\ChatGPT;
+use Boctulus\Simplerest\Core\Libs\DBCache;
+use Boctulus\Simplerest\Core\Libs\Factory;
+
+use Boctulus\Simplerest\Core\Libs\SiteMap;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\VarDump;
+
+use PhpParser\Node\Scalar\MagicConst\File;
+use Boctulus\Simplerest\Core\Libs\ClaudeAI;
+use Boctulus\Simplerest\Core\Libs\CSSUtils;
+use Boctulus\Simplerest\Core\Libs\Hardware;
+use Boctulus\Simplerest\Core\Libs\JobQueue;
+use Boctulus\Simplerest\Core\Libs\Parallex;
+use Boctulus\Simplerest\Models\az\BarModel;
+
+use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\CookieJar;
+use Boctulus\Simplerest\Core\Libs\FileCache;
+use Boctulus\Simplerest\Core\Libs\MediaType;
+use Boctulus\Simplerest\Core\Libs\Paginator;
+use Boctulus\Simplerest\Core\Libs\PHPParser;
+use Boctulus\Simplerest\Core\Libs\Reflector;
+use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Libs\ItalianReviews;
+use Boctulus\Simplerest\Core\Libs\CustomTags;
+use Boctulus\Simplerest\Core\Libs\DomCrawler;
+use Boctulus\Simplerest\Core\Libs\GoogleMaps;
+use Boctulus\Simplerest\Core\Libs\Obfuscator;
+use Boctulus\Simplerest\Core\Libs\SendinBlue;
+
+use Boctulus\Simplerest\Core\Libs\ZipManager;
+use Boctulus\Simplerest\Core\Libs\GoogleDrive;
+use Boctulus\Simplerest\Core\Libs\Memoization;
+use Boctulus\Simplerest\Core\Libs\SimpleCrypt;
+use Boctulus\Simplerest\Core\Libs\FileUploader;
+use Boctulus\Simplerest\Core\Libs\LangDetector;
+use Boctulus\Simplerest\Core\Libs\Messurements;
+use Boctulus\Simplerest\Core\Libs\EasyHTMLTable;
+use Boctulus\Simplerest\Core\Libs\EmailTemplate;
+use Boctulus\Simplerest\Core\Libs\i18n\POParser;
+use Boctulus\Simplerest\Core\Libs\InMemoryCache;
+use Boctulus\Simplerest\Core\Libs\StratoScraper;
+use Boctulus\Simplerest\Libs\Scrapers\Curiosite;
+use Boctulus\Simplerest\Models\az\ProductsModel;
+use Boctulus\Simplerest\Modules\EatLeaf\EatLeaf;
+use Boctulus\Simplerest\Controllers\api\Products;
+use Boctulus\Simplerest\Core\Libs\Base64Uploader;
+use Boctulus\Simplerest\Core\Libs\DatabaseBackup;
+use Boctulus\Simplerest\Core\Libs\i18n\Translate;
+use Boctulus\Simplerest\Libs\ArbitrageCalculator;
+use Boctulus\Simplerest\Libs\HaulmerSignatureSDK;
+use Boctulus\Simplerest\Libs\LaravelApiGenerator;
+use Boctulus\Simplerest\Core\API\v1\ApiController;
+use Boctulus\Simplerest\Core\Libs\ApacheWebServer;
+use Boctulus\Simplerest\Core\Libs\CronJobMananger;
+use Boctulus\Simplerest\Core\Libs\FileMemoization;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
+use Boctulus\Simplerest\Core\Libs\RandomGenerator;
+use Boctulus\Simplerest\Core\Libs\ValidationRules;
+use Boctulus\Simplerest\Libs\NITColombiaValidator;
+use Boctulus\Simplerest\Controllers\api\TblPersona;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Form;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Html;
+use Boctulus\Simplerest\Core\Libs\MailFromRemoteWP;
+use Boctulus\Simplerest\Core\Libs\PostmanGenerator;
+use Boctulus\Simplerest\Models\az\AutomovilesModel;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\FileMemoizationV2;
+use Boctulus\Simplerest\Core\Libs\HTML as HTMLTools;
+use Boctulus\Simplerest\Libs\ItalianGrammarAnalyzer;
+use Boctulus\Simplerest\Libs\Scrapers\AmazonScraper;
+use Boctulus\Simplerest\Modules\Countdown\CountDown;
+use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
+use Boctulus\Simplerest\Libs\Scrapers\MaisonsScraper;
+use Boctulus\Simplerest\Modules\CSVImporter\Importer;
+use Boctulus\Simplerest\Modules\ProgressBar\Progress;
+use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form;
+use Boctulus\Simplerest\Modules\StarRating\StarRating;
+use Boctulus\Simplerest\Core\Libs\WooCommerceApiClient;
+use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
+use Boctulus\Simplerest\Libs\Scrapers\LeroyMerlinScraper;
+use Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs\WordPress;
+use Boctulus\Simplerest\Core\Libs\code_cleaner\AngularCleaner;
+use Boctulus\Simplerest\Modules\CiudadesCL\CiudadesCLShortcode;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Boctulus\Simplerest\Core\Libs\code_cleaner\BootstrapCleaner;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use Boctulus\Simplerest\Core\Libs\CMS_Scanner\Scanner as CMSScanner;
+use Boctulus\Simplerest\Core\Libs\i18n\AlternativeGetTextTranslator;
+use Boctulus\Simplerest\Modules\AndroidEngine\src\Libs\CodeStackDetector;
+use Boctulus\Simplerest\Modules\AndroidEngine\src\Libs\AndroidXmlRenderer;
 
 class DumbController extends Controller
 {
@@ -12324,6 +12325,31 @@ class DumbController extends Controller
 
         AndroidXmlRenderer::setRootPath($project_path);         
         echo AndroidXmlRenderer::render($view_path);
+    }
+
+    /*   
+        FALLA porque no detecta nada
+
+        http://simplerest.lan/prompt_generator#chat-771
+
+    */
+    function test_android_native_detector(){
+        $detector = new CodeStackDetector();
+        $detector->setRootPath('C:\Users\jayso\AndroidStudioProjects\FriendlyPOS');
+        $result = $detector->detect();
+
+        dd($result);
+        dd($detector->getErrors(), 'Errors');
+    }
+
+    // FALLA
+    function test_react_native_detector(){    
+        $detector = new CodeStackDetector();
+        $detector->setRootPath('D:\Android\restaturant-react-native\restaurant-app');
+        $result = $detector->detect();
+
+        dd($result);
+        dd($detector->getErrors(), 'Errors');
     }
 
 }   // end class

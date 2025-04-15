@@ -41,6 +41,25 @@ class Files
 		}
 	}
 
+	static function fileExists(string $path, bool $exclude_directories = true){
+		$ok = file_exists($path);
+
+		if ($exclude_directories){
+			$ok = $ok && !is_file($path);	
+		}
+
+		return $ok;
+	}
+
+	static function directoryExists(string $path){
+		return file_exists($path) && is_dir($path);
+	}
+
+	// alias
+	static function dirExists(string $path){
+		static::directoryExists($path);
+	}
+
 	static function realPathNoCoercive($path = null){
 		if ($path === null){
 			return false;
@@ -725,7 +744,6 @@ class Files
 		return $results;
 	}
 	
-
 	/*
 		Recursively search for files matching a pattern in a directory and its subdirectories.
 		Optionally, exclude files matching any of the exclude patterns.
@@ -852,6 +870,13 @@ class Files
         }
 
 		return $ret;
+	}
+
+	/*
+		Devuelve lista de archivos de forma recursiva
+	*/
+	static function getFiles(string $dir, $file_extension = null){		
+		return empty($file_extension) ? static::deepScan($dir) : static::recursiveGlob($dir . DIRECTORY_SEPARATOR . "*.$file_extension");
 	}
 
 	/*
@@ -1643,6 +1668,18 @@ class Files
 		fclose($file);
 		
 		return $string;
+	}
+
+	static function readFile(string $path){
+		if (is_dir($path)) {
+			return false;
+		}
+
+		if (!file_exists($path) || !is_file($path) || !is_readable($path)) {
+			return false;
+		}
+
+		return file_get_contents($path);
 	}
 
 	/**
