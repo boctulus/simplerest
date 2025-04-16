@@ -8030,6 +8030,13 @@ class DumbController extends Controller
         );
     }
 
+    function test_db_cache_forget()
+    {
+        dd(
+            DBCache::forget('galaxia')
+        );
+    }
+
     function test_db_transient()
     {
         set_transient('bzz-importer_completion', 55);
