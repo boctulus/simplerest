@@ -21,10 +21,8 @@ class CacheTable implements IMigration
         ->integer('id')->auto()->pri()
         ->string('_key_', 191)
         ->text('value')
-        ->integer('expires_at')
-        ->timestamp('cached_at')->nullable()
-		// ...
-        ->datetimes();
+        ->integer('expires_at')->unsigned()
+        ->integer('cached_at')->unsigned()->nullable();
 
 		$sc->create();
     }

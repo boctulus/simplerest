@@ -20958,3 +20958,89 @@ Ej:
 
 	// Muestra el resultado.
 	dd($result);
+
+
+# Observer Implementation
+
+This implementation follows the Observer pattern using interfaces to define contracts for Subjects (Observables) and Observers. An optional trait—named EventBusTrait—is provided to enable an EventBus-like mechanism, which can persist the last event using a configurable persistence mechanism (cache) that implements the ICache interface. 
+
+The implementation is modular and enables flexibility for different use cases.
+
+## Components
+
+### ISubject
+
+Declares methods to attach, detach, and notify observers.
+
+Path: app/Core/Interfaces/ISubject.php
+
+### IObserver
+
+Declares a single update() method for receiving notifications.
+
+Path: app/Core/Interfaces/IObserver.php
+
+### ICache
+
+Provides a contract for cache implementations, including methods for storing and retrieving data with expiration.
+
+Path: app/Core/Interfaces/ICache.php
+
+
+## Cache Implementations
+
+Three cache mechanisms are available:
+
+InMemoryCache: Cache persists data only during the request (best for testing/development).
+
+FileCache: Uses the file system to store cache data.
+
+DBCache: Persists cache in a database table.
+
+Files are located in: app/Core/Libs/
+
+
+## EventBus Trait
+
+This trait provides a default implementation of the ISubject interface.
+It handles the attachment and notification of observers and persists the last event using a configurable cache.
+
+Path: app/Core/Traits/EventBusTrait.php
+
+The trait allows developers to choose the persistence mechanism by calling:
+
+```
+EventBus::setCacheMechanism(InMemoryCache::class);
+```
+
+## Concrete Implementation
+
+A concrete class that uses the EventBusTrait to implement the ISubject interface.
+
+Path: app/Core/Libs/EventBus.php
+
+
+## Example with Multiple Observers
+
+```
+// Set cache mechanism and instantiate EventBus.
+EventBus::setCacheMechanism(InMemoryCache::class);
+$eventBus = new EventBus();
+
+// Attach multiple observers.
+$observer1 = new SampleObserver();
+$observer2 = new SampleObserver();
+$observer3 = new SampleObserver();
+
+$eventBus->attach($observer1);
+$eventBus->attach($observer2);
+$eventBus->attach($observer3);
+
+// Dispatch an event.
+$eventBus->notify("Test event data with multiple observers using InMemoryCache");
+
+// Retrieve and display last event.
+$lastEvent = EventBus::getLastEvent();
+dd($lastEvent, "Last event from Cache");
+```
+
