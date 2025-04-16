@@ -1,9 +1,27 @@
 TODO SimpleRest
 ===============
 
-- Convertir Config en su version sin uso de "static" y usar el contenedor de dependencias inversas para usarlo obteniendo un singleton.
+- Mejorar el "EventBus". Actualmente tiene varias limitaciones:
 
-- Crear clase ValConfig como "Snapshot" (copia inmutable profunda) de Config. Otro nombre mas largo seria ImmutableConfig
+  . Tiene Single Event Persistence (solo queda almacenado el ultimo valor ingresado) aunque tiene sentido considerando el siguiete punto.
+
+  . Synchronous Notification
+
+    Limitation: Notifications are dispatched synchronously, meaning that all observer update calls block further execution until they complete.
+
+    Impact: In high-load or long-running observer routines, this can lead to performance bottlenecks and may not scale well for real-time applications.
+
+  . No Acknowledgment or Retry Mechanism
+
+    Limitation: There is no built-in mechanism for confirming that each observer has processed the event successfully.
+
+  . Lack of Event Queuing Mechanism 
+
+    Limitation: The implementation overwrites the last event on each notification rather than queuing them.
+
+- (Opcional) Convertir Config en su version sin uso de "static" y usar el contenedor de dependencias inversas para usarlo obteniendo un singleton.
+
+- Crear clase inmutableConfig como version inmutable de Config.
 
 https://chat.deepseek.com/a/chat/s/a8417cf5-7be3-4a5a-8eaa-71f0f61e286f
 http://simplerest.lan/prompt_generator#chat-784
