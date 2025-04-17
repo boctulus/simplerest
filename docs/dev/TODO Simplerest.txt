@@ -1,7 +1,19 @@
 TODO SimpleRest
 ===============
 
-- Mejorar el "EventBus". Actualmente tiene varias limitaciones:
+- Considerar la idea de crear "UI controllers" que a diferencia de un simple WebController estaria acoplado a una vista en concreto y esta "vista" podria ser una vista parcial como un tipo de "Fragment" de Android y permitiria de forma sencilla enviar y recibir datos de la View usando por ejemplo WebSockets o SSE.
+
+https://claude.ai/chat/2da02df7-b710-49b0-b42a-17a435233b49
+
+Considerar tambien crear "ViewModels" para almacenar aquello que es requerido para esa vista (aunque podrian "compartirse") y/o el estado de la misma.
+
+En este caso las vistas no pueden ser simplemente archivos html o php con HTML sino deben ser cargados desde clases de tipo "View"  (equivalente a "Activity") y "Fragment" con su ciclo de vida.  Quizas algo parecido a los de Fragments y Activities de Android.
+
+- Mejorar el "EventBus"
+
+https://chatgpt.com/c/67ff30f0-c16c-800d-af88-f71ca2292a09
+
+ Actualmente tiene varias limitaciones:
 
   . Tiene Single Event Persistence (solo queda almacenado el ultimo valor ingresado) aunque tiene sentido considerando el siguiete punto.
 
