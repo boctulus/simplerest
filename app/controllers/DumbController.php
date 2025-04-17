@@ -3333,6 +3333,54 @@ class DumbController extends Controller
         dd(Files::recursiveGlob(ROOT_PATH . DIRECTORY_SEPARATOR . '*.zip|*.txt'));
     }
 
+    // Con excluded files como string --ok
+    function test_glob_rec_3()
+    {
+        $dir = 'D:\Android\pos\MyPOS';
+        $pattern = '*.java|*.xml|*.gradle|*.properties';
+
+        dd(
+            Files::recursiveGlob($dir . DIRECTORY_SEPARATOR . $pattern, 0, 
+                'D:\Android\pos\MyPOS\app\src\main\res\values\*|D:\Android\pos\MyPOS\app\build\intermediates\*'
+            )
+        );
+    }
+
+    // Con excluded files como array --ok
+    function test_glob_rec_4()
+    {
+        $dir = 'D:\Android\pos\MyPOS';
+        $pattern = '*.java|*.xml|*.gradle|*.properties';
+        $exclude = [
+            'D:\Android\pos\MyPOS\app\src\main\res\values\*',
+            'D:\Android\pos\MyPOS\app\build\intermediates\*'
+        ];
+
+        dd(
+            Files::recursiveGlob($dir . DIRECTORY_SEPARATOR . $pattern, 0, 
+                $exclude
+            )
+        );
+    }
+
+    // Con excluded files con rutas relativas
+    function test_glob_rec_5()
+    {
+        $dir = 'D:\Android\pos\MyPOS';
+        $pattern = '*.java|*.xml|*.gradle|*.properties';
+        $exclude = [
+            'app\src\main\res\values\*',            
+            'app\src\main\res\xml\*',
+            'app\build\intermediates\*',
+        ];
+
+        dd(
+            Files::recursiveGlobWithRootPath($dir, $pattern, 0, 
+                $exclude
+            )
+        );
+    }
+
     function test_abs_path()
     {
         dd(Files::getAbsolutePath("docs/x.txt"));

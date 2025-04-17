@@ -3,6 +3,9 @@ LIVEDATA (inspirado en Android)
 
 LiveData Concept for Simplerest
 
+https://www.youtube.com/watch?v=suC0OM5gGAA
+
+
 The idea for a LiveData implementation in Simplerest is to create a mechanism that allows real-time, reactive updates from the server side, similar to what LiveWire provides, but tailored to the Simplerest framework and without the exact limitations of LiveWire.
 
 This approach centers around maintaining the latest state of a Model or Controller on the server using a pattern similar to LiveData. It is intended to notify the front-end (via technologies such as Ajax, WebSockets, or Server-Sent Events) when a particular piece of data changes. The core idea is to decouple the server’s state update from the client’s request/response cycle by persisting the latest value of data and ensuring that connected clients receive these updates as soon as possible.
