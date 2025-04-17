@@ -126,3 +126,4 @@
 [2025-04-15 16:13:44]	0.8.12	MutationObserver para mostrar SKU en col de precio (RELMOTOR SHORTCODE)
 [2025-04-16 14:02:50]	0.8.12	EventBus simplista
 [2025-04-17 17:29:48]	0.8.12	Files::recursiveGlobWithRootPat()
+[2025-04-17 17:36:51]	0.8.12	Mejoras en recursiveGlob() y recursiveGlobWithRootPath()
