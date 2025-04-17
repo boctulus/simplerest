@@ -9,8 +9,16 @@ Trait FilesTrait
     /**
      * Encuentra todos los archivos relevantes para el análisis
      */
-    function findRelevantFiles($pattern, $excludePaths = [])
+    function findRelevantFiles($pattern, $excludePaths = null)
     {        
+        if ($excludePaths === null){
+            $excludePaths  = [];
+        }
+
+        if (is_array($excludePaths)){
+            $excludePaths = implode('|', $excludePaths);
+        }        
+
         return Files::recursiveGlob(
             $this->rootPath . DIRECTORY_SEPARATOR . $pattern,
             0,

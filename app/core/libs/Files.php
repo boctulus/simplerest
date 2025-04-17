@@ -821,6 +821,102 @@ class Files
 		return $files;
 	}
 
+	/*
+		A diferencia
+
+		Ej:
+
+		$dir = 'D:\Android\pos\MyPOS';
+        $pattern = '*.java|*.xml|*.gradle|*.properties';
+        $exclude = [
+            'app\src\main\res\values\*',            
+            'app\src\main\res\xml\*',
+            'app\build\intermediates\*',
+        ];
+
+        dd(
+            Files::recursiveGlobWithRootPath($dir, $pattern, 0, 
+                $exclude
+            )
+        );
+
+	*/
+	static function recursiveGlobWithRootPath($root_path, $pattern, $flags = 0, $exclude = [])
+	{
+		// For the first call, prepend root_path to pattern if pattern doesn't have it already
+		if (!str_starts_with($pattern, $root_path)) {
+			$full_pattern = $root_path . DIRECTORY_SEPARATOR . $pattern;
+		} else {
+			$full_pattern = $pattern;
+		}
+
+		// If multiple patterns are provided (using pipe "|"), split and merge results
+		if (Strings::containsAny(['|', ';'], $pattern)) {
+			$files = [];
+			$subPatterns = Strings::split($pattern, '|', ';');
+			foreach ($subPatterns as $subPat) {
+				// Recursively call the function with each sub-pattern
+				$files = array_merge($files, self::recursiveGlobWithRootPath($root_path, $subPat, $flags, $exclude));
+			}
+			// Remove duplicate entries and return the result
+			return array_unique($files);
+		}
+
+		// Process single pattern
+		$files = glob($full_pattern, $flags);
+		if ($files === false) {
+			$files = [];
+		}
+
+		// Recursive search in subdirectories
+		$dir_pattern = dirname($full_pattern) . '/*';
+		foreach (glob($dir_pattern, GLOB_ONLYDIR | GLOB_NOSORT | GLOB_BRACE) as $subDir) {
+			$subPattern = $subDir . DIRECTORY_SEPARATOR . basename($full_pattern);
+			$subFiles = self::recursiveGlobWithRootPath($root_path, $subPattern, $flags, $exclude);
+			$files = array_merge($files, $subFiles);
+		}
+
+		// Process exclusions
+		if (!empty($exclude)) {
+			// Ensure exclude is an array
+			if (!is_array($exclude)) {
+				$exclude = [$exclude];
+			}
+
+			// Process each file
+			foreach ($files as $ix => $file) {
+				$normalizedFile = str_replace(['\\', '/'], '/', $file);
+				
+				// Check against each exclude pattern
+				foreach ($exclude as $exPattern) {
+					// Make sure exclusion path is absolute by adding root_path if necessary
+					if (!static::isAbsolutePath($exPattern)) {
+						$fullExPattern = $root_path . DIRECTORY_SEPARATOR . $exPattern;
+					} else {
+						$fullExPattern = $exPattern;
+					}
+					
+					// Normalize the exclusion pattern for consistent matching
+					$normalizedExPattern = str_replace(['\\', '/'], '/', $fullExPattern);
+					
+					// Check if file matches the exclusion pattern
+					if (fnmatch($normalizedExPattern, $normalizedFile)) {
+						unset($files[$ix]);
+						break;
+					}
+				}
+			}
+		}
+
+		// Clean up file paths
+		$result = [];
+		foreach ($files as $f) {
+			$result[] = static::convertSlashes(static::removeUnnecessarySlashes($f));
+		}
+
+		return $result;
+	}
+
  	/**
      * Escanea un directorio y devuelve una lista de archivos
      * 
