@@ -3363,7 +3363,7 @@ class DumbController extends Controller
         );
     }
 
-    // Con excluded files con rutas relativas
+    // Con excluded files con rutas relativas como string
     function test_glob_rec_5()
     {
         $dir = 'D:\Android\pos\MyPOS';
@@ -3373,6 +3373,19 @@ class DumbController extends Controller
             'app\src\main\res\xml\*',
             'app\build\intermediates\*',
         ];
+
+        dd(
+            Files::recursiveGlobWithRootPath($dir, $pattern, 0, 
+                $exclude
+            )
+        );
+    }
+
+    function test_glob_rec_6()
+    {
+        $dir = 'D:\Android\pos\MyPOS';
+        $pattern = '*.java|*.xml|*.gradle|*.properties';
+        $exclude =  'app\src\main\res\values\*|app\src\main\res\xml\*|app\build\intermediates\*';
 
         dd(
             Files::recursiveGlobWithRootPath($dir, $pattern, 0, 
