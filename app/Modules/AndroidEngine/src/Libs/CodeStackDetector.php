@@ -7,6 +7,8 @@ use Boctulus\Simplerest\Core\Traits\ErrorReporting;
 
 /*
     Análisis de código Android
+
+    Esta clase funciona MUY MAL
 */
 class CodeStackDetector
 {   

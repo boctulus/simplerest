@@ -19,8 +19,9 @@ Trait FilesTrait
             $excludePaths = implode('|', $excludePaths);
         }        
 
-        return Files::recursiveGlob(
-            $this->rootPath . DIRECTORY_SEPARATOR . $pattern,
+        return Files::recursiveGlobWithRootPath(
+            $this->rootPath, 
+            $pattern, 
             0,
             $excludePaths
         );

@@ -16,12 +16,13 @@
    ],
    "version":"0.8.12",
    "require":{
-      "php":">=7.4,<8.4",
-      "firebase/php-jwt": "^6.0",
+      "php":">=7.4,<8.4",      
       "vlucas/phpdotenv": "^5.2",
       "simplerest/shopifyconnector": "@dev",
 		"nikic/php-parser": "^5.4",
-		"doctrine/inflector": "^2.0"
+		"doctrine/inflector": "^2.0",
+      "kreait/firebase-php": "^7.0",
+		"google/cloud-firestore": "^1.50"
    },
    "scripts":{
       "pre-autoload-dump":"Google\\Task\\Composer::cleanup"
