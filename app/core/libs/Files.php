@@ -745,6 +745,8 @@ class Files
 	}
 	
 	/*
+		Nota: esta funcion podria ser deprecated en favor de recursiveGlobWithRootPath()
+
 		Recursively search for files matching a pattern in a directory and its subdirectories.
 		Optionally, exclude files matching any of the exclude patterns.
 		Optionally, combine multiple patterns using pipe "|" or semicolon ";".
@@ -759,9 +761,9 @@ class Files
 					'D:\Android\pos\MyPOS\app\build\*'
 				])
 			);
-	*/
 
-	static function recursiveGlob($pattern, $flags = 0, $exclude = [])
+	*/
+	static function recursiveGlob($pattern, $flags = 0, $exclude = null)
 	{
 		// Separate directory and file pattern
 		$lastSeparatorPos = strrpos($pattern, DIRECTORY_SEPARATOR);
@@ -796,7 +798,7 @@ class Files
 		// Exclude files matching any of the exclude patterns (using fnmatch)
 		if (!empty($exclude)) {
 			if (!is_array($exclude)) {
-				$exclude = [$exclude];
+				$exclude = explode('|', $exclude);
 			}
 			foreach ($files as $ix => $entry) {
 				// Normalize file path: convert both forward and backward slashes to "/"
@@ -822,24 +824,25 @@ class Files
 	}
 
 	/*
-		A diferencia
+		A diferencia de recursiveGlob() acepta patrones a excluir con rutas relativas a $root_path
+
+		Por esta razon recursiveGlob() deberia ser considerada obsoleta
 
 		Ej:
 
-		$dir = 'D:\Android\pos\MyPOS';
-        $pattern = '*.java|*.xml|*.gradle|*.properties';
-        $exclude = [
-            'app\src\main\res\values\*',            
-            'app\src\main\res\xml\*',
-            'app\build\intermediates\*',
-        ];
+			$dir = 'D:\Android\pos\MyPOS';
+			$pattern = '*.java|*.xml|*.gradle|*.properties';
+			$exclude = [
+				'app\src\main\res\values\*',            
+				'app\src\main\res\xml\*',
+				'app\build\intermediates\*',
+			];
 
-        dd(
-            Files::recursiveGlobWithRootPath($dir, $pattern, 0, 
-                $exclude
-            )
-        );
-
+			dd(
+				Files::recursiveGlobWithRootPath($dir, $pattern, 0, 
+					$exclude
+				)
+			);
 	*/
 	static function recursiveGlobWithRootPath($root_path, $pattern, $flags = 0, $exclude = [])
 	{
@@ -880,7 +883,7 @@ class Files
 		if (!empty($exclude)) {
 			// Ensure exclude is an array
 			if (!is_array($exclude)) {
-				$exclude = [$exclude];
+				$exclude = explode('|', $exclude);
 			}
 
 			// Process each file
