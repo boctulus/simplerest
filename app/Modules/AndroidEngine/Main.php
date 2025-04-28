@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\modules\AndroidEngine;
+namespace Boctulus\Simplerest\Modules\AndroidEngine;
 
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;

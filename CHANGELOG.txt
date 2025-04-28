@@ -127,3 +127,4 @@
 [2025-04-16 14:02:50]	0.8.12	EventBus simplista
 [2025-04-17 17:29:48]	0.8.12	Files::recursiveGlobWithRootPat()
 [2025-04-17 17:36:51]	0.8.12	Mejoras en recursiveGlob() y recursiveGlobWithRootPath()
+[2025-04-28 18:58:13]	0.8.12	Actualizado composer.json para incluir GRPC
