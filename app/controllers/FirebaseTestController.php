@@ -11,19 +11,20 @@ class FirebaseTestController extends Controller
 
     function test()
     {
-        $credential_path = ETC_PATH . 'firebase_test.json';
+        $serviceAccountPath = ETC_PATH . 'firebase_test.json';
+        $bd_uri             = 'https://firestorecrud-7000.firebaseio.com';
 
-        if (!file_exists($credential_path)) {
-            dd("No existe el archivo de credenciales de Firebase en la ruta: $credential_path");
+        if (!file_exists($serviceAccountPath)) {
+            dd("No existe el archivo de credenciales de Firebase en la ruta: $serviceAccountPath");
         }
-        
-        if (!is_readable($credential_path)) {
-            dd("No se puede leer el archivo de credenciales de Firebase en la ruta: $credential_path");
+
+        if (!is_readable($serviceAccountPath)) {
+            dd("No se puede leer el archivo de credenciales de Firebase en la ruta: $serviceAccountPath");
         }        
 
         $factory = (new Factory())
-        ->withServiceAccount($credential_path)
-        ->withDatabaseUri('https://firestorecrud-7000.firebaseio.com');
+        ->withServiceAccount($serviceAccountPath)
+        ->withDatabaseUri($bd_uri);
 
         $auth = $factory->createAuth();
         $realtimeDatabase = $factory->createDatabase();
