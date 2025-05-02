@@ -129,3 +129,4 @@
 [2025-04-17 17:36:51]	0.8.12	Mejoras en recursiveGlob() y recursiveGlobWithRootPath()
 [2025-04-28 18:58:13]	0.8.12	Actualizado composer.json para incluir GRPC
 [2025-05-02 17:42:34]	0.8.12	Mejora en getCSV() con AUTO-DETECT de separador
+[2025-05-02 18:05:43]	0.8.12	processCSV() tambien soporta autoteccion de separador
