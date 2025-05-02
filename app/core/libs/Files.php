@@ -281,22 +281,69 @@ class Files
 		fclose($f);
 	}
 
-	static function getCSV(string $path, string $separator = ",", bool $header = true, bool $assoc = true){	
+	/**
+	 * Parses a CSV file into an array, with optional header and automatic separator detection.
+	 *
+	 * @param string $path      Path to the CSV file.
+	 * @param string $separator Field separator (e.g., ",", ";", "|", or "AUTO" to auto-detect).
+	 * @param bool   $header    Whether the first line is a header row (default: true).
+	 * @param bool   $assoc     Return associative arrays using headers as keys (default: true).
+	 *
+	 * @return array If $header is true, returns ['rows' => [...], 'header' => [...]];
+	 *               otherwise returns a flat array of rows.
+	 *
+	 * @throws \Exception If separator is set to "AUTO" and cannot be reliably determined.
+	 */
+	static function getCSV(string $path, string $separator = "AUTO", bool $header = true, bool $assoc = true) {
 		$rows = [];
-
-		ini_set('auto_detect_line_endings', 'true');
-
-		$handle = fopen($path,'r');
-
-		if ($header){
+	
+		// Leer contenido y normalizar saltos de línea
+		$content = file_get_contents($path);
+		$content = str_replace(["\r\n", "\r"], "\n", $content);
+	
+		// Extraer primera línea
+		$lines = explode("\n", $content);
+		$firstLine = $lines[0] ?? '';
+	
+		// Detección automática del separador
+		if ($separator === 'AUTO') {
+			// Extraer caracteres no permitidos como candidatos a separador
+			preg_match_all('/[^\p{L}\p{N}_\-]/u', $firstLine, $matches);
+			$candidates = array_count_values($matches[0]);
+	
+			// Si hay coma o punto y coma, elegir preferentemente
+			if (isset($candidates[','])) {
+				$separator = ',';
+			} elseif (isset($candidates[';'])) {
+				$separator = ';';
+			} else {
+				// Filtrar duplicados y evaluar
+				$unique = array_keys($candidates);
+	
+				if (count($unique) === 1) {
+					$separator = $unique[0];
+				} elseif (count($unique) > 1) {
+					throw new \Exception("Cannot determine CSV separator automatically. Multiple candidates found: " . implode(', ', $unique));
+				} else {
+					throw new \Exception("Cannot determine CSV separator. No valid non-alphabetic delimiters found.");
+				}
+			}
+		}
+	
+		// Create a temporary memory stream from the normalized content
+		$handle = fopen('php://temp', 'r+');
+		fwrite($handle, $content);
+		rewind($handle);
+	
+		if ($header) {
 			$cabecera = fgetcsv($handle, null, $separator);
-			$ch       = count($cabecera);
-
-			foreach ($cabecera as $ix => $row){				
+			$ch = count($cabecera);
+	
+			foreach ($cabecera as $ix => $row) {
 				$cabecera[$ix] = Strings::sanitize($row);
 			}
-		}  else {
-			$assoc    = false;
+		} else {
+			$assoc = false;
 		}
 		
 		$i = 0;

@@ -7341,7 +7341,8 @@ class DumbController extends Controller
 
     function get_extensions()
     {
-        dd(get_loaded_extensions());
+        dd(PHP_VERSION, 'PHP Version');
+        dd(get_loaded_extensions(), 'PHP Extensions');
     }
 
     function test_byte()
@@ -12418,6 +12419,26 @@ class DumbController extends Controller
 
         dd($result);
         dd($detector->getErrors(), 'Errors');
+    }
+
+    function csv_debug_2()
+    {
+        $path = 'D:\Desktop\PALITO PRJ\Db_Comercio\comercio.csv';
+
+        $csv    = Files::getCSV($path);
+        $rows   = $csv['rows'];
+        $header = $csv['header'];
+
+        // $rows = Arrays::getColumns($rows, [
+        //     'ID',
+        //     'Tipo',
+        //     'SKU'
+        // ]);
+
+        print_array($rows);
+
+        $total = count($rows);
+        dd($total, 'TOTAL');
     }
 
 }   // end class
