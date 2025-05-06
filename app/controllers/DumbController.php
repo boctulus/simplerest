@@ -10108,20 +10108,20 @@ class DumbController extends Controller
     */
     function test_read_csv_2()
     {
-        System::registerStats(true, false);
+        // System::registerStats(true, false);
 
         $path = 'C:\Users\jayso\OneDrive\Documentos\customers-2000000.csv';
 
         global $emails_ending_org;
         global $processed;
 
-        Files::processCSV($path, ',', true, function ($row) {
+        Files::processCSV($path, 'AUTO', true, function ($row) {
             // Ex.
             global $emails_ending_org, $processed;
 
             if (Strings::endsWith('.org', $row['Email'])) {
                 $emails_ending_org++;
-                // dd($row['Email']);
+                dd($row['Email']);
             }
 
             $processed++;
@@ -10135,11 +10135,12 @@ class DumbController extends Controller
 
     function test_read_csv_3()
     {
-        $archivo = 'D:\www\woo4' . '/wp-content/pekeinventario/articulosweb.txt';
+        $archivo = 'D:\Desktop\PALITO PRJ\DATABASE\productos.csv';
+        dd($archivo, 'ARCHIVO');
 
-        Files::processCSV($archivo, ';', true, function ($p) {
+        Files::processCSV($archivo, 'AUTO', true, function ($p) {
             dd($p, 'P (por procesar)');
-        }, null, 36332, 5);
+        }, null, 0, 5);
     }
 
     function test_parallex()
@@ -12421,24 +12422,14 @@ class DumbController extends Controller
         dd($detector->getErrors(), 'Errors');
     }
 
-    function csv_debug_2()
+    function read_csv()
     {
-        $path = 'D:\Desktop\PALITO PRJ\Db_Comercio\comercio.csv';
+        $archivo = 'D:\Desktop\PALITO PRJ\DATABASE\productos.csv';
+        dd($archivo, 'ARCHIVO');
 
-        $csv    = Files::getCSV($path);
-        $rows   = $csv['rows'];
-        $header = $csv['header'];
-
-        // $rows = Arrays::getColumns($rows, [
-        //     'ID',
-        //     'Tipo',
-        //     'SKU'
-        // ]);
-
-        print_array($rows);
-
-        $total = count($rows);
-        dd($total, 'TOTAL');
+        Files::processCSV($archivo, 'AUTO', true, function ($p) {
+            dd($p, 'P');
+        }, null, 0, 2);
     }
 
 }   // end class
