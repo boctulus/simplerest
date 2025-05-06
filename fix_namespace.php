@@ -19,8 +19,8 @@ if (php_sapi_name() != "cli"){
 	]
 */
 
-$search  = 'boctulus\\AzulejosMadridImp\\';
-$replace = 'boctulus\\azulejos\\';
+$search  = 'ZippyCart\\';
+$replace = 'Boctulus\Simplerest\\';
 
 
 searchAndReplaceInFiles(__DIR__, '*.php', $search, $replace);
