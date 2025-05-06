@@ -87,7 +87,7 @@ class CliRouter
             } else {
                 $ck = static::$routes[$key];
 
-                $namespace = Strings::contains('\\', $ck) ? '' : 'Boctulus\\Simplerest\\Controllers\\';
+                $namespace = Strings::contains('\\', $ck) ? '' : namespace_url() . '\\Controllers\\';
                 $pos = strpos($ck, '@');
 
                 if ($pos === false){
@@ -126,7 +126,7 @@ class CliRouter
         
         try {
             if (!isset($result)){                
-                $namespace = 'Boctulus\\Simplerest\\Controllers\\';
+                $namespace = namespace_url() . '\\Controllers\\';
 
                 // dd(static::$routes, 'routes');
                 // dd($key, 'key');

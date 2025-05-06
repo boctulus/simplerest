@@ -1,10 +1,15 @@
 <?php
 
 use Boctulus\Simplerest\Core\Libs\ApiClient;
-use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Model;
+
+function namespace_url(bool $include_trailing_slash = false){
+    return Config::get('namespace') . ($include_trailing_slash ? '\\' : '');    
+}
 
 /*
     Returns BASE_URL to be used in the FrontEnd

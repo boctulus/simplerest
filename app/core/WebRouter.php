@@ -263,7 +263,7 @@ class WebRouter
                         static::$ck_params[$verb][$uri][] = $p->name;                        
                     }
                 } else {
-                    $namespace = Strings::contains('\\', $ck) ? '' : 'Boctulus\\Simplerest\\Controllers\\';
+                    $namespace = Strings::contains('\\', $ck) ? '' : namespace_url(true) . 'Controllers\\';
                     $pos = strpos($ck, '@');
                     if ($pos === false){
                         $ctrl = $ck;
