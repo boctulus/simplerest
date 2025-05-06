@@ -282,6 +282,67 @@ class Files
 	}
 
 	/**
+	 * Detects the CSV separator character from a sample line.
+	 *
+	 * @param string $line First line of the CSV file.
+	 *
+	 * @return string The detected separator character.
+	 *
+	 * @throws \Exception If the separator cannot be reliably determined.
+	 */
+	static function detectSeparator(string $line): string
+	{
+		// Contadores para posibles separadores
+		$counts = [];
+
+		// Analizar cada caracter de la línea
+		$len = mb_strlen($line, 'UTF-8');
+
+		for ($i = 0; $i < $len; $i++) {
+			$char = mb_substr($line, $i, 1, 'UTF-8');
+
+			// Excluir caracteres alfanuméricos, guiones, guiones bajos y letras Unicode
+			if (preg_match('/[a-zA-Z0-9_\-\p{L}]/u', $char)) {
+				continue;
+			}
+
+			// Contabilizar el caracter
+			if (!isset($counts[$char])) {
+				$counts[$char] = 0;
+			}
+			$counts[$char]++;
+		}
+
+		if (empty($counts)) {
+			throw new \Exception("Cannot determine CSV separator automatically. No candidates found.");
+		}
+
+		// Filtrar solo los que aparecen más de una vez
+		$candidates = array_filter($counts, fn($count) => $count > 1);
+
+		if (empty($candidates)) {
+			// Si ninguno se repite, tomar el que más aparece aunque sea solo 1 vez
+			arsort($counts);
+			$char = array_key_first($counts);
+			return $char;
+		}
+
+		// Si hay uno claramente más frecuente, tomarlo
+		arsort($candidates);
+		$top = array_keys($candidates);
+		$max = max($candidates);
+
+		// Verificar si hay empate
+		$top_with_same_freq = array_filter($candidates, fn($count) => $count === $max);
+
+		if (count($top_with_same_freq) > 1) {
+			throw new \Exception("Cannot determine CSV separator automatically. Multiple candidates found: " . implode(',', array_keys($top_with_same_freq)));
+		}
+
+		return array_key_first($top_with_same_freq);
+	}
+
+	/**
 	 * Parses a CSV file into an array, with optional header and automatic separator detection.
 	 *
 	 * @param string $path      Path to the CSV file.
@@ -294,40 +355,20 @@ class Files
 	 *
 	 * @throws \Exception If separator is set to "AUTO" and cannot be reliably determined.
 	 */
-	static function getCSV(string $path, string $separator = "AUTO", bool $header = true, bool $assoc = true) {
+	static function getCSV(string $path, $separator = "AUTO", bool $header = true, bool $assoc = true) {
 		$rows = [];
-	
+
 		// Leer contenido y normalizar saltos de línea
 		$content = file_get_contents($path);
 		$content = str_replace(["\r\n", "\r"], "\n", $content);
-	
+
 		// Extraer primera línea
 		$lines = explode("\n", $content);
 		$firstLine = $lines[0] ?? '';
-	
+
 		// Detección automática del separador
 		if ($separator === 'AUTO') {
-			// Extraer caracteres no permitidos como candidatos a separador
-			preg_match_all('/[^\p{L}\p{N}_\-]/u', $firstLine, $matches);
-			$candidates = array_count_values($matches[0]);
-	
-			// Si hay coma o punto y coma, elegir preferentemente
-			if (isset($candidates[','])) {
-				$separator = ',';
-			} elseif (isset($candidates[';'])) {
-				$separator = ';';
-			} else {
-				// Filtrar duplicados y evaluar
-				$unique = array_keys($candidates);
-	
-				if (count($unique) === 1) {
-					$separator = $unique[0];
-				} elseif (count($unique) > 1) {
-					throw new \Exception("Cannot determine CSV separator automatically. Multiple candidates found: " . implode(', ', $unique));
-				} else {
-					throw new \Exception("Cannot determine CSV separator. No valid non-alphabetic delimiters found.");
-				}
-			}
+			$separator = self::detectSeparator($firstLine);
 		}
 	
 		// Create a temporary memory stream from the normalized content
@@ -426,37 +467,53 @@ class Files
 			dd($p, 'P (por procesar)');
 		}, null ,36332,5); 
 
+
+		Si $separator es 'AUTO' se detecta automaticamente el separador 
     */
 	static function processCSV(string $path, string $separator, bool $header, callable $fn, $header_defs = null, $start_line = 0, $limit = false, bool $replace_spaces = true, bool $lowecase = false)
     {
-        $handle = fopen($path, 'r');
-
-        if (!$handle) {
-            return;
-        }
-
-        if ($header) {
-            $cabecera = fgetcsv($handle, null, $separator);
-            $ch       = count($cabecera);
-
-			foreach ($cabecera as $ix => $row){				
+		$handle = fopen($path, 'r');
+	
+		if (!$handle) {
+			return;
+		}
+	
+		$firstLine = null;
+	
+		if ($separator === 'AUTO') {
+			$firstLine = fgets($handle);
+			$separator = self::detectSeparator($firstLine);
+		}
+	
+		if ($header) {
+			if ($firstLine === null) {
+				$cabecera = fgetcsv($handle, null, $separator);
+			} else {
+				$cabecera = str_getcsv($firstLine, $separator);
+			}
+	
+			$ch = count($cabecera);
+	
+			foreach ($cabecera as $ix => $row) {
 				$cabecera[$ix] = Strings::sanitize($row);
-
-				// Normalizacion
-				if ($lowecase){
+	
+				if ($lowecase) {
 					$cabecera[$ix] = strtolower($cabecera[$ix]);
 				}
-				
-				// Normalizacion
-				if ($replace_spaces){
+	
+				if ($replace_spaces) {
 					$cabecera[$ix] = str_replace(' ', '-', $cabecera[$ix]);
-				}				
+				}
 			}
-
-            $assoc = true;
-        } else {
-            $assoc = false;
-        }
+	
+			$assoc = true;
+		} else {
+			if ($firstLine !== null) {
+				rewind($handle);
+			}
+	
+			$assoc = false;
+		}
 
 		// Avanzar hasta la línea de inicio
 		for ($i = 0; $i < $start_line; $i++) {

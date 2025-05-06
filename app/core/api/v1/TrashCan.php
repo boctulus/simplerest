@@ -16,6 +16,8 @@ use Boctulus\Simplerest\Core\Libs\Url;
 class TrashCan extends MyApiController
 {
     protected $model;
+    protected $instance;
+    protected $instance2;
     
     function __construct()
     {
@@ -31,8 +33,8 @@ class TrashCan extends MyApiController
         $this->model_name = ucfirst($entity) . 'Model';
         $this->table_name = strtolower($entity);
 
-        $this->model    = 'Boctulus\\Simplerest\\Models\\'. $this->model_name;
-        $api_ctrl = '\Boctulus\\Simplerest\\Controllers\\API\\' . ucfirst($entity);
+        $this->model    = namespace_url() . '\\Models\\'. $this->model_name;
+        $api_ctrl = namespace_url() . '\\Controllers\\api\\' . ucfirst($entity);
         
         if (!class_exists($api_ctrl)){
             error("Entity $entity not found", 404);

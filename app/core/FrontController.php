@@ -81,7 +81,7 @@ class FrontController
         $sub = (int) $config['remove_api_slug'];
 
         if ($is_auth){
-            $namespace = 'Boctulus\\Simplerest\\Controllers\\';
+            $namespace = namespace_url() . '\\Controllers\\';
 
             $class_file =  CONTROLLERS_PATH. 'MyAuthController.php';
         
@@ -122,7 +122,7 @@ class FrontController
             if ($controller == 'trash_can' || $controller == 'trashCan' || $controller == 'TrashCan' || $controller == 'collections' || $controller == 'Collections') {
                 $namespace = 'simplerest\\core\\api\\'. $api_version . '\\';
             } else {
-                $namespace = 'Boctulus\\Simplerest\\Controllers\\api\\';
+                $namespace = namespace_url() . '\\Controllers\\api\\';
             }    
 
             $class_name = $namespace . ucfirst($controller); //
@@ -136,7 +136,7 @@ class FrontController
         } else {
             //dd($_params, 'PARAMS:');
 
-            $namespace = 'Boctulus\\Simplerest\\Controllers\\';
+            $namespace = namespace_url() . '\\Controllers\\';
 
             if (empty($_params) || $_params[0]==''){
                 $class_file = substr($config['default_controller'],0, strlen($config['default_controller'])-10);
