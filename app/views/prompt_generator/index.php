@@ -136,6 +136,10 @@
         return [...new Set(functions)];
     }
 
+    function removeEmojis(text) {
+        return text.replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF]/gu, '');
+    }
+    
     // Función para obtener el contenido desde la API
     function getPromptContent() {
         const description = $('#prompt-description').val();

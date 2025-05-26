@@ -12432,4 +12432,10 @@ class DumbController extends Controller
         }, null, 0, 2);
     }
 
+    function test_remove_emotij(){
+        dd(
+            Strings::removeEmojis("Texto con emojis ✅📄❌")
+        );        
+    }
+
 }   // end class
