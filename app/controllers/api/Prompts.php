@@ -85,8 +85,23 @@ class Prompts extends MyApiController
         );
     }
 
+    protected function sanitizeDataRecursive($data) {
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                $data[$key] = $this->sanitizeDataRecursive($value);
+            }
+            return $data;
+        } elseif (is_string($data)) {
+            return Strings::removeEmojis($data);
+        } else {
+            return $data;
+        }
+    }
+
     protected function onPostingAfterCheck($id, array &$data)
-    {        
+    {   
+        $data = $this->sanitizeDataRecursive($data);
+
         if (!empty($data['description'])){
             CustomTags::register('dir', function($params) {
                 $path      = $params['path'] ?? '';

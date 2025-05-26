@@ -2673,6 +2673,13 @@ class Strings
 		return $str;
 	}
 
+	static function removeEmojis(string $text): string {
+		return preg_replace(
+			'/[\x{1F000}-\x{1FAFF}\x{2700}-\x{27BF}\x{2600}-\x{26FF}]/u', 
+			'', 
+			$text
+		);
+	}
 }
 
 
