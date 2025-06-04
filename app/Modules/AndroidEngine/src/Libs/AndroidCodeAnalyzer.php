@@ -13,6 +13,7 @@ use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Listeners;
 use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Resources\Drawables;
 use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Resources\Values;
 use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\XMLLayouts;
+use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\LogCat;
 
 /*
     Análisis de código Android
@@ -34,6 +35,7 @@ class AndroidCodeAnalyzer
     use Listeners; // Trait para detectar listeners
     use Fragments; // Trait para detectar fragmentos
     use XMLLayouts; // Trait para manejo de Layouts
+    use LogCat;
 
     use ErrorReporting; // Trait para manejar errores y advertencias 
 
