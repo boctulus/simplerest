@@ -43,4 +43,9 @@ Trait AndroidManifest
 
         return $permissions;
     }   
+
+    public function getManifestPath(){
+        $manifestPath = $this->rootPath . '/app/src/main/AndroidManifest.xml';
+        return $manifestPath;
+    }
 }

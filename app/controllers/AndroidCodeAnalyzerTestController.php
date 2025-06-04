@@ -341,4 +341,13 @@ class AndroidCodeAnalyzerTestController extends Controller
 
         dd($result);
     }    
+
+    function test_logcat_detector(){
+        $analyzer = new AndroidCodeAnalyzer();
+        $analyzer->setRootPath('D:\Android\pos\MyPOS');
+
+        $result = $analyzer->findLogsInFiles();
+
+        dd($result);
+    }
 }
