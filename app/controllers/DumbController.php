@@ -12438,4 +12438,33 @@ class DumbController extends Controller
         );        
     }
 
+    function test_logcat_detector(){
+        $javaCode = <<<JAVA
+        Log.d("MainActivity", "App started");
+        Log.e('NetworkManager', 'Connection failed');
+        Log.i("Init", "Initialization complete");
+        Log.w ( "WarningTag" , "This is a warning" );
+        Log.v("VerboseTag", "Verbose mode enabled");
+        Log.wtf('Critical', 'Something terrible happened');
+        // Otros logs con formatos incorrectos que deben ser ignorados:
+        Logx.d("Fake", "Should not match");
+        Log.d("MissingMessage");
+        Log.d("Extra", "Message", "Another arg");
+        JAVA;
+
+        // Expresión regular para capturar logs válidos con TAG y mensaje
+        $regex = '/Log\.(d|i|e|w|v|wtf)\s*\(\s*["\']([^"\']+)["\']\s*,\s*["\']([^"\']+)["\']\s*\)\s*;/';
+
+        if (preg_match_all($regex, $javaCode, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                echo "Level: {$match[1]}\n";
+                echo "TAG: {$match[2]}\n";
+                echo "Message: {$match[3]}\n";
+                echo "--------------------------\n";
+            }
+        } else {
+            echo "No matches found.\n";
+        }
+    }
+
 }   // end class
