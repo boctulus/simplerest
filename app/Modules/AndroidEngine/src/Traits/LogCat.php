@@ -2,8 +2,41 @@
 
 namespace Boctulus\Simplerest\Modules\AndroidEngine\src\Traits;
 
+use Boctulus\Simplerest\Core\Libs\Files;
+
+
 Trait LogCat 
 {
+    /*
+        Procesa un archivo con contenido del log de LogCat y extrae las
+        lineas que se correspoden al nivel de log
+
+        V — Verbose
+        D — Debug
+        I — Info
+        W — Warning
+        E — Error
+        A — Assert (Fallos que deberían nunca ocurrir)
+    */
+    function filterLogByLevel(string $logContent, string $levelPattern): array {
+        $levels = explode('|', $levelPattern);
+        $lines = explode("\n", $logContent);
+        $filtered = [];
+
+        foreach ($lines as $line) {
+            // Divide la línea por espacios múltiples y reindexa
+            $parts = array_values(array_filter(explode(' ', $line), fn($s) => $s !== ''));
+
+            // Verifica que haya al menos 5 columnas
+            if (isset($parts[5]) && in_array($parts[5], $levels)) {
+                $filtered[] = $line;
+            }
+        }
+
+        return $filtered;
+    }
+
+
     /**
      * Extracts Android Log.*("TAG", "Message") statements from code and returns them as structured array.
      *
@@ -24,6 +57,10 @@ Trait LogCat
         return $result;
     }
 
+    /*
+        Encuentra Log.{level}('{TAG}', '{message}')
+        en distintos archivos
+    */
     function findLogsInFiles(bool $only_tags = true){
         $files = $this->findCodeFiles();
 
