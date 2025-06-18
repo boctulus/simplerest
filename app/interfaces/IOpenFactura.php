@@ -9,6 +9,7 @@ interface IOpenFactura {
 ), $custom = NULL, $sendEmail = NULL, $idempotencyKey = NULL);
     public function getDTEStatus($token);
     public function anularGuiaDespacho($folio, $fecha);
+    public function anularDTE52($folio, $fecha);
     public function getCompanyInfo();
     public function getTaxpayer($rut);
     public function listTaxpayers($queryParams = array (
