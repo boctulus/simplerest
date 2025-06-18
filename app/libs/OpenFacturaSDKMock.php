@@ -2,6 +2,7 @@
 
 namespace Boctulus\Simplerest\Libs;
 
+use Boctulus\Simplerest\Core\exceptions\NotImplementedException;
 use Boctulus\Simplerest\interfaces\IOpenFactura;
 
 class OpenFacturaSDKMock implements IOpenFactura
@@ -77,6 +78,10 @@ class OpenFacturaSDKMock implements IOpenFactura
      */
     public function anularDTE52($folio, $fecha) {
         return ['success' => "Se ha anulado el documento Folio: $folio"];
+    }
+
+    public function anularGuiaDespacho($folio, $fecha){
+        throw new NotImplementedException();
     }
 
     /**
