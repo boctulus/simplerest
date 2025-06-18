@@ -41,6 +41,34 @@ function handleCSS(selector, cssObject = null) {
 }
 
 /*
+    Shows if an element is supposed to be visible or not
+*/
+function isVisibleDeep(selector) {
+  const $el = $(selector);
+
+  if ($el.length === 0) return false;
+
+  let current = $el[0];
+
+  while (current && current.nodeType === 1) {
+    const $current = $(current);
+    const style = window.getComputedStyle(current);
+
+    if (
+      style.display === 'none' ||
+      style.visibility === 'hidden' ||
+      style.opacity === '0'
+    ) {
+      return false;
+    }
+
+    current = current.parentElement;
+  }
+
+  return true;
+}
+
+/*
     listClickEventListeners() permite activar la detección de clics
 */
 function listClickEventListeners(){

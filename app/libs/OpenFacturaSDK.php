@@ -2,8 +2,9 @@
 
 namespace Boctulus\Simplerest\Libs;
 
-use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\exceptions\NotImplementedException;
 use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\interfaces\IOpenFactura;
 
 /*
@@ -136,6 +137,17 @@ class OpenFacturaSDK implements IOpenFactura
             ->request($this->base_url . '/v2/dte/document/' . $token . '/status', 'GET')
             ->data();
     }   
+
+    /**
+     * Anulación de un DTE tipo 52.
+     *
+     * @param int $folio Folio del documento.
+     * @param string $fecha Fecha de anulación.
+     * @return array Respuesta
+     */
+    public function anularDTE52($folio, $fecha) {
+        throw new NotImplementedException(); // Not Implemented !
+    }
 
     /**
      * Anula una Guía de Despacho Electrónica (DTE tipo 52).

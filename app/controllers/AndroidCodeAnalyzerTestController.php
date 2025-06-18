@@ -3,8 +3,10 @@
 namespace Boctulus\Simplerest\controllers;
 
 use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Libs\VarDump;
 use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
 use Boctulus\Simplerest\Modules\AndroidEngine\src\Libs\AndroidCodeAnalyzer;
 
@@ -349,5 +351,26 @@ class AndroidCodeAnalyzerTestController extends Controller
         $result = $analyzer->findLogsInFiles();
 
         dd($result);
+    }
+
+    /*
+        Procesa un archivo con contenido del log de LogCat y extrae las
+        lineas que se correspoden al nivel de log
+
+        V — Verbose
+        D — Debug
+        I — Info
+        W — Warning
+        E — Error
+        A — Assert (Fallos que deberían nunca ocurrir)
+    */
+    function test_filter_by_error_level(){
+        $path       = "D:\Desktop\COTIZACIONES\SOFT POS (POINT OF SALE)\LOGS\LOG CRASH SCANNER.txt";
+        $logContent = Files::getContent($path);
+        
+        $analyzer = new AndroidCodeAnalyzer();
+        $res = $analyzer->filterLogByLevel($logContent, 'A|E');
+        
+        print_array($res);
     }
 }

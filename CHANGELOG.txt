@@ -134,3 +134,4 @@
 [2025-05-26 17:00:44]	0.8.12	Automatic update
 [2025-06-04 17:09:37]	0.8.12	Android Analizer update
 [2025-06-05 19:09:03]	0.8.12	Filtrado de logs de LogCat
+[2025-06-18 17:25:45]	0.8.12	Automatic update
