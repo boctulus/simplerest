@@ -7194,9 +7194,9 @@ class DumbController extends Controller
     */
     function test_add_sub_dates()
     {
-        $date = '08 Dec 2024';
+        $date = '26 Jun 2025';
 
-        $d = 90;
+        $d = 56;
 
         dd(
             Date::addDays($date, $d),
