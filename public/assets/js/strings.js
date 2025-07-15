@@ -4,3 +4,5 @@ function decodeHTMLEntities(text) {
     textArea.innerHTML = text;
     return textArea.value;
 }
+
+const ucfirst = s => (s && s[0].toUpperCase() + s.slice(1)) || ""
