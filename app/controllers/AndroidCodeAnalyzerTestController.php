@@ -365,7 +365,7 @@ class AndroidCodeAnalyzerTestController extends Controller
         A — Assert (Fallos que deberían nunca ocurrir)
     */
     function test_filter_by_error_level(){
-        $path       = "D:\Desktop\COTIZACIONES\SOFT POS (POINT OF SALE)\LOGS\LOG CRASH SCANNER.txt";
+        $path       = "C:\Users\jayso\AndroidStudioProjects\FriendlyPOS\crash.txt";
         $logContent = Files::getContent($path);
         
         $analyzer = new AndroidCodeAnalyzer();
