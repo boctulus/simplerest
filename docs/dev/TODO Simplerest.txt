@@ -1,6 +1,10 @@
 TODO SimpleRest
 ===============
 
+- Replicar lo que hecho en ZippyCart / FriendlyPOS con "modulos" y "componentes".
+
+  La implementacion actual que usa https://ticiwe.com/ deberia encasularse y dejarse como respaldo. Es util solo para Dashboard demasiado simples.
+
 - Considerar la idea de crear "UI controllers" que a diferencia de un simple WebController estaria acoplado a una vista en concreto y esta "vista" podria ser una vista parcial como un tipo de "Fragment" de Android y permitiria de forma sencilla enviar y recibir datos de la View usando por ejemplo WebSockets o SSE.
 
 https://claude.ai/chat/2da02df7-b710-49b0-b42a-17a435233b49
@@ -99,6 +103,19 @@ Por defecto copiaria solo archivos mas nuevos pero con --force seria de cualquie
 
 # Router
 
+- Al router de SR le falta poder de alguna forma recibir parametros adicionales que especifican Middlewares como es en NodeJs con ExpresJs:
+
+  router.put('/:id', isAuthenticated, canEditCategory, upload.single('image'), async (req, res) => { ... });
+
+Estos middlewares determinan si el flujo sigue o no asi como modificar el "objeto" request.
+
+En Laravel es "similar":
+
+  Route::put('/categories/{id}', [CategoryController::class, 'update'])
+    ->middleware(['auth', 'can:edit-category']);
+
+https://chatgpt.com/c/6875c42b-4a6c-800d-9cf0-2e7727e45033
+
 - Consierar agregar describe() para poder describir funciones anonimas de los routers al listar (como haria Laravel)
 
   CliRouter::set('sql-query', function () {
@@ -116,6 +133,8 @@ return [
     // NO funciona
     'Boctulus\Simplerest\Controllers\TestController' => InyectarSaludo::class,
 ];
+
+# QueryBuilder
 
 - Implemenar insert() a nivel de Model con SubRecursos
 
