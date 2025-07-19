@@ -137,3 +137,4 @@
 [2025-06-18 17:25:45]	0.8.12	Automatic update
 [2025-06-25 08:48:52]	0.8.12	Automatic update
 [2025-07-15 10:11:33]	0.8.12	Automatic update
+[2025-07-19 18:11:40]	0.8.12	Mejora en limpieza de paths antes de agregar a prompt_generator
