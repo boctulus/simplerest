@@ -748,7 +748,7 @@
             // Agregar el evento para extraer rutas del PROMPT
             $('#extractPathsButton').click(function(e) {
                 e.preventDefault();
-                extractPathsFromPrompt();
+                extractPathsFromPrompt({absolute: true, system: "WINDOWS-ONLY"});
             });
 
             // Agregar el evento para el botón nuevo
@@ -1045,51 +1045,76 @@
             history.pushState('', document.title, window.location.pathname);
         }
 
-        function extractPathsFromPrompt() {
+        function extractPathsFromPrompt(options = {}) {
             const promptText = $('#prompt-description').val();
 
-            // Expresión regular para detectar rutas absolutas en Windows y Unix
+            const absolute = options.absolute ?? null;
+            const system   = options.system ?? "ALL";
+
+            // Expresión regular para detectar rutas absolutas en Windows y Unix (en bruto)
             const pathRegex = /(?:[a-zA-Z]:\\[^:\n]+)|(?:\/[^\n:]+)/g;
+            const rawPaths = promptText.match(pathRegex) || [];
 
-            // Encontrar todas las coincidencias
-            const paths = promptText.match(pathRegex) || [];
+            const cleanedPaths = rawPaths.map(raw => {
+                let ret = raw
+                    .replace(/^\s*(\/\*|\*\/)/, '')  // elimina /* o */ al inicio
+                    .replace(/(\/\*|\*\/)\s*$/, '')  // elimina /* o */ al final
+                    .replace(/\*\//g, '')            // elimina cualquier "*/" intermedio
+                    .replace(/\/\*/g, '')            // elimina cualquier "/*" intermedio
+                    .trim();
 
-            // Filtrar y limpiar las rutas encontradas
-            const validPaths = paths
-                .map(path => path.trim())
-                .filter(path => {
-                    // Verificar que la ruta tenga una extensión de archivo y no esté vacía
-                    return path && path.length > 0 && path.includes('.') && !path.endsWith('.');
-                });
+                return ret;
+            });
 
-            // Si no se encontraron rutas válidas
+            const validPaths = cleanedPaths.filter(path => {
+                // Debe contener punto para suponer que es un archivo (no carpeta)
+                if (!path || !path.includes('.') || path.endsWith('.')) return false;
+
+                // Si se pide ruta absoluta, validar según el sistema
+                if (absolute === true) {
+                    if (system === "WINDOWS-ONLY") {
+                        // Debe comenzar con letra y ":\" (como C:\ o D:\)
+                        return /^[c-zC-Z]:\\/.test(path);
+                    } else if (system === "UNIX-ONLY") {
+                        // Debe comenzar con /home/ o /var/www/
+                        return path.startsWith('/home/') || path.startsWith('/var/www/');
+                    } else {
+                        // ALL: Acepta ambos formatos válidos
+                        return /^[c-zC-Z]:\\/.test(path) || path.startsWith('/');
+                    }
+                }
+
+                // Si no se requiere absoluta, acepta cualquier ruta con extensión
+                return true;
+            });
+
             if (validPaths.length === 0) {
-                Swal.fire('Información', 'No se encontraron rutas absolutas en el texto del PROMPT', 'info');
+                Swal.fire('Información', 'No se encontraron rutas válidas en el texto del PROMPT', 'info');
                 return;
             }
 
-            // Agregar cada ruta válida encontrada
+            let addedCount = 0;
+
             validPaths.forEach(path => {
-                // Verificar si la ruta ya existe
                 const exists = $('.file-input').filter(function() {
                     return $(this).val() === path;
                 }).length > 0;
 
-                // Si la ruta no existe, agregarla
                 if (!exists) {
                     addFilePathInput(path);
+                    addedCount++;
                 }
             });
 
-            // Mostrar mensaje de éxito
             Swal.fire({
                 title: 'Éxito',
-                text: `Se agregaron ${validPaths.length} ruta(s) desde el PROMPT`,
+                text: `Se agregaron ${addedCount} ruta(s) desde el PROMPT`,
                 icon: 'success',
                 timer: 2000,
                 showConfirmButton: false
             });
         }
+
 
 
         // Función para actualizar el texto del botón con la opción seleccionada
