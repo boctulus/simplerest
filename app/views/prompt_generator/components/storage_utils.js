@@ -2,6 +2,8 @@
 
 function getSavedPromptsImpl() {
     let prompts = [];
+    
+    // Cargar prompts desde localStorage
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key.startsWith('chat-')) {
@@ -16,34 +18,43 @@ function getSavedPromptsImpl() {
         }
     }
 
-    // Si no hay prompts en localStorage, cargar desde el backend
-    if (prompts.length === 0) {
+    // Si hay pocos prompts en localStorage, cargar más desde API
+    if (prompts.length < 10) {
         $.ajax({
             url: '/api/v1/prompts?page=1',
             type: 'GET',
             success: function(response) {
                 if (response.data && response.data.prompts) {
                     response.data.prompts.forEach(prompt => {
-                        const formState = {
-                            id: prompt.id,
-                            description: prompt.description || '',
-                            notes: prompt.notes || '',
-                            filePaths: prompt.files ? prompt.files.map(file => ({
-                                path: file.path || '',
-                                disabled: file.disabled || false,
-                                allowedFunctions: file.allowedFunctions || ''
-                            })) : [],
-                            timestamp: prompt.timestamp || new Date().toISOString()
-                        };
-                        localStorage.setItem(`chat-${prompt.id}`, JSON.stringify(formState));
-                        prompts.push(formState);
+                        // Solo agregar si no existe ya en localStorage
+                        const existsInLocal = prompts.some(p => p.id == prompt.id);
+                        if (!existsInLocal) {
+                            const formState = {
+                                id: prompt.id,
+                                description: prompt.description || '',
+                                notes: prompt.notes || '',
+                                filePaths: JSON.parse(prompt.files || '[]').map(file => ({
+                                    path: file.path || '',
+                                    disabled: false,
+                                    allowedFunctions: ''
+                                })),
+                                timestamp: prompt.created_at || new Date().toISOString()
+                            };
+                            
+                            try {
+                                localStorage.setItem(`chat-${prompt.id}`, JSON.stringify(formState));
+                                prompts.push(formState);
+                            } catch (e) {
+                                console.warn('No se pudo guardar prompt en localStorage:', e);
+                            }
+                        }
                     });
                 }
             },
             error: function(xhr) {
                 console.error('Error loading prompts from backend:', xhr);
             },
-            async: false // Para mantener simplicidad, aunque no es ideal
+            async: false
         });
     }
 
@@ -76,42 +87,127 @@ function saveFormToLocalStorageImpl(context) {
 }
 
 function loadFromHashImpl(context) {
-    context.loading = true;
-    setTimeout(() => {
-        const currentHash = window.location.hash;
-        let savedForm;
+    const currentHash = window.location.hash;
+    console.log('Hash detectado en la URL:', currentHash);
 
-        console.log(currentHash, 'currentHash'); //
+    if (currentHash.startsWith('#chat-')) {
+        const formId = currentHash.split('-')[1];
+        console.log('ID extraído del hash:', formId);
 
-        if (currentHash.startsWith('#chat-')) {
-            const formId = currentHash.split('-')[1];
-            console.log(formId, 'formId'); //
+        // BYPASS COMPLETO DE LOCALSTORAGE - IR DIRECTO A LA API
+        console.log('Consultando API directamente (bypass localStorage)...');
+        context.loading = true;
 
-            savedForm = JSON.parse(localStorage.getItem(`chat-${formId}`));
-        } else {
-            savedForm = JSON.parse(localStorage.getItem('currentForm'));
-        }
+        $.ajax({
+            url: `/api/v1/prompts/${formId}`,
+            type: 'GET',
+            cache: false, // Asegurar que no se use caché HTTP
+            success: (response) => {
+                console.log('Respuesta de la API:', response);
 
-        console.log(savedForm); //
+                const prompt = response.data;
+                if (prompt && prompt.id == formId) {
+                    console.log('Prompt encontrado en API:', prompt);
+                    
+                    // Cargar datos en el contexto
+                    context.description = prompt.description || '';
+                    context.notes = prompt.notes || '';
+                    
+                    let parsedFiles = [];
+                    try {
+                        parsedFiles = JSON.parse(prompt.files || '[]');
+                    } catch (e) {
+                        console.error('Error parsing files from API:', e);
+                        parsedFiles = [];
+                    }
+                    
+                    context.filePaths = parsedFiles.map((file, idx) => ({
+                        id: `file-${Date.now()}-${idx}`,
+                        path: file.path || file || '', // Manejar tanto objetos como strings
+                        disabled: false,
+                        allowedFunctions: file.allowed_functions ? file.allowed_functions.join('\n') : '',
+                        showFunctions: false,
+                        showDropdown: false,
+                        selected: false
+                    }));
 
-        if (savedForm) {
-            context.description = savedForm.description || '';
-            context.notes = savedForm.notes || '';
-            context.filePaths = savedForm.filePaths.map((file, index) => ({
-                id: 'file-' + Date.now() + index, // Generar ID único
-                path: file.path || '',
-                disabled: file.disabled || false,
-                allowedFunctions: file.allowedFunctions || '',
-                showFunctions: false,
-                showDropdown: false,
-                selected: false
-            }));
-            if (context.filePaths.length === 0) {
-                context.addFilePath();
+                    // Asegurar que haya al menos una ruta
+                    if (context.filePaths.length === 0) {
+                        context.filePaths.push({
+                            id: `file-${Date.now()}`,
+                            path: '',
+                            disabled: false,
+                            allowedFunctions: '',
+                            showFunctions: false,
+                            showDropdown: false,
+                            selected: false
+                        });
+                    }
+
+                    console.log('Datos cargados exitosamente desde API');
+                } else {
+                    console.error('Prompt no encontrado en la API para ID:', formId);
+                    Swal.fire('Error', 'El prompt solicitado no se encontró', 'error');
+                    
+                    // Limpiar formulario si no se encuentra
+                    context.description = '';
+                    context.notes = '';
+                    context.filePaths = [{
+                        id: `file-${Date.now()}`,
+                        path: '',
+                        disabled: false,
+                        allowedFunctions: '',
+                        showFunctions: false,
+                        showDropdown: false,
+                        selected: false
+                    }];
+                }
+                context.loading = false;
+            },
+            error: (xhr, status, error) => {
+                console.error('Error al consultar la API:', status, error);
+                
+                let errorMessage = 'No se pudo cargar el prompt';
+                if (xhr.status === 404) {
+                    errorMessage = 'El prompt no existe';
+                } else if (xhr.status >= 500) {
+                    errorMessage = 'Error del servidor';
+                }
+                
+                Swal.fire('Error', `${errorMessage} (ID: ${formId})`, 'error');
+                
+                // Limpiar formulario en caso de error
+                context.description = '';
+                context.notes = '';
+                context.filePaths = [{
+                    id: `file-${Date.now()}`,
+                    path: '',
+                    disabled: false,
+                    allowedFunctions: '',
+                    showFunctions: false,
+                    showDropdown: false,
+                    selected: false
+                }];
+                
+                context.loading = false;
             }
-        }
+        });
+    } else {
+        // Si no hay hash, inicializar formulario vacío
+        console.log('No hay hash, inicializando formulario vacío');
+        context.description = '';
+        context.notes = '';
+        context.filePaths = [{
+            id: `file-${Date.now()}`,
+            path: '',
+            disabled: false,
+            allowedFunctions: '',
+            showFunctions: false,
+            showDropdown: false,
+            selected: false
+        }];
         context.loading = false;
-    }, 300);
+    }
 }
 
 function saveAsNewPromptImpl(context) {
