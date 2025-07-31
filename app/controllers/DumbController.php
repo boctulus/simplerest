@@ -7194,16 +7194,15 @@ class DumbController extends Controller
     */
     function test_add_sub_dates()
     {
-        $date = '26 Jun 2025';
+        $date = '31 Aug 2025';
 
-        $d = 56;
+        $d = 21;
 
         dd(
             Date::addDays($date, $d),
             " $date + $d dias",
         );
     }
-
 
     function get_model_defs()
     {
@@ -12424,7 +12423,7 @@ class DumbController extends Controller
 
     function read_csv()
     {
-        $archivo = 'D:\Desktop\PALITO PRJ\DATABASE\productos.csv';
+        $archivo = 'D:\\Desktop\\ZIPPY\\DATABASE\\productos.csv';
         dd($archivo, 'ARCHIVO');
 
         Files::processCSV($archivo, 'AUTO', true, function ($p) {

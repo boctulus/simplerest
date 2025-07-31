@@ -139,7 +139,7 @@
     function removeEmojis(text) {
         return text.replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF]/gu, '');
     }
-    
+
     // Función para obtener el contenido desde la API
     function getPromptContent() {
         const description = $('#prompt-description').val();
@@ -303,7 +303,7 @@
 
         // Crear el wrapper para contener ambos elementos
         const $wrapper = $('<div class="file-wrapper"></div>');
-        
+
         // Crear el grupo de ruta
         const $filePathGroup = $(`
             <div class="input-group mb-2 file-path-group" data-file-id="${uniqueId}" ${isDisabled ? 'data-disabled="true"' : ''}>
@@ -418,15 +418,89 @@
         localStorage.removeItem('currentForm');
     }
 
+    // Función para gestionar el localStorage y mantener solo los N prompts más recientes
+    function manageLocalStorage($max_saved = 100) {
+    const prompts = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('chat-')) {
+            try {
+                const promptData = JSON.parse(localStorage.getItem(key));
+                if (promptData && promptData.id && promptData.timestamp) {
+                    prompts.push({
+                        key,
+                        timestamp: promptData.timestamp
+                    });
+                }
+            } catch (e) {
+                console.error('Error parsing prompt for cleanup:', e);
+                // Eliminar entradas corruptas
+                localStorage.removeItem(key);
+            }
+        }
+    }
+
+    // Ordenar por timestamp descendente (más recientes primero)
+    prompts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    // Eliminar los prompts más antiguos si hay más de 20
+    while (prompts.length > 100) {
+        const oldestPrompt = prompts.pop();
+        localStorage.removeItem(oldestPrompt.key);
+        console.log(`Prompt antiguo eliminado: ${oldestPrompt.key}`);
+    }
+}
+
+    // Función actualizada para guardar prompts
     function saveFormVersion(id, description, files, notes) {
+        // Gestionar el localStorage antes de guardar
+        manageLocalStorage();
+
         const formVersion = {
             id: id,
             description: description,
-            files: files, // Ahora files ya contiene los objetos con path y allowed_functions
+            files: files,
             notes: notes,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString() // Incluir timestamp
         };
-        localStorage.setItem(`chat-${id}`, JSON.stringify(formVersion));
+
+        try {
+            localStorage.setItem(`chat-${id}`, JSON.stringify(formVersion));
+        } catch (e) {
+            if (e.name === 'QuotaExceededError') {
+                console.error('QuotaExceededError al guardar. Eliminando el más antiguo...');
+                const prompts = getSortedPrompts();
+                if (prompts.length > 0) {
+                    const oldestPrompt = prompts[prompts.length - 1];
+                    localStorage.removeItem(oldestPrompt.key);
+                    localStorage.setItem(`chat-${id}`, JSON.stringify(formVersion));
+                }
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    // Función auxiliar para obtener prompts ordenados
+    function getSortedPrompts() {
+        const prompts = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('chat-')) {
+                try {
+                    const promptData = JSON.parse(localStorage.getItem(key));
+                    if (promptData && promptData.id && promptData.timestamp) {
+                        prompts.push({
+                            key,
+                            timestamp: promptData.timestamp
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error al parsear el prompt:', e);
+                }
+            }
+        }
+        return prompts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     }
 
     function saveFormToLocalStorage() {
@@ -748,7 +822,10 @@
             // Agregar el evento para extraer rutas del PROMPT
             $('#extractPathsButton').click(function(e) {
                 e.preventDefault();
-                extractPathsFromPrompt({absolute: true, system: "WINDOWS-ONLY"});
+                extractPathsFromPrompt({
+                    absolute: true,
+                    system: "WINDOWS-ONLY"
+                });
             });
 
             // Agregar el evento para el botón nuevo
@@ -1049,7 +1126,7 @@
             const promptText = $('#prompt-description').val();
 
             const absolute = options.absolute ?? null;
-            const system   = options.system ?? "ALL";
+            const system = options.system ?? "ALL";
 
             // Expresión regular para detectar rutas absolutas en Windows y Unix (en bruto)
             const pathRegex = /(?:[a-zA-Z]:\\[^:\n]+)|(?:\/[^\n:]+)/g;
@@ -1057,10 +1134,10 @@
 
             const cleanedPaths = rawPaths.map(raw => {
                 let ret = raw
-                    .replace(/^\s*(\/\*|\*\/)/, '')  // elimina /* o */ al inicio
-                    .replace(/(\/\*|\*\/)\s*$/, '')  // elimina /* o */ al final
-                    .replace(/\*\//g, '')            // elimina cualquier "*/" intermedio
-                    .replace(/\/\*/g, '')            // elimina cualquier "/*" intermedio
+                    .replace(/^\s*(\/\*|\*\/)/, '') // elimina /* o */ al inicio
+                    .replace(/(\/\*|\*\/)\s*$/, '') // elimina /* o */ al final
+                    .replace(/\*\//g, '') // elimina cualquier "*/" intermedio
+                    .replace(/\/\*/g, '') // elimina cualquier "/*" intermedio
                     .trim();
 
                 return ret;
