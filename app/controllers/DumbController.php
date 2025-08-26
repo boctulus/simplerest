@@ -12423,7 +12423,7 @@ class DumbController extends Controller
 
     function read_csv()
     {
-        $archivo = 'D:\\Desktop\\ZIPPY\\DATABASE\\productos.csv';
+        $archivo = 'D:\\nodejs\\zippycart\\etc\\sample-product-branches.csv';
         dd($archivo, 'ARCHIVO');
 
         Files::processCSV($archivo, 'AUTO', true, function ($p) {
