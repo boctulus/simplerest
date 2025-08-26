@@ -15,7 +15,7 @@
             <label class="checkbox-label" for="terms_accept">
                 <input type="checkbox" id="terms_accept" name="terms_accept" required>
                 <span class="checkmark"></span>
-                <span>Acepto los <a href="#" target="_blank">términos y condiciones</a> del servicio</span>
+                <span>Acepto los <a href="<?= $tos_link ?>" target="_blank">términos y condiciones</a> del servicio</span>
             </label>
         </div>
 
