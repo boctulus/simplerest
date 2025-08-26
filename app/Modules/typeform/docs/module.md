@@ -6,6 +6,22 @@
 - Added routes in config/routes.php for GET /typeform and POST /typeform/process
 - Implemented proper session management
 
+Ej:
+```php
+use Boctulus\Simplerest\Modules\Typeform\Typeform;
+
+// ...
+
+WebRouter::get("typeform", function() use ($route) {
+	set_template('templates/tpl_bt3.php');  /* Bootstrap 3.x based template */        
+	render(Typeform::get());
+});
+
+WebRouter::post("typeform/process", function() use ($route) {
+	render(Typeform::process());
+});
+```
+
 🎯 Multi-step Form (8 Steps)
 
 1. Welcome - Introduction page

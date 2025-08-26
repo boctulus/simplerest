@@ -76,6 +76,7 @@ WebRouter::get("tax_calc", function() use ($route) {
 	render(TaxCalc::get());
 });
 
+
 WebRouter::get("typeform", function() use ($route) {
 	set_template('templates/tpl_bt3.php');          
 	render(Typeform::get());
@@ -84,6 +85,7 @@ WebRouter::get("typeform", function() use ($route) {
 WebRouter::post("typeform/process", function() use ($route) {
 	render(Typeform::process());
 });
+
 
 WebRouter::get('mem', function(){
 	dd(System::getMemoryLimit(), 'Memory limit');
