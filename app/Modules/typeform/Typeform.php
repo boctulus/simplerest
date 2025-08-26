@@ -24,7 +24,19 @@ class Typeform
         // Initialize session for form data
         Session::start();
         
-        return get_view(__DIR__ . '/views/typeform.php', null);
+        // Get configuration
+        $config = Config::get('typeform');
+        $tosLink = $config['links']['tos'] ?? '#';
+        
+        // Handle relative URLs
+        if ($tosLink !== '#' && !filter_var($tosLink, FILTER_VALIDATE_URL)) {
+            // If it's not a full URL, make it relative to the current domain
+            $tosLink = rtrim(request_url(), '/') . '/' . ltrim($tosLink, '/');
+        }
+        
+        return get_view(__DIR__ . '/views/typeform.php', [
+            'tos_link' => $tosLink
+        ]);
     }
 
     static function process()
