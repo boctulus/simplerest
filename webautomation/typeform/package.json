@@ -1,0 +1,22 @@
+{
+  "name": "typeform-automation-tests",
+  "version": "1.0.0",
+  "description": "Playwright automation tests for Typeform module",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "codegen": "playwright codegen",
+    "install-browsers": "playwright install"
+  },
+  "keywords": ["playwright", "automation", "testing", "typeform"],
+  "author": "SimpleRest Framework",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

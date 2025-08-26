@@ -8,6 +8,7 @@ use Boctulus\Simplerest\Core\Libs\System;
 use Boctulus\Simplerest\Core\WebRouter;
 use Boctulus\Simplerest\Libs\Debug;
 use Boctulus\Simplerest\Modules\TaxCalc\TaxCalc;
+use Boctulus\Simplerest\Modules\Typeform\Typeform;
 
 
 $route = WebRouter::getInstance();
@@ -73,6 +74,15 @@ WebRouter::get('test-mid',  'TestController@mid');
 WebRouter::get("tax_calc", function() use ($route) {
 	set_template('templates/tpl_bt3.php');          
 	render(TaxCalc::get());
+});
+
+WebRouter::get("typeform", function() use ($route) {
+	set_template('templates/tpl_bt3.php');          
+	render(Typeform::get());
+});
+
+WebRouter::post("typeform/process", function() use ($route) {
+	render(Typeform::process());
 });
 
 WebRouter::get('mem', function(){
