@@ -1,15 +1,27 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     h1 {
-        font-size: 2.5rem;
-    }
-    
-    h2 {
         font-size: 2rem;
     }
     
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    h3 {
+        font-size: 1.25rem;
+    }
+    
     .subtitle {
-        font-size: 1.1rem;
+        font-size: 1rem;
+    }
+    
+    #form-summary {
+        font-size: 1rem;
+    }
+    
+    #form-summary strong {
+        min-width: 150px;
     }
     
     .options-grid {
@@ -49,11 +61,20 @@
 
 @media (max-width: 480px) {
     h1 {
-        font-size: 2rem;
+        font-size: 1.75rem;
     }
     
     h2 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.1rem;
+    }
+    
+    #form-summary strong {
+        display: block;
+        margin-bottom: 0.25rem;
     }
     
     .card-icon {
