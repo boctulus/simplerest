@@ -1,6 +1,6 @@
 <?php
 // Prepare variables for views
-$viewVars = compact('tos_link');
+$viewVars = compact('tos_link', 'background_image', 'brand_title', 'brand_subtitle');
 
 // Include all step partial views
 $content = '';
