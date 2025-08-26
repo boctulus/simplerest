@@ -2,21 +2,50 @@
 
 ## Configuración
 
-### Enlaces Configurables
+### Configuración Completa
 
-Puedes configurar los enlaces del formulario editando el archivo:
+Puedes configurar tanto los enlaces como la interfaz del formulario editando el archivo:
 ```
 D:\laragon\www\simplerest\app\modules\typeform\config\config.php
 ```
 
-#### Términos y Condiciones
+#### Enlaces Configurables
 
 ```php
 return [
     "links" => [
         "tos" => "URL_DE_TUS_TERMINOS_Y_CONDICIONES"
+    ],
+    "ui" => [
+        "background_image" => "tu-imagen.jpg",
+        "brand" => [
+            "title" => "Tu Título",
+            "subtitle" => "Tu Subtítulo"
+        ]
     ]
 ];
+```
+
+#### Imagen de Fondo (Panel Izquierdo)
+
+```php
+// Imagen desde assets/img/
+"background_image" => "blue-pos.jpeg"
+
+// Ruta absoluta
+"background_image" => "/ruta/completa/imagen.jpg"
+
+// URL externa
+"background_image" => "https://ejemplo.com/imagen.jpg"
+```
+
+#### Contenido del Panel Izquierdo
+
+```php
+"brand" => [
+    "title" => "Bienvenido",
+    "subtitle" => "Sistema de activación de boletas electrónicas"
+]
 ```
 
 **Ejemplos de configuración:**
