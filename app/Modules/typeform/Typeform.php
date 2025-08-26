@@ -34,8 +34,25 @@ class Typeform
             $tosLink = rtrim(request_url(), '/') . '/' . ltrim($tosLink, '/');
         }
         
+        // Get UI configuration
+        $backgroundImage = $config['ui']['background_image'] ?? 'blue-pos.jpeg';
+        $brandTitle = $config['ui']['brand']['title'] ?? 'Bienvenido';
+        $brandSubtitle = $config['ui']['brand']['subtitle'] ?? 'Sistema de activación de boletas electrónicas';
+        
+        // Process background image path
+        if (!filter_var($backgroundImage, FILTER_VALIDATE_URL) && !str_starts_with($backgroundImage, '/')) {
+            // Relative path from assets/img/
+            $backgroundImage = __DIR__ . '/assets/img/' . $backgroundImage;
+            // Convert to web path
+            $backgroundImage = str_replace(ROOT_PATH, '', $backgroundImage);
+            $backgroundImage = str_replace('\\', '/', $backgroundImage);
+        }
+        
         return get_view(__DIR__ . '/views/typeform.php', [
-            'tos_link' => $tosLink
+            'tos_link' => $tosLink,
+            'background_image' => $backgroundImage,
+            'brand_title' => $brandTitle,
+            'brand_subtitle' => $brandSubtitle
         ]);
     }
 
