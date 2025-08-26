@@ -1,0 +1,66 @@
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        font-size: 2rem;
+    }
+    
+    .subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .options-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .option-card {
+        padding: 1.5rem;
+    }
+    
+    .step-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+    
+    .phone-input {
+        flex-direction: column;
+    }
+    
+    .phone-input select,
+    .phone-input input {
+        border-radius: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .form-wrapper {
+        padding: 60px 15px 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    .card-icon {
+        font-size: 2rem;
+    }
+    
+    .success-icon {
+        font-size: 3rem;
+    }
+}

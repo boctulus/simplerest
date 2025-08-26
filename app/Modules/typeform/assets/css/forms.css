@@ -1,0 +1,82 @@
+/* Form Groups */
+.form-group {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group select {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.form-group input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #F17DFF;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.form-group input.error {
+    border-color: #FF6B6B;
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Phone Input */
+.phone-input {
+    display: flex;
+    gap: 0;
+}
+
+.phone-input select {
+    width: 120px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+}
+
+.phone-input input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Summary Card */
+.summary-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    backdrop-filter: blur(10px);
+}
+
+.summary-card h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #F17DFF;
+}

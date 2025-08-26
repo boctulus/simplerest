@@ -2,19 +2,19 @@
 
 return [
     'include' => [
-        __DIR__ . '/../app/core/helpers', 
-        __DIR__ . '/../app/helpers',
+        __DIR__ . '/../app/Core/Helpers', 
+        __DIR__ . '/../app/Helpers',
         // __DIR__ . '/../boot'
 
-        // __DIR__ . '/../app/core/helpers/system.php',
-        // __DIR__ . '/../app/core/helpers/http.php',
-        // __DIR__ . '/../app/core/helpers/url.php',        
-        // __DIR__ . '/../app/core/helpers/factories.php',
-        // __DIR__ . '/../app/core/helpers/view.php',
-        // __DIR__ . '/../app/core/helpers/db.php',
+        // __DIR__ . '/../app/Core/Helpers/system.php',
+        // __DIR__ . '/../app/Core/Helpers/http.php',
+        // __DIR__ . '/../app/Core/Helpers/url.php',        
+        // __DIR__ . '/../app/Core/Helpers/factories.php',
+        // __DIR__ . '/../app/Core/Helpers/view.php',
+        // __DIR__ . '/../app/Core/Helpers/db.php',
     ],
 
     'exclude' => [
-        __DIR__ . '/../app/core/helpers/cli.php',
+        __DIR__ . '/../app/Core/Helpers/cli.php',
     ]
 ];
