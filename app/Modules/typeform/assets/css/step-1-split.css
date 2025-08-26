@@ -1,0 +1,236 @@
+/* Step 1 Split Screen Layout */
+
+/* Contenedor principal del step 1 */
+.step-1-split .split-container {
+    display: flex;
+    flex-direction: row;
+    min-height: 80vh; /* Ajustado para no cubrir toda la pantalla */
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+/* Panel izquierdo con imagen (solo step 1) */
+.step-1-split .left-panel {
+    display: none; /* Oculto por defecto en móvil */
+    position: relative;
+    width: 45%;
+    min-height: 80vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.step-1-split .left-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(22, 51, 255, 0.4) 0%, rgba(15, 42, 153, 0.5) 100%);
+    z-index: 1;
+}
+
+.step-1-split .left-panel-content {
+    position: relative;
+    z-index: 2;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+/* Panel derecho con formulario (solo step 1) */
+.step-1-split .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, rgba(22, 51, 255, 0.95) 0%, rgba(15, 42, 153, 0.95) 100%);
+    position: relative;
+    min-height: 80vh;
+    backdrop-filter: blur(10px);
+}
+
+.step-1-split .step-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 50px;
+    text-align: center;
+}
+
+/* Contenido del panel izquierdo */
+.step-1-split .brand-content {
+    color: white;
+    text-align: left;
+}
+
+.step-1-split .brand-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    line-height: 1.2;
+}
+
+.step-1-split .brand-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.95;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    line-height: 1.5;
+}
+
+/* Ajustes tipográficos para el panel derecho */
+.step-1-split .right-panel h1 {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.step-1-split .right-panel .subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    opacity: 0.9;
+}
+
+.step-1-split .step-actions {
+    margin-top: 2rem;
+}
+
+/* Media Queries Responsive */
+
+/* Desktop grande */
+@media (min-width: 1200px) {
+    .step-1-split .left-panel {
+        display: block;
+        width: 50%;
+    }
+    
+    .step-1-split .right-panel {
+        width: 50%;
+    }
+    
+    .step-1-split .brand-title {
+        font-size: 3.2rem;
+    }
+    
+    .step-1-split .brand-subtitle {
+        font-size: 1.4rem;
+    }
+    
+    .step-1-split .right-panel h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Desktop mediano */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .step-1-split .left-panel {
+        display: block;
+        width: 45%;
+    }
+    
+    .step-1-split .right-panel {
+        width: 55%;
+    }
+    
+    .step-1-split .step-content {
+        padding: 50px 40px;
+    }
+    
+    .step-1-split .left-panel-content {
+        padding: 50px 35px;
+    }
+}
+
+/* Tablet horizontal */
+@media (min-width: 768px) and (max-width: 991px) and (orientation: landscape) {
+    .step-1-split .left-panel {
+        display: block;
+        width: 40%;
+    }
+    
+    .step-1-split .right-panel {
+        width: 60%;
+    }
+    
+    .step-1-split .step-content {
+        padding: 40px 30px;
+    }
+    
+    .step-1-split .left-panel-content {
+        padding: 40px 30px;
+    }
+    
+    .step-1-split .brand-title {
+        font-size: 2.2rem;
+    }
+    
+    .step-1-split .brand-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .step-1-split .right-panel h1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Tablet y móvil - Layout de una sola columna */
+@media (max-width: 991px) {
+    .step-1-split .split-container {
+        flex-direction: column;
+        min-height: auto;
+    }
+    
+    .step-1-split .right-panel {
+        width: 100%;
+        min-height: 60vh;
+    }
+    
+    .step-1-split .step-content {
+        padding: 40px 30px;
+    }
+    
+    .step-1-split .right-panel h1 {
+        font-size: 2rem;
+    }
+    
+    .step-1-split .right-panel .subtitle {
+        font-size: 1rem;
+    }
+}
+
+/* Móvil pequeño */
+@media (max-width: 480px) {
+    .step-1-split .split-container {
+        margin: 0 10px;
+        border-radius: 8px;
+    }
+    
+    .step-1-split .step-content {
+        padding: 30px 20px;
+    }
+    
+    .step-1-split .right-panel h1 {
+        font-size: 1.8rem;
+        line-height: 1.3;
+    }
+    
+    .step-1-split .right-panel .subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 2.5rem;
+    }
+}
+
+/* Asegurar que otros steps no se vean afectados */
+.step:not(.step-1-split) {
+    /* Mantener el comportamiento normal para otros steps */
+}
