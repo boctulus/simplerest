@@ -1,0 +1,74 @@
+/* Base styles and reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #1633FF 0%, #0F2A99 100%);
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.typeform-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form Wrapper */
+.form-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px 40px;
+}
+
+#typeform {
+    width: 100%;
+    max-width: 680px;
+}
+
+/* Typography */
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 3rem;
+    font-weight: 400;
+}
+
+/* Links */
+a {
+    color: #F17DFF;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #E066FF;
+}
