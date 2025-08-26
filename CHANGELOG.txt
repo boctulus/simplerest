@@ -143,3 +143,4 @@
 [2025-08-04 09:33:52]	0.8.12	Automatic update
 [2025-08-26 17:06:18]	0.8.12	Modulo tipo shortcode para WordPress
 [2025-08-26 18:29:11]	0.8.12	CSS mejorados
+[2025-08-26 18:59:19]	0.8.12	TOS
