@@ -31,37 +31,37 @@ if (!defined('APP_PATH'))
     define('APP_PATH', ROOT_PATH . 'app' . DIRECTORY_SEPARATOR);
 
 if (!defined('BACKUP_PATH'))
-	define('BACKUP_PATH', ROOT_PATH  . 'backup' . DIRECTORY_SEPARATOR);
+	define('BACKUP_PATH', ROOT_PATH  . 'Backup' . DIRECTORY_SEPARATOR);
 
 if (!defined('UPDATE_PATH'))
-	define('UPDATE_PATH', ROOT_PATH  . 'updates' . DIRECTORY_SEPARATOR);
+	define('UPDATE_PATH', ROOT_PATH  . 'Udates' . DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_PATH'))
-    define('CORE_PATH', APP_PATH . 'core'. DIRECTORY_SEPARATOR);
+    define('CORE_PATH', APP_PATH . 'Core'. DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_INTERFACE_PATH'))
-	define('CORE_INTERFACE_PATH', CORE_PATH  . 'interfaces' . DIRECTORY_SEPARATOR);    
+	define('CORE_INTERFACE_PATH', CORE_PATH  . 'Interfaces' . DIRECTORY_SEPARATOR);    
 
 if (!defined('CORE_TRAIT_PATH'))
-	define('CORE_TRAIT_PATH', CORE_PATH  . 'traits' . DIRECTORY_SEPARATOR);
+	define('CORE_TRAIT_PATH', CORE_PATH  . 'Traits' . DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_LIBS_PATH'))
-    define('CORE_LIBS_PATH', CORE_PATH  . 'libs' . DIRECTORY_SEPARATOR);
+    define('CORE_LIBS_PATH', CORE_PATH  . 'Libs' . DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_HELPERS_PATH'))
-    define('CORE_HELPERS_PATH', CORE_PATH  . 'helpers' . DIRECTORY_SEPARATOR);
+    define('CORE_HELPERS_PATH', CORE_PATH  . 'Helpers' . DIRECTORY_SEPARATOR);
 
 if (!defined('CLASS_TEMPLATES_PATH'))
-	define('CLASS_TEMPLATES_PATH', CORE_PATH  . 'templates' . DIRECTORY_SEPARATOR);
+	define('CLASS_TEMPLATES_PATH', CORE_PATH  . 'Templates' . DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_EXCEPTIONS_PATH'))
-	define('CORE_EXCEPTIONS_PATH', CORE_PATH  . 'exceptions' . DIRECTORY_SEPARATOR);
+	define('CORE_EXCEPTIONS_PATH', CORE_PATH  . 'Exceptions' . DIRECTORY_SEPARATOR);
 
 if (!defined('MODELS_PATH'))
-    define('MODELS_PATH', APP_PATH . 'models'. DIRECTORY_SEPARATOR);   
+    define('MODELS_PATH', APP_PATH . 'Models'. DIRECTORY_SEPARATOR);   
 
 if (!defined('SCHEMA_PATH')){
-    define('SCHEMA_PATH', APP_PATH . 'schemas' . DIRECTORY_SEPARATOR);
+    define('SCHEMA_PATH', APP_PATH . 'Schemas' . DIRECTORY_SEPARATOR);
 }
 
 if (!defined('DTO_PATH'))
@@ -71,22 +71,22 @@ if (!defined('DAO_PATH'))
     define('DAO_PATH', APP_PATH . 'DAO' . DIRECTORY_SEPARATOR);
 
 if (!defined('CRONOS_PATH')){
-    define('CRONOS_PATH', APP_PATH . 'background/cronjobs' . DIRECTORY_SEPARATOR);
+    define('CRONOS_PATH', APP_PATH . 'Background/Cronjobs' . DIRECTORY_SEPARATOR);
 }
 
 if (!defined('TASKS_PATH')){
-    define('TASKS_PATH', APP_PATH . 'background/tasks' . DIRECTORY_SEPARATOR);
+    define('TASKS_PATH', APP_PATH . 'Background/Tasks' . DIRECTORY_SEPARATOR);
 }
 
 if (!defined('COMMANDS_PATH')){
-    define('COMMANDS_PATH', APP_PATH . 'commands' . DIRECTORY_SEPARATOR);
+    define('COMMANDS_PATH', APP_PATH . 'Commands' . DIRECTORY_SEPARATOR);
 }
 
 if (!defined('DATABASE_PATH'))
     define('DATABASE_PATH', ROOT_PATH . 'database'. DIRECTORY_SEPARATOR);  
 
 if (!defined('MIGRATIONS_PATH'))
-    define('MIGRATIONS_PATH', DATABASE_PATH . 'migrations'. DIRECTORY_SEPARATOR);   
+    define('MIGRATIONS_PATH', DATABASE_PATH . 'Migrations'. DIRECTORY_SEPARATOR);   
 
 if (!defined('SEEDERS_PATH'))
     define('SEEDERS_PATH', DATABASE_PATH . 'seeders'. DIRECTORY_SEPARATOR);   
@@ -95,47 +95,47 @@ if (!defined('ETC_PATH'))
     define('ETC_PATH', ROOT_PATH . 'etc'. DIRECTORY_SEPARATOR);     
 
 if (!defined('VIEWS_PATH'))
-    define('VIEWS_PATH', APP_PATH .  'views' . DIRECTORY_SEPARATOR);  
+    define('VIEWS_PATH', APP_PATH .  'Views' . DIRECTORY_SEPARATOR);  
 
 if (!defined('MODULES_PATH'))
-    define('MODULES_PATH', APP_PATH .  'modules' . DIRECTORY_SEPARATOR);  
+    define('MODULES_PATH', APP_PATH .  'Modules' . DIRECTORY_SEPARATOR);  
 
 if (!defined('CONTROLLERS_PATH'))
-    define('CONTROLLERS_PATH', APP_PATH . 'controllers' . DIRECTORY_SEPARATOR);    
+    define('CONTROLLERS_PATH', APP_PATH . 'Controllers' . DIRECTORY_SEPARATOR);    
 
 if (!defined('PAGES_PATH'))
-    define('PAGES_PATH', APP_PATH . 'pages' . DIRECTORY_SEPARATOR);  
+    define('PAGES_PATH', APP_PATH . 'Pages' . DIRECTORY_SEPARATOR);  
 
 if (!defined('THIRD_PARTY_PATH'))
     define('THIRD_PARTY_PATH', APP_PATH . 'third-party' . DIRECTORY_SEPARATOR);      
 
 // added 22-01-2024
 if (!defined('EXCEPTIONS_PATH'))
-	define('EXCEPTIONS_PATH', APP_PATH  . 'exceptions' . DIRECTORY_SEPARATOR);
+	define('EXCEPTIONS_PATH', APP_PATH  . 'Exceptions' . DIRECTORY_SEPARATOR);
 
 if (!defined('SECURITY_PATH'))
     define('SECURITY_PATH', STORAGE_PATH . 'security'. DIRECTORY_SEPARATOR);
 
 if (!defined('API_PATH'))
-    define('API_PATH', CONTROLLERS_PATH  . 'api' . DIRECTORY_SEPARATOR); 
+    define('API_PATH', CONTROLLERS_PATH  . 'Api' . DIRECTORY_SEPARATOR); 
 
 if (!defined('INTERFACE_PATH'))
-	define('INTERFACE_PATH', APP_PATH  . 'interfaces' . DIRECTORY_SEPARATOR); 
+	define('INTERFACE_PATH', APP_PATH  . 'Interfaces' . DIRECTORY_SEPARATOR); 
 
 if (!defined('LIBS_PATH'))
-    define('LIBS_PATH', APP_PATH . 'libs' . DIRECTORY_SEPARATOR);   
+    define('LIBS_PATH', APP_PATH . 'Libs' . DIRECTORY_SEPARATOR);   
 
 if (!defined('TRAIT_PATH'))
-    define('TRAIT_PATH', APP_PATH . 'traits' . DIRECTORY_SEPARATOR); 
+    define('TRAIT_PATH', APP_PATH . 'Traits' . DIRECTORY_SEPARATOR); 
 
 if (!defined('HELPERS_PATH'))
-    define('HELPERS_PATH', APP_PATH . 'helpers' . DIRECTORY_SEPARATOR);  
+    define('HELPERS_PATH', APP_PATH . 'Helpers' . DIRECTORY_SEPARATOR);  
 
 if (!defined('LOCALE_PATH'))
     define('LOCALE_PATH', APP_PATH . 'locale' . DIRECTORY_SEPARATOR);  
 
 if (!defined('MIDDLEWARES_PATH'))
-    define('MIDDLEWARES_PATH', APP_PATH . 'middlewares' . DIRECTORY_SEPARATOR); 
+    define('MIDDLEWARES_PATH', APP_PATH . 'Middlewares' . DIRECTORY_SEPARATOR); 
 
 if (!defined('WIDGETS_PATH'))
     define('WIDGETS_PATH', APP_PATH . 'widgets' . DIRECTORY_SEPARATOR);

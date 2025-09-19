@@ -11230,7 +11230,10 @@ class DumbController extends Controller
 
         // $urls = Strings::lines($list, true, true);
 
-        $urls = ['https://tuprimerpaso.duoc.cl'];
+        /*
+            Falla con "https://th.iherb.com/" dando "Failed to connect to th.iherb.com port 443 after 21083 ms: Couldn't connect to server"
+        */
+        $urls = ['https://tuprimerpaso.duoc.cl']; 
 
         foreach ($urls as $url) {
             dd(
