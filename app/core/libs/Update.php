@@ -151,7 +151,7 @@ class Update
         Files::copy(UPDATE_PATH, $tmp_dst . 'updates', [ basename($update_dir) ]);
         //Files::copy(ROOT_PATH, $tmp_dst, ['app/controllers/UpdateController.php']);
 
-        Zip::zip($tmp_dst, UPDATE_PATH . 'update-' . basename($update_dir) . '.zip', [
+        ZipManager::zip($tmp_dst, UPDATE_PATH . 'update-' . basename($update_dir) . '.zip', [
             "completed"
         ]);
     }

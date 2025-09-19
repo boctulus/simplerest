@@ -1,13 +1,13 @@
-<!-- Step 6: Upload Documents -->
-<div class="step" data-step="6">
+<!-- Step: Upload Documents -->
+<div class="step" data-step="9" data-step-alias="upload-documents" data-conditional="document_types[]:!cards && has_signature:no">
     <div class="step-content">
         <h2>Documentos requeridos</h2>
         <p class="subtitle">Sube los documentos necesarios para el proceso</p>
         
         <div class="form-group">
-            <label for="id_document">Cédula de Identidad (ambas caras)</label>
+            <label for="id_document_front">Cédula de Identidad (frente)</label>
             <div class="file-upload">
-                <input type="file" id="id_document" name="id_document" accept=".pdf,.jpg,.jpeg,.png" required>
+                <input type="file" id="id_document_front" name="id_document_front" accept=".pdf,.jpg,.jpeg,.png" required>
                 <div class="file-upload-content">
                     <div class="file-icon">📎</div>
                     <p>Arrastra tu archivo aquí o haz clic para seleccionar</p>
@@ -16,14 +16,14 @@
             </div>
         </div>
 
-        <div class="form-group conditional-field" id="signature-upload" style="display: none;">
-            <label for="signature_file">Archivo de firma electrónica</label>
+        <div class="form-group">
+            <label for="id_document_reverse">Cédula de Identidad (reverso)</label>
             <div class="file-upload">
-                <input type="file" id="signature_file" name="signature_file" accept=".p12,.pfx">
+                <input type="file" id="id_document_reverse" name="id_document_reverse" accept=".pdf,.jpg,.jpeg,.png" required>
                 <div class="file-upload-content">
-                    <div class="file-icon">🔒</div>
-                    <p>Sube tu archivo de firma (.p12 o .pfx)</p>
-                    <span class="file-types">P12, PFX - Máximo 2MB</span>
+                    <div class="file-icon">📎</div>
+                    <p>Arrastra tu archivo aquí o haz clic para seleccionar</p>
+                    <span class="file-types">PDF, JPG, PNG - Máximo 5MB</span>
                 </div>
             </div>
         </div>

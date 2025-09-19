@@ -32,6 +32,11 @@ class Mail extends MailBase implements IMail
         return static::$mailer ?? $config['email']['mailer_default'];
     }
 
+    static function getMailerString(){
+        $config = Config::get();
+        return static::$mailer ?? $config['email']['mailer_default'];
+    }
+
     /*
         Overide options
     */

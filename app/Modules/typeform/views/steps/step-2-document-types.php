@@ -1,5 +1,5 @@
-<!-- Step 2: Document Types -->
-<div class="step" data-step="2">
+<!-- Step: Document Types -->
+<div class="step" data-step="2" data-step-alias="document-types">
     <div class="step-content">
         <h2>¿Qué tipos de documentos tributarios necesitas habilitar?</h2>
         <div class="options-grid">
@@ -17,6 +17,14 @@
                     <div class="card-icon">🧾</div>
                     <h3>Boletas</h3>
                     <p>Boletas electrónicas para consumidores finales</p>
+                </div>
+            </label>
+            <label class="option-card" for="cards">
+                <input type="checkbox" id="cards" name="document_types[]" value="cards">
+                <div class="card-content">
+                    <div class="card-icon">📄</div>
+                    <h3>Tarjetas solamente</h3>
+                    <p>Solo tarjetas</p>
                 </div>
             </label>
         </div>

@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:form.typeform.com)"
+      "WebFetch(domain:form.typeform.com)",
+      "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform\\views\\steps/**)",
+      "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform\\views\\steps/**)",
+      "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform\\views\\steps/**)",
+      "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform\\views\\steps/**)",
+      "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform\\assets\\js/**)",
+      "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform/**)"
     ],
     "deny": [],
     "ask": []

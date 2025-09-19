@@ -12,6 +12,12 @@
     transform: translateY(0);
 }
 
+/* Conditional steps hidden by logic */
+.step.conditional-hidden {
+    display: none !important;
+    opacity: 0 !important;
+}
+
 .step-content {
     text-align: center;
 }
