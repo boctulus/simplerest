@@ -450,7 +450,7 @@ class ValidatorController extends Controller
             array (
               0 => 
               array (
-                'path' => 'D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\libs\\ClaudeAI.php',
+                'path' => 'D:\\laragon\\www\\Boctulus\\Simplerest\\app\\Core\\Libs\\ClaudeAI.php',
                 'allowed_functions' => 
                 array (
                   0 => '__construct',
@@ -529,7 +529,7 @@ class ValidatorController extends Controller
             array (
               0 => 
               array (
-                'path' => 'D:\\laragon\\www\\Boctulus\\Simplerest\\app\\core\\libs\\ClaudeAI.php',
+                'path' => 'D:\\laragon\\www\\Boctulus\\Simplerest\\app\\Core\\Libs\\ClaudeAI.php',
                 'allowed_functions' => 
                 array (
                   0 => '__construct',

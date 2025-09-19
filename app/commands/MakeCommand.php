@@ -16,7 +16,7 @@ class MakeCommand implements ICommand
 {
     const SERVICE_PROVIDERS_PATH = ROOT_PATH . 'packages' . DIRECTORY_SEPARATOR;
 
-    const TEMPLATES = CORE_PATH . 'templates' . DIRECTORY_SEPARATOR;
+    const TEMPLATES = CORE_PATH . 'Templates' . DIRECTORY_SEPARATOR;
 
     const MODEL_TEMPLATE  = self::TEMPLATES . 'Model.php';
     const DTO_TEMPLATE  = self::TEMPLATES . 'DTO.php';
@@ -600,10 +600,10 @@ class MakeCommand implements ICommand
         }
 
         if ($core) {
-            $namespace = $this->namespace . '\\core\\libs';
+            $namespace = $this->namespace . '\\Core\\Libs';
             $dest_path = CORE_LIBS_PATH;
         } else {
-            $namespace = $this->namespace . '\\libs';
+            $namespace = $this->namespace . '\\Libs';
             $dest_path = LIBS_PATH;
         }
 
@@ -625,10 +625,10 @@ class MakeCommand implements ICommand
         }
 
         if ($core) {
-            $namespace = $this->namespace . '\\core\\traits';
+            $namespace = $this->namespace . '\\Core\\Traits';
             $dest_path = CORE_TRAIT_PATH;
         } else {
-            $namespace = $this->namespace . '\\traits';
+            $namespace = $this->namespace . '\\Traits';
             $dest_path = TRAIT_PATH;
         }
 
@@ -651,10 +651,10 @@ class MakeCommand implements ICommand
 
         // Configurar namespace y destino según --core
         if ($core) {
-            $namespace = $this->namespace . '\\core\\interfaces';
+            $namespace = $this->namespace . '\\Core\\Interfaces';
             $dest_path = CORE_INTERFACE_PATH;
         } else {
-            $namespace = $this->namespace . '\\interfaces';
+            $namespace = $this->namespace . '\\Interfaces';
             $dest_path = INTERFACE_PATH;
         }
 
@@ -784,7 +784,7 @@ class MakeCommand implements ICommand
         }
 
         if ($core) {
-            $namespace = $this->namespace . '\\core\\exceptions';
+            $namespace = $this->namespace . '\\Core\\exceptions';
             $dest_path = CORE_EXCEPTIONS_PATH;
         } else {
             $namespace = $this->namespace . '\\exceptions';
@@ -809,7 +809,7 @@ class MakeCommand implements ICommand
         }
 
         if ($core) {
-            $namespace = $this->namespace . '\\core\\helpers';
+            $namespace = $this->namespace . '\\Core\\helpers';
             $dest_path = CORE_HELPERS_PATH;
         } else {
             $namespace = $this->namespace . '\\helpers';

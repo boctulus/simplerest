@@ -7,7 +7,7 @@ use Boctulus\Simplerest\Core\API\v1\Download;
 
 class DownloadController extends Download
 {
-    function files  ($id){
+    function files($id){
         return $this->get($id);  
     }
 

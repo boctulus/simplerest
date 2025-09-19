@@ -1,5 +1,5 @@
-<!-- Step 4: Legal Representative -->
-<div class="step" data-step="4">
+<!-- Step: Legal Representative -->
+<div class="step" data-step="5" data-step-alias="legal-representative">
     <div class="step-content">
         <h2>Representante Legal</h2>
         <div class="form-group">
@@ -8,7 +8,7 @@
         </div>
         <div class="form-group">
             <label for="legal_rep_rut">RUT del representante legal</label>
-            <input type="text" id="legal_rep_rut" name="legal_rep_rut" placeholder="12.345.678-9" required>
+            <input type="text" id="legal_rep_rut" name="legal_rep_rut" placeholder="18280886-5" required>
         </div>
         <div class="form-group">
             <label for="legal_rep_email">Email del representante legal</label>
