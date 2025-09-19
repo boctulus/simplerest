@@ -8,9 +8,6 @@ use Boctulus\Simplerest\Schemas\az\FilesSchema;
 
 class FilesModel extends MyModel
 {
-	
-	
-
 	protected $hidden   = [];
 	protected $not_fillable = [];
 

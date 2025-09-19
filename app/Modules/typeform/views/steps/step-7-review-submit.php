@@ -1,5 +1,5 @@
-<!-- Step 7: Review and Submit -->
-<div class="step" data-step="7">
+<!-- Step: Review and Submit -->
+<div class="step" data-step="11" data-step-alias="review-submit">
     <div class="step-content">
         <h2>Revisión Final</h2>
         <p class="subtitle">Por favor revisa la información antes de enviar</p>

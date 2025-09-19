@@ -37,169 +37,176 @@ use Boctulus\Simplerest\Core\Libs\Numbers;
 
 class FileUploader
 {
-	protected $filenames  = [];
-	protected $location = UPLOADS_PATH;
-	protected $erroneous = [];
-	protected $renamerFn = null;
-	protected const WILDCARD = '*';
-	
-	
-	function __construct(){
-        if (!file_exists($this->location)){
+    protected array $filenames = [];
+    protected string $location = UPLOADS_PATH;
+    protected array $erroneous = [];
+    protected $renamerFn = null;
+    protected const WILDCARD = '*';
+
+    function __construct()
+    {
+        if (!file_exists($this->location)) {
             Files::mkDirOrFail($this->location);
         }
-	}	
-	
-	static function setLimits($upload_max_filesize = '1024M', $post_max_size = '1024M', $memory_limit = '768M', $max_exec_time = '600'){
-		set_server_limits($upload_max_filesize, $post_max_size, $memory_limit, $max_exec_time);
-	}
+    }
 
-	// @param string path (sin / al final)
-	function setLocation($path){
-		$this->location = $path;
+    // path without trailing slash
+    function setLocation(string $path): self
+    {
+        $this->location = $path;
 
-        if (!file_exists($this->location)){
+        if (!file_exists($this->location)) {
             Files::mkDirOrFail($this->location);
         }
 
-		return $this;
-	}	
+        return $this;
+    }
 
-	function getLocation(){
-		return $this->location;
-	}
-	
-	/*
-		Renamer
-	*/
-	function setFileHandler($fn, ...$params){
-		$this->renamerFn = [$fn, $params];
-		return $this;
-	}
-	
-	/* 
-		Retorna un array con el nombre original y el nombre con el que se almacenó
-	*/
-	function getFileNames(){
-		return $this->filenames;
-	}
-	
-	/**
-	* Los archivos que presentaron error quedan aqui	
-	*/
-	function getErrors(){
-		return $this->erroneous;
-	}
-		
-	/**
-	* 
-	* Dependiendo del caso puede tener que llamarse con el NAME del INPUT TYPE='file'
-	* y si hay varias declaraciones de archivos como arrays o algunos estan declarados
-	* como arrays y otros no, será necesario seleccionarlos con su NAME en $input_name
-	*/	
-	function doUpload($input_name = NULL)
-	{		
-		if(empty($_FILES))
-			return $this;
-					
-		$renamerFn = $this->renamerFn[0];
-		$subfijo   = $this->renamerFn[1][0];	
+    function getLocation(): string
+    {
+        return $this->location;
+    }
 
-		// reset	
-		$this->filenames  = [];	
-		$this->erroneous = [];
-			
-		Files::mkDirOrFail($this->location);
-		Files::writableOrFail($this->location);
-		
-		$key_0 = Arrays::arrayKeyFirst($_FILES);
-		$file0 = $_FILES[$key_0]; 
-		$name = $input_name != NULL ? $input_name : $key_0;
+    // Renamer
+    function setFileHandler(callable $fn, ...$params): self
+    {
+        $this->renamerFn = [$fn, $params];
+        return $this;
+    }
 
+    // Returns original/stored names plus field and index
+    function getFileNames(): array
+    {
+        return $this->filenames;
+    }
 
-		if(is_array($file0['error']) && isset($_FILES[$name]['error']) && is_array($_FILES[$name]['error'])){
-			$i = 0; 
-			foreach($_FILES[$name]['error'] as $key => $error)
-			{			
-				if ($error == UPLOAD_ERR_OK)
-				{
-					/*
-					 $tmp_name  -> "C:\xampp\tmp\phpF864.tmp"
-  					 basename($_FILES[$name]["name"][$key]) -> "hidden.jfif"
-					*/
-					
-					$tmp_name = $_FILES[$name]["tmp_name"][$key];
-					$filename = basename($_FILES[$name]["name"][$key]); 
-					$new_filename = $renamerFn($subfijo) . '.' . pathinfo($_FILES[$name]["name"][$key], PATHINFO_EXTENSION);
-					$this->filenames[$i] = [ 
-						'ori_name'  => $filename, 
-						'as_stored' => $new_filename 
-					];
-					move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR . $new_filename);
-					$i++;				
-				}else
-					$this->erroneous[] = $_FILES[$name]['name'][$key];
-			}
-		
-		}else{
-			
-			if($input_name != NULL && isset($_FILES[$input_name]['error'])){
-				if ($_FILES[$input_name]['error'] == UPLOAD_ERR_OK)
-				{
-					$tmp_name = $_FILES[$input_name]['tmp_name'];
-					$filename =  basename($_FILES[$input_name]['name']);
-					$new_filename = $renamerFn($subfijo) . '.' . pathinfo($_FILES[$input_name]['name'], PATHINFO_EXTENSION);
-					$this->filenames[] = [ 
-						'ori_name'  => $filename, 
-						'as_stored' => $new_filename 
-					];
-					move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR. $new_filename);		
-				}else
-					$this->erroneous[] = $_FILES[$input_name]['name'];
-			}
-			else
-				if($input_name == NULL){
-					foreach($_FILES as $_name => $file){
-						if ($file['error'] == UPLOAD_ERR_OK)
-						{
-							$tmp_name = $file['tmp_name'];
-							$filename =  basename($file['name']);
-							$new_filename = $renamerFn($subfijo) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-							$this->filenames[] = [ 
-								'ori_name'  => $filename, 
-								'as_stored' => $new_filename
-							 ];
-							move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR. $new_filename);		
-						}else
-							$this->erroneous[] = $file['name'];
-					}
-				}else if ($input_name[strlen($input_name)-1] == self::WILDCARD){
-					$starts_with = substr($input_name, 0, strlen($input_name)-1);
-					
-					foreach($_FILES as $_name => $file){
-						if(substr($_name, 0, strlen($_name)-1) != $starts_with)
-							continue;
-						
-						if ($file['error'] == UPLOAD_ERR_OK)
-						{
-							$tmp_name = $file['tmp_name'];
-							$filename =  basename($file['name']);
-							$new_filename = $renamerFn($subfijo) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-							$this->filenames[] = [ 
-								'ori_name'  => $filename, 
-								'as_stored' => $new_filename 
-							];
-							move_uploaded_file($tmp_name, $this->location. DIRECTORY_SEPARATOR. $new_filename);		
-						}else
-							$this->erroneous[] = $file['name'];
-					}
-				}
-		
-		}
-		
-		return $this;
-    }	
+    // Files with errors
+    function getErrors(): array
+    {
+        return $this->erroneous;
+    }
 
-	
-	
-}	
+    /**
+     * Process upload.
+     * If $input_name is null, processes all inputs in $_FILES.
+     * Supports arrays of files and wildcard names (e.g. "file_*").
+     */
+    function doUpload(?string $input_name = null): self
+    {
+        if (empty($_FILES)) {
+            return $this;
+        }
+
+        // Renamer fallback
+        $renamerFn = function (string $suffix = ''): string {
+            return uniqid($suffix, true);
+        };
+
+        $subfijo = '';
+        if ($this->renamerFn !== null) {
+            $renamerFn = $this->renamerFn[0];
+            $subfijo   = $this->renamerFn[1][0] ?? '';
+        }
+
+        // reset
+        $this->filenames = [];
+        $this->erroneous = [];
+
+        Files::mkDirOrFail($this->location);
+        Files::writableOrFail($this->location);
+
+        $key_0 = Arrays::arrayKeyFirst($_FILES);
+        $file0 = $_FILES[$key_0] ?? null;
+        $name  = $input_name !== null ? $input_name : $key_0;
+
+        // Helper to move/store a single file
+        $saveOne = function (string $field, ?int $index, string $tmp_path, string $client_name) use ($renamerFn, $subfijo) {
+            $new_filename = $renamerFn($subfijo) . '.' . pathinfo($client_name, PATHINFO_EXTENSION);
+            $this->filenames[] = [
+                'field'     => $field,
+                'index'     => $index,
+                'ori_name'  => basename($client_name),
+                'as_stored' => $new_filename
+            ];
+            move_uploaded_file($tmp_path, $this->location . DIRECTORY_SEPARATOR . $new_filename);
+        };
+
+        // Helper to record an error
+        $pushError = function (string $field, ?int $index, string $client_name) {
+            $this->erroneous[] = [
+                'field'    => $field,
+                'index'    => $index,
+                'ori_name' => basename($client_name)
+            ];
+        };
+
+        // Case 1: explicit array for a given name
+        if ($file0 !== null && is_array($file0['error']) && isset($_FILES[$name]['error']) && is_array($_FILES[$name]['error'])) {
+            foreach ($_FILES[$name]['error'] as $idx => $error) {
+                if ($error === UPLOAD_ERR_OK) {
+                    $saveOne($name, $idx, $_FILES[$name]['tmp_name'][$idx], $_FILES[$name]['name'][$idx]);
+                } else {
+                    $pushError($name, $idx, $_FILES[$name]['name'][$idx]);
+                }
+            }
+            return $this;
+        }
+
+        // Case 2: explicit single input name
+        if ($input_name !== null && isset($_FILES[$input_name]['error'])) {
+            if ($_FILES[$input_name]['error'] === UPLOAD_ERR_OK) {
+                $saveOne($input_name, null, $_FILES[$input_name]['tmp_name'], $_FILES[$input_name]['name']);
+            } else {
+                $pushError($input_name, null, $_FILES[$input_name]['name']);
+            }
+            return $this;
+        }
+
+        // Case 3: wildcard (e.g., "file_*")
+        if ($input_name !== null && substr($input_name, -1) === self::WILDCARD) {
+            $starts_with = substr($input_name, 0, strlen($input_name) - 1);
+            foreach ($_FILES as $_name => $file) {
+                if (strpos($_name, $starts_with) !== 0) {
+                    continue;
+                }
+                if (is_array($file['error'])) {
+                    foreach ($file['error'] as $idx => $error) {
+                        if ($error === UPLOAD_ERR_OK) {
+                            $saveOne($_name, $idx, $file['tmp_name'][$idx], $file['name'][$idx]);
+                        } else {
+                            $pushError($_name, $idx, $file['name'][$idx]);
+                        }
+                    }
+                } else {
+                    if ($file['error'] === UPLOAD_ERR_OK) {
+                        $saveOne($_name, null, $file['tmp_name'], $file['name']);
+                    } else {
+                        $pushError($_name, null, $file['name']);
+                    }
+                }
+            }
+            return $this;
+        }
+
+        // Case 4: no input_name -> iterate every $_FILES entry
+        foreach ($_FILES as $_name => $file) {
+            if (is_array($file['error'])) {
+                foreach ($file['error'] as $idx => $error) {
+                    if ($error === UPLOAD_ERR_OK) {
+                        $saveOne($_name, $idx, $file['tmp_name'][$idx], $file['name'][$idx]);
+                    } else {
+                        $pushError($_name, $idx, $file['name'][$idx]);
+                    }
+                }
+            } else {
+                if ($file['error'] === UPLOAD_ERR_OK) {
+                    $saveOne($_name, null, $file['tmp_name'], $file['name']);
+                } else {
+                    $pushError($_name, null, $file['name']);
+                }
+            }
+        }
+
+        return $this;
+    }
+}

@@ -30,10 +30,17 @@ body {
     padding: 80px 20px 40px;
 }
 
+/* Reduce padding when header with logo is present */
+.typeform-container:has(header) .form-wrapper,
+.form-wrapper.reduced-padding {
+    padding: 20px 20px 40px;
+}
+
 #typeform {
     width: 100%;
     max-width: 680px;
 }
+
 
 /* Typography - Tamaños consistentes */
 h1 {

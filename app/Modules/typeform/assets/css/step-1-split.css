@@ -1,5 +1,11 @@
 /* Step 1 Split Screen Layout */
 
+/* Override max-width only for step 1 */
+.step-1-split {
+    max-width: none !important;
+    width: 100% !important;
+}
+
 /* Contenedor principal del step 1 */
 .step-1-split .split-container {
     display: flex;
@@ -10,7 +16,7 @@
     overflow: hidden;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     margin: 0 auto;
-    max-width: 1200px;
+    max-width: 1800px;
 }
 
 /* Panel izquierdo con imagen (solo step 1) */
@@ -61,7 +67,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 60px 50px;
+    padding: 40px 50px;
     text-align: center;
 }
 

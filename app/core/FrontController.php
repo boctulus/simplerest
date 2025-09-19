@@ -120,7 +120,7 @@ class FrontController
             $controller = implode('',array_map('ucfirst',explode('_',$controller)));
         
             if ($controller == 'trash_can' || $controller == 'trashCan' || $controller == 'TrashCan' || $controller == 'collections' || $controller == 'Collections') {
-                $namespace = 'simplerest\\core\\api\\'. $api_version . '\\';
+                $namespace = 'simplerest\\Core\\api\\'. $api_version . '\\';
             } else {
                 $namespace = namespace_url() . '\\Controllers\\api\\';
             }    

@@ -19,7 +19,7 @@ if (php_sapi_name() != "cli"){
 	]
 */
 
-$search  = 'ZippyCart\\';
+$search  = 'boctulus\\efirma\\';
 $replace = 'Boctulus\Simplerest\\';
 
 
