@@ -7,7 +7,9 @@
       "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform\\views\\steps/**)",
       "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform\\views\\steps/**)",
       "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform\\assets\\js/**)",
-      "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform/**)"
+      "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform/**)",
+      "Bash(mkdir:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
