@@ -51,7 +51,7 @@ class Mail extends MailBase implements IMail
     static function silentDebug($level = null){
         global $config;
 
-        $options = $config['email']['mailers'][ static::getMailer() ];
+        $options = $config['email']['mailers'][ static::getMailerString() ];
 
         if (isset($options['SMTPDebug']) && $options['SMTPDebug'] != 0){
             $default_debug_level = $options['SMTPDebug'];
@@ -122,10 +122,9 @@ class Mail extends MailBase implements IMail
         )
     */
     static function send($to, $subject = '', $body = '', $attachments = null, $from = [], Array $cc = [], $bcc = [], $reply_to = [], $alt_body = null) : bool {
-		$config = Config::get();
+        $config = Config::get();
 
         $body = trim($body);
-
         if (!Strings::startsWith('<html>', $body)){
             $body = "<html><body>$body</body></html>";
         }
@@ -172,68 +171,111 @@ class Mail extends MailBase implements IMail
             $tmp = $from;
             $from = [];
             $from['email'] = $tmp;
-        } 
+        }
+        // Normaliza clave name (corrige posible 'mame')
+        if (isset($from['mame']) && !isset($from['name'])) {
+            $from['name'] = $from['mame'];
+        }
 
-        // if (empty($reply_to)){
-        //     $reply_to = $from;
-        // }
+        $mailer = static::getMailerString();
 
-        $mailer = static::getMailer();
-
-		$mail = new PHPMailer();
+        $mail = new PHPMailer();
         $mail->isSMTP();
 
-        $options = array_merge($config['email']['mailers'][$mailer], static::$options);
+        $options = static::$options;
+        if (!empty($mailer)){
+            $options = array_merge($config['email']['mailers'][$mailer], static::$options);
+        }
 
         if (static::$debug_level !== null){
             $options['SMTPDebug'] = static::$debug_level;
         }
 
         foreach ($options as $k => $prop){
-			$mail->{$k} = $prop;
-        }	
+            $mail->{$k} = $prop;
+        }
 
+        // Defaults de remitente
+        $from['email'] = $from['email'] ?? ($config['email']['from']['address'] ?? ($config['email']['mailers'][$mailer]['Username'] ?? null));
+        $from['name']  = $from['name']  ?? ($config['email']['from']['name'] ?? '');
+
+        if (!empty($from['email'])){
+            $mail->setFrom($from['email'], $from['name'] ?? '');
+        }
+
+        // Reply-To por defecto = From si no se pasa
+        if (empty($reply_to) && !empty($from['email'])) {
+            $reply_to = $from;
+        }
         if (!empty($reply_to)){
             $mail->addReplyTo($reply_to['email'], $reply_to['name'] ?? '');
         }
-        
 
-        $from['email'] = $from['email'] ?? $config['email']['from']['address'] ?? $config['email']['mailers'][$mailer]['Username'];
-        $from['mame']  = $from['mame']  ?? $config['email']['from']['name'];
-
-        if (!empty($from)){
-            $mail->setFrom($from['email'], $from['name'] ?? '');
-        }
-        
         foreach ($to as $_to){
             $mail->addAddress($_to['email'], $_to['name'] ?? '');
         }
 
+        $mail->CharSet = 'UTF-8';
         $mail->Subject = $subject;
-		$mail->msgHTML($body); 
-		
-		if (!is_null($alt_body)){
+        $mail->msgHTML($body);
+
+        if (!is_null($alt_body)){
             $mail->AltBody = $alt_body;
         }
-		
+
+        // Adjuntos (retro-compat y extendido)
         if (!empty($attachments)){
             if (!is_array($attachments)){
                 $attachments = [ $attachments ];
             }
 
-            foreach($attachments as $att){
-                $mail->addAttachment($att);    
+            foreach ($attachments as $att) {
+                if (is_string($att)) {
+                    if (!is_file($att)) {
+                        static::$errors = "Attachment not found: {$att}";
+                        return false;
+                    }
+                    $mail->addAttachment($att);
+                } elseif (is_array($att)) {
+                    // Soporta:
+                    // ['path'=>..., 'name'=>..., 'encoding'=>..., 'type'=>...]
+                    // o adjunto en memoria:
+                    // ['data'=>string, 'name'=>..., 'encoding'=>..., 'type'=>...]
+                    $encoding = $att['encoding'] ?? 'base64';
+                    $type     = $att['type']     ?? 'application/octet-stream';
+
+                    if (isset($att['data'])) {
+                        $data = $att['data'];
+                        $name = $att['name'] ?? 'file.bin';
+                        if (!is_string($data) || $data === '') {
+                            static::$errors = "Invalid in-memory attachment data";
+                            return false;
+                        }
+                        $mail->addStringAttachment($data, $name, $encoding, $type);
+                    } else {
+                        $path = $att['path'] ?? null;
+                        $name = $att['name'] ?? '';
+                        if (!$path || !is_file($path)) {
+                            static::$errors = "Attachment not found or missing path";
+                            return false;
+                        }
+                        $mail->addAttachment($path, $name, $encoding, $type);
+                    }
+                } else {
+                    static::$errors = "Invalid attachment entry";
+                    return false;
+                }
             }
         }
 
-        if (!empty($cc)){            
-            foreach($cc as $_cc){
+        if (!empty($cc)){
+            foreach ($cc as $_cc){
                 $mail->addCC($_cc['email'], $_cc['name'] ?? '');
             }
         }
 
-        if (!empty($bcc)){            
-            foreach($bcc as $_bcc){
+        if (!empty($bcc)){
+            foreach ($bcc as $_bcc){
                 $mail->addBCC($_bcc['email'], $_bcc['name'] ?? '');
             }
         }
@@ -241,31 +283,28 @@ class Mail extends MailBase implements IMail
         if (static::$silent){
             ob_start();
         }
-		
-        if (!$mail->send())
-        {	
-            static::$errors = $mail->ErrorInfo;
 
+        if (!$mail->send()){
+            static::$errors = $mail->ErrorInfo;
             if (static::$silent){
                 Logger::dump(static::$errors, 'dump.txt', true);
             }
-
             $ret = static::$errors;
-        }else{
+        } else {
             if (static::$silent){
                 Logger::dump(true, 'dump.txt', true);
             }
-
             static::$errors = null;
-            $ret =  true;
-        }        
-                 
+            $ret = true;
+        }
+
         if (static::$silent){
             $content = ob_get_contents();
             ob_end_clean();
         }
 
         return $ret;
-	}
+    }
+
     
 }

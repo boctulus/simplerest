@@ -2,6 +2,7 @@
 
 namespace Boctulus\Simplerest\Core\libs;
 
+use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Libs\XML;
 
@@ -619,24 +620,6 @@ class Strings
 		return $ret;
 	}
 
-	static function trim($dato = null, bool $even_null = true, bool $auto_cast_numbers = true){
-		if ($dato === null){
-			if (!$even_null){
-				throw new \InvalidArgumentException("Dato can not be null");
-			}
-
-			return '';
-		}
-
-		if ($auto_cast_numbers){
-			if (is_int($dato) || is_float($dato) || is_double($dato)){
-				$dato = (string) $dato;
-			}
-		}
-
-		return trim($dato);
-	}
-
 	/*
 		Auto-detecta retorno de carro en un string
 
@@ -973,7 +956,48 @@ class Strings
 	}
 
 	static function trimArray(Array $strings){
-		return array_map('trim', $strings);
+		return Arrays::trimArray($strings);
+	}
+
+	/*
+		Hace trim() a un string o a cada string en un array de strings
+
+		Ej:
+
+		foreach($lines as $k => $line){
+            $parsed_row = parseCsvLine($line); 
+            $parsed_row = Strings::trim($parsed_row);
+            
+            if (Strings::isEmpty($parsed_row)){
+                unset($lines[$k]);
+            }
+        }
+	*/
+	static function trim($dato = null, bool $even_null = true, bool $auto_cast_numbers = true)
+	{
+		if (is_object($dato)){
+			throw new \InvalidArgumentException("Dato can not be an object or an array");
+		} 
+
+		if (is_array($dato)){
+			return static::trimArray($dato);
+		}
+
+		if ($dato === null){
+			if (!$even_null){
+				throw new \InvalidArgumentException("Dato can not be null");
+			}
+
+			return '';
+		}
+
+		if ($auto_cast_numbers){
+			if (is_int($dato) || is_float($dato) || is_double($dato)){
+				$dato = (string) $dato;
+			}
+		}
+
+		return trim($dato);
 	}
 
 	/*
@@ -1565,6 +1589,56 @@ class Strings
         return $reducedHtml;
     }
 
+	/**
+     * Verifica si un valor está "vacío" según reglas personalizadas:
+     * - null => vacío
+     * - string vacío o solo espacios => vacío
+     * - array => vacío si todos sus elementos son vacíos
+     * - otros valores (incluyendo 0 y "0") => NO vacío
+     *
+     * @param mixed $value
+     * @return bool
+	 * 
+	 * Ej:
+	 * 
+	 *	// Imprime true
+	 *  var_dump(
+     *      Strings::isEmpty([
+     *         'Nombre' => 'saa',
+     *         'Edad' => null,
+     *         'Ciudad' => '',
+     *      ])
+     *   );
+     */
+    public static function isEmpty($value): bool {
+		// Null
+		if ($value === null) {
+			return true;
+		}
+
+		// String vacío o con solo espacios
+		if (is_string($value)) {
+			return trim($value) === '';
+		}
+
+		// Array
+		if (is_array($value)) {
+			if (count($value) === 0) {
+				return true;
+			}
+			// Recursivamente verificar cada valor
+			foreach ($value as $v) {
+				if (!self::isEmpty($v)) {
+					return false;
+				}
+			}
+			return true; // todos vacíos
+		}
+
+		// Otros tipos (int, float, bool, object, resource)
+		return false;
+	}
+	
 	static function equal(string $s1, string $s2, bool $case_sensitive = true){
 		if ($case_sensitive === false){
 			$s1 = strtolower($s1);
