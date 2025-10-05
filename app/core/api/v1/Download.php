@@ -13,7 +13,9 @@ class Download extends ResourceController
     // caso puntual donde lo conservo:
     static protected $guest_access = true;
 
-    public $table_name = 'files';
+    protected $table_name = 'files';
+    protected $tenantid;
+    protected $conn;
 
     function __construct()
     {

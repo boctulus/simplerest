@@ -2,6 +2,8 @@
 
 namespace Boctulus\Simplerest\Core\Libs;
 
+use Boctulus\Simplerest\Core\libs\Strings;
+
 class Arrays 
 {
     public static function reorderArray(array $array, array $order_keys): array {
@@ -92,9 +94,16 @@ class Arrays
     /*
         Trim every element of array
     */
-    static function trimArray(array $arr){
-        return array_map('trim', $arr);
-    }
+    static function trimArray(Array $strings){
+		return array_map(function($item) {
+			// Maneja arrays anidados recursivamente
+			if (is_array($item)) {
+				return self::trimArray($item);
+			}
+			// Convierte a string si es necesario
+			return trim((string) $item);
+		}, $strings);
+	}
 
     static function rtrimArray(array $arr){
         return array_map('rtrim', $arr);

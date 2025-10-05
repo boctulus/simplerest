@@ -10644,50 +10644,50 @@ class DumbController extends Controller
 
 
     // OK
-    function test_dom_crawler_p()
-    {
-        StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 60);
+    // function test_dom_crawler_p()
+    // {
+    //     StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 60);
 
-        dd(StratoScraper::getProduct('/Products/zami'));
-    }
+    //     dd(StratoScraper::getProduct('/Products/zami'));
+    // }
 
-    // OK
-    function test_dom_crawler_cats()
-    {
-        StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 60);
-        $html = StratoScraper::getHTML('');
+    // // OK
+    // function test_dom_crawler_cats()
+    // {
+    //     StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 60);
+    //     $html = StratoScraper::getHTML('');
 
-        dd(StratoScraper::getCategoList($html));
-    }
+    //     dd(StratoScraper::getCategoList($html));
+    // }
 
-    function test_dom_crawler_cat()
-    {
-        $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 60);
+    // function test_dom_crawler_cat()
+    // {
+    //     $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 60);
 
-        dd(StratoScraper::getCatego($html));
-    }
+    //     dd(StratoScraper::getCatego($html));
+    // }
 
-    function test_dom_crawler_cat_paginator()
-    {
-        $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 60);
+    // function test_dom_crawler_cat_paginator()
+    // {
+    //     $html = StratoScraper::getHTML('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', 3600 * 24 * 60);
 
-        dd(StratoScraper::getPaginator($html));
-    }
+    //     dd(StratoScraper::getPaginator($html));
+    // }
 
-    function test_dom_crawler_product_links()
-    {
-        $page = 3;
+    // function test_dom_crawler_product_links()
+    // {
+    //     $page = 3;
 
-        StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 60);
+    //     StratoScraper::setup('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920', 3600 * 24 * 60);
 
-        $url  = StratoScraper::getCategoryPageURL('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', $page);
+    //     $url  = StratoScraper::getCategoryPageURL('https://www.azulejosmadridonline.es/epages/63993920.sf/es_ES/?ObjectPath=/Shops/63993920/Categories/%22Azulejos/Porcel%C3%A1nicos%22/Azulejos', $page);
 
-        $html = StratoScraper::getHTML($url, 3600 * 24 * 60);
+    //     $html = StratoScraper::getHTML($url, 3600 * 24 * 60);
 
-        dd(
-            StratoScraper::getProductLinks($html)
-        );
-    }
+    //     dd(
+    //         StratoScraper::getProductLinks($html)
+    //     );
+    // }
 
     function test_table_export(){
         dd(DatabaseBackup::exportTableAsCSV('roles'), 'PATH');
@@ -12467,6 +12467,12 @@ class DumbController extends Controller
         } else {
             echo "No matches found.\n";
         }
+    }
+
+    function is_empty(){
+        $data = array ( 'categorias' => '', 'precio' => '', 'descripcion' => '', 'marca' => '', 'ean' => '', 'imagen' => '', 'precio_raw' => '');
+
+        var_dump(Strings::isEmpty($data) ); // true
     }
 
 }   // end class
