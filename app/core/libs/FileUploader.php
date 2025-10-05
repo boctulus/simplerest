@@ -40,7 +40,7 @@ class FileUploader
     protected array $filenames = [];
     protected string $location = UPLOADS_PATH;
     protected array $erroneous = [];
-    protected $renamerFn = null;
+    protected ?array $renamerFn = null;
     protected const WILDCARD = '*';
 
     function __construct()
@@ -126,7 +126,9 @@ class FileUploader
                 'field'     => $field,
                 'index'     => $index,
                 'ori_name'  => basename($client_name),
-                'as_stored' => $new_filename
+                'as_stored' => $new_filename,
+                'full_path' => $this->location . DIRECTORY_SEPARATOR . $new_filename,
+				'size'	    => filesize($tmp_path)
             ];
             move_uploaded_file($tmp_path, $this->location . DIRECTORY_SEPARATOR . $new_filename);
         };
