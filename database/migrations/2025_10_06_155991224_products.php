@@ -1,6 +1,5 @@
 <?php
 
-use Boctulus\Simplerest\Core\Interfaces\IMigration;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Model;
@@ -25,7 +24,7 @@ class Products extends Migration
 
         $sc
         // EAN (barcode)
-        ->varchar('ean', 50)->unique()->pri()
+        ->varchar('ean', 50)->pri()
         // Product description
         ->text('description')->nullable()
         // Net content (numeric quantity, e.g. 900.00)
