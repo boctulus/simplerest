@@ -155,3 +155,4 @@
 [2025-10-07 12:05:08]	0.8.12	Corregido Schema: ahora si agrega PRI KEY aun cuando el campo no es AUTOINCREMENT
 [2025-10-07 12:29:11]	0.8.12	Automatic update
 [2025-10-07 12:49:23]	0.8.12	Correccion en DB::create()
+[2025-10-08 00:44:11]	0.8.12	Automatic update
