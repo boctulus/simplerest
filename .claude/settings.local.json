@@ -9,7 +9,11 @@
       "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform\\assets\\js/**)",
       "Read(D:\\laragon\\www\\friend-ly\\wp-content\\plugins\\efirma\\app\\shortcodes\\Typeform/**)",
       "Bash(mkdir:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFix security vulnerabilities in third-party dependencies\n\nUpdated outdated npm packages in tabulator and x-editable:\n- Replaced obsolete node-sass with modern sass (Dart Sass)\n- Updated grunt and all grunt plugins to latest stable versions\n- Fixed 76 vulnerabilities (8 critical, 32 high, 30 moderate, 8 low)\n\nResults:\n- x-editable: 57 vulnerabilities → 0 vulnerabilities ✓\n- tabulator: 20 vulnerabilities → 2 moderate (no fix available)\n\nRemaining 2 moderate vulnerabilities in postcss-prettify have no fix available\nand are in dev dependencies only.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
