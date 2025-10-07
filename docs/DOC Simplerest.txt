@@ -14103,6 +14103,8 @@ Si se modifica $model_name a por ejemplo "OtroModel" entonces los permisos sobre
 
 # Archivos CSV
 
+Mecanismo eficiente en consumo de memoria de procesar archivos de CSV grandes.
+
 Ej:
 
 	Files::processCSV($path, ',', true, function($row){
@@ -14210,6 +14212,121 @@ Ej:
 	} catch (\Exception $e){
 		Logger::logError($e->getMessage());
 	}
+
+# Liberacion de memoria al procesar archivos CSV
+
+Al procesar archivos grandes es vital limpiar referencias y usar gc_collect_cycles();
+
+Ej:
+
+	Files::processCSV($file, '|', true, function ($p) use (&$model_instance, $reset_model_every) {
+            global $count, $inserted, $skipped, $errors;
+
+            $count++;
+
+            // --- Basic row filter ---
+            if (empty($p['brand']) || $p['brand'] === 'SIN MARCA') {
+                $skipped++;
+                return;
+            }
+
+            // --- Normalize EAN ---
+            $rawEan = $p['product-id'] ?? '';
+            // remove everything that's not a digit
+            $digits = preg_replace('/\D+/', '', $rawEan);
+
+            if ($digits === '') {
+                $skipped++;
+                // optionally log reason: empty/invalid product-id
+                // error_log("Skipping row $count: empty product-id");
+                return;
+            }
+
+            // Enforce max length for EAN (13 digits expected for EAN-13)
+            if (strlen($digits) > 13) {
+                $errors++;
+                // optional: log or save problematic EAN
+                error_log("Row $count: product-id has >13 digits, skipping: '{$rawEan}' -> '{$digits}'");
+                return;
+            }
+
+            // IMPORTANT: converting to integer will drop leading zeros.
+            // Decide which behaviour you want:
+            //  - if you NEED to preserve leading zeros (e.g. '0123456789012'), store as string in DB (column must accept numeric string or varchar).
+            //  - if you truly want the numeric intval, continue and cast.
+            //
+            // The code below preserves numeric value but handles 32-bit PHP safely:
+            if (PHP_INT_SIZE >= 8) {
+                // 64-bit PHP: safe to cast up to 13 digits
+                $ean_value = (int) $digits;
+            } else {
+                // 32-bit PHP: ints may overflow; keep numeric string and let MySQL cast when inserting into BIGINT
+                $ean_value = $digits; // numeric string
+            }
+
+            $dato = [
+                'ean' => $ean_value,
+                'description' => $p['description'] ?? null,
+                'net_content' => $p['net-content'] ?? null,
+                'unit_of_measurement' => $p['unit-of-measurement'] ?? null,
+                'brand' => $p['brand'],
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
+
+            try {
+                // Reuse the model instance across rows to avoid reconnect/overhead
+                // table() will create it on first use because we pass by reference.
+                $model_instance = table('products');
+                $id = $model_instance->create($dato, true);
+
+                if ($id === null) {
+                    // create returned null -> duplicate (because you pass true to ignore duplicates)
+                    $skipped++;
+                } else {
+                    $inserted++;
+                }
+            } catch (\Exception $e) {
+                $errors++;
+                error_log("Error inserting EAN '{$dato['ean']}' on row {$count}: " . $e->getMessage());
+                // optionally: capture $dato or $p to a failed rows list for manual retry
+            } finally {
+                // free per-row heavy references (small arrays) to help GC
+                $dato = null;
+
+                // Optionally reset the model instance periodically to avoid long-running leaks or refresh schema
+                if ($reset_model_every > 0 && $count % $reset_model_every === 0) {
+                    // If model holds DB connections or large caches, unset and let GC run.
+                    if (is_object($model_instance)) {
+                        // if your MyModel has explicit cleanup, call it:
+                        if (method_exists($model_instance, 'cleanup')) {
+                            $model_instance->cleanup(); // user-defined cleanup (close statements, clear caches)
+                        }
+                        // remove reference
+                        $model_instance = null;
+                    }
+                    // force collection
+                    gc_collect_cycles();
+                }
+            }
+
+            // periodic progress + minor GC
+            if ($count % 500 === 0) {
+                gc_collect_cycles();
+                echo "Processed: $count | Inserted: $inserted | Skipped: $skipped | Errors: $errors\n";
+            }
+        }, null, 0, 99999999);
+
+        // final cleanup
+        if (is_object($model_instance) && method_exists($model_instance, 'cleanup')) {
+            $model_instance->cleanup();
+        }
+        $model_instance = null;
+
+        // close DB connection used for import
+        DB::closeConnection();
+
+        echo "Import finished. Processed: $count | Inserted: $inserted | Skipped: $skipped | Errors: $errors\n";
+    }
 
 
 ### Ofuscación de archivos

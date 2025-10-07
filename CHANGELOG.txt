@@ -156,3 +156,4 @@
 [2025-10-07 12:29:11]	0.8.12	Automatic update
 [2025-10-07 12:49:23]	0.8.12	Correccion en DB::create()
 [2025-10-08 00:44:11]	0.8.12	Automatic update
+[2025-10-08 00:50:51]	0.8.12	Automatic update
