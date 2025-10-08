@@ -118,34 +118,36 @@ WebRouter::get('api/v1/cool',  'DumbAuthController@super_cool_action');
 	Esta obligandose a ir de lo especifico a lo general
 */
 
-WebRouter::get('admin/migrate', function(){
-	chdir(ROOT_PATH);
-	
-	exec("php com migrations migrate", $output_lines, $res_code);
-	
-	foreach($output_lines as $output_line){
-		dd($output_line);
-	}
+// Grouped admin utilities
+WebRouter::group('admin', function() {
+	WebRouter::get('migrate', function(){
+		chdir(ROOT_PATH);
 
-	dd($res_code, 'RES_CODE');
-});
+		exec("php com migrations migrate", $output_lines, $res_code);
 
+		foreach($output_lines as $output_line){
+			dd($output_line);
+		}
 
-WebRouter::get('admin/test_smtp', function(){
-	Mail::debug(4);
-	Mail::setMailer('ovh');
+		dd($res_code, 'RES_CODE');
+	});
 
-	Mail::send(
-		[
-			'email' => 'boctulus@gmail.com',
-			'name' => 'Pablo'
-		],
-		'Pruebita 001JRBX',
-		'Hola!<p/>Esto es una más <b>prueba</b> con el server de Planex<p/>Chau'
-	);
+	WebRouter::get('test_smtp', function(){
+		Mail::debug(4);
+		Mail::setMailer('ovh');
 
-	dd(Mail::errors(), 'Error');
-	dd(Mail::status(), 'Status');
+		Mail::send(
+			[
+				'email' => 'boctulus@gmail.com',
+				'name' => 'Pablo'
+			],
+			'Pruebita 001JRBX',
+			'Hola!<p/>Esto es una más <b>prueba</b> con el server de Planex<p/>Chau'
+		);
+
+		dd(Mail::errors(), 'Error');
+		dd(Mail::status(), 'Status');
+	});
 });
 
 
@@ -164,45 +166,5 @@ WebRouter::get('admin/pagina-dos', function(){
 //	$content = "Panel de Admin";
 //	render($content);
 //});
-
-
-// ========================================
-// TEST WebRouter::group() functionality
-// ========================================
-
-// Simple group test
-WebRouter::group('test-group', function() {
-    WebRouter::get('simple', function() {
-        return json_encode(['message' => 'Simple group works!', 'route' => '/test-group/simple']);
-    });
-
-    WebRouter::get('with-param/{id}', function($id) {
-        return json_encode(['message' => 'Group with parameter works!', 'id' => $id, 'route' => '/test-group/with-param/{id}']);
-    })->where(['id' => '[0-9]+']);
-});
-
-// Nested groups test
-WebRouter::group('api', function() {
-    WebRouter::get('status', function() {
-        return json_encode(['status' => 'ok', 'route' => '/api/status']);
-    });
-
-    WebRouter::group('v1', function() {
-        WebRouter::get('users', function() {
-            return json_encode(['users' => ['user1', 'user2'], 'route' => '/api/v1/users']);
-        });
-
-        WebRouter::get('products', function() {
-            return json_encode(['products' => ['product1', 'product2'], 'route' => '/api/v1/products']);
-        });
-
-        // Triple nested group
-        WebRouter::group('admin', function() {
-            WebRouter::get('logs', function() {
-                return json_encode(['logs' => [], 'route' => '/api/v1/admin/logs']);
-            });
-        });
-    });
-});
 
 

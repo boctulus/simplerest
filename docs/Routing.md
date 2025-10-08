@@ -567,3 +567,29 @@ El FrontController no necesita la `\` para separar carpetas.
 - WebRouter: `app/Core/WebRouter.php`
 - CliRouter: `app/Core/CliRouter.php`
 - FrontController: `app/Core/FrontController.php`
+
+---
+
+# Comparacion con Laravel routing
+
+SimpleRest está en ~70% de funcionalidad respecto a Laravel en routing:
+
+  Fortalezas:
+  - ✅ Tiene las features fundamentales bien implementadas
+  - ✅ Ordenamiento automático es superior a Laravel
+  - ✅ Sintaxis más simple y consistente CLI/Web
+  - ✅ Multi-word commands más flexibles
+
+  Debilidades:
+  - ❌ Falta Model Binding (feature MUY usada)
+  - ❌ Falta Resource Controllers (ahorra MUCHO código)
+  - ❌ Alias/Name implementados pero no funcionan
+  - ❌ No hay route caching (importante para performance)
+
+  Para producción seria, SimpleRest necesitaría:
+  1. Arreglar alias() y name()
+  2. Implementar Model Binding
+  3. Implementar Resource Controllers
+  4. Agregar Route Caching
+
+  Con esos 4 features, SimpleRest estaría al 85-90% de Laravel en routing y sería completamente viable para producción.
