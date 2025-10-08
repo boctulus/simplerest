@@ -241,6 +241,7 @@ return [
 		//Boctulus\Simplerest\BasicACL\BasicAclServiceProvider::class
 		Boctulus\Zippy\ServiceProvider::class,
 		Boctulus\CliTest\ServiceProvider::class,
+		Boctulus\WebTest\ServiceProvider::class,
 		// ...
 		//boctulus\hello_world\HelloServiceProvider::class
 	],
