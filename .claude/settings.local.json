@@ -17,7 +17,8 @@
       "Bash(php com vea:*)",
       "Bash(php:*)",
       "Bash(composer dumpautoload:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
