@@ -1,0 +1,18 @@
+{
+    "name": "boctulus/web-test",
+    "description": "Package web-test by boctulus",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\WebTest\\": "src/"
+        }
+    },
+    "extra": {
+        "simplerest": {
+            "providers": [
+                "Boctulus\\WebTest\\ServiceProvider"
+            ]
+        }
+    },
+    "require": {}
+}
