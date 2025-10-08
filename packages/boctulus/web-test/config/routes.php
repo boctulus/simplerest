@@ -34,10 +34,6 @@ WebRouter::group('api', function() {
             return json_encode(['users' => ['user1', 'user2'], 'route' => '/api/v1/users']);
         });
 
-        WebRouter::get('products', function() {
-            return json_encode(['products' => ['product1', 'product2'], 'route' => '/api/v1/products']);
-        });
-
         // Triple nested group
         WebRouter::group('admin', function() {
             WebRouter::get('logs', function() {

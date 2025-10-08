@@ -14,12 +14,36 @@
   - [Uso Básico](#uso-básico)
   - [Comandos con Funciones Anónimas](#comandos-con-funciones-anónimas)
   - [Comandos Multi-palabra](#comandos-multi-palabra)
+  - [Soporte de Métodos Mágicos (__call)](#soporte-de-métodos-mágicos-__call)
   - [Grupos de Comandos](#grupos-de-comandos)
 - [Routing en Packages](#routing-en-packages)
   - [Configuración de Rutas Web](#configuración-de-rutas-web)
   - [Configuración de Rutas CLI](#configuración-de-rutas-cli)
+  - [Configuración de Package](#configuración-de-package)
 - [Front Controller](#front-controller)
+- [Arquitectura de Handlers](#arquitectura-de-handlers)
+  - [Concepto](#concepto)
+  - [Beneficios](#beneficios)
+  - [Los 6 Handlers](#los-6-handlers)
+  - [Configuración](#configuración)
+  - [Flujo de Ejecución](#flujo-de-ejecución)
+  - [Crear un Handler Personalizado](#crear-un-handler-personalizado)
+  - [Handler vs Traits](#handler-vs-traits)
+  - [Casos de Uso Avanzados](#casos-de-uso-avanzados)
+  - [Testing de Handlers](#testing-de-handlers)
+  - [Migración desde FrontController Antiguo](#migración-desde-frontcontroller-antiguo)
+  - [Soporte de __call() en FrontController](#soporte-de-__call-en-frontcontroller)
 - [Errores Comunes](#errores-comunes)
+  - [Comando no encontrado](#comando-no-encontrado)
+  - [Método mágico __call() no funciona](#método-mágico-__call-no-funciona)
+  - [Handler personalizado no se carga](#handler-personalizado-no-se-carga)
+  - [Ruta web no responde](#ruta-web-no-responde)
+  - [Argumentos incorrectos](#argumentos-incorrectos)
+  - [Conflicto de rutas](#conflicto-de-rutas)
+- [Mejores Prácticas](#mejores-prácticas)
+- [Referencias](#referencias)
+- [Changelog - Mejoras Recientes](#changelog---mejoras-recientes)
+- [Comparación con Laravel Routing](#comparacion-con-laravel-routing)
 
 ---
 
@@ -265,6 +289,90 @@ php com db seed
 
 **Nota**: Internamente los espacios se convierten a `:` para el matching.
 
+### Soporte de Métodos Mágicos (__call)
+
+**✨ Nuevo**: CliRouter ahora soporta el método mágico `__call()` en controladores.
+
+Cuando un controlador tiene el método `__call()`, el CliRouter permite invocar métodos que no existen físicamente en la clase:
+
+#### Ejemplo: WhatsappController
+
+```php
+<?php
+
+namespace Boctulus\Simplerest\Controllers;
+
+class WhatsappController extends Controller
+{
+    function __call($name, $arguments)
+    {
+        // Permitir números de teléfono como métodos
+        if (is_numeric($name)) {
+            return $this->createLink($name, ...$arguments);
+        }
+
+        // Permitir alias=valor
+        if (Strings::contains("=", $name)) {
+            $alias = Strings::after($name, "=");
+            return $this->index($alias);
+        }
+    }
+
+    private function createLink($phone, $message = null)
+    {
+        if ($message) {
+            return "https://api.whatsapp.com/send?phone=$phone&text=$message";
+        }
+        return "https://wa.me/$phone";
+    }
+}
+```
+
+#### Uso:
+
+```bash
+# Método "mágico" con número como nombre
+php com whatsapp 333333333 'Hola!'
+# Resultado: https://api.whatsapp.com/send?phone=333333333&text=Hola!
+
+# Método "mágico" con formato especial
+php com whatsapp alias=ph
+# Resultado: https://wa.me/639620738513
+
+# Método real existente
+php com whatsapp getPhone es
+# Resultado: +34 644 149161
+```
+
+**Ventajas**:
+- ✅ Permite APIs más flexibles en CLI
+- ✅ Acepta parámetros que no son nombres de métodos válidos en PHP
+- ✅ Ideal para DSLs (Domain Specific Languages) en consola
+- ✅ Compatible con el fallback del CliRouter
+
+**Cómo funciona**:
+
+El CliRouter verifica si el controlador tiene `__call()` antes de decidir si un parámetro es un método o un argumento:
+
+```php
+// En CliRouter.php (líneas 203-218)
+if (isset($params[1])) {
+    if (method_exists($controller, $params[1])) {
+        // Método real existe
+        $action = $params[1];
+        $actionParams = array_slice($params, 2);
+    } elseif (method_exists($className, '__call')) {
+        // Tiene __call(), tratar segundo parámetro como método
+        $action = $params[1];
+        $actionParams = array_slice($params, 2);
+    } else {
+        // No existe ni método ni __call(), es argumento de index()
+        $action = 'index';
+        $actionParams = array_slice($params, 1);
+    }
+}
+```
+
 ### Grupos de Comandos
 
 ```php
@@ -416,6 +524,146 @@ class ServiceProvider extends BaseServiceProvider
 }
 ```
 
+### Configuración de Package
+
+Cada package puede tener su propio archivo de configuración que permite controlar diferentes aspectos del comportamiento del framework para ese package específico.
+
+#### Archivo: `packages/vendor/package-name/config/config.php`
+
+```php
+<?php
+
+/*
+    Package Configuration
+
+    Este archivo de configuración es específico del package y sobrescribe
+    la configuración global cuando se ejecuta un controlador de este package.
+
+    Opciones disponibles:
+    - front_controller: Habilita/deshabilita FrontController para este package (default: true)
+    - web_router: Habilita/deshabilita WebRouter para este package (default: true)
+    - console_router: Habilita/deshabilita CliRouter para este package (default: true)
+    - base_url: Prefijo de URL base para las rutas del package (default: '')
+*/
+
+return [
+    // Habilitar o deshabilitar FrontController para este package
+    'front_controller' => true,
+
+    // Habilitar o deshabilitar WebRouter para este package
+    'web_router' => true,
+
+    // Habilitar o deshabilitar CliRouter para este package
+    'console_router' => true,
+
+    // Configuración personalizada del package
+    // Agrega tu configuración personalizada aquí
+];
+```
+
+#### ¿Cómo funciona?
+
+El ServiceProvider debe cargar la configuración del package en el método `boot()`:
+
+```php
+<?php
+
+namespace Vendor\PackageName;
+
+use Boctulus\Simplerest\Core\ServiceProvider as BaseServiceProvider;
+use Boctulus\Simplerest\Core\Libs\Config;
+
+class ServiceProvider extends BaseServiceProvider
+{
+    public function boot()
+    {
+        // Cargar configuración del package
+        $configFile = __DIR__ . '/../config/config.php';
+        if (file_exists($configFile)) {
+            $packageConfig = include $configFile;
+
+            // Extraer vendor y package del namespace
+            // Formato esperado: Vendor\Package
+            $namespace = __NAMESPACE__;
+            $parts = explode('\\', $namespace);
+
+            if (count($parts) >= 2) {
+                $vendor = strtolower($parts[0]);
+                $package = strtolower($parts[1]);
+
+                Config::loadPackageConfig($vendor, $package, $packageConfig);
+            }
+        }
+
+        // Cargar rutas web del package
+        $routesFile = __DIR__ . '/../config/routes.php';
+        if (file_exists($routesFile)) {
+            include $routesFile;
+        }
+
+        // Cargar rutas CLI del package
+        $cliRoutesFile = __DIR__ . '/../config/cli_routes.php';
+        if (file_exists($cliRoutesFile)) {
+            include $cliRoutesFile;
+        }
+    }
+
+    public function register()
+    {
+        // Registrar servicios
+    }
+}
+```
+
+#### Deshabilitando FrontController
+
+Si deseas que tu package solo use WebRouter o CliRouter y no el FrontController:
+
+```php
+// config/config.php
+return [
+    'front_controller' => false,  // Deshabilitar FrontController
+    'web_router' => true,
+    'console_router' => true,
+];
+```
+
+**Importante:** Cuando se deshabilita `front_controller`, el package solo responderá a las rutas definidas explícitamente en `routes.php` y `cli_routes.php`. No podrás acceder a controladores directamente mediante la URL o comandos CLI sin definir las rutas correspondientes.
+
+#### Ejemplo de Uso
+
+Para un package que debe ser accedido solo mediante rutas explícitas:
+
+```php
+// config/config.php
+return [
+    'front_controller' => false,
+    'web_router' => true,
+    'console_router' => true,
+];
+
+// config/routes.php
+use Boctulus\Simplerest\Core\WebRouter;
+
+WebRouter::group('secure-api', function() {
+    WebRouter::post('process', 'Vendor\SecureApi\Controllers\ApiController@process');
+    WebRouter::get('status', 'Vendor\SecureApi\Controllers\ApiController@status');
+});
+
+// config/cli_routes.php
+use Boctulus\Simplerest\Core\CliRouter;
+
+CliRouter::group('secure-api', function() {
+    CliRouter::command('init', 'Vendor\SecureApi\Controllers\SetupController@init');
+    CliRouter::command('reset', 'Vendor\SecureApi\Controllers\SetupController@reset');
+});
+```
+
+Con esta configuración:
+- ✅ Funciona: `POST /secure-api/process` (ruta definida)
+- ✅ Funciona: `php com secure-api init` (comando definido)
+- ❌ No funciona: `GET /secure-api/api-controller/process` (FrontController deshabilitado)
+
 ### Ejemplo Completo: Package Zippy
 
 #### Rutas Web (`packages/boctulus/zippy/config/routes.php`):
@@ -492,6 +740,348 @@ El FrontController no necesita la `\` para separar carpetas.
 
 ---
 
+## Arquitectura de Handlers
+
+El FrontController utiliza un sistema de **Handlers** modulares que separan las responsabilidades del routing en clases independientes y configurables.
+
+### Concepto
+
+En lugar de tener un FrontController monolítico de 400+ líneas, la arquitectura de handlers delega cada aspecto del routing a clases especializadas:
+
+```
+Request → RequestHandler → ApiHandler/AuthHandler → Controller
+                              ↓
+                         OutputHandler → MiddlewareHandler → Response
+```
+
+### Beneficios
+
+✅ **Modularidad**: Cada handler tiene una responsabilidad única
+✅ **Testabilidad**: Los handlers son fáciles de testear aisladamente
+✅ **Configurabilidad**: Puedes reemplazar cualquier handler con tu propia implementación
+✅ **Mantenibilidad**: FrontController reducido de 317 a 99 líneas (68% menos código)
+✅ **Extensibilidad**: Agregar nuevos tipos de rutas sin tocar el core
+
+### Los 6 Handlers
+
+#### 1. RequestHandler
+
+**Responsabilidad**: Parsea requests HTTP/CLI y resuelve controladores regulares.
+
+**Métodos**:
+- `parse(string $env): array` - Detecta entorno y extrae parámetros
+- `resolveController(array $params): array` - Resuelve clase, método y argumentos
+
+**Ubicación**: `app/Core/Handlers/RequestHandler.php`
+
+#### 2. ApiHandler
+
+**Responsabilidad**: Maneja rutas `/api/*` con validación de versión.
+
+**Métodos**:
+- `resolve(array $params): array` - Resuelve rutas API con versionado
+
+**Características**:
+- Valida formato de versión (v1, v2, etc.)
+- Soporte para `remove_api_slug` config
+- Determina método HTTP automáticamente
+
+**Ubicación**: `app/Core/Handlers/ApiHandler.php`
+
+#### 3. AuthHandler
+
+**Responsabilidad**: Procesa rutas `/auth` de autenticación.
+
+**Métodos**:
+- `resolve(array $params): array` - Resuelve rutas de autenticación
+
+**Características**:
+- Maneja MyAuthController
+- Valida versión de API
+- Extrae action y parámetros
+
+**Ubicación**: `app/Core/Handlers/AuthHandler.php`
+
+#### 4. OutputHandler
+
+**Responsabilidad**: Formatea respuestas según contexto (JSON, HTML, CLI).
+
+**Métodos**:
+- `format($controller, $data): string` - Determina y aplica formato de salida
+
+**Formatos soportados**:
+- `json` - Para ApiController
+- `pretty_json` - Para Postman/Insomnia
+- `dd` - Para ConsoleController y navegadores
+
+**Ubicación**: `app/Core/Handlers/OutputHandler.php`
+
+#### 5. MiddlewareHandler
+
+**Responsabilidad**: Ejecuta middlewares configurados para clase/método.
+
+**Métodos**:
+- `run(string $class, string $method): void` - Ejecuta middlewares aplicables
+
+**Características**:
+- Carga `config/middlewares.php`
+- Soporta middleware específico por método
+- Soporta middleware global con `__all__`
+
+**Ubicación**: `app/Core/Handlers/MiddlewareHandler.php`
+
+#### 6. ErrorHandler
+
+**Responsabilidad**: Manejo centralizado de errores y excepciones.
+
+**Métodos**:
+- `handle(\Throwable $e): void` - Procesa errores y envía respuesta
+
+**Características**:
+- Logging automático de errores
+- Respuestas JSON estructuradas
+- Captura todas las excepciones
+
+**Ubicación**: `app/Core/Handlers/ErrorHandler.php`
+
+### Configuración
+
+Los handlers se configuran en `config/config.php`:
+
+```php
+'front_behaviors' => [
+    'request'    => Boctulus\Simplerest\Core\Handlers\RequestHandler::class,
+    'api'        => Boctulus\Simplerest\Core\Handlers\ApiHandler::class,
+    'auth'       => Boctulus\Simplerest\Core\Handlers\AuthHandler::class,
+    'output'     => Boctulus\Simplerest\Core\Handlers\OutputHandler::class,
+    'middleware' => Boctulus\Simplerest\Core\Handlers\MiddlewareHandler::class,
+    'error'      => Boctulus\Simplerest\Core\Handlers\ErrorHandler::class,
+],
+```
+
+### Flujo de Ejecución
+
+```php
+// FrontController::resolve()
+
+1. Instanciar handlers desde config
+2. Determinar entorno (CLI/HTTP)
+3. Parse request → RequestHandler::parse()
+4. Resolver ruta:
+   - Si /auth  → AuthHandler::resolve()
+   - Si /api   → ApiHandler::resolve()
+   - Sino     → RequestHandler::resolveController()
+5. Validar clase y método existen
+6. Ejecutar método del controlador
+7. Formatear salida → OutputHandler::format()
+8. Ejecutar middlewares → MiddlewareHandler::run()
+9. Enviar respuesta
+```
+
+### Crear un Handler Personalizado
+
+#### Ejemplo: CustomApiHandler
+
+```php
+<?php
+
+namespace MyApp\Handlers;
+
+use Boctulus\Simplerest\Core\Handlers\ApiHandler;
+
+class CustomApiHandler extends ApiHandler
+{
+    public function resolve(array $params): array
+    {
+        // Lógica personalizada para versionado diferente
+        if (isset($params[1]) && $params[1] === 'v2') {
+            return $this->resolveV2($params);
+        }
+
+        // Delegar al comportamiento original
+        return parent::resolve($params);
+    }
+
+    private function resolveV2(array $params): array
+    {
+        // Implementación específica para v2
+        $controller = $params[2] ?? null;
+        $namespace = namespace_url() . '\\Controllers\\api\\v2\\';
+        $class_name = $namespace . ucfirst($controller) . 'Controller';
+
+        // ... lógica custom
+
+        return [$class_name, $method, $args, 'v2'];
+    }
+}
+```
+
+#### Registrar el Handler Personalizado
+
+En `config/config.php`:
+
+```php
+'front_behaviors' => [
+    'request'    => Boctulus\Simplerest\Core\Handlers\RequestHandler::class,
+    'api'        => MyApp\Handlers\CustomApiHandler::class, // ← Personalizado
+    'auth'       => Boctulus\Simplerest\Core\Handlers\AuthHandler::class,
+    'output'     => Boctulus\Simplerest\Core\Handlers\OutputHandler::class,
+    'middleware' => Boctulus\Simplerest\Core\Handlers\MiddlewareHandler::class,
+    'error'      => Boctulus\Simplerest\Core\Handlers\ErrorHandler::class,
+],
+```
+
+### Handler vs Traits
+
+¿Por qué handlers y no traits?
+
+| Aspecto | Handlers (Clases) | Traits |
+|---------|------------------|--------|
+| **Instanciabilidad** | ✅ Sí, con estado propio | ❌ No |
+| **Configurabilidad** | ✅ Desde config.php | ❌ Fijo en código |
+| **Reemplazabilidad** | ✅ Total | ⚠️ Parcial |
+| **Testabilidad** | ✅ Alta (unit tests) | ⚠️ Media |
+| **Inyección de dependencias** | ✅ Sí | ❌ No |
+| **Polimorfismo** | ✅ Sí | ❌ No |
+
+### Casos de Uso Avanzados
+
+#### 1. Handler de Autenticación Personalizada
+
+```php
+class OAuth2AuthHandler extends AuthHandler
+{
+    public function resolve(array $params): array
+    {
+        // Validar token OAuth2
+        $token = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+        if (!$this->validateOAuth2Token($token)) {
+            Response::getInstance()->error('Unauthorized', 401);
+        }
+
+        return parent::resolve($params);
+    }
+}
+```
+
+#### 2. Handler de Output con Cache
+
+```php
+class CachedOutputHandler extends OutputHandler
+{
+    public function format($controller, $data): string
+    {
+        $cacheKey = $this->getCacheKey($controller, $data);
+
+        if ($cached = Cache::get($cacheKey)) {
+            return $cached;
+        }
+
+        $output = parent::format($controller, $data);
+        Cache::set($cacheKey, $output, 3600);
+
+        return $output;
+    }
+}
+```
+
+#### 3. Handler de Errores con Logging Avanzado
+
+```php
+class SentryErrorHandler extends ErrorHandler
+{
+    public function handle(\Throwable $e): void
+    {
+        // Enviar a Sentry
+        \Sentry\captureException($e);
+
+        // Log local
+        parent::handle($e);
+    }
+}
+```
+
+### Testing de Handlers
+
+Los handlers son fáciles de testear:
+
+```php
+class RequestHandlerTest extends TestCase
+{
+    public function testParseHttpRequest()
+    {
+        $_SERVER['REQUEST_URI'] = '/users/123';
+
+        $handler = new RequestHandler();
+        [$params, $is_auth, $is_api] = $handler->parse('http');
+
+        $this->assertEquals(['users', '123'], $params);
+        $this->assertFalse($is_auth);
+        $this->assertFalse($is_api);
+    }
+
+    public function testResolveController()
+    {
+        $handler = new RequestHandler();
+        [$class, $method, $args] = $handler->resolveController(['users', 'show', '123']);
+
+        $this->assertEquals('Boctulus\Simplerest\Controllers\UsersController', $class);
+        $this->assertEquals('show', $method);
+        $this->assertEquals(['123'], $args);
+    }
+}
+```
+
+### Migración desde FrontController Antiguo
+
+Si tienes código legacy que depende del FrontController antiguo, la migración es transparente:
+
+✅ **Compatibilidad 100%**: Todos los controladores existentes funcionan sin cambios
+✅ **API idéntica**: El comportamiento externo es el mismo
+✅ **Sin breaking changes**: No hay que modificar rutas o controladores
+
+La única diferencia es interna: el código ahora está mejor organizado en handlers separados.
+
+### Soporte de __call() en FrontController
+
+El FrontController también soporta el método mágico `__call()` tanto para HTTP como para CLI:
+
+```php
+class ApiController extends Controller
+{
+    function __call($name, $arguments)
+    {
+        // Manejar rutas dinámicas como /api/v1/users/getByEmail
+        if (Strings::startsWith('getBy', $name)) {
+            $field = lcfirst(Strings::after($name, 'getBy'));
+            return $this->findBy($field, ...$arguments);
+        }
+    }
+
+    private function findBy($field, $value)
+    {
+        return User::where($field, $value)->first();
+    }
+}
+```
+
+**Uso HTTP**:
+```bash
+GET /api/v1/users/getByEmail/user@example.com
+GET /api/v1/users/getById/123
+```
+
+**Uso CLI**:
+```bash
+php com api v1 users getByEmail user@example.com
+php com api v1 users getById 123
+```
+
+El FrontController detecta automáticamente si la clase tiene `__call()` y permite la ejecución de métodos que no existen físicamente.
+
+---
+
 ## Errores Comunes
 
 ### Comando no encontrado
@@ -503,6 +1093,51 @@ El FrontController no necesita la `\` para separar carpetas.
 - Asegúrate de que `console_router` está habilitado en `config/config.php`
 - Confirma que el namespace del controlador es correcto
 - Ejecuta `composer dumpautoload --no-ansi` después de agregar nuevos controladores
+
+### Método mágico __call() no funciona
+
+**Problema**: Los métodos dinámicos con `__call()` no se ejecutan.
+
+**Solución**:
+- **CLI**: Verifica que estás usando CliRouter o FrontController (ambos soportan `__call()`)
+- **HTTP**: Verifica que el FrontController está habilitado
+- Confirma que el método `__call()` está definido correctamente en el controlador
+- Revisa que el método no exista físicamente (PHP prioriza métodos reales sobre `__call()`)
+
+**Ejemplo de debug**:
+
+```php
+function __call($name, $arguments)
+{
+    // Debug temporal
+    error_log("__call invoked with: $name");
+    error_log("Arguments: " . var_export($arguments, true));
+
+    // Tu lógica...
+}
+```
+
+### Handler personalizado no se carga
+
+**Problema**: El handler personalizado no se está usando.
+
+**Solución**:
+- Verifica que el namespace es correcto en `config/config.php`
+- Confirma que el handler extiende la clase base correspondiente
+- Ejecuta `composer dumpautoload`
+- Revisa que el método requerido está implementado
+- Verifica que el array `front_behaviors` tiene la clave correcta
+
+**Ejemplo correcto**:
+
+```php
+// config/config.php
+'front_behaviors' => [
+    'request'    => Boctulus\Simplerest\Core\Handlers\RequestHandler::class,
+    'api'        => MyApp\Handlers\CustomApiHandler::class, // ✅ Namespace completo
+    // ...
+],
+```
 
 ### Ruta web no responde
 
@@ -567,6 +1202,188 @@ El FrontController no necesita la `\` para separar carpetas.
 - WebRouter: `app/Core/WebRouter.php`
 - CliRouter: `app/Core/CliRouter.php`
 - FrontController: `app/Core/FrontController.php`
+- Handlers: `app/Core/Handlers/*.php`
+
+---
+
+## Changelog - Mejoras Recientes
+
+### v0.8.13 - Configuración Específica de Packages
+
+#### ✨ Package Configuration System
+
+**Sistema de configuración por package**:
+- ✅ Cada package puede tener su propio `config/config.php`
+- ✅ Configuración específica sobrescribe la global
+- ✅ Control granular de FrontController, WebRouter y CliRouter por package
+- ✅ Namespace aislado: `packages.{vendor}.{package}.*`
+- ✅ Fallback automático a configuración global
+
+**Nuevos métodos en Config.php**:
+1. **Config::loadPackageConfig()** - Carga configuración del package
+2. **Config::getPackageConfig()** - Obtiene config con fallback a global
+3. **Config::getPackageFromClass()** - Extrae vendor/package del namespace
+
+**Ubicación**: `app/Core/Libs/Config.php` (líneas 148-229)
+
+#### ✨ FrontController Package-aware
+
+**FrontController verifica configuración de packages**:
+- ✅ Detecta automáticamente si un controlador pertenece a un package
+- ✅ Respeta la configuración `front_controller` del package
+- ✅ Si está deshabilitado, el package solo responde a rutas explícitas
+- ✅ Compatible con packages existentes (default: habilitado)
+
+**Ubicación**: `app/Core/FrontController.php` (líneas 50-66)
+
+#### ✨ Templates Actualizados
+
+**ServiceProvider.php template**:
+- ✅ Carga automática de `config/config.php` en `boot()`
+- ✅ Detección automática de vendor/package desde namespace
+- ✅ Integración con `Config::loadPackageConfig()`
+
+**Ubicación**: `app/Core/Templates/ServiceProvider.php`
+
+**PackageConfig.php template** (nuevo):
+- ✅ Template con opciones por defecto
+- ✅ Documentación inline de todas las opciones
+- ✅ Generado automáticamente al crear packages con `php com make package`
+
+**Ubicación**: `app/Core/Templates/PackageConfig.php`
+
+#### ✨ Generación Automática
+
+**MakeCommand actualizado**:
+- ✅ `php com make package vendor/name` genera `config/config.php` automáticamente
+- ✅ Usa template PackageConfig.php
+- ✅ Listo para usar sin configuración adicional
+
+**Ubicación**: `app/Commands/MakeCommand.php` (líneas 3010-3018)
+
+#### 📚 Documentación
+
+**Routing.md actualizado con**:
+- ✅ Nueva sección "Configuración de Package" (140+ líneas)
+- ✅ Ejemplos de configuración por package
+- ✅ Ejemplo práctico de package con FrontController deshabilitado
+- ✅ Explicación de ✅/❌ con FrontController habilitado/deshabilitado
+- ✅ Documentación de cómo funciona el sistema de carga de config
+
+**Ubicación**: `docs/Routing.md` (líneas 526-665)
+
+#### 🎯 Casos de Uso
+
+**Package con rutas explícitas solamente**:
+```php
+// Deshabilitar FrontController para forzar rutas explícitas
+return [
+    'front_controller' => false,
+    'web_router' => true,
+    'console_router' => true,
+];
+```
+
+**Package aislado con configuración personalizada**:
+```php
+return [
+    'front_controller' => true,
+    'web_router' => true,
+    'console_router' => false,  // Sin comandos CLI
+    'base_url' => '/custom-prefix',
+
+    // Configuración personalizada
+    'api_key' => 'secret',
+    'cache_enabled' => true,
+];
+```
+
+**Acceder a configuración del package**:
+```php
+// Desde cualquier lugar del código
+$value = Config::getPackageConfig('vendor', 'package', 'api_key', 'default');
+```
+
+#### 🔧 Breaking Changes
+
+**Ninguno**: Esta feature es completamente backward compatible. Packages existentes sin `config/config.php` usan los valores por defecto (todos habilitados).
+
+---
+
+### v0.8.12 - Refactoring de Handlers y Soporte __call()
+
+#### ✨ Nueva Arquitectura de Handlers
+
+**Refactoring completo del FrontController**:
+- ✅ Reducción de 317 a 99 líneas (68% menos código)
+- ✅ 6 handlers modulares e intercambiables
+- ✅ Configuración centralizada en `config/config.php`
+- ✅ 100% compatible con código existente (sin breaking changes)
+
+**Handlers implementados**:
+1. **RequestHandler** - Parsing HTTP/CLI y resolución de controladores
+2. **ApiHandler** - Manejo de rutas `/api/*` con versionado
+3. **AuthHandler** - Procesamiento de rutas `/auth`
+4. **OutputHandler** - Formateo de respuestas (JSON, HTML, CLI)
+5. **MiddlewareHandler** - Ejecución de middlewares
+6. **ErrorHandler** - Manejo centralizado de errores
+
+**Ubicación**: `app/Core/Handlers/`
+
+#### ✨ Soporte de Métodos Mágicos (__call)
+
+**CliRouter**: Ahora detecta y ejecuta correctamente métodos mágicos `__call()`:
+- ✅ Permite números y caracteres especiales como nombres de método
+- ✅ Ideal para DSLs (Domain Specific Languages)
+- ✅ Fallback inteligente: primero busca método real, luego `__call()`
+
+**Ejemplo**:
+```bash
+php com whatsapp 333333333 'Hola'
+php com whatsapp alias=ph
+```
+
+**FrontController**: Soporte completo de `__call()` tanto HTTP como CLI:
+- ✅ Detecta automáticamente si la clase tiene `__call()`
+- ✅ Funciona con rutas web y comandos de consola
+- ✅ Validación inteligente: `method_exists()` antes de `__call()`
+
+**Fix aplicado**: `app/Core/CliRouter.php` líneas 207-210
+
+#### 🐛 Correcciones
+
+**PHP 8 Compatibility**:
+- ✅ Agregado `#[\ReturnTypeWillChange]` a métodos ArrayAccess en Request.php
+- ✅ Eliminados warnings de deprecación en PHP 8.x
+
+**Request Parameters**:
+- ✅ Parámetros de ruta ahora accesibles vía Request ArrayAccess
+- ✅ `$req->setParams()` llamado automáticamente en FrontController
+
+#### 📚 Documentación
+
+**Routing.md actualizado con**:
+- ✅ Sección completa "Arquitectura de Handlers" (300+ líneas)
+- ✅ Ejemplos de handlers personalizados
+- ✅ Testing de handlers
+- ✅ Casos de uso avanzados (OAuth2, Cache, Sentry)
+- ✅ Sección "Soporte de Métodos Mágicos"
+- ✅ Errores comunes actualizados
+- ✅ Tabla de contenidos expandida
+
+#### 🎯 Beneficios
+
+**Para Desarrolladores**:
+- Código más limpio y mantenible
+- Fácil de extender sin tocar el core
+- Testeable a nivel unitario
+- Flexibilidad total para customización
+
+**Para el Framework**:
+- Arquitectura moderna y escalable
+- Separación clara de responsabilidades (SOLID)
+- Preparado para features futuras
+- Mejor debuggeabilidad
 
 ---
 
