@@ -86,13 +86,14 @@ if (count($args) > 0){
 if ($routing){
    $cfg = Config::get();
 
-   if ($cfg['front_controller']){  
-      FrontController::resolve();
+   if ($cfg['console_router']){
+      include CONFIG_PATH . 'cli_routes.php';
+      CliRouter::compile();
+      CliRouter::resolve();
    }
 
-   if ($cfg['console_router']){  
-      include CONFIG_PATH . 'cli_routes.php';
-      CliRouter::resolve();
+   if ($cfg['front_controller']){
+      FrontController::resolve();
    }
 }
      

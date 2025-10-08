@@ -1,8 +1,6 @@
 <?php
 
 use Boctulus\Simplerest\Core\CliRouter;
-use Boctulus\Simplerest\Core\Libs\System;
-use Boctulus\Simplerest\Core\Libs\Logger;
 
 // Inicializar el router
 $route = CliRouter::getInstance();

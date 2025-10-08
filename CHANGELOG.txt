@@ -158,3 +158,4 @@
 [2025-10-08 00:44:11]	0.8.12	Automatic update
 [2025-10-08 00:50:51]	0.8.12	Automatic update
 [2025-10-08 11:44:15]	0.8.12	Corregido WebController: ahora el orden de las rutas no es necesario
+[2025-10-08 12:16:57]	0.8.12	Corregidos problemas con CliRouter
