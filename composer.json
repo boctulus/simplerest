@@ -38,7 +38,8 @@
          "Boctulus\\Simplerest\\":"app/",
          "Boctulus\\Simplerest\\FineGrainedACL\\":"packages/simplerest/fine-grained-acl/src",
          "Boctulus\\Simplerest\\BasicACL\\":"packages/simplerest/basic-acl/src",
-         "Boctulus\\Zippy\\":"packages/boctulus/zippy/src"
+         "Boctulus\\Zippy\\":"packages/boctulus/zippy/src",
+         "Boctulus\\CliTest\\":"packages/boctulus/cli-test/src"
       }
    },
    "repositories": [    
