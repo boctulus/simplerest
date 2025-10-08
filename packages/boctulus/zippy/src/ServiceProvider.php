@@ -13,8 +13,17 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
-        // Load package routes
-        include __DIR__ . '/../config/routes.php';
+        // Load package web routes
+        $routesFile = __DIR__ . '/../config/routes.php';
+        if (file_exists($routesFile)) {
+            include $routesFile;
+        }
+
+        // Load package CLI routes
+        $cliRoutesFile = __DIR__ . '/../config/cli_routes.php';
+        if (file_exists($cliRoutesFile)) {
+            include $cliRoutesFile;
+        }
     }
 
     /**
