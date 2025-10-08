@@ -23,8 +23,23 @@ return [
 
 	'web_router'       => true,
 	'console_router'   => true,
-	'front_controller' => true, 
- 	
+	'front_controller' => true,
+
+	/*
+		FrontController Handlers (Behaviors)
+
+		Configurable classes for handling different aspects of request processing.
+		You can replace any handler with a custom implementation.
+	*/
+	'front_behaviors' => [
+		'request'    => Boctulus\Simplerest\Core\Handlers\RequestHandler::class,
+		'api'        => Boctulus\Simplerest\Core\Handlers\ApiHandler::class,
+		'auth'       => Boctulus\Simplerest\Core\Handlers\AuthHandler::class,
+		'output'     => Boctulus\Simplerest\Core\Handlers\OutputHandler::class,
+		'middleware' => Boctulus\Simplerest\Core\Handlers\MiddlewareHandler::class,
+		'error'      => Boctulus\Simplerest\Core\Handlers\ErrorHandler::class,
+	],
+
 	/*
 		urls start with /api/ if remove_api_slug is set to false
 	*/	
