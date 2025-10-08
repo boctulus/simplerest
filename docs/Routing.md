@@ -1,235 +1,569 @@
-### Controlador
+# Routing en SimpleRest Framework
+
+## Tabla de Contenidos
+
+- [Introducción](#introducción)
+- [Controladores](#controladores)
+- [WebRouter](#webrouter)
+  - [Definición de Rutas](#definición-de-rutas)
+  - [Rutas con Parámetros](#rutas-con-parámetros)
+  - [Grupos de Rutas](#grupos-de-rutas)
+  - [Funciones Anónimas](#funciones-anónimas)
+  - [Ordenamiento Automático](#ordenamiento-automático)
+- [CliRouter](#clirouter)
+  - [Uso Básico](#uso-básico)
+  - [Comandos con Funciones Anónimas](#comandos-con-funciones-anónimas)
+  - [Comandos Multi-palabra](#comandos-multi-palabra)
+  - [Grupos de Comandos](#grupos-de-comandos)
+- [Routing en Packages](#routing-en-packages)
+  - [Configuración de Rutas Web](#configuración-de-rutas-web)
+  - [Configuración de Rutas CLI](#configuración-de-rutas-cli)
+- [Front Controller](#front-controller)
+- [Errores Comunes](#errores-comunes)
+
+---
+
+## Introducción
+
+SimpleRest Framework ofrece un sistema de routing flexible que soporta tanto rutas web (HTTP) como rutas de consola (CLI). El sistema permite definir rutas mediante controladores o funciones anónimas.
+
+### Componentes principales:
+
+- **WebRouter**: Maneja rutas HTTP con soporte para verbos GET, POST, PUT, PATCH, DELETE, OPTIONS
+- **CliRouter**: Maneja comandos de consola con soporte para comandos simples y multi-palabra
+- **FrontController**: Sistema simplificado principalmente para uso en terminal
+
+---
+
+## Controladores
 
 Los controladores son clases cuyos métodos ejecutan acciones al ser invocados desde el FrontController o el Router.
 
-Para demostrar como ejecutar un controlador desde la linea de comandos ejemplificaremos con un simple controlador ubicado en la carpeta controllers:
+### Ejemplo básico:
 
-	<?php
+```php
+<?php
 
-	namespace Boctulus\Simplerest\Controllers;
+namespace Boctulus\Simplerest\Controllers;
 
-	class DumbController extends Controller
-	{
+class DumbController extends Controller
+{
+    function add($a, $b)
+    {
+        $res = (int) $a + (int) $b;
+        return "$a + $b = " . $res;
+    }
+}
+```
 
-		function add($a, $b){
-			$res = (int) $a + (int) $b;
-			return  "$a + $b = " . $res;
-		}
+### Ejecución desde consola:
 
-	}
+```bash
+php com dumb add 1 6
+```
 
-La acción será ejecutada con: 
+**Nota**: Hay soporte para controladores en sub-directorios (ej: `Controllers/Admin/UserController.php`)
 
-	php com dumb add 1 6
+---
 
-Hay soporte para sub-directorios o sub-sub-(sub)-directorios 
+## WebRouter
 
+### Configuración
 
-# Front Controller y Router 
+El WebRouter se habilita desde `config/config.php` y se configura en `config/routes.php`.
 
-Es posible configurar el uso del Front Controller y/o del Router. El primero es más sencillo pero se aconseja casi exclusivamente para utilizar los controllers desde la terminal. 
+```php
+'web_router' => true,
+```
 
-El Router tiene la enorme ventaja de permitir filtrar los requests por su verbo HTTP:
+### Definición de Rutas
 
-	# ruta: /calc/sum/4/5
-	WebRouter::get('calc/sum', function($a, $b){
-		return "La suma de $a y $b da ". ($a + $b);
-	})->where(['a' => '[0-9]+', 'b' =>'[0-9]+']);
+#### Métodos estándar
 
-	# ruta: /saludador/sp/hi/Juan/Carlos/44
-	WebRouter::get('saludador/sp/hi/', function($nombre, $apellido, $edad){
-		return "Hola ". ($edad > 30 ? 'Sr. ' : '') . "$nombre $apellido";
-	})->where(['edad' => '[0-9]+', 'nombre' =>'[a-zA-Z]+', 'apellido' =>'[a-zA-Z]+']);
+```php
+// Rutas básicas
+WebRouter::get('/usuario/{id}', 'UserController@show');
+WebRouter::post('/producto', 'ProductController@store');
+WebRouter::put('/producto/{id}', 'ProductController@update');
+WebRouter::delete('/producto/{id}', 'ProductController@destroy');
+```
 
-	# ruta: /saludador/en/hi/Juan/Carlos/44
-	WebRouter::get('saludador/en/hi/', function($nombre, $apellido, $edad){
-		return "Hello ". ($edad > 30 ? 'Mr. ' : '') . "$apellido $nombre";
-	})->where(['edad' => '[0-9]+', 'nombre' =>'[a-zA-Z]+', 'apellido' =>'[a-zA-Z]+']);
+#### Usando `fromArray()`
 
-	# ruta: /tonterias
-	WebRouter::get('tonterias',  'DumbController');
+Permite definir múltiples rutas en un solo llamado:
 
-	# ruta: /chatbot/hi
-	WebRouter::get('chatbot/hi', 'DumbController@hi')
-	->where(['name' => '[a-zA-Z]+']);  // <-- where() no implementado con controladores !
+```php
+WebRouter::fromArray([
+    'GET:/speed_check' => 'SpeedCheckController@index',
+    'POST:/producto' => 'ProductController@store',
+    '/ping' => 'SystemController@ping' // Todos los verbos
+]);
+```
 
-	# ruta: /cosas/67
-	WebRouter::delete('cosas', function($id){
-		return "Deleting cosa con id = $id";
-	});
+### Rutas con Parámetros
 
-El router se habilitan desde el archivo config/config.php y se configura desde /config/routes.php
+```php
+// Ruta: /user/123
+WebRouter::get('user/{id}', 'UserController@show')
+    ->where(['id' => '[0-9]+']);
 
-Actualmente el orden en que se definen las rutas es importante ..... (es algo que debe corregirse).
+// Múltiples parámetros
+WebRouter::get('calc/sum/{a}/{b}', function($a, $b) {
+    return "La suma de $a y $b es " . ($a + $b);
+})->where(['a' => '[0-9]+', 'b' => '[0-9]+']);
+```
 
-Esta obligandose a ir de lo especifico a lo general.
+### Grupos de Rutas
 
-Ej:
-
-	WebRouter::get('admin/una-pagina', function(){
-		$content = "Pagina (de acceso restringido)";
-		render($content);
-	});
-
-	WebRouter::get('admin/pagina-dos', function(){
-		$content = "Pagina dos (de acceso restringido)";
-		render($content);
-	});
-
-	WebRouter::get('admin', function(){
-		$content = "Panel de Admin";
-		render($content);
-	});
-
-
-# Router
-
-Introducción
-
-El sistema de enrutamiento permite definir rutas de manera flexible utilizando una sintaxis simplificada. Este manual cubre la estructura y el uso de las rutas, incluyendo el método WebRouter::fromArray() para registrar múltiples rutas de manera eficiente.
-
-Definición de Rutas
-
-Las rutas pueden definirse utilizando los métodos estándar o con el nuevo método fromArray().
-
-Métodos estándar
-
-Se pueden registrar rutas utilizando los métodos get(), post(), put(), patch(), delete(), y options().
-
-	WebRouter::get('/usuario/{id}', 'UserController@show');
-	WebRouter::post('/producto', 'ProductController@store');
-
-Uso de WebRouter::fromArray()
-
-El método fromArray() permite definir múltiples rutas en un solo llamado.
-
-Formato del Array
-
-Cada entrada del array debe seguir el formato:
-
-	'VERB:/ruta' => 'Controlador@metodo' (para una ruta con verbo específico)
-
-	'/ruta' => 'Controlador@metodo' (para todos los verbos soportados)
-
-Ejemplo
-
-	WebRouter::fromArray([
-		'GET:/speed_check' => 'boctulus\relmotor_central\controllers\SpeedCheck@index',
-		'POST:/producto' => 'ProductController@store',
-		'/ping' => 'SystemController@ping' // Se registrará en GET, POST, PUT, PATCH, DELETE, OPTIONS
-	]);
-
-Rutas con parametros
-
-	WebRouter::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
-
-Grupos de rutas
-
-	WebRouter::group('admin', function() {
-		WebRouter::get('dashboard', 'DumbController@dashboard');
-		WebRouter::get('settings', 'DumbController@settings');
-	});
-
-Funciones anonimas 
-
-WebRouter::get('system/info/gettext', function(){
-	if ( false === function_exists('gettext') ) {
-		echo "You do not have the gettext library installed with PHP.";
-		exit(1);
-	}
+```php
+WebRouter::group('admin', function() {
+    WebRouter::get('dashboard', 'AdminController@dashboard');
+    WebRouter::get('settings', 'AdminController@settings');
+    WebRouter::get('users', 'AdminController@users');
 });
 
+// Las rutas resultantes:
+// /admin/dashboard
+// /admin/settings
+// /admin/users
+```
 
-# Route de consola
+### Funciones Anónimas
 
-CliRouter es un componente que permite ejecutar comandos PHP desde la línea de comandos, facilitando la creación de scripts de automatización y la ejecución de tareas administrativas.
+```php
+WebRouter::get('system/info', function() {
+    return [
+        'php_version' => PHP_VERSION,
+        'framework' => 'SimpleRest v1.0'
+    ];
+});
 
-Uso Básico
+WebRouter::delete('cache/{key}', function($key) {
+    return "Deleting cache key: $key";
+});
+```
 
-Para ejecutar un comando, use la sintaxis:
+### Ordenamiento Automático
 
-	php com {comando} [argumentos]
+**✨ Nuevo**: El WebRouter ordena automáticamente las rutas de más específica a más general.
 
-Ej:
+No es necesario preocuparse por el orden al definir rutas:
 
-	php com hello
+```php
+// Antes (orden manual requerido):
+WebRouter::get('admin/users/active', 'AdminController@activeUsers');
+WebRouter::get('admin/users/{id}', 'AdminController@showUser');
+WebRouter::get('admin/users', 'AdminController@listUsers');
 
-Salida esperada:
+// Ahora (orden automático):
+WebRouter::get('admin/users', 'AdminController@listUsers');
+WebRouter::get('admin/users/{id}', 'AdminController@showUser');
+WebRouter::get('admin/users/active', 'AdminController@activeUsers');
+// ✅ El router las ordena automáticamente para evitar conflictos
+```
 
-	Hello, world!
-	
-Manejo de Parámetros
+**Criterios de ordenamiento:**
 
-Se pueden pasar argumentos a los comandos de la siguiente manera:
+1. Mayor número de literales (segmentos sin placeholders)
+2. Mayor número de segmentos totales
+3. Menor número de parámetros dinámicos `{param}`
 
-	php com math sum 10 20
+---
 
-Si el controlador MathController tiene el método sum, este recibirá los argumentos 10 y 20.
+## CliRouter
 
-Ej:
+### Configuración
 
-	class MathController {
-		function sum($a, $b) {
-			return $a + $b;
-		}
-	}
+El CliRouter se habilita desde `config/config.php` y se configura en `config/cli_routes.php`.
 
-	Salida esperada:
+```php
+'console_router' => true,
+```
 
-	30
+### Uso Básico
 
-Controladores en carpetas
+```bash
+php com {comando} [argumentos]
+```
 
-Los controladores pueden organizarse en subcarpetas dentro de controllers. Para ejecutar un comando en una carpeta, use:
+#### Definir comandos en `config/cli_routes.php`:
 
-	php com folder\class_name action
+```php
+// Comando con controlador
+CliRouter::command('dbdriver', 'Boctulus\Simplerest\Controllers\DumbController@db_driver');
 
-Esto ejecutará el método action dentro de folder\{CassName}Controller.
+// Comando con función anónima
+CliRouter::command('version', function() {
+    return 'SimpleRest Framework v1.0.0';
+});
+```
 
+#### Ejecución:
 
-Diferencia con FrontController
+```bash
+php com version
+# Salida: SimpleRest Framework v1.0.0
 
-Mientras tanto CliRouter como FrontController pueden ejecutar asi:
+php com dbdriver
+# Ejecuta el método db_driver del DumbController
+```
 
-	php com folder\calc inc 7
+### Comandos con Funciones Anónimas
 
-solo FrontController puede hacerlo asi:
+```php
+// Sin parámetros
+CliRouter::command('version', function() {
+    return 'SimpleRest Framework v1.0.0';
+});
 
-	php com folder calc inc 7
+// Con parámetros
+CliRouter::command('pow', function($num, $exp) {
+    return pow($num, $exp);
+});
 
-O sea el FrontController tiene no necesita la "\"
+// Con validación
+CliRouter::command('user:create', function($name, $email) {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return "Error: Email inválido";
+    }
+    return "Usuario $name creado con email $email";
+});
+```
 
+#### Ejecución:
 
-Archivo config/cli_routes.php
+```bash
+php com pow 2 8
+# Salida: 256
 
-CliRouter procesa el archivo cli_routes.php de forma similar a como WebRouter procesa routes.php
+php com user:create Juan juan@example.com
+# Salida: Usuario Juan creado con email juan@example.com
+```
 
-Ej:
-	
-	CliRouter::command('dbdriver', 'Boctulus\Simplerest\Controllers\DumbController@db_driver');
-	CliRouter::command('adder', 'Boctulus\Simplerest\Controllers\Calculator@add');
+### Comandos Multi-palabra
 
-Funciones anonimas
+**✨ Nuevo**: Soporte para comandos con múltiples palabras separadas por espacios.
 
-De forma similar al WebRouter, el CliRouter acepta funciones anonimas en el config/cli_routes.php
+```php
+CliRouter::command('cache:clear', 'CacheController@clear');
+CliRouter::command('db:migrate', 'MigrationController@migrate');
+CliRouter::command('db:seed', 'MigrationController@seed');
+```
 
-Ej:
+#### Ejecución:
 
-	// Funcion anonima sin parametros 
-	CliRouter::command('version', function() {
-		return 'SimpleRest Framework v1.0.0';
-	});
+```bash
+php com cache:clear
+php com db:migrate
+php com db:seed
 
-	// Funcion anonima con parametros
-	CliRouter::command('pow', function($num, $exp) {
-		return pow($num, $exp);
-	});
+# También funciona con espacios:
+php com cache clear
+php com db migrate
+php com db seed
+```
 
+**Nota**: Internamente los espacios se convierten a `:` para el matching.
 
-Errores Comunes y Soluciones
+### Grupos de Comandos
 
-- Comando no encontrado: Verifique que el nombre del controlador y el método sean correctos.
+```php
+CliRouter::group('db', function() {
+    CliRouter::command('migrate', 'MigrationController@migrate');
+    CliRouter::command('rollback', 'MigrationController@rollback');
+    CliRouter::command('seed', 'SeederController@run');
+});
 
-- Argumentos incorrectos: Revise la documentación del comando y asegúrese de pasar los valores correctos.
+// Genera los comandos:
+// php com db:migrate
+// php com db:rollback
+// php com db:seed
+```
 
-- Espacios en argumentos: Use comillas si el argumento contiene espacios.
+#### Grupos anidados:
+
+```php
+CliRouter::group('cache', function() {
+    CliRouter::group('redis', function() {
+        CliRouter::command('clear', 'CacheController@clearRedis');
+        CliRouter::command('info', 'CacheController@redisInfo');
+    });
+});
+
+// Ejecutar:
+// php com cache:redis:clear
+// php com cache redis clear  (también funciona)
+```
+
+---
+
+## Routing en Packages
+
+Los packages pueden definir sus propias rutas web y CLI, que se cargan automáticamente cuando el package está habilitado.
+
+### Estructura de un Package
+
+```
+packages/vendor/package-name/
+├── config/
+│   ├── routes.php          # Rutas web (WebRouter)
+│   └── cli_routes.php      # Rutas CLI (CliRouter)
+├── src/
+│   ├── Controllers/
+│   ├── ServiceProvider.php
+│   └── ...
+└── composer.json
+```
+
+### Configuración de Rutas Web
+
+Archivo: `packages/vendor/package-name/config/routes.php`
+
+```php
+<?php
+
+use Boctulus\Simplerest\Core\WebRouter;
+
+// Rutas web del package
+WebRouter::get('mypackage/dashboard', 'Vendor\PackageName\Controllers\DashboardController@index');
+WebRouter::post('mypackage/save', 'Vendor\PackageName\Controllers\DataController@save');
+
+// Usando grupos
+WebRouter::group('mypackage', function() {
+    WebRouter::get('users', 'Vendor\PackageName\Controllers\UserController@index');
+    WebRouter::get('users/{id}', 'Vendor\PackageName\Controllers\UserController@show');
+    WebRouter::post('users', 'Vendor\PackageName\Controllers\UserController@store');
+});
+```
+
+### Configuración de Rutas CLI
+
+Archivo: `packages/vendor/package-name/config/cli_routes.php`
+
+```php
+<?php
+
+use Boctulus\Simplerest\Core\CliRouter;
+
+// Comandos CLI del package
+CliRouter::group('mypackage', function() {
+
+    // Comandos simples
+    CliRouter::command('install', 'Vendor\PackageName\Controllers\SetupController@install');
+    CliRouter::command('status', 'Vendor\PackageName\Controllers\SetupController@status');
+
+    // Comandos agrupados
+    CliRouter::group('db', function() {
+        CliRouter::command('migrate', 'Vendor\PackageName\Controllers\DbController@migrate');
+        CliRouter::command('seed', 'Vendor\PackageName\Controllers\DbController@seed');
+    });
+
+    // Con funciones anónimas
+    CliRouter::command('version', function() {
+        return 'MyPackage v1.0.0';
+    });
+});
+```
+
+#### Ejecución de comandos del package:
+
+```bash
+# Comandos simples
+php com mypackage install
+php com mypackage status
+php com mypackage version
+
+# Comandos agrupados
+php com mypackage db migrate
+php com mypackage db seed
+
+# También funciona con ':'
+php com mypackage:db:migrate
+```
+
+### ServiceProvider del Package
+
+El ServiceProvider debe cargar ambos archivos de rutas:
+
+```php
+<?php
+
+namespace Vendor\PackageName;
+
+use Boctulus\Simplerest\Core\ServiceProvider as BaseServiceProvider;
+
+class ServiceProvider extends BaseServiceProvider
+{
+    public function boot()
+    {
+        // Load package web routes
+        $routesFile = __DIR__ . '/../config/routes.php';
+        if (file_exists($routesFile)) {
+            include $routesFile;
+        }
+
+        // Load package CLI routes
+        $cliRoutesFile = __DIR__ . '/../config/cli_routes.php';
+        if (file_exists($cliRoutesFile)) {
+            include $cliRoutesFile;
+        }
+    }
+
+    public function register()
+    {
+        // Register services
+    }
+}
+```
+
+### Ejemplo Completo: Package Zippy
+
+#### Rutas Web (`packages/boctulus/zippy/config/routes.php`):
+
+```php
+<?php
+
+use Boctulus\Simplerest\Core\WebRouter;
+
+WebRouter::group('zippy', function() {
+    WebRouter::get('csv/comercio', 'Boctulus\Zippy\Controllers\ZippyController@read_csv_comercio');
+    WebRouter::get('csv/products', 'Boctulus\Zippy\Controllers\ZippyController@read_csv_products');
+
+    WebRouter::get('importer', 'Boctulus\Zippy\Controllers\ProductImportController@index');
+    WebRouter::get('importer/import', 'Boctulus\Zippy\Controllers\ProductImportController@import_zippy_csv');
+});
+```
+
+#### Rutas CLI (`packages/boctulus/zippy/config/cli_routes.php`):
+
+```php
+<?php
+
+use Boctulus\Simplerest\Core\CliRouter;
+
+CliRouter::group('zippy', function() {
+
+    CliRouter::group('importer', function() {
+        CliRouter::command('import', 'Boctulus\Zippy\Controllers\ProductImportController@import_zippy_csv');
+        CliRouter::command('check-dupes', 'Boctulus\Zippy\Controllers\ProductImportController@check_dupes');
+    });
+
+    CliRouter::group('csv', function() {
+        CliRouter::command('comercio', 'Boctulus\Zippy\Controllers\ZippyController@read_csv_comercio');
+        CliRouter::command('products', 'Boctulus\Zippy\Controllers\ZippyController@read_csv_products');
+    });
+});
+```
+
+#### Uso:
+
+```bash
+# Rutas web
+GET /zippy/csv/comercio
+GET /zippy/importer/import
+
+# Rutas CLI
+php com zippy importer import
+php com zippy importer check-dupes
+php com zippy csv comercio
+```
+
+---
+
+## Front Controller
+
+Es posible configurar el uso del Front Controller y/o del Router. El primero es más sencillo pero se aconseja casi exclusivamente para utilizar los controllers desde la terminal.
+
+### Diferencia con CliRouter
+
+Mientras tanto **CliRouter** como **FrontController** pueden ejecutar:
+
+```bash
+php com folder\calc inc 7
+```
+
+Solo **FrontController** puede hacerlo así:
+
+```bash
+php com folder calc inc 7
+```
+
+El FrontController no necesita la `\` para separar carpetas.
+
+---
+
+## Errores Comunes
+
+### Comando no encontrado
+
+**Problema**: El comando CLI no se ejecuta.
+
+**Solución**:
+- Verifica que el archivo `config/cli_routes.php` existe
+- Asegúrate de que `console_router` está habilitado en `config/config.php`
+- Confirma que el namespace del controlador es correcto
+- Ejecuta `composer dumpautoload --no-ansi` después de agregar nuevos controladores
+
+### Ruta web no responde
+
+**Problema**: La ruta web retorna 404.
+
+**Solución**:
+- Verifica que `web_router` está habilitado en `config/config.php`
+- Confirma que la ruta está definida en `config/routes.php` o en el package
+- Revisa que el controlador y método existen
+- Verifica que el ServiceProvider del package está registrado
+
+### Argumentos incorrectos
+
+**Problema**: Error de argumentos en comandos CLI.
+
+**Solución**:
+- Revisa la cantidad de parámetros esperados por el método
+- Usa comillas si el argumento contiene espacios: `php com test "hello world"`
+- Verifica el tipo de datos esperado (string, int, etc.)
+
+### Conflicto de rutas
+
+**Problema**: Una ruta captura requests de otra más específica.
+
+**Solución**:
+- **WebRouter**: Ya no es necesario ordenar manualmente, el router lo hace automáticamente
+- **CliRouter**: Define comandos más específicos dentro de grupos para evitar ambigüedad
+- Usa el método `where()` para validar parámetros y hacer rutas más específicas
+
+---
+
+## Mejores Prácticas
+
+### Para WebRouter:
+
+1. **Usa grupos** para organizar rutas relacionadas
+2. **Valida parámetros** con `where()` para mayor seguridad
+3. **Prefija rutas de packages** para evitar conflictos (ej: `mypackage/*`)
+4. **Documenta rutas complejas** con comentarios en el archivo de rutas
+
+### Para CliRouter:
+
+1. **Usa grupos** para comandos relacionados (`db:migrate`, `db:seed`)
+2. **Nombres descriptivos** que indiquen claramente la acción
+3. **Maneja errores** dentro de los controladores/callbacks
+4. **Documenta comandos** en el README del package
+
+### Para Packages:
+
+1. **Siempre prefijar rutas** con el nombre del package
+2. **Cargar rutas en ServiceProvider** dentro del método `boot()`
+3. **Documentar comandos CLI** disponibles en el README
+4. **Incluir ejemplos** de uso en los archivos de rutas
+
+---
+
+## Referencias
+
+- Configuración principal: `config/config.php`
+- Rutas web globales: `config/routes.php`
+- Rutas CLI globales: `config/cli_routes.php`
+- WebRouter: `app/Core/WebRouter.php`
+- CliRouter: `app/Core/CliRouter.php`
+- FrontController: `app/Core/FrontController.php`

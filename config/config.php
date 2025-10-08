@@ -240,6 +240,7 @@ return [
 		Boctulus\Simplerest\FineGrainedACL\FineGrainedAclServiceProvider::class,
 		//Boctulus\Simplerest\BasicACL\BasicAclServiceProvider::class
 		Boctulus\Zippy\ServiceProvider::class,
+		Boctulus\CliTest\ServiceProvider::class,
 		// ...
 		//boctulus\hello_world\HelloServiceProvider::class
 	],
