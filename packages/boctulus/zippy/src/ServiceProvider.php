@@ -1,8 +1,10 @@
 <?php
 
-namespace Boctulus\Simplerest\packages;
+namespace Boctulus\Zippy;
 
-class Other 
+use Boctulus\Simplerest\Core\ServiceProvider as BaseServiceProvider;
+
+class ServiceProvider extends BaseServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -11,7 +13,8 @@ class Other
      */
     public function boot()
     {
-        
+        // Load package routes
+        include __DIR__ . '/../config/routes.php';
     }
 
     /**
@@ -21,7 +24,7 @@ class Other
      */
     public function register()
     {
-       
-    }     
+
+    }
 }
 
