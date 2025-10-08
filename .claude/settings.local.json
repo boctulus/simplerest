@@ -18,7 +18,8 @@
       "Bash(php:*)",
       "Bash(composer dumpautoload:*)",
       "Bash(pkill:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

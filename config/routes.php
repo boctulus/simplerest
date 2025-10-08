@@ -166,3 +166,43 @@ WebRouter::get('admin/pagina-dos', function(){
 //});
 
 
+// ========================================
+// TEST WebRouter::group() functionality
+// ========================================
+
+// Simple group test
+WebRouter::group('test-group', function() {
+    WebRouter::get('simple', function() {
+        return json_encode(['message' => 'Simple group works!', 'route' => '/test-group/simple']);
+    });
+
+    WebRouter::get('with-param/{id}', function($id) {
+        return json_encode(['message' => 'Group with parameter works!', 'id' => $id, 'route' => '/test-group/with-param/{id}']);
+    })->where(['id' => '[0-9]+']);
+});
+
+// Nested groups test
+WebRouter::group('api', function() {
+    WebRouter::get('status', function() {
+        return json_encode(['status' => 'ok', 'route' => '/api/status']);
+    });
+
+    WebRouter::group('v1', function() {
+        WebRouter::get('users', function() {
+            return json_encode(['users' => ['user1', 'user2'], 'route' => '/api/v1/users']);
+        });
+
+        WebRouter::get('products', function() {
+            return json_encode(['products' => ['product1', 'product2'], 'route' => '/api/v1/products']);
+        });
+
+        // Triple nested group
+        WebRouter::group('admin', function() {
+            WebRouter::get('logs', function() {
+                return json_encode(['logs' => [], 'route' => '/api/v1/admin/logs']);
+            });
+        });
+    });
+});
+
+
