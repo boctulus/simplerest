@@ -1,16 +1,16 @@
 {
-    "name": "boctulus/other",
-    "description": "Package Other by boctulus",
+    "name": "boctulus/zippy",
+    "description": "Package zippy by boctulus",
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Boctulus\\Other\\": "src/"
+            "Boctulus\\Zippy\\": "src/"
         }
     },
     "extra": {
         "simplerest": {
             "providers": [
-                "Boctulus\\Other\\ServiceProvider"
+                "Boctulus\\Zippy\\ServiceProvider"
             ]
         }
     },

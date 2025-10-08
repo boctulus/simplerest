@@ -24,7 +24,7 @@ class Products extends Migration
 
         $sc
         // EAN (barcode)
-        ->varchar('ean', 50)->pri()
+        ->bigint('ean')->unsigned()->pri()
         // Product description
         ->text('description')->nullable()
         // Net content (numeric quantity, e.g. 900.00)

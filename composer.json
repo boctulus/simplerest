@@ -35,9 +35,10 @@
    },
    "autoload":{
       "psr-4":{
-         "Boctulus\\Simplerest\\":"app/",         
+         "Boctulus\\Simplerest\\":"app/",
          "Boctulus\\Simplerest\\FineGrainedACL\\":"packages/simplerest/fine-grained-acl/src",
-         "Boctulus\\Simplerest\\BasicACL\\":"packages/simplerest/basic-acl/src"       
+         "Boctulus\\Simplerest\\BasicACL\\":"packages/simplerest/basic-acl/src",
+         "Boctulus\\Zippy\\":"packages/boctulus/zippy/src"
       }
    },
    "repositories": [    
