@@ -16,17 +16,19 @@ use Boctulus\Simplerest\Core\FrontController;
 
 $cfg = Config::get();
 
-if ($cfg['web_router']){        
+if ($cfg['web_router']){
     include __DIR__ . '/config/routes.php';
     WebRouter::compile();
     WebRouter::resolve();
-} 
+}
 
-if ($cfg['console_router']){        
+if ($cfg['console_router']){
+    include __DIR__ . '/config/cli_routes.php';
+    CliRouter::compile();
     CliRouter::resolve();
-} 
+}
 
-if ($cfg['front_controller']){        
+if ($cfg['front_controller']){
     FrontController::resolve();
 } 
 
