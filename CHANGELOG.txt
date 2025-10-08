@@ -161,3 +161,4 @@
 [2025-10-08 12:16:57]	0.8.12	Corregidos problemas con CliRouter
 [2025-10-08 12:24:22]	0.8.12	CliRouter funciona dentro de packages
 [2025-10-08 15:31:24]	0.8.12	CliRouter improved
+[2025-10-08 15:44:37]	0.8.12	WebRouter testeado
