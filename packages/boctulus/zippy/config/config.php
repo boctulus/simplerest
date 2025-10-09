@@ -30,7 +30,7 @@ return [
     'web_router' => true,
 
     // Enable or disable CliRouter for this package
-    'console_router' => false,
+    'console_router' => true,
 
     // Package-specific settings
     // Add your custom configuration here
