@@ -19,7 +19,7 @@ class Webhooks implements IMigration
 
         DB::statement("
         CREATE TABLE IF NOT EXISTS `webhooks` (
-            `id` int(11) NOT NULL,
+            `id` int(11) NOT NULL AUTO_INCREMENT,
             `name` varchar(50) DEFAULT NULL,
             `entity` varchar(50) NOT NULL,
             `op` varchar(10) NOT NULL,
@@ -31,19 +31,21 @@ class Webhooks implements IMigration
             `updated_at` datetime DEFAULT NULL,
             `updated_by` int(11) DEFAULT NULL,
             `deleted_at` datetime DEFAULT NULL,
-            `deleted_by` int(11) DEFAULT NULL
+            `deleted_by` int(11) DEFAULT NULL,
+            PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf16;
         ");
+    }
 
-        DB::statement("
-        ALTER TABLE `webhooks`
-            ADD PRIMARY KEY (`id`);");
-
-        DB::statement("
-        ALTER TABLE `webhooks`
-            MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-        ");
-
+    /**
+     * Rollback migration.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        get_default_connection();
+        DB::statement("DROP TABLE IF EXISTS `webhooks`;");
     }
 }
 

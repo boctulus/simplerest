@@ -246,8 +246,7 @@ class ProductImportController extends Controller
             try {
                 // Reuse the model instance across rows to avoid reconnect/overhead
                 // table() will create it on first use because we pass by reference.
-                $model_instance = table('products');
-                $id = $model_instance->create($dato, true);
+                $id = table('products', $model_instance)->create($dato, true);
 
                 if ($id === null) {
                     // create returned null -> duplicate (because you pass true to ignore duplicates)
