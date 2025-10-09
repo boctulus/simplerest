@@ -23,7 +23,10 @@
       "Bash(git log:*)",
       "Read(//d/tmp/**)",
       "Bash(git checkout:*)",
-      "Bash(mysql:*)"
+      "Bash(mysql:*)",
+      "Bash(findstr:*)",
+      "Read(//d/laragon/bin/php/php-8.3.15-Win32-vs16-x64/**)",
+      "Bash(.vendorbinphpunit --bootstrap .vendorautoload.php .testsDB_TransactionTest.php)"
     ],
     "deny": [],
     "ask": []
