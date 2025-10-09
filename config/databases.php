@@ -88,21 +88,6 @@ return
 			]
 		],
 
-		'complex01' => [
-			'host'		=> env('DB_HOST_EDU', '127.0.0.1'),
-			'port'		=> env('DB_PORT_EDU'),
-			'driver' 	=> env('DB_CONNECTION_EDU'),
-			'db_name' 	=> 'test_complex_db01',
-			'user'		=> env('DB_USERNAME_EDU'), 
-			'pass'		=> env('DB_PASSWORD_EDU'),
-			'charset'	=> 'utf8',
-			//'schema'	=> 'test_complex_db01',  
-			'pdo_options' => [
-				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-				\PDO::ATTR_EMULATE_PREPARES => false
-			]
-		],
-
 		// 'woo3' => [
 		// 	'host'		=> env('DB_HOST_WOO3', '127.0.0.1'),
 		// 	'port'		=> env('DB_PORT_WOO3'),
@@ -195,10 +180,19 @@ return
 		// 		\PDO::ATTR_EMULATE_PREPARES => false
 		// 	]
 		// ],
+
+		'test_sqlite' => [
+			'driver' => 'sqlite',
+			'db_name' => ':memory:', // o STORAGE_PATH . 'test.sqlite'
+			'host' => null,
+			'user' => null,
+			'pass' => null,
+			'pdo_options' => null,
+		],
 		
 	], 	
 
-	'db_connection_default' => 'main',
+	'db_connection_default' => 'main',  
 
     'tentant_groups' => [
 		// 'companies' => [
