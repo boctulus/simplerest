@@ -38,6 +38,9 @@ class Products extends Migration
         // Categories as JSON array of simple strings, e.g. ["oil","cooking"]
         // If your DB doesn't support native JSON, consider using ->text('categories')->nullable() instead.
         ->json('categories')->nullable()
+        ->varchar('catego_raw1', 100)->nullable()
+        ->varchar('catego_raw2', 100)->nullable()
+        ->varchar('catego_raw3', 100)->nullable()        
         // created_at / updated_at
         ->datetimes();
 
