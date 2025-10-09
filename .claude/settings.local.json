@@ -19,7 +19,11 @@
       "Bash(composer dumpautoload:*)",
       "Bash(pkill:*)",
       "Bash(cat:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(git log:*)",
+      "Read(//d/tmp/**)",
+      "Bash(git checkout:*)",
+      "Bash(mysql:*)"
     ],
     "deny": [],
     "ask": []
