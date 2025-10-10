@@ -28,6 +28,7 @@ class MakeCommand implements ICommand
     const SERVICE_PROVIDER_TEMPLATE = self::TEMPLATES . 'ServiceProvider.php';
     const SYSTEM_CONST_TEMPLATE = self::TEMPLATES . 'SystemConstants.php';
     const INTERFACE_TEMPLATE = self::TEMPLATES . 'Interface.php';
+    const PACKAGE_CONFIG_TEMPLATE = self::TEMPLATES . 'PackageConfig.php';
     const HELPER_TEMPLATE = self::TEMPLATES . 'Helper.php';
     const LIBS_TEMPLATE = self::TEMPLATES . 'Lib.php';
     const TRAIT_TEMPLATE = self::TEMPLATES . 'Trait.php';
@@ -36,6 +37,7 @@ class MakeCommand implements ICommand
     const MIDDLEWARE_TEMPLATE = self::TEMPLATES . 'Middleware.php';
     const EXCEPTION_TEMPLATE = self::TEMPLATES . 'Exception.php';
     const COMMAND_TEMPLATE = self::TEMPLATES . 'Command.php';
+    const TEST_TEMPLATE = self::TEMPLATES . 'TestCase.php';
 
     protected $namespace;
     protected $table_name;
@@ -165,9 +167,9 @@ class MakeCommand implements ICommand
 
         make command myCommand
 
-        make module myModule [--force | -f] [ --remove ]
+        make testcase MyFeature
 
-        make module myWidget [--force | -f] [ --remove ]
+        make module myModule [--force | -f] [ --remove ]
              
         make migration [ {name} ] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ] [ --strict ] [ --remove ]
 
@@ -2816,7 +2818,57 @@ class MakeCommand implements ICommand
         // Crear archivo README.md básico si no existe
         $readmePath = $packagePath . 'README.md';
         if (!file_exists($readmePath)) {
-            $readmeContent = "# {$packageName}\n\nPackage {$packageName} by {$author}.\n";
+            $readmeContent = "# {$packageName}\n\n";
+            $readmeContent .= "Package {$packageName} by {$author}.\n\n";
+            $readmeContent .= "## Installation\n\n";
+            $readmeContent .= "1. Add the package namespace to `composer.json` autoload section:\n\n";
+            $readmeContent .= "```json\n";
+            $readmeContent .= "\"autoload\": {\n";
+            $readmeContent .= "    \"psr-4\": {\n";
+            $readmeContent .= "        \"{$namespace}\\\\\": \"packages/{$authorSlug}/{$packageSlug}/src\"\n";
+            $readmeContent .= "    }\n";
+            $readmeContent .= "}\n";
+            $readmeContent .= "```\n\n";
+            $readmeContent .= "2. Add the ServiceProvider to `config/config.php` providers array:\n\n";
+            $readmeContent .= "```php\n";
+            $readmeContent .= "'providers' => [\n";
+            $readmeContent .= "    {$namespace}\\ServiceProvider::class,\n";
+            $readmeContent .= "    // ...\n";
+            $readmeContent .= "],\n";
+            $readmeContent .= "```\n\n";
+            $readmeContent .= "3. Regenerate the autoloader:\n\n";
+            $readmeContent .= "```bash\n";
+            $readmeContent .= "composer dumpautoload --no-ansi\n";
+            $readmeContent .= "```\n\n";
+            $readmeContent .= "## Usage\n\n";
+            $readmeContent .= "### Routes\n\n";
+            $readmeContent .= "Define your routes in `config/routes.php`:\n\n";
+            $readmeContent .= "```php\n";
+            $readmeContent .= "use Boctulus\\Simplerest\\Core\\WebRouter;\n\n";
+            $readmeContent .= "WebRouter::get('{$packageSlug}/example', '{$namespace}\\Controllers\\ExampleController@index');\n";
+            $readmeContent .= "```\n\n";
+            $readmeContent .= "### Controllers\n\n";
+            $readmeContent .= "Create controllers in `src/Controllers/` with namespace `{$namespace}\\Controllers`.\n\n";
+            $readmeContent .= "## Structure\n\n";
+            $readmeContent .= "```\n";
+            $readmeContent .= "{$packageSlug}/\n";
+            $readmeContent .= "├── assets/          # CSS, JS, images\n";
+            $readmeContent .= "├── config/          # Configuration files (routes, etc.)\n";
+            $readmeContent .= "├── database/        # Migrations and seeders\n";
+            $readmeContent .= "├── etc/             # Additional resources\n";
+            $readmeContent .= "├── src/             # Source code\n";
+            $readmeContent .= "│   ├── Controllers/ # Controllers\n";
+            $readmeContent .= "│   ├── Models/      # Models\n";
+            $readmeContent .= "│   ├── Middlewares/ # Middlewares\n";
+            $readmeContent .= "│   ├── Helpers/     # Helper functions\n";
+            $readmeContent .= "│   ├── Libs/        # Libraries\n";
+            $readmeContent .= "│   ├── Interfaces/  # Interfaces\n";
+            $readmeContent .= "│   └── Traits/      # Traits\n";
+            $readmeContent .= "├── tests/           # Unit tests\n";
+            $readmeContent .= "├── views/           # View templates\n";
+            $readmeContent .= "└── composer.json    # Package metadata\n";
+            $readmeContent .= "```\n";
+
             file_put_contents($readmePath, $readmeContent);
             StdOut::print("README.md created at: $readmePath");
         }
@@ -2856,7 +2908,127 @@ class MakeCommand implements ICommand
             }
         }
 
+        // Crear archivo de rutas web de ejemplo
+        $routesPath = $packagePath . 'config/routes.php';
+        if (!file_exists($routesPath)) {
+            $routesContent = "<?php\n\n";
+            $routesContent .= "use Boctulus\Simplerest\Core\WebRouter;\n\n";
+            $routesContent .= "/*\n";
+            $routesContent .= "    {$packageName} Package Web Routes\n";
+            $routesContent .= "*/\n\n";
+            $routesContent .= "// Example route:\n";
+            $routesContent .= "// WebRouter::get('{$packageSlug}/example', '{$namespace}\\Controllers\\ExampleController@index');\n";
+
+            file_put_contents($routesPath, $routesContent);
+            StdOut::print("Web routes file created at: $routesPath");
+        }
+
+        // Crear archivo de rutas CLI de ejemplo
+        $cliRoutesPath = $packagePath . 'config/cli_routes.php';
+        if (!file_exists($cliRoutesPath)) {
+            $cliRoutesContent = "<?php\n\n";
+            $cliRoutesContent .= "use Boctulus\Simplerest\Core\CliRouter;\n\n";
+            $cliRoutesContent .= "/*\n";
+            $cliRoutesContent .= "    {$packageName} Package - CLI Routes\n";
+            $cliRoutesContent .= "    \n";
+            $cliRoutesContent .= "    Define CLI commands for the {$packageName} package.\n";
+            $cliRoutesContent .= "    Commands can be executed with: php com {$packageSlug} <command>\n";
+            $cliRoutesContent .= "*/\n\n";
+
+            $cliRoutesContent .= "// ========================================\n";
+            $cliRoutesContent .= "// EXAMPLE 1: Simple command with closure\n";
+            $cliRoutesContent .= "// ========================================\n\n";
+            $cliRoutesContent .= "// CliRouter::command('{$packageSlug}:hello', function() {\n";
+            $cliRoutesContent .= "//     return 'Hello from {$packageName}!';\n";
+            $cliRoutesContent .= "// });\n";
+            $cliRoutesContent .= "// Execute: php com {$packageSlug}:hello\n";
+            $cliRoutesContent .= "//      or: php com {$packageSlug} hello\n\n";
+
+            $cliRoutesContent .= "// ========================================\n";
+            $cliRoutesContent .= "// EXAMPLE 2: Command with parameters\n";
+            $cliRoutesContent .= "// ========================================\n\n";
+            $cliRoutesContent .= "// CliRouter::command('{$packageSlug}:greet', function(\$name) {\n";
+            $cliRoutesContent .= "//     return \"Hello, \$name! Welcome to {$packageName}.\";\n";
+            $cliRoutesContent .= "// });\n";
+            $cliRoutesContent .= "// Execute: php com {$packageSlug}:greet John\n\n";
+
+            $cliRoutesContent .= "// ========================================\n";
+            $cliRoutesContent .= "// EXAMPLE 3: Command with controller\n";
+            $cliRoutesContent .= "// ========================================\n\n";
+            $cliRoutesContent .= "// CliRouter::command('{$packageSlug}:example', '{$namespace}\\Controllers\\ExampleController@index');\n";
+            $cliRoutesContent .= "// Execute: php com {$packageSlug}:example\n\n";
+
+            $cliRoutesContent .= "// ========================================\n";
+            $cliRoutesContent .= "// EXAMPLE 4: Grouped commands\n";
+            $cliRoutesContent .= "// ========================================\n\n";
+            $cliRoutesContent .= "// CliRouter::group('{$packageSlug}', function() {\n";
+            $cliRoutesContent .= "//     \n";
+            $cliRoutesContent .= "//     // Setup commands\n";
+            $cliRoutesContent .= "//     CliRouter::command('install', '{$namespace}\\Controllers\\SetupController@install');\n";
+            $cliRoutesContent .= "//     CliRouter::command('uninstall', '{$namespace}\\Controllers\\SetupController@uninstall');\n";
+            $cliRoutesContent .= "//     \n";
+            $cliRoutesContent .= "//     // Database commands\n";
+            $cliRoutesContent .= "//     CliRouter::group('db', function() {\n";
+            $cliRoutesContent .= "//         CliRouter::command('migrate', '{$namespace}\\Controllers\\DbController@migrate');\n";
+            $cliRoutesContent .= "//         CliRouter::command('seed', '{$namespace}\\Controllers\\DbController@seed');\n";
+            $cliRoutesContent .= "//         CliRouter::command('reset', '{$namespace}\\Controllers\\DbController@reset');\n";
+            $cliRoutesContent .= "//     });\n";
+            $cliRoutesContent .= "//     \n";
+            $cliRoutesContent .= "//     // Cache commands\n";
+            $cliRoutesContent .= "//     CliRouter::group('cache', function() {\n";
+            $cliRoutesContent .= "//         CliRouter::command('clear', function() {\n";
+            $cliRoutesContent .= "//             return 'Cache cleared successfully!';\n";
+            $cliRoutesContent .= "//         });\n";
+            $cliRoutesContent .= "//         CliRouter::command('info', '{$namespace}\\Controllers\\CacheController@info');\n";
+            $cliRoutesContent .= "//     });\n";
+            $cliRoutesContent .= "// });\n\n";
+            $cliRoutesContent .= "// Execute:\n";
+            $cliRoutesContent .= "//   php com {$packageSlug} install\n";
+            $cliRoutesContent .= "//   php com {$packageSlug} db migrate\n";
+            $cliRoutesContent .= "//   php com {$packageSlug} db seed\n";
+            $cliRoutesContent .= "//   php com {$packageSlug} cache clear\n\n";
+
+            $cliRoutesContent .= "// ========================================\n";
+            $cliRoutesContent .= "// EXAMPLE 5: Command with validation\n";
+            $cliRoutesContent .= "// ========================================\n\n";
+            $cliRoutesContent .= "// CliRouter::command('{$packageSlug}:create-user', function(\$email, \$role = 'user') {\n";
+            $cliRoutesContent .= "//     if (!filter_var(\$email, FILTER_VALIDATE_EMAIL)) {\n";
+            $cliRoutesContent .= "//         return \"Error: Invalid email address\";\n";
+            $cliRoutesContent .= "//     }\n";
+            $cliRoutesContent .= "//     return \"User created: \$email with role: \$role\";\n";
+            $cliRoutesContent .= "// });\n";
+            $cliRoutesContent .= "// Execute: php com {$packageSlug}:create-user user@example.com admin\n\n";
+
+            $cliRoutesContent .= "// ========================================\n";
+            $cliRoutesContent .= "// YOUR COMMANDS HERE\n";
+            $cliRoutesContent .= "// ========================================\n\n";
+            $cliRoutesContent .= "// Add your custom CLI routes below:\n\n";
+
+            file_put_contents($cliRoutesPath, $cliRoutesContent);
+            StdOut::print("CLI routes file created at: $cliRoutesPath");
+        }
+
+        // Crear archivo de configuración del paquete
+        $configPath = $packagePath . 'config/config.php';
+        if (!file_exists($configPath)) {
+            if (file_exists(self::PACKAGE_CONFIG_TEMPLATE)) {
+                $configContent = file_get_contents(self::PACKAGE_CONFIG_TEMPLATE);
+                file_put_contents($configPath, $configContent);
+                StdOut::print("Package config file created at: $configPath");
+            }
+        }
+
         StdOut::print("Package created successfully at: $packagePath");
+        StdOut::print("");
+        StdOut::print("Next steps:");
+        StdOut::print("1. Add the package namespace to composer.json autoload section:");
+        StdOut::print("   \"{$namespace}\\\\\": \"packages/{$authorSlug}/{$packageSlug}/src\"");
+        StdOut::print("");
+        StdOut::print("2. Add the ServiceProvider to config/config.php providers array:");
+        StdOut::print("   {$namespace}\\ServiceProvider::class,");
+        StdOut::print("");
+        StdOut::print("3. Run: composer dumpautoload --no-ansi");
+        StdOut::print("");
     }
 
     function widget(string $name, ...$opt)
@@ -2905,5 +3077,20 @@ class MakeCommand implements ICommand
         $subfix = 'Command';  // Ej: 'Controller'
 
         $this->renderTemplate($name, $prefix, $subfix, COMMANDS_PATH, $template_path, '', ...$opt);
+    }
+
+    function testcase($name, ...$opt)
+    {
+        $template_path = self::TEST_TEMPLATE;
+        $prefix = '';
+        $subfix = 'Test';
+        $dest_path = ROOT_PATH . 'tests' . DIRECTORY_SEPARATOR;
+
+        $this->renderTemplate($name, $prefix, $subfix, $dest_path, $template_path, '', ...$opt);
+    }
+
+    // alias de testcase()
+    function phpunit($name, ...$opt){
+        $this->testcase($name, ...$opt);
     }
 }

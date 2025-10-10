@@ -1220,31 +1220,31 @@ class Schema
 	/*
 		`nombre_campo` tipo[(longitud)] [(array_set_enum)] [charset] [collate] [attributos] NULL|NOT_NULL [default] [AUTOINCREMENT]
 	*/
-	function getDefinition($field){
-		$cmd = '';		
+	function getDefinition($field, $field_name = null){
+		$cmd = '';
 		if (in_array($field['type'], ['SET', 'ENUM'])){
-			$values = implode(',', array_map(function($e){ return "'$e'"; }, $field['array']));	
+			$values = implode(',', array_map(function($e){ return "'$e'"; }, $field['array']));
 			$cmd .= "($values) ";
 		}else{
 			if (isset($field['len'])){
-				$len = implode(',', (array) $field['len']);	
+				$len = implode(',', (array) $field['len']);
 				$cmd .= "($len) ";
 			}else
-				$cmd .= " ";	
+				$cmd .= " ";
 		}
-		
+
 		if (isset($field['attr'])){
 			$cmd .= "{$field['attr']} ";
 		}
-		
+
 		if (isset($field['charset'])){
 			$cmd .= "CHARACTER SET {$field['charset']} ";
 		}
-		
+
 		if (isset($field['collation'])){
 			$cmd .= "COLLATE {$field['collation']} ";
 		}
-			
+
 		if (isset($field['nullable'])){
 			$cmd .= "{$field['nullable']} ";
 		}else
@@ -1256,8 +1256,11 @@ class Schema
 
 		if (isset($field['auto'])){
 			$cmd .= "AUTO_INCREMENT PRIMARY KEY";
+		} elseif ($field_name !== null && isset($this->indices[$field_name]) && $this->indices[$field_name] === 'PRIMARY') {
+			// Si el campo está marcado como PRIMARY KEY (sin AUTO_INCREMENT)
+			$cmd .= "PRIMARY KEY";
 		}
-		
+
 		return trim($cmd);
 	}
 
@@ -1325,8 +1328,8 @@ class Schema
 	
 		$cmd = '';
 		foreach ($this->fields as $name => $field){
-			$cmd .= "`$name` {$field['type']} ";			
-			$cmd .= $this->getDefinition($field);	
+			$cmd .= "`$name` {$field['type']} ";
+			$cmd .= $this->getDefinition($field, $name);
 			$cmd .= ",\n";
 		}
 		
@@ -2106,23 +2109,24 @@ class Schema
 		DB::beginTransaction();
 		try{
 			//dd($this->commands, 'SQL STATEMENTS');
-			
+
 			foreach($this->commands as $change){
 				DB::statement($change);
-			}		
-			
+			}
+
 			DB::commit();
 		} catch (\PDOException $e) {
+			DB::rollback();
 			dd($change, 'SQL');
 			dd($e->getMessage(), "PDO error");
-			throw $e;		
+			throw $e;
         } catch (\Exception $e) {
+			DB::rollback();
             throw $e;
-        } catch (\Throwable $e) {  
-			throw $e;       
-        } finally {
-			DB::rollback();     
-		}    
+        } catch (\Throwable $e) {
+			DB::rollback();
+			throw $e;
+        }
 	}	
 
 

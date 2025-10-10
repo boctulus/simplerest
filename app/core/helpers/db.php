@@ -2,12 +2,11 @@
 
 use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Models\MyModel;
 use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\StdOut;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Exceptions\SqlException;
-use Boctulus\Simplerest\Core\Libs\Config;
 
 /*
     Ejecuta callback bajo una conexion a base de datos
@@ -338,8 +337,12 @@ function get_defs(string $table_name, $tenant_id = null, bool $include_hidden = 
 /*
     Similar to DB::table() but schema is not loaded so no validations are performed
 */
-function table(string $tb_name) : MyModel {
-    return (new MyModel(true))->table($tb_name);
+function table(string $tb_name, &$model_instance = null) : Model {
+    if ($model_instance === null){
+       $model_instance = new Model(true);
+    }
+
+    return $model_instance->table($tb_name);
 }
 
 function get_users_table(){
@@ -1120,7 +1123,7 @@ function tb_prefix() {
 }
 
 function sql_formatter(string $sql, ...$options){
-    return MyModel::sqlFormatter($sql, ...$options);
+    return Model::sqlFormatter($sql, ...$options);
 }
 
 /*

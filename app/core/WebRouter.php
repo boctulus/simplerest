@@ -131,6 +131,25 @@ class WebRouter
             } else {
                 // Rotta che richiama un controller.
                 [$class_name, $method] = static::$ctrls[$req_method][$uri];
+
+                // Verificar si el controlador pertenece a un package y si WebRouter está habilitado
+                $packageInfo = Config::getPackageFromClass($class_name);
+
+                if ($packageInfo !== null) {
+                    // Es un controlador de package, verificar configuración específica
+                    $packageWebRouter = Config::getPackageConfig(
+                        $packageInfo['vendor'],
+                        $packageInfo['package'],
+                        'web_router',
+                        true // Default: habilitado
+                    );
+
+                    if (!$packageWebRouter) {
+                        // WebRouter deshabilitado para este package
+                        return;
+                    }
+                }
+
                 $controller_obj = new $class_name();
                 $data = call_user_func_array([$controller_obj, $method], $args);
 
@@ -202,6 +221,25 @@ class WebRouter
                     $res->set($data);
                 } else {
                     [ $class_name, $method ] = static::$ctrls[$req_method][$uri];
+
+                    // Verificar si el controlador pertenece a un package y si WebRouter está habilitado
+                    $packageInfo = Config::getPackageFromClass($class_name);
+
+                    if ($packageInfo !== null) {
+                        // Es un controlador de package, verificar configuración específica
+                        $packageWebRouter = Config::getPackageConfig(
+                            $packageInfo['vendor'],
+                            $packageInfo['package'],
+                            'web_router',
+                            true // Default: habilitado
+                        );
+
+                        if (!$packageWebRouter) {
+                            // WebRouter deshabilitado para este package, continuar buscando otras rutas
+                            continue;
+                        }
+                    }
+
                     $controller_obj = new $class_name();
 
                     // dd(get_class($controller_obj));
@@ -253,14 +291,14 @@ class WebRouter
     }
 
     public static function compile()
-    {   
+    {
         foreach (static::$routes as $verb => $callbacks){
             foreach($callbacks as $uri => $ck){
                 // Per funzioni anonime
                 if (is_callable($ck)){
                     $r = new \ReflectionFunction($ck);
                     foreach ($r->getParameters() as $p){
-                        static::$ck_params[$verb][$uri][] = $p->name;                        
+                        static::$ck_params[$verb][$uri][] = $p->name;
                     }
                 } else {
                     $namespace = Strings::contains('\\', $ck) ? '' : namespace_url(true) . 'Controllers\\';
@@ -272,18 +310,18 @@ class WebRouter
                         $ctrl = substr($ck, 0, $pos);
                         $method = substr($ck, $pos+1);
                     }
-    
+
                     $class_name = "{$namespace}{$ctrl}";
                     if (!class_exists($class_name)){
-                        throw new \InvalidArgumentException("Controller class $class_name not found");  
+                        throw new \InvalidArgumentException("Controller class $class_name not found");
                     }
                     if (!method_exists($class_name, $method)){
-                        throw new \InvalidArgumentException("Method $method was not found in $class_name"); 
+                        throw new \InvalidArgumentException("Method $method was not found in $class_name");
                     }
-                                        
+
                     static::$ctrls[$verb][$uri] = [$class_name, $method];
                 }
-    
+
                 // Se la rotta contiene parametri dinamici (placeholder {param})
                 if (strpos($uri, '{') !== false) {
                     $pattern = preg_replace_callback('/\{(\w+)\}/', function($matches) use ($verb, $uri) {
@@ -293,14 +331,87 @@ class WebRouter
                         }
                         return '([^/]+)';
                     }, $uri);
-    
+
                     static::$routePatterns[$verb][$uri] = '#^' . $pattern . '$#';
-    
+
                     // Estrai i nomi dei parametri
                     preg_match_all('/\{(\w+)\}/', $uri, $paramMatches);
                     static::$routeParamNames[$verb][$uri] = $paramMatches[1];
                 }
             }
+
+            // --- ORDENAR rutas del verbo $verb por especificidad ---
+            // Calculamos una métrica: más literales => más específico; más segmentos => más específico; menos params => más específico
+            $uris = array_keys(static::$routes[$verb]);
+
+            usort($uris, function($a, $b) use ($verb) {
+                $calc = function($uri) {
+                    $segments = array_values(array_filter(explode('/', $uri), 'strlen'));
+                    $numSegments = count($segments);
+                    $numParams = preg_match_all('/\{(\w+)\}/', $uri, $pm);
+                    $numLiterals = 0;
+                    foreach ($segments as $s) {
+                        if (strpos($s, '{') === false && $s !== '') $numLiterals++;
+                    }
+                    // Devolvemos una tupla para comparar: (numLiterals, numSegments, -numParams)
+                    return [$numLiterals, $numSegments, -$numParams];
+                };
+
+                $va = $calc($a);
+                $vb = $calc($b);
+
+                // Comparación lexicográfica: preferir mayor numLiterals, luego mayor numSegments, luego menor numParams
+                if ($va[0] !== $vb[0]) return ($va[0] > $vb[0]) ? -1 : 1;
+                if ($va[1] !== $vb[1]) return ($va[1] > $vb[1]) ? -1 : 1;
+                if ($va[2] !== $vb[2]) return ($va[2] > $vb[2]) ? -1 : 1;
+                // Si empatan, mantener orden lexicográfico inverso por longitud (más largo -> antes)
+                if (strlen($a) !== strlen($b)) return (strlen($a) > strlen($b)) ? -1 : 1;
+                return strcmp($a, $b);
+            });
+
+            // Reconstruir las estructuras en el orden especificado por $uris
+            $newRoutes = [];
+            $newCtrls = [];
+            $newPatterns = [];
+            $newParamNames = [];
+            $newCkParams = [];
+            $newWheres = [];
+
+            foreach ($uris as $u) {
+                // routes
+                $newRoutes[$u] = static::$routes[$verb][$u];
+
+                // ctrls (si existen)
+                if (isset(static::$ctrls[$verb][$u])) {
+                    $newCtrls[$u] = static::$ctrls[$verb][$u];
+                }
+
+                // routePatterns y paramNames
+                if (isset(static::$routePatterns[$verb][$u])) {
+                    $newPatterns[$u] = static::$routePatterns[$verb][$u];
+                }
+                if (isset(static::$routeParamNames[$verb][$u])) {
+                    $newParamNames[$u] = static::$routeParamNames[$verb][$u];
+                }
+
+                // ck_params
+                if (isset(static::$ck_params[$verb][$u])) {
+                    $newCkParams[$u] = static::$ck_params[$verb][$u];
+                }
+
+                // wheres
+                if (isset(static::$wheres[$verb][$u])) {
+                    $newWheres[$u] = static::$wheres[$verb][$u];
+                }
+            }
+
+            static::$routes[$verb] = $newRoutes;
+            static::$ctrls[$verb] = $newCtrls;
+            static::$routePatterns[$verb] = $newPatterns;
+            static::$routeParamNames[$verb] = $newParamNames;
+            static::$ck_params[$verb] = $newCkParams;
+            static::$wheres[$verb] = $newWheres;
+            // --- fin ordenamiento ---
         }
     }
 

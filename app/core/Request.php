@@ -2,11 +2,11 @@
 
 namespace Boctulus\Simplerest\Core;
 
-use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Interfaces\Arrayable;
 use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\Strings;
-use Boctulus\Simplerest\Core\Interfaces\Arrayable;
+use Boctulus\Simplerest\Core\Libs\Url;
 
 /*
     Correcciones necesarias !!
@@ -14,7 +14,7 @@ use Boctulus\Simplerest\Core\Interfaces\Arrayable;
     https://chatgpt.com/c/66e8fb29-9d10-800d-9a61-5d8284942006
 */
 
-class Request  implements /*\ArrayAccess,*/ Arrayable
+class Request  implements \ArrayAccess, Arrayable
 {
     protected static $query_arr;
     protected static $raw;
@@ -408,25 +408,29 @@ class Request  implements /*\ArrayAccess,*/ Arrayable
 
     /*  ArrayAccess       */
 
-    // function offsetSet($offset, $value) {
-    //     if (is_null($offset)) {
-    //         static::$params[] = $value;
-    //     } else {
-    //         static::$params[$offset] = $value;
-    //     }
-    // }
+    #[\ReturnTypeWillChange]
+    function offsetSet($offset, $value) {
+        if (is_null($offset)) {
+            static::$params[] = $value;
+        } else {
+            static::$params[$offset] = $value;
+        }
+    }
 
-    // function offsetExists($offset) {
-    //     return isset(static::$params[$offset]);
-    // }
+    #[\ReturnTypeWillChange]
+    function offsetExists($offset) {
+        return isset(static::$params[$offset]);
+    }
 
-    // function offsetUnset($offset) {
-    //     unset(static::$params[$offset]);
-    // }
+    #[\ReturnTypeWillChange]
+    function offsetUnset($offset) {
+        unset(static::$params[$offset]);
+    }
 
-    // function offsetGet($offset) {
-    //     return isset(static::$params[$offset]) ? static::$params[$offset] : null;
-    // }
+    #[\ReturnTypeWillChange]
+    function offsetGet($offset) {
+        return isset(static::$params[$offset]) ? static::$params[$offset] : null;
+    }
 
     // Antes method()
     function method(){
