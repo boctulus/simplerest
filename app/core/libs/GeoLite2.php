@@ -7,7 +7,7 @@ namespace Boctulus\Simplerest\Core\Libs;
 
     D:\www\woo7\wp-content\plugins\joinchat_m
 
-    y crear package
+    TODO: mover a package
 */
 class GeoLite2
 {

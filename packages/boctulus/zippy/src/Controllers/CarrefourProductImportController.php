@@ -9,7 +9,7 @@ use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\Simplerest\Core\Libs\System;
 use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
 
-class ProductImportController extends Controller
+class CarrefourProductImportController extends Controller
 {
     function __construct()
     {
@@ -17,77 +17,77 @@ class ProductImportController extends Controller
     }
 
     /**
-     * Parsea una línea CSV con el comportamiento específico:
-     * - Algunos valores pueden tener comas dentro de comillas.
-     * - Los números decimales vienen entre comillas y usan coma decimal y punto de miles.
-     * - Devuelve array asociativo con claves:
-     *   categories, price, description, brand, ean, img
+     * Parsea una línea CSV del archivo carrefour.csv con formato:
+     * "Almacén"|"Productos Orgánicos"|"5.677,40"|"Descripción"|" MARCA"|7798015441347|"https://..."
+     *
+     * - Columna 0: Ignorada (siempre "Almacén")
+     * - Columna 1: Categoría (guardar en catego_raw1)
+     * - Columna 2: Precio
+     * - Columna 3: Descripción del producto
+     * - Columna 4: Marca
+     * - Columna 5: EAN (sin comillas)
+     * - Columna 6: URL de la imagen
      *
      * @param string $line  Línea CSV
-     * @param int $expectedTail Número de campos fijos al final (price, description, brand, ean, img). Default 5.
-     * @return array Associative array parsed
+     * @return array Associative array con: category, price, description, brand, ean, img
      */
-    static function parseCsvLineSpecial(string $line, int $expectedTail = 5): array
+    static function parseCsvLineSpecial(string $line): array
     {
-        // branddor temporal improbable
-        $MARK = '<<CSV_COMMA>>';
+        // Marcador temporal para proteger pipes dentro de comillas
+        $MARK = '<<CSV_PIPE>>';
 
-        // 1) Reemplazar comas DENTRO de comillas por un branddor
-        //    Usamos regex simple para grupos entre comillas dobles.
+        // 1) Reemplazar pipes DENTRO de comillas por un marcador
         $modified = preg_replace_callback(
             '/"([^"]*)"/u',
             function ($m) use ($MARK) {
-                // Reemplaza solo comas internas por el branddor y devuelve el contenido sin las comillas
-                return str_replace(',', $MARK, $m[1]);
+                // Reemplaza pipes internos por el marcador y devuelve el contenido sin comillas
+                return str_replace('|', $MARK, $m[1]);
             },
             $line
         );
 
-        // 2) Partir por comas (ahora las comas internas están protegidas)
-        $parts = explode(',', $modified);
+        // 2) Partir por pipes (ahora los pipes internos están protegidos)
+        $parts = explode('|', $modified);
 
-        // 3) Restaurar branddor a comas, limpiar espacios y comillas sobrantes
+        // 3) Restaurar marcador a pipes y limpiar espacios
         $cleaned = array_map(function ($p) use ($MARK) {
-            // restaurar comas internas, quitar posibles comillas sobrantes y trim
-            $s = str_replace($MARK, ',', $p);
-            // quitar comillas residuales y trim
+            $s = str_replace($MARK, '|', $p); // restaurar pipes internos
             $s = trim($s);
-            $s = trim($s, "\"'\x00..\x1F"); // quita comillas y control chars al inicio/fin
+            $s = trim($s, "\"'\x00..\x1F"); // quita comillas y control chars
             return $s;
         }, $parts);
 
-        // 4) Si hay más campos de los esperados, unir los encabezados en 'categories'
-        $n = count($cleaned);
-        if ($n < $expectedTail + 1) {
-            // no es suficiente, devolver algo razonable
-            // completar con valores vacíos
-            $pad = array_pad($cleaned, $expectedTail + 1, '');
-            $cleaned = $pad;
-            $n = count($cleaned);
-        }
+        // Asegurarse de tener al menos 7 columnas
+        $cleaned = array_pad($cleaned, 7, '');
 
-        // categories = unión de todos los campos que queden antes de los últimos $expectedTail campos
-        $numCategories = $n - $expectedTail;
-        $categoriesArr = array_slice($cleaned, 0, $numCategories);
-        $tailArr = array_slice($cleaned, $numCategories, $expectedTail);
+        // Extraer campos según la estructura del CSV de Carrefour
+        // Columna 0: Ignorar ("Almacén")
+        // Columna 1: Categoría
+        $category = $cleaned[1] ?? '';
 
-        $categories = implode(',', $categoriesArr);
-        // Mapear tail a campos en orden: price, description, brand, ean, img
-        // Si el CSV esperara otro orden, ajustar aquí.
-        $mapping = [
-            'price' => $tailArr[0] ?? '',
-            'description' => $tailArr[1] ?? '',
-            'brand' => $tailArr[2] ?? '',
-            'ean' => $tailArr[3] ?? '',
-            'img' => $tailArr[4] ?? '',
+        // Columna 2: Precio
+        $price = $cleaned[2] ?? '';
+
+        // Columna 3: Descripción
+        $description = $cleaned[3] ?? '';
+
+        // Columna 4: Marca
+        $brand = $cleaned[4] ?? '';
+
+        // Columna 5: EAN (ya viene sin comillas)
+        $ean = $cleaned[5] ?? '';
+
+        // Columna 6: URL de imagen
+        $img = $cleaned[6] ?? '';
+
+        return [
+            'category' => $category,
+            'price' => $price,
+            'description' => $description,
+            'brand' => $brand,
+            'ean' => $ean,
+            'img' => $img,
         ];
-
-        // 5) Normalizar price: convertir "6.216,44" -> "6216.44" (float)
-        // $mapping['price_raw'] = $mapping['price'];
-        $mapping['price'] = static::normalizePrice($mapping['price']);
-        $mapping['description'] = str_replace('----', '', $mapping['description']);
-
-        return array_merge(['categories' => trim(trim($categories, ','))], $mapping);
     }
 
     /**
@@ -139,7 +139,7 @@ class ProductImportController extends Controller
 
     function getCSVContent($limit = null)
     {
-        $data  = Files::getContent('D:\\Desktop\\ZIPPY FILES\\ListaVea.csv');
+        $data  = Files::getContent('D:\\Desktop\\ZIPPY FILES\\exports\\carrefour.csv');
         $data  = Strings::fixEncoding($data);
         $rows  = Strings::lines($data, true, true);
 
@@ -334,21 +334,23 @@ class ProductImportController extends Controller
         DB::setConnection('zippy');
 
         foreach ($rows as $row) {
-            $ean   = (int) $row['ean'];
-            $img   = $row['img'] ?: null;
-            $desc  = $row['description'] ?: null;
-            $brand = $row['brand'] ?: null;
+            $ean      = (int) $row['ean'];
+            $img      = $row['img'] ?: null;
+            $desc     = $row['description'] ?: null;
+            $category = $row['category'] ?: null;
+            $brand    = $row['brand'] ?: null;
 
             if (empty($ean)) {
                 // EAN inválido, saltar
                 echo "Skipping row with empty/invalid EAN\n";
                 continue;
-            }   
+            }
 
             if (table('products')->where('ean', $ean)->exists()) {
                 // actualizar
                 table('products')->where('ean', $ean)->update([
                     'description' => $desc,
+                    'catego_raw1' => $category,
                     'brand' => $brand,
                     'img' => $img,
                     'updated_at' => date('Y-m-d H:i:s'),
@@ -359,13 +361,14 @@ class ProductImportController extends Controller
                 table('products')->create([
                     'ean' => $ean,
                     'description' => $desc,
+                    'catego_raw1' => $category,
                     'brand' => $brand,
                     'img' => $img,
                     'created_at' => date('Y-m-d H:i:s'),
                 ], true); // true = ignore duplicates (shouldn't happen here)
                 echo "Inserted EAN: $ean\n";
-            
-            
+
+
             }
         }
 

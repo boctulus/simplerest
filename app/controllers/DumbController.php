@@ -675,9 +675,10 @@ class DumbController extends Controller
         return  "$a + $b = " . $res;
     }
 
+    // Ej: /dumb/mul/40/33
     function mul()
     {
-        $req = Request::getInstance();
+        $req = Request::getInstance(); // obviamente funciona solo en la web
         $res = (int) $req[0] * (int) $req[1];
         return "$req[0] * $req[1] = " . $res . PHP_EOL;
     }
@@ -1245,7 +1246,6 @@ class DumbController extends Controller
     }
 
     function test_r2($user_id){
-        return __METHOD__;
         dd($user_id, 'user');
     }
 
@@ -12474,5 +12474,7 @@ class DumbController extends Controller
 
         var_dump(Strings::isEmpty($data) ); // true
     }
+
+    
 
 }   // end class

@@ -14,11 +14,12 @@ class MigrationsSchema implements ISchema
 
 			'id_name'			=> 'id',
 
-			'fields'			=> ['id', 'db', 'filename', 'created_at'],
+			'fields'			=> ['id', 'db', 'path', 'filename', 'created_at'],
 
 			'attr_types'		=> [
 				'id' => 'INT',
 				'db' => 'STR',
+				'path' => 'STR',
 				'filename' => 'STR',
 				'created_at' => 'STR'
 			],
@@ -31,7 +32,7 @@ class MigrationsSchema implements ISchema
 
 			'autoincrement' 	=> 'id',
 
-			'nullable'			=> ['id', 'db', 'created_at'],
+			'nullable'			=> ['id', 'db', 'path', 'created_at'],
 
 			'required'			=> ['filename'],
 
@@ -40,6 +41,7 @@ class MigrationsSchema implements ISchema
 			'rules' 			=> [
 				'id' => ['type' => 'int'],
 				'db' => ['type' => 'str', 'max' => 50],
+				'path' => ['type' => 'str', 'max' => 255],
 				'filename' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'created_at' => ['type' => 'datetime']
 			],

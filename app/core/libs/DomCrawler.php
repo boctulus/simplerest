@@ -5,11 +5,13 @@ namespace Boctulus\Simplerest\Core\Libs;
 use Symfony\Component\DomCrawler\Crawler;
 
 /*
- * Class DomCrawler
+ * Class DomCrawler   
  * 
  * La idea de esta clase es generar una interfaz simple y concistente 
  * sobre Symfony\Component\DomCrawler\Crawler
  * 
+ * 
+ * TODO: mover a package
   
   Ej:
  

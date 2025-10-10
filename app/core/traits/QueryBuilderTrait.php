@@ -3619,17 +3619,22 @@ trait QueryBuilderTrait
 
 			$debug = Config::get()['debug'];
 
-			if (!$ignore_duplicates && !Strings::contains('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry', $e->getMessage())) {
-				throw new \PDOException($debug ? $e->getMessage() : "Integrity constraint violation");
-			} else {
-				if ($debug) {
-					$msg = "Error inserting data from " . $this->from() . ' - ' . $e->getMessage();
-				} else {
-					$msg = 'Error inserting data';
-				}
+			// Verificar si es un error de duplicado
+			$is_duplicate_error = Strings::contains('1062 Duplicate entry', $e->getMessage());
 
-				throw new \PDOException($msg);
+			// Si ignore_duplicates está activado Y es un error de duplicado, simplemente retornar null
+			if ($ignore_duplicates && $is_duplicate_error) {
+				return null;
 			}
+
+			// Para cualquier otro error, lanzar excepción
+			if ($debug) {
+				$msg = "Error inserting data from " . $this->from() . ' - ' . $e->getMessage();
+			} else {
+				$msg = 'Error inserting data';
+			}
+
+			throw new \PDOException($msg);
 		}
 
 		$this->current_operation = null;
@@ -3717,13 +3722,14 @@ trait QueryBuilderTrait
 
 	/**
 	 * Main method for inserting records with full model lifecycle
-	 * 
+	 *
 	 * @param array $data Single record or array of records
 	 * @param bool $useTransaction Whether to wrap in transaction
-	 * @return mixed Last inserted ID or false on failure
+	 * @param bool $ignore_duplicates If true, ignore duplicate key errors and return null
+	 * @return mixed Last inserted ID, null if duplicate ignored, or false on failure
 	 * @throws \Exception On validation or database errors
 	 */
-	function insert(array $data, bool $useTransaction = true)
+	function insert(array $data, bool $useTransaction = true, bool $ignore_duplicates = false)
 	{
 		if ($this->conn == null) {
 			throw new SqlException('No connection');
@@ -3758,7 +3764,7 @@ trait QueryBuilderTrait
 
 				// dd($data); //
 
-				$ret = $this->executeInsert($data);
+				$ret = $this->executeInsert($data, $ignore_duplicates);
 
 				if ($useTransaction) {
 					DB::commit();
@@ -3782,7 +3788,7 @@ trait QueryBuilderTrait
 		try {
 			$ret = null;
 			foreach ($data as $record) {
-				$ret = $this->insert($record, false);
+				$ret = $this->insert($record, false, $ignore_duplicates);
 			}
 
 			if ($useTransaction) {
@@ -3987,7 +3993,7 @@ trait QueryBuilderTrait
 	 * Helper method to execute single record insert
 	 * Used by both insert() and rawInsert()
 	 */
-	private function executeInsert(array $data)
+	private function executeInsert(array $data, bool $ignore_duplicates = false)
 	{
 		$vars = array_keys($data);
 		$placeholders = array_fill(0, count($vars), '?');
@@ -4045,16 +4051,39 @@ trait QueryBuilderTrait
 			$st->bindValue($index++, $val, $types[$i]);
 		}
 
-		if (!$st->execute()) {
-			return false;
-		}
+		try {
+			$result = $st->execute();
+			if (!$result) {
+				return false;
+			}
+			return $this->conn->lastInsertId();
+		} catch (\PDOException $e) {
+			$this->logSQL();
 
-		return $this->conn->lastInsertId();
+			$debug = Config::get()['debug'];
+
+			// Verificar si es un error de duplicado
+			$is_duplicate_error = Strings::contains('1062 Duplicate entry', $e->getMessage());
+
+			// Si ignore_duplicates está activado Y es un error de duplicado, simplemente retornar null
+			if ($ignore_duplicates && $is_duplicate_error) {
+				return null;
+			}
+
+			// Para cualquier otro error, lanzar excepción
+			if ($debug) {
+				$msg = "Error inserting data from " . $this->from() . ' - ' . $e->getMessage();
+			} else {
+				$msg = 'Error inserting data';
+			}
+
+			throw new \PDOException($msg);
+		}
 	}
 
 	function insertOrIgnore(array $data)
 	{
-		$this->insert($data, true);
+		return $this->insert($data, true, true);
 	}
 
 	/**
