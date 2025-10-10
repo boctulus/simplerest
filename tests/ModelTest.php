@@ -21,6 +21,12 @@ use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Core\Traits\UnitTestCaseSQLTrait;
 use Boctulus\Simplerest\Core\Libs\Validator;
 
+/*
+    * Requiere PHPUnit y una configuración adecuada de la base de datos.
+    *
+    * Ejecuta con: ./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/ModelTest.php    
+    *
+*/
 class ModelTest extends TestCase
 {
   use UnitTestCaseSQLTrait;
