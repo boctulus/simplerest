@@ -174,3 +174,4 @@
 [2025-10-10 10:39:08]	0.8.12	make testcase
 [2025-10-10 11:07:00]	0.8.12	DOC PackagesAndModules.md
 [2025-10-10 11:16:55]	0.8.12	php com module --to_package=
+[2025-10-10 11:17:21]	0.8.12	php com module --to_package=
