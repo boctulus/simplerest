@@ -3,9 +3,23 @@
 namespace Boctulus\Simplerest\tests;
 
 use PHPUnit\Framework\TestCase;
-use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
 
+/*
+    * Asegúrate de tener una conexión SQLite en config.php para pruebas.
+    * Ejemplo:
+    * 'test_sqlite' => ['driver' => 'sqlite', 'db_name' => ':memory:']
+    *
+    * O usa un archivo temporal si prefieres persistencia entre pruebas.
+    *
+    * Estos tests verifican que las transacciones funcionan correctamente,
+    * incluyendo commits, rollbacks y transacciones anidadas con savepoints.
+    *
+    * Requiere PHPUnit y una configuración adecuada de la base de datos.
+    *
+    * Ejecuta con: ./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/DB_TransactionTest.php    
+    *
+*/
 class DB_TransactionTest extends TestCase
 {
     protected static $tmpDbFile;
