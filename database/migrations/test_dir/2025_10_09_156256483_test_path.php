@@ -1,18 +1,15 @@
 <?php
 
-use Boctulus\Simplerest\Core\Interfaces\IMigration;
+use Boctulus\Simplerest\Core\Libs\Migration;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Core\Libs\DB;
 
-return new class implements IMigration
+class TestPath extends Migration
 {
-    protected $table = 'some';
-
-    function __construct(){
-        ### CONSTRUCTOR
-    }
+    protected $table      = 'test_path';
+    protected $connection = null;
 
     /**
 	* Run migration.
@@ -27,7 +24,7 @@ return new class implements IMigration
 
         $sc
         ->integer('id')->auto()->pri()
-        ->varchar('name')
+        // ->varchar('name')
 		// ...
         ->datetimes();
 
@@ -45,6 +42,6 @@ return new class implements IMigration
 
         Schema::dropIfExists($this->table);
     }
-};
+}
 
 

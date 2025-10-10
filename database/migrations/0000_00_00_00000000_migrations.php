@@ -27,6 +27,7 @@ class MigrationsMigration implements IMigration
                 CREATE TABLE IF NOT EXISTS migrations (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     db varchar(50) DEFAULT NULL,
+                    path varchar(255) DEFAULT NULL,
                     filename varchar(255) NOT NULL,
                     created_at DATETIME NULL
                 );");
@@ -38,6 +39,7 @@ class MigrationsMigration implements IMigration
                 CREATE TABLE IF NOT EXISTS `migrations` (
                     `id` int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
                     `db` varchar(50) DEFAULT NULL,
+                    `path` varchar(255) DEFAULT NULL,
                     `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
                     `created_at` DATETIME NULL
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -48,6 +50,13 @@ class MigrationsMigration implements IMigration
                     DB::statement("ALTER TABLE `migrations` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");
                 } catch (\Exception $e) {
                     // Ignore if already has AUTO_INCREMENT
+                }
+
+                // Add path column if it doesn't exist (for existing installations)
+                try {
+                    DB::statement("ALTER TABLE `migrations` ADD COLUMN `path` varchar(255) DEFAULT NULL AFTER `db`;");
+                } catch (\Exception $e) {
+                    // Ignore if column already exists
                 }
 
             break;

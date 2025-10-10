@@ -171,3 +171,4 @@
 [2025-10-09 16:42:35]	0.8.12	Automatic update
 [2025-10-09 17:09:44]	0.8.12	Automatic update
 [2025-10-09 17:22:24]	0.8.12	Transacciones anidadas (clase DB)
+[2025-10-10 10:39:08]	0.8.12	make testcase
