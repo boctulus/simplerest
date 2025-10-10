@@ -32,4 +32,9 @@ CliRouter::group('zippy', function() {
         CliRouter::command('index', 'Boctulus\Zippy\Controllers\ZippyUsersController@index');
         CliRouter::command('login', 'Boctulus\Zippy\Controllers\ZippyUsersController@login');
     });
+
+    // Category commands
+    CliRouter::group('category', function() {
+        CliRouter::command('list', 'Boctulus\Zippy\Controllers\CategoryController@list_categories');
+    });
 });
