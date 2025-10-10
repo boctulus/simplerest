@@ -18,17 +18,12 @@ class CategoryController extends Controller
         DB::setConnection('zippy');
 
         // Obtener todas las categorías únicas del campo catego_raw1
-        $categories = table('products')  // no usar DB::table() sino table()
-            ->select('catego_raw1')
+        // Usamos pluck() para obtener directamente un array de valores
+        $categoryList = table('products')
             ->whereNotNull('catego_raw1')
             ->where('catego_raw1', '!=', '')
             ->distinct()
-            ->get();
-
-        // Extraer solo los valores en un array simple
-        $categoryList = array_map(function($item) {
-            return $item['catego_raw1'];
-        }, $categories);
+            ->pluck('catego_raw1');
 
         // Ordenar alfabéticamente
         sort($categoryList);
