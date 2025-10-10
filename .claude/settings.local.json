@@ -29,7 +29,8 @@
       "Bash(.vendorbinphpunit --bootstrap .vendorautoload.php .testsDB_TransactionTest.php)",
       "Bash(dir:*)",
       "Bash(del D:laragonwwwsimpleresttestsSampleTest.php)",
-      "Bash(del D:laragonwwwsimpleresttestsExampleTest.php)"
+      "Bash(del D:laragonwwwsimpleresttestsExampleTest.php)",
+      "Read(//d/Desktop/ZIPPY FILES/exports/**)"
     ],
     "deny": [],
     "ask": []

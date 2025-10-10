@@ -5,6 +5,7 @@ namespace Boctulus\Simplerest\Core;
 use Boctulus\Simplerest\Core\API\v1\ApiController;
 use Boctulus\Simplerest\Core\Controllers\ConsoleController;
 use Boctulus\Simplerest\Core\Libs\Cli;
+use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\Msg;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\Url;
@@ -55,37 +56,85 @@ class CliRouter
     public static function resolve()
     {
         if (!is_cli()){
-            return;
+            return false;
         }
 
         global $argv;
         $params = array_slice($argv, 1);
-        
+
         // Si no se proporciona ningún comando, muestra instrucciones
         if (empty($params)) {
             dd("Uso: php com {controller} [action] [argumentos]");
-            return;
+            return true;
         }
 
         /*
-            Si ejecuto "php com pow 2 8" entonces $key == 'pow'
+            Intentar matchear comandos multi-palabra
+
+            Ejemplos:
+            - php com version              -> match "version"
+            - php com zippy importer run   -> intenta "zippy:importer:run", "zippy:importer", "zippy"
+            - php com pow 2 8              -> match "pow" con params [2, 8]
         */
-        $key = $params[0];
+        $matchedCommand = null;
+        $matchedParams = [];
 
-        // dd($key, 'key');        
-        // dd(static::$routes, 'routes');
+        // Intentar desde el comando más largo al más corto
+        for ($i = count($params); $i > 0; $i--) {
+            $testKey = implode(':', array_slice($params, 0, $i));
+            if (isset(static::$routes[$testKey])) {
+                $matchedCommand = $testKey;
+                $matchedParams = array_slice($params, $i);
+                break;
+            }
+        }
 
-        if (isset(static::$routes[$key])) {
-            $params = array_slice($params, 1);
+        if ($matchedCommand !== null) {
+            $params = $matchedParams;
+
+            // Validar parámetros usando where() si están definidos
+            if (isset(static::$wheres['command'][$matchedCommand])) {
+                $wheres = static::$wheres['command'][$matchedCommand];
+
+                // Obtener nombres de parámetros de la función/método
+                if (is_callable(static::$routes[$matchedCommand])) {
+                    $reflection = new \ReflectionFunction(static::$routes[$matchedCommand]);
+                } else {
+                    $ck = static::$routes[$matchedCommand];
+                    $pos = strpos($ck, '@');
+                    $ctrl = substr($ck, 0, $pos);
+                    $method = substr($ck, $pos+1);
+                    $namespace = Strings::contains('\\', $ctrl) ? '' : namespace_url() . '\\Controllers\\';
+                    $class_name = "{$namespace}{$ctrl}";
+                    $reflection = new \ReflectionMethod($class_name, $method);
+                }
+
+                $parameters = $reflection->getParameters();
+
+                // Validar cada parámetro
+                foreach ($parameters as $index => $parameter) {
+                    $paramName = $parameter->getName();
+
+                    if (isset($wheres[$paramName]) && isset($params[$index])) {
+                        $pattern = '/^' . $wheres[$paramName] . '$/';
+
+                        if (!preg_match($pattern, $params[$index])) {
+                            dd("Error: Parameter '$paramName' with value '{$params[$index]}' does not match pattern '{$wheres[$paramName]}'");
+                            return true;
+                        }
+                    }
+                }
+            }
 
             // dd($params, 'params');
-            if (is_callable(static::$routes[$key])) {                
-                $cb     = static::$routes[$key];
+            if (is_callable(static::$routes[$matchedCommand])) {
+                $cb     = static::$routes[$matchedCommand];
                 $result = $cb(...$params);
 
                 response()->set($result)->flush();
+                return true;
             } else {
-                $ck = static::$routes[$key];
+                $ck = static::$routes[$matchedCommand];
 
                 $namespace = Strings::contains('\\', $ck) ? '' : namespace_url() . '\\Controllers\\';
                 $pos = strpos($ck, '@');
@@ -99,13 +148,32 @@ class CliRouter
                 }
 
                 $class_name = "{$namespace}{$ctrl}";
+
+                // Verificar si el controlador pertenece a un package y si CliRouter está habilitado
+                $packageInfo = Config::getPackageFromClass($class_name);
+
+                if ($packageInfo !== null) {
+                    // Es un controlador de package, verificar configuración específica
+                    $packageConsoleRouter = Config::getPackageConfig(
+                        $packageInfo['vendor'],
+                        $packageInfo['package'],
+                        'console_router',
+                        true // Default: habilitado
+                    );
+
+                    if (!$packageConsoleRouter) {
+                        // CliRouter deshabilitado para este package
+                        return false;
+                    }
+                }
+
                 if (!class_exists($class_name)){
-                    throw new \InvalidArgumentException("Controller class $class_name not found");  
+                    throw new \InvalidArgumentException("Controller class $class_name not found");
                 }
                 if (!method_exists($class_name, $method)){
-                    throw new \InvalidArgumentException("Method $method was not found in $class_name"); 
+                    throw new \InvalidArgumentException("Method $method was not found in $class_name");
                 }
-                                        
+
                 // dd([$class_name, $method]);
 
                 // Instanciar el controlador
@@ -121,33 +189,43 @@ class CliRouter
 
                 // Retornar o manejar la respuesta según sea necesario
                 response()->set($result)->flush();
+                return true;
             }
         }
         
         try {
-            if (!isset($result)){                
+            if (!isset($result)){
+                // Fallback to FrontController style routing
                 $namespace = namespace_url() . '\\Controllers\\';
 
                 // dd(static::$routes, 'routes');
-                // dd($key, 'key');
                 // dd($params, 'params');
 
                 // Determina el controlador
-                $controllerName = $key;
-               
+                $controllerName = $params[0] ?? null;
+
+                if ($controllerName === null) {
+                    dd("Error: No se proporcionó un controlador.");
+                    return true;
+                }
+
                 $className = $namespace . ucfirst($controllerName) . 'Controller';
-                
+
                 if (!class_exists($className)) {
-                    dd("Error: Controlador '$className' no encontrado.");
-                    return;
+                    // No se encontró controlador, devolver false para que FrontController lo intente
+                    return false;
                 }
                 
                 // Instancia el controlador
                 $controller = new $className();
                 
                 // Determina la acción
-                if (isset($params[1])) {            
+                if (isset($params[1])) {
                     if (method_exists($controller, $params[1])) {
+                        $action = $params[1];
+                        $actionParams = array_slice($params, 2);
+                    } elseif (method_exists($className, '__call')) {
+                        // Si hay __call(), el segundo parámetro es el método "mágico"
                         $action = $params[1];
                         $actionParams = array_slice($params, 2);
                     } else {
@@ -220,10 +298,14 @@ class CliRouter
 
                 // Finalmente, enviamos la respuesta (lo que llama flush() y la muestra en consola)
                 response()->set($result)->flush();
+                return true;
             }
         } catch (\Exception $e) {
             dd("Error durante la ejecución del comando: " . $e->getMessage());
+            return true;
         }
+
+        return false;
     }
 
     /*
@@ -236,13 +318,13 @@ class CliRouter
      * Registra un comando CLI.
      */
     public static function command(string $cmd, $callback) {
-        $$cmd = trim($cmd);
+        $cmd = trim($cmd);
 
         if (static::$groupPrefix !== '') {
             $cmd = trim(static::$groupPrefix, ':') . ':' . $cmd;
         }
 
-        static::$current_command =$cmd;
+        static::$current_command = $cmd;
         static::$current = ['command', $cmd];
         static::$routes[$cmd] = $callback;
 

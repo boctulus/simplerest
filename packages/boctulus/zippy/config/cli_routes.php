@@ -11,9 +11,13 @@ CliRouter::group('zippy', function() {
 
     // Importer commands
     CliRouter::group('importer', function() {
-        CliRouter::command('import', 'Boctulus\Zippy\Controllers\ProductImportController@import_zippy_csv');
-        CliRouter::command('check_dupes', 'Boctulus\Zippy\Controllers\ProductImportController@check_dupes');
-        CliRouter::command('index', 'Boctulus\Zippy\Controllers\ProductImportController@index');
+        CliRouter::command('import:coto', 'Boctulus\Zippy\Controllers\CotoProductImportController@import_zippy_csv');
+        CliRouter::command('check_dupes:coto', 'Boctulus\Zippy\Controllers\CotoProductImportController@check_dupes');
+        CliRouter::command('index:coto', 'Boctulus\Zippy\Controllers\CotoProductImportController@index');
+
+        CliRouter::command('import:carrefour', 'Boctulus\Zippy\Controllers\CarrefourProductImportController@import_zippy_csv');
+        CliRouter::command('check_dupes:carrefour', 'Boctulus\Zippy\Controllers\CarrefourProductImportController@check_dupes');
+        CliRouter::command('index:carrefour', 'Boctulus\Zippy\Controllers\CarrefourProductImportController@index');
     });
 
     // CSV reader commands

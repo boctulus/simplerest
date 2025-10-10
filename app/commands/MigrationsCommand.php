@@ -54,9 +54,14 @@ class MigrationsCommand implements ICommand
                 $match = $matches[1];
                 if (!preg_match('/^([a-z0-9_-]+)$/i', $match, $matches)){
                     throw new \InvalidArgumentException("Invalid indentifier '{$match}' for tenant id");
-                }    
+                }
 
                 $to_db = $matches[1];
+
+                // Validar que la conexión existe
+                if (!DB::connectionExists($to_db)) {
+                    throw new \InvalidArgumentException("Connection '$to_db' is not registered in db_connections");
+                }
             }
 
             if ('--retry' == $o || 'retry' == $o || '--force' == $o || 'force' == $o){
@@ -88,7 +93,11 @@ class MigrationsCommand implements ICommand
                     $path = Files::getDir($_f);
                     $_f = basename($_f);
                 } else {
-                    if (Strings::contains(DIRECTORY_SEPARATOR, $_f)){
+                    // Soportar tanto \ como / como separadores
+                    if (Strings::contains(DIRECTORY_SEPARATOR, $_f) || Strings::contains('/', $_f)){
+                        // Normalizar separadores a DIRECTORY_SEPARATOR
+                        $_f = str_replace('/', DIRECTORY_SEPARATOR, $_f);
+
                         $fr = explode(DIRECTORY_SEPARATOR, $_f);
 
                         $_f = $fr[count($fr)-1];
@@ -99,7 +108,7 @@ class MigrationsCommand implements ICommand
                         if (!Strings::startsWith(DIRECTORY_SEPARATOR, $path)){
                             $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path;
                         }
-                    } 
+                    }
                 }
 
                 $path = str_replace('//', '/', $path);
@@ -156,16 +165,31 @@ class MigrationsCommand implements ICommand
         } else {
             if ($ignore){
                 $filename = $filenames[0];
-                
+
                 DB::getDefaultConnection();
 
                 /*
                     Debe existir la tabla 'migrations'
                 */
                 if (Schema::hasTable('migrations')){
-                   
+
+                    // Calcular ruta relativa respecto a MIGRATIONS_PATH
+                    // Normalizar ambos paths para comparación correcta
+                    $normalized_migrations_path = rtrim(str_replace('\\', '/', realpath(MIGRATIONS_PATH)), '/');
+                    $normalized_current_path = rtrim(str_replace('\\', '/', realpath($path)), '/');
+
+                    // Remover MIGRATIONS_PATH del path actual para obtener el path relativo
+                    if (strpos($normalized_current_path, $normalized_migrations_path) === 0) {
+                        $relative_path = substr($normalized_current_path, strlen($normalized_migrations_path));
+                        $relative_path = ltrim($relative_path, '/'); // Remover leading slash
+                    } else {
+                        // Si no está dentro de MIGRATIONS_PATH, guardar el path completo
+                        $relative_path = $normalized_current_path;
+                    }
+
                     $data = [
-                        'filename' => $filename
+                        'filename' => $filename,
+                        'path' => !empty($relative_path) ? $relative_path : null
                     ];
 
                     if ($to_db != 'default'){
@@ -184,7 +208,7 @@ class MigrationsCommand implements ICommand
 
                     return;
                 }
-               
+
             }
     
         } 
@@ -218,10 +242,18 @@ class MigrationsCommand implements ICommand
 
             try {
                 DB::disableForeignKeyConstraints();
-                (new Migrations())->up();
+                (new $class_name_mg())->up();
             } finally {
                 DB::enableForeignKeyConstraints();
             }
+
+            // Register the migrations migration itself
+            StdOut::print("Migrated  '$filename_mg' --ok\r\n");
+
+            get_default_connection();
+            table('migrations')->create([
+                'filename' => $filename_mg
+            ]);
         }
 
         $ix = 0;
@@ -229,27 +261,24 @@ class MigrationsCommand implements ICommand
         foreach ($filenames as $filename)
         { 
             if (!$retry){
-                $m = (object) table('migrations');
-
-                if ($m
+                // Create a fresh query builder instance for each check
+                $exists = table('migrations')
                 ->where([
                     'filename' => $filename
                 ])
-                ->when($to_db != null, function ($q) use ($to_db) {
+                ->when($to_db != null,
+                    function ($q) use ($to_db) {
+                        $q->where(['db', $to_db]);
+                    },
+                    function ($q) {
+                        $q->whereNull('db');
+                    }
+                )
+                ->exists();
 
-                    $q->group(function($q) use ($to_db){
-                        $q
-                        //->whereNull('db', $to_db)
-                        ->where(['db', $to_db]);
-                    });
-
-                })
-                ->exists()){
-                    //d('SKIPING');
+                if ($exists){
                     continue;
                 }
-
-                //d($m->getLog(), 'SQL');
             }
 
             if ($ix >= $cnt){
@@ -340,10 +369,28 @@ class MigrationsCommand implements ICommand
                 Main connection restore
             */
 
+            /*
+                Main connection restore and register migration
+            */
             get_default_connection();
 
+            // Calcular ruta relativa respecto a MIGRATIONS_PATH
+            // Normalizar ambos paths para comparación correcta
+            $normalized_migrations_path = rtrim(str_replace('\\', '/', realpath(MIGRATIONS_PATH)), '/');
+            $normalized_current_path = rtrim(str_replace('\\', '/', realpath($path)), '/');
+
+            // Remover MIGRATIONS_PATH del path actual para obtener el path relativo
+            if (strpos($normalized_current_path, $normalized_migrations_path) === 0) {
+                $relative_path = substr($normalized_current_path, strlen($normalized_migrations_path));
+                $relative_path = ltrim($relative_path, '/'); // Remover leading slash
+            } else {
+                // Si no está dentro de MIGRATIONS_PATH, guardar el path completo
+                $relative_path = $normalized_current_path;
+            }
+
             $data = [
-                'filename' => $filename
+                'filename' => $filename,
+                'path' => !empty($relative_path) ? $relative_path : null
             ];
 
             $main = get_default_connection_id();
@@ -356,9 +403,7 @@ class MigrationsCommand implements ICommand
                 $to_db = $main;
             }
 
-            $m = (object) table('migrations');
-
-            $ok = $m
+            $ok = table('migrations')
             ->create($data);
 
             $ix++;
@@ -490,9 +535,14 @@ class MigrationsCommand implements ICommand
             }
         }
 
+        // Si no se especificó --to=, usar la conexión por defecto
         if (!isset($to_db)){
-            StdOut::print("--to= is not optional\r\n");
-            exit;
+            $to_db = '__NULL__';
+        } else {
+            // Validar que la conexión existe solo si se especificó y no es la por defecto
+            if ($to_db != '__NULL__'){
+                $this->validateConnection($to_db);
+            }
         }
 
         StdOut::print("Rolling back up to $steps migrations\r\n");
@@ -500,8 +550,8 @@ class MigrationsCommand implements ICommand
         if (!isset($filenames)){
             $m = (object) table('migrations');
 
-            $filenames = $m
-            ->when($to_db == '__NULL__', 
+            $migrations = $m
+            ->when($to_db == '__NULL__',
                 function($q){
                     $q->whereNull('db');
                 },
@@ -510,8 +560,16 @@ class MigrationsCommand implements ICommand
                 }
             )
             ->orderBy(['id' => 'DESC'])
-            ->pluck('filename');
-        }    
+            ->get();
+
+            // Si no se especificó --dir ni --file, usar los paths guardados
+            $filenames = [];
+            $stored_paths = [];
+            foreach ($migrations as $mig) {
+                $filenames[] = $mig['filename'];
+                $stored_paths[$mig['filename']] = $mig['path'] ?? null;
+            }
+        }
 
         if (empty($filenames)){
             return;
@@ -523,11 +581,33 @@ class MigrationsCommand implements ICommand
         $cnt = min($steps, count($filenames));
         for ($i=0; $i<$cnt; $i++){
             $filename   = $filenames[$i];
-            $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;          
-            
 
-            $full_path = $path . ( isset($_dir) ? $_dir . '/' : '' ). $filename;
+            // Si se especificó --dir o --file, usar esos parámetros
+            // Si no, usar el path guardado en la tabla migrations
+            if (isset($_dir)) {
+                $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $_dir . DIRECTORY_SEPARATOR;
+            } elseif (isset($file_opt)) {
+                // Ya se manejó el path arriba cuando se parseó --file=
+                $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
+            } elseif (isset($stored_paths[$filename]) && !empty($stored_paths[$filename])) {
+                // Verificar si el path guardado es absoluto o relativo
+                $stored_path = $stored_paths[$filename];
+
+                if (Files::isAbsolutePath($stored_path)) {
+                    // Si es absoluto, usarlo directamente
+                    $path = $stored_path . DIRECTORY_SEPARATOR;
+                } else {
+                    // Si es relativo, agregarlo a MIGRATIONS_PATH
+                    $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $stored_path . DIRECTORY_SEPARATOR;
+                }
+            } else {
+                // Fallback: usar MIGRATIONS_PATH directamente
+                $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
+            }
+
+            $full_path = $path . $filename;
             $full_path = preg_replace('#/+#','/',$full_path);
+            $full_path = str_replace('/', DIRECTORY_SEPARATOR, $full_path);
            
             if (!file_exists($full_path)){
                 StdOut::print("File '$full_path' not found");
@@ -617,9 +697,9 @@ class MigrationsCommand implements ICommand
             }
         }
 
-        if (!isset($to_db)){
-            StdOut::print("--to= is not optional\r\n");
-            exit;
+        // Validar que la conexión existe solo si se especificó
+        if (isset($to_db)){
+            $this->validateConnection($to_db);
         }
 
         DB::getDefaultConnection();
@@ -702,10 +782,8 @@ class MigrationsCommand implements ICommand
             }
         }
 
-        if (!isset($to_db)){
-            StdOut::print("--to= is not optional\r\n");
-            exit;
-        }
+        // fresh es destructivo, --to= es obligatorio
+        $this->validateConnection($to_db ?? null, true);
 
         if (!$force){
             StdOut::print("fresh: this method is destructive. " .
@@ -932,8 +1010,8 @@ class MigrationsCommand implements ICommand
 
     function help($name = null, ...$args){
         $str = <<<STR
-        migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ]         
-        make migration --class_name=Filesss --table=files --to:main --dir='test\sub3 
+        migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ]
+        make migration --class_name=Filesss --table=files --to:main --dir='test\sub3
         migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --fresh ] [ --retry ] [ --ignore ] [ --make= ] [ --debug ]
         migrations rollback --to={some_db_conn} [ --dir= ] [ --file= ] [ --step=={N} | --all] [ --simulate ]
         migrations fresh [ --dir= ] [ --file= ] --to=some_db_conn [ --force ] [ --migrate ]
@@ -943,9 +1021,9 @@ class MigrationsCommand implements ICommand
         Examples:
 
         migrations make my_table
-        migrations make my_table --dir=my_folder  
-        
-        migrations make my_table --table=my_table   
+        migrations make my_table --dir=my_folder
+
+        migrations make my_table --table=my_table
         migrations make my_table --to=db_connection
         migrations make my_table --table=my_table --class_name=MyTableAddDate --to:main
         migrations make --class_name=Files
@@ -955,10 +1033,10 @@ class MigrationsCommand implements ICommand
         migrations make --class_name=Filesss --table=files --to:main --dir='test\sub3
         migrations make brands --create
         migrations make brands --dir=giglio --to=giglio --create
-        
-        
+
+
         migrations migrate
-        
+
         migrations rollback --to=db_195 --dir=compania
         migrations rollback --to=db_195 --dir=compania --simulate
         migrations rollback --to=main --step=2
@@ -980,7 +1058,7 @@ class MigrationsCommand implements ICommand
         migrations migrate --from:main --file=some_migr_file.ph --ignore
 
         migrations migrate --fresh --to:main --force
-        
+
         migrations redo  --file=2021_09_14_27910581_files.php --to:main
 
         migrations fresh --to=db_195 --force
@@ -999,10 +1077,10 @@ class MigrationsCommand implements ICommand
         migrations list --dir=edu
         migrations list --dir=edu --table=tags
         migrations list --dir=edu --contains=tag
-        
+
 
         Inline migrations
-        
+
         make migration foo --dropColumn=algun_campo
         make migration foo --renameColumn=viejo_nombre,nuevo_nombre
         make migration foo --renameTable=viejo_nombre,nuevo_nombre
@@ -1029,9 +1107,31 @@ class MigrationsCommand implements ICommand
         php com make migration --dir=test --table=my_table --dropPrimary --unique=some_field,another_field
 
         STR;
-        
+
         dd(strtoupper(Strings::before(__METHOD__, 'Command::')) . ' HELP');
         dd($str);
-    }    
+    }
+
+    /**
+     * Valida que el parámetro --to= esté especificado y que la conexión exista
+     *
+     * @param string|null $to_db El identificador de conexión a validar
+     * @param bool $required Si true, --to= es obligatorio
+     * @throws \InvalidArgumentException Si --to= no está especificado y es requerido
+     * @throws \InvalidArgumentException Si la conexión no está registrada
+     */
+    private function validateConnection($to_db, $required = false)
+    {
+        if (!isset($to_db)) {
+            if ($required) {
+                throw new \InvalidArgumentException("--to= is not optional");
+            }
+            return; // --to= es opcional y no fue especificado
+        }
+
+        if (!DB::connectionExists($to_db)) {
+            throw new \InvalidArgumentException("Connection '$to_db' is not registered in db_connections");
+        }
+    }
 }
 

@@ -13,11 +13,11 @@ class DB
 {
 	protected static $connections = [];
 	protected static $current_id_conn;
-	protected static $model_instance;  
+	protected static $model_instance;
 	protected static $raw_sql;
 	protected static $values = [];
 	protected static $tb_name;
-	protected static $inited_transaction = false; 
+	protected static $transaction_level = 0;
 	protected static $default_primary_key_name = 'id';
 
 	const INFOMIX    = 'infomix';
@@ -55,6 +55,15 @@ class DB
 		static::$default_primary_key_name = $name;
 	}
 
+	public static function connectionExists(string $id)
+	{
+		if ($id === null){
+			throw new \InvalidArgumentException("Empty connection identifier");
+		}
+
+		return isset(Config::get()['db_connections'][$id]);
+	}
+
 	public static function setConnection(string $id)
 	{
 		if ($id === null){
@@ -68,7 +77,7 @@ class DB
 		static::$current_id_conn = $id;
 	}
 
-    public static function getConnection(string $conn_id = null) {	
+    public static function getConnection($conn_id = null) {	
 		$config = Config::get();
 
 		$cc = count($config['db_connections']);
@@ -145,7 +154,12 @@ class DB
 						$pdo_opt);				
 					break;
 				case static::SQLITE:
+					// :memory: es un caso especial que no necesita path
+				if ($db_name === ':memory:') {
+					$db_file = ':memory:';
+				} else {
 					$db_file = Strings::contains(DIRECTORY_SEPARATOR, $db_name) ?  $db_name : STORAGE_PATH . $db_name;
+				}
 	
 					self::$connections[static::$current_id_conn] = new \PDO(
 						"sqlite:$db_file", /* DSN */
@@ -582,6 +596,18 @@ class DB
 		return $sql;
 	}
 
+	/*
+		Verifica si el driver soporta SAVEPOINT para transacciones anidadas
+	*/
+	protected static function supportsSavepoints(): bool {
+		try {
+			$drv = static::driver();
+		} catch (\Exception $e) {
+			return false;
+		}
+		return in_array($drv, [static::MYSQL, static::SQLITE, static::PGSQL]);
+	}
+
 	// SET autocommit=0;
 	static function disableAutoCommit(){
 		static::getConnection()->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
@@ -650,65 +676,111 @@ class DB
 	public static function beginTransaction(){
 		#dd("Solicitud de inicio de transacción para => ". static::getCurrentConnectionId());
 
-		if (static::$inited_transaction){
-			// don't start it again!
+		$conn = static::getConnection();
+
+		static::$transaction_level++;
+
+		if (static::$transaction_level === 1) {
+			// Primera transacción - usar BEGIN TRANSACTION
+			$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			$conn->beginTransaction();
 			return;
 		}
 
-		#dd("Inicio de transacción para => ". static::getCurrentConnectionId());
-
-		try {
-			static::getConnection()->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-			static::getConnection()->beginTransaction();
-
-			static::$inited_transaction = true;
-		} catch (\Exception $e){
-			
-		} finally {
-        	static::$inited_transaction = false;
-    	}		
+		// Transacción anidada - usar SAVEPOINT si el driver lo soporta
+		if (static::supportsSavepoints()) {
+			$savepoint = 'LEVEL_' . static::$transaction_level;
+			$conn->exec("SAVEPOINT {$savepoint}");
+		}
+		// Si no soporta savepoints, no hacemos nada - el rollback/commit anidado manejará el escenario
 	}
 
 	public static function commit(){
-		if (phpversion() >= 8){
-			return;
-		}
-
-		if (!static::$inited_transaction){
+		if (static::$transaction_level === 0){
 			// nothing to do
 			return;
 		}
 
-		static::getConnection()->commit();
-		static::$inited_transaction = false;
+		$conn = static::getConnection();
+
+		// Verificar si PDO realmente tiene una transacción activa
+		if (!$conn->inTransaction()){
+			// No hay transacción activa en esta conexión, resetear el contador
+			static::$transaction_level = 0;
+			return;
+		}
+
+		if (static::$transaction_level === 1) {
+			// Última transacción - hacer COMMIT
+			$conn->commit();
+			static::$transaction_level--;
+			return;
+		}
+
+		// Transacción anidada - liberar SAVEPOINT si el driver lo soporta
+		$savepoint = 'LEVEL_' . static::$transaction_level;
+		if (static::supportsSavepoints()) {
+			try {
+				$conn->exec("RELEASE SAVEPOINT {$savepoint}");
+			} catch (\Exception $e) {
+				// Si falla RELEASE podemos ignorarlo (se liberará en el commit final)
+			}
+		}
+		static::$transaction_level--;
 	}
 
 	public static function rollback(){
-		if (phpversion() >= 8){
-			return;
-		}
-
-		if (!static::$inited_transaction){
+		if (static::$transaction_level === 0){
 			// nothing to do
 			return;
 		}
 
-		static::getConnection()->rollback();
-		static::$inited_transaction = false;
+		$conn = static::getConnection();
+
+		// Verificar si PDO realmente tiene una transacción activa
+		if (!$conn->inTransaction()){
+			// No hay transacción activa en esta conexión, resetear el contador
+			static::$transaction_level = 0;
+			return;
+		}
+
+		if (static::$transaction_level === 1) {
+			// Última transacción - hacer ROLLBACK completo
+			$conn->rollback();
+			static::$transaction_level = 0;
+			return;
+		}
+
+		// Rollback a savepoint si el driver lo soporta, sino forzar rollback completo
+		$savepoint = 'LEVEL_' . static::$transaction_level;
+		if (static::supportsSavepoints()) {
+			try {
+				$conn->exec("ROLLBACK TO SAVEPOINT {$savepoint}");
+				// Opcionalmente liberar el savepoint tras el rollback
+				try {
+					$conn->exec("RELEASE SAVEPOINT {$savepoint}");
+				} catch (\Exception $inner) {
+					// ignorar si falla el release
+				}
+			} catch (\Exception $e) {
+				// Si falla el rollback to savepoint, forzar rollback total para evitar inconsistencias
+				$conn->rollback();
+				static::$transaction_level = 0;
+				return;
+			}
+		} else {
+			// No hay soporte de savepoints => forzar rollback completo
+			$conn->rollback();
+			static::$transaction_level = 0;
+			return;
+		}
+
+		static::$transaction_level--;
 	}
 
 	// https://github.com/laravel/framework/blob/4.1/src/Illuminate/DB/Connection.php#L417
 	public static function transaction(\Closure $callback)
-    {		
-		if (phpversion() >= 8){
-			return $callback();
-		}
-
-		if (static::$inited_transaction){
-			// don't start it again!
-			return;
-		}
-
+    {
 		static::beginTransaction();
 
 		try
@@ -716,7 +788,12 @@ class DB
 			$result = $callback();
 			static::commit();
 		}catch (\Exception $e){
-			static::rollBack();
+			// Envolver en try/catch para evitar excepciones anidadas
+			try {
+				static::rollback();
+			} catch (\Exception $inner) {
+				// ignorar errores en rollback, pero loguear si es posible
+			}
 			throw $e;
 		}
 
@@ -943,7 +1020,7 @@ class DB
 	
 		} finally {
 			// Restore previous connection
-			if (empty(!$current_id_conn)){
+			if (!empty($current_id_conn)){
 				static::setConnection($current_id_conn);
 			}
 		}

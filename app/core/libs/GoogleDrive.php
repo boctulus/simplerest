@@ -14,6 +14,8 @@ use Boctulus\Simplerest\Core\Libs\FileCache;
     Wrapper sobre el SDK de Google Drive
 
     @author Pablo Bozzolo < boctulus >
+
+    TODO: mover a package
 */
 class GoogleDrive
 {
@@ -279,7 +281,7 @@ class GoogleDrive
                 throw new \Exception("id is empty for '$link_or_id'");
             }
 
-            return null;
+            return false; // antes retornaba null
         }
 
         Files::mkDestination($destination);

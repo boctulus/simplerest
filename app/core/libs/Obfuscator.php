@@ -6,6 +6,8 @@ namespace Boctulus\Simplerest\Core\Libs;
     Pablo Bozzolo < boctulus@gmail.com >
 
     Wrapper sobre https://github.com/pk-fr/yakpro-po
+
+    TODO: mover a package
 */
 
 use Boctulus\Simplerest\Core\Libs\Files;

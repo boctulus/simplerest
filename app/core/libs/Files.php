@@ -422,14 +422,14 @@ class Files
 
         Ej:
 
-        static::processCSV($path, ',', true, function($row){
+        Files::processCSV($path, ',', true, function($row){
             // Procesamiento del row
             dd($row, 'ROW');
         });
 
 		o si el archivo no tiene cabecera se la puede especificar:
 
-		static::processCSV($archivo, ';', false, function($p) { 
+		Files::processCSV($archivo, ';', false, function($p) { 
 			dd($p, 'P (por procesar)');
 		}, [
 			'sku',
@@ -440,7 +440,7 @@ class Files
 
 		y aun si la tiene se pueden redefinir algunos campos:
 
-		static::processCSV($archivo, ';', true, function($p) { 
+		Files::processCSV($archivo, ';', true, function($p) { 
 			dd($p, 'P (por procesar)');
 		}, [
 			'SKU'            => 'sku',
@@ -452,7 +452,7 @@ class Files
 
 		Ej:
 		
-		static::processCSV($archivo, ';', false, function($p) { 
+		Files::processCSV($archivo, ';', false, function($p) { 
 			dd($p, 'P (por procesar)');
 		}, [
 			'sku',
@@ -463,7 +463,7 @@ class Files
 
 		o si el archivo tiene ya cabecera entonces asi:
 
-		static::processCSV($archivo, ';', true, function($p) { 
+		Files::processCSV($archivo, ';', true, function($p) { 
 			dd($p, 'P (por procesar)');
 		}, null ,36332,5); 
 
@@ -502,7 +502,7 @@ class Files
 				}
 	
 				if ($replace_spaces) {
-					$cabecera[$ix] = str_replace(' ', '-', $cabecera[$ix]);
+					//$cabecera[$ix] = str_replace(' ', '-', $cabecera[$ix]);
 				}
 			}
 	
