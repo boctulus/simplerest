@@ -1,18 +1,15 @@
 <?php
 
-use Boctulus\Simplerest\Core\Interfaces\IMigration;
+use Boctulus\Simplerest\Core\Libs\Migration;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Core\Libs\DB;
 
-class __NAME__ implements IMigration
+class __NAME__ extends Migration
 {
-    protected $table = '__TB_NAME__';
-
-    function __construct(){
-        ### CONSTRUCTOR
-    }
+    protected $table      = '__TB_NAME__';
+    protected $connection = null;
 
     /**
 	* Run migration.
@@ -22,6 +19,8 @@ class __NAME__ implements IMigration
     public function up()
     {
         ### UP
+
+        $sc = new Schema($this->table);
 
         $sc
         // ..

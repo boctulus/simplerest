@@ -144,4 +144,86 @@ class Config
 
         $target[] = $value;
     }
+
+    /**
+     * Load and merge package configuration
+     *
+     * Configuration is stored under: packages.{vendor}.{package}.*
+     *
+     * @param string $vendor Vendor name (e.g., 'boctulus')
+     * @param string $package Package name (e.g., 'zippy')
+     * @param array $config Package configuration array
+     * @return void
+     */
+    static function loadPackageConfig(string $vendor, string $package, array $config)
+    {
+        if (empty(static::$data)) {
+            static::setup();
+        }
+
+        $namespace = "packages.{$vendor}.{$package}";
+
+        // Store package config in its namespace
+        static::set($namespace, $config);
+    }
+
+    /**
+     * Get configuration from package or fallback to global
+     *
+     * @param string $vendor Vendor name
+     * @param string $package Package name
+     * @param string $key Configuration key
+     * @param mixed $default Default value if not found
+     * @return mixed
+     */
+    static function getPackageConfig(string $vendor, string $package, string $key, $default = null)
+    {
+        if (empty(static::$data)) {
+            static::setup();
+        }
+
+        // Try package-specific config first
+        $packageValue = static::get("packages.{$vendor}.{$package}.{$key}");
+
+        if ($packageValue !== null) {
+            return $packageValue;
+        }
+
+        // Fallback to global config
+        return static::get($key, $default);
+    }
+
+    /**
+     * Extract vendor and package name from controller class name
+     *
+     * @param string $className Full controller class name
+     * @return array|null ['vendor' => string, 'package' => string] or null if not a package
+     */
+    static function getPackageFromClass(string $className): ?array
+    {
+        // Expected format: Vendor\Package\Controllers\SomeController
+        // or: Boctulus\Zippy\Controllers\ZippyController
+
+        $parts = explode('\\', $className);
+
+        if (count($parts) < 3) {
+            return null;
+        }
+
+        $rootNamespace = static::get('namespace', 'Boctulus\\Simplerest');
+
+        // Check if it's not the main framework namespace
+        if (strpos($className, $rootNamespace) === 0) {
+            return null;
+        }
+
+        // Extract vendor and package (first two parts)
+        $vendor = strtolower($parts[0]);
+        $package = strtolower($parts[1]);
+
+        return [
+            'vendor' => $vendor,
+            'package' => $package
+        ];
+    }
 }

@@ -10,6 +10,9 @@ namespace Boctulus\Simplerest\Core\Libs;
     Pastebin: Pastebin is one of the most well-known pastebin services. While it does not provide an official API, there are third-party libraries and wrappers available that allow you to interact with Pastebin programmatically.
 
     Ghostbin: Ghostbin is another popular pastebin-like service that offers an API. It allows you to create, retrieve, and delete pastes. Ghostbin pastes can be public or password-protected.
+
+    TODO: mover a package
+
 */
 
 class Pastebin
