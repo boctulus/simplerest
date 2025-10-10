@@ -30,7 +30,9 @@
       "Bash(dir:*)",
       "Bash(del D:laragonwwwsimpleresttestsSampleTest.php)",
       "Bash(del D:laragonwwwsimpleresttestsExampleTest.php)",
-      "Read(//d/Desktop/ZIPPY FILES/exports/**)"
+      "Read(//d/Desktop/ZIPPY FILES/exports/**)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)"
     ],
     "deny": [],
     "ask": []
