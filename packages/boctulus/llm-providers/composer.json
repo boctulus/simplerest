@@ -1,0 +1,31 @@
+{
+    "name": "boctulus/llm-providers",
+    "description": "Unified interface for multiple LLM providers (OpenAI, Claude, and more)",
+    "type": "library",
+    "keywords": ["llm", "openai", "chatgpt", "claude", "anthropic", "ai", "machine-learning"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "boctulus",
+            "email": "boctulus@example.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\LLMProviders\\": "src/"
+        }
+    },
+    "extra": {
+        "simplerest": {
+            "providers": [
+                "Boctulus\\LLMProviders\\ServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    }
+}

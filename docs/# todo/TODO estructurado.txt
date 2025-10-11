@@ -1,0 +1,526 @@
+# TODO SimpleRest
+
+**Ruta:** `D:\laragon\WWW\simplerest\docs\# todo\TODO Simplerest.txt`
+
+---
+
+## 📋 Índice
+
+1. [Arquitectura y Módulos](#arquitectura-y-módulos)
+2. [Router y FrontController](#router-y-frontcontroller)
+3. [Query Builder](#query-builder)
+4. [Migraciones](#migraciones)
+5. [Documentación](#documentación)
+6. [Frontend](#frontend)
+7. [API y Modelado](#api-y-modelado)
+8. [Seguridad](#seguridad)
+9. [Validaciones](#validaciones)
+10. [Cache y Optimización](#cache-y-optimización)
+11. [Base de Datos](#base-de-datos)
+12. [Testing](#testing)
+13. [Deployment y DevOps](#deployment-y-devops)
+
+---
+
+## Arquitectura y Módulos
+
+### Modularización
+
+- [ ] Replicar lo que hecho en ZippyCart/FriendlyPOS con "módulos" y "componentes"
+  - La implementación actual que usa https://ticiwe.com/ debería encapsularse y dejarse como respaldo
+  - Es útil solo para Dashboard demasiado simples
+
+### UI Controllers y ViewModels
+
+- [ ] Considerar crear "UI controllers" acoplados a vistas concretas
+  - Permitirían fragmentos tipo Android
+  - Envío/recepción de datos usando WebSockets o SSE
+  - [Referencia](https://claude.ai/chat/2da02df7-b710-49b0-b42a-17a435233b49)
+
+- [ ] Implementar "ViewModels" para almacenar estado de vistas
+  - Las vistas deberían cargarse desde clases tipo "View" (equivalente a "Activity")
+  - Incluir "Fragment" con ciclo de vida
+  - Similar a Fragments y Activities de Android
+
+### EventBus
+
+- [ ] Mejorar el EventBus ([ChatGPT](https://chatgpt.com/c/67ff30f0-c16c-800d-af88-f71ca2292a09))
+  - **Limitaciones actuales:**
+    - Single Event Persistence (solo último valor)
+    - Synchronous Notification (bloquea ejecución)
+    - No hay mecanismo de acknowledgment o retry
+    - Falta queuing mechanism
+
+### Configuración
+
+- [ ] (Opcional) Convertir Config a versión sin uso de "static"
+  - Usar contenedor de dependencias inversas
+  - Obtener singleton
+
+- [ ] Crear clase ImmutableConfig como versión inmutable de Config
+  - [DeepSeek](https://chat.deepseek.com/a/chat/s/a8417cf5-7be3-4a5a-8eaa-71f0f61e286f)
+  - [Prompt Generator](http://simplerest.lan/prompt_generator#chat-784)
+
+---
+
+## Router y FrontController
+
+### Router Web
+
+- Ejecutar una a una las recomendaciones en `https://chatgpt.com/c/68ea0c72-f2b8-8324-9527-4d377418bd23`  (boctulus)
+
+### Middlewares
+
+- [ ] Poder recibir parámetros adicionales en Middlewares
+  ```php
+  router.put('/:id', isAuthenticated, canEditCategory, upload.single('image'), async (req, res) => { ... });
+  ```
+  - [ChatGPT](https://chatgpt.com/c/6875c42b-4a6c-800d-9cf0-2e7727e45033)
+
+- [ ] Agregar describe() para funciones anónimas en routers
+  ```php
+  CliRouter::set('sql-query', function () {
+    \DB::statement('your query');
+  })->describe('Execute SQL query');
+  ```
+
+### Bugs y Mejoras
+
+- [ ] Arreglar procesamiento de middlewares cuando no se especifica action con @
+  ```php
+  // Funciona
+  'Boctulus\Simplerest\Controllers\TestController@mid' => InyectarSaludo::class,
+  
+  // NO funciona
+  'Boctulus\Simplerest\Controllers\TestController' => InyectarSaludo::class,
+  ```
+  - [Prompt Generator](http://simplerest.lan/prompt_generator#chat-579)
+
+---
+
+## Query Builder
+
+### Funcionalidades Pendientes
+
+- [ ] Implementar insert() a nivel de Model con SubRecursos
+  - [Prompt Generator](http://simplerest.lan/prompt_generator#chat-427)
+  - [Test Insert](http://simplerest.lan/demos/model/test_insert_struct)
+  - `D:\laragon\www\Boctulus\Simplerest\app\controllers\TestInsertController.php`
+
+### Refactoring
+
+- [ ] Clarificar diferencias entre execution modes:
+  ```php
+  if ($this->executionMode != self::EXECUTION_MODE_SIMULATE)
+  // vs.
+  if ($this->exec)
+  ```
+
+- [ ] Decidir jerarquía de clases Exception
+
+### Adapter Pattern
+
+- [ ] Implementar "Adapter Pattern" para casos como inflector
+  - Evitar acoplamiento a paquetes específicos de Composer
+  - [DeepSeek](https://chat.deepseek.com/a/chat/s/8a543c0b-1e20-4771-a82b-035bf2dd506b)
+  - [Claude](https://claude.ai/chat/f89ff1ae-1995-4b52-bdb1-464481a5d40e)
+  - [Prompt Generator](http://simplerest.lan/prompt_generator#chat-338)
+
+---
+
+## Migraciones
+
+### Simulación
+
+- [ ] Con `--simulate` ejecutar migraciones en transacción con ROLLBACK o tablas temporales
+  ```bash
+  migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --fresh ] [ --retry ]
+  ```
+  - [ChatGPT](https://chatgpt.com/c/67da814a-e66c-800d-ba78-f573a930b22d)
+
+### Migración desde DTO
+
+- [ ] Permitir crear migración desde DTO
+  - Ejecutar migraciones en tablas temporales
+  - Comparar estructura final con DTO
+  - Generar migración automáticamente
+  ```bash
+  php com make migration --from_dto={archivo.php} --update
+  ```
+
+### Combinación de Parámetros
+
+- [ ] Permitir combinar `--dir=` + `--to` + `--file=`
+  ```bash
+  # Funciona
+  php com migrations migrate --to=edu --file=edu/2025_02_23_136560811_users_table.php
+  
+  # No funciona (todavía)
+  php com migrations migrate --dir=edu --to=edu --file=2025_02_23_136560811_users_table.php
+  ```
+
+### Error Handling
+
+- [ ] Mejorar información de errores en Exceptions
+  - Tipo de Exception
+  - Código de error
+  - Location (archivo:línea)
+
+### Generación de Schemas
+
+- [ ] Revisar generación de Schemas para PRIMARY KEY
+  ```php
+  'id_name' => 'id',
+  'primary' => ['id'],
+  'autoincrement' => 'id',
+  'nullable' => ['id', 'created_at', 'updated_at'], // ¿Por qué id es nullable?
+  'required' => ['shopify_product_id'],
+  'uniques' => ['shopify_product_id'],
+  ```
+
+---
+
+## Documentación
+
+### DocBlocks
+
+- [ ] Documentar funciones con @param y @return (PHPdoc)
+  - [Claude](https://claude.ai/chat/50494670-fb32-46ce-b519-41f4903f5bdf)
+  - Plan:
+    1. Procesar cada clase listando métodos
+    2. Generar DocBlock usando Reflector::generateDocBlock()
+    3. Pasar a IA para completar
+    4. Insertar quirúrgicamente sin tocar código
+
+### Herramientas de Documentación
+
+- [ ] Enfoque híbrido Starlight + Doxygen
+  - Doxygen para documentación técnica desde código
+  - Starlight para documentación alto nivel
+  - Vincular ambas documentaciones
+
+- [ ] Generar documentación con Doxygen
+  - [GitHub](https://github.com/doxygen/doxygen)
+
+### Referencias
+
+- [ ] Complementar con documentación existente en .txt
+- [ ] Revisar docs de otros frameworks:
+  - [CodeIgniter](https://codeigniter.com/user_guide/cli/cli_library.html)
+  - [Laravel](https://laravel.com/docs/9.x/validation#rule-string)
+  - [IBM](https://www.ibm.com/docs/en/iis/11.7?topic=content-running-referential-integrity-analysis)
+
+### Testing Progress
+
+- [ ] Documentar progreso de pruebas unitarias
+  - [Video](https://youtu.be/GgLIp1aWi1s?si=9zpMLkj2FogKJPMV&t=180)
+  - [ChatGPT](https://chatgpt.com/c/678cc032-afe4-800d-a933-e6a97f41e4d1)
+  - Herramientas sugeridas:
+    - Istanbul/NYC (JavaScript/TypeScript)
+    - Codecov.io / Coveralls
+    - Jest HTML Reporter
+    - SonarQube
+
+---
+
+## Frontend
+
+### Modularización
+
+- [ ] Terminar generador de front
+- [ ] Incorporar switches del plugin "Import quoter cl"
+- [ ] Agregar Dropdown sub-menu
+- [ ] Construir formularios responsivos desde arrays
+
+### Componentes UI
+
+- [ ] Implementar campos tipo:
+  - Dropdown (select-option)
+  - Radio
+  - Checkboxes
+  - TinyMCE
+  - File upload
+  - Image upload (con thumbnails)
+  - Gallery image upload
+  - Date picker
+  - Time picker
+  - DateTime picker
+
+### DataTables
+
+- [ ] Centrar contenidos de celdas alineados con cabeceras Tabulator
+- [ ] Agregar checkbox para "seleccionar todos"
+- [ ] Ocultar botón "Delete" hasta seleccionar registros
+- [ ] Reemplazar 3 botones por row con "..." desplegable
+- [ ] Depreciar edición inline por defecto
+- [ ] Implementar modo "view" al click en row
+
+### Assets y Build
+
+- [ ] Permitir assets en módulos/packages
+  - Despliegue en `./public/assets` con build script
+  - Modificar referencias dinámicamente
+  - [ChatGPT](https://chatgpt.com/c/66fb5fee-dc08-800d-9d47-bd337cf0c0b6)
+
+---
+
+## API y Modelado
+
+### Documentadores
+
+- [ ] Generar documentación en RAML
+  - [RAML](https://raml.org/developers/design-your-api)
+  - [YouTube](https://www.youtube.com/watch?v=vaWvVilZtZw)
+
+- [ ] Implementar Swagger-UI
+  - [Medium](https://medium.com/@tatianaensslin/how-to-add-swagger-ui-to-php-server-code-f1610c01dc03)
+  - [Styde](https://styde.net/como-documentar-una-api-en-laravel-usando-swagger/)
+
+- [ ] Usar readme.com para documentación
+  - Ejemplo: [Alegra](https://developer.alegra.com/reference/get_variant-attributes)
+
+### Composer
+
+- [ ] Resolver problemas con PSR-4/PSR-0
+  - Múltiples warnings de autoloading
+  - Clases con nombres incorrectos
+  - Templates con __NAME__
+
+### Service Workers
+
+- [ ] Generar Constants para rutas compatibles con SW
+- [ ] Permitir acceso directo a assets en módulos
+- [ ] Build script para deploy en `./public/assets`
+
+---
+
+## Seguridad
+
+### Crítico
+
+- [ ] Request y Response deben usar métodos de clase para concurrencia
+  - [ChatGPT](https://chatgpt.com/c/66e8fb29-9d10-800d-9a61-5d8284942006)
+
+- [ ] Revisar dependencias con problemas de seguridad en composer.json
+
+### Headers
+
+- [ ] Enviar headers de seguridad correctos:
+  ```php
+  header('X-Content-Type-Options:nosniff');
+  header('X-Frame-Options:SAMEORIGIN');
+  header('X-XSS-Protection:1;mode=block');
+  ```
+
+### Tokens
+
+- [ ] Implementar invalidación de tokens
+  - Tabla `access_tokens`
+  - Tabla `access_token_blacklist`
+  - Endpoint `/api/auth/revoke`
+  - Invalidar todos cambiando secret key
+  - Refresh tokens max 30/90/200 días
+
+---
+
+## Cache y Optimización
+
+### Performance Máxima
+
+- [ ] Testear en Nginx, LiteSpeed y Apache
+- [ ] Zipear respuestas HTTP
+- [ ] Usar PHP-FPM (opcode caching)
+- [ ] Implementar OPCache
+- [ ] Memcached / Redis
+- [ ] Cachear views de componentes
+- [ ] Usar framework frontend reactivo
+- [ ] Procedimientos almacenados
+- [ ] Cursores a nivel DB
+- [ ] Indexación correcta
+- [ ] Paginación eficiente (seek method)
+- [ ] HTTP 2.0 y 3.0
+- [ ] Lectura de archivos en chunks
+- [ ] Implementar Swoole
+- [ ] Generadores y fibras
+- [ ] Clusters MySQL
+- [ ] CDNs (Cloudflare)
+- [ ] Minificar CSS/JS/HTML
+- [ ] Optimizar Google Fonts
+- [ ] Lazy-load imágenes
+- [ ] defer/async en JS
+- [ ] Preloading assets
+- [ ] Sphinx para FULL SEARCH
+
+### Build Process
+
+- [ ] Implementar build simple con GULP
+  - Copiar archivos
+  - Minimizar CSS/JavaScript
+  - Compilar preprocesadores
+  - Optimizar imágenes
+  - Source maps
+
+---
+
+## Base de Datos
+
+### Multi-tenant
+
+- [ ] Options: get_option() y set_option por scope de DB
+- [ ] Securitizar tenant_id (hash sobre conexión)
+- [ ] Asociar tenants a dominios/subdominios + puerto
+
+### Soporte
+
+- [ ] JSON completo
+- [ ] Transients (DB, archivos, REDIS, Memcached)
+- [ ] CSV a migraciones
+- [ ] Seeders
+- [ ] Store Procedures
+- [ ] Cursors
+- [ ] Views (read-only)
+- [ ] Tablas temporales
+- [ ] PostgreSQL completo
+- [ ] SQLite optimizado
+
+---
+
+## Testing
+
+### Unit Testing
+
+- [ ] Actualizar y mantener pruebas
+- [ ] Event hooks (modelos, API)
+- [ ] Comparar impersonate vs login
+- [ ] Comparar con Laravel Query Builder
+
+### Stress Testing
+
+- [ ] JMeter
+- [ ] RESTful Stress
+- [ ] Apache JMeter config
+- [ ] Métricas con telegraf + influxdb + grafana
+
+---
+
+## Deployment y DevOps
+
+### Docker
+
+- [ ] docker-compose para SimpleRest + phpmyadmin
+- [ ] Implementar "Laravel Sail" equivalente
+- [ ] Nginx container
+- [ ] Testing environments
+
+### CI/CD
+
+- [ ] GitHub Actions para:
+  - Ejecutar migraciones automáticamente
+  - Tests automatizados
+  - Deploy automático
+
+### Monitoring
+
+- [ ] Implementar logging avanzado
+- [ ] Laravel Telescope equivalente
+- [ ] Métricas de performance
+- [ ] Error tracking
+
+---
+
+## Comandos Pendientes
+
+### Make Commands
+
+```bash
+# Models, Controllers, etc.
+php com make controller {name} --module={module}
+php com make model {name} --module={module}
+
+# Discovery
+php com make discovery
+
+# Packages
+php com make package {name}
+
+# Updates
+php com make update {name}
+
+# Forms
+php com make form-control
+
+# CRUD desde consola
+php com crud {table} --list
+php com crud {table} --find={id}
+php com crud {table} --delete
+```
+
+### Database Commands
+
+```bash
+php com db list
+php com db list --tables
+php com db import --path=
+php com db import --file=
+```
+
+### Routes Commands
+
+```bash
+php com routes list
+php com routes find "{string}"
+```
+
+---
+
+## Packages a Convertir
+
+### Core a Packages
+
+- [ ] SendinBlue → Package
+- [ ] FacebookConnect / GoogleConnect → Package
+- [ ] Obfuscator → Package
+- [ ] laravelGenerator → Package
+- [ ] PostmanGenerator → Package
+- [ ] GoogleMaps → Package
+- [ ] Collections (Laravel wrapper)
+- [ ] Carbon (DateTime extension)
+
+### Nuevo Package System
+
+- [ ] Framework como package privado Composer
+- [ ] Service Providers con autodiscovery
+- [ ] Vendor:publish para configuración
+
+---
+
+## Prioridades TOP
+
+### Crítico
+
+1. **Concurrencia**: Request/Response métodos de clase
+2. **Seguridad**: Dependencias vulnerables
+3. **Tokens**: Sistema de invalidación
+4. **Cache**: REDIS implementación
+5. **Tests**: Actualizar suite completa
+
+### Alto
+
+6. **Documentación**: DocBlocks completos
+7. **Frontend**: Generador completo
+8. **API**: HATEOAS implementación
+9. **Migraciones**: Auto-migración DTO
+10. **Performance**: Optimizaciones críticas
+
+---
+
+## Notas Finales
+
+- **Versión actual**: Evaluar según semver
+- **Roadmap**: Priorizar según impacto/esfuerzo
+- **Breaking changes**: Planificar para v2.0
+- **Deprecations**: Documentar y alertar
+
+---
+
+*Generado desde: `D:\laragon\WWW\simplerest\docs\# todo\TODO Simplerest.txt`*

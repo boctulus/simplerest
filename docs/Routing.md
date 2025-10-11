@@ -716,6 +716,36 @@ php com zippy importer check-dupes
 php com zippy csv comercio
 ```
 
+### Ejemplo Completo: Package LLM-Providers
+
+#### Rutas CLI (`packages/boctulus/llm-providers/config/cli_routes.php`):
+
+```php
+<?php
+
+use Boctulus\Simplerest\Core\CliRouter;
+
+CliRouter::group('llm', function() {
+    // Ollama
+    CliRouter::command('ollama:prompt', 'Boctulus\LLMProviders\Controllers\LlmController@ollama_prompt');
+    CliRouter::command('ollama:list', 'Boctulus\LLMProviders\Controllers\LlmController@ollama_list');
+});
+```
+
+#### Uso:
+
+```bash
+# Listar modelos de Ollama
+php com llm ollama:list
+
+# Enviar un prompt a Ollama con el modelo por defecto
+php com llm ollama:prompt "¿Cuál es la capital de Francia?"
+
+# Enviar un prompt a Ollama especificando un modelo
+php com llm ollama:prompt "Escribe un poema sobre la IA" "mistral"
+```
+
+
 ---
 
 ## Front Controller
