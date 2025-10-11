@@ -917,8 +917,12 @@ trait QueryBuilderTrait
 		return $this->random();
 	}
 
-	function select(array $fields)
+	function select($fields)
 	{
+		if (is_string($fields)) {
+			$fields = array_map('trim', explode(',', $fields));
+		}
+
 		$this->fields = $fields;
 		return $this;
 	}
@@ -929,7 +933,7 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function selectRaw(string $q, array $vals = null)
+	function selectRaw(string $q, $vals = null)
 	{
 		if (substr_count($q, '?') != count((array) $vals))
 			throw new \InvalidArgumentException("Number of ? are not consitent with the number of passed values");
@@ -951,7 +955,7 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function whereRaw(string $q, array $vals = null)
+	function whereRaw(string $q, $vals = null)
 	{
 		$qm = substr_count($q, '?');
 
@@ -1140,7 +1144,12 @@ trait QueryBuilderTrait
 			}
 
 			if ($this->distinct) {
-				$remove = [$this->schema['id_name']];
+				$remove = [];
+
+				// Verificar que el schema no sea null antes de acceder
+				if ($this->schema !== null && isset($this->schema['id_name'])) {
+					$remove[] = $this->schema['id_name'];
+				}
 
 				if ($this->inSchema([$this->createdAt]))
 					$remove[] = $this->createdAt;
