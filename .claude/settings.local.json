@@ -36,7 +36,11 @@
       "Bash(./vendor/bin/phpunit:*)",
       "Read(//d/laragon/www/simplerest/app/Core/**)",
       "Read(//d/laragon/www/simplerest/packages/boctulus/web-test/**)",
-      "Read(//d/laragon/www/simplerest/tests/**)"
+      "Read(//d/laragon/www/simplerest/tests/**)",
+      "Read(//d/laragon/www/simplerest/config/**)",
+      "Read(//d/laragon/www/simplerest/**)",
+      "Bash(del D:laragonwwwsimpleresttestsDebugCalculatorRouteTest.php)",
+      "Bash(del D:laragonwwwsimpleresttestsDebugWebRouterInternalsTest.php)"
     ],
     "deny": [],
     "ask": []
