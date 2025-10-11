@@ -42,7 +42,11 @@
       "Bash(del D:laragonwwwsimpleresttestsDebugCalculatorRouteTest.php)",
       "Bash(del D:laragonwwwsimpleresttestsDebugWebRouterInternalsTest.php)",
       "Bash(del:*)",
-      "Bash(del \"D:\\laragon\\WWW\\simplerest\\app\\Core\\Interfaces\\AIChat.php\")"
+      "Bash(del \"D:\\laragon\\WWW\\simplerest\\app\\Core\\Interfaces\\AIChat.php\")",
+      "Bash(ollama list:*)",
+      "Bash(ollama pull:*)",
+      "Bash(composer:*)",
+      "Bash(move:*)"
     ],
     "deny": [],
     "ask": []

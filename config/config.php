@@ -247,16 +247,17 @@ return [
 		'use_gettext' => false
 	],
 
-	/*
-		Service Providers
-	*/
-
-	'providers' => [
-		Boctulus\Simplerest\FineGrainedACL\FineGrainedAclServiceProvider::class,
+	    /*
+	        Service Providers
+	    */
+	
+	    'providers' => [
+	        Boctulus\DummyApi\ServiceProvider::class,		Boctulus\Simplerest\FineGrainedACL\FineGrainedAclServiceProvider::class,
 		//Boctulus\Simplerest\BasicACL\BasicAclServiceProvider::class
 		Boctulus\Zippy\ServiceProvider::class,
 		Boctulus\CliTest\ServiceProvider::class,
 		Boctulus\WebTest\ServiceProvider::class,
+		Boctulus\LLMProviders\ServiceProvider::class,
 		// ...
 		//boctulus\hello_world\HelloServiceProvider::class
 	],

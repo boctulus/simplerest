@@ -7,7 +7,7 @@ use Boctulus\Simplerest\Core\Controllers\Controller;
 
 class LlmController extends Controller
 {
-    public function ollama_prompt($prompt = '¿Qué es PHP?', $model = 'llama2')
+    public function ollama_prompt($prompt = '¿Qué es PHP?', $model = 'qwen2.5:1.5b')
     {
         $llm = LLMFactory::ollama();
 

@@ -98,6 +98,7 @@ public function exec(?string $model = null): array
     $data = array_merge([
         'model' => $modelToUse,
         'prompt' => $prompt,
+        'stream' => false,  // Deshabilitar streaming para obtener respuesta completa
     ], $this->params);
 
     try {
@@ -132,7 +133,14 @@ public function exec(?string $model = null): array
 public function getContent(bool $decode = true)
 {
     if (!empty($this->error_msg)) return false;
-    return $this->response['data']['text'] ?? null;
+
+    // Con stream: false, Ollama devuelve un solo JSON con el campo 'response'
+    // ApiClient wraps the response in data->data
+    if (isset($this->response['data']['data']['response'])) {
+        return $this->response['data']['data']['response'];
+    }
+
+    return null;
 }
 
 public function getTokenUsage(): ?array
@@ -168,9 +176,22 @@ public function error()
 public function listModels(): array
 {
     try {
-        $this->client->get('/api/models');
+        $this->client->get('/api/tags');
         $resp = $this->client->getResponse();
-        if (is_string($resp)) $resp = json_decode($resp, true);
+
+        // Procesar la respuesta
+        if (is_array($resp) && isset($resp['data'])) {
+            $data = $resp['data'];
+            if (is_string($data)) {
+                $data = json_decode($data, true);
+            }
+            return $data['models'] ?? [];
+        }
+
+        if (is_string($resp)) {
+            $resp = json_decode($resp, true);
+        }
+
         return $resp['models'] ?? [];
     } catch (\Exception $e) {
         throw new ProviderException(
