@@ -40,7 +40,9 @@
       "Read(//d/laragon/www/simplerest/config/**)",
       "Read(//d/laragon/www/simplerest/**)",
       "Bash(del D:laragonwwwsimpleresttestsDebugCalculatorRouteTest.php)",
-      "Bash(del D:laragonwwwsimpleresttestsDebugWebRouterInternalsTest.php)"
+      "Bash(del D:laragonwwwsimpleresttestsDebugWebRouterInternalsTest.php)",
+      "Bash(del:*)",
+      "Bash(del \"D:\\laragon\\WWW\\simplerest\\app\\Core\\Interfaces\\AIChat.php\")"
     ],
     "deny": [],
     "ask": []
