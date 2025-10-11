@@ -18,6 +18,7 @@
    "require":{
       "php":">=7.4,<8.4",      
       "vlucas/phpdotenv": "^5.2",
+      "boctulus/dummyapi": "@dev",
       "simplerest/shopifyconnector": "@dev",
 		"nikic/php-parser": "^5.4",
 		"doctrine/inflector": "^2.0",
@@ -48,6 +49,13 @@
     {
         "type": "path",
         "url": "packages/simplerest/shopifyconnector",
+        "options": {
+            "symlink": true
+        }
+    },
+    {
+        "type": "path",
+        "url": "packages/boctulus/dummyapi",
         "options": {
             "symlink": true
         }
