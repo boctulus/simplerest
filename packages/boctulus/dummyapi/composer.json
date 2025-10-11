@@ -1,0 +1,18 @@
+{
+    "name": "boctulus/dummyapi",
+    "description": "Package DummyApi by boctulus",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\Dummyapi\\": "src/"
+        }
+    },
+    "extra": {
+        "simplerest": {
+            "providers": [
+                "Boctulus\\Dummyapi\\ServiceProvider"
+            ]
+        }
+    },
+    "require": {}
+}
