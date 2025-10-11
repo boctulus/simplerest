@@ -9,6 +9,7 @@ use Boctulus\Simplerest\Core\WebRouter;
 use Boctulus\Simplerest\Libs\Debug;
 use Boctulus\Simplerest\Modules\TaxCalc\TaxCalc;
 use Boctulus\Simplerest\Modules\Typeform\Typeform;
+use Boctulus\Simplerest\Modules\FirebaseTest\FirebaseTest;
 
 
 $route = WebRouter::getInstance();
@@ -84,6 +85,56 @@ WebRouter::get("typeform", function() use ($route) {
 
 WebRouter::post("typeform/process", function() use ($route) {
 	render(Typeform::process());
+});
+
+
+// Firebase Test Module Routes
+WebRouter::get("firebase-test", function() use ($route) {
+	set_template('templates/tpl_bt3.php');
+	$module = new FirebaseTest();
+	render($module->index());
+});
+
+WebRouter::get("firebase-test/config", function() use ($route) {
+	set_template('templates/tpl_bt3.php');
+	$module = new FirebaseTest();
+	render($module->show_config());
+});
+
+WebRouter::get("firebase-test/firestore", function() use ($route) {
+	set_template('templates/tpl_bt3.php');
+	$module = new FirebaseTest();
+	render($module->test_firestore());
+});
+
+WebRouter::get("firebase-test/auth", function() use ($route) {
+	set_template('templates/tpl_bt3.php');
+	$module = new FirebaseTest();
+	render($module->test_auth());
+});
+
+WebRouter::post("firebase-test/auth", function() use ($route) {
+	set_template('templates/tpl_bt3.php');
+	$module = new FirebaseTest();
+	render($module->test_auth());
+});
+
+WebRouter::get("firebase-test/realtime-db", function() use ($route) {
+	set_template('templates/tpl_bt3.php');
+	$module = new FirebaseTest();
+	render($module->test_realtime_db());
+});
+
+WebRouter::get("firebase-test/storage", function() use ($route) {
+	set_template('templates/tpl_bt3.php');
+	$module = new FirebaseTest();
+	render($module->test_storage());
+});
+
+WebRouter::post("firebase-test/storage", function() use ($route) {
+	set_template('templates/tpl_bt3.php');
+	$module = new FirebaseTest();
+	render($module->test_storage());
 });
 
 
