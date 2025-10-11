@@ -103,7 +103,7 @@ WebRouter::group('test-params', function() {
         switch($op) {
             case 'add': $result = $a + $b; break;
             case 'sub': $result = $a - $b; break;
-            case 'mul': $result = $a * $b; break;
+            case 'mul': $result = $a * $b; break; // Ej: /test-params/calc/3/mul/7
             case 'div': $result = $b != 0 ? $a / $b : 'Error: Division by zero'; break;
         }
         return json_encode([
@@ -112,5 +112,5 @@ WebRouter::group('test-params', function() {
             'b' => $b,
             'result' => $result
         ]);
-    })->where(['a' => '[0-9]+', 'op' => '(add|sub|mul|div)', 'b' => '[0-9]+']);
+    })->where(['a' => '[0-9]+', 'op' => 'add|sub|mul|div', 'b' => '[0-9]+']);
 });

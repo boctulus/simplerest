@@ -103,6 +103,8 @@ Por defecto copiaria solo archivos mas nuevos pero con --force seria de cualquie
 
 # Router
 
+- Ejecutar una a una las recomendaciones en `https://chatgpt.com/c/68ea0c72-f2b8-8324-9527-4d377418bd23`  (boctulus)
+
 - Al router de SR le falta poder de alguna forma recibir parametros adicionales que especifican Middlewares como es en NodeJs con ExpresJs:
 
   router.put('/:id', isAuthenticated, canEditCategory, upload.single('image'), async (req, res) => { ... });
