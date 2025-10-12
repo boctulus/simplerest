@@ -193,3 +193,4 @@
 [2025-10-12 14:28:59]	0.8.12	php com make migrations:module
 [2025-10-12 14:38:42]	0.8.12	comandos migrations migrate:module y migrations migrate:package
 [2025-10-12 14:58:27]	0.8.12	HELP improved
+[2025-10-12 15:16:45]	0.8.12	controller:package, controller:module, etc

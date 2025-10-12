@@ -8,7 +8,7 @@ use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
 
-class ZippyUsersController extends Controller
+class FirebaseTestController extends Controller
 {
     protected $firebaseApiKey;
 
