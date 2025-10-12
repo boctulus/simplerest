@@ -9,13 +9,13 @@ use Boctulus\Simplerest\Core\Libs\DB;
 class Categories extends Migration
 {
     protected $table      = 'categories';
-    protected $connection = null;
+    protected $connection = 'zippy';
 
-    /**
-	* Run migration.
-    *
-    * @return void
-    */
+   /**
+     * Run migration.
+     *
+     * @return void
+     */
     public function up()
     {
         ### UP
@@ -23,25 +23,30 @@ class Categories extends Migration
         $sc = new Schema($this->table);
 
         $sc
-        ->integer('id')->auto()->pri()
-        // ->varchar('name')
-		// ...
+        ->varchar('id', 21)->pri()
+        ->varchar('name', 150)->notNullable()
+        ->varchar('slug', 150)->unique()
+        ->varchar('image_url', 255)->nullable()
+        ->integer('store_id')->nullable()
+        ->integer('parent_id')->nullable()
+        ->varchar('parent_slug', 150)->nullable()
         ->datetimes();
 
         $sc->create();
     }
 
     /**
-	* Run undo migration.
-    *
-    * @return void
-    */
+     * Run undo migration.
+     *
+     * @return void
+     */
     public function down()
     {
         ### DOWN
 
         Schema::dropIfExists($this->table);
     }
+
 }
 
 
