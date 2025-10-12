@@ -62,6 +62,7 @@ class ApiClient
 
     // Request
     protected $url;
+    protected $base_url;
     protected $verb;
     protected $req_headers;
     protected $options = [];
@@ -153,7 +154,7 @@ class ApiClient
 
         $mock puede ser la ruta a un archivo .json, .php o un array
     */
-    function mock($mock, bool $ignore_empty = false)
+    function mock($mock, int $http_code = 200, bool $ignore_empty = false)
     {   
         if (!$ignore_empty && empty($mock)){
             throw new \Exception("Empty mock!");
@@ -180,6 +181,7 @@ class ApiClient
         // }
 
         $this->response = $mock;
+        $this->status   = $http_code;
         $this->mocked   = true;
 
         if ($this->auto_decode == false){
@@ -187,6 +189,8 @@ class ApiClient
                 $this->response = json_encode($this->response);
             }
         }
+
+        return $this;
     }
 
     function dump(){
@@ -235,10 +239,15 @@ class ApiClient
         $this->url = Url::normalize($url);
         return $this;
     }
-    
+
     // alias
     function url($url){
         return $this->setUrl($url);
+    }
+
+    function setBaseUrl($url){
+        $this->base_url = rtrim(Url::normalize($url), '/');
+        return $this;
     }
 
     function useCookieJar(){
@@ -894,18 +903,28 @@ class ApiClient
         return $this;
     }
 
-    function get($url = null, $headers = null, $options = null){    
-        $url = $this->url ?? $url;
+    function get($url = null, $headers = null, $options = null){
+        // Si hay base_url y $url empieza con /, concatenar
+        if (!empty($this->base_url) && $url !== null && $url[0] === '/') {
+            $url = $this->base_url . $url;
+        } else {
+            $url = $this->url ?? $url;
+        }
 
         if ($url === null){
             throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . " or constructor or setUrl()");
         }
-        
+
         return $this->request($url, 'GET', null, $headers, $options);
     }
 
     function delete($url = null, $headers = null, $options = null){
-        $url = $this->url ?? $url;
+        // Si hay base_url y $url empieza con /, concatenar
+        if (!empty($this->base_url) && $url !== null && $url[0] === '/') {
+            $url = $this->base_url . $url;
+        } else {
+            $url = $this->url ?? $url;
+        }
 
         if ($url === null){
             throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . " or constructor or setUrl()");
@@ -915,8 +934,14 @@ class ApiClient
     }
 
     function post($url = null, $body = null, $headers = null, $options = null){
-        $url  = $this->url ?? $url;
-        $body = $body      ?? $this->body ?? null;
+        // Si hay base_url y $url empieza con /, concatenar
+        if (!empty($this->base_url) && $url !== null && $url[0] === '/') {
+            $url = $this->base_url . $url;
+        } else {
+            $url  = $this->url ?? $url;
+        }
+
+        $body = $body ?? $this->body ?? null;
 
         if ($url === null){
             throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . "() or constructor or setUrl()");
@@ -926,7 +951,12 @@ class ApiClient
     }
 
     function put($url = null, $body = null, $headers = null, $options = null){
-        $url = $this->url ?? $url;
+        // Si hay base_url y $url empieza con /, concatenar
+        if (!empty($this->base_url) && $url !== null && $url[0] === '/') {
+            $url = $this->base_url . $url;
+        } else {
+            $url = $this->url ?? $url;
+        }
 
         if ($url === null){
             throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . " or constructor or setUrl()");
@@ -936,7 +966,12 @@ class ApiClient
     }
 
     function patch($url = null, $body = null, $headers = null, $options = null){
-        $url = $this->url ?? $url;
+        // Si hay base_url y $url empieza con /, concatenar
+        if (!empty($this->base_url) && $url !== null && $url[0] === '/') {
+            $url = $this->base_url . $url;
+        } else {
+            $url = $this->url ?? $url;
+        }
 
         if ($url === null){
             throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . " or constructor or setUrl()");

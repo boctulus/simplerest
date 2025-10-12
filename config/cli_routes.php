@@ -181,8 +181,7 @@ CliRouter::command('firebase:test-all', function() {
         $output .= "   ✗ Firestore Error: " . $e->getMessage() . "\n";
     }
 
-    // Test 3: Realtime Database
-    $output .= "\n3. Testing Realtime Database...\n";
+    // Test 3: Realtime Database\n";
     try {
         $firebase = (new \Kreait\Firebase\Factory)->withProjectId(env('FIREBASE_PROJECT_ID'));
         $database = $firebase->createDatabase();
@@ -193,8 +192,7 @@ CliRouter::command('firebase:test-all', function() {
         $output .= "   ✗ Realtime Database Error: " . $e->getMessage() . "\n";
     }
 
-    // Test 4: Authentication
-    $output .= "\n4. Testing Authentication...\n";
+    // Test 4: Authentication\n";
     try {
         $firebase = (new \Kreait\Firebase\Factory)->withProjectId(env('FIREBASE_PROJECT_ID'));
         $auth = $firebase->createAuth();
