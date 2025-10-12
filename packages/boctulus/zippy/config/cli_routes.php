@@ -35,6 +35,7 @@ CliRouter::group('zippy', function() {
 
     // Category commands
     CliRouter::group('category', function() {
-        CliRouter::command('list', 'Boctulus\Zippy\Controllers\CategoryController@list_categories');
+        // php com zippy category list
+        CliRouter::command('list', 'Boctulus\Zippy\Controllers\CategoryController@list_categories'); 
     });
 });
