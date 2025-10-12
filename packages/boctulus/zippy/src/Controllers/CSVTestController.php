@@ -8,7 +8,7 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\Simplerest\Core\Traits\TimeExecutionTrait;
 
-class ZippyController extends Controller
+class CSVTestController extends Controller
 {
     function read_csv_comercio()
     {

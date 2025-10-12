@@ -22,15 +22,15 @@ CliRouter::group('zippy', function() {
 
     // CSV reader commands
     CliRouter::group('csv', function() {
-        CliRouter::command('comercio', 'Boctulus\Zippy\Controllers\ZippyController@read_csv_comercio');
-        CliRouter::command('products', 'Boctulus\Zippy\Controllers\ZippyController@read_csv_products');
-        CliRouter::command('sucursales', 'Boctulus\Zippy\Controllers\ZippyController@read_csv_sucursales');
+        CliRouter::command('comercio', 'Boctulus\Zippy\Controllers\CSVTestController@read_csv_comercio');
+        CliRouter::command('products', 'Boctulus\Zippy\Controllers\CSVTestController@read_csv_products');
+        CliRouter::command('sucursales', 'Boctulus\Zippy\Controllers\CSVTestController@read_csv_sucursales');
     });
 
     // Users commands
     CliRouter::group('users', function() {
-        CliRouter::command('index', 'Boctulus\Zippy\Controllers\ZippyUsersController@index');
-        CliRouter::command('login', 'Boctulus\Zippy\Controllers\ZippyUsersController@login');
+        CliRouter::command('index', 'Boctulus\Zippy\Controllers\FirebaseTestController@index');
+        CliRouter::command('login', 'Boctulus\Zippy\Controllers\FirebaseTestController@login');
     });
 
     // Category commands
