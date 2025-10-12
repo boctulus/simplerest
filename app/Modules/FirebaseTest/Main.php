@@ -8,27 +8,77 @@ use Boctulus\Simplerest\Core\Libs\Module;
 use Boctulus\Simplerest\Core\Libs\Env;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
+use Kreait\Firebase\Http\HttpClientOptions;
 
 class FirebaseTest extends Module
 {
     protected $firebase;
+    protected $logFile;
+    protected $useRestTransport = false; // Cambiar a true para forzar REST
 
     function __construct(){
         parent::__construct();
+
+        // Configurar logging
+        $this->logFile = __DIR__ . '/logs/firebase_debug.log';
+        $this->setupErrorHandlers();
+
         $this->initializeFirebase();
     }
 
     /**
-     * Inicializa la conexión con Firebase
+     * Configura handlers globales de errores y logging
+     */
+    protected function setupErrorHandlers()
+    {
+        // Crear directorio de logs si no existe
+        $logDir = dirname($this->logFile);
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0755, true);
+        }
+
+        // Configuración de errores PHP
+        error_reporting(E_ALL);
+        ini_set('display_errors', '1'); // En producción usar '0' y solo log
+        ini_set('log_errors', '1');
+        ini_set('error_log', $this->logFile);
+
+        // Error handler personalizado
+        set_error_handler(function($severity, $message, $file, $line) {
+            $this->logError("[PHP ERROR] $message in $file:$line (severity: $severity)");
+            return false; // Permitir comportamiento normal después
+        });
+
+        // Shutdown function para capturar errores fatales
+        register_shutdown_function(function() {
+            $err = error_get_last();
+            if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+                $this->logError("[SHUTDOWN ERROR] " . print_r($err, true));
+            }
+        });
+    }
+
+    /**
+     * Log helper para escribir mensajes de debug/error
+     */
+    protected function logError($message, $context = [])
+    {
+        $timestamp = date('Y-m-d H:i:s');
+        $contextStr = !empty($context) ? ' | Context: ' . json_encode($context) : '';
+        $logMessage = "[$timestamp] $message$contextStr\n";
+
+        error_log($logMessage, 3, $this->logFile);
+    }
+
+    /**
+     * Inicializa la conexión con Firebase con opciones avanzadas
      */
     protected function initializeFirebase()
     {
         try {
-            // Método 1: Usando Service Account credentials
-            // Si tienes un archivo JSON de credenciales
-            // $this->firebase = (new Factory)->withServiceAccount(__DIR__ . '/config/firebase-credentials.json');
+            $this->logError("[INIT] Iniciando Firebase...");
 
-            // Método 2: Usando credenciales desde .env
+            // Obtener credenciales desde .env
             $projectId = env('FIREBASE_PROJECT_ID');
             $clientEmail = env('FIREBASE_CLIENT_EMAIL');
             $privateKey = env('FIREBASE_PRIVATE_KEY');
@@ -37,24 +87,87 @@ class FirebaseTest extends Module
                 throw new \Exception("FIREBASE_PROJECT_ID no está configurado en .env");
             }
 
+            $this->logError("[INIT] Project ID: $projectId");
+
+            // Verificar extensiones disponibles
+            $hasGrpc = extension_loaded('grpc');
+            $hasProtobuf = extension_loaded('protobuf');
+            $this->logError("[INIT] Extensiones - gRPC: " . ($hasGrpc ? 'SÍ' : 'NO') . ", Protobuf: " . ($hasProtobuf ? 'SÍ' : 'NO'));
+
+            // Configurar opciones HTTP con timeout
+            $httpOptions = HttpClientOptions::default()
+                ->withTimeOut(30.0)
+                ->withConnectTimeout(10.0);
+
+            // Crear la factory base
+            $factory = new Factory();
+
             // Si tenemos credenciales completas de service account
             if (!empty($clientEmail) && !empty($privateKey)) {
-                $serviceAccount = ServiceAccount::fromValue([
+                // Crear archivo temporal con credenciales JSON
+                $serviceAccountData = [
                     'type' => 'service_account',
                     'project_id' => $projectId,
                     'client_email' => $clientEmail,
                     'private_key' => str_replace('\\n', "\n", $privateKey),
-                ]);
+                    'private_key_id' => 'key-id',
+                    'client_id' => 'client-id',
+                    'auth_uri' => 'https://accounts.google.com/o/oauth2/auth',
+                    'token_uri' => 'https://oauth2.googleapis.com/token',
+                    'auth_provider_x509_cert_url' => 'https://www.googleapis.com/oauth2/v1/certs',
+                ];
 
-                $this->firebase = (new Factory)
-                    ->withServiceAccount($serviceAccount);
+                $tempFile = sys_get_temp_dir() . '/firebase-sa-' . md5($projectId) . '.json';
+                file_put_contents($tempFile, json_encode($serviceAccountData, JSON_PRETTY_PRINT));
+
+                $this->logError("[INIT] Archivo de credenciales temporal creado: $tempFile");
+
+                // Validar que el JSON sea válido
+                $validated = json_decode(file_get_contents($tempFile), true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new \Exception("Error validando JSON de credenciales: " . json_last_error_msg());
+                }
+
+                $factory = $factory->withServiceAccount($tempFile);
+                $this->logError("[INIT] Service Account configurado");
             } else {
-                // Inicializar solo con Project ID (funcionalidad limitada)
-                $this->firebase = (new Factory)
-                    ->withProjectId($projectId);
+                $factory = $factory->withProjectId($projectId);
+                $this->logError("[INIT] Solo Project ID configurado (funcionalidad limitada)");
             }
 
-        } catch (\Exception $e) {
+            // Configurar cliente HTTP
+            $factory = $factory->withHttpClientOptions($httpOptions);
+
+            // Si se fuerza REST o no hay gRPC disponible, configurar transporte REST para Firestore
+            if ($this->useRestTransport || !$hasGrpc) {
+                $this->logError("[INIT] Usando transporte REST para Firestore");
+
+                try {
+                    $factory = $factory->withFirestoreClientConfig([
+                        'transport' => 'rest',
+                    ]);
+                } catch (\Throwable $e) {
+                    $this->logError("[INIT] No se pudo configurar REST transport: " . $e->getMessage());
+                }
+            } else {
+                $this->logError("[INIT] Usando transporte gRPC (por defecto)");
+            }
+
+            $this->firebase = $factory;
+            $this->logError("[INIT] Firebase inicializado correctamente");
+
+            // Verificar que podemos crear el cliente Firestore
+            try {
+                $firestore = $this->firebase->createFirestore()->database();
+                $this->logError("[INIT] Cliente Firestore creado OK");
+            } catch (\Throwable $e) {
+                $this->logError("[INIT] Error creando cliente Firestore: " . get_class($e) . " - " . $e->getMessage());
+                $this->logError("[INIT] Trace: " . $e->getTraceAsString());
+                throw $e;
+            }
+
+        } catch (\Throwable $e) {
+            $this->logError("[INIT] Error fatal al inicializar Firebase: " . get_class($e) . " - " . $e->getMessage());
             echo "Error al inicializar Firebase: " . $e->getMessage() . "\n";
             $this->firebase = null;
         }
@@ -106,50 +219,155 @@ class FirebaseTest extends Module
     }
 
     /**
-     * Prueba de Firestore (Cloud Firestore)
+     * Prueba de Firestore (Cloud Firestore) con logging avanzado
      */
     function test_firestore()
     {
-        try {
-            $firestore = $this->firebase->createFirestore()->database();
+        $html = '<h2>Test Firestore</h2>';
+        $writeSuccess = false;
+        $writeMethod = '';
+        $docId = null;
 
-            $html = '<h2>Test Firestore</h2>';
+        try {
+            $this->logError("[FIRESTORE] Iniciando test de Firestore...");
+            $firestore = $this->firebase->createFirestore()->database();
+            $this->logError("[FIRESTORE] Cliente Firestore obtenido");
 
             // Crear un documento
             $collection = $firestore->collection('test_collection');
+            $this->logError("[FIRESTORE] Colección 'test_collection' obtenida");
+
             $document = $collection->newDocument();
+            $docId = $document->id();
+            $this->logError("[FIRESTORE] Nuevo documento creado con ID: $docId");
 
             $data = [
                 'nombre' => 'Test Document',
                 'fecha' => date('Y-m-d H:i:s'),
                 'valor' => rand(1, 100),
-                'activo' => true
+                'activo' => true,
+                'timestamp' => time(),
             ];
 
-            $document->set($data);
-            $html .= '<h3>Documento creado:</h3>';
-            $html .= '<pre>' . print_r($data, true) . '</pre>';
-            $html .= '<p>ID: ' . $document->id() . '</p>';
+            $this->logError("[FIRESTORE] Datos a escribir: " . json_encode($data));
 
-            // Leer documentos
-            $documents = $collection->limit(10)->documents();
-            $html .= '<h3>Documentos en la colección (últimos 10):</h3>';
+            // Intentar escribir con set() usando Throwable para capturar TODO
+            try {
+                $this->logError("[FIRESTORE] Intentando escribir con set()...");
+                $document->set($data);
+                $this->logError("[FIRESTORE] set() completado sin excepción");
 
-            foreach ($documents as $doc) {
-                if ($doc->exists()) {
-                    $html .= '<div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">';
-                    $html .= '<strong>ID:</strong> ' . $doc->id() . '<br>';
-                    $html .= '<pre>' . print_r($doc->data(), true) . '</pre>';
+                // Verificar que realmente se escribió
+                $snap = $document->snapshot();
+                $this->logError("[FIRESTORE] Snapshot obtenido, exists: " . ($snap->exists() ? 'YES' : 'NO'));
+
+                if ($snap->exists()) {
+                    $writeSuccess = true;
+                    $writeMethod = 'set()';
+                    $this->logError("[FIRESTORE] Escritura verificada OK con set()");
+                    $html .= '<div style="background: #d4edda; padding: 10px; margin: 10px 0; border: 1px solid #c3e6cb;">';
+                    $html .= '<strong>✓ Escritura exitosa con set()</strong>';
+                    $html .= '</div>';
+                } else {
+                    $this->logError("[FIRESTORE] ADVERTENCIA: set() no lanzó excepción pero snapshot no existe");
+                    $html .= '<div style="background: #fff3cd; padding: 10px; margin: 10px 0; border: 1px solid #ffc107;">';
+                    $html .= '<strong>⚠ set() completó pero no se verificó escritura</strong>';
+                    $html .= '</div>';
+                }
+            } catch (\Throwable $t) {
+                $this->logError("[FIRESTORE] set() falló: " . get_class($t) . " - " . $t->getMessage());
+                $this->logError("[FIRESTORE] Trace: " . $t->getTraceAsString());
+
+                $html .= '<div style="background: #f8d7da; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb;">';
+                $html .= '<strong>✗ Error con set():</strong> ' . get_class($t) . '<br>';
+                $html .= htmlspecialchars($t->getMessage());
+                $html .= '</div>';
+
+                // Fallback: intentar con add() en lugar de set()
+                try {
+                    $this->logError("[FIRESTORE] Intentando fallback con add()...");
+                    $addedDoc = $collection->add($data);
+                    $docId = $addedDoc->id();
+                    $this->logError("[FIRESTORE] add() exitoso, nuevo ID: $docId");
+
+                    $writeSuccess = true;
+                    $writeMethod = 'add() [fallback]';
+
+                    $html .= '<div style="background: #d4edda; padding: 10px; margin: 10px 0; border: 1px solid #c3e6cb;">';
+                    $html .= '<strong>✓ Fallback exitoso con add()</strong><br>';
+                    $html .= 'Nuevo ID: ' . $docId;
+                    $html .= '</div>';
+                } catch (\Throwable $t2) {
+                    $this->logError("[FIRESTORE] add() también falló: " . get_class($t2) . " - " . $t2->getMessage());
+                    $this->logError("[FIRESTORE] Trace: " . $t2->getTraceAsString());
+
+                    $html .= '<div style="background: #f8d7da; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb;">';
+                    $html .= '<strong>✗ Fallback add() también falló:</strong> ' . get_class($t2) . '<br>';
+                    $html .= htmlspecialchars($t2->getMessage());
                     $html .= '</div>';
                 }
             }
+
+            if ($writeSuccess) {
+                $html .= '<h3>Documento escrito con ' . $writeMethod . ':</h3>';
+                $html .= '<pre>' . print_r($data, true) . '</pre>';
+                $html .= '<p><strong>ID:</strong> ' . $docId . '</p>';
+            }
+
+            // Leer documentos existentes
+            try {
+                $this->logError("[FIRESTORE] Leyendo documentos existentes...");
+                $documents = $collection->limit(10)->documents();
+                $html .= '<h3>Documentos en la colección (últimos 10):</h3>';
+
+                $count = 0;
+                foreach ($documents as $doc) {
+                    if ($doc->exists()) {
+                        $count++;
+                        $html .= '<div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">';
+                        $html .= '<strong>ID:</strong> ' . $doc->id() . '<br>';
+                        $html .= '<pre>' . print_r($doc->data(), true) . '</pre>';
+                        $html .= '</div>';
+                    }
+                }
+
+                $this->logError("[FIRESTORE] Lectura completada, $count documentos encontrados");
+
+                if ($count === 0) {
+                    $html .= '<p>No hay documentos en la colección.</p>';
+                }
+            } catch (\Throwable $t) {
+                $this->logError("[FIRESTORE] Error leyendo documentos: " . $t->getMessage());
+                $html .= '<div style="background: #f8d7da; padding: 10px; margin: 10px 0;">';
+                $html .= '<strong>Error leyendo documentos:</strong> ' . htmlspecialchars($t->getMessage());
+                $html .= '</div>';
+            }
+
+            // Información de debug
+            $html .= '<h3>Debug Info:</h3>';
+            $html .= '<pre>';
+            $html .= "Transporte: " . ($this->useRestTransport ? 'REST (forzado)' : 'gRPC (default)') . "\n";
+            $html .= "gRPC instalado: " . (extension_loaded('grpc') ? 'SÍ' : 'NO') . "\n";
+            $html .= "Protobuf instalado: " . (extension_loaded('protobuf') ? 'SÍ' : 'NO') . "\n";
+            $html .= "Log file: {$this->logFile}\n";
+            $html .= '</pre>';
 
             $html .= '<p><a href="/firebase-test">Volver</a></p>';
 
             return $html;
 
-        } catch (\Exception $e) {
-            return '<h2>Error en Firestore</h2><p>' . $e->getMessage() . '</p><p><a href="/firebase-test">Volver</a></p>';
+        } catch (\Throwable $e) {
+            $this->logError("[FIRESTORE] Error fatal en test_firestore: " . get_class($e) . " - " . $e->getMessage());
+            $this->logError("[FIRESTORE] Trace: " . $e->getTraceAsString());
+
+            return '<h2>Error Fatal en Firestore</h2>' .
+                   '<div style="background: #f8d7da; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb;">' .
+                   '<strong>Tipo:</strong> ' . get_class($e) . '<br>' .
+                   '<strong>Mensaje:</strong> ' . htmlspecialchars($e->getMessage()) . '<br>' .
+                   '<strong>Archivo:</strong> ' . $e->getFile() . ':' . $e->getLine() . '<br>' .
+                   '<strong>Log:</strong> ' . $this->logFile .
+                   '</div>' .
+                   '<p><a href="/firebase-test">Volver</a></p>';
         }
     }
 
