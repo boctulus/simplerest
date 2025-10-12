@@ -46,7 +46,9 @@
       "Bash(ollama list:*)",
       "Bash(ollama pull:*)",
       "Bash(composer:*)",
-      "Bash(move:*)"
+      "Bash(move:*)",
+      "Bash(cmd /c move:*)",
+      "Bash(cmd /c del:*)"
     ],
     "deny": [],
     "ask": []

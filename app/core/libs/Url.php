@@ -139,8 +139,9 @@ class Url
         $p['path'] = isset($p['path']) ? rtrim($p['path'], '/') : '';
         $query     = isset($p['query']) ? "?{$p['query']}" : '';
         $p['host'] = str_replace('//', '/', $p['host']);
+        $port      = isset($p['port']) ? ":{$p['port']}" : '';
 
-        return "{$p['scheme']}://{$p['host']}{$p['path']}$query";
+        return "{$p['scheme']}://{$p['host']}{$port}{$p['path']}$query";
     }
 
     /**
