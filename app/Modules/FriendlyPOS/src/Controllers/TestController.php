@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\modules\FriendlyPOS\Controllers;
+namespace Boctulus\Simplerest\Modules\FriendlyPOS\Controllers;
 
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\Simplerest\Core\Libs\Strings;
