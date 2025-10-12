@@ -23,9 +23,13 @@ class Utils
     */
     static function getConstantName(int $value, string $domain){
         $constants = get_defined_constants(true)[$domain];
-        $name      = array_search($value, $constants, TRUE);  
+        $name      = array_search($value, $constants, TRUE);
 
         return $name;
+    }
+
+    static function is_cli(): bool {
+        return php_sapi_name() === 'cli' || php_sapi_name() === 'phpdbg';
     }
 }
 

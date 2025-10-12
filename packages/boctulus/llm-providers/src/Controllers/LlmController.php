@@ -28,6 +28,11 @@ class LlmController extends Controller
         $llm = LLMFactory::ollama();
         $models = $llm->listModels();
         
+        if (is_cli()){
+            print_r($models);
+            return;
+        }
+
         return $models;
     }
 }
