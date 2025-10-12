@@ -110,6 +110,19 @@ class FirebaseTest extends Module
      */
     function test_firestore()
     {
+        // Firestore requiere credenciales completas de Service Account
+        if (empty(env('FIREBASE_CLIENT_EMAIL')) || empty(env('FIREBASE_PRIVATE_KEY'))) {
+            return '<h2>Error en Firestore</h2>' .
+                   '<p>Firestore requiere credenciales completas de Service Account.</p>' .
+                   '<p>Por favor configura en tu archivo .env:</p>' .
+                   '<ul>' .
+                   '<li><code>FIREBASE_CLIENT_EMAIL</code></li>' .
+                   '<li><code>FIREBASE_PRIVATE_KEY</code></li>' .
+                   '</ul>' .
+                   '<p>Estas credenciales las puedes obtener del archivo JSON de Service Account de Firebase.</p>' .
+                   '<p><a href="/firebase-test">Volver</a></p>';
+        }
+
         try {
             $firestore = $this->firebase->createFirestore()->database();
 
@@ -158,6 +171,18 @@ class FirebaseTest extends Module
      */
     function test_auth()
     {
+        // Authentication requiere credenciales completas de Service Account
+        if (empty(env('FIREBASE_CLIENT_EMAIL')) || empty(env('FIREBASE_PRIVATE_KEY'))) {
+            return '<h2>Error en Authentication</h2>' .
+                   '<p>Authentication requiere credenciales completas de Service Account.</p>' .
+                   '<p>Por favor configura en tu archivo .env:</p>' .
+                   '<ul>' .
+                   '<li><code>FIREBASE_CLIENT_EMAIL</code></li>' .
+                   '<li><code>FIREBASE_PRIVATE_KEY</code></li>' .
+                   '</ul>' .
+                   '<p><a href="/firebase-test">Volver</a></p>';
+        }
+
         try {
             $auth = $this->firebase->createAuth();
 
@@ -275,6 +300,18 @@ class FirebaseTest extends Module
      */
     function test_storage()
     {
+        // Storage requiere credenciales completas de Service Account
+        if (empty(env('FIREBASE_CLIENT_EMAIL')) || empty(env('FIREBASE_PRIVATE_KEY'))) {
+            return '<h2>Error en Storage</h2>' .
+                   '<p>Storage requiere credenciales completas de Service Account.</p>' .
+                   '<p>Por favor configura en tu archivo .env:</p>' .
+                   '<ul>' .
+                   '<li><code>FIREBASE_CLIENT_EMAIL</code></li>' .
+                   '<li><code>FIREBASE_PRIVATE_KEY</code></li>' .
+                   '</ul>' .
+                   '<p><a href="/firebase-test">Volver</a></p>';
+        }
+
         try {
             $storage = $this->firebase->createStorage();
             $bucket = $storage->getBucket();
