@@ -1,10 +1,10 @@
 <?php
 
-namespace Boctulus\Simplerest\exchange_rates;
+namespace Boctulus\BasicACL;
 
 use Boctulus\Simplerest\Core\ServiceProvider;
 
-class ExchangeRateServiceProvider extends ServiceProvider
+class BasicAclServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -13,7 +13,7 @@ class ExchangeRateServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // dd("Initing service");
+        
     }
 
     /**
@@ -23,6 +23,6 @@ class ExchangeRateServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // dd("Registering " . __CLASS__);
+       
     }    
 }

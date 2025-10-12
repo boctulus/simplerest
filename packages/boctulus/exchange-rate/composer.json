@@ -1,12 +1,19 @@
 {
-    "name": "boctulus/exchange_rate",
+    "name": "boctulus/exchange-rate",
     "description": "Currencies Exchange Rate",
     "type": "library",
     "version": "1.0.0",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Boctulus\\Simplerest\\ExchangeRate\\": "src/"
+            "Boctulus\\ExchangeRate\\": "src/"
+        }
+    },
+    "extra": {
+        "simplerest": {
+            "providers": [
+                "Boctulus\\ExchangeRate\\ServiceProvider"
+            ]
         }
     },
     "authors": [

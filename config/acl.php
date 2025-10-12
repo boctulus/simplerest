@@ -1,6 +1,6 @@
 <?php
 
-use Boctulus\Simplerest\FineGrainedACL\Acl;
+use Boctulus\FineGrainedACL\Acl;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Libs\Debug;
 

@@ -7,7 +7,6 @@ use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Module;
 use Boctulus\Simplerest\Core\Libs\Env;
 use Kreait\Firebase\Factory;
-use Kreait\Firebase\ServiceAccount;
 
 class FirebaseTest extends Module
 {
@@ -24,7 +23,7 @@ class FirebaseTest extends Module
     protected function initializeFirebase()
     {
         try {
-            // Método 1: Usando Service Account credentials
+            // Método 1: Usando Service Account credentials desde archivo JSON
             // Si tienes un archivo JSON de credenciales
             // $this->firebase = (new Factory)->withServiceAccount(__DIR__ . '/config/firebase-credentials.json');
 
@@ -39,15 +38,20 @@ class FirebaseTest extends Module
 
             // Si tenemos credenciales completas de service account
             if (!empty($clientEmail) && !empty($privateKey)) {
-                $serviceAccount = ServiceAccount::fromValue([
+                // Crear un archivo temporal con las credenciales en formato JSON
+                $serviceAccountData = [
                     'type' => 'service_account',
                     'project_id' => $projectId,
                     'client_email' => $clientEmail,
                     'private_key' => str_replace('\\n', "\n", $privateKey),
-                ]);
+                ];
+
+                // Guardar en archivo temporal
+                $tempFile = sys_get_temp_dir() . '/firebase-credentials-' . md5($projectId) . '.json';
+                file_put_contents($tempFile, json_encode($serviceAccountData));
 
                 $this->firebase = (new Factory)
-                    ->withServiceAccount($serviceAccount);
+                    ->withServiceAccount($tempFile);
             } else {
                 // Inicializar solo con Project ID (funcionalidad limitada)
                 $this->firebase = (new Factory)

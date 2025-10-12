@@ -19,7 +19,7 @@
       "php":">=7.4,<8.4",      
       "vlucas/phpdotenv": "^5.2",
       "boctulus/dummyapi": "@dev",
-      "simplerest/shopifyconnector": "@dev",
+      "boctulus/shopifyconnector": "@dev",
 		"nikic/php-parser": "^5.4",
 		"doctrine/inflector": "^2.0",
       "kreait/firebase-php": "^7.0",
@@ -37,18 +37,19 @@
    "autoload":{
       "psr-4":{
          "Boctulus\\Simplerest\\":"app/",
-         "Boctulus\\Simplerest\\FineGrainedACL\\":"packages/simplerest/fine-grained-acl/src",
-         "Boctulus\\Simplerest\\BasicACL\\":"packages/simplerest/basic-acl/src",
+         "Boctulus\\FineGrainedACL\\":"packages/boctulus/fine-grained-acl/src",
+         "Boctulus\\BasicACL\\":"packages/boctulus/basic-acl/src",
          "Boctulus\\Zippy\\":"packages/boctulus/zippy/src",
          "Boctulus\\CliTest\\":"packages/boctulus/cli-test/src",
          "Boctulus\\WebTest\\":"packages/boctulus/web-test/src",
-         "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src"
+         "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src",
+         "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src"
       }
    },
    "repositories": [    
     {
         "type": "path",
-        "url": "packages/simplerest/shopifyconnector",
+        "url": "packages/boctulus/shopifyconnector",
         "options": {
             "symlink": true
         }
