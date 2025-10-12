@@ -1,10 +1,10 @@
 <?php
 
-namespace Boctulus\Simplerest\BasicACL;
+namespace Boctulus\FineGrainedACL;
 
 use Boctulus\Simplerest\Core\ServiceProvider;
 
-class BasicAclServiceProvider extends ServiceProvider
+class FineGrainedAclServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -13,7 +13,8 @@ class BasicAclServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        
+        //dd("booting from Boctulus\Simplerest\FineGrainedACL");
+        //include __DIR__.'/routes.php';
     }
 
     /**

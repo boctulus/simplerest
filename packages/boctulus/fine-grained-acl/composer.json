@@ -1,0 +1,27 @@
+{
+    "name": "boctulus/fine-grained-acl",
+    "description": "Full equiped ACL for SimpleRest",
+    "type": "library",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "boctulus",
+            "email": "boctulus@gmail.com"
+        }
+    ],
+    "keywords": ["simplerest", "acl", "grained-acl"],
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\FineGrainedACL\\": "src/"
+        }
+    },
+    "extra": {
+        "simplerest": {
+            "providers": [
+                "Boctulus\\FineGrainedACL\\FineGrainedAclServiceProvider"
+            ]
+        }
+    },
+    "require": {},
+    "require-dev": {}
+}
