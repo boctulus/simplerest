@@ -27,10 +27,11 @@ class Categories extends Migration
         ->varchar('name', 150)->notNullable()
         ->varchar('slug', 150)->unique()
         ->varchar('image_url', 255)->nullable()
-        ->integer('store_id')->nullable()
-        ->integer('parent_id')->nullable()
+        ->varchar('store_id',30)->nullable()
+        ->varchar('parent_id',21)->nullable()
         ->varchar('parent_slug', 150)->nullable()
-        ->datetimes();
+        ->timestamps()
+        ->softDeletes();
 
         $sc->create();
     }
