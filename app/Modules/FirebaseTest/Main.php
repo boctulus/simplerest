@@ -185,7 +185,8 @@ class FirebaseTest extends Module
         $html = '<h1>Firebase Test Module</h1>';
         $html .= '<p>Pruebas disponibles:</p>';
         $html .= '<ul>';
-        $html .= '<li><a href="/firebase-test/firestore">Test Firestore (Database)</a></li>';
+        $html .= '<li><strong><a href="/firebase-test/raw-http">✨ Test HTTP Puro (SIN dependencias, SIN gRPC)</a></strong> ⭐ NUEVO</li>';
+        $html .= '<li><a href="/firebase-test/firestore">Test Firestore (con librerías)</a></li>';
         $html .= '<li><a href="/firebase-test/auth">Test Authentication</a></li>';
         $html .= '<li><a href="/firebase-test/realtime-db">Test Realtime Database</a></li>';
         $html .= '<li><a href="/firebase-test/storage">Test Storage</a></li>';
@@ -566,5 +567,177 @@ class FirebaseTest extends Module
         } catch (\Exception $e) {
             return '<h2>Error en Storage</h2><p>' . $e->getMessage() . '</p><p><a href="/firebase-test">Volver</a></p>';
         }
+    }
+
+    /**
+     * Prueba de Firestore con HTTP Puro (sin dependencias, sin gRPC)
+     */
+    function test_raw_http()
+    {
+        require_once __DIR__ . '/FirestoreRawHTTP.php';
+
+        $html = '<h1>Test Firestore - HTTP Puro</h1>';
+        $html .= '<p style="background: #e3f2fd; padding: 15px; border-left: 4px solid #2196f3;">';
+        $html .= '<strong>ℹ️ Este test NO usa:</strong><br>';
+        $html .= '• kreait/firebase-php<br>';
+        $html .= '• google/cloud-firestore<br>';
+        $html .= '• gRPC ni Protobuf<br><br>';
+        $html .= '<strong>✓ Solo usa:</strong> cURL + OpenSSL nativos de PHP';
+        $html .= '</p>';
+
+        try {
+            // Obtener credenciales
+            $projectId = env('FIREBASE_PROJECT_ID');
+            $clientEmail = env('FIREBASE_CLIENT_EMAIL');
+            $privateKey = env('FIREBASE_PRIVATE_KEY');
+
+            if (empty($projectId) || empty($clientEmail) || empty($privateKey)) {
+                throw new \Exception("Faltan credenciales en .env");
+            }
+
+            // Crear cliente HTTP puro
+            $client = new FirestoreRawHTTP($projectId, $clientEmail, $privateKey);
+
+            // TEST 1: Obtener access token
+            $html .= '<h2>1. Autenticación OAuth2</h2>';
+            try {
+                $token = $client->getAccessToken();
+                $html .= '<div style="background: #d4edda; padding: 10px; border: 1px solid #c3e6cb;">';
+                $html .= '✅ Access token obtenido: ' . substr($token, 0, 40) . '...';
+                $html .= '</div>';
+            } catch (\Exception $e) {
+                $html .= '<div style="background: #f8d7da; padding: 10px; border: 1px solid #f5c6cb;">';
+                $html .= '❌ Error obteniendo token: ' . htmlspecialchars($e->getMessage());
+                $html .= '</div>';
+                $html .= '<p><a href="/firebase-test">Volver</a></p>';
+                return $html;
+            }
+
+            // TEST 2: Crear documento
+            $html .= '<h2>2. Crear Documento (HTTP POST)</h2>';
+            $testData = [
+                'nombre' => 'Test HTTP Web',
+                'fecha' => date('Y-m-d H:i:s'),
+                'timestamp' => time(),
+                'valor' => rand(1, 1000),
+                'activo' => true,
+                'metodo' => 'HTTP directo desde navegador',
+            ];
+
+            $html .= '<p><strong>Datos a escribir:</strong></p>';
+            $html .= '<pre>' . json_encode($testData, JSON_PRETTY_PRINT) . '</pre>';
+
+            $createResult = $client->createDocument('test_raw_http', $testData);
+
+            if ($createResult['success']) {
+                $html .= '<div style="background: #d4edda; padding: 10px; border: 1px solid #c3e6cb;">';
+                $html .= '✅ <strong>¡Documento creado exitosamente!</strong><br>';
+                $html .= 'Document ID: <code>' . $createResult['documentId'] . '</code>';
+                $html .= '</div>';
+
+                $docId = $createResult['documentId'];
+
+                // TEST 3: Leer documento
+                $html .= '<h2>3. Leer Documento (HTTP GET)</h2>';
+                $readResult = $client->getDocument('test_raw_http', $docId);
+
+                if ($readResult['success']) {
+                    $html .= '<div style="background: #d4edda; padding: 10px; border: 1px solid #c3e6cb;">';
+                    $html .= '✅ <strong>Documento leído exitosamente</strong>';
+                    $html .= '</div>';
+                    $html .= '<pre>' . json_encode($readResult['data'], JSON_PRETTY_PRINT) . '</pre>';
+                } else {
+                    $html .= '<div style="background: #f8d7da; padding: 10px; border: 1px solid #f5c6cb;">';
+                    $html .= '❌ Error leyendo documento: ' . htmlspecialchars($readResult['error']);
+                    $html .= '</div>';
+                }
+
+                // TEST 4: Actualizar documento
+                $html .= '<h2>4. Actualizar Documento (HTTP PATCH)</h2>';
+                $updateData = [
+                    'nombre' => 'Test HTTP Web - ACTUALIZADO',
+                    'fecha_update' => date('Y-m-d H:i:s'),
+                    'contador' => 555,
+                ];
+
+                $updateResult = $client->createDocument('test_raw_http', $updateData, $docId);
+
+                if ($updateResult['success']) {
+                    $html .= '<div style="background: #d4edda; padding: 10px; border: 1px solid #c3e6cb;">';
+                    $html .= '✅ <strong>Documento actualizado</strong>';
+                    $html .= '</div>';
+
+                    // Verificar actualización
+                    $verifyResult = $client->getDocument('test_raw_http', $docId);
+                    if ($verifyResult['success']) {
+                        $html .= '<p><strong>Datos actualizados:</strong></p>';
+                        $html .= '<pre>' . json_encode($verifyResult['data'], JSON_PRETTY_PRINT) . '</pre>';
+                    }
+                } else {
+                    $html .= '<div style="background: #f8d7da; padding: 10px; border: 1px solid #f5c6cb;">';
+                    $html .= '❌ Error actualizando: ' . htmlspecialchars($updateResult['error']);
+                    $html .= '</div>';
+                }
+
+            } else {
+                $html .= '<div style="background: #f8d7da; padding: 10px; border: 1px solid #f5c6cb;">';
+                $html .= '❌ <strong>Error creando documento</strong><br>';
+                $html .= 'Error: ' . htmlspecialchars($createResult['error']) . '<br>';
+                if (isset($createResult['message'])) {
+                    $html .= 'Mensaje: ' . htmlspecialchars($createResult['message']);
+                }
+                $html .= '</div>';
+            }
+
+            // TEST 5: Listar documentos
+            $html .= '<h2>5. Listar Documentos (HTTP GET)</h2>';
+            $listResult = $client->listDocuments('test_raw_http', 5);
+
+            if ($listResult['success']) {
+                $html .= '<div style="background: #d4edda; padding: 10px; border: 1px solid #c3e6cb;">';
+                $html .= '✅ Encontrados: ' . $listResult['count'] . ' documentos';
+                $html .= '</div>';
+
+                if ($listResult['count'] > 0) {
+                    $html .= '<div style="margin-top: 10px;">';
+                    foreach ($listResult['documents'] as $i => $doc) {
+                        $html .= '<div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0;">';
+                        $html .= '<strong>Documento ' . ($i + 1) . ':</strong> <code>' . $doc['id'] . '</code><br>';
+                        $html .= '<small><pre>' . json_encode($doc['data'], JSON_PRETTY_PRINT) . '</pre></small>';
+                        $html .= '</div>';
+                    }
+                    $html .= '</div>';
+                }
+            } else {
+                $html .= '<div style="background: #f8d7da; padding: 10px; border: 1px solid #f5c6cb;">';
+                $html .= '❌ Error listando: ' . htmlspecialchars($listResult['error']);
+                $html .= '</div>';
+            }
+
+            // Resumen
+            $html .= '<hr>';
+            $html .= '<h2>✅ Resumen</h2>';
+            $html .= '<div style="background: #e8f5e9; padding: 15px; border-left: 4px solid #4caf50;">';
+            $html .= '<strong>Prueba completada con HTTP puro</strong><br>';
+            $html .= '✓ Sin usar kreait/firebase-php<br>';
+            $html .= '✓ Sin usar google/cloud-firestore<br>';
+            $html .= '✓ Sin usar gRPC<br>';
+            $html .= '✓ Solo cURL + OpenSSL nativos<br><br>';
+            $html .= '<strong>Log completo:</strong> ' . $client->getLogFile();
+            $html .= '</div>';
+
+        } catch (\Throwable $e) {
+            $html .= '<h2>❌ Error Fatal</h2>';
+            $html .= '<div style="background: #f8d7da; padding: 15px; border: 1px solid #f5c6cb;">';
+            $html .= '<strong>Tipo:</strong> ' . get_class($e) . '<br>';
+            $html .= '<strong>Mensaje:</strong> ' . htmlspecialchars($e->getMessage()) . '<br>';
+            $html .= '<strong>Archivo:</strong> ' . $e->getFile() . ':' . $e->getLine() . '<br>';
+            $html .= '<details><summary>Stack trace</summary><pre>' . htmlspecialchars($e->getTraceAsString()) . '</pre></details>';
+            $html .= '</div>';
+        }
+
+        $html .= '<p><a href="/firebase-test">← Volver al menú</a></p>';
+
+        return $html;
     }
 }

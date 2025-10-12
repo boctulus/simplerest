@@ -94,38 +94,54 @@ CliRouter::command('firebase:test-firestore', function() {
                "Por favor configura FIREBASE_CLIENT_EMAIL y FIREBASE_PRIVATE_KEY en tu archivo .env";
     }
 
+    require_once __DIR__ . '/../app/Modules/FirebaseTest/FirestoreRawHTTP.php';
+
     try {
-        // Crear archivo temporal con credenciales
+        echo "🔥 Test Firestore con HTTP Puro (sin librerías)\n\n";
+
         $projectId = env('FIREBASE_PROJECT_ID');
-        $serviceAccountData = [
-            'type' => 'service_account',
-            'project_id' => $projectId,
-            'client_email' => env('FIREBASE_CLIENT_EMAIL'),
-            'private_key' => str_replace('\\n', "\n", env('FIREBASE_PRIVATE_KEY')),
-        ];
+        $clientEmail = env('FIREBASE_CLIENT_EMAIL');
+        $privateKey = env('FIREBASE_PRIVATE_KEY');
 
-        $tempFile = sys_get_temp_dir() . '/firebase-credentials-' . md5($projectId) . '.json';
-        file_put_contents($tempFile, json_encode($serviceAccountData));
+        // Usar cliente HTTP puro que FUNCIONA
+        $client = new \Boctulus\Simplerest\modules\FirebaseTest\FirestoreRawHTTP($projectId, $clientEmail, $privateKey);
 
-        $firebase = (new \Kreait\Firebase\Factory)->withServiceAccount($tempFile);
-        $firestore = $firebase->createFirestore()->database();
+        echo "1. Obteniendo access token...\n";
+        $token = $client->getAccessToken();
+        echo "   ✓ Token obtenido: " . substr($token, 0, 40) . "...\n\n";
 
-        // Crear un documento de prueba
-        $collection = $firestore->collection('cli_test');
-        $document = $collection->newDocument();
-
+        echo "2. Creando documento...\n";
         $data = [
             'timestamp' => time(),
-            'message' => 'Test desde CLI',
+            'message' => 'Test desde CLI con HTTP puro',
             'random' => rand(1, 1000),
+            'fecha' => date('Y-m-d H:i:s'),
         ];
 
-        // Falla silenciosamente
-        $document->set($data);
+        $result = $client->createDocument('cli_test', $data);
 
-        return "✓ Firestore test OK - Documento creado con ID: " . $document->id();
-    } catch (\Exception $e) {
-        return "✗ Error: " . $e->getMessage();
+        if ($result['success']) {
+            echo "   ✓ Documento creado exitosamente!\n";
+            echo "   Document ID: {$result['documentId']}\n\n";
+
+            echo "3. Verificando lectura...\n";
+            $readResult = $client->getDocument('cli_test', $result['documentId']);
+
+            if ($readResult['success']) {
+                echo "   ✓ Documento leído correctamente\n";
+                echo "   Datos: " . json_encode($readResult['data']) . "\n\n";
+                return "✅ TEST EXITOSO - Firestore funciona correctamente con HTTP puro";
+            } else {
+                return "✗ Error leyendo documento: " . $readResult['error'];
+            }
+        } else {
+            return "✗ Error creando documento: {$result['error']}\n" .
+                   (isset($result['message']) ? "   Mensaje: {$result['message']}" : "");
+        }
+
+    } catch (\Throwable $e) {
+        return "✗ Error fatal: " . get_class($e) . " - " . $e->getMessage() . "\n" .
+               "   Archivo: " . $e->getFile() . ":" . $e->getLine();
     }
 });
 
