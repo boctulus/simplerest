@@ -1,0 +1,191 @@
+# Commandos personalizados
+
+El framework implementa comandos personalizados bajo el patron "Command" y se generan con "php com make command {nombre}"
+
+Ej:
+
+	php com make command myCommand
+
+Cada comando tiene un metodo handle($args) que se puede redefinir (generalmente no es necesario) y un metodo help() requerido por la interfaz ICommand.
+
+Ej:
+
+	<?php
+
+	use Boctulus\Simplerest\Core\Libs\DB;
+	use Boctulus\Simplerest\interfaces\ICommand;
+
+	class MysqlLogCommand implements ICommand 
+	{
+		/*
+			Redefino handler()
+		*/
+		function handle($args){
+			$fst = array_shift($args);
+
+			if ($fst == 'on'){
+				dd("Iniciando logs ...");
+				DB::dbLogOn();
+				return;
+			}
+
+			if ($fst == 'off'){
+				dd("Desactivando logs ...");
+				DB::dbLogOff();
+				return;
+			}
+
+			if ($fst == 'start'){
+				dd("Activando logs ...");
+				DB::dbLogStart();
+				return;
+			}
+
+			if ($fst == 'dump'){
+				dd("Volcando logs ...");
+				DB::dbLogDump();
+				return;
+			}         
+		}   
+		
+		/*
+			Proveo ayuda requerida
+		*/
+		function help($name = null, ...$args){
+			$str = <<<STR
+			php com mysql_log on                                  DB::dbLogOn()
+			php com mysql_log off                                 DB::dbLogOff()
+			php com mysql_log start [-filename=]  que ejecuta ..  DB::dbLogStart()       
+			php com mysql_log dump                                DB::dbLogDump() 
+			STR;
+
+			dd(strtoupper(Strings::before(__METHOD__, 'Command::')) . ' HELP');
+			dd($str);
+		}
+	} 
+
+
+El trait MakeCommand viene con varios metodos utiles para crear nuevos comandos:
+
+# renderTemplate
+
+## description
+
+Método utilitario para crear archivos a partir de plantillas con opciones de personalización.
+
+## usage
+
+```php
+$this->renderTemplate($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
+```
+
+## parameters
+
+- - `$name`: Nombre base del archivo (ej. `my_controller`).
+- - `$prefix`: Prefijo opcional para la clase (ej. `I` para interfaces).
+- - `$subfix`: Sufijo para la clase (ej. `Controller`).
+- - `$dest_path`: Ruta base donde se guardará el archivo.
+- - `$template_path`: Ruta de la plantilla a utilizar.
+- - `$namespace`: Namespace opcional para la clase.
+- - `...$opt`: Opciones como `--force`, `--unignore`, `--strict`, `--remove`.
+
+## examples
+
+- 1. **Crear un controlador:**
+   ```php
+   $this->renderTemplate('my_controller', '', 'Controller', CONTROLLERS_PATH, self::TEMPLATES . 'Controller.php', $this->namespace . '\\controllers', '--force');
+   ```
+   - Genera `MyControllerController.php` en `CONTROLLERS_PATH`.
+- 2. **Crear una interfaz:**
+   ```php
+   $this->renderTemplate('my_interface', 'I', '', INTERFACE_PATH, self::INTERFACE_TEMPLATE, $this->namespace . '\\interfaces', '--strict');
+   ```
+   - Genera `IMyInterface.php` con `declare(strict_types=1);`.
+- 3. **Eliminar un archivo:**
+   ```php
+   $this->renderTemplate('my_controller', '', 'Controller', CONTROLLERS_PATH, self::TEMPLATES . 'Controller.php', $this->namespace . '\\controllers', '--remove');
+   ```
+   - Elimina `MyControllerController.php` si existe.
+
+# makeScaffolding
+
+## description
+
+Crea una estructura de directorios para scaffoldings y soporta opciones como `--force` y `--remove`.
+
+## usage
+
+```php
+$this->makeScaffolding($directories, $basePath, $options);
+```
+
+## parameters
+
+- - `$directories`: Array de subdirectorios a crear (ej. `['assets/css', 'config']`).
+- - `$basePath`: Directorio base donde se crearán los subdirectorios.
+- - `$options`: Opciones como `--force`, `--remove`.
+
+## examples
+
+- 1. **Crear estructura de módulo:**
+   ```php
+   $this->makeScaffolding(['assets/css', 'config'], MODULES_PATH . 'myModule', ['--force']);
+   ```
+   - Crea `assets/css` y `config` en `myModule`, sobrescribiendo si es necesario.
+- 2. **Eliminar estructura:**
+   ```php
+   $this->makeScaffolding(['assets/css', 'config'], MODULES_PATH . 'myModule', ['--remove']);
+   ```
+   - Elimina los subdirectorios especificados si existen.
+
+# Comando SQL
+
+El comando `sql` permite ejecutar operaciones SQL desde la línea de comandos.
+
+## Subcomandos disponibles
+
+### sql list
+
+Lista el contenido de una tabla específica con soporte para paginación y formato de tabla.
+
+#### Sintaxis
+
+```bash
+php com sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]
+```
+
+#### Parámetros
+
+- `{db}.{table}`: Nombre de la conexión de base de datos y tabla en formato `conexion.tabla`
+- `--offset=N`: Número de registros a saltar (opcional, por defecto: 0)
+- `--limit=N`: Número máximo de registros a mostrar (opcional, por defecto: 10)
+- `--format=table`: Formato de salida. Valores posibles:
+  - Sin especificar: formato simple (un registro por bloque)
+  - `table`: formato de tabla ASCII con bordes
+
+#### Ejemplos
+
+```bash
+# Listar los primeros 10 registros de la tabla users
+php com sql list 'main.users'
+
+# Listar los primeros 20 registros
+php com sql list 'main.users' --limit=20
+
+# Listar 5 registros empezando desde el registro 10
+php com sql list 'main.users' --offset=10 --limit=5
+
+# Mostrar resultados en formato de tabla ASCII
+php com sql list 'main.users' --format=table
+
+# Listar 50 productos de otra conexión en formato tabla
+php com sql list 'db_195.products' --limit=50 --format=table
+```
+
+#### Notas
+
+- La conexión de base de datos especificada debe estar registrada en `db_connections`
+- El formato de tabla ASCII es útil para visualizar datos tabulares de manera más clara
+- Si no se especifica `--limit`, por defecto se muestran 10 registros
+- El formato simple muestra cada registro en un bloque separado con sus campos
+
