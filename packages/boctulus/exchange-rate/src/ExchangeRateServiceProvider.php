@@ -1,10 +1,10 @@
 <?php
 
-namespace Boctulus\Simplerest\FineGrainedACL;
+namespace Boctulus\ExchangeRate;
 
 use Boctulus\Simplerest\Core\ServiceProvider;
 
-class FineGrainedAclServiceProvider extends ServiceProvider
+class ExchangeRateServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -13,8 +13,7 @@ class FineGrainedAclServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //dd("booting from Boctulus\Simplerest\FineGrainedACL");
-        //include __DIR__.'/routes.php';
+        // dd("Initing service");
     }
 
     /**
@@ -24,6 +23,6 @@ class FineGrainedAclServiceProvider extends ServiceProvider
      */
     public function register()
     {
-       
+        // dd("Registering " . __CLASS__);
     }    
 }

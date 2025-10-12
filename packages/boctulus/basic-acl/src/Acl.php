@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\BasicACL;
+namespace Boctulus\BasicACL;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Factory;

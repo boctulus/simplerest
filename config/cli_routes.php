@@ -88,9 +88,26 @@ CliRouter::command('firebase:config', function() {
 });
 
 CliRouter::command('firebase:test-firestore', function() {
-    $module = new FirebaseTest();
+    // Firestore requiere credenciales completas de Service Account
+    if (empty(env('FIREBASE_CLIENT_EMAIL')) || empty(env('FIREBASE_PRIVATE_KEY'))) {
+        return "✗ Error: Firestore requiere credenciales completas de Service Account.\n" .
+               "Por favor configura FIREBASE_CLIENT_EMAIL y FIREBASE_PRIVATE_KEY en tu archivo .env";
+    }
+
     try {
-        $firebase = (new \Kreait\Firebase\Factory)->withProjectId(env('FIREBASE_PROJECT_ID'));
+        // Crear archivo temporal con credenciales
+        $projectId = env('FIREBASE_PROJECT_ID');
+        $serviceAccountData = [
+            'type' => 'service_account',
+            'project_id' => $projectId,
+            'client_email' => env('FIREBASE_CLIENT_EMAIL'),
+            'private_key' => str_replace('\\n', "\n", env('FIREBASE_PRIVATE_KEY')),
+        ];
+
+        $tempFile = sys_get_temp_dir() . '/firebase-credentials-' . md5($projectId) . '.json';
+        file_put_contents($tempFile, json_encode($serviceAccountData));
+
+        $firebase = (new \Kreait\Firebase\Factory)->withServiceAccount($tempFile);
         $firestore = $firebase->createFirestore()->database();
 
         // Crear un documento de prueba
@@ -103,6 +120,7 @@ CliRouter::command('firebase:test-firestore', function() {
             'random' => rand(1, 1000),
         ];
 
+        // Falla silenciosamente
         $document->set($data);
 
         return "✓ Firestore test OK - Documento creado con ID: " . $document->id();
