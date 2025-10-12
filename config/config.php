@@ -252,8 +252,9 @@ return [
 	    */
 	
 	    'providers' => [
-	        Boctulus\DummyApi\ServiceProvider::class,		Boctulus\Simplerest\FineGrainedACL\FineGrainedAclServiceProvider::class,
-		//Boctulus\Simplerest\BasicACL\BasicAclServiceProvider::class
+	        Boctulus\DummyApi\ServiceProvider::class,
+		Boctulus\FineGrainedACL\FineGrainedAclServiceProvider::class,
+		//Boctulus\BasicACL\BasicAclServiceProvider::class,
 		Boctulus\Zippy\ServiceProvider::class,
 		Boctulus\CliTest\ServiceProvider::class,
 		Boctulus\WebTest\ServiceProvider::class,

@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\exchange_rate;
+namespace Boctulus\ExchangeRate;
 
 /*
     @author boctulus

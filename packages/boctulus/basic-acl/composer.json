@@ -1,0 +1,27 @@
+{
+    "name": "boctulus/basic-acl",
+    "description": "Basic ACL for SimpleRest",
+    "type": "library",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "boctulus",
+            "email": "boctulus@gmail.com"
+        }
+    ],
+    "keywords": ["simplerest", "acl", "basic"],
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\BasicACL\\": "src/"
+        }
+    },
+    "extra": {
+        "simplerest": {
+            "providers": [
+                "Boctulus\\BasicACL\\BasicAclServiceProvider"
+            ]
+        }
+    },
+    "require": {},
+    "require-dev": {}
+}
