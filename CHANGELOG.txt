@@ -195,3 +195,4 @@
 [2025-10-12 14:58:27]	0.8.12	HELP improved
 [2025-10-12 15:16:45]	0.8.12	controller:package, controller:module, etc
 [2025-10-12 15:24:15]	0.8.12	Small namespace bug corrected
+[2025-10-12 20:35:46]	0.8.12	Migrations fixed
