@@ -199,3 +199,4 @@
 [2025-10-12 20:47:13]	0.8.12	Automatic update
 [2025-10-12 20:49:39]	0.8.12	Agregado mensaje `Already migrated for DB={name}. Skipping` cuando este migrada y se especifique --to=
 [2025-10-12 21:51:38]	0.8.12	php com sql list command
+[2025-10-13 11:52:11]	0.8.12	fix-git-case.ps1

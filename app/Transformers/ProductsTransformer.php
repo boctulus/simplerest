@@ -1,0 +1,34 @@
+<?php
+
+namespace Boctulus\Simplerest\transformers;
+
+use Boctulus\Simplerest\Core\Controllers\Controller;
+
+class ProductsTransformer implements \Boctulus\Simplerest\Core\Interfaces\ITransformer
+{
+	public function transform(object $product, $controller = NULL)
+    {
+        return [
+			'id' => $product->id,
+			'name' => $product->name,
+			'description' => $product->description,
+			'size' => $product->size,
+			'cost' => $product->cost,
+			'created_at' => $product->created_at,
+			'created_by' => $product->created_by,
+			'updated_at' => $product->updated_at,
+			'updated_by' => $product->updated_by,
+			'deleted_at' => $product->deleted_at,
+			'is_active' => $product->is_active ? 'true' : 'false',	
+			'is_locked' => $product->is_locked ? 'true' : 'false',			
+			'belongs_to' => $product->belongs_to
+        ];
+	}
+}
+
+
+
+
+
+
+

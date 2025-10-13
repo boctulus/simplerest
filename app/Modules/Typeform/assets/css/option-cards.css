@@ -1,0 +1,67 @@
+/* Option Cards */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.option-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: block;
+    text-align: center;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.option-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.option-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.option-card input:checked + .card-content {
+    color: #F17DFF;
+}
+
+.option-card input:checked {
+    opacity: 1;
+}
+
+.option-card input:checked ~ * {
+    border-color: #F17DFF;
+    background: rgba(241, 125, 255, 0.1);
+}
+
+.card-content {
+    transition: all 0.2s ease;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.card-content h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.card-content p {
+    opacity: 0.8;
+    font-size: 0.95rem;
+}

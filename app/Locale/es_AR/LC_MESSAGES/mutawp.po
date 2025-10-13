@@ -1,0 +1,128 @@
+#
+msgid ""
+msgstr	"Project-Id-Version: SimpleRest Translations 0.0.1\n"
+	"Report-Msgid-Bugs-To: boctulus@gmail.com\n"
+	"POT-Creation-Date: 2010-05-28 06:18-0500\n"
+	"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+	"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+	"Language-Team: LANGUAGE <boctulus@gmail.com\n"
+	"MIME-Version: 1.0\n"
+	"Content-Type: text/plain; charset=UTF-8\n"
+	"Content-Transfer-Encoding: 8bit\n"
+
+msgid "version"
+msgstr "versión"
+
+msgid "support"
+msgstr "soporte"
+
+msgid "activate"
+msgstr "activar"
+
+msgid "active:/f/"
+msgstr "activa"
+
+msgid "active:/m/"
+msgstr "activo"
+
+msgid "licence"
+msgstr "licencia"
+
+msgid "repository"
+msgstr "repositorio"
+
+msgid "plugin"
+msgstr "plugin"
+
+msgid "theme"
+msgstr "tema"
+
+msgid "plugins"
+msgstr "plugins"
+
+msgid "themes"
+msgstr "temas"
+
+msgid "only themes"
+msgstr "solo temas"
+
+msgid "search"
+msgstr "buscar"
+
+msgid "install"
+msgstr "instalar"
+
+msgid "learn more"
+msgstr "saber más"
+
+msgid "plugins + themes"
+msgstr "plugins + temas"
+
+msgid "help"
+msgstr "ayuda"
+
+msgid "installed"
+msgstr "instalados"
+
+msgid "update"
+msgstr "actualizar"
+
+msgid "downloading"
+msgstr "descargando"
+
+msgid "successfully installed"
+msgstr "instalacion exitosa"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "since"
+msgstr "desde"
+
+msgid "since v? to v?"
+msgstr "desde v%s a v%s"
+
+msgid "save"
+msgstr "guardar"
+
+msgid "inactive licence"
+msgstr "licencia inactiva"
+
+msgid "no active"
+msgstr "no activa"
+
+msgid "? licence"
+msgstr "licencia de %s"
+
+msgid "licence to connect with your ? account"
+msgstr "la licencia para conectar con tu cuenta de %s"
+
+msgid "get your licence key here."
+msgstr "obtenga su clave de licencia aquí."
+
+msgid "plugin list"
+msgstr "lista de plugins"
+
+msgid "activation"
+msgstr "activación"
+
+msgid "learn +"
+msgstr "saber más"
+
+msgid "licence to connect with your account"
+msgstr "licencia para conectar con tu cuenta"
+
+msgid "welcome to"
+msgstr "bienvenido a"
+
+msgid "licence activation"
+msgstr "activación de licencia"
+
+msgid "visit store"
+msgstr "ir a la tienda"
+
+msgid "licence for"
+msgstr "licencia de"
+
+msgid "Grow your business with MutaWP! Use our official plugin to create fantastic websites."
+msgstr "¡Haz crecer tu negocio con MutaWp! Usa nuestro plugin oficial para crear fantásticos sitios webs."

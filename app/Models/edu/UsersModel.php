@@ -1,0 +1,20 @@
+<?php
+
+namespace Boctulus\Simplerest\Models\edu;
+
+use Boctulus\Simplerest\Models\MyModel;
+use Boctulus\Simplerest\Schemas\edu\UsersSchema;
+
+class UsersModel extends MyModel
+{
+	protected $hidden       = [];
+	protected $not_fillable = [];
+
+	protected $field_names  = [];
+	protected $formatters    = [];
+
+    function __construct(bool $connect = false){
+        parent::__construct($connect, UsersSchema::class);
+	}	
+}
+
