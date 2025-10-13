@@ -214,7 +214,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/boctulus/dummyapi",
-                "reference": "e22688f21895d17331f2bebe6ed3c994bcd62e4a"
+                "reference": "7c5279a3d497fa56ef9d5f5c3cec86b65d600ffd"
             },
             "type": "library",
             "extra": {
@@ -241,7 +241,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/boctulus/shopifyconnector",
-                "reference": "a726ef40720093c760db376445887b3389adc39b"
+                "reference": "2b8922ecd9c2a264fe1369a2fe1db5993b763f73"
             },
             "type": "library",
             "description": "Package ShopifyConnector by boctulus",
