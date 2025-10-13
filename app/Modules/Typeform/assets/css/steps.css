@@ -1,0 +1,81 @@
+/* Steps */
+.step {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.step.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Conditional steps hidden by logic */
+.step.conditional-hidden {
+    display: none !important;
+    opacity: 0 !important;
+}
+
+.step-content {
+    text-align: center;
+}
+
+/* Step Actions */
+.step-actions {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Success Message */
+.success-message {
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-box {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: left;
+    backdrop-filter: blur(10px);
+}
+
+.info-box h3 {
+    text-align: center;
+    color: #F17DFF;
+    margin-bottom: 1rem;
+}
+
+.info-box ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-box li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.info-box li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #F17DFF;
+    font-weight: bold;
+}
+
+/* Conditional Fields */
+.conditional-field {
+    transition: all 0.3s ease;
+}
