@@ -1,0 +1,33 @@
+#copyPrompt {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 38px 0 0 0;
+    z-index: 10;
+}
+.position-relative {
+    position: relative;
+}
+.delete-file-path {
+    color: #dc3545;
+}
+.delete-file-path:hover {
+    color: #fff;
+    background-color: #dc3545;
+}
+.input-group-text {
+    padding: 0.375rem 0.75rem;
+}
+.form-check-input {
+    margin-top: 0 !important;
+}
+
+.dropdown-menu {
+    margin-top: 2px; /* Un pequeño espacio entre el botón y el menú */
+    min-width: 146px; /* Reducimos el ancho mínimo */
+    max-width: 200px; /* Reducimos el ancho máximo */
+    max-height: 200px; /* Altura máxima antes de que aparezca scroll */
+    padding-bottom: 30px;
+    overflow-y: auto; /* Permite scroll si el contenido es muy largo */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
