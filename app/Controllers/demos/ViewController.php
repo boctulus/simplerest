@@ -1,0 +1,97 @@
+<?php
+
+namespace Boctulus\Simplerest\Controllers\demos;
+
+use Boctulus\Simplerest\Core\View;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Controllers\Controller;
+
+class ViewController extends Controller
+{
+    function test_async_defer_1(){
+        set_template('test_async_await/my_tpl_1.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_1b(){
+        set_template('test_async_await/my_tpl_1b.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_1c(){
+        set_template('test_async_await/my_tpl_1c.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_2(){
+        set_template('test_async_await/my_tpl_2.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_3(){
+        set_template('test_async_await/my_tpl_3.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_4(){
+        set_template('test_async_await/my_tpl_4.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_async_defer_5(){
+        set_template('test_async_await/my_tpl_5.php');
+        render("Hola Sr. Putin");
+    }
+
+    function test_asset_enqueue(){
+       js_file('https://kit.fontawesome.com/3f60db90e4.js', [
+            "crossorigin" => "anonymous" // falta incluir atributos
+        ]);
+
+        render("Hola Sr. Putin");
+    }
+
+    function test_enqueue_js_asset_local(){
+        js_file('js/dojo/dojo.js');
+        render("Deberia haberse encolado un .js");
+    }
+    
+    function test_enqueue_css_asset_local(){
+        css_file('third_party/bootstrap/3.x/normalize.css');
+        render("Deberia haberse encolado un .css");
+    }
+
+    /*
+        Decorado de vistas 
+    */
+    function view_decoration()
+    {  
+        css_file(
+            asset('andrea/css/master.css')
+        );
+
+        $placeholder = get_view('andrea/builder');
+        $content     = get_view('andrea/container', ['placeholder' => $placeholder]);
+
+        render($content);
+    }
+
+    function view_decoration_2()
+    {  
+        css_file(
+            asset('andrea/css/master.css')
+        );
+
+        $content = '<section style="border: red 1px solid;">' .
+            get_view('andrea/builder') .
+        '</section>';
+
+        render($content);
+    }
+
+    
+}
+
