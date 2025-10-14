@@ -4,6 +4,9 @@ namespace Boctulus\Zippy\Libs;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Zippy\Contracts\CategoryMatchingStrategyInterface;
+use Boctulus\Zippy\Strategies\LLMMatchingStrategy;
+use Boctulus\Zippy\Strategies\FuzzyMatchingStrategy;
 
 /**
  * CategoryMapper
@@ -23,10 +26,11 @@ class CategoryMapper
     protected static $cache = [];
     protected static $categoriesCache = null;
     protected static $keywordMap = null;
+    protected static ?CategoryMatchingStrategyInterface $matchingStrategy = null;
 
     // Thresholds configurables
     const FUZZY_THRESHOLD = 0.40; // 40% similarity mínima
-    const HIGH_CONFIDENCE = 70;   // 70% para auto-aplicar fuzzy
+    const HIGH_CONFIDENCE = 70;   // 70% para auto-aplicar fuzzy/LLM
     const LOW_CONFIDENCE = 50;    // <50% requiere revisión manual
 
     /**
