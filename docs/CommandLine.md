@@ -189,3 +189,56 @@ php com sql list 'db_195.products' --limit=50 --format=table
 - Si no se especifica `--limit`, por defecto se muestran 10 registros
 - El formato simple muestra cada registro en un bloque separado con sus campos
 
+# Zippy Command
+
+Comandos para la gestión de productos y categorías de Zippy.
+
+## test_mapping
+
+Prueba el mapeo de una categoría raw sin guardar en la base de datos.
+
+### Sintaxis
+
+```bash
+php com zippy test_mapping --raw="<value>" [--strategy=<strategy>]
+```
+
+### Parámetros
+
+- `--raw="<value>"`: (Requerido) El texto de la categoría a probar.
+- `--strategy=<strategy>`: (Opcional) La estrategia a utilizar. Valores posibles: `llm`, `fuzzy`. Por defecto es `llm`.
+
+### Ejemplo
+
+```bash
+# Probar mapeo usando la estrategia por defecto (llm)
+php com zippy test_mapping --raw="Aceites Y Condimentos"
+
+# Probar mapeo forzando la estrategia fuzzy
+php com zippy test_mapping --raw="Aceites Y Condimentos" --strategy=fuzzy
+```
+
+## products_process_categories
+
+Procesa los productos de la base de datos para asignarles las categorías correspondientes basándose en sus datos.
+
+### Sintaxis
+
+```bash
+php com zippy products_process_categories [--limit=<N>] [--dry-run]
+```
+
+### Parámetros
+
+- `--limit=<N>`: (Opcional) Limita el número de productos a procesar.
+- `--dry-run`: (Opcional) Ejecuta el comando en modo de simulación sin guardar los cambios en la base de datos.
+
+### Ejemplo
+
+```bash
+# Procesar 100 productos en modo de simulación
+php com zippy products_process_categories --limit=100 --dry-run
+
+# Procesar 500 productos y guardar los cambios
+php com zippy products_process_categories --limit=500
+```
