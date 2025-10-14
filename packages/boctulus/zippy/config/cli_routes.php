@@ -38,5 +38,13 @@ CliRouter::group('zippy', function() {
         // php com zippy category list
         CliRouter::command('list', 'Boctulus\Zippy\Controllers\CategoryController@list_categories'); 
         CliRouter::command('import', 'Boctulus\Zippy\Controllers\AdminTasksController@insertCategories');
+        
+        // Nuevos comandos de mapping con estrategias LLM/Fuzzy
+        CliRouter::command('test_mapping', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_mapping');
+        CliRouter::command('test_batch', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_batch_mapping');
+        CliRouter::command('compare', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@compare_strategies');
+        CliRouter::command('test_config', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_config');
+        CliRouter::command('stats', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_stats');
+        CliRouter::command('test_full', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_full_system');
     });
 });

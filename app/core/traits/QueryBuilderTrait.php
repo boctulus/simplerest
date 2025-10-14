@@ -825,8 +825,12 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function orderBy(array $o)
+	function orderBy($o)
 	{
+		if (is_string($o)) {
+			$o = array_map('trim', explode(',', $o));
+		}
+
 		$this->order = array_merge($this->order, $o);
 		return $this;
 	}
