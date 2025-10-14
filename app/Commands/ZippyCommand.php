@@ -50,7 +50,7 @@ class ZippyCommand implements ICommand
         }
 
         // Query base
-        $query = DB::table('products', 'zippy');
+        $query = DB::table('products');
 
         if ($onlyUnmapped) {
             $query->whereNull('categories')
@@ -97,7 +97,7 @@ class ZippyCommand implements ICommand
 
                 // Guardar si no es dry-run
                 if (!$dryRun) {
-                    DB::table('products', 'zippy')
+                    DB::table('products')
                         ->where('id', $product->id)
                         ->update([
                             'categories' => $categoriesJson,
@@ -529,21 +529,21 @@ class ZippyCommand implements ICommand
         StdOut::print("=== Categorías raw detectadas en productos ===\n");
 
         // Unir catego_raw1, catego_raw2, catego_raw3
-        $raw1 = DB::table('products', 'zippy')
+        $raw1 = DB::table('products')
             ->selectRaw('DISTINCT catego_raw1 as raw')
             ->whereNotNull('catego_raw1')
             ->whereRaw("catego_raw1 != ''")
             ->limit($limit)
             ->get();
 
-        $raw2 = DB::table('products', 'zippy')
+        $raw2 = DB::table('products')
             ->selectRaw('DISTINCT catego_raw2 as raw')
             ->whereNotNull('catego_raw2')
             ->whereRaw("catego_raw2 != ''")
             ->limit($limit)
             ->get();
 
-        $raw3 = DB::table('products', 'zippy')
+        $raw3 = DB::table('products')
             ->selectRaw('DISTINCT catego_raw3 as raw')
             ->whereNotNull('catego_raw3')
             ->whereRaw("catego_raw3 != ''")

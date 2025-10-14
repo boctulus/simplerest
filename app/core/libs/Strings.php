@@ -142,6 +142,33 @@ class Strings
 		return static::replaceDupes($str, ' ');
 	}
 
+	 /**
+     * Normaliza string: lowercase, quita acentos, signos, espacios múltiples
+     */
+    static function normalize(string $raw): string
+    {
+        if (empty($raw)) return '';
+
+        $s = mb_strtolower(trim($raw), 'UTF-8');
+
+        // Quitar acentos
+        $trans = [
+            'á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ñ'=>'n','ü'=>'u',
+            'à'=>'a','è'=>'e','ì'=>'i','ò'=>'o','ù'=>'u',
+            'â'=>'a','ê'=>'e','î'=>'i','ô'=>'o','û'=>'u',
+            'ä'=>'a','ë'=>'e','ï'=>'i','ö'=>'o','ü'=>'u',
+        ];
+        $s = strtr($s, $trans);
+
+        // Eliminar caracteres no alfanuméricos (permitir espacios, &, -)
+        $s = preg_replace('/[^a-z0-9\s&\-]/', ' ', $s);
+
+        // Múltiples espacios -> uno solo
+        $s = preg_replace('/\s+/', ' ', trim($s));
+
+        return $s;
+    }
+
 	/*
 		Ej:
 

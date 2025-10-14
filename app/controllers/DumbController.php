@@ -12476,6 +12476,13 @@ class DumbController extends Controller
         exit;
     }
 
+    // ok
+    function test_string_normalization(){
+        $raw = "   Café ";
+        var_dump(Strings::normalize($raw));
+        exit;
+    }
+
     
 
 }   // end class

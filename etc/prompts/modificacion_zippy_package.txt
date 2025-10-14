@@ -1,0 +1,1206 @@
+Vamos a modificar el sistema de mapeo de categorías para que use LLM (Ollama) como una estrategia más, y que sea pluggable.
+
+Pasos a seguir:
+
+Modificar la clase CategoryMapper para que use el patrón estrategia, permitiendo cambiar entre fuzzy matching y LLM (y otros en el futuro).
+
+Crear una estrategia de LLM que use el paquete boctulus\llm-providers para consultar a Ollama.
+
+Configurar el sistema para que, por defecto, use una estrategia (por ejemplo, fuzzy) y permitir cambiar a LLM.
+
+Permitir especificar el orden de prioridad de las estrategias (por ejemplo, primero fuzzy, luego LLM, o viceversa).
+
+Implementar el procesamiento por lotes (batch) para la estrategia de LLM, para evitar hacer muchas consultas individuales.
+
+Vamos a desglosar los cambios:
+
+1. Modificar CategoryMapper para usar estrategias
+En lugar de tener el fuzzy matching hardcodeado, vamos a permitir inyectar una estrategia (o una lista de estrategias) para intentar el matching.
+
+2. Crear la estrategia de LLM
+Ya tenemos una clase LLMMatchingStrategy en Strategies/LLMMatchingStrategy.php. Vamos a asegurarnos de que esté bien implementada.
+
+3. Configuración
+Podemos agregar una configuración para especificar la estrategia por defecto y el orden de las estrategias.
+
+4. Procesamiento por lotes
+Para el LLM, es más eficiente enviar varias categorías en una sola consulta (si el modelo lo permite). Vamos a implementar un método para procesar por lotes.
+
+5. Integrar con el comando existente
+Modificar el comando test_mapping para que use la nueva estrategia.
+
+Vamos a empezar modificando la clase CategoryMapper para que use estrategias.
+
+Actualmente, CategoryMapper tiene un método resolve que intenta varias estrategias en un orden fijo. Vamos a cambiar esto para que use una lista de estrategias configurable.
+
+Idea:
+
+Agregar una propiedad estática $strategies que sea un array de instancias de CategoryMatchingStrategyInterface.
+
+Agregar un método para establecer las estrategias.
+
+Modificar el método resolve para que intente cada estrategia en el orden dado.
+
+También, para no romper la compatibilidad, podemos dejar el comportamiento por defecto (fuzzy) si no se configuran estrategias.
+
+Vamos a modificar CategoryMapper:
+
+php
+// En Libs/CategoryMapper.php
+
+use Boctulus\Zippy\Contracts\CategoryMatchingStrategyInterface;
+use Boctulus\Zippy\Strategies\FuzzyMatchingStrategy;
+
+class CategoryMapper
+{
+    // ... propiedades existentes
+
+    protected static $strategies = [];
+
+    /**
+     * Establece las estrategias de matching a usar
+     *
+     * @param array $strategies Array de instancias de CategoryMatchingStrategyInterface
+     */
+    public static function setStrategies(array $strategies): void
+    {
+        self::$strategies = $strategies;
+    }
+
+    /**
+     * Obtiene las estrategias actuales
+     *
+     * @return array
+     */
+    public static function getStrategies(): array
+    {
+        if (empty(self::$strategies)) {
+            // Por defecto, usar fuzzy matching
+            self::$strategies = [new FuzzyMatchingStrategy()];
+        }
+        return self::$strategies;
+    }
+
+    // ... resto de la clase
+
+    /**
+     * Resuelve una categoría raw -> [slug1, slug2, ...] usando las estrategias configuradas
+     */
+    public static function resolve(string $raw, bool $autoSave = true): array
+    {
+        if (empty($raw)) {
+            return [];
+        }
+
+        $result = [];
+
+        // 1) Buscar en category_mappings (cache)
+        $mapping = self::findMapping($raw);
+        if ($mapping && !empty($mapping['category_id'])) {
+            DB::setConnection('zippy');
+            $cat = DB::select("SELECT * FROM categories WHERE id = ? AND deleted_at IS NULL LIMIT 1", [$mapping['category_id']], 'ASSOC', null, true);
+
+            if ($cat) {
+                return [$cat['slug']];
+            }
+        }
+
+        if ($mapping && !empty($mapping['category_slug'])) {
+            return [$mapping['category_slug']];
+        }
+
+        // 2) Coincidencia directa en categories
+        $cat = self::findCategoryByNameOrSlug($raw);
+        if ($cat) {
+            if ($autoSave) {
+                self::saveMapping([
+                    'raw_value' => $raw,
+                    'category_id' => $cat->id,
+                    'category_slug' => $cat->slug,
+                    'mapping_type' => 'normalized',
+                    'notes' => 'Auto-matched by direct name/slug',
+                    'is_reviewed' => false,
+                ]);
+            }
+            return [$cat->slug];
+        }
+
+        // 3) Token/keyword matching (esto también podría ser una estrategia, pero por ahora lo dejamos como está)
+        $tokenMatch = self::matchByTokens($raw);
+        if ($tokenMatch) {
+            if ($autoSave) {
+                self::saveMapping([
+                    'raw_value' => $raw,
+                    'category_slug' => $tokenMatch['slug'],
+                    'mapping_type' => 'substring',
+                    'notes' => 'Matched by token: ' . $tokenMatch['token'],
+                    'is_reviewed' => false,
+                ]);
+            }
+            return [$tokenMatch['slug']];
+        }
+
+        // 4) Usar las estrategias configuradas
+        $availableCategories = self::getAvailableCategories();
+        $strategies = self::getStrategies();
+
+        foreach ($strategies as $strategy) {
+            $match = $strategy->match($raw, $availableCategories);
+            if ($match) {
+                $category = $match['category'];
+                $score = $match['score'];
+
+                // Convertir a objeto si es array (para uniformidad)
+                if (is_array($category)) {
+                    $category = (object)$category;
+                }
+
+                // Verificar si la categoría existe en la BD (por si acaso)
+                $catInDb = self::findCategoryByNameOrSlug($category->slug ?? $category->name);
+                if (!$catInDb) {
+                    continue; // Si no existe, probar con la siguiente estrategia
+                }
+
+                // Usar el slug de la base de datos
+                $slug = $catInDb->slug;
+
+                // Guardar el mapping
+                if ($autoSave) {
+                    self::saveMapping([
+                        'raw_value' => $raw,
+                        'category_id' => $catInDb->id,
+                        'category_slug' => $slug,
+                        'mapping_type' => $strategy->getName(),
+                        'confidence' => $score,
+                        'notes' => 'Matched by strategy: ' . $strategy->getName(),
+                        'is_reviewed' => false,
+                    ]);
+                }
+
+                return [$slug];
+            }
+        }
+
+        // 5) No match: marcar unmapped
+        if ($autoSave) {
+            self::saveMapping([
+                'raw_value' => $raw,
+                'mapping_type' => 'unmapped',
+                'notes' => 'No match found - requires manual review',
+                'is_reviewed' => false,
+            ]);
+        }
+
+        return []; // Retornar vacío en lugar de 'otros' - caller decide fallback
+    }
+
+    /**
+     * Obtiene las categorías disponibles en formato para las estrategias
+     */
+    protected static function getAvailableCategories(): array
+    {
+        if (self::$categoriesCache === null) {
+            DB::setConnection('zippy');
+            self::$categoriesCache = DB::select("SELECT * FROM categories WHERE deleted_at IS NULL");
+        }
+
+        $availableCategories = [];
+        foreach (self::$categoriesCache as $cat) {
+            $availableCategories[$cat->slug] = $cat;
+        }
+
+        return $availableCategories;
+    }
+
+    // ... resto de métodos
+}
+Ahora, vamos a modificar el comando test_mapping (que actualmente no está en los archivos proporcionados, pero asumo que existe) para que use la estrategia de LLM.
+
+Pero primero, vamos a crear un comando de prueba que use LLM. Podemos llamarlo test_llm_mapping o modificar el existente.
+
+Dado que no tenemos el código del comando test_mapping, asumiré que está en algún controlador. Vamos a suponer que hay un controlador CategoryMappingTestController con un método test_mapping.
+
+En lugar de modificar el comando existente, vamos a crear uno nuevo que use LLM, para no romper el existente.
+
+Pero para integrarlo con el sistema actual, vamos a modificar el CategoryMapper para que, en lugar de usar solo fuzzy, use las estrategias configuradas.
+
+Ahora, vamos a crear una estrategia de LLM que use el paquete llm-providers. Ya tenemos LLMMatchingStrategy en Strategies/LLMMatchingStrategy.php. Vamos a revisarla y ajustar si es necesario.
+
+En LLMMatchingStrategy, el método match ya está implementado para usar el LLM. Sin embargo, note que el método buildPrompt construye un prompt que pide un JSON específico. Eso está bien.
+
+Ahora, necesitamos configurar el sistema para usar la estrategia de LLM. Podemos hacerlo en el comando de prueba.
+
+Ejemplo de cómo usar el CategoryMapper con estrategias:
+
+php
+use Boctulus\Zippy\Strategies\LLMMatchingStrategy;
+use Boctulus\Zippy\Strategies\FuzzyMatchingStrategy;
+
+// Configurar las estrategias: primero LLM, luego fuzzy
+$llmStrategy = new LLMMatchingStrategy('qwen2.5:3b', 0.2, 500, true);
+$fuzzyStrategy = new FuzzyMatchingStrategy();
+
+CategoryMapper::setStrategies([$llmStrategy, $fuzzyStrategy]);
+
+// Luego usar CategoryMapper::resolve() como siempre
+Pero note que el LLM es más lento y requiere Ollama corriendo. Por lo tanto, quizás no queremos usarlo por defecto, sino solo cuando se necesite.
+
+Vamos a crear un comando específico para probar el mapeo con LLM.
+
+Comando para probar mapeo con LLM
+Podemos agregar un comando en cli_routes.php:
+
+php
+CliRouter::command('test_llm_mapping', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_llm_mapping');
+Y en CategoryMappingTestController:
+
+php
+public function test_llm_mapping($raw = null)
+{
+    // Si no se pasó raw, usar uno por defecto
+    if ($raw === null) {
+        $raw = 'Aceites Y Condimentos';
+    }
+
+    // Configurar estrategias: LLM primero, luego fuzzy
+    $llmStrategy = new LLMMatchingStrategy('qwen2.5:3b', 0.2, 500, true);
+    $fuzzyStrategy = new FuzzyMatchingStrategy();
+
+    CategoryMapper::setStrategies([$llmStrategy, $fuzzyStrategy]);
+
+    // Llamar a CategoryMapper::resolve
+    $result = CategoryMapper::resolve($raw);
+
+    // Mostrar resultado
+    dd($result, 'LLM Mapping Result');
+}
+Procesamiento por lotes
+Para el procesamiento por lotes, podemos agregar un método en CategoryMapper que procese múltiples valores raw en un solo lote, especialmente para la estrategia de LLM.
+
+En LLMMatchingStrategy, podríamos agregar un método matchBatch que tome un array de valores raw y devuelva un array de resultados.
+
+Sin embargo, el LLM que estamos usando (Ollama) no soporta batch en una sola llamada, por lo que tendríamos que hacer múltiples llamadas. Pero podemos agruparlas en una sola petición si Ollama soporta multiple prompts en una sola llamada? No, la API de Ollama no soporta batch.
+
+Por lo tanto, el procesamiento por lotes sería simplemente iterar sobre cada valor raw y llamar a match para cada uno. Pero podemos hacerlo de forma que se envíen en paralelo? No, porque la API de Ollama no soporta múltiples prompts en una sola petición.
+
+Entonces, para batch, simplemente iteramos y usamos match para cada uno.
+
+Podemos agregar un método en CategoryMapper:
+
+php
+public static function resolveBatch(array $rawValues, bool $autoSave = true): array
+{
+    $results = [];
+    foreach ($rawValues as $raw) {
+        $results[$raw] = self::resolve($raw, $autoSave);
+    }
+    return $results;
+}
+Pero esto no es eficiente para LLM porque haría una petición por cada valor. Si tenemos muchos, puede ser lento.
+
+Una alternativa es modificar la estrategia de LLM para que acepte un batch y envíe una petición por cada uno, pero sin paralelismo. O, si queremos paralelismo, tendríamos que usar curl multi o similar, pero eso complica.
+
+Por ahora, vamos a dejar que el LLM se haga uno por uno. Si el batch es grande, puede ser lento, pero para pruebas está bien.
+
+Configuración del LLM
+En la estrategia de LLM, estamos usando el modelo 'qwen2.5:3b'. Podemos hacer que esto sea configurable.
+
+Conclusión
+Hemos modificado CategoryMapper para usar estrategias, lo que permite usar LLM como una estrategia más. Hemos creado un comando para probar el mapeo con LLM.
+
+Ahora, para usar LLM en producción, se debería configurar las estrategias según sea necesario.
+
+Nota: El LLM puede no ser siempre la mejor opción, ya que es más lento y requiere recursos. Por lo tanto, se puede usar en combinación con otras estrategias (primero fuzzy, y si no encuentra, entonces LLM) o viceversa.
+
+Vamos a escribir los cambios en los archivos.
+
+Nota: Solo voy a mostrar los archivos modificados y los nuevos. Los archivos no modificados no se incluyen.
+
+Archivos a modificar:
+packages/boctulus/zippy/src/Libs/CategoryMapper.php
+
+packages/boctulus/zippy/src/Strategies/LLMMatchingStrategy.php (ya existe, pero verificar)
+
+packages/boctulus/zippy/config/cli_routes.php (agregar comando)
+
+Nuevos archivos:
+Ninguno, porque LLMMatchingStrategy ya existe.
+
+Modificación de CategoryMapper.php:
+Vamos a modificar CategoryMapper para agregar las estrategias.
+
+Modificación de cli_routes.php:
+Agregar el comando test_llm_mapping.
+
+Nota: Dado que el código de CategoryMapper que proporcionaste es largo, voy a mostrar solo las partes modificadas.
+
+Modificaciones en CategoryMapper.php:
+php
+// ... namespace y imports ...
+
+class CategoryMapper
+{
+    // ... propiedades existentes ...
+
+    protected static $strategies = [];
+
+    // ... métodos existentes ...
+
+    /**
+     * Establece las estrategias de matching a usar
+     *
+     * @param array $strategies Array de instancias de CategoryMatchingStrategyInterface
+     */
+    public static function setStrategies(array $strategies): void
+    {
+        self::$strategies = $strategies;
+    }
+
+    /**
+     * Obtiene las estrategias actuales
+     *
+     * @return array
+     */
+    public static function getStrategies(): array
+    {
+        if (empty(self::$strategies)) {
+            // Por defecto, usar fuzzy matching
+            self::$strategies = [new FuzzyMatchingStrategy()];
+        }
+        return self::$strategies;
+    }
+
+    /**
+     * Obtiene las categorías disponibles en formato para las estrategias
+     */
+    protected static function getAvailableCategories(): array
+    {
+        if (self::$categoriesCache === null) {
+            DB::setConnection('zippy');
+            self::$categoriesCache = DB::select("SELECT * FROM categories WHERE deleted_at IS NULL");
+        }
+
+        $availableCategories = [];
+        foreach (self::$categoriesCache as $cat) {
+            $availableCategories[$cat->slug] = $cat;
+        }
+
+        return $availableCategories;
+    }
+
+    // ... en el método resolve, reemplazar la parte de fuzzy matching por el uso de estrategias ...
+
+    /**
+     * Resuelve una categoría raw -> [slug1, slug2, ...] usando todas las estrategias
+     *
+     * @param string $raw Valor raw de categoría
+     * @param bool $autoSave Si debe guardar mappings automáticamente
+     * @return array Array de slugs encontrados
+     */
+    public static function resolve(string $raw, bool $autoSave = true): array
+    {
+        if (empty($raw)) {
+            return [];
+        }
+
+        $result = [];
+
+        // 1) Buscar en category_mappings
+        $mapping = self::findMapping($raw);
+        if ($mapping && !empty($mapping['category_id'])) {
+            DB::setConnection('zippy');
+            $cat = DB::select("SELECT * FROM categories WHERE id = ? AND deleted_at IS NULL LIMIT 1", [$mapping['category_id']], 'ASSOC', null, true);
+
+            if ($cat) {
+                return [$cat['slug']];
+            }
+        }
+
+        if ($mapping && !empty($mapping['category_slug'])) {
+            return [$mapping['category_slug']];
+        }
+
+        // 2) Coincidencia directa en categories
+        $cat = self::findCategoryByNameOrSlug($raw);
+        if ($cat) {
+            if ($autoSave) {
+                self::saveMapping([
+                    'raw_value' => $raw,
+                    'category_id' => $cat->id,
+                    'category_slug' => $cat->slug,
+                    'mapping_type' => 'normalized',
+                    'notes' => 'Auto-matched by direct name/slug',
+                    'is_reviewed' => false,
+                ]);
+            }
+            return [$cat->slug];
+        }
+
+        // 3) Token/keyword matching
+        $tokenMatch = self::matchByTokens($raw);
+        if ($tokenMatch) {
+            if ($autoSave) {
+                self::saveMapping([
+                    'raw_value' => $raw,
+                    'category_slug' => $tokenMatch['slug'],
+                    'mapping_type' => 'substring',
+                    'notes' => 'Matched by token: ' . $tokenMatch['token'],
+                    'is_reviewed' => false,
+                ]);
+            }
+            return [$tokenMatch['slug']];
+        }
+
+        // 4) Usar las estrategias configuradas
+        $availableCategories = self::getAvailableCategories();
+        $strategies = self::getStrategies();
+
+        foreach ($strategies as $strategy) {
+            $match = $strategy->match($raw, $availableCategories);
+            if ($match) {
+                $category = $match['category'];
+                $score = $match['score'];
+
+                // Convertir a objeto si es array (para uniformidad)
+                if (is_array($category)) {
+                    $category = (object)$category;
+                }
+
+                // Verificar si la categoría existe en la BD (por si acaso)
+                $catInDb = self::findCategoryByNameOrSlug($category->slug ?? $category->name);
+                if (!$catInDb) {
+                    continue; // Si no existe, probar con la siguiente estrategia
+                }
+
+                // Usar el slug de la base de datos
+                $slug = $catInDb->slug;
+
+                // Guardar el mapping
+                if ($autoSave) {
+                    self::saveMapping([
+                        'raw_value' => $raw,
+                        'category_id' => $catInDb->id,
+                        'category_slug' => $slug,
+                        'mapping_type' => $strategy->getName(),
+                        'confidence' => $score,
+                        'notes' => 'Matched by strategy: ' . $strategy->getName(),
+                        'is_reviewed' => false,
+                    ]);
+                }
+
+                return [$slug];
+            }
+        }
+
+        // 5) No match: marcar unmapped
+        if ($autoSave) {
+            self::saveMapping([
+                'raw_value' => $raw,
+                'mapping_type' => 'unmapped',
+                'notes' => 'No match found - requires manual review',
+                'is_reviewed' => false,
+            ]);
+        }
+
+        return []; // Retornar vacío en lugar de 'otros' - caller decide fallback
+    }
+
+    // ... resto de métodos ...
+}
+Modificación de cli_routes.php:
+Agregar el comando:
+
+php
+// ... dentro del grupo 'zippy' ...
+
+CliRouter::command('test_llm_mapping', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_llm_mapping');
+Crear CategoryMappingTestController:
+Si no existe, creamos el controlador CategoryMappingTestController en src/Controllers/CategoryMappingTestController.php:
+
+php
+<?php
+
+namespace Boctulus\Zippy\Controllers;
+
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Zippy\Libs\CategoryMapper;
+use Boctulus\Zippy\Strategies\LLMMatchingStrategy;
+use Boctulus\Zippy\Strategies\FuzzyMatchingStrategy;
+
+class CategoryMappingTestController extends Controller
+{
+    public function test_llm_mapping($raw = null)
+    {
+        // Si no se pasó raw, usar uno por defecto
+        if ($raw === null) {
+            $raw = 'Aceites Y Condimentos';
+        }
+
+        // Configurar estrategias: LLM primero, luego fuzzy
+        $llmStrategy = new LLMMatchingStrategy('qwen2.5:3b', 0.2, 500, true);
+        $fuzzyStrategy = new FuzzyMatchingStrategy();
+
+        CategoryMapper::setStrategies([$llmStrategy, $fuzzyStrategy]);
+
+        // Llamar a CategoryMapper::resolve
+        $result = CategoryMapper::resolve($raw);
+
+        // Mostrar resultado
+        dd($result, 'LLM Mapping Result');
+    }
+}
+Consideraciones:
+Asegúrate de que Ollama esté corriendo y que el modelo 'qwen2.5:3b' esté instalado.
+
+La estrategia de LLM puede fallar si Ollama no está disponible, entonces pasará a la siguiente estrategia (fuzzy).
+
+Con estos cambios, ya se puede probar el mapeo con LLM usando el comando:
+
+bash
+php com zippy test_llm_mapping --raw="Aceites Y Condimentos"
+O sin argumentos para usar el valor por defecto.
+
+Nota:
+El método resolve de CategoryMapper ahora usa las estrategias configuradas. Si no se configuran, usa fuzzy matching por defecto.
+
+Esto no afecta el comportamiento existente porque por defecto se usa fuzzy matching.
+
+Mejoras futuras:
+Podríamos agregar una configuración en un archivo de configuración para las estrategias por defecto.
+
+Podríamos implementar un sistema de caché para las respuestas del LLM para evitar repetir las mismas consultas.
+
+Por ahora, con estos cambios, se cumple el objetivo.
+
+Voy a ayudarte a implementar un sistema de categorización usando LLM (Ollama) que reemplace o complemente el fuzzy matching actual. Crearé una arquitectura pluggable para los métodos de clasificación.
+
+1. Primero, creemos el sistema de estrategias configurable
+Archivo: D:\laragon\www\simplerest\packages\boctulus\zippy\src\Libs\CategoryClassifier.php
+php
+<?php
+
+namespace Boctulus\Zippy\Libs;
+
+use Boctulus\Zippy\Contracts\CategoryMatchingStrategyInterface;
+use Boctulus\Zippy\Strategies\FuzzyMatchingStrategy;
+use Boctulus\Zippy\Strategies\LLMMatchingStrategy;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Logger;
+
+/**
+ * CategoryClassifier
+ * 
+ * Sistema principal de clasificación que permite usar múltiples estrategias
+ * de forma intercambiable y configurable.
+ */
+class CategoryClassifier
+{
+    protected static $strategies = [];
+    protected static $defaultStrategy = 'fuzzy';
+    protected static $fallbackStrategy = 'fuzzy';
+    protected static $batchSize = 1;
+    protected static $availableCategories = null;
+
+    /**
+     * Configura las estrategias disponibles
+     */
+    public static function configure(array $config = []): void
+    {
+        // Estrategias por defecto
+        $defaultStrategies = [
+            'fuzzy' => new FuzzyMatchingStrategy(),
+            'llm' => new LLMMatchingStrategy(
+                $config['llm_model'] ?? 'qwen2.5:3b',
+                $config['llm_temperature'] ?? 0.2,
+                $config['llm_max_tokens'] ?? 500,
+                $config['llm_verbose'] ?? false
+            )
+        ];
+
+        self::$strategies = $config['strategies'] ?? $defaultStrategies;
+        self::$defaultStrategy = $config['default_strategy'] ?? 'fuzzy';
+        self::$fallbackStrategy = $config['fallback_strategy'] ?? 'fuzzy';
+        self::$batchSize = $config['batch_size'] ?? 1;
+    }
+
+    /**
+     * Registra una nueva estrategia
+     */
+    public static function registerStrategy(string $name, CategoryMatchingStrategyInterface $strategy): void
+    {
+        self::$strategies[$name] = $strategy;
+    }
+
+    /**
+     * Obtiene las categorías disponibles desde la BD
+     */
+    protected static function getAvailableCategories(): array
+    {
+        if (self::$availableCategories !== null) {
+            return self::$availableCategories;
+        }
+
+        DB::setConnection('zippy');
+        $categories = DB::select("SELECT * FROM categories WHERE deleted_at IS NULL");
+        
+        $availableCategories = [];
+        foreach ($categories as $cat) {
+            $availableCategories[$cat->slug] = $cat;
+        }
+
+        self::$availableCategories = $availableCategories;
+        return $availableCategories;
+    }
+
+    /**
+     * Clasifica un valor raw usando las estrategias configuradas
+     */
+    public static function classify(string $raw, ?string $strategyName = null, ?float $threshold = null): ?array
+    {
+        if (empty($raw)) {
+            return null;
+        }
+
+        $strategyName = $strategyName ?? self::$defaultStrategy;
+        $availableCategories = self::getAvailableCategories();
+
+        if (empty($availableCategories)) {
+            Logger::log("No categories available for classification");
+            return null;
+        }
+
+        // Verificar si la estrategia existe
+        if (!isset(self::$strategies[$strategyName])) {
+            Logger::log("Strategy '{$strategyName}' not found, using fallback");
+            $strategyName = self::$fallbackStrategy;
+        }
+
+        $strategy = self::$strategies[$strategyName];
+
+        // Si la estrategia requiere servicio externo y no está disponible, usar fallback
+        if ($strategy->requiresExternalService() && !self::isStrategyAvailable($strategy)) {
+            Logger::log("Strategy '{$strategyName}' not available, using fallback");
+            $strategy = self::$strategies[self::$fallbackStrategy];
+        }
+
+        try {
+            return $strategy->match($raw, $availableCategories, $threshold);
+        } catch (\Exception $e) {
+            Logger::log("Error in strategy '{$strategyName}': " . $e->getMessage());
+            
+            // Intentar con fallback
+            if ($strategyName !== self::$fallbackStrategy) {
+                $fallbackStrategy = self::$strategies[self::$fallbackStrategy];
+                return $fallbackStrategy->match($raw, $availableCategories, $threshold);
+            }
+            
+            return null;
+        }
+    }
+
+    /**
+     * Clasifica múltiples valores en lote
+     */
+    public static function classifyBatch(array $rawValues, ?string $strategyName = null, ?float $threshold = null): array
+    {
+        $results = [];
+        $batchSize = self::$batchSize;
+
+        // Procesar en lotes
+        $batches = array_chunk($rawValues, $batchSize);
+        
+        foreach ($batches as $batch) {
+            $batchResults = [];
+            
+            foreach ($batch as $raw) {
+                $result = self::classify($raw, $strategyName, $threshold);
+                $batchResults[$raw] = $result;
+            }
+            
+            $results = array_merge($results, $batchResults);
+            
+            // Pequeña pausa entre lotes para no sobrecargar
+            if (count($batches) > 1) {
+                usleep(100000); // 100ms
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Verifica si una estrategia está disponible
+     */
+    protected static function isStrategyAvailable(CategoryMatchingStrategyInterface $strategy): bool
+    {
+        if (!$strategy->requiresExternalService()) {
+            return true;
+        }
+
+        // Verificación especial para LLM
+        if ($strategy instanceof LLMMatchingStrategy) {
+            return LLMMatchingStrategy::isAvailable();
+        }
+
+        return true;
+    }
+
+    /**
+     * Obtiene información de las estrategias disponibles
+     */
+    public static function getStrategiesInfo(): array
+    {
+        $info = [];
+        
+        foreach (self::$strategies as $name => $strategy) {
+            $info[$name] = [
+                'name' => $strategy->getName(),
+                'requires_external' => $strategy->requiresExternalService(),
+                'available' => self::isStrategyAvailable($strategy)
+            ];
+        }
+
+        return $info;
+    }
+
+    /**
+     * Obtiene estadísticas de clasificación
+     */
+    public static function getClassificationStats(array $results): array
+    {
+        $total = count($results);
+        $successful = 0;
+        $confidences = [];
+
+        foreach ($results as $result) {
+            if ($result && isset($result['score']) && $result['score'] > 0) {
+                $successful++;
+                $confidences[] = $result['score'];
+            }
+        }
+
+        $avgConfidence = !empty($confidences) ? array_sum($confidences) / count($confidences) : 0;
+
+        return [
+            'total' => $total,
+            'successful' => $successful,
+            'failed' => $total - $successful,
+            'success_rate' => $total > 0 ? round(($successful / $total) * 100, 2) : 0,
+            'avg_confidence' => round($avgConfidence, 2),
+            'min_confidence' => !empty($confidences) ? min($confidences) : 0,
+            'max_confidence' => !empty($confidences) ? max($confidences) : 0,
+        ];
+    }
+}
+2. Actualicemos el LLMMatchingStrategy para mejor manejo de errores
+Archivo: D:\laragon\www\simplerest\packages\boctulus\zippy\src\Strategies\LLMMatchingStrategy.php (Actualizado)
+php
+<?php
+
+namespace Boctulus\Zippy\Strategies;
+
+use Boctulus\Zippy\Contracts\CategoryMatchingStrategyInterface;
+use Boctulus\LLMProviders\Factory\LLMFactory;
+use Boctulus\Simplerest\Core\Libs\Logger;
+
+class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
+{
+    protected string $model;
+    protected float $temperature;
+    protected ?int $maxTokens;
+    protected bool $verbose;
+    protected int $timeout;
+    protected int $maxRetries;
+
+    public function __construct(
+        string $model = 'qwen2.5:3b',
+        float $temperature = 0.2,
+        ?int $maxTokens = 500,
+        bool $verbose = false,
+        int $timeout = 30,
+        int $maxRetries = 2
+    ) {
+        $this->model = $model;
+        $this->temperature = $temperature;
+        $this->maxTokens = $maxTokens;
+        $this->verbose = $verbose;
+        $this->timeout = $timeout;
+        $this->maxRetries = $maxRetries;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function match(string $raw, array $availableCategories, ?float $threshold = null): ?array
+    {
+        $threshold = $threshold ?? 0.70;
+
+        for ($attempt = 0; $attempt <= $this->maxRetries; $attempt++) {
+            try {
+                $llm = LLMFactory::ollama();
+                $llm->setModel($this->model);
+                $llm->setTemperature($this->temperature);
+
+                if ($this->maxTokens) {
+                    $llm->setMaxTokens($this->maxTokens);
+                }
+
+                // Configurar timeout
+                $llm->getClient()->setTimeout($this->timeout);
+
+                $prompt = $this->buildPrompt($raw, $availableCategories);
+                $llm->addContent($prompt, 'user');
+
+                $response = $llm->exec();
+
+                if ($error = $llm->error()) {
+                    throw new \Exception("LLM Error: {$error}");
+                }
+
+                $content = $llm->getContent();
+
+                if (empty($content)) {
+                    throw new \Exception("LLM returned empty content");
+                }
+
+                $result = $this->parseResponse($content, $availableCategories);
+
+                if (!$result) {
+                    throw new \Exception("Failed to parse LLM response");
+                }
+
+                // Verificar threshold
+                if ($result['score'] < ($threshold * 100)) {
+                    if ($this->verbose) {
+                        Logger::log("LLM confidence {$result['score']}% below threshold " . ($threshold * 100) . "%");
+                    }
+                    return null;
+                }
+
+                if ($this->verbose) {
+                    Logger::log("LLM matched '{$raw}' to '{$result['category']->slug}' with {$result['score']}% confidence");
+                }
+
+                return $result;
+
+            } catch (\Exception $e) {
+                if ($this->verbose) {
+                    Logger::log("LLM Strategy attempt {$attempt} failed: " . $e->getMessage());
+                }
+
+                if ($attempt === $this->maxRetries) {
+                    if ($this->verbose) {
+                        Logger::log("Max retries reached for LLM classification");
+                    }
+                    return null;
+                }
+
+                // Esperar antes de reintentar
+                sleep(1);
+            }
+        }
+
+        return null;
+    }
+
+    // ... (el resto de los métodos se mantienen igual)
+}
+3. Controlador para testing del nuevo sistema
+Archivo: D:\laragon\www\simplerest\packages\boctulus\zippy\src\Controllers\CategoryMappingTestController.php
+php
+<?php
+
+namespace Boctulus\Zippy\Controllers;
+
+use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Zippy\Libs\CategoryClassifier;
+use Boctulus\Zippy\Libs\CategoryMapper;
+use Boctulus\Simplerest\Core\Libs\Logger;
+
+class CategoryMappingTestController extends Controller
+{
+    public function test_mapping($raw = null)
+    {
+        $raw = $raw ?? 'Aceites Y Condimentos';
+        
+        echo "=== Test de Mapping Mejorado ===\n\n";
+        echo "Raw value: {$raw}\n\n";
+
+        // Configurar el clasificador
+        CategoryClassifier::configure([
+            'default_strategy' => 'llm',
+            'fallback_strategy' => 'fuzzy',
+            'batch_size' => 1,
+            'llm_model' => 'qwen2.5:3b',
+            'llm_verbose' => true
+        ]);
+
+        // Mostrar información de estrategias
+        $strategiesInfo = CategoryClassifier::getStrategiesInfo();
+        echo "✓ Estrategias disponibles:\n";
+        foreach ($strategiesInfo as $name => $info) {
+            $status = $info['available'] ? '✓ Disponible' : '✗ No disponible';
+            echo "  - {$name}: {$info['name']} ({$status})\n";
+        }
+        echo "\n";
+
+        // Probar clasificación individual
+        echo "--- Clasificación con LLM ---\n";
+        $result = CategoryClassifier::classify($raw, 'llm');
+        
+        if ($result) {
+            $category = $result['category'];
+            $score = $result['score'];
+            
+            echo "✓ Categoría detectada:\n";
+            echo "  - {$category->slug} ({$category->name}) - Confianza: {$score}%\n";
+            
+            if (isset($result['reasoning'])) {
+                echo "  Razón: {$result['reasoning']}\n";
+            }
+        } else {
+            echo "✗ No se pudo clasificar con LLM\n";
+            
+            // Intentar con fallback
+            echo "\n--- Clasificación con Fuzzy (fallback) ---\n";
+            $fuzzyResult = CategoryClassifier::classify($raw, 'fuzzy');
+            
+            if ($fuzzyResult) {
+                $category = $fuzzyResult['category'];
+                $score = $fuzzyResult['score'];
+                echo "✓ Categoría detectada:\n";
+                echo "  - {$category->slug} ({$category->name}) - Similitud: {$score}%\n";
+            } else {
+                echo "✗ No se pudo clasificar con ninguna estrategia\n";
+            }
+        }
+
+        echo "\n";
+    }
+
+    public function test_batch_mapping()
+    {
+        $testValues = [
+            'Aceites Y Condimentos',
+            'Lacteos y Derivados', 
+            'Bebidas Sin Alcohol',
+            'Galletitas y Golosinas',
+            'Limpieza del Hogar'
+        ];
+
+        echo "=== Test de Batch Mapping ===\n\n";
+
+        // Configurar el clasificador
+        CategoryClassifier::configure([
+            'default_strategy' => 'llm',
+            'fallback_strategy' => 'fuzzy',
+            'batch_size' => 2, // Probar con tamaño de lote 2
+            'llm_model' => 'qwen2.5:3b',
+            'llm_verbose' => false
+        ]);
+
+        echo "Procesando " . count($testValues) . " valores...\n\n";
+
+        $startTime = microtime(true);
+        $results = CategoryClassifier::classifyBatch($testValues);
+        $endTime = microtime(true);
+
+        $executionTime = round($endTime - $startTime, 2);
+
+        // Mostrar resultados
+        foreach ($results as $raw => $result) {
+            echo "Raw: '{$raw}'\n";
+            
+            if ($result && isset($result['category'])) {
+                $category = $result['category'];
+                $score = $result['score'];
+                $strategy = $result['strategy'] ?? 'unknown';
+                
+                echo "  → {$category->slug} ({$category->name}) - {$score}% [{$strategy}]\n";
+            } else {
+                echo "  → ✗ No clasificado\n";
+            }
+            echo "\n";
+        }
+
+        // Estadísticas
+        $stats = CategoryClassifier::getClassificationStats($results);
+        echo "--- Estadísticas ---\n";
+        echo "Tiempo ejecución: {$executionTime}s\n";
+        echo "Total: {$stats['total']}\n";
+        echo "Exitosos: {$stats['successful']} ({$stats['success_rate']}%)\n";
+        echo "Confianza promedio: {$stats['avg_confidence']}%\n";
+    }
+
+    public function compare_strategies($raw = null)
+    {
+        $raw = $raw ?? 'Aceites Y Condimentos';
+        
+        echo "=== Comparación de Estrategias ===\n\n";
+        echo "Raw value: {$raw}\n\n";
+
+        CategoryClassifier::configure([
+            'batch_size' => 1,
+            'llm_model' => 'qwen2.5:3b'
+        ]);
+
+        $strategies = ['fuzzy', 'llm'];
+        
+        foreach ($strategies as $strategy) {
+            echo "--- {$strategy} ---\n";
+            
+            $startTime = microtime(true);
+            $result = CategoryClassifier::classify($raw, $strategy);
+            $endTime = microtime(true);
+            
+            $time = round(($endTime - $startTime) * 1000, 2); // ms
+            
+            if ($result) {
+                $category = $result['category'];
+                $score = $result['score'];
+                echo "✓ {$category->slug} ({$category->name}) - {$score}% - {$time}ms\n";
+            } else {
+                echo "✗ No clasificado - {$time}ms\n";
+            }
+            echo "\n";
+        }
+    }
+}
+4. Actualizar las rutas CLI
+Archivo: D:\laragon\www\simplerest\packages\boctulus\zippy\config\cli_routes.php (Actualizado)
+php
+<?php
+
+use Boctulus\Simplerest\Core\CliRouter;
+
+/*
+    Zippy Package CLI Routes
+*/
+
+// Grouped commands under 'zippy'
+CliRouter::group('zippy', function() {
+
+    // Importer commands
+    CliRouter::group('importer', function() {
+        CliRouter::command('import:coto', 'Boctulus\Zippy\Controllers\CotoProductImportController@import_zippy_csv');
+        CliRouter::command('check_dupes:coto', 'Boctulus\Zippy\Controllers\CotoProductImportController@check_dupes');
+        CliRouter::command('index:coto', 'Boctulus\Zippy\Controllers\CotoProductImportController@index');
+
+        CliRouter::command('import:carrefour', 'Boctulus\Zippy\Controllers\CarrefourProductImportController@import_zippy_csv');
+        CliRouter::command('check_dupes:carrefour', 'Boctulus\Zippy\Controllers\CarrefourProductImportController@check_dupes');
+        CliRouter::command('index:carrefour', 'Boctulus\Zippy\Controllers\CarrefourProductImportController@index');
+    });
+
+    // CSV reader commands
+    CliRouter::group('csv', function() {
+        CliRouter::command('comercio', 'Boctulus\Zippy\Controllers\CSVTestController@read_csv_comercio');
+        CliRouter::command('products', 'Boctulus\Zippy\Controllers\CSVTestController@read_csv_products');
+        CliRouter::command('sucursales', 'Boctulus\Zippy\Controllers\CSVTestController@read_csv_sucursales');
+    });
+
+    // Users commands
+    CliRouter::group('users', function() {
+        CliRouter::command('index', 'Boctulus\Zippy\Controllers\FirebaseTestController@index');
+        CliRouter::command('login', 'Boctulus\Zippy\Controllers\FirebaseTestController@login');
+    });
+
+    // Category commands
+    CliRouter::group('category', function() {
+        CliRouter::command('list', 'Boctulus\Zippy\Controllers\CategoryController@list_categories'); 
+        CliRouter::command('import', 'Boctulus\Zippy\Controllers\AdminTasksController@insertCategories');
+        
+        // Nuevos comandos de mapeo mejorado
+        CliRouter::command('test_mapping', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_mapping');
+        CliRouter::command('test_batch_mapping', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_batch_mapping');
+        CliRouter::command('compare_strategies', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@compare_strategies');
+    });
+});
+5. Configuración del sistema
+Archivo: D:\laragon\www\simplerest\packages\boctulus\zippy\config\category_classifier.php
+php
+<?php
+
+/*
+    Configuración del sistema de clasificación de categorías
+*/
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | Estrategia por defecto
+    |--------------------------------------------------------------------------
+    |
+    | Estrategia de clasificación a usar por defecto.
+    | Opciones: 'fuzzy', 'llm'
+    |
+    */
+    'default_strategy' => env('CATEGORY_DEFAULT_STRATEGY', 'llm'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Estrategia de fallback
+    |--------------------------------------------------------------------------
+    |
+    | Estrategia a usar cuando la principal falla.
+    |
+    */
+    'fallback_strategy' => env('CATEGORY_FALLBACK_STRATEGY', 'fuzzy'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tamaño del lote
+    |--------------------------------------------------------------------------
+    |
+    | Número de elementos a procesar en cada lote.
+    | Para LLM, mantener bajo (1-5) para mejor estabilidad.
+    |
+    */
+    'batch_size' => env('CATEGORY_BATCH_SIZE', 1),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Configuración de LLM
+    |--------------------------------------------------------------------------
+    */
+    'llm' => [
+        'model' => env('OLLAMA_MODEL', 'qwen2.5:3b'),
+        'temperature' => env('OLLAMA_TEMPERATURE', 0.2),
+        'max_tokens' => env('OLLAMA_MAX_TOKENS', 500),
+        'timeout' => env('OLLAMA_TIMEOUT', 30),
+        'max_retries' => env('OLLAMA_MAX_RETRIES', 2),
+        'verbose' => env('OLLAMA_VERBOSE', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Umbrales de confianza
+    |--------------------------------------------------------------------------
+    */
+    'thresholds' => [
+        'fuzzy' => env('FUZZY_THRESHOLD', 0.40),
+        'llm' => env('LLM_THRESHOLD', 0.70),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logging
+    |--------------------------------------------------------------------------
+    */
+    'logging' => [
+        'enabled' => env('CATEGORY_LOGGING', true),
+        'level' => env('CATEGORY_LOG_LEVEL', 'info'),
+    ],
+];
+Uso del nuevo sistema
+Ahora puedes usar los nuevos comandos:
+
+bash
+# Test individual con LLM
+php com zippy category test_mapping --raw="Aceites Y Condimentos"
+
+# Test por lotes
+php com zippy category test_batch_mapping
+
+# Comparar estrategias
+php com zippy category compare_strategies --raw="Lacteos y Derivados"
+
