@@ -141,7 +141,7 @@ class OpenAIProvider implements LLMProviderInterface
     /**
      * @inheritDoc
      */
-    public function addContent(string $content, string $role = 'user')
+    public function addContent($content, string $role = 'user')
     {
         $this->messages[] = [
             'role'    => $role,
