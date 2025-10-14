@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\exceptions;
+namespace Boctulus\Simplerest\Core\Exceptions;
 
 use Boctulus\Simplerest\Core\Libs\Logger;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Models\mpp;
+namespace Boctulus\Simplerest\Models\Mpo;
 
 use Boctulus\Simplerest\Models\MyModel;
 use Boctulus\Simplerest\Schemas\mpp\TBL_BARRIOSSchema; //

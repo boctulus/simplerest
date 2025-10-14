@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\tests\Unit;
+namespace Boctulus\Simplerest\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Boctulus\Simplerest\Core\Libs\i18n\Translate;

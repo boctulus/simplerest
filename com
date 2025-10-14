@@ -59,19 +59,23 @@ if (count($args) > 0){
    $name         = Strings::snakeToCamel(array_shift($args));
    $commandClass = $name . "Command";
 
+   // Incluir el namespace completo para los comandos
+   $namespace = Config::get()['namespace'];
+   $commandClassWithNamespace = $namespace . "\\Commands\\" . $commandClass;
+
    $comm_files   = Files::glob(COMMANDS_PATH, '*Command.php');
 
    foreach ($comm_files as $file){
       $_name = Strings::matchOrFail(Files::convertSlashes($file, '/'), '|/([a-zA-Z0-9_]+)Command.php|');
-      
+
       if ($name != $_name){
          continue;
       }
 
       require $file;
 
-      if (class_exists($commandClass)){      
-         $commandInstance = new $commandClass();
+      if (class_exists($commandClassWithNamespace)){
+         $commandInstance = new $commandClassWithNamespace();
          
          if (method_exists($commandInstance, 'handle')) {
             $commandInstance->handle($args);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Models;
+namespace Boctulus\Simplerest\Modules\FriendlyPOS\Models;
 
 use Boctulus\Simplerest\Models\MyModel;
 ### IMPORTS

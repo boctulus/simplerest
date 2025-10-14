@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Modules\AndroidEngine\src\Libs;
+namespace Boctulus\Simplerest\Modules\AndroidEngine\Src\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Traits\ErrorReporting;

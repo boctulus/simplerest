@@ -1,5 +1,7 @@
 <?php
 
+namespace Boctulus\Simplerest\Commands;
+
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Interfaces\ICommand;
 use Boctulus\Simplerest\Core\Traits\CommandTrait;
