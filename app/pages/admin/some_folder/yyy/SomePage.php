@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\pages\admin\xxx\yyy;
+namespace Boctulus\Simplerest\Pages\Admin\SomeFolder\Yyy;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Request;

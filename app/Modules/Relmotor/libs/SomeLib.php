@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Modules\Relmotor\libs;
+namespace Boctulus\Simplerest\Modules\Relmotor\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Logger;

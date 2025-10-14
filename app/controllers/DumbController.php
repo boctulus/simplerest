@@ -12473,6 +12473,7 @@ class DumbController extends Controller
         $data = array ( 'categorias' => '', 'precio' => '', 'descripcion' => '', 'marca' => '', 'ean' => '', 'imagen' => '', 'precio_raw' => '');
 
         var_dump(Strings::isEmpty($data) ); // true
+        exit;
     }
 
     

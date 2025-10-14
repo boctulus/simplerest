@@ -1,7 +1,7 @@
 <?php
 
-// namespace Boctulus\WebTest;
+namespace Boctulus\WebTest;
 
-interface Web-test {
+interface ExampleInterface {
     // __METHODS__
 }

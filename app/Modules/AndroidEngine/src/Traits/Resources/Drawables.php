@@ -1,9 +1,9 @@
 <?php
 
-namespace Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Resources;
+namespace Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\Resources;
 
 use Boctulus\Simplerest\Core\Traits\ErrorReporting;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\XML;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\XML;
 
 Trait Drawables 
 {

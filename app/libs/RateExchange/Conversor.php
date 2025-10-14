@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\SW\libs\currency;
+namespace Boctulus\Simplerest\Libs\RateExchange;
 
 use boctulus\SW\interfaces\ICurrencyConverter;
 

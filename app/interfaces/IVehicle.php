@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\interfaces;
+namespace Boctulus\Simplerest\Interfaces;
 
 interface IVehicle {
     function run();

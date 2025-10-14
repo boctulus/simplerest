@@ -4,7 +4,7 @@
  * Solo usa cURL y funciones nativas de PHP
  */
 
-namespace Boctulus\Simplerest\modules\FirebaseTest;
+namespace Boctulus\Simplerest\Modules\FirebaseTest;
 
 class FirestoreRawHTTP
 {

@@ -13,9 +13,10 @@ Considerar tambien crear "ViewModels" para almacenar aquello que es requerido pa
 
 En este caso las vistas no pueden ser simplemente archivos html o php con HTML sino deben ser cargados desde clases de tipo "View"  (equivalente a "Activity") y "Fragment" con su ciclo de vida.  Quizas algo parecido a los de Fragments y Activities de Android.
 
-- Implementar:
+- Implementar [!][!][!]
 
 https://chatgpt.com/g/g-p-68ec7c552c048191ab0067a6bc3f92f3-framework-de-php-llamado-simplerest/c/68ec7cc0-5968-8323-bd02-3bf07d042b59
+
 
 - Mejorar el "EventBus"
 

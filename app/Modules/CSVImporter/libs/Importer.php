@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Modules\csv_importer\libs;
+namespace Boctulus\Simplerest\Modules\CSVImporter\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\Files;

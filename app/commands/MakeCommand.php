@@ -1,5 +1,7 @@
 <?php
 
+namespace Boctulus\Simplerest\Commands;
+
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Config;

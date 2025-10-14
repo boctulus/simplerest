@@ -1,7 +1,7 @@
 <?php
 
-// namespace Boctulus\CliTest;
+namespace Boctulus\CliTest;
 
-interface Cli-test {
+interface ExampleInterface {
     // __METHODS__
 }

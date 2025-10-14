@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers;
+namespace Boctulus\Simplerest\Controllers\Demos;
 
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\Simplerest\Core\Request;
