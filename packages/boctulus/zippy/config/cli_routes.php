@@ -33,6 +33,12 @@ CliRouter::group('zippy', function() {
         CliRouter::command('login', 'Boctulus\Zippy\Controllers\FirebaseTestController@login');
     });
 
+    // Nuevos comandos de procesamiento de productos
+    CliRouter::group('products', function() {
+        CliRouter::command('process_categories', 'Boctulus\Zippy\Controllers\ProductCategoryController@process_products');
+        CliRouter::command('process_uncategorized', 'Boctulus\Zippy\Controllers\ProductCategoryController@process_uncategorized');
+    });
+
     // Category commands
     CliRouter::group('category', function() {
         // php com zippy category list
