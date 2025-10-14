@@ -1,0 +1,18 @@
+parameters:
+    level: 7
+    paths:
+        - app
+    excludePaths:
+        - app/Core/Templates/*
+        - app/Modules/SimpleHtmlDomParser/*
+
+    ignoreErrors:
+        - '#Call to an undefined method#'
+        - '#Access to an undefined property#'
+        -
+            identifier: missingType.iterableValue
+        -
+            identifier: missingType.generics
+
+    bootstrapFiles:
+        - vendor/autoload.php

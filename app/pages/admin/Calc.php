@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\pages\admin;
+namespace Boctulus\Simplerest\Pages\Admin;
 
 use Boctulus\Simplerest\abstracts\pages\Page;
 

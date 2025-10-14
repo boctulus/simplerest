@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\modules\FriendlyPOS;
+namespace Boctulus\Simplerest\Modules\FriendlyPOS;
 
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;

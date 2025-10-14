@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\modules\Typeform\tests;
+namespace Boctulus\Simplerest\Modules\Typeform\Tests;
 
 use Boctulus\Simplerest\core\libs\TestCase;
 use Boctulus\Simplerest\controllers\TypeformController;

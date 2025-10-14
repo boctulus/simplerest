@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\libs;
+namespace Boctulus\Simplerest\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\core\libs\Fragment;

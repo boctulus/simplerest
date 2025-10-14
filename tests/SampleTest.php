@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\tests;
+namespace Boctulus\Simplerest\Tests;
 
 use PHPUnit\Framework\TestCase;
 
@@ -20,10 +20,10 @@ require_once __DIR__ . '/../app.php';
  *
  * Requiere PHPUnit y una configuración adecuada de la base de datos.
  *
- * Ejecuta con: ./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/SampleTestTest.php
+ * Ejecuta con: ./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/SampleTest.php
  *
 */
-class SampleTestTest extends TestCase
+class SampleTest extends TestCase
 {
     public static function setUpBeforeClass(): void
     {

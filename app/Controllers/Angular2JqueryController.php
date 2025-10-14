@@ -7,7 +7,7 @@ use Boctulus\Simplerest\Core\Libs\code_cleaner\AngularCleaner;
 use Boctulus\Simplerest\Core\Libs\CSS;
 use Boctulus\Simplerest\Core\Libs\Files;
 
-class Angular2jqueryController extends Controller
+class Angular2JqueryController extends Controller
 {
     function run()
     {

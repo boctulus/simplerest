@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\middlewares;
+namespace Boctulus\Simplerest\Middlewares;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Files;

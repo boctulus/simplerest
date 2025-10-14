@@ -32,7 +32,7 @@
 	},
    "scripts":{
       "test": "phpunit --colors=always",
-      "cs": "phpstan analyse src --level=7",
+      "cs": "phpstan analyse app --level=7",
       "pre-autoload-dump":"Google\\Task\\Composer::cleanup"
    },
    "extra":{
@@ -50,7 +50,11 @@
          "Boctulus\\WebTest\\":"packages/boctulus/web-test/src",
          "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src",
          "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src"
-      }
+      },
+      "exclude-from-classmap": [
+         "app/Core/Templates/",
+         "app/Modules/SimpleHtmlDomParser/"
+      ]
    },
    "autoload-dev": {
       "psr-4": {

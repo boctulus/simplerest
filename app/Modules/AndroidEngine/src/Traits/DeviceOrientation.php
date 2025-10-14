@@ -1,9 +1,9 @@
 <?php
 
-namespace Boctulus\Simplerest\Modules\AndroidEngine\src\Traits;
+namespace Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits;
 
 use Boctulus\Simplerest\Core\Traits\ErrorReporting;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\FilesTrait;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\FilesTrait;
 
 Trait DeviceOrientation 
 {
