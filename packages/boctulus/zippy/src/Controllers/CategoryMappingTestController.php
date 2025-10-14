@@ -13,71 +13,45 @@ use Boctulus\Simplerest\Core\Libs\Logger;
  */
 class CategoryMappingTestController extends Controller
 {
-    /**
-     * Test básico de mapping con estrategias configurables
-     */
-    public function test_mapping($raw = null)
+    public function test_mapping($request)
     {
-        $raw = $raw ?? 'Aceites Y Condimentos';
+        $raw = $request->getOption('raw');
+        $strategy = $request->getOption('strategy', 'llm'); // LLM por defecto
         
-        echo "=== Test de Mapping con Estrategias ===\n\n";
-        echo "Raw value: '{$raw}'\n\n";
+        if (empty($raw)) {
+            echo "Error: Debes proporcionar un valor raw con --raw=\"valor\"\n";
+            echo "Ejemplo: php com zippy test_mapping --raw=\"Aceites Y Condimentos\"\n";
+            return;
+        }
 
-        // Configurar CategoryMapper con LLM como estrategia principal
+        // Configurar con LLM como estrategia por defecto
         CategoryMapper::configure([
+            'default_strategy' => 'llm',
             'strategies_order' => ['llm', 'fuzzy'],
             'llm_model' => 'qwen2.5:3b',
-            'llm_verbose' => true,
+            'llm_temperature' => 0.2,
             'thresholds' => [
+                'fuzzy' => 0.40,
                 'llm' => 0.70,
-                'fuzzy' => 0.40
             ]
         ]);
 
-        // Mostrar información de estrategias
-        $strategies = CategoryMapper::getStrategies();
-        echo "✓ Estrategias disponibles:\n";
-        foreach ($strategies as $name => $strategy) {
-            $available = CategoryMapper::isStrategyAvailable($strategy) ? '✓ Disponible' : '✗ No disponible';
-            $external = $strategy->requiresExternalService() ? ' (Servicio externo)' : ' (Local)';
-            echo "  - {$name}: {$strategy->getName()}{$external} - {$available}\n";
-        }
-        echo "\n";
+        echo "Probando mapeo para: \"$raw\"\n";
+        echo "Estrategia: $strategy\n\n";
 
-        // Probar resolución
-        echo "--- Resolución automática (orden configurado) ---\n";
-        $startTime = microtime(true);
-        $result = CategoryMapper::resolve($raw, false); // No auto-save para test
-        $endTime = microtime(true);
+        $result = CategoryMapper::resolve($raw, false, $strategy);
         
-        $executionTime = round(($endTime - $startTime) * 1000, 2); // ms
-
         if (!empty($result)) {
-            echo "✓ Categoría encontrada: " . implode(', ', $result) . "\n";
+            echo "✅ Categoría asignada: " . implode(', ', $result) . "\n";
         } else {
-            echo "✗ No se encontró categoría\n";
+            echo "❌ No se pudo asignar categoría\n";
         }
-        
-        echo "Tiempo de ejecución: {$executionTime}ms\n\n";
 
-        // Probar estrategias específicas
-        $strategiesToTest = ['llm', 'fuzzy'];
-        
-        foreach ($strategiesToTest as $strategyName) {
-            echo "--- Test específico: {$strategyName} ---\n";
-            
-            $startTime = microtime(true);
-            $result = CategoryMapper::resolve($raw, false, $strategyName);
-            $endTime = microtime(true);
-            
-            $time = round(($endTime - $startTime) * 1000, 2); // ms
-            
-            if (!empty($result)) {
-                echo "✓ Categoría: " . implode(', ', $result) . " - {$time}ms\n";
-            } else {
-                echo "✗ Sin resultado - {$time}ms\n";
-            }
-            echo "\n";
+        // Mostrar estadísticas del mapping
+        $stats = CategoryMapper::getStats();
+        echo "\nEstadísticas de mapeo:\n";
+        foreach ($stats as $key => $value) {
+            echo "- " . ucfirst(str_replace('_', ' ', $key)) . ": $value\n";
         }
     }
 

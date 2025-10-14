@@ -24,6 +24,86 @@ class ZippyCommand implements ICommand
     }
 
     /**
+     * Procesa productos y actualiza sus categorías
+     * 
+     * Uso: php com zippy products_process_categories --limit=100 --dry-run
+     */
+    public function products_process_categories(...$options)
+    {
+        $opts = $this->parseOptions($options);
+        $limit = $opts['limit'] ?? 100;
+        $dryRun = $opts['dry_run'] ?? false;
+        $strategy = $opts['strategy'] ?? null;
+
+        DB::setConnection('zippy');
+        
+        // Configurar CategoryMapper
+        CategoryMapper::configure([
+            'default_strategy' => 'llm',
+            'strategies_order' => ['llm', 'fuzzy'],
+            'thresholds' => [
+                'fuzzy' => 0.40,
+                'llm' => 0.70,
+            ]
+        ]);
+
+        // Obtener productos sin categorías procesadas o para reprocesar
+        $query = "SELECT * FROM products WHERE 1=1";
+        
+        if ($limit) {
+            $query .= " LIMIT " . (int)$limit;
+        }
+
+        $products = DB::select($query);
+        $processed = 0;
+        $errors = 0;
+
+        $total = count($products);
+        echo "Procesando $total productos...\n";
+
+        foreach ($products as $product) {
+            try {
+                $productId = is_array($product) ? ($product['ean'] ?? $product['id']) : ($product->ean ?? $product->id);
+                echo "[$processed/$total] Procesando producto ID/EAN: $productId\n";
+                
+                // Resolver categorías usando CategoryMapper
+                $categories = CategoryMapper::resolveProduct($product, true);
+                
+                if (!empty($categories)) {
+                    echo "  → Categorías asignadas: " . implode(', ', $categories) . "\n";
+                    
+                    if (!$dryRun) {
+                        // Actualizar el campo categories (JSON)
+                        DB::update(
+                            "UPDATE products SET categories = ? WHERE ean = ?",
+                            [json_encode($categories), $productId]
+                        );
+                    }
+                } else {
+                    echo "  → No se encontraron categorías\n";
+                }
+                
+                $processed++;
+                
+            } catch (\Exception $e) {
+                $errors++;
+                echo "  → ERROR: " . $e->getMessage() . "\n";
+                continue;
+            }
+        }
+
+        echo "\nResumen:\n";
+        echo "- Productos procesados: $processed\n";
+        echo "- Errores: $errors\n";
+        
+        if ($dryRun) {
+            echo "- MODO SIMULACIÓN: No se realizaron cambios en la BD\n";
+        }
+        
+        DB::closeConnection();
+    }
+
+    /**
      * Procesa categorías de productos en batch
      *
      * Uso:
@@ -81,24 +161,25 @@ class ZippyCommand implements ICommand
 
         foreach ($products as $product) {
             $processed++;
+            $productId = is_array($product) ? ($product['id'] ?? null) : ($product->id ?? null);
 
             try {
                 // Resolver categorías
                 $categories = CategoryMapper::resolveProduct($product, true);
 
                 if (empty($categories)) {
-                    StdOut::print("[{$processed}/{$total}] Producto ID {$product->id}: Sin categorías detectadas\n");
+                    StdOut::print("[{$processed}/{$total}] Producto ID {$productId}: Sin categorías detectadas\n");
                     continue;
                 }
 
                 $categoriesJson = json_encode($categories);
 
-                StdOut::print("[{$processed}/{$total}] Producto ID {$product->id}: " . implode(', ', $categories) . "\n");
+                StdOut::print("[{$processed}/{$total}] Producto ID {$productId}: " . implode(', ', $categories) . "\n");
 
                 // Guardar si no es dry-run
                 if (!$dryRun) {
                     DB::table('products')
-                        ->where('id', $product->id)
+                        ->where('id', $productId)
                         ->update([
                             'categories' => $categoriesJson,
                             'updated_at' => date('Y-m-d H:i:s'),
@@ -106,7 +187,7 @@ class ZippyCommand implements ICommand
                     $updated++;
                 }
             } catch (\Exception $e) {
-                StdOut::print("[{$processed}/{$total}] ERROR en producto ID {$product->id}: " . $e->getMessage() . "\n");
+                StdOut::print("[{$processed}/{$total}] ERROR en producto ID {$productId}: " . $e->getMessage() . "\n");
                 $errors++;
             }
         }
@@ -313,72 +394,52 @@ class ZippyCommand implements ICommand
      * Prueba el mapeo de una categoría raw sin guardar
      *
      * Uso:
-     *   php com zippy test_mapping --raw="<value>"
+     *   php com zippy test_mapping --raw="<value>" [--strategy=<strategy>]
      *
      * Opciones:
      *   --raw="value"    Valor raw a probar (requerido)
+     *   --strategy=X     Estrategia a usar (llm, fuzzy). Default: llm
      */
     public function test_mapping(...$options)
     {
         $opts = $this->parseOptions($options);
         $raw = $opts['raw'] ?? null;
+        $strategy = $opts['strategy'] ?? 'llm'; // LLM por defecto
 
-        if (!$raw) {
-            StdOut::print("Error: Se requiere --raw=\"<value>\"\n");
-            StdOut::print("Uso: php com zippy test_mapping --raw=\"Aceites Y Condimentos\"\n");
+        if (empty($raw)) {
+            StdOut::print("Error: Debes proporcionar un valor raw con --raw=\"valor\"\n");
+            StdOut::print("Ejemplo: php com zippy test_mapping --raw=\"Aceites Y Condimentos\"\n");
             return;
         }
 
-        StdOut::print("=== Test de Mapping ===\n");
-        StdOut::print("Raw value: {$raw}\n");
-        StdOut::print("Normalized: " . Strings::normalize($raw) . "\n\n");
+        // Configurar con LLM como estrategia por defecto
+        CategoryMapper::configure([
+            'default_strategy' => 'llm',
+            'strategies_order' => ['llm', 'fuzzy'],
+            'llm_model' => 'qwen2.5:3b',
+            'llm_temperature' => 0.2,
+            'thresholds' => [
+                'fuzzy' => 0.40,
+                'llm' => 0.70,
+            ]
+        ]);
 
-        // Probar sin guardar
-        $slugs = CategoryMapper::resolve($raw, false);
+        StdOut::print("Probando mapeo para: \"$raw\"\n");
+        StdOut::print("Estrategia: $strategy\n\n");
 
-        if (empty($slugs)) {
-            StdOut::print("❌ No se encontró mapping.\n");
-        } else {
-            StdOut::print("✓ Categorías detectadas:\n");
-            
-            foreach ($slugs as $slug) {
-                // Buscar info de la categoría
-                $cat = DB::select("SELECT * FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1",
-                    [$slug], 'ASSOC', null, true);
-
-                if ($cat) {
-                    StdOut::print("  - {$slug} ({$cat['name']})\n");
-                    if ($cat['parent_slug']) {
-                        StdOut::print("    Parent: {$cat['parent_slug']}\n");
-                    }
-                } else {
-                    StdOut::print("  - {$slug} (categoría no encontrada en BD)\n");
-                }
-            }
-        }
-
-        // Mostrar posibles matches fuzzy
-        StdOut::print("\n--- Fuzzy matches (top 5) ---\n");
-        $norm = Strings::normalize($raw);
+        $result = CategoryMapper::resolve($raw, false, $strategy);
         
-        $categories = DB::select("SELECT * FROM categories WHERE deleted_at IS NULL");
-        $scores = [];
-
-        foreach ($categories as $cat) {
-            $nameNorm = Strings::normalize($cat['name']);
-            similar_text($norm, $nameNorm, $perc);
-            $scores[] = ['category' => $cat, 'score' => $perc];
+        if (!empty($result)) {
+            StdOut::print("✅ Categoría asignada: " . implode(', ', $result) . "\n");
+        } else {
+            StdOut::print("❌ No se pudo asignar categoría\n");
         }
 
-        usort($scores, function($a, $b) {
-            return $b['score'] <=> $a['score'];
-        });
-
-        $top = array_slice($scores, 0, 5);
-        foreach ($top as $item) {
-            $cat = $item['category'];
-            $score = round($item['score'], 2);
-            StdOut::print("  {$score}% - {$cat['slug']} ({$cat['name']})\n");
+        // Mostrar estadísticas del mapping
+        $stats = CategoryMapper::getStats();
+        StdOut::print("\nEstadísticas de mapeo:\n");
+        foreach ($stats as $key => $value) {
+            StdOut::print("- " . ucfirst(str_replace('_', ' ', $key)) . ": $value\n");
         }
     }
 

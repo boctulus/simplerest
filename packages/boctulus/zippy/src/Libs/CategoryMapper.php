@@ -116,7 +116,11 @@ class CategoryMapper
 
         $availableCategories = [];
         foreach (self::$categoriesCache as $cat) {
-            $availableCategories[$cat->slug] = $cat;
+            // FIX: Use array access
+            $slug = is_array($cat) ? ($cat['slug'] ?? null) : ($cat->slug ?? null);
+            if ($slug) {
+                $availableCategories[$slug] = $cat;
+            }
         }
 
         return $availableCategories;
@@ -174,11 +178,15 @@ class CategoryMapper
         }
 
         foreach (self::$categoriesCache as $cat) {
-            $catNameNorm = Strings::normalize($cat->name);
-            $catSlugNorm = Strings::normalize($cat->slug);
+            // FIX: Use array access and handle both array/object cases
+            $catName = is_array($cat) ? ($cat['name'] ?? null) : ($cat->name ?? null);
+            $catSlug = is_array($cat) ? ($cat['slug'] ?? null) : ($cat->slug ?? null);
+
+            $catNameNorm = Strings::normalize($catName ?? '');
+            $catSlugNorm = Strings::normalize($catSlug ?? '');
 
             if ($catNameNorm === $norm || $catSlugNorm === $slug || $catSlugNorm === $norm) {
-                return $cat;
+                return (object)$cat;
             }
         }
 
@@ -398,8 +406,12 @@ class CategoryMapper
         $bestScore = 0;
 
         foreach (self::$categoriesCache as $cat) {
-            $nameNorm = Strings::normalize($cat->name);
-            $slugNorm = Strings::normalize($cat->slug);
+            // FIX: Use array access and handle both array/object cases
+            $catName = is_array($cat) ? ($cat['name'] ?? null) : ($cat->name ?? null);
+            $catSlug = is_array($cat) ? ($cat['slug'] ?? null) : ($cat->slug ?? null);
+
+            $nameNorm = Strings::normalize($catName ?? '');
+            $slugNorm = Strings::normalize($catSlug ?? '');
 
             // Probar con name
             similar_text($norm, $nameNorm, $percName);
