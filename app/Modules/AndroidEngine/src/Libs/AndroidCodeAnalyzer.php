@@ -1,22 +1,24 @@
 <?php
 
-namespace Boctulus\Simplerest\Modules\AndroidEngine\src\Libs;
+namespace Boctulus\Simplerest\Modules\AndroidEngine\Src\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Traits\ErrorReporting;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Activities;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\AndroidManifest;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\DeviceOrientation;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Fragments;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Gradle;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Listeners;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Resources\Drawables;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\Resources\Values;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\XMLLayouts;
-use Boctulus\Simplerest\Modules\AndroidEngine\src\Traits\LogCat;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\Activities;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\AndroidManifest;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\DeviceOrientation;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\Fragments;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\Gradle;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\Listeners;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\Resources\Drawables;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\Resources\Values;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\XMLLayouts;
+use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\LogCat;
 
 /*
     Análisis de código Android
+
+    TODO: convertir en package
 */
 
 class AndroidCodeAnalyzer

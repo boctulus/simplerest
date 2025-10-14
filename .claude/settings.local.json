@@ -48,7 +48,8 @@
       "Bash(composer:*)",
       "Bash(move:*)",
       "Bash(cmd /c move:*)",
-      "Bash(cmd /c del:*)"
+      "Bash(cmd /c del:*)",
+      "Bash(vendorbinphpstan analyse:*)"
     ],
     "deny": [],
     "ask": []
