@@ -12,26 +12,132 @@ use Boctulus\Zippy\Strategies\FuzzyMatchingStrategy;
  * CategoryMapper
  *
  * Sistema inteligente de mapeo de categorías desde valores raw (scraping)
- * hacia categorías normalizadas en la BD.
+ * hacia categorías normalizadas en la BD usando patrón estrategia.
  *
  * Estrategias de matching (en orden de prioridad):
  * 1. Exact mapping en category_mappings
  * 2. Direct match en categories (name/slug)
  * 3. Token/keyword heuristics
- * 4. Fuzzy matching (similarity)
- * 5. Fallback a 'otros' o marcar unmapped
+ * 4. Estrategias configurables (LLM, Fuzzy, etc.)
+ * 5. Fallback a unmapped
  */
 class CategoryMapper
 {
     protected static $cache = [];
     protected static $categoriesCache = null;
     protected static $keywordMap = null;
-    protected static ?CategoryMatchingStrategyInterface $matchingStrategy = null;
+    protected static $strategies = [];
+    protected static $config = [];
 
     // Thresholds configurables
     const FUZZY_THRESHOLD = 0.40; // 40% similarity mínima
     const HIGH_CONFIDENCE = 70;   // 70% para auto-aplicar fuzzy/LLM
     const LOW_CONFIDENCE = 50;    // <50% requiere revisión manual
+
+    /**
+     * Configura las estrategias de matching
+     */
+    public static function configure(array $config = []): void
+    {
+        self::$config = array_merge([
+            'default_strategy' => 'fuzzy',
+            'fallback_strategy' => 'fuzzy',
+            'strategies_order' => ['fuzzy'],
+            'batch_size' => 1,
+            'llm_model' => 'qwen2.5:3b',
+            'llm_temperature' => 0.2,
+            'llm_max_tokens' => 500,
+            'llm_verbose' => false,
+            'thresholds' => [
+                'fuzzy' => 0.40,
+                'llm' => 0.70,
+            ]
+        ], $config);
+
+        // Inicializar estrategias por defecto
+        if (empty(self::$strategies)) {
+            self::$strategies = [
+                'fuzzy' => new FuzzyMatchingStrategy(),
+                'llm' => new LLMMatchingStrategy(
+                    self::$config['llm_model'],
+                    self::$config['llm_temperature'],
+                    self::$config['llm_max_tokens'],
+                    self::$config['llm_verbose']
+                )
+            ];
+        }
+    }
+
+    /**
+     * Establece las estrategias de matching a usar
+     */
+    public static function setStrategies(array $strategies): void
+    {
+        self::$strategies = $strategies;
+    }
+
+    /**
+     * Obtiene las estrategias configuradas
+     */
+    public static function getStrategies(): array
+    {
+        if (empty(self::$strategies)) {
+            self::configure(); // Inicializar con valores por defecto
+        }
+        return self::$strategies;
+    }
+
+    /**
+     * Obtiene una estrategia específica por nombre
+     */
+    public static function getStrategy(string $name): ?CategoryMatchingStrategyInterface
+    {
+        $strategies = self::getStrategies();
+        return $strategies[$name] ?? null;
+    }
+
+    /**
+     * Registra una nueva estrategia
+     */
+    public static function registerStrategy(string $name, CategoryMatchingStrategyInterface $strategy): void
+    {
+        self::$strategies[$name] = $strategy;
+    }
+
+    /**
+     * Obtiene las categorías disponibles en formato para las estrategias
+     */
+    protected static function getAvailableCategories(): array
+    {
+        if (self::$categoriesCache === null) {
+            DB::setConnection('zippy');
+            self::$categoriesCache = DB::select("SELECT * FROM categories WHERE deleted_at IS NULL");
+        }
+
+        $availableCategories = [];
+        foreach (self::$categoriesCache as $cat) {
+            $availableCategories[$cat->slug] = $cat;
+        }
+
+        return $availableCategories;
+    }
+
+    /**
+     * Verifica si una estrategia está disponible
+     */
+    public static function isStrategyAvailable(CategoryMatchingStrategyInterface $strategy): bool
+    {
+        if (!$strategy->requiresExternalService()) {
+            return true;
+        }
+
+        // Verificación especial para LLM
+        if ($strategy instanceof LLMMatchingStrategy) {
+            return LLMMatchingStrategy::isAvailable();
+        }
+
+        return true;
+    }
 
     /**
      * Busca mapping exacto en category_mappings (caché incluido)
@@ -372,21 +478,20 @@ class CategoryMapper
     }
 
     /**
-     * Resuelve una categoría raw -> [slug1, slug2, ...] usando todas las estrategias
+     * Resuelve una categoría raw -> [slug1, slug2, ...] usando estrategias configuradas
      *
      * @param string $raw Valor raw de categoría
      * @param bool $autoSave Si debe guardar mappings automáticamente
+     * @param string|null $strategyName Estrategia específica a usar, o null para usar orden configurado
      * @return array Array de slugs encontrados
      */
-    public static function resolve(string $raw, bool $autoSave = true): array
+    public static function resolve(string $raw, bool $autoSave = true, ?string $strategyName = null): array
     {
         if (empty($raw)) {
             return [];
         }
 
-        $result = [];
-
-        // 1) Buscar en category_mappings
+        // 1) Buscar en category_mappings (caché)
         $mapping = self::findMapping($raw);
         if ($mapping && !empty($mapping['category_id'])) {
             DB::setConnection('zippy');
@@ -432,42 +537,26 @@ class CategoryMapper
             return [$tokenMatch['slug']];
         }
 
-        // 4) Fuzzy matching
-        $fuzzy = self::fuzzyMatch($raw);
-        if ($fuzzy) {
-            $confidence = $fuzzy['score'];
-            $cat = $fuzzy['category'];
-
-            if ($confidence >= self::HIGH_CONFIDENCE) {
-                // Alta confianza: auto-aplicar
-                if ($autoSave) {
-                    self::saveMapping([
-                        'raw_value' => $raw,
-                        'category_id' => $cat->id,
-                        'category_slug' => $cat->slug,
-                        'mapping_type' => 'fuzzy',
-                        'confidence' => $confidence,
-                        'notes' => 'High confidence fuzzy match',
-                        'is_reviewed' => false,
-                    ]);
-                }
-                return [$cat->slug];
-            } elseif ($confidence >= self::LOW_CONFIDENCE) {
-                // Confianza media: guardar para revisión pero usar
-                if ($autoSave) {
-                    self::saveMapping([
-                        'raw_value' => $raw,
-                        'category_id' => $cat->id,
-                        'category_slug' => $cat->slug,
-                        'mapping_type' => 'fuzzy',
-                        'confidence' => $confidence,
-                        'notes' => 'Medium confidence - requires review',
-                        'is_reviewed' => false,
-                    ]);
-                }
-                return [$cat->slug];
+        // 4) Usar estrategias configuradas
+        $availableCategories = self::getAvailableCategories();
+        
+        if ($strategyName) {
+            // Usar estrategia específica
+            $result = self::tryStrategy($raw, $strategyName, $availableCategories, $autoSave);
+            if ($result) {
+                return $result;
             }
-            // else: confianza baja, no usar
+        } else {
+            // Usar orden de estrategias configurado
+            self::configure(); // Asegurar que esté configurado
+            $strategiesOrder = self::$config['strategies_order'] ?? ['fuzzy'];
+            
+            foreach ($strategiesOrder as $name) {
+                $result = self::tryStrategy($raw, $name, $availableCategories, $autoSave);
+                if ($result) {
+                    return $result;
+                }
+            }
         }
 
         // 5) No match: marcar unmapped
@@ -480,7 +569,117 @@ class CategoryMapper
             ]);
         }
 
-        return []; // Retornar vacío en lugar de 'otros' - caller decide fallback
+        return []; // Retornar vacío - caller decide fallback
+    }
+
+    /**
+     * Intenta resolver usando una estrategia específica
+     */
+    protected static function tryStrategy(string $raw, string $strategyName, array $availableCategories, bool $autoSave): ?array
+    {
+        $strategy = self::getStrategy($strategyName);
+        if (!$strategy) {
+            return null;
+        }
+
+        // Verificar si la estrategia está disponible
+        if (!self::isStrategyAvailable($strategy)) {
+            return null;
+        }
+
+        try {
+            $thresholds = self::$config['thresholds'] ?? [];
+            $threshold = $thresholds[$strategyName] ?? null;
+            
+            $match = $strategy->match($raw, $availableCategories, $threshold);
+            
+            if (!$match) {
+                return null;
+            }
+
+            $category = $match['category'];
+            $score = $match['score'];
+            $reasoning = $match['reasoning'] ?? '';
+            $strategyUsed = $match['strategy'] ?? $strategyName;
+
+            // Convertir a objeto si es array
+            if (is_array($category)) {
+                $category = (object)$category;
+            }
+
+            // Verificar que la categoría existe en BD
+            $catInDb = self::findCategoryByNameOrSlug($category->slug ?? $category->name);
+            if (!$catInDb) {
+                return null;
+            }
+
+            $slug = $catInDb->slug;
+
+            // Determinar confianza para auto-aplicar
+            $confidence = $score;
+            $shouldApply = true;
+            $notes = "Matched by {$strategy->getName()}";
+            
+            if ($reasoning) {
+                $notes .= " - {$reasoning}";
+            }
+
+            if ($confidence >= self::HIGH_CONFIDENCE) {
+                $notes .= ' (High confidence)';
+                $isReviewed = false;
+            } elseif ($confidence >= self::LOW_CONFIDENCE) {
+                $notes .= ' (Medium confidence - requires review)';
+                $isReviewed = false;
+            } else {
+                $notes .= ' (Low confidence - requires review)';
+                $isReviewed = false;
+                // Aún se aplica pero se marca para revisión
+            }
+
+            if ($autoSave && $shouldApply) {
+                self::saveMapping([
+                    'raw_value' => $raw,
+                    'category_id' => $catInDb->id,
+                    'category_slug' => $slug,
+                    'mapping_type' => $strategyUsed,
+                    'confidence' => $confidence,
+                    'notes' => $notes,
+                    'is_reviewed' => $isReviewed,
+                ]);
+            }
+
+            return [$slug];
+
+        } catch (\Exception $e) {
+            // Log error pero no fallar completamente
+            error_log("Strategy {$strategyName} failed: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Resuelve múltiples categorías en lote
+     */
+    public static function resolveBatch(array $rawValues, bool $autoSave = true, ?string $strategyName = null): array
+    {
+        $results = [];
+        $batchSize = self::$config['batch_size'] ?? 1;
+
+        // Procesar en lotes
+        $batches = array_chunk($rawValues, $batchSize);
+        
+        foreach ($batches as $batch) {
+            foreach ($batch as $raw) {
+                $results[$raw] = self::resolve($raw, $autoSave, $strategyName);
+            }
+            
+            // Pausa pequeña entre lotes si hay múltiples
+            if (count($batches) > 1) {
+                usleep(100000); // 100ms
+            }
+        }
+
+        return $results;
     }
 
     /**
