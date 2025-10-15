@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Commands;
+namespace Boctulus\Zippy\Commands;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\StdOut;
