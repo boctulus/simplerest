@@ -208,3 +208,4 @@
 [2025-10-14 16:25:21]	0.8.12	Automatic update
 [2025-10-14 22:44:03]	0.8.12	Automatic update
 [2025-10-14 22:59:54]	0.8.12	Automatic update
+[2025-10-15 08:22:15]	0.8.12	Better documentation for Strings functions
