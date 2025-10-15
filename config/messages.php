@@ -7,6 +7,7 @@
 return [
     'GENERAL>INVALID_CLASS'                          => 'Invalid class',
     'GENERAL>CLASS_NOT_FOUND'                        => 'Class not found',
+    'GENERAL>NOT_IMPLEMENTED'                        => 'Not implemented',
 
     'HTTP>MALFORMED_URL'                             => 'Malformed url',
     'HTTP>BAD_REQUEST'                               => 'Bad request',
@@ -45,14 +46,22 @@ return [
     'VALIDATION>VALIDATION_ERROR'                    => 'Validation error',
     'VALIDATION>NOT_BETWEEN'                         => 'Invalid range',
     'VALIDATION>INVALID_DATA_TYPE'                   => 'Invalid data type',
+    'VALIDATION>INVALID_VALIDATION'                  => 'Invalid validation',
 
-    'FILES>NO_FILES'                                 => 'No files',
+    'FILES>NOT_A_FILE'                               => 'Directory but not a file',
+    'FILES>UNREADABLE'                               => 'Unreadable file',
+    'FILES>NO_FILES'                                 => 'Empty directory',
     'FILES>UNKNOWN_FILE_ID'                          => 'Unknown file id',
     'FILES>FILE_NOT_FOUND'                           => 'File not found',
     'FILES>FILE_PERMISSION_ERROR'                    => 'File permission error',
 
-    'EXCEPTIONS>SQL_EXCEPTION'                       => 'SQL Exception',
-    'EXCEPTIONS>PDO_EXCEPTION'                       => 'PDO Exception',
+    'DB>SQL_EXCEPTION'                               => 'SQL Exception',
+    'DB>PDO_EXCEPTION'                               => 'PDO Exception',
+    'DB>COLUMN_NOT_FOUND'                            => 'Column not found in table',
+    'DB>TABLE_NOT_FOUND'                             => 'Table not found',
+    'DB>TABLE_ALREADY_EXISTS'                        => 'Table already exists',
+    'DB>SCHEMA_ERROR'                                => 'Schema error',
+    'DB>EMPTY_SCHEMA'                                => 'Empty schema',
 
     'CONFIGURATION>MISSING_CONFIG_USER_TABLE'        => 'Table users_table declaration is missing in config file',
 ];
