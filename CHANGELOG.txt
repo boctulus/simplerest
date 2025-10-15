@@ -209,3 +209,4 @@
 [2025-10-14 22:44:03]	0.8.12	Automatic update
 [2025-10-14 22:59:54]	0.8.12	Automatic update
 [2025-10-15 08:22:15]	0.8.12	Better documentation for Strings functions
+[2025-10-15 11:39:42]	0.8.12	Se depredica SystemConstants
