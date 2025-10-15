@@ -15,6 +15,7 @@ return [
     ],
 
     'exclude' => [
-        __DIR__ . '/../app/Core/Helpers/cli.php',
+        // Eg:
+        // __DIR__ . '/../app/Core/Helpers/cli.php',
     ]
 ];

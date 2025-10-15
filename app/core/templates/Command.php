@@ -1,5 +1,7 @@
 <?php
 
+namespace __NAMESPACE__;
+
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Interfaces\ICommand;
 use Boctulus\Simplerest\Core\Traits\CommandTrait;

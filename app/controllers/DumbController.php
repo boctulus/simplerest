@@ -150,6 +150,7 @@ use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Boctulus\Simplerest\Libs\Scrapers\LeroyMerlinScraper;
 use Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs\WordPress;
 use Boctulus\Simplerest\Core\Libs\code_cleaner\AngularCleaner;
+use Boctulus\Simplerest\Core\Exceptions\MiddlewareNotFoundException;
 use Boctulus\Simplerest\Modules\CiudadesCL\CiudadesCLShortcode;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Boctulus\Simplerest\Core\Libs\code_cleaner\BootstrapCleaner;
@@ -12481,6 +12482,12 @@ class DumbController extends Controller
         $raw = "   Café ";
         var_dump(Strings::normalize($raw));
         exit;
+    }
+
+    function get_packages(){
+       //dd(package_scan_base(VENDOR_PATH));
+    //    dd(get_packages_from_all_sources());
+       exit;    
     }
 
     
