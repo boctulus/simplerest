@@ -10639,13 +10639,6 @@ Ej:
 	/api/v1/mi_tabla?tenantid=db_xyz&lang=es
  
 
-Los textos a ser traducidos se encuentran config/messages.php y son compilados a config/msg_const.php mediante el comando:
-
-	php com make system_constants
-
-El comando genera el archivo app/core/libs/SystemConstants.php y *debería* también generar un array para el dominio "system" que sería compilado a .po
-
-
 # Archivos .pot
 
 A partir de archivos "{domain}.pot.php" en el la carpeta de locales, se pueden generar todos los archivos "{domain}.php" para cada idioma 
