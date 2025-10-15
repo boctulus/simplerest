@@ -13,7 +13,6 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 /*
    Parse command line arguments into the $_GET variable <sep16@psu.edu>
 */
-
 parse_str(implode('&', array_slice($argv, 3)), $_GET);
 
 /*
@@ -23,14 +22,12 @@ parse_str(implode('&', array_slice($argv, 3)), $_GET);
 
    php com my_controller my_action env:variable=valor cfg:my_config_variable=3
 */
-
 foreach ($_GET as $var => $val)
 {
    $pos = strpos($var, 'env:');
    
    if ($pos === 0){
       $var = substr($var, 4);
-
       Env::set($var, $val);
    }
 
@@ -38,19 +35,14 @@ foreach ($_GET as $var => $val)
    
    if ($pos === 0){
       $var = substr($var, 4);
-
       Config::set($var, $val);
    }
 }
 
 
-# Implementacoon de patron Command
+# Implementación de patrón Command
+# Se hace autodiscovery de comandos en app/Commands y packages/*/src/Commands (y packages/*/Commands)
 #
-# https://chatgpt.com/c/b27203dd-bc30-4950-a3c8-8a4e6ecb25d8
-# https://chatgpt.com/c/2e4ac7e1-7ac7-4d86-ba9f-f1d61264504b
-#
-
-// The "routing" system is disabled after found a command to execute
 $routing = true;
 
 $args = array_slice($argv, 1);
@@ -59,53 +51,166 @@ if (count($args) > 0){
    $name         = Strings::snakeToCamel(array_shift($args));
    $commandClass = $name . "Command";
 
-   // Incluir el namespace completo para los comandos
-   $namespace = Config::get()['namespace'];
-   $commandClassWithNamespace = $namespace . "\\Commands\\" . $commandClass;
+   // Mantengo compatibilidad con la forma tradicional (namespace desde Config), pero
+   // el discovery permitirá comandos en packages sin necesidad de modificar autoload.
+   $namespace = Config::get()['namespace'] ?? null;
+   $commandClassWithNamespace = $namespace ? ($namespace . "\\Commands\\" . $commandClass) : null;
 
-   $comm_files   = Files::glob(COMMANDS_PATH, '*Command.php');
+   //
+   // --- AUTODISCOVERY DE COMMANDS (app + packages) ---
+   //
 
-   foreach ($comm_files as $file){
-      $_name = Strings::matchOrFail(Files::convertSlashes($file, '/'), '|/([a-zA-Z0-9_]+)Command.php|');
+   $searchPaths = [];
+
+   // Ruta histórica de comandos en app (constante COMMANDS_PATH debe existir)
+   if (defined('COMMANDS_PATH')) {
+       $searchPaths[] = COMMANDS_PATH;
+   } else {
+       // fallback sensible: app/Commands relativo a la app.php
+       $appCommands = realpath(__DIR__ . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Commands');
+       if ($appCommands && is_dir($appCommands)) {
+           $searchPaths[] = $appCommands;
+       }
+   }
+
+   $packagesBase = realpath(__DIR__ . DIRECTORY_SEPARATOR . 'packages');
+
+   if ($packagesBase && is_dir($packagesBase)) {
+       // primer nivel: autores (p.ej. "boctulus")
+       $authorDirs = glob($packagesBase . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+       if ($authorDirs !== false) {
+           foreach ($authorDirs as $authorDir) {
+               // segundo nivel: paquetes dentro del author (p.ej. "zippy")
+               $pkgDirs = glob($authorDir . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+               if ($pkgDirs === false) continue;
+
+               foreach ($pkgDirs as $pkgDir) {
+                   // paths posibles donde pueden existir comandos
+                   $c1 = $pkgDir . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Commands';
+                   $c2 = $pkgDir . DIRECTORY_SEPARATOR . 'Commands';
+
+                   if (is_dir($c1)) {
+                       $searchPaths[] = $c1;
+                   }
+                   if (is_dir($c2)) {
+                       $searchPaths[] = $c2;
+                   }
+               }
+           }
+       }
+   }
+
+   // Normalizo rutas y obtengo todos los archivos *Command.php de esas rutas (evito duplicados)
+   $comm_files = [];
+   foreach ($searchPaths as $p) {
+       // Evito paths vacíos o no existentes
+       if (!$p || !is_dir($p)) continue;
+       $files = Files::glob($p, '*Command.php');
+       if ($files && is_array($files)) {
+           foreach ($files as $f) {
+               $rp = realpath($f);
+               if ($rp) $comm_files[$rp] = $f;
+               else $comm_files[$f] = $f;
+           }
+       }
+   }
+
+   // Si no se encontraron archivos por Files::glob, como fallback intento un glob nativo
+   if (empty($comm_files)) {
+       foreach ($searchPaths as $p) {
+           if (!is_dir($p)) continue;
+           foreach (glob($p . DIRECTORY_SEPARATOR . '*Command.php') as $f) {
+               $rp = realpath($f);
+               if ($rp) $comm_files[$rp] = $f;
+               else $comm_files[$f] = $f;
+           }
+       }
+   }
+
+   // Recorro archivos y busco el que coincida con el nombre solicitado
+   foreach ($comm_files as $file) {
+      // Intento extraer el nombre base por convención: /SomeNameCommand.php
+      $match = Strings::matchOrFail(Files::convertSlashes($file, '/'), '|/([a-zA-Z0-9_]+)Command.php|');
+      $_name = $match;
 
       if ($name != $_name){
          continue;
       }
 
-      require $file;
+      // Antes de require: obtengo clases declaradas
+      $before = get_declared_classes();
 
-      if (class_exists($commandClassWithNamespace)){
-         $commandInstance = new $commandClassWithNamespace();
-         
-         if (method_exists($commandInstance, 'handle')) {
-            $commandInstance->handle($args);
-            $routing = false;
-         } else {
-            throw new \Exception("Command without handle");
-         }
+      // Requiero el archivo (si tiene namespace la clase quedará registrada)
+      try {
+          require_once $file;
+      } catch (\Throwable $e) {
+          // Si el require falla informo con detalle (pero dejo que el flujo principal pueda intentar otras rutas)
+          fwrite(STDERR, "Error cargando comando desde {$file}: " . $e->getMessage() . PHP_EOL);
+          continue;
       }
-   }
-}
+
+      // Después de require: nuevas clases
+      $after = get_declared_classes();
+      $diff = array_values(array_diff($after, $before));
+
+      // Busco en las clases nuevas una que termine en "Command"
+      $foundClass = null;
+      foreach ($diff as $class) {
+          if (preg_match('/Command$/', $class)) {
+              // Si queremos, verificamos que la clase contenga el nombre base (e.g. Zippy in ZippyCommand)
+              if (stripos($class, $_name) !== false || true) {
+                  $foundClass = $class;
+                  break;
+              }
+          }
+      }
+
+      // Si no hallamos clase nueva (ej. ya estaba cargada por autoload), comprobamos clases ya declaradas
+      if (!$foundClass) {
+          foreach (get_declared_classes() as $class) {
+              if (preg_match('/\\\?' . preg_quote($_name . 'Command', '/') . '$/i', $class)) {
+                  $foundClass = $class;
+                  break;
+              }
+          }
+      }
+
+      // Si aún no se encontró, intentamos la clase según namespace configurado (compatibilidad retro)
+      if (!$foundClass && $commandClassWithNamespace && class_exists($commandClassWithNamespace)) {
+          $foundClass = $commandClassWithNamespace;
+      }
+
+      if ($foundClass && class_exists($foundClass)) {
+          // Crear instancia y ejecutar si tiene handle
+          try {
+              $commandInstance = new $foundClass();
+          } catch (\Throwable $e) {
+              throw new \Exception("No se pudo instanciar el comando {$foundClass}: " . $e->getMessage());
+          }
+
+          if (method_exists($commandInstance, 'handle')) {
+              $commandInstance->handle($args);
+              $routing = false;
+              break; // ya ejecuté el comando; salgo
+          } else {
+              throw new \Exception("Command {$foundClass} encontrado pero no define handle()");
+          }
+      }
+   } // foreach comm_files
+} // if count(args) > 0
 
 if ($routing){
    $cfg = Config::get();
 
    $handled = false;
 
-   if ($cfg['console_router']){
+   if (!empty($cfg['console_router'])){
       include CONFIG_PATH . 'cli_routes.php';
       CliRouter::compile();
       $handled = CliRouter::resolve();
    }
 
-   if (!$handled && $cfg['front_controller']){
+   if (!$handled && !empty($cfg['front_controller'])){
       FrontController::resolve();
    }
 }
-     
-
- 
- 	
-
-
-
