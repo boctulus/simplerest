@@ -208,6 +208,7 @@ class MakeCommand implements ICommand
         make widget [ --include-js | --js ]
 
         make command myCommand
+        make command:package zippy MyCommand
 
         make testcase MyFeature
 
@@ -257,11 +258,6 @@ class MakeCommand implements ICommand
 
         make trans --from='/home/www/woo1/wp-content/plugins/import-quoter-cl/locale'
         make trans --domain=mutawp --to='D:\www\woo2\wp-content\plugins\mutawp\languages' --preset=wp
-
-
-        # System constants
-
-        make system_constants
 
 
         # Acl file
@@ -627,7 +623,7 @@ class MakeCommand implements ICommand
 
     function middleware($name, ...$opt)
     {
-        $namespace = $this->namespace . '\\middlewares';
+        $namespace = $this->namespace . '\\Middlewares';
         $dest_path = MIDDLEWARES_PATH;
         $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
@@ -2492,51 +2488,6 @@ class MakeCommand implements ICommand
     }
 
     /*
-        Creates a migration within a package
-
-        Usage: php com make migrations:package {package_name} {migration_name} [options]
-
-        Example: php com make migrations:package zippy categories --create
-                 php com make migrations:package zippy users --table=users --edit
-                 php com make migrations:package zippy categories --remove
-    */
-    function migrations_package(...$opt)
-    {
-        if (count($opt) < 2) {
-            StdOut::print("\nError: Package name and migration name are required.\n");
-            StdOut::print("Usage: php com make migrations:package {package_name} {migration_name} [options]\n");
-            StdOut::print("Example: php com make migrations:package zippy categories --create\n\n");
-            return;
-        }
-
-        // Extract package name and migration name
-        $package_name = array_shift($opt);
-        $migration_name = array_shift($opt);
-
-        // Validate package name format (lowercase, alphanumeric, dashes, underscores)
-        if (!preg_match('/^[a-z0-9_-]+$/', $package_name)) {
-            StdOut::print("\nError: Invalid package name '$package_name'. Use only lowercase letters, numbers, dashes, and underscores.\n\n");
-            return;
-        }
-
-        // Build paths
-        $package_base = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name;
-        $relative_path = '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
-                       'packages' . DIRECTORY_SEPARATOR . 'boctulus' . DIRECTORY_SEPARATOR .
-                       $package_name . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';
-
-        // Use the helper method
-        $this->createMigrationInContext(
-            'package',
-            "boctulus/$package_name",
-            $package_base,
-            $relative_path,
-            $migration_name,
-            $opt
-        );
-    }
-
-    /*
         Creates a migration within a module
 
         Usage: php com make migrations:module {module_name} {migration_name} [options]
@@ -2602,49 +2553,6 @@ class MakeCommand implements ICommand
         $file = str_replace('__NAME__', $this->camel_case . 'ServiceProvider', $file);
 
         $this->write($dest_path, $file, $protected, $remove);
-    }
-
-    function system_constants(...$opt)
-    {
-        include_once CONFIG_PATH . '/messages.php';
-
-        $lines = explode(PHP_EOL, $_messages);
-
-        $consts = '';
-        foreach ($lines as $line) {
-            $line = trim($line);
-
-            if (empty($line)) {
-                continue;
-            }
-
-            if (!preg_match('/([A-Z_>]+)[ \t]+([A-Z_]+)[ \t]+["\'](.*)["\']/', $line, $matches)) {
-                echo "Unable to compile $line\r\n";
-                continue;
-            }
-
-            $type = $matches[1];
-            $code = $matches[2];
-            $text = $matches[3];
-
-            $name = $code;
-
-            $consts .= "\r\n\t" . "const $name = [
-                'type' => '$type',
-                'code' => '$code',
-                'text' => \"$text\"
-            ];" . "\r\n";
-        }
-
-        $filename  = 'SystemConstants.php';
-        $dest_path = CORE_LIBS_PATH . $filename;
-
-        $protected = $this->hasFileProtection($filename, $dest_path, $opt);
-
-        $data = file_get_contents(self::SYSTEM_CONST_TEMPLATE);
-        $data = str_replace('# __CONSTANTS', $consts, $data);
-
-        $this->write($dest_path, $data, $protected);
     }
 
     // for translations
@@ -3055,7 +2963,7 @@ class MakeCommand implements ICommand
                         ]
                     ]
                 ],
-                "require"     => new stdClass()
+                "require"     => new \stdClass()
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
             file_put_contents($composerJsonPath, $composerContent);
@@ -3342,66 +3250,6 @@ class MakeCommand implements ICommand
     }
 
     /*
-        Create a controller in a specific package
-
-        Usage: php com make controller:package {package_name} {controller_name}
-
-        Example: php com make controller:package zippy MyController
-    */
-    function controller_package(...$opt)
-    {
-        if (count($opt) < 2) {
-            StdOut::print("\nError: Package name and controller name are required.\n");
-            StdOut::print("Usage: php com make controller:package {package_name} {controller_name}\n");
-            StdOut::print("Example: php com make controller:package zippy MyController\n\n");
-            return;
-        }
-
-        // Extract package name and controller name
-        $package_name = array_shift($opt);
-        $controller_name = array_shift($opt);
-
-        // Validate package name format
-        if (!preg_match('/^[a-z0-9_-]+$/', $package_name)) {
-            StdOut::print("\nError: Invalid package name '$package_name'. Use only lowercase letters, numbers, dashes, and underscores.\n\n");
-            return;
-        }
-
-        // Check if package exists
-        $package_base = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name;
-        if (!file_exists($package_base)) {
-            StdOut::print("\nError: Package 'boctulus/$package_name' does not exist at: $package_base\n\n");
-            return;
-        }
-
-        // Build namespace and destination path
-        // Convert package name to CamelCase (e.g., "my-package" -> "MyPackage")
-        $package_name_camel = str_replace(['-', '_'], '', ucwords($package_name, '-_'));
-        $original_namespace = $this->namespace;
-        $this->namespace = "Boctulus\\$package_name_camel";
-
-        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR;
-
-        // Create directory if it doesn't exist
-        if (!file_exists($dest_path)) {
-            Files::mkDirOrFail($dest_path);
-        }
-
-        StdOut::print("\nCreating controller in package 'boctulus/$package_name'...\n\n");
-
-        // Call the original controller method
-        $namespace = $this->namespace . '\\Controllers';
-        $template_path = self::TEMPLATES . 'Controller.php';
-        $prefix = '';
-        $subfix = 'Controller';
-
-        $this->renderTemplate($controller_name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
-
-        // Restore original namespace
-        $this->namespace = $original_namespace;
-    }
-
-    /*
         Create a controller in a specific module
 
         Usage: php com make controller:module {module_name} {controller_name}
@@ -3453,51 +3301,6 @@ class MakeCommand implements ICommand
         $this->namespace = $original_namespace;
     }
 
-    /*
-        Create a middleware in a specific package
-    */
-    function middleware_package(...$opt)
-    {
-        if (count($opt) < 2) {
-            StdOut::print("\nError: Package name and middleware name are required.\n");
-            StdOut::print("Usage: php com make middleware:package {package_name} {middleware_name}\n");
-            StdOut::print("Example: php com make middleware:package zippy MyMiddleware\n\n");
-            return;
-        }
-
-        $package_name = array_shift($opt);
-        $middleware_name = array_shift($opt);
-
-        if (!preg_match('/^[a-z0-9_-]+$/', $package_name)) {
-            StdOut::print("\nError: Invalid package name '$package_name'.\n\n");
-            return;
-        }
-
-        $package_base = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name;
-        if (!file_exists($package_base)) {
-            StdOut::print("\nError: Package 'boctulus/$package_name' does not exist.\n\n");
-            return;
-        }
-
-        $package_name_camel = str_replace(['-', '_'], '', ucwords($package_name, '-_'));
-        $original_namespace = $this->namespace;
-        $this->namespace = "Boctulus\\$package_name_camel";
-
-        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Middlewares' . DIRECTORY_SEPARATOR;
-
-        if (!file_exists($dest_path)) {
-            Files::mkDirOrFail($dest_path);
-        }
-
-        StdOut::print("\nCreating middleware in package 'boctulus/$package_name'...\n\n");
-
-        $namespace = $this->namespace . '\\Middlewares';
-        $template_path = self::TEMPLATES . 'Middleware.php';
-        $this->renderTemplate($middleware_name, '', '', $dest_path, $template_path, $namespace, ...$opt);
-
-        $this->namespace = $original_namespace;
-    }
-
     function middleware_module(...$opt)
     {
         if (count($opt) < 2) {
@@ -3514,10 +3317,8 @@ class MakeCommand implements ICommand
             return;
         }
 
-        $original_namespace = $this->namespace;
-        $this->namespace = "Boctulus\\Simplerest\\modules\\$module_name";
-
-        $dest_path = $module_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Middlewares' . DIRECTORY_SEPARATOR;
+        $namespace_base = "{$this->namespace}\\$module_name";
+        $dest_path      = $module_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Middlewares' . DIRECTORY_SEPARATOR;
 
         if (!file_exists($dest_path)) {
             Files::mkDirOrFail($dest_path);
@@ -3525,55 +3326,9 @@ class MakeCommand implements ICommand
 
         StdOut::print("\nCreating middleware in module '$module_name'...\n\n");
 
-        $namespace = $this->namespace . '\\Middlewares';
+        $namespace = $namespace_base . '\\Middlewares';
         $template_path = self::TEMPLATES . 'Middleware.php';
         $this->renderTemplate($middleware_name, '', '', $dest_path, $template_path, $namespace, ...$opt);
-
-        $this->namespace = $original_namespace;
-    }
-
-    /*
-        Create a lib in a specific package
-    */
-    function lib_package(...$opt)
-    {
-        if (count($opt) < 2) {
-            StdOut::print("\nError: Package name and lib name are required.\n");
-            StdOut::print("Usage: php com make lib:package {package_name} {lib_name}\n");
-            return;
-        }
-
-        $package_name = array_shift($opt);
-        $lib_name = array_shift($opt);
-
-        if (!preg_match('/^[a-z0-9_-]+$/', $package_name)) {
-            StdOut::print("\nError: Invalid package name.\n\n");
-            return;
-        }
-
-        $package_base = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name;
-        if (!file_exists($package_base)) {
-            StdOut::print("\nError: Package 'boctulus/$package_name' does not exist.\n\n");
-            return;
-        }
-
-        $package_name_camel = str_replace(['-', '_'], '', ucwords($package_name, '-_'));
-        $original_namespace = $this->namespace;
-        $this->namespace = "Boctulus\\$package_name_camel";
-
-        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Libs' . DIRECTORY_SEPARATOR;
-
-        if (!file_exists($dest_path)) {
-            Files::mkDirOrFail($dest_path);
-        }
-
-        StdOut::print("\nCreating lib in package 'boctulus/$package_name'...\n\n");
-
-        $namespace = $this->namespace . '\\Libs';
-        $template_path = self::LIBS_TEMPLATE;
-        $this->renderTemplate($lib_name, '', '', $dest_path, $template_path, $namespace, ...$opt);
-
-        $this->namespace = $original_namespace;
     }
 
     function lib_module(...$opt)
@@ -3606,50 +3361,6 @@ class MakeCommand implements ICommand
         $namespace = $this->namespace . '\\Libs';
         $template_path = self::LIBS_TEMPLATE;
         $this->renderTemplate($lib_name, '', '', $dest_path, $template_path, $namespace, ...$opt);
-
-        $this->namespace = $original_namespace;
-    }
-
-    /*
-        Create a helper in a specific package
-    */
-    function helper_package(...$opt)
-    {
-        if (count($opt) < 2) {
-            StdOut::print("\nError: Package name and helper name are required.\n");
-            return;
-        }
-
-        $package_name = array_shift($opt);
-        $helper_name = array_shift($opt);
-
-        if (!preg_match('/^[a-z0-9_-]+$/', $package_name)) {
-            StdOut::print("\nError: Invalid package name.\n\n");
-            return;
-        }
-
-        $package_base = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name;
-        if (!file_exists($package_base)) {
-            StdOut::print("\nError: Package 'boctulus/$package_name' does not exist.\n\n");
-            return;
-        }
-
-        $package_name_camel = str_replace(['-', '_'], '', ucwords($package_name, '-_'));
-        $original_namespace = $this->namespace;
-        $this->namespace = "Boctulus\\$package_name_camel";
-
-        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Helpers' . DIRECTORY_SEPARATOR;
-
-        if (!file_exists($dest_path)) {
-            Files::mkDirOrFail($dest_path);
-        }
-
-        StdOut::print("\nCreating helper in package 'boctulus/$package_name'...\n\n");
-
-        $namespace = $this->namespace . '\\helpers';
-        $template_path = self::HELPER_TEMPLATE;
-        $opt[] = "--lowercase";
-        $this->renderTemplate($helper_name, '', '', $dest_path, $template_path, $namespace, ...$opt);
 
         $this->namespace = $original_namespace;
     }
@@ -3689,49 +3400,6 @@ class MakeCommand implements ICommand
         $this->namespace = $original_namespace;
     }
 
-    /*
-        Create an interface in a specific package
-    */
-    function interface_package(...$opt)
-    {
-        if (count($opt) < 2) {
-            StdOut::print("\nError: Package name and interface name are required.\n");
-            return;
-        }
-
-        $package_name = array_shift($opt);
-        $interface_name = array_shift($opt);
-
-        if (!preg_match('/^[a-z0-9_-]+$/', $package_name)) {
-            StdOut::print("\nError: Invalid package name.\n\n");
-            return;
-        }
-
-        $package_base = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name;
-        if (!file_exists($package_base)) {
-            StdOut::print("\nError: Package 'boctulus/$package_name' does not exist.\n\n");
-            return;
-        }
-
-        $package_name_camel = str_replace(['-', '_'], '', ucwords($package_name, '-_'));
-        $original_namespace = $this->namespace;
-        $this->namespace = "Boctulus\\$package_name_camel";
-
-        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Interfaces' . DIRECTORY_SEPARATOR;
-
-        if (!file_exists($dest_path)) {
-            Files::mkDirOrFail($dest_path);
-        }
-
-        StdOut::print("\nCreating interface in package 'boctulus/$package_name'...\n\n");
-
-        $namespace = $this->namespace . '\\Interfaces';
-        $template_path = self::INTERFACE_TEMPLATE;
-        $this->renderTemplate($interface_name, 'I', '', $dest_path, $template_path, $namespace, ...$opt);
-
-        $this->namespace = $original_namespace;
-    }
-
     function interface_module(...$opt)
     {
         if (count($opt) < 2) {
@@ -3762,49 +3430,6 @@ class MakeCommand implements ICommand
         $namespace = $this->namespace . '\\Interfaces';
         $template_path = self::INTERFACE_TEMPLATE;
         $this->renderTemplate($interface_name, 'I', '', $dest_path, $template_path, $namespace, ...$opt);
-
-        $this->namespace = $original_namespace;
-    }
-
-    /*
-        Create a model in a specific package
-    */
-    function model_package(...$opt)
-    {
-        if (count($opt) < 2) {
-            StdOut::print("\nError: Package name and model name are required.\n");
-            return;
-        }
-
-        $package_name = array_shift($opt);
-        $model_name = array_shift($opt);
-
-        if (!preg_match('/^[a-z0-9_-]+$/', $package_name)) {
-            StdOut::print("\nError: Invalid package name.\n\n");
-            return;
-        }
-
-        $package_base = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name;
-        if (!file_exists($package_base)) {
-            StdOut::print("\nError: Package 'boctulus/$package_name' does not exist.\n\n");
-            return;
-        }
-
-        $package_name_camel = str_replace(['-', '_'], '', ucwords($package_name, '-_'));
-        $original_namespace = $this->namespace;
-        $this->namespace = "Boctulus\\$package_name_camel";
-
-        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR;
-
-        if (!file_exists($dest_path)) {
-            Files::mkDirOrFail($dest_path);
-        }
-
-        StdOut::print("\nCreating model in package 'boctulus/$package_name'...\n\n");
-
-        $namespace = $this->namespace . '\\Models';
-        $template_path = self::MODEL_NO_SCHEMA_TEMPLATE; // Use schema-less template for simplicity
-        $this->renderTemplate($model_name, '', 'Model', $dest_path, $template_path, $namespace, ...$opt);
 
         $this->namespace = $original_namespace;
     }
