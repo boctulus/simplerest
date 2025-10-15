@@ -4,7 +4,6 @@ namespace Boctulus\Simplerest\Core;
 
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\Files;
-use Boctulus\Simplerest\Core\Libs\Msg;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\Url;
 
@@ -57,7 +56,7 @@ class WebRouter
             }   
     
             if ($path === false || ! Url::urlCheck($_SERVER['REQUEST_URI']) ){
-                $res->error(Msg::MALFORMED_URL, 400); 
+                $res->error('Malformed URL', 400); 
             }
                 
             $_params = explode('/', $path);

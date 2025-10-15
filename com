@@ -41,7 +41,7 @@ foreach ($_GET as $var => $val)
 
 
 # Implementación de patrón Command
-# Se hace autodiscovery de comandos en app/Commands y packages/*/src/Commands (y packages/*/Commands)
+# Se hace autodiscovery de comandos en app/Commands y packages/*/*/src/Commands
 #
 $routing = true;
 
@@ -59,6 +59,7 @@ if (count($args) > 0){
    //
    // --- AUTODISCOVERY DE COMMANDS (app + packages) ---
    //
+   // (Podria usar el helper package.php que provee funciones de autodiscovery)
 
    $searchPaths = [];
 
@@ -115,17 +116,7 @@ if (count($args) > 0){
        }
    }
 
-   // Si no se encontraron archivos por Files::glob, como fallback intento un glob nativo
-   if (empty($comm_files)) {
-       foreach ($searchPaths as $p) {
-           if (!is_dir($p)) continue;
-           foreach (glob($p . DIRECTORY_SEPARATOR . '*Command.php') as $f) {
-               $rp = realpath($f);
-               if ($rp) $comm_files[$rp] = $f;
-               else $comm_files[$f] = $f;
-           }
-       }
-   }
+   // dd($comm_files);
 
    // Recorro archivos y busco el que coincida con el nombre solicitado
    foreach ($comm_files as $file) {

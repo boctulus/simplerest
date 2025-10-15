@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Libs;
 
-use Boctulus\Simplerest\Core\Interfaces\AIChat;
+use Boctulus\LLMProviders\Contracts\LLMProviderInterface;
 use Boctulus\Simplerest\Core\Libs\Strings;
 
 /*
@@ -30,7 +30,7 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 */
 class ReviewMaker 
 {
-    protected AIChat $client;
+    protected LLMProviderInterface $client;
 
     protected $notes = [];
 
@@ -38,7 +38,7 @@ class ReviewMaker
         En el constructor deberia poder inyectar la IA a usar
         como ChatGPT o Claude
     */
-    function __construct(AIChat $client, $params = []) {
+    function __construct(LLMProviderInterface $client, $params = []) {
         $this->client = $client;
 
         if (!empty($params)){

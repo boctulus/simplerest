@@ -6,6 +6,11 @@ use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Url;
 
+/*
+    Actualizar:
+
+    https://chatgpt.com/g/g-p-68ec7c552c048191ab0067a6bc3f92f3-framework-de-php-llamado-simplerest/c/68eef816-8404-8322-96cd-92697c89621f
+*/
 trait ExceptionHandler
 {
     /**
