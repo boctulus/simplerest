@@ -9,6 +9,9 @@ if (!defined('CONFIG_PATH'))
 if (!defined('PACKAGES_PATH'))
 	define('PACKAGES_PATH', ROOT_PATH  . 'packages' . DIRECTORY_SEPARATOR);    
 
+if (!defined('VENDOR_PATH'))
+	define('VENDOR_PATH', ROOT_PATH  . 'vendor' . DIRECTORY_SEPARATOR);  
+
 if (!defined('DOCS_PATH'))
 	define('DOCS_PATH', ROOT_PATH  . 'docs' . DIRECTORY_SEPARATOR);
 
@@ -23,9 +26,6 @@ if (!defined('CACHE_PATH'))
 
 if (!defined('LOGS_PATH'))
     define('LOGS_PATH', ROOT_PATH . 'logs'. DIRECTORY_SEPARATOR); 
-
-if (!defined('VENDOR_PATH'))
-    define('VENDOR_PATH', ROOT_PATH . 'vendor'. DIRECTORY_SEPARATOR); 
 
 if (!defined('APP_PATH'))
     define('APP_PATH', ROOT_PATH . 'app' . DIRECTORY_SEPARATOR);
