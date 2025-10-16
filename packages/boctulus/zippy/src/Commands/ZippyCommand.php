@@ -37,7 +37,6 @@ class ZippyCommand implements ICommand
 
         DB::setConnection('zippy');
         
-        // Configurar CategoryMapper
         CategoryMapper::configure([
             'default_strategy' => 'llm',
             'strategies_order' => ['llm', 'fuzzy'],
@@ -47,14 +46,13 @@ class ZippyCommand implements ICommand
             ]
         ]);
 
-        // Obtener productos sin categorías procesadas o para reprocesar
-        $query = "SELECT * FROM products WHERE 1=1";
+        $query = DB::table('products');
         
         if ($limit) {
-            $query .= " LIMIT " . (int)$limit;
+            $query->limit((int)$limit);
         }
 
-        $products = DB::select($query);
+        $products = $query->get();
         $processed = 0;
         $errors = 0;
 
@@ -66,18 +64,17 @@ class ZippyCommand implements ICommand
                 $productId = is_array($product) ? ($product['ean'] ?? $product['id']) : ($product->ean ?? $product->id);
                 echo "[$processed/$total] Procesando producto ID/EAN: $productId\n";
                 
-                // Resolver categorías usando CategoryMapper
                 $categories = CategoryMapper::resolveProduct($product, true);
                 
                 if (!empty($categories)) {
                     echo "  → Categorías asignadas: " . implode(', ', $categories) . "\n";
                     
                     if (!$dryRun) {
-                        // Actualizar el campo categories (JSON)
-                        DB::update(
-                            "UPDATE products SET categories = ? WHERE ean = ?",
-                            [json_encode($categories), $productId]
-                        );
+                        DB::table('products')
+                            ->where('ean', $productId)
+                            ->update([
+                                'categories' => json_encode($categories)
+                            ]);
                     }
                 } else {
                     echo "  → No se encontraron categorías\n";
@@ -87,7 +84,7 @@ class ZippyCommand implements ICommand
                 
             } catch (\Exception $e) {
                 $errors++;
-                echo "  → ERROR: " . $e->getMessage() . "\n";
+                dd($e->getMessage(), "→ ERROR");
                 continue;
             }
         }
@@ -105,15 +102,6 @@ class ZippyCommand implements ICommand
 
     /**
      * Procesa categorías de productos en batch
-     *
-     * Uso:
-     *   php com zippy process_categories [--limit=100] [--offset=0] [--only-unmapped]
-     *
-     * Opciones:
-     *   --limit=N           Limitar cantidad de productos a procesar (default: sin límite)
-     *   --offset=N          Offset para paginación (default: 0)
-     *   --only-unmapped     Solo procesar productos sin categories JSON
-     *   --dry-run           No guardar cambios, solo mostrar qué haría
      */
     public function process_categories(...$options)
     {
@@ -129,12 +117,13 @@ class ZippyCommand implements ICommand
             StdOut::print("⚠ Modo DRY-RUN activado: no se guardarán cambios\n");
         }
 
-        // Query base
         $query = DB::table('products');
 
         if ($onlyUnmapped) {
-            $query->whereNull('categories')
+            $query->where(function($q) {
+                $q->whereNull('categories')
                   ->orWhereRaw("JSON_LENGTH(categories) = 0");
+            });
         }
 
         if ($limit) {
@@ -164,7 +153,6 @@ class ZippyCommand implements ICommand
             $productId = is_array($product) ? ($product['id'] ?? null) : ($product->id ?? null);
 
             try {
-                // Resolver categorías
                 $categories = CategoryMapper::resolveProduct($product, true);
 
                 if (empty($categories)) {
@@ -176,13 +164,11 @@ class ZippyCommand implements ICommand
 
                 StdOut::print("[{$processed}/{$total}] Producto ID {$productId}: " . implode(', ', $categories) . "\n");
 
-                // Guardar si no es dry-run
                 if (!$dryRun) {
                     DB::table('products')
-                        ->where('id', $productId)
+                        ->where(['id', $productId])
                         ->update([
-                            'categories' => $categoriesJson,
-                            'updated_at' => date('Y-m-d H:i:s'),
+                            'categories' => $categoriesJson
                         ]);
                     $updated++;
                 }
@@ -197,16 +183,12 @@ class ZippyCommand implements ICommand
         StdOut::print("Actualizados: " . ($dryRun ? "0 (dry-run)" : $updated) . "\n");
         StdOut::print("Errores: {$errors}\n");
 
-        // Mostrar stats de mappings
         StdOut::print("\n");
         $this->map_stats();
     }
 
     /**
      * Muestra estadísticas de mappings de categorías
-     *
-     * Uso:
-     *   php com zippy map_stats
      */
     public function map_stats()
     {
@@ -220,26 +202,24 @@ class ZippyCommand implements ICommand
         StdOut::print("Revisados: {$stats['reviewed']}\n");
         StdOut::print("Necesitan revisión: {$stats['needs_review']}\n");
 
-        // Desglose por tipo
-        $types = DB::select("SELECT mapping_type, COUNT(*) as count FROM category_mappings WHERE deleted_at IS NULL GROUP BY mapping_type");
+        $types = DB::table('category_mappings')
+            ->selectRaw('mapping_type, COUNT(*) as count')
+            ->whereNull('deleted_at')
+            ->groupBy('mapping_type')
+            ->get();
 
         if (!empty($types)) {
             StdOut::print("\n--- Desglose por tipo ---\n");
             foreach ($types as $type) {
-                StdOut::print("  {$type['mapping_type']}: {$type['count']}\n");
+                $mappingType = is_array($type) ? $type['mapping_type'] : $type->mapping_type;
+                $count = is_array($type) ? $type['count'] : $type->count;
+                StdOut::print("  {$mappingType}: {$count}\n");
             }
         }
     }
 
     /**
      * Muestra mappings que necesitan revisión
-     *
-     * Uso:
-     *   php com zippy show_unmapped [--limit=20] [--type=unmapped]
-     *
-     * Opciones:
-     *   --limit=N    Limitar cantidad de resultados (default: 20)
-     *   --type=X     Filtrar por tipo: unmapped, fuzzy, all (default: unmapped)
      */
     public function show_unmapped(...$options)
     {
@@ -249,23 +229,23 @@ class ZippyCommand implements ICommand
 
         StdOut::print("=== Mappings que necesitan revisión ===\n");
 
-        // Construir SQL según filtros
-        $sql = "SELECT * FROM category_mappings WHERE deleted_at IS NULL AND is_reviewed = 0";
+        $query = DB::table('category_mappings')
+            ->whereNull('deleted_at')
+            ->where('is_reviewed', 0);
 
         if ($type === 'unmapped') {
-            $sql .= " AND mapping_type = 'unmapped'";
+            $query->where('mapping_type', 'unmapped');
         } elseif ($type === 'fuzzy') {
-            $sql .= " AND mapping_type = 'fuzzy'";
+            $query->where('mapping_type', 'fuzzy');
         }
-        // 'all' no filtra por tipo
 
-        $sql .= " ORDER BY created_at DESC";
+        $query->orderBy('created_at', 'DESC');
 
         if ($limit) {
-            $sql .= " LIMIT {$limit}";
+            $query->limit($limit);
         }
 
-        $mappings = DB::select($sql);
+        $mappings = $query->get();
 
         if (empty($mappings)) {
             StdOut::print("No hay mappings pendientes de revisión.\n");
@@ -275,16 +255,17 @@ class ZippyCommand implements ICommand
         StdOut::print("Encontrados: " . count($mappings) . "\n\n");
 
         foreach ($mappings as $m) {
-            StdOut::print("ID: {$m['id']}\n");
-            StdOut::print("  Raw: {$m['raw_value']}\n");
-            StdOut::print("  Normalized: {$m['normalized']}\n");
-            StdOut::print("  Mapped to: " . ($m['category_slug'] ?? 'NULL') . "\n");
-            StdOut::print("  Type: {$m['mapping_type']}\n");
-            if (!empty($m['confidence'])) {
-                StdOut::print("  Confidence: {$m['confidence']}%\n");
+            $mArray = is_array($m) ? $m : (array)$m;
+            StdOut::print("ID: {$mArray['id']}\n");
+            StdOut::print("  Raw: {$mArray['raw_value']}\n");
+            StdOut::print("  Normalized: {$mArray['normalized']}\n");
+            StdOut::print("  Mapped to: " . ($mArray['category_slug'] ?? 'NULL') . "\n");
+            StdOut::print("  Type: {$mArray['mapping_type']}\n");
+            if (!empty($mArray['confidence'])) {
+                StdOut::print("  Confidence: {$mArray['confidence']}%\n");
             }
-            if (!empty($m['notes'])) {
-                StdOut::print("  Notes: {$m['notes']}\n");
+            if (!empty($mArray['notes'])) {
+                StdOut::print("  Notes: {$mArray['notes']}\n");
             }
             StdOut::print("\n");
         }
@@ -295,14 +276,6 @@ class ZippyCommand implements ICommand
 
     /**
      * Marca un mapping como revisado y opcionalmente cambia la categoría
-     *
-     * Uso:
-     *   php com zippy review_mapping --id=<id> [--slug=<slug>] [--reject]
-     *
-     * Opciones:
-     *   --id=N          ID del mapping a revisar (requerido)
-     *   --slug=X        Slug de la categoría a asignar
-     *   --reject        Rechazar el mapping (quitar category_id/slug)
      */
     public function review_mapping(...$options)
     {
@@ -317,94 +290,87 @@ class ZippyCommand implements ICommand
             return;
         }
 
-        $mapping = DB::select("SELECT * FROM category_mappings WHERE id = ? AND deleted_at IS NULL LIMIT 1",
-            [$id], 'ASSOC', null, true);
+        $mapping = DB::table('category_mappings')
+            ->where('id', $id)
+            ->whereNull('deleted_at')
+            ->first();
 
         if (!$mapping) {
             StdOut::print("Error: Mapping con ID {$id} no encontrado.\n");
             return;
         }
 
-        if ($reject) {
-            $sql = "UPDATE category_mappings SET
-                    is_reviewed = 1,
-                    reviewed_at = ?,
-                    updated_at = ?,
-                    category_id = NULL,
-                    category_slug = NULL,
-                    mapping_type = 'unmapped',
-                    notes = ?
-                    WHERE id = ?";
+        $mappingArray = is_array($mapping) ? $mapping : (array)$mapping;
 
-            $notes = ($mapping['notes'] ?? '') . ' | Rejected by manual review';
-            DB::update($sql, [date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), $notes, $id]);
+        if ($reject) {
+            $notes = ($mappingArray['notes'] ?? '') . ' | Rejected by manual review';
+            
+            DB::table('category_mappings')
+                ->where('id', $id)
+                ->update([
+                    'is_reviewed' => 1,
+                    'reviewed_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'category_id' => null,
+                    'category_slug' => null,
+                    'mapping_type' => 'unmapped',
+                    'notes' => $notes
+                ]);
 
             StdOut::print("✓ Mapping ID {$id} revisado y rechazado.\n");
-            StdOut::print("  Raw: {$mapping['raw_value']}\n");
+            StdOut::print("  Raw: {$mappingArray['raw_value']}\n");
 
         } elseif ($slug) {
-            // Buscar categoría por slug
-            $category = DB::select("SELECT * FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1",
-                [$slug], 'ASSOC', null, true);
+            $category = DB::table('categories')
+                ->where('slug', $slug)
+                ->whereNull('deleted_at')
+                ->first();
 
             if (!$category) {
                 StdOut::print("Error: Categoría con slug '{$slug}' no encontrada.\n");
                 return;
             }
 
-            $sql = "UPDATE category_mappings SET
-                    is_reviewed = 1,
-                    reviewed_at = ?,
-                    updated_at = ?,
-                    category_id = ?,
-                    category_slug = ?,
-                    mapping_type = 'manual',
-                    notes = ?
-                    WHERE id = ?";
+            $catArray = is_array($category) ? $category : (array)$category;
+            $notes = ($mappingArray['notes'] ?? '') . ' | Confirmed by manual review';
 
-            $notes = ($mapping['notes'] ?? '') . ' | Confirmed by manual review';
-            DB::update($sql, [
-                date('Y-m-d H:i:s'),
-                date('Y-m-d H:i:s'),
-                $category['id'],
-                $category['slug'],
-                $notes,
-                $id
-            ]);
+            DB::table('category_mappings')
+                ->where('id', $id)
+                ->update([
+                    'is_reviewed' => 1,
+                    'reviewed_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'category_id' => $catArray['id'],
+                    'category_slug' => $catArray['slug'],
+                    'mapping_type' => 'manual',
+                    'notes' => $notes
+                ]);
 
             StdOut::print("✓ Mapping ID {$id} revisado y confirmado.\n");
-            StdOut::print("  Raw: {$mapping['raw_value']}\n");
+            StdOut::print("  Raw: {$mappingArray['raw_value']}\n");
             StdOut::print("  Nueva categoría: {$slug}\n");
         } else {
-            // Solo marcar como revisado sin cambios
-            $sql = "UPDATE category_mappings SET
-                    is_reviewed = 1,
-                    reviewed_at = ?,
-                    updated_at = ?
-                    WHERE id = ?";
-
-            DB::update($sql, [date('Y-m-d H:i:s'), date('Y-m-d H:i:s'), $id]);
+            DB::table('category_mappings')
+                ->where('id', $id)
+                ->update([
+                    'is_reviewed' => 1,
+                    'reviewed_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
 
             StdOut::print("✓ Mapping ID {$id} marcado como revisado.\n");
-            StdOut::print("  Raw: {$mapping['raw_value']}\n");
+            StdOut::print("  Raw: {$mappingArray['raw_value']}\n");
         }
     }
 
     /**
      * Prueba el mapeo de una categoría raw sin guardar
-     *
-     * Uso:
-     *   php com zippy test_mapping --raw="<value>" [--strategy=<strategy>]
-     *
-     * Opciones:
-     *   --raw="value"    Valor raw a probar (requerido)
-     *   --strategy=X     Estrategia a usar (llm, fuzzy). Default: llm
      */
     public function test_mapping(...$options)
     {
         $opts = $this->parseOptions($options);
         $raw = $opts['raw'] ?? null;
-        $strategy = $opts['strategy'] ?? 'llm'; // LLM por defecto
+        $strategy = $opts['strategy'] ?? 'llm';
 
         if (empty($raw)) {
             StdOut::print("Error: Debes proporcionar un valor raw con --raw=\"valor\"\n");
@@ -412,7 +378,6 @@ class ZippyCommand implements ICommand
             return;
         }
 
-        // Configurar con LLM como estrategia por defecto
         CategoryMapper::configure([
             'default_strategy' => 'llm',
             'strategies_order' => ['llm', 'fuzzy'],
@@ -435,7 +400,6 @@ class ZippyCommand implements ICommand
             StdOut::print("❌ No se pudo asignar categoría\n");
         }
 
-        // Mostrar estadísticas del mapping
         $stats = CategoryMapper::getStats();
         StdOut::print("\nEstadísticas de mapeo:\n");
         foreach ($stats as $key => $value) {
@@ -445,12 +409,6 @@ class ZippyCommand implements ICommand
 
     /**
      * Importa mappings iniciales desde SQL
-     *
-     * Uso:
-     *   php com zippy import_initial_mappings [--force]
-     *
-     * Opciones:
-     *   --force    Sobrescribir mappings existentes
      */
     public function import_initial_mappings(...$options)
     {
@@ -459,7 +417,6 @@ class ZippyCommand implements ICommand
 
         StdOut::print("=== Importando mappings iniciales ===\n");
 
-        // Mappings iniciales basados en el análisis
         $initialMappings = [
             ['raw' => 'Aceites Y Condimentos', 'slug' => 'almacen', 'type' => 'manual'],
             ['raw' => 'Aderezos Y Salsas', 'slug' => 'almacen', 'type' => 'manual'],
@@ -489,14 +446,13 @@ class ZippyCommand implements ICommand
         $imported = 0;
         $skipped = 0;
 
-        
-
         foreach ($initialMappings as $mapping) {
             $normalized = Strings::normalize($mapping['raw']);
 
-            // Verificar si existe
-            $exists = DB::select("SELECT * FROM category_mappings WHERE normalized = ? AND deleted_at IS NULL LIMIT 1",
-                [$normalized], 'ASSOC', null, true);
+            $exists = DB::table('category_mappings')
+                ->where('normalized', $normalized)
+                ->whereNull('deleted_at')
+                ->first();
 
             if ($exists && !$force) {
                 StdOut::print("⊘ Skipped: {$mapping['raw']} (ya existe)\n");
@@ -504,55 +460,48 @@ class ZippyCommand implements ICommand
                 continue;
             }
 
-            // Buscar category_id
-            $category = DB::select("SELECT * FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1",
-                [$mapping['slug']], 'ASSOC', null, true);
+            $category = DB::table('categories')
+                ->where('slug', $mapping['slug'])
+                ->whereNull('deleted_at')
+                ->first();
 
             if (!$category) {
                 StdOut::print("⚠ Warning: Categoría '{$mapping['slug']}' no encontrada para: {$mapping['raw']}\n");
                 continue;
             }
 
-            if ($exists && $force) {
-                // Actualizar
-                $sql = "UPDATE category_mappings SET
-                        category_id = ?,
-                        category_slug = ?,
-                        mapping_type = ?,
-                        notes = ?,
-                        is_reviewed = ?,
-                        reviewed_at = ?,
-                        updated_at = ?
-                        WHERE id = ?";
+            $catArray = is_array($category) ? $category : (array)$category;
 
-                DB::update($sql, [
-                    $category['id'],
-                    $category['slug'],
-                    $mapping['type'],
-                    $mapping['notes'] ?? 'Initial mapping',
-                    true,
-                    date('Y-m-d H:i:s'),
-                    date('Y-m-d H:i:s'),
-                    $exists['id']
-                ]);
+            if ($exists && $force) {
+                $existsArray = is_array($exists) ? $exists : (array)$exists;
+                
+                DB::table('category_mappings')
+                    ->where('id', $existsArray['id'])
+                    ->update([
+                        'category_id' => $catArray['id'],
+                        'category_slug' => $catArray['slug'],
+                        'mapping_type' => $mapping['type'],
+                        'notes' => $mapping['notes'] ?? 'Initial mapping',
+                        'is_reviewed' => true,
+                        'reviewed_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+                    
                 StdOut::print("↻ Updated: {$mapping['raw']} → {$mapping['slug']}\n");
             } else {
-                // Insertar
-                $sql = "INSERT INTO category_mappings (raw_value, normalized, category_id, category_slug, mapping_type, notes, is_reviewed, reviewed_at, created_at, updated_at)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-                DB::insert($sql, [
-                    $mapping['raw'],
-                    $normalized,
-                    $category['id'],
-                    $category['slug'],
-                    $mapping['type'],
-                    $mapping['notes'] ?? 'Initial mapping',
-                    true,
-                    date('Y-m-d H:i:s'),
-                    date('Y-m-d H:i:s'),
-                    date('Y-m-d H:i:s'),
+                DB::table('category_mappings')->insert([
+                    'raw_value' => $mapping['raw'],
+                    'normalized' => $normalized,
+                    'category_id' => $catArray['id'],
+                    'category_slug' => $catArray['slug'],
+                    'mapping_type' => $mapping['type'],
+                    'notes' => $mapping['notes'] ?? 'Initial mapping',
+                    'is_reviewed' => true,
+                    'reviewed_at' => date('Y-m-d H:i:s'),
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
                 ]);
+                
                 StdOut::print("✓ Imported: {$mapping['raw']} → {$mapping['slug']}\n");
             }
 
@@ -566,9 +515,6 @@ class ZippyCommand implements ICommand
 
     /**
      * Limpia el caché de CategoryMapper
-     *
-     * Uso:
-     *   php com zippy clear_cache
      */
     public function clear_cache()
     {
@@ -577,10 +523,7 @@ class ZippyCommand implements ICommand
     }
 
     /**
-     * Lista categorías raw detectadas en products (análisis exploratorio)
-     *
-     * Uso:
-     *   php com zippy category_list [--limit=100]
+     * Lista categorías raw detectadas en products
      */
     public function category_list(...$options)
     {
@@ -589,7 +532,6 @@ class ZippyCommand implements ICommand
 
         StdOut::print("=== Categorías raw detectadas en productos ===\n");
 
-        // Unir catego_raw1, catego_raw2, catego_raw3
         $raw1 = DB::table('products')
             ->selectRaw('DISTINCT catego_raw1 as raw')
             ->whereNotNull('catego_raw1')
@@ -612,9 +554,9 @@ class ZippyCommand implements ICommand
             ->get();
 
         $all = array_merge(
-            array_column($raw1, 'raw'),
-            array_column($raw2, 'raw'),
-            array_column($raw3, 'raw')
+            array_column((array)$raw1, 'raw'),
+            array_column((array)$raw2, 'raw'),
+            array_column((array)$raw3, 'raw')
         );
 
         $unique = array_unique(array_filter($all));
@@ -703,7 +645,6 @@ Ejemplos:
   php com zippy review_mapping --id=5 --slug=almacen
   php com zippy test_mapping --raw="Aceites Y Condimentos"
   php com zippy import_initial_mappings
-  php com zippy category_list
 
 STR;
 

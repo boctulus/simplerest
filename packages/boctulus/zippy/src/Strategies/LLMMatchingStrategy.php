@@ -26,7 +26,7 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
      * @param bool $verbose Si debe loguear detalles para debugging
      */
     public function __construct(
-        string $model = 'qwen2.5:3b',
+        string $model = 'qwen2.5:1.5b',
         float $temperature = 0.2,
         ?int $maxTokens = 500,
         bool $verbose = false
@@ -61,12 +61,18 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
             // Ejecutar
             $response = $llm->exec();
 
-            if ($error = $llm->error()) {
-                if ($this->verbose) {
-                    Logger::log("LLM Error: {$error}");
-                }
-                return null;
+            if ($response['status'] !== 200){
+                $error = $response['data']['data']['error'];
+
+                throw new \Exception("Error '$error | http status code: {$response['status']}");
             }
+
+            // if ($error = $llm->error()) {
+            //     if ($this->verbose) {
+            //         Logger::log("LLM Error: {$error}");
+            //     }
+            //     return null;
+            // }
 
             $content = $llm->getContent();
 
@@ -95,15 +101,14 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
                 return null;
             }
 
-            if ($this->verbose) {
-                Logger::log("LLM matched '{$raw}' to '{$result['category']}' with {$result['score']}% confidence");
-                if (isset($result['reasoning'])) {
-                    Logger::log("Reasoning: {$result['reasoning']}");
-                }
-            }
+            // if ($this->verbose) {
+            //     Logger::log("LLM matched '{$raw}' to '{$result['category']}' with {$result['score']}% confidence");
+            //     if (isset($result['reasoning'])) {
+            //         Logger::log("Reasoning: {$result['reasoning']}");
+            //     }
+            // }
 
             return $result;
-
         } catch (\Exception $e) {
             if ($this->verbose) {
                 Logger::log("LLM Strategy exception: " . $e->getMessage());
@@ -137,7 +142,7 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
         $prompt = <<<PROMPT
 Eres un sistema experto en clasificación de productos para supermercados y tiendas.
 
-Debes clasificar el siguiente texto de categoría en UNA de las categorías disponibles:
+Debes clasificar el siguiente texto de categoría en UNA de las categorías disponibles o bien especificar "Not matched" sino hay ninguna que realmente se ajuste o "Not sure" si no hay seguridad:
 
 Texto a clasificar: "{$raw}"
 
@@ -150,7 +155,7 @@ IMPORTANTE:
 3. "category" debe ser uno de los slugs listados arriba
 4. "confidence" debe ser un número entre 0 y 100
 5. "reasoning" debe explicar brevemente por qué elegiste esa categoría
-6. Si no estás seguro o ninguna categoría encaja bien, usa confidence bajo (<70)
+6. Si no estás seguro o ninguna categoría devuelve "Not sure" como categoria
 
 Responde SOLO con el JSON:
 PROMPT;
