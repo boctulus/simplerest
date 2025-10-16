@@ -216,3 +216,4 @@
 [2025-10-15 16:12:51]	0.8.12	Automatic update
 [2025-10-15 23:43:34]	0.8.12	AUTODISCOVERY DE PACKAGES OK
 [2025-10-16 11:06:58]	0.8.12	Automatic update
+[2025-10-16 12:14:55]	0.8.12	Bosquejo de CategoryMapper
