@@ -12485,8 +12485,8 @@ class DumbController extends Controller
     }
 
     function get_packages(){
-       //dd(package_scan_base(VENDOR_PATH));
-    //    dd(get_packages_from_all_sources());
+       dd(package_scan_base(VENDOR_PATH));
+       // dd(get_packages_from_all_sources());
        exit;    
     }
 
