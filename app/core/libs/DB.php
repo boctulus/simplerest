@@ -800,9 +800,6 @@ class DB
 		return $result;
     }
 		
-	//
-	// https://laravel.com/docs/5.0/database
-	//
 	public static function select(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, bool $only_one = false, bool $close_cursor = false, bool $tb_prefix = true, &$st = null){
 		if ($vals === null){
 			$vals = [];
