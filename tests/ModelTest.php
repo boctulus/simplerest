@@ -49,6 +49,10 @@ class ModelTest extends TestCase
     $query = DB::table('products')->select(['size', 'cost'])->distinct();
     $this->assertSQLEquals($query->dd(), 'SELECT DISTINCT size, cost FROM products WHERE deleted_at IS NULL;');
 
+    // select() similar al del Query Builder de Laravel
+    $query = DB::table('products')->select('size', 'cost')->distinct();
+    $this->assertSQLEquals($query->dd(), 'SELECT DISTINCT size, cost FROM products WHERE deleted_at IS NULL;');
+
     // 
     $query = DB::table('products')->oldest();
     $this->assertSQLEquals($query->dd(), 'SELECT * FROM products WHERE deleted_at IS NULL ORDER BY created_at DESC;');
