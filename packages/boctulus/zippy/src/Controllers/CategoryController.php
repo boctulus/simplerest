@@ -21,7 +21,7 @@ class CategoryController extends Controller
     {
         DB::setConnection('zippy');
 
-        $rows = DB::table('categories')->select(['id','slug','name','parent_slug'])->get();
+        $rows = DB::table('categories')->select('id','slug','name','parent_slug')->get();
 
         DB::closeConnection();
 
