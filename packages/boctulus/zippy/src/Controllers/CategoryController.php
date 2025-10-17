@@ -4,6 +4,7 @@ namespace Boctulus\Zippy\Controllers;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Request;
 use Boctulus\Zippy\Libs\CategoryMapper;
 
 class CategoryController extends Controller
@@ -32,9 +33,11 @@ class CategoryController extends Controller
      * Create a category
      * Usage: php com zippycart category create --name="Leche y derivados" --slug=leche --parent=food
      */
-    function create_category($request)
+    function create_category()
     {
         DB::setConnection('zippy');
+
+        $request = Request::getInstance();
 
         $name = $request->getOption('name') ?? $request->getOption('n');
         $slug = $request->getOption('slug') ?? $request->getOption('s');
