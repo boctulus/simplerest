@@ -921,10 +921,32 @@ trait QueryBuilderTrait
 		return $this->random();
 	}
 
+	/*
+		Formas validas de enviar fields:
+
+		$model->select('id, name, email'); // Laravel style
+		$model->select(['id', 'name', 'email']); // as array
+		$model->select('id', 'name', 'email'); // as string
+	*/
 	function select($fields)
 	{
-		if (is_string($fields)) {
-			$fields = array_map('trim', explode(',', $fields));
+		// Captura todos los argumentos pasados
+		$args = func_get_args();
+
+		if (count($args) > 1) {
+			// Si hay más de un argumento, los tratamos como lista de campos
+			$fields = array_map('trim', $args);
+		} else {
+			// Solo un argumento
+			$fields = $args[0];
+
+			if (is_string($fields)) {
+				// Si es una cadena, dividir por coma
+				$fields = array_map('trim', explode(',', $fields));
+			} elseif (!is_array($fields)) {
+				// Cualquier otro tipo (seguridad)
+				$fields = [$fields];
+			}
 		}
 
 		$this->fields = $fields;
