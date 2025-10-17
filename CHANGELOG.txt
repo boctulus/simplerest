@@ -220,3 +220,4 @@
 [2025-10-17 12:04:44]	0.8.12	Nuevo CattegoryMapper bocetado
 [2025-10-17 16:42:54]	0.8.12	Updated LLMMatchingStrategy.php (small changes)
 [2025-10-17 16:57:48]	0.8.12	QueryBuilderTrait select() improvement
+[2025-10-17 18:08:33]	0.8.12	Automatic update
