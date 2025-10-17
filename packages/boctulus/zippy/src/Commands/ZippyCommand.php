@@ -188,182 +188,6 @@ class ZippyCommand implements ICommand
     }
 
     /**
-     * Muestra estadísticas de mappings de categorías
-     */
-    public function map_stats()
-    {
-        StdOut::print("=== Estadísticas de Category Mappings ===\n");
-
-        $stats = CategoryMapper::getStats();
-
-        StdOut::print("Total mappings: {$stats['total']}\n");
-        StdOut::print("Mapeados: {$stats['mapped']} ({$stats['mapping_rate']}%)\n");
-        StdOut::print("Sin mapear: {$stats['unmapped']}\n");
-        StdOut::print("Revisados: {$stats['reviewed']}\n");
-        StdOut::print("Necesitan revisión: {$stats['needs_review']}\n");
-
-        $types = DB::table('category_mappings')
-            ->selectRaw('mapping_type, COUNT(*) as count')
-            ->whereNull('deleted_at')
-            ->groupBy('mapping_type')
-            ->get();
-
-        if (!empty($types)) {
-            StdOut::print("\n--- Desglose por tipo ---\n");
-            foreach ($types as $type) {
-                $mappingType = is_array($type) ? $type['mapping_type'] : $type->mapping_type;
-                $count = is_array($type) ? $type['count'] : $type->count;
-                StdOut::print("  {$mappingType}: {$count}\n");
-            }
-        }
-    }
-
-    /**
-     * Muestra mappings que necesitan revisión
-     */
-    public function show_unmapped(...$options)
-    {
-        $opts = $this->parseOptions($options);
-        $limit = $opts['limit'] ?? 20;
-        $type = $opts['type'] ?? 'unmapped';
-
-        StdOut::print("=== Mappings que necesitan revisión ===\n");
-
-        $query = DB::table('category_mappings')
-            ->whereNull('deleted_at')
-            ->where('is_reviewed', 0);
-
-        if ($type === 'unmapped') {
-            $query->where('mapping_type', 'unmapped');
-        } elseif ($type === 'fuzzy') {
-            $query->where('mapping_type', 'fuzzy');
-        }
-
-        $query->orderBy('created_at', 'DESC');
-
-        if ($limit) {
-            $query->limit($limit);
-        }
-
-        $mappings = $query->get();
-
-        if (empty($mappings)) {
-            StdOut::print("No hay mappings pendientes de revisión.\n");
-            return;
-        }
-
-        StdOut::print("Encontrados: " . count($mappings) . "\n\n");
-
-        foreach ($mappings as $m) {
-            $mArray = is_array($m) ? $m : (array)$m;
-            StdOut::print("ID: {$mArray['id']}\n");
-            StdOut::print("  Raw: {$mArray['raw_value']}\n");
-            StdOut::print("  Normalized: {$mArray['normalized']}\n");
-            StdOut::print("  Mapped to: " . ($mArray['category_slug'] ?? 'NULL') . "\n");
-            StdOut::print("  Type: {$mArray['mapping_type']}\n");
-            if (!empty($mArray['confidence'])) {
-                StdOut::print("  Confidence: {$mArray['confidence']}%\n");
-            }
-            if (!empty($mArray['notes'])) {
-                StdOut::print("  Notes: {$mArray['notes']}\n");
-            }
-            StdOut::print("\n");
-        }
-
-        StdOut::print("Para revisar un mapping usa:\n");
-        StdOut::print("  php com zippy review_mapping --id=<id> --slug=<slug>\n");
-    }
-
-    /**
-     * Marca un mapping como revisado y opcionalmente cambia la categoría
-     */
-    public function review_mapping(...$options)
-    {
-        $opts = $this->parseOptions($options);
-        $id = $opts['id'] ?? null;
-        $slug = $opts['slug'] ?? null;
-        $reject = $opts['reject'] ?? false;
-
-        if (!$id) {
-            StdOut::print("Error: Se requiere --id=<id>\n");
-            StdOut::print("Uso: php com zippy review_mapping --id=<id> [--slug=<slug>] [--reject]\n");
-            return;
-        }
-
-        $mapping = DB::table('category_mappings')
-            ->where('id', $id)
-            ->whereNull('deleted_at')
-            ->first();
-
-        if (!$mapping) {
-            StdOut::print("Error: Mapping con ID {$id} no encontrado.\n");
-            return;
-        }
-
-        $mappingArray = is_array($mapping) ? $mapping : (array)$mapping;
-
-        if ($reject) {
-            $notes = ($mappingArray['notes'] ?? '') . ' | Rejected by manual review';
-            
-            DB::table('category_mappings')
-                ->where('id', $id)
-                ->update([
-                    'is_reviewed' => 1,
-                    'reviewed_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'category_id' => null,
-                    'category_slug' => null,
-                    'mapping_type' => 'unmapped',
-                    'notes' => $notes
-                ]);
-
-            StdOut::print("✓ Mapping ID {$id} revisado y rechazado.\n");
-            StdOut::print("  Raw: {$mappingArray['raw_value']}\n");
-
-        } elseif ($slug) {
-            $category = DB::table('categories')
-                ->where('slug', $slug)
-                ->whereNull('deleted_at')
-                ->first();
-
-            if (!$category) {
-                StdOut::print("Error: Categoría con slug '{$slug}' no encontrada.\n");
-                return;
-            }
-
-            $catArray = is_array($category) ? $category : (array)$category;
-            $notes = ($mappingArray['notes'] ?? '') . ' | Confirmed by manual review';
-
-            DB::table('category_mappings')
-                ->where('id', $id)
-                ->update([
-                    'is_reviewed' => 1,
-                    'reviewed_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'category_id' => $catArray['id'],
-                    'category_slug' => $catArray['slug'],
-                    'mapping_type' => 'manual',
-                    'notes' => $notes
-                ]);
-
-            StdOut::print("✓ Mapping ID {$id} revisado y confirmado.\n");
-            StdOut::print("  Raw: {$mappingArray['raw_value']}\n");
-            StdOut::print("  Nueva categoría: {$slug}\n");
-        } else {
-            DB::table('category_mappings')
-                ->where('id', $id)
-                ->update([
-                    'is_reviewed' => 1,
-                    'reviewed_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
-                ]);
-
-            StdOut::print("✓ Mapping ID {$id} marcado como revisado.\n");
-            StdOut::print("  Raw: {$mappingArray['raw_value']}\n");
-        }
-    }
-
-    /**
      * Prueba el mapeo de una categoría raw sin guardar
      */
     public function test_mapping(...$options)
@@ -408,112 +232,6 @@ class ZippyCommand implements ICommand
     }
 
     /**
-     * Importa mappings iniciales desde SQL
-     */
-    public function import_initial_mappings(...$options)
-    {
-        $opts = $this->parseOptions($options);
-        $force = $opts['force'] ?? false;
-
-        StdOut::print("=== Importando mappings iniciales ===\n");
-
-        $initialMappings = [
-            ['raw' => 'Aceites Y Condimentos', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Aderezos Y Salsas', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Alimento De Bebés Y Niños', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Arroz Y Legumbres', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Cereales', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Conservas', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Encurtidos', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Endulzantes', 'slug' => 'dieteticas', 'type' => 'manual'],
-            ['raw' => 'Especias', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Golosinas', 'slug' => 'golosinas', 'type' => 'exact'],
-            ['raw' => 'Harinas', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Infusiones', 'slug' => 'infusiones', 'type' => 'exact'],
-            ['raw' => 'Leche En Polvo', 'slug' => 'lacteos', 'type' => 'manual'],
-            ['raw' => 'Mermeladas Y Dulces', 'slug' => 'golosinas', 'type' => 'manual'],
-            ['raw' => 'Panaderia', 'slug' => 'almacen', 'type' => 'manual', 'notes' => 'Considerar crear subcategoría'],
-            ['raw' => 'Pasta Seca, Lista Y Rellenas', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Polvo Para Postres Y Reposteria', 'slug' => 'almacen', 'type' => 'manual', 'notes' => 'Considerar subcategoría repostería'],
-            ['raw' => 'Productos Orgánicos', 'slug' => 'dieteticas', 'type' => 'manual'],
-            ['raw' => 'Rebozador Y Pan Rallado', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Salsas Y Puré De Tomate', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Snacks', 'slug' => 'aperitivos', 'type' => 'manual'],
-            ['raw' => 'Sopas, Caldos, Puré Y Saborizantes', 'slug' => 'almacen', 'type' => 'manual'],
-            ['raw' => 'Suplementos Dietarios', 'slug' => 'dieteticas', 'type' => 'manual'],
-        ];
-
-        $imported = 0;
-        $skipped = 0;
-
-        foreach ($initialMappings as $mapping) {
-            $normalized = Strings::normalize($mapping['raw']);
-
-            $exists = DB::table('category_mappings')
-                ->where('normalized', $normalized)
-                ->whereNull('deleted_at')
-                ->first();
-
-            if ($exists && !$force) {
-                StdOut::print("⊘ Skipped: {$mapping['raw']} (ya existe)\n");
-                $skipped++;
-                continue;
-            }
-
-            $category = DB::table('categories')
-                ->where('slug', $mapping['slug'])
-                ->whereNull('deleted_at')
-                ->first();
-
-            if (!$category) {
-                StdOut::print("⚠ Warning: Categoría '{$mapping['slug']}' no encontrada para: {$mapping['raw']}\n");
-                continue;
-            }
-
-            $catArray = is_array($category) ? $category : (array)$category;
-
-            if ($exists && $force) {
-                $existsArray = is_array($exists) ? $exists : (array)$exists;
-                
-                DB::table('category_mappings')
-                    ->where('id', $existsArray['id'])
-                    ->update([
-                        'category_id' => $catArray['id'],
-                        'category_slug' => $catArray['slug'],
-                        'mapping_type' => $mapping['type'],
-                        'notes' => $mapping['notes'] ?? 'Initial mapping',
-                        'is_reviewed' => true,
-                        'reviewed_at' => date('Y-m-d H:i:s'),
-                        'updated_at' => date('Y-m-d H:i:s')
-                    ]);
-                    
-                StdOut::print("↻ Updated: {$mapping['raw']} → {$mapping['slug']}\n");
-            } else {
-                DB::table('category_mappings')->insert([
-                    'raw_value' => $mapping['raw'],
-                    'normalized' => $normalized,
-                    'category_id' => $catArray['id'],
-                    'category_slug' => $catArray['slug'],
-                    'mapping_type' => $mapping['type'],
-                    'notes' => $mapping['notes'] ?? 'Initial mapping',
-                    'is_reviewed' => true,
-                    'reviewed_at' => date('Y-m-d H:i:s'),
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s'),
-                ]);
-                
-                StdOut::print("✓ Imported: {$mapping['raw']} → {$mapping['slug']}\n");
-            }
-
-            $imported++;
-        }
-
-        StdOut::print("\n=== Resumen ===\n");
-        StdOut::print("Importados: {$imported}\n");
-        StdOut::print("Omitidos: {$skipped}\n");
-    }
-
-    /**
      * Limpia el caché de CategoryMapper
      */
     public function clear_cache()
@@ -524,6 +242,8 @@ class ZippyCommand implements ICommand
 
     /**
      * Lista categorías raw detectadas en products
+     * 
+     * Son categorias unicas (se eliminan duplicados de la lista de resultados)
      */
     public function category_list(...$options)
     {
@@ -591,6 +311,30 @@ class ZippyCommand implements ICommand
     }
 
     /**
+     * Muestra estadísticas de mappings de categorías (cant de categorias mapeadas, sin revisar, etc)
+     */
+    public function map_stats()
+    {
+        // DE MOMENTO --ANULADO--
+    }
+
+    /**
+     * Muestra mappings que necesitan revisión
+     */
+    public function show_unmapped(...$options)
+    {
+        // DE MOMENTO --ANULADO--
+    }
+
+    /**
+     * Marca un mapping como revisado y opcionalmente cambia la categoría
+     */
+    public function review_mapping(...$options)
+    {
+        // DE MOMENTO --ANULADO--
+    }
+
+    /**
      * Ayuda del comando
      */
     public function help($name = null, ...$args)
@@ -628,8 +372,6 @@ Comandos disponibles:
   test_mapping --raw="<value>"
     Prueba el mapeo de una categoría sin guardar
 
-  import_initial_mappings [--force]
-    Importa los 23 mappings iniciales predefinidos
 
   category_list [--limit=100]
     Lista categorías raw encontradas en productos
