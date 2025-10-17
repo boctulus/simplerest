@@ -934,7 +934,7 @@ class DB
 		return static::select($raw_sql, $vals, $fetch_mode, $tenant_id, false, true, $st);
 	}
 
-	public static function selectOne(string $raw_sql, ?Array $vals = null, $fetch_mode = 'ASSOC', ?string $tenant_id = null, bool $only_one = false){
+	public static function selectOne(string $raw_sql, ?Array $vals = null, $fetch_mode = 'ASSOC', ?string $tenant_id = null){
 		return static::select($raw_sql, $vals, $fetch_mode, $tenant_id, true);
 	}
 

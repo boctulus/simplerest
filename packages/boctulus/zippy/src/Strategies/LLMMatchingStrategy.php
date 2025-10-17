@@ -42,7 +42,7 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
      */
     public function match(string $raw, array $availableCategories, ?float $threshold = null): ?array
     {
-        $threshold = $threshold ?? 0.70; // 70% por defecto para LLM
+        $threshold = $threshold ?? 0.95; // default, ej: 0.95 significa 95%
 
         try {
             $llm = LLMFactory::ollama();
@@ -142,7 +142,7 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
         $prompt = <<<PROMPT
 Eres un sistema experto en clasificación de productos para supermercados y tiendas.
 
-Debes clasificar el siguiente texto de categoría en UNA de las categorías disponibles o bien especificar "Not matched" sino hay ninguna que realmente se ajuste o "Not sure" si no hay seguridad:
+Debes clasificar el siguiente texto de categoría o devolver NULL si no hay seguridad:
 
 Texto a clasificar: "{$raw}"
 
@@ -150,12 +150,16 @@ Categorías disponibles:
 {$categoriesText}
 
 IMPORTANTE:
-1. Debes devolver SOLO un objeto JSON válido, sin texto adicional antes o después
-2. El formato debe ser exactamente: {"category": "slug-de-categoria", "confidence": 95, "reasoning": "explicación breve"}
-3. "category" debe ser uno de los slugs listados arriba
-4. "confidence" debe ser un número entre 0 y 100
-5. "reasoning" debe explicar brevemente por qué elegiste esa categoría
-6. Si no estás seguro o ninguna categoría devuelve "Not sure" como categoria
+- Debes devolver SOLO un objeto JSON válido, sin texto adicional antes o después
+- Devuelves SOLO UNA categoria o NULL.
+- El formato debe ser exactamente: {"category": "slug-de-categoria", "is_new", "sugested_name", "sugested_parent_slug", "confidence": 95, "reasoning": "explicación breve"}
+- El campo "category" debe ser uno de los slugs listados arriba excepto que no la encuentres pero puedas sugerir una nueva.
+- El campo "confidence" debe ser un número entre 0 y 100
+- El campo  "reasoning" debe explicar brevemente por qué elegiste esa categoría
+- El campo "is_new" devuelve un bool que indica si es nueva (la estas sugiriendo).
+- Los campos "sugested_name", "sugested_parent_slug" hacen referencia a una categoria nueva propuesta.
+- Cuando propongas una nueva categoria debes estar absolutamente segura de que no existe y que no es redundante o irrelevante y debes enviar los campos pertinentes: "sugested_name", "sugested_parent_slug" asi como colocar "is_new" en true.
+- En caso de no encontrar categoria con nivel de confianza alto debes devuelver NULL.
 
 Responde SOLO con el JSON:
 PROMPT;
