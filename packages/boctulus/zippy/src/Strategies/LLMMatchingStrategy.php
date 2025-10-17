@@ -7,10 +7,7 @@ use Boctulus\LLMProviders\Factory\LLMFactory;
 use Boctulus\Simplerest\Core\Libs\Logger;
 
 /**
- * Estrategia de matching basada en LLM (Large Language Model)
- *
- * Usa Ollama local para clasificación semántica inteligente de categorías.
- * Más preciso que fuzzy matching pero requiere Ollama running.
+ * Estrategia de matching basada en LLM
  */
 class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
 {
@@ -19,12 +16,6 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
     protected ?int $maxTokens;
     protected bool $verbose;
 
-    /**
-     * @param string $model Modelo de Ollama a usar (ej: 'llama3.2', 'qwen2.5', 'mistral')
-     * @param float $temperature Temperatura para generación (0.0-1.0, menor = más determinístico)
-     * @param int|null $maxTokens Límite de tokens para la respuesta
-     * @param bool $verbose Si debe loguear detalles para debugging
-     */
     public function __construct(
         string $model = 'qwen2.5:1.5b',
         float $temperature = 0.2,
@@ -39,10 +30,15 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @param string $raw
+     * @param array $availableCategories slug => ['name'=>..., 'parent_slug'=>..., 'id'=>...]
+     * @param float|null $threshold 0..1
+     * @return array|null
      */
     public function match(string $raw, array $availableCategories, ?float $threshold = null): ?array
     {
-        $threshold = $threshold ?? 0.95; // default, ej: 0.95 significa 95%
+        $threshold = $threshold ?? 0.95; // default 95%
 
         try {
             $llm = LLMFactory::ollama();
@@ -62,17 +58,9 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
             $response = $llm->exec();
 
             if ($response['status'] !== 200){
-                $error = $response['data']['data']['error'];
-
-                throw new \Exception("Error '$error | http status code: {$response['status']}");
+                $error = $response['data']['data']['error'] ?? 'unknown';
+                throw new \Exception("Error LLM exec: '$error' | http status code: {$response['status']}");
             }
-
-            // if ($error = $llm->error()) {
-            //     if ($this->verbose) {
-            //         Logger::log("LLM Error: {$error}");
-            //     }
-            //     return null;
-            // }
 
             $content = $llm->getContent();
 
@@ -83,7 +71,7 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
                 return null;
             }
 
-            // Parsear respuesta JSON
+            // Parsear respuesta JSON (maneja sugerencias new y retornos por slug)
             $result = $this->parseResponse($content, $availableCategories);
 
             if (!$result) {
@@ -93,20 +81,13 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
                 return null;
             }
 
-            // Verificar threshold
+            // Verificar threshold (result['score'] está en 0..100)
             if ($result['score'] < ($threshold * 100)) {
                 if ($this->verbose) {
                     Logger::log("LLM confidence {$result['score']}% below threshold " . ($threshold * 100) . "%");
                 }
                 return null;
             }
-
-            // if ($this->verbose) {
-            //     Logger::log("LLM matched '{$raw}' to '{$result['category']}' with {$result['score']}% confidence");
-            //     if (isset($result['reasoning'])) {
-            //         Logger::log("Reasoning: {$result['reasoning']}");
-            //     }
-            // }
 
             return $result;
         } catch (\Exception $e) {
@@ -125,10 +106,8 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
         // Construir lista de categorías con formato legible
         $categoriesList = [];
         foreach ($availableCategories as $slug => $categoryData) {
-            $name = is_array($categoryData) ? $categoryData['name'] : $categoryData->name;
-            $parentSlug = is_array($categoryData)
-                ? ($categoryData['parent_slug'] ?? null)
-                : ($categoryData->parent_slug ?? null);
+            $name = is_array($categoryData) ? ($categoryData['name'] ?? '') : ($categoryData->name ?? '');
+            $parentSlug = is_array($categoryData) ? ($categoryData['parent_slug'] ?? null) : ($categoryData->parent_slug ?? null);
 
             $line = "- {$slug}: {$name}";
             if ($parentSlug) {
@@ -152,16 +131,17 @@ Categorías disponibles:
 IMPORTANTE:
 - Debes devolver SOLO un objeto JSON válido, sin texto adicional antes o después
 - Devuelves SOLO UNA categoria o NULL.
-- El formato debe ser exactamente: {"category": "slug-de-categoria", "is_new", "sugested_name", "sugested_parent_slug", "confidence": 95, "reasoning": "explicación breve"}
-- El campo "category" debe ser uno de los slugs listados arriba excepto que no la encuentres pero puedas sugerir una nueva.
-- El campo "confidence" debe ser un número entre 0 y 100
-- El campo  "reasoning" debe explicar brevemente por qué elegiste esa categoría
-- El campo "is_new" devuelve un bool que indica si es nueva (la estas sugiriendo).
-- Los campos "sugested_name", "sugested_parent_slug" hacen referencia a una categoria nueva propuesta.
-- Cuando propongas una nueva categoria debes estar absolutamente segura de que no existe y que no es redundante o irrelevante y debes enviar los campos pertinentes: "sugested_name", "sugested_parent_slug" asi como colocar "is_new" en true.
-- En caso de no encontrar categoria con nivel de confianza alto debes devuelver NULL.
+- El formato debe ser exactamente:
+  {"category": "slug-de-categoria" | {"name":"Nombre de categoria"}, "is_new": true|false, "sugested_name": string|null, "sugested_parent_slug": string|null, "confidence": int, "reasoning": "explicación breve"}
+- Si propones una nueva categoría (is_new = true) rellena "sugested_name" y "sugested_parent_slug".
+- El campo "category" puede ser:
+    * Un slug existente (p. ej. "dairy.milk")
+    * Un objeto con {"name":"nombre de categoria"} si prefieres referir por nombre
+- confidence: número entre 0 y 100
+- reasoning: breve explicación por qué elegiste esa categoría
+- Devuelve NULL si no estás seguro (o si confidence es baja).
 
-Responde SOLO con el JSON:
+Responde SOLO con el JSON.
 PROMPT;
 
         return $prompt;
@@ -169,18 +149,23 @@ PROMPT;
 
     /**
      * Parsea la respuesta del LLM
+     *
+     * Responde un array con:
+     *  - 'category' => slug string o array/object (si 'is_new' true, category puede ser null)
+     *  - 'score' => float (0..100)
+     *  - 'reasoning' => string
+     *  - 'is_new' => bool
+     *  - 'sugested_name' => string|null
+     *  - 'sugested_parent_slug' => string|null
      */
     protected function parseResponse(string $content, array $availableCategories): ?array
     {
-        // Limpiar posible texto antes/después del JSON
         $content = trim($content);
 
-        // Intentar extraer JSON si está embebido en texto
+        // Extraer JSON si viene envuelto en texto
         if (!str_starts_with($content, '{')) {
-            // Buscar el primer { y el último }
             $start = strpos($content, '{');
             $end = strrpos($content, '}');
-
             if ($start !== false && $end !== false && $end > $start) {
                 $content = substr($content, $start, $end - $start + 1);
             }
@@ -188,46 +173,111 @@ PROMPT;
 
         $data = json_decode($content, true);
 
-        if (!$data || !isset($data['category']) || !isset($data['confidence'])) {
+        if (!$data) {
             return null;
         }
 
-        $slug = $data['category'];
-        $confidence = (float)$data['confidence'];
-        $reasoning = $data['reasoning'] ?? '';
-
-        // Verificar que la categoría existe
-        if (!isset($availableCategories[$slug])) {
+        // Si devuelve explicitamente NULL (string "null" o null), manejar
+        if (is_null($data) || (is_string($data) && strtolower($data) === 'null')) {
             return null;
         }
 
-        return [
-            'category' => $availableCategories[$slug],
-            'score' => $confidence,
-            'reasoning' => $reasoning,
-            'strategy' => 'llm'
-        ];
+        // Validaciones mínimas
+        $confidence = null;
+        if (isset($data['confidence'])) {
+            $confidence = (float)$data['confidence'];
+        } elseif (isset($data['confidence']) === false && isset($data['score'])) {
+            $confidence = (float)$data['score'];
+        }
+
+        $isNew = isset($data['is_new']) ? (bool)$data['is_new'] : false;
+        $reasoning = $data['reasoning'] ?? ($data['reason'] ?? '');
+
+        // Si LLM dice que es nueva
+        if ($isNew) {
+            $suggestedName = $data['sugested_name'] ?? $data['suggested_name'] ?? null;
+            $suggestedParent = $data['sugested_parent_slug'] ?? $data['suggested_parent_slug'] ?? $data['parent_slug'] ?? null;
+
+            if (empty($suggestedName) || $confidence === null) {
+                return null;
+            }
+
+            return [
+                'category' => null,
+                'score' => $confidence,
+                'reasoning' => $reasoning,
+                'is_new' => true,
+                'sugested_name' => $suggestedName,
+                'sugested_parent_slug' => $suggestedParent,
+                'strategy' => 'llm'
+            ];
+        }
+
+        // Si LLM devolvió una categoría (slug o objeto con name)
+        if (!isset($data['category']) || $confidence === null) {
+            return null;
+        }
+
+        $cat = $data['category'];
+
+        // Si category es slug string y existe en availableCategories -> OK
+        if (is_string($cat)) {
+            if (!isset($availableCategories[$cat])) {
+                // No existe ese slug, considerarlo no válido
+                return null;
+            }
+            return [
+                'category' => $cat,
+                'score' => $confidence,
+                'reasoning' => $reasoning,
+                'is_new' => false,
+                'strategy' => 'llm'
+            ];
+        }
+
+        // Si category es objeto/array con name, intentar buscar un slug por nombre
+        if (is_array($cat) || is_object($cat)) {
+            $name = is_array($cat) ? ($cat['name'] ?? null) : ($cat->name ?? null);
+            if (!$name) {
+                return null;
+            }
+
+            // Buscar slug por name en availableCategories
+            foreach ($availableCategories as $slug => $catData) {
+                if (($catData['name'] ?? null) === $name) {
+                    return [
+                        'category' => $slug,
+                        'score' => $confidence,
+                        'reasoning' => $reasoning,
+                        'is_new' => false,
+                        'strategy' => 'llm'
+                    ];
+                }
+            }
+
+            // Si no encontramos por name, devolver el objeto (caller intentará inferir)
+            return [
+                'category' => (is_array($cat) ? $cat : (array)$cat),
+                'score' => $confidence,
+                'reasoning' => $reasoning,
+                'is_new' => false,
+                'strategy' => 'llm'
+            ];
+        }
+
+        return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName(): string
     {
         return "LLM Semantic Matching ({$this->model})";
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function requiresExternalService(): bool
     {
-        return true; // Requiere Ollama running
+        return true;
     }
 
-    /**
-     * Verifica si Ollama está disponible
-     */
     public static function isAvailable(): bool
     {
         try {
@@ -239,9 +289,6 @@ PROMPT;
         }
     }
 
-    /**
-     * Lista modelos disponibles en Ollama
-     */
     public static function getAvailableModels(): array
     {
         try {
