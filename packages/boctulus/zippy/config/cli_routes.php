@@ -68,7 +68,7 @@ CliRouter::group('zippycart', function() {
                     $res = ['error' => 'exception', 'message' => $e->getMessage()];
                 }
 
-                dd($res, 'LLM Response');
+                // dd($res, 'LLM Response');
 
                 // Normalizar salida para inspección: si hay match, extraer slug posible
                 $matched_slug = null;
