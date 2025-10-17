@@ -217,7 +217,7 @@ class Strings
         // Múltiples espacios -> uno solo
         $s = preg_replace('/\s+/', ' ', trim($s));
 
-        return $s;
+        return trim($s);
     }
 
 	/*
