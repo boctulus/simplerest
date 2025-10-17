@@ -42,7 +42,7 @@ class CategoryMapper
     /**
      * Guarda un alias entre un nombre alternativo de categoría y una categoría existente
      */
-    public function saveCategoryAlias(string $category_slug, string $raw_value, ?string $source = null): void
+    static function saveCategoryAlias(string $category_slug, string $raw_value, ?string $source = null): void
     {
         $normalized = Strings::normalize($raw_value);
 
