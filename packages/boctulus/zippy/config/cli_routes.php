@@ -150,11 +150,17 @@ CliRouter::group('zippycart', function() {
 
     // Category commands
     CliRouter::group('category', function() {
-        // php com zippycart category list
+        // Existing
         CliRouter::command('list', 'Boctulus\Zippy\Controllers\CategoryController@list_categories'); 
         CliRouter::command('import', 'Boctulus\Zippy\Controllers\AdminTasksController@insertCategories');
-        
-        // Nuevos comandos de mapping con estrategias LLM/Fuzzy
+
+        // New helpers in CategoryController
+        CliRouter::command('create', 'Boctulus\Zippy\Controllers\CategoryController@create_category'); // --name --slug --parent
+        CliRouter::command('create_mapping', 'Boctulus\Zippy\Controllers\CategoryController@create_mapping'); // --slug --raw --source
+        CliRouter::command('resolve', 'Boctulus\Zippy\Controllers\CategoryController@test_resolve'); // --text
+        CliRouter::command('resolve_product', 'Boctulus\Zippy\Controllers\CategoryController@test_resolve_product'); // --raw1 --raw2 --description
+
+        // Keep the other mapping test controllers (if exist) as auxiliary
         CliRouter::command('test_mapping', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_mapping');
         CliRouter::command('test_batch', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_batch_mapping');
         CliRouter::command('compare', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@compare_strategies');
