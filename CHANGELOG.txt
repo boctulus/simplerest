@@ -224,3 +224,4 @@
 [2025-10-17 23:12:53]	0.8.12	Metodo getOption() para clase Request OK
 [2025-10-18 08:54:57]	0.8.12	Automatic update
 [2025-10-18 09:56:34]	0.8.12	Some refactoring on Commands trait
+[2025-10-18 10:05:05]	0.8.12	Mas refactoring sobre comandos
