@@ -8,7 +8,105 @@ Ej:
 
 Cada comando tiene un metodo handle($args) que se puede redefinir (generalmente no es necesario) y un metodo help() requerido por la interfaz ICommand.
 
-Ej:
+## CommandTrait
+
+Todos los comandos usan el trait `CommandTrait` que provee funcionalidad común:
+
+### parseOptions()
+
+Parsea opciones de línea de comandos en formato `--key=value`, `--key:value`, o `--key` (flags booleanos).
+
+**Características:**
+
+- Soporta formato `--key=value` y `--key:value`
+- Convierte guiones a guiones bajos (`--dry-run` → `dry_run`)
+- Elimina comillas de los valores (`--name="John"` → `name: "John"`)
+- Flags booleanos: `--verbose` → `verbose: true`
+
+**Ejemplo:**
+
+```php
+public function myMethod(...$options)
+{
+    $opts = $this->parseOptions($options);
+    $limit = $opts['limit'] ?? 100;
+    $dryRun = $opts['dry_run'] ?? false;
+    $name = $opts['name'] ?? null;
+}
+```
+
+### getOption()
+
+Helper para obtener valores parseados con valor por defecto.
+
+**Ejemplo:**
+
+```php
+public function myMethod(...$options)
+{
+    $opts = $this->parseOptions($options);
+    $limit = $this->getOption($opts, 'limit', 100);
+    $verbose = $this->getOption($opts, 'verbose', false);
+}
+```
+
+### Comandos con opciones personalizadas
+
+Si necesitas valores por defecto o parseo específico, puedes sobrescribir `parseOptions()`:
+
+```php
+protected function parseOptions(array $args): array {
+    // Valores por defecto específicos
+    $defaults = [
+        'pattern' => '*.*',
+        'recursive' => false,
+    ];
+
+    // Normalizar aliases
+    $normalizedArgs = [];
+    foreach ($args as $arg) {
+        if ($arg === '-r') {
+            $normalizedArgs[] = '--recursive';
+        } else {
+            $normalizedArgs[] = $arg;
+        }
+    }
+
+    // Parsear (inline o llamar a método auxiliar)
+    $options = [];
+    foreach ($normalizedArgs as $arg) {
+        if (preg_match('/^--([^=:]+)[=:](.+)$/', $arg, $matches)) {
+            $key = str_replace('-', '_', $matches[1]);
+            $value = trim($matches[2], '"\'');
+            $options[$key] = $value;
+        } elseif (preg_match('/^--(.+)$/', $arg, $matches)) {
+            $key = str_replace('-', '_', $matches[1]);
+            $options[$key] = true;
+        }
+    }
+
+    return array_merge($defaults, $options);
+}
+```
+
+### Pruebas unitarias
+
+El framework incluye pruebas unitarias para `CommandTrait` en `tests/CommandTraitTest.php`:
+
+```bash
+# Ejecutar pruebas del CommandTrait
+./vendor/bin/phpunit tests/CommandTraitTest.php
+```
+
+Las pruebas cubren:
+- Parseo con formato `--key=value` y `--key:value`
+- Flags booleanos (`--dry-run`)
+- Valores con comillas (`--name="John Doe"`)
+- Conversión de guiones a guiones bajos
+- Casos reales de ZippyCommand, FileCommand y ModuleCommand
+- Helper getOption() con valores por defecto
+
+## Ejemplo completo de comando
 
 	<?php
 
