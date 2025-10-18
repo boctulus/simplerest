@@ -225,3 +225,4 @@
 [2025-10-18 08:54:57]	0.8.12	Automatic update
 [2025-10-18 09:56:34]	0.8.12	Some refactoring on Commands trait
 [2025-10-18 10:05:05]	0.8.12	Mas refactoring sobre comandos
+[2025-10-18 10:39:21]	0.8.12	Sistema de comandos mejorado
