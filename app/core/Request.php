@@ -71,7 +71,7 @@ class Request  implements \ArrayAccess, Arrayable
                 if (isset($_SERVER['QUERY_STRING'])){
                     static::$query_arr = url::queryString();
                 }
-                
+
                 /*
                     Accept encoding
 
@@ -88,15 +88,15 @@ class Request  implements \ArrayAccess, Arrayable
                 $headers = static::getHeaders();
 
                 $accept_encoding_header = $headers['Accept-Encoding'] ?? null;
-                
+
                 if (!empty($accept_encoding_header)){
                     static::$accept_encoding = $accept_encoding_header;
                 } else {
                     if (!empty(static::$query_arr["accept_encoding"])){
                         static::$accept_encoding = Arrays::shift(static::$accept_encoding, 'accept_encoding');
                     }
-                }                
-                
+                }
+
                 /*
                     Content-Type
 
@@ -108,12 +108,12 @@ class Request  implements \ArrayAccess, Arrayable
 
                 if (!empty($content_type_header)){
                     static::$content_type = $content_type_header;
-                    
+
                 } else {
                     if (!empty(static::$query_arr["content_type"])){
                         static::$content_type = Arrays::shift(static::$accept_encoding, 'content_type');
                     }
-                }   
+                }
 
                 // Content-Type
                 $is_form_data = (bool) Strings::startsWith('multipart/form-data', static::$content_type);
@@ -124,7 +124,7 @@ class Request  implements \ArrayAccess, Arrayable
                 // Si el Content-Type es para json,.... decode
 
                 static::$body = ($is_json && !empty(static::$raw)) ? Url::bodyDecode(static::$raw) : static::$raw;
-                
+
                 static::$headers = apache_request_headers();
 
                 $tmp = [];
@@ -132,12 +132,50 @@ class Request  implements \ArrayAccess, Arrayable
                     $tmp[strtolower($key)] = $val;
                 }
                 static::$headers = $tmp;
-                
+
+            } else {
+                // CLI mode: parse options from $argv
+                static::$query_arr = [];
+                static::$headers = [];
+                static::$body = [];
+
+                global $argv;
+                if (isset($argv)) {
+                    static::$query_arr = static::parseCliOptions($argv);
+                }
             }
             static::$instance = new static();
         }
-        
+
         return self::$instance; // cambio de static a self 11-mar-2025
+    }
+
+    /**
+     * Parse CLI options from $argv array
+     * Supports formats: --key=value, --key:value, --key
+     *
+     * @param array $argv
+     * @return array
+     */
+    protected static function parseCliOptions(array $argv): array
+    {
+        $options = [];
+
+        foreach ($argv as $arg) {
+            // Match --key=value or --key:value
+            if (preg_match('/^--([^=:]+)[=:](.+)$/', $arg, $matches)) {
+                $key = str_replace('-', '_', $matches[1]);
+                $value = trim($matches[2], '"\'');
+                $options[$key] = $value;
+            }
+            // Match --key (boolean flag)
+            elseif (preg_match('/^--(.+)$/', $arg, $matches)) {
+                $key = str_replace('-', '_', $matches[1]);
+                $options[$key] = true;
+            }
+        }
+
+        return $options;
     }
 
     function getRaw(){
@@ -289,7 +327,7 @@ class Request  implements \ArrayAccess, Arrayable
     /*  
         https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
     */
-    function acceptEncoding() : ?string {
+    function acceptEncoding() {
         if (static::$accept_encoding){
             return static::$accept_encoding;
         }
@@ -305,7 +343,7 @@ class Request  implements \ArrayAccess, Arrayable
         return in_array('deflate', explode(',', static::acceptEncoding() ?? ''));
     }
 
-    function getQuery(string $key = null)
+    function getQuery($key = null)
     {
         if ($key == null)
             return static::$query_arr;
@@ -314,7 +352,7 @@ class Request  implements \ArrayAccess, Arrayable
     }    
 
     // getter destructivo sobre $query_arr
-    function shiftQuery($key, $default_value = NULL, callable $fn = null)
+    function shiftQuery($key, $default_value = NULL, $fn = null)
     {
         static $arr = [];
 
@@ -338,7 +376,7 @@ class Request  implements \ArrayAccess, Arrayable
     }
     
     function has($key){
-        return array_key_exists($key, static::$query_arr);
+        return is_array(static::$query_arr) && array_key_exists($key, static::$query_arr);
     }
 
     function get($key, $default_value = null){
@@ -400,6 +438,65 @@ class Request  implements \ArrayAccess, Arrayable
 
         unset(static::$body[$key]);
         return $ret;
+    }
+    
+    /**
+     * Devuelve una opción (query, body, param o header) por su nombre.
+     * 
+     * Orden de búsqueda:
+     * 1. Query string (?key=)
+     * 2. Cuerpo (body json o form-data)
+     * 3. Parámetros de ruta
+     * 4. Headers
+     *
+     * Ejemplo:
+     *   $slug = $request->getOption('slug') ?? $request->getOption('s');
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed|null
+     */
+    function getOption(string $key, $default = null)
+    {
+        static $cache = [];
+
+        if (array_key_exists($key, $cache)) {
+            return $cache[$key];
+        }
+
+        $value = null;
+
+        // 1. Query string
+        if ($this->has($key)) {
+            $value = $this->get($key);
+        }
+
+        // 2. Body (si no se encontró antes)
+        if ($value === null && is_array(static::$body) && array_key_exists($key, static::$body)) {
+            $value = static::$body[$key];
+        }
+
+        // 3. Parámetros de ruta
+        if ($value === null && isset(static::$params[$key])) {
+            $value = static::$params[$key];
+        }
+
+        // 4. Headers (en minúsculas)
+        if ($value === null && isset(static::$headers[strtolower($key)])) {
+            $value = static::$headers[strtolower($key)];
+        }
+
+        $cache[$key] = $value ?? $default;
+
+        return $cache[$key];
+    }
+
+    function input($key, $default = null){
+        return $this->getOption($key, $default);
+    }
+
+    function json(){
+        return $this->getBodyDecoded();
     }
 
     function getCode(){
