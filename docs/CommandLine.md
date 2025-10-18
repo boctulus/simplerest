@@ -291,22 +291,30 @@ php com sql list 'db_195.products' --limit=50 --format=table
 
 Comandos para la gestión de productos y categorías de Zippy.
 
-## test_mapping
+Los comandos de Zippy están organizados en grupos usando subcomandos:
+
+- **category**: Gestión y diagnóstico de categorías
+- **ollama**: Pruebas de LLM/Ollama
+- Comandos de procesamiento de productos (sin grupo)
+
+## Comandos de Procesamiento de Productos
+
+### test_mapping
 
 Prueba el mapeo de una categoría raw sin guardar en la base de datos.
 
-### Sintaxis
+#### Sintaxis
 
 ```bash
 php com zippy test_mapping --raw="<value>" [--strategy=<strategy>]
 ```
 
-### Parámetros
+#### Parámetros
 
 - `--raw="<value>"`: (Requerido) El texto de la categoría a probar.
 - `--strategy=<strategy>`: (Opcional) La estrategia a utilizar. Valores posibles: `llm`, `fuzzy`. Por defecto es `llm`.
 
-### Ejemplo
+#### Ejemplo
 
 ```bash
 # Probar mapeo usando la estrategia por defecto (llm)
@@ -316,22 +324,22 @@ php com zippy test_mapping --raw="Aceites Y Condimentos"
 php com zippy test_mapping --raw="Aceites Y Condimentos" --strategy=fuzzy
 ```
 
-## products_process_categories
+### products_process_categories
 
 Procesa los productos de la base de datos para asignarles las categorías correspondientes basándose en sus datos.
 
-### Sintaxis
+#### Sintaxis
 
 ```bash
 php com zippy products_process_categories [--limit=<N>] [--dry-run]
 ```
 
-### Parámetros
+#### Parámetros
 
 - `--limit=<N>`: (Opcional) Limita el número de productos a procesar.
 - `--dry-run`: (Opcional) Ejecuta el comando en modo de simulación sin guardar los cambios en la base de datos.
 
-### Ejemplo
+#### Ejemplo
 
 ```bash
 # Procesar 100 productos en modo de simulación
@@ -339,4 +347,172 @@ php com zippy products_process_categories --limit=100 --dry-run
 
 # Procesar 500 productos y guardar los cambios
 php com zippy products_process_categories --limit=500
+```
+
+## Comandos de Categorías
+
+Todos los comandos de categorías se acceden mediante: `php com zippy category <subcomando> [opciones]`
+
+### category list_all
+
+Lista todas las categorías existentes en la tabla categories.
+
+#### Sintaxis
+
+```bash
+php com zippy category list_all
+```
+
+### category create
+
+Crea una nueva categoría.
+
+#### Sintaxis
+
+```bash
+php com zippy category create --name="<nombre>" [opciones]
+```
+
+#### Parámetros
+
+- `--name="<nombre>"`: (Requerido) Nombre de la categoría.
+- `--slug=<slug>`: (Opcional) Slug de la categoría. Si no se proporciona, se genera automáticamente del nombre.
+- `--parent=<slug>`: (Opcional) Slug del padre.
+- `--image_url=<url>`: (Opcional) URL de la imagen.
+- `--store_id=<id>`: (Opcional) ID de la tienda.
+
+#### Ejemplo
+
+```bash
+php com zippy category create --name="Leche y derivados" --slug=dairy.milk --parent=dairy
+```
+
+### category create_mapping
+
+Crea un mapping (alias) de categoría.
+
+#### Sintaxis
+
+```bash
+php com zippy category create_mapping --slug=<slug> --raw="<texto>" [opciones]
+```
+
+#### Parámetros
+
+- `--slug=<slug>`: (Requerido) Slug de categoría existente.
+- `--raw="<texto>"`: (Requerido) Texto raw a mapear.
+- `--source=<fuente>`: (Opcional) Fuente del mapping.
+
+#### Ejemplo
+
+```bash
+php com zippy category create_mapping --slug=dairy.milk --raw="Leche entera 1L" --source=mercado
+```
+
+### category resolve
+
+Prueba resolver con texto suelto (invoca LLM).
+
+#### Sintaxis
+
+```bash
+php com zippy category resolve --text="<texto>"
+```
+
+#### Parámetros
+
+- `--text="<texto>"`: (Requerido) Texto a resolver.
+
+#### Ejemplo
+
+```bash
+php com zippy category resolve --text="Leche entera 1L marca tradicional"
+```
+
+### category resolve_product
+
+Prueba resolver para un producto (slots + description).
+
+#### Sintaxis
+
+```bash
+php com zippy category resolve_product [opciones]
+```
+
+#### Parámetros
+
+- `--raw1="<texto>"`: Categoría raw 1.
+- `--raw2="<texto>"`: Categoría raw 2.
+- `--raw3="<texto>"`: Categoría raw 3.
+- `--description="<texto>"`: Descripción del producto.
+- `--ean=<ean>`: EAN del producto.
+
+#### Ejemplo
+
+```bash
+php com zippy category resolve_product --raw1="Leche entera" --description="Pack de 6 leches 1L"
+```
+
+### category find_missing_parents
+
+Encuentra categorías padre que se referencian pero no existen.
+
+#### Sintaxis
+
+```bash
+php com zippy category find_missing_parents
+```
+
+### category find_orphans
+
+Encuentra categorías huérfanas (cuyo padre no existe).
+
+#### Sintaxis
+
+```bash
+php com zippy category find_orphans
+```
+
+### category report_issues
+
+Genera un reporte combinado de problemas de categorías.
+
+#### Sintaxis
+
+```bash
+php com zippy category report_issues
+```
+
+### category generate_create_commands
+
+Genera comandos para crear las categorías padre faltantes.
+
+#### Sintaxis
+
+```bash
+php com zippy category generate_create_commands
+```
+
+## Comandos de Ollama/LLM
+
+Todos los comandos de Ollama se acceden mediante: `php com zippy ollama <subcomando> [opciones]`
+
+### ollama test_strategy
+
+Prueba modelos disponibles en Ollama.
+
+#### Sintaxis
+
+```bash
+php com zippy ollama test_strategy
+```
+
+### ollama hard_tests
+
+Ejecuta pruebas hardcodeadas del LLM.
+
+#### Sintaxis
+
+```bash
+php com zippy ollama hard_tests
 ```
