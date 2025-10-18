@@ -160,12 +160,10 @@ CliRouter::group('zippycart', function() {
         CliRouter::command('resolve', 'Boctulus\Zippy\Controllers\CategoryController@test_resolve'); // --text
         CliRouter::command('resolve_product', 'Boctulus\Zippy\Controllers\CategoryController@test_resolve_product'); // --raw1 --raw2 --description
 
-        // Keep the other mapping test controllers (if exist) as auxiliary
-        CliRouter::command('test_mapping', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_mapping');
-        CliRouter::command('test_batch', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_batch_mapping');
-        CliRouter::command('compare', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@compare_strategies');
-        CliRouter::command('test_config', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_config');
-        CliRouter::command('stats', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_stats');
-        CliRouter::command('test_full', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@test_full_system');
+        // Category integrity checks and diagnostics
+        CliRouter::command('find_missing_parents', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@find_missing_parents');
+        CliRouter::command('find_orphans', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@find_orphan_categories');
+        CliRouter::command('report_issues', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@report_category_issues');
+        CliRouter::command('generate_create_commands', 'Boctulus\Zippy\Controllers\CategoryMappingTestController@generate_create_commands');
     });
 });

@@ -50,6 +50,59 @@ Este README explica el flujo para probar CategoryMapper y las utilidades relacio
    - Este comando ejecuta tests hardcodeados y hace `dd()` de cada respuesta LLM (útil para debugging).
    - Asegúrate de que `LLMMatchingStrategy::isAvailable()` devuelva `true` (Ollama up).
 
+## Comandos de diagnóstico de categorías
+
+Estos comandos ayudan a identificar y solucionar problemas de integridad en la estructura de categorías:
+
+1. **Encontrar categorías padre faltantes**
+   ```bash
+   php com zippycart category find_missing_parents
+   ```
+   - Busca todos los `parent_slug` que se referencian pero no existen como categorías.
+   - Muestra cuántas categorías hijas tiene cada padre faltante.
+   - Útil para detectar padres que deberían crearse.
+
+2. **Encontrar categorías huérfanas**
+   ```bash
+   php com zippycart category find_orphans
+   ```
+   - Lista todas las categorías cuyo `parent_slug` no existe en la base de datos.
+   - Muestra el ID, slug, nombre y el padre faltante de cada categoría huérfana.
+   - Ayuda a identificar categorías que quedaron con referencias inválidas.
+
+3. **Reporte completo de problemas**
+   ```bash
+   php com zippycart category report_issues
+   ```
+   - Genera un reporte combinado con padres faltantes y categorías huérfanas.
+   - Incluye un resumen con totales y el estado general de integridad.
+   - Útil para tener una vista completa de todos los problemas.
+
+4. **Generar comandos de creación automática**
+   ```bash
+   php com zippycart category generate_create_commands
+   ```
+   - Analiza los padres faltantes y genera los comandos `php com` necesarios para crearlos.
+   - Los comandos generados incluyen un nombre sugerido basado en el slug.
+   - Copia y ejecuta los comandos generados para resolver rápidamente los problemas.
+
+### Ejemplo de flujo de diagnóstico y corrección:
+
+```bash
+# 1. Revisar si hay problemas
+php com zippycart category report_issues
+
+# 2. Generar comandos para crear categorías faltantes
+php com zippycart category generate_create_commands
+
+# 3. Ejecutar los comandos generados (copiar y pegar cada línea)
+php com zippycart category create --name="Dairy" --slug=dairy
+php com zippycart category create --name="Bakery" --slug=bakery
+
+# 4. Verificar que se resolvieron los problemas
+php com zippycart category report_issues
+```
+
 ## Notas operativas
 - **Creación automática de categorías:** Si LLM sugiere `is_new: true` con `sugested_name`, `CategoryMapper` creará una nueva fila en `categories` con `id = uniqid('cat_')`, slug normalizado y creará un `category_mappings` desde el `raw_value`.
 - **Umbrales:** Por defecto LLM threshold = 0.7 (70%). Ajusta en `CategoryMapper::configure()` o pasando configuración en tus scripts antes de invocar resolve/resolveProduct.
