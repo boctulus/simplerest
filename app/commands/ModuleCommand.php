@@ -154,7 +154,7 @@ class ModuleCommand implements ICommand
                     ]
                 ]
             ],
-            "require" => new stdClass()
+            "require" => new \stdClass()
         ];
 
         file_put_contents($composerJsonPath, json_encode($composerContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
@@ -437,23 +437,47 @@ LICENSE;
 
     /**
      * Parsea las opciones pasadas al comando
+     *
+     * Soporta alias: -k para --keep-module
+     * Extiende el parseOptions() del CommandTrait con valores por defecto específicos
      */
     protected function parseOptions(array $args): array
     {
-        $options = [
+        // Valores por defecto específicos de este comando
+        $defaults = [
             'author' => '',
             'keep_module' => false,
         ];
 
+        // Normalizar aliases antes de parsear
+        $normalizedArgs = [];
         foreach ($args as $arg) {
-            if (preg_match('/^--author[=:](.+)$/', $arg, $matches)) {
-                $options['author'] = trim($matches[1]);
-            } elseif ($arg === '--keep-module' || $arg === '-k') {
-                $options['keep_module'] = true;
+            // Convertir alias -k a --keep-module
+            if ($arg === '-k') {
+                $normalizedArgs[] = '--keep-module';
+            } else {
+                $normalizedArgs[] = $arg;
             }
         }
 
-        return $options;
+        // Parsear usando la lógica base del CommandTrait (inline)
+        $options = [];
+        foreach ($normalizedArgs as $arg) {
+            // Match --key=value or --key:value
+            if (preg_match('/^--([^=:]+)[=:](.+)$/', $arg, $matches)) {
+                $key = str_replace('-', '_', $matches[1]);
+                $value = trim($matches[2], '"\'');
+                $options[$key] = $value;
+            }
+            // Match --key (boolean flag)
+            elseif (preg_match('/^--(.+)$/', $arg, $matches)) {
+                $key = str_replace('-', '_', $matches[1]);
+                $options[$key] = true;
+            }
+        }
+
+        // Combinar con valores por defecto
+        return array_merge($defaults, $options);
     }
 
     /**

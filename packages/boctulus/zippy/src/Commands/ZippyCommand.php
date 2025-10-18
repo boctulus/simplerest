@@ -217,18 +217,19 @@ class ZippyCommand implements ICommand
         StdOut::print("Estrategia: $strategy\n\n");
 
         $result = CategoryMapper::resolve($raw, false, $strategy);
-        
+
         if (!empty($result)) {
             StdOut::print("✅ Categoría asignada: " . implode(', ', $result) . "\n");
         } else {
             StdOut::print("❌ No se pudo asignar categoría\n");
         }
 
-        $stats = CategoryMapper::getStats();
-        StdOut::print("\nEstadísticas de mapeo:\n");
-        foreach ($stats as $key => $value) {
-            StdOut::print("- " . ucfirst(str_replace('_', ' ', $key)) . ": $value\n");
-        }
+        // TODO: Implementar getStats() en CategoryMapper
+        // $stats = CategoryMapper::getStats();
+        // StdOut::print("\nEstadísticas de mapeo:\n");
+        // foreach ($stats as $key => $value) {
+        //     StdOut::print("- " . ucfirst(str_replace('_', ' ', $key)) . ": $value\n");
+        // }
     }
 
     /**

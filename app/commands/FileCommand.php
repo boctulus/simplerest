@@ -87,11 +87,15 @@ class FileCommand implements ICommand
     /**
      * Parsea las opciones pasadas al comando.
      *
+     * Soporta alias: -r para --recursive
+     * Extiende el parseOptions() del CommandTrait con valores por defecto específicos
+     *
      * @param array $args Argumentos/options del comando.
      * @return array Opciones parseadas.
      */
     protected function parseOptions(array $args): array {
-        $options = [
+        // Valores por defecto específicos de este comando
+        $defaults = [
             'pattern'   => '*.*',
             'exclude'   => null,
             'recursive' => false,
@@ -99,23 +103,35 @@ class FileCommand implements ICommand
             'only_dirs' => false,
         ];
 
+        // Normalizar aliases antes de parsear
+        $normalizedArgs = [];
         foreach ($args as $arg) {
-            if (preg_match('/^--(pattern)[=|:]([a-z0-9A-ZñÑ_\.-_\*\|]+)$/', $arg, $matches)){
-                $options['pattern'] = $matches[2];
-            } elseif (preg_match('/^(--recursive|-r)$/', $arg)){
-                $options['recursive'] = true;
-            } elseif ($arg === '--include-dirs') {
-                $options['include_dirs'] = true;
-            } elseif ($arg === '--only-dirs') {
-                $options['only_dirs'] = true;
-            } elseif (preg_match('/^--(exclude)[=|:]([\:a-z0-9A-ZñÑ_\.\*-_\/\\\\]+)$/', $arg, $matches)){
-                $options['exclude'] = $matches[2];
+            // Convertir alias -r a --recursive
+            if ($arg === '-r') {
+                $normalizedArgs[] = '--recursive';
+            } else {
+                $normalizedArgs[] = $arg;
             }
         }
 
-        // dd($options, 'options');  
+        // Parsear usando la lógica base del CommandTrait (inline)
+        $options = [];
+        foreach ($normalizedArgs as $arg) {
+            // Match --key=value or --key:value
+            if (preg_match('/^--([^=:]+)[=:](.+)$/', $arg, $matches)) {
+                $key = str_replace('-', '_', $matches[1]);
+                $value = trim($matches[2], '"\'');
+                $options[$key] = $value;
+            }
+            // Match --key (boolean flag)
+            elseif (preg_match('/^--(.+)$/', $arg, $matches)) {
+                $key = str_replace('-', '_', $matches[1]);
+                $options[$key] = true;
+            }
+        }
 
-        return $options;
+        // Combinar con valores por defecto
+        return array_merge($defaults, $options);
     }
 
     function help($name = null, ...$args) {
