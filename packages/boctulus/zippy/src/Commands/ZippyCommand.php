@@ -289,26 +289,7 @@ class ZippyCommand implements ICommand
         }
     }
 
-    /**
-     * Parsea opciones del comando
-     */
-    protected function parseOptions(array $args): array
-    {
-        $options = [];
-
-        foreach ($args as $arg) {
-            if (preg_match('/^--([^=:]+)[=:](.+)$/', $arg, $matches)) {
-                $key = str_replace('-', '_', $matches[1]);
-                $value = trim($matches[2], '"\'');
-                $options[$key] = $value;
-            } elseif (preg_match('/^--(.+)$/', $arg, $matches)) {
-                $key = str_replace('-', '_', $matches[1]);
-                $options[$key] = true;
-            }
-        }
-
-        return $options;
-    }
+    // parseOptions() ahora está disponible en CommandTrait
 
     /**
      * Muestra estadísticas de mappings de categorías (cant de categorias mapeadas, sin revisar, etc)
