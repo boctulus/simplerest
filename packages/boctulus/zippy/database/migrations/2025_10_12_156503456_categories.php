@@ -30,6 +30,9 @@ class Categories extends Migration
         ->varchar('store_id',30)->nullable()
         ->varchar('parent_id',21)->nullable()
         ->varchar('parent_slug', 150)->nullable()
+        ->enum('proposed_by', ['human', 'llm', 'neural network'])->default('llm')
+        ->boolean('is_approved')->default(false)
+        ->boolean('is_active')->default(true)
         ->timestamps()
         ->softDeletes();
 
