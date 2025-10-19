@@ -227,3 +227,4 @@
 [2025-10-18 10:05:05]	0.8.12	Mas refactoring sobre comandos
 [2025-10-18 10:39:21]	0.8.12	Sistema de comandos mejorado
 [2025-10-18 11:53:21]	0.8.12	Helper db reparado
+[2025-10-19 15:41:06]	0.8.12	Revisiones
