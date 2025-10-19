@@ -7,20 +7,26 @@ use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Traits\ExceptionHandler;
 use Boctulus\Simplerest\Core\Traits\InsertWithSubResourcesTrait;
-// use Boctulus\Simplerest\Core\Traits\RelationshipTrait;
+use Boctulus\Simplerest\Core\Traits\RelationshipTrait;
 use Boctulus\Simplerest\Core\Traits\QueryBuilderTrait;
 use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
 
-class Model 
-{	
+class Model
+{
 	use ExceptionHandler;
 	use QueryBuilderTrait;
-	use SubResourceHandler;	
-	// use RelationshipTrait;
+	use SubResourceHandler;
+	use RelationshipTrait;
 	use InsertWithSubResourcesTrait;
-	
+
 	public    $exec = true;
 	protected $schema;
+
+	// ORM properties
+	protected static $table;
+	protected $orm_attributes = [];
+	protected $exists = false;
+	protected $original = [];
 	
 
 	function __construct(bool $connect = false, $schema = null, bool $load_config = true)
@@ -171,5 +177,12 @@ class Model
 	function getConn(){
 		return $this->conn;
 	}
+
+	/*
+		ORM Methods - Laravel-like Active Record pattern
+
+		https://chatgpt.com/c/68f49b1c-7170-8321-8c87-7351564630d2
+	*/
+
 
 }
