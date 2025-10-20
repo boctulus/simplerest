@@ -17,7 +17,7 @@ class OpenFacturaSDKTestController extends Controller
     private $sdk_instance;
     private $mock    = false;
     private $sandbox = false;
-    private $api_key = env('API_KEY_DEV');
+    private $api_key = env('OPENFACTURA_API_KEY_DEV');
 
     public function __construct() {
         parent::__construct();
@@ -112,7 +112,7 @@ class OpenFacturaSDKTestController extends Controller
 
         // PROD
         $base_url           = 'https://api.haulmer.com';
-        $api_key            = env('API_KEY_DEV');
+        $api_key            = env('OPENFACTURA_API_KEY_DEV');
         $idempotency_key    = null;
 
         $cli = new ApiClient();
@@ -196,7 +196,7 @@ class OpenFacturaSDKTestController extends Controller
 
         // PROD
         $base_url           = 'https://api.haulmer.com';
-        $api_key            = env('API_KEY_DEV');
+        $api_key            = env('OPENFACTURA_API_KEY_DEV');
         $idempotency_key    = 'clave_unica_' . time(); // Evita duplicados
 
         $cli = new ApiClient();
