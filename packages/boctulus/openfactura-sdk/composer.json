@@ -1,0 +1,18 @@
+{
+    "name": "boctulus/openfactura-sdk",
+    "description": "Package openfactura-sdk by boctulus",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\OpenfacturaSdk\\": "src/"
+        }
+    },
+    "extra": {
+        "simplerest": {
+            "providers": [
+                "Boctulus\\OpenfacturaSdk\\ServiceProvider"
+            ]
+        }
+    },
+    "require": {}
+}
