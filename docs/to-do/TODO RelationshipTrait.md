@@ -9,7 +9,7 @@
     - Analiza PKs, FKs y UNIQUEs para determinar el tipo
     - Maneja tablas pivot para relaciones n:m
   2. ✅ Optimización con caché estático
-    - isXX(), getRelType(), getRelations(), getPivot() usan caché
+    - validateTableRelationship(), getRelType(), getRelations(), getPivot() usan caché
     - Evita consultas repetidas a schemas
   3. ✅ Multi-tenancy
     - Soporta múltiples conexiones con $tenant_id

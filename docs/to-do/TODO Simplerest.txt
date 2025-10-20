@@ -417,30 +417,6 @@ https://dataedo.com/blog/how-to-document-rest-api-project-written-in-php-using-s
 
 ------x--------
 
-- Resolver problemas con COMPOSER JSON !!!
-
-Class Boctulus\Simplerest\Controllers\Angular2JqueryController located in D:/www/simplerest/app\controllers\Angular2jqueryController.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\Controllers\demos\ImaginatorTest located in D:/www/simplerest/app\controllers\demos\ImaginatorTestController.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\Controllers\OneSignalTesterController located in D:/www/simplerest/app\controllers\demos\OneSignalTesterController.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\Controllers\TestImportCsvController located in D:/www/simplerest/app\controllers\ImportCsvController.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\abstracts\pages\Page located in D:/www/simplerest/app\core\abstracts\Page.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\Controllers\api\__NAME__ located in D:/www/simplerest/app\core\templates\ApiRestfulController.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\middlewares\__NAME__ located in D:/www/simplerest/app\core\templates\Middleware.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\models\__NAME__ located in D:/www/simplerest/app\core\templates\Model-no-schema.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\models\__NAME__ located in D:/www/simplerest/app\core\templates\Model.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\Schemas\__NAME__ located in D:/www/simplerest/app\core\templates\Schema.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\providers\__NAME__ located in D:/www/simplerest/app\core\templates\ServiceProvider.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\Core\Libs\SystemConstants located in D:/www/simplerest/app\core\templates\SystemConstants.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\Background\Tasks\__NAME__ located in D:/www/simplerest/app\core\templates\Task.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\models\legion\TblCotizacionDetalleModel located in D:/www/simplerest/app\models\legion\TblCotizacionDetalleModel[1].php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\models\legion\TblUnidadMedidaModel located in D:/www/simplerest/app\models\legion\TblUnidadMedidaModel[1].php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\models\mpp\BarriosModel located in D:/www/simplerest/app\models\mpo\BarriosModel.php does not comply with psr-4 autoloading standard. Skipping.
-Class Boctulus\Simplerest\pages\admin\xxx\yyy\SomePage located in D:/www/simplerest/app\pages\admin\some_folder\yyy\SomePage.php does not comply with psr-4 autoloading standard. Skipping.
-Class PHPTAL_Php_Attribute_PHPTAL_ID located in D:/www/simplerest/vendor/phptal/phptal/classes\PHPTAL\Php\Attribute\PHPTAL\Id.php does not comply with psr-0 autoloading standard. Skipping.
-Class PHPTAL_Php_Attribute_PHPTAL_TALES located in D:/www/simplerest/vendor/phptal/phptal/classes\PHPTAL\Php\Attribute\PHPTAL\Tales.php does not comply with psr-0 auto
-
-- Generar archivo Constants para las rutas de archivo compatible con la implemetación de SW.
-
 - Permitir que "assets" se accedan directamente dentro de  modulos o packages y que ejecutando un "buid script" se desplieguen en ./public/assets y modifiquen dinamicamente las referencias.
 
 https://chatgpt.com/c/66fb5fee-dc08-800d-9d47-bd337cf0c0b6
@@ -470,21 +446,6 @@ https://claude.ai/chat/442c1c97-413c-4fe0-adb3-3f1af9f5d591
 -  Options > get_option() y set_option (update_uption):
 
   para el caso de multitenant, opcionalmente setear el valor en el scope de la base de datos seleccionada (tabla options para esa DB)
-
-- Modificar el composer.json y reemplazar masivamente:
-
-  Boctulus\Simplerest\
-  Simplerest\
-
-<-- hacerlo con tiempo y luego de pushear porque puede romper todo.
-
-Debe hacerse porque al crear un paquete en Composer automaticamente se crea de la siguiente forma el composer.json del package:
-
-  "autoload": {
-        "psr-4": {
-            "Simplerest\\HelloWorld\\": "src/"  <--- notar la mayuscula inicial
-        }
-    },
 
 - Implementar "router a librerias" directo desde la terminal com 
 

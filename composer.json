@@ -49,7 +49,8 @@
          "Boctulus\\CliTest\\":"packages/boctulus/cli-test/src",
          "Boctulus\\WebTest\\":"packages/boctulus/web-test/src",
          "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src",
-         "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src"
+         "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src",
+         "Boctulus\\OpenfacturaSdk\\": "packages/boctulus/openfactura-sdk/src"
       },
       "exclude-from-classmap": [
          "app/Core/Templates/",
