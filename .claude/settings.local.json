@@ -54,7 +54,8 @@
       "Bash(cmd /c rename \"D:\\laragon\\www\\simplerest\\packages\\boctulus\\openfactura-sdk\" \"openfactura-sdk-backup\")",
       "WebFetch(domain:github.com)",
       "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\packages\\boctulus\\openfactura-sdk\")",
-      "WebFetch(domain:docsapi-openfactura.haulmer.com)"
+      "WebFetch(domain:docsapi-openfactura.haulmer.com)",
+      "Bash(cmd /c \"del /F D:\\laragon\\www\\simplerest\\app\\Libs\\OpenFacturaSDK.php && del /F D:\\laragon\\www\\simplerest\\app\\Libs\\OpenFacturaSDKMock.php && del /F D:\\laragon\\www\\simplerest\\app\\Libs\\OpenFacturaSDKFactory.php && del /F D:\\laragon\\www\\simplerest\\app\\Interfaces\\IOpenFactura.php\")"
     ],
     "deny": [],
     "ask": []
