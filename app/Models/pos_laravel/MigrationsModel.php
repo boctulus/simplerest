@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Models\pos_laravel;
 
 use Boctulus\Simplerest\Models\MyModel;
-use Boctulus\Simplerest\Schemas\pos_laravel\MigrationsSchema;
+use Boctulus\FriendlyposWeb\Schemas\MigrationsSchema;
 
 class MigrationsModel extends MyModel
 {

@@ -2,9 +2,9 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\City;
-use App\Models\Company;
-use App\Models\Country;
+use Boctulus\FriendlyposWeb\Models\City;
+use Boctulus\FriendlyposWeb\Models\Company;
+use Boctulus\FriendlyposWeb\Models\Country;
 use Livewire\Component;
 
 class Companies extends Component

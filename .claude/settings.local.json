@@ -55,7 +55,17 @@
       "WebFetch(domain:github.com)",
       "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\packages\\boctulus\\openfactura-sdk\")",
       "WebFetch(domain:docsapi-openfactura.haulmer.com)",
-      "Bash(cmd /c \"del /F D:\\laragon\\www\\simplerest\\app\\Libs\\OpenFacturaSDK.php && del /F D:\\laragon\\www\\simplerest\\app\\Libs\\OpenFacturaSDKMock.php && del /F D:\\laragon\\www\\simplerest\\app\\Libs\\OpenFacturaSDKFactory.php && del /F D:\\laragon\\www\\simplerest\\app\\Interfaces\\IOpenFactura.php\")"
+      "Bash(cmd /c \"del /F D:\\laragon\\www\\simplerest\\app\\Libs\\OpenFacturaSDK.php && del /F D:\\laragon\\www\\simplerest\\app\\Libs\\OpenFacturaSDKMock.php && del /F D:\\laragon\\www\\simplerest\\app\\Libs\\OpenFacturaSDKFactory.php && del /F D:\\laragon\\www\\simplerest\\app\\Interfaces\\IOpenFactura.php\")",
+      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\packages\\boctulus\\friendlypos-web\\src\\Libs\\LaravelFpdf\")",
+      "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\copy_models_to_package.php\")",
+      "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\copy_models.php\")",
+      "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\fix_model_references.php\")",
+      "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\fix_producto_marcas.php\")",
+      "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\move_schemas.php\")",
+      "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\move_api_controllers.php\")",
+      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\app\\Models\\pos_laravel\")",
+      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\app\\Schemas\\pos_laravel\")",
+      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\app\\Controllers\\api\")"
     ],
     "deny": [],
     "ask": []
