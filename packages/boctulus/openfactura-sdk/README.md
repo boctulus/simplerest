@@ -38,7 +38,7 @@ composer dumpautoload
 
 Para obtener tu API Key:
 
-1. **Sandbox (desarrollo):** `928e15a2d14d4a6292345f04960f4bd3`
+1. **Sandbox (desarrollo):** `928e1928e1xxxxxxxxxxxxxxxxxxxxxxxxxx`
 2. **Producción:** Contacta con Haulmer en [www.openfactura.cl](https://www.openfactura.cl)
 
 ### Inicialización
@@ -48,7 +48,7 @@ use Boctulus\OpenfacturaSdk\OpenFacturaSDK;
 use Boctulus\OpenfacturaSdk\OpenFacturaSDKFactory;
 
 // Opción 1: Inicialización directa
-$apiKey = '928e15a2d14d4a6292345f04960f4bd3';
+$apiKey = '928e1928e1xxxxxxxxxxxxxxxxxxxxxxxxxx';
 $sandbox = true; // true = sandbox, false = producción
 
 $sdk = new OpenFacturaSDK($apiKey, $sandbox);

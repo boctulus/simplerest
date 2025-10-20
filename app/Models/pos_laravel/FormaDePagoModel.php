@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Models\pos_laravel;
 
 use Boctulus\Simplerest\Models\MyModel;
-use Boctulus\Simplerest\Schemas\pos_laravel\FormaDePagoSchema;
+use Boctulus\FriendlyposWeb\Schemas\FormaDePagoSchema;
 
 class FormaDePagoModel extends MyModel
 {

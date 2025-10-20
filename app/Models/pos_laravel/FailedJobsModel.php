@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Models\pos_laravel;
 
 use Boctulus\Simplerest\Models\MyModel;
-use Boctulus\Simplerest\Schemas\pos_laravel\FailedJobsSchema;
+use Boctulus\FriendlyposWeb\Schemas\FailedJobsSchema;
 
 class FailedJobsModel extends MyModel
 {

@@ -331,7 +331,7 @@ class ValidatorTest extends TestCase
     // {
     //     $validator = new Validator();
         
-    //     $db = $this->getMockBuilder('simplerest\core\libs\DB')
+    //     $db = $this->getMockBuilder('Simplerest\Core\libs\DB')
     //         ->disableOriginalConstructor()
     //         ->getMock();
         

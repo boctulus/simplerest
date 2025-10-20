@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\__MODEL_NAME__;
-use App\Http\Resources\__RESOURCE_NAME__;
+use Boctulus\FriendlyposWeb\Models\__MODEL_NAME__;
+use Boctulus\FriendlyposWeb\Http\Resources\__RESOURCE_NAME__;
 use Illuminate\Http\Request;
 
 class __CONTROLLER_NAME__ extends Controller 

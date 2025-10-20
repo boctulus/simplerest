@@ -42,7 +42,7 @@ return
 			]
 		],
 
-		// Sr. Jorge
+		// POS WEB realizado por Sr. Jorge en Laravel
 		'pos_laravel' => [
 			'host'		=> env('DB_HOST', '127.0.0.1'),
 			'port'		=> env('DB_PORT'),

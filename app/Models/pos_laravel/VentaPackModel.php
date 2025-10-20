@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Models\pos_laravel;
 
 use Boctulus\Simplerest\Models\MyModel;
-use Boctulus\Simplerest\Schemas\pos_laravel\VentaPackSchema;
+use Boctulus\FriendlyposWeb\Schemas\VentaPackSchema;
 
 class VentaPackModel extends MyModel
 {

@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Models\pos_laravel;
 
 use Boctulus\Simplerest\Models\MyModel;
-use Boctulus\Simplerest\Schemas\pos_laravel\TicketVentaDetalleItemExtraSchema;
+use Boctulus\FriendlyposWeb\Schemas\TicketVentaDetalleItemExtraSchema;
 
 class TicketVentaDetalleItemExtraModel extends MyModel
 {
