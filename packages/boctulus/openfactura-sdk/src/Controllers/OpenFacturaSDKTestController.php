@@ -9,15 +9,15 @@ use Boctulus\Simplerest\Core\Controllers\Controller;
 /*
     https://grok.com/chat/f4a3da3e-9861-42c8-b4b1-99e360c1bebe
 
-    API KEY desarrollo: '928e15a2d14d4a6292345f04960f4bd3'
-    API KEY produccion: '04f1d39392684b0a9e78ff2a3d0b167a'
+    API KEY desarrollo: '928e1xxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    API KEY produccion: '04f1dxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 */
 class OpenFacturaSDKTestController extends Controller
 {
     private $sdk_instance;
     private $mock    = false;
     private $sandbox = false;
-    private $api_key = '04f1d39392684b0a9e78ff2a3d0b167a';
+    private $api_key = env('API_KEY_DEV');
 
     public function __construct() {
         parent::__construct();
@@ -107,12 +107,12 @@ class OpenFacturaSDKTestController extends Controller
 
         // DESARROLLO
         // $base_url        = 'https://dev-api.haulmer.com';
-        // $api_key         = '928e15a2d14d4a6292345f04960f4bd3';
-        // $idempotency_key = 'fccb60fb512d13df5083790d64c4d5dd';
+        // $api_key         = '928e15xxxxxxxxxxxxxxxxxxxxxxxxxx';
+        // $idempotency_key = 'fccb60xxxxxxxxxxxxxxxxxxxxxxxxxx';
 
         // PROD
         $base_url           = 'https://api.haulmer.com';
-        $api_key            = '04f1d39392684b0a9e78ff2a3d0b167a';
+        $api_key            = env('API_KEY_DEV');
         $idempotency_key    = null;
 
         $cli = new ApiClient();
@@ -196,7 +196,7 @@ class OpenFacturaSDKTestController extends Controller
 
         // PROD
         $base_url           = 'https://api.haulmer.com';
-        $api_key            = '04f1d39392684b0a9e78ff2a3d0b167a';
+        $api_key            = env('API_KEY_DEV');
         $idempotency_key    = 'clave_unica_' . time(); // Evita duplicados
 
         $cli = new ApiClient();
