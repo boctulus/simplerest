@@ -49,7 +49,12 @@
       "Bash(move:*)",
       "Bash(cmd /c move:*)",
       "Bash(cmd /c del:*)",
-      "Bash(vendorbinphpstan analyse:*)"
+      "Bash(vendorbinphpstan analyse:*)",
+      "Read(//d/laragon/www/friendapp/**)",
+      "Bash(cmd /c rename \"D:\\laragon\\www\\simplerest\\packages\\boctulus\\openfactura-sdk\" \"openfactura-sdk-backup\")",
+      "WebFetch(domain:github.com)",
+      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\packages\\boctulus\\openfactura-sdk\")",
+      "WebFetch(domain:docsapi-openfactura.haulmer.com)"
     ],
     "deny": [],
     "ask": []

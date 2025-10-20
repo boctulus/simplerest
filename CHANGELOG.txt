@@ -228,3 +228,4 @@
 [2025-10-18 10:39:21]	0.8.12	Sistema de comandos mejorado
 [2025-10-18 11:53:21]	0.8.12	Helper db reparado
 [2025-10-19 15:41:06]	0.8.12	Revisiones
+[2025-10-20 12:52:14]	0.8.12	Automatic update
