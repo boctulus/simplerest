@@ -235,3 +235,4 @@
 [2025-10-20 14:13:01]	0.8.12	Automatic update
 [2025-10-20 14:22:12]	0.8.12	Automatic update
 [2025-10-20 20:44:43]	0.8.12	Automatic update
+[2025-10-20 20:45:49]	0.8.12	Inicio de paquete friendlypos-web por WEB POS

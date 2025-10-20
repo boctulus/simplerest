@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\City;
-use App\Models\Country;
+use Boctulus\FriendlyposWeb\Models\City;
+use Boctulus\FriendlyposWeb\Models\Country;
 use Illuminate\Database\Seeder;
 
 class CountryCitySeeder extends Seeder
