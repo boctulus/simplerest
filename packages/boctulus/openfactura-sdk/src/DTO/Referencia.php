@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\DTOs\OpenFactura\DTE;
+namespace Boctulus\OpenfacturaSdk\DTO;
 
 class Referencia {
     public int $NroLinRef;
