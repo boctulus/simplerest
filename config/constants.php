@@ -65,7 +65,7 @@ if (!defined('SCHEMA_PATH')){
 }
 
 if (!defined('DTO_PATH'))
-    define('DTO_PATH', APP_PATH . 'DTOs' . DIRECTORY_SEPARATOR);
+    define('DTO_PATH', APP_PATH . 'DTO' . DIRECTORY_SEPARATOR);
 
 if (!defined('DAO_PATH'))
     define('DAO_PATH', APP_PATH . 'DAO' . DIRECTORY_SEPARATOR);

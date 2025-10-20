@@ -579,7 +579,7 @@ class MakeCommand implements ICommand
             }
         }
 
-        $namespace = $this->namespace . '\\DTOs' . ($dir ? '\\' . str_replace('/', '\\', $dir) : '');
+        $namespace = $this->namespace . '\\DTO' . ($dir ? '\\' . str_replace('/', '\\', $dir) : '');
         $dest_path = DTO_PATH . Files::convertSlashes($dir, Files::WIN_DIR_SLASH) . DIRECTORY_SEPARATOR;
         $template_path = self::TEMPLATES . 'DTO.php';
         $prefix = '';
