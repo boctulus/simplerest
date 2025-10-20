@@ -28,11 +28,12 @@ require_once __DIR__ . '/../../../../app.php';
  */
 class OpenFacturaSDKIntegrationTest extends TestCase
 {
-    protected $apiKey = '928e15a2d14d4a6292345f04960f4bd3'; // API Key de desarrollo
+    protected $apiKey;
     protected $sdk;
 
     protected function setUp(): void
     {
+        $this->apiKey = env('OPENFACTURA_API_KEY_DEV'); // API Key de desarrollo
         $this->sdk = new OpenFacturaSDK($this->apiKey, true); // sandbox = true
     }
 
