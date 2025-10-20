@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Models\pos_laravel;
 
 use Boctulus\Simplerest\Models\MyModel;
-use Boctulus\Simplerest\Schemas\pos_laravel\DocumentodteSchema;
+use Boctulus\FriendlyposWeb\Schemas\DocumentodteSchema;
 
 class DocumentodteModel extends MyModel
 {

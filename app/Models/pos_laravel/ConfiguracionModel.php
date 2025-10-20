@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Models\pos_laravel;
 
 use Boctulus\Simplerest\Models\MyModel;
-use Boctulus\Simplerest\Schemas\pos_laravel\ConfiguracionSchema;
+use Boctulus\FriendlyposWeb\Schemas\ConfiguracionSchema;
 
 class ConfiguracionModel extends MyModel
 {

@@ -1,7 +1,7 @@
 <?php
 namespace Database\Factories;
 
-use App\Models\__MODEL_NAME__;
+use Boctulus\FriendlyposWeb\Models\__MODEL_NAME__;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class __MODEL_NAME__Factory extends Factory
