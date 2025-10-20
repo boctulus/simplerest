@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\DTOs\OpenFactura\DTE;
+namespace Boctulus\OpenfacturaSdk\DTO;
 
 class Totales {
     public float $MntNeto;
