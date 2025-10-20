@@ -13,7 +13,7 @@ use Boctulus\OpenfacturaSdk\Interfaces\IOpenFactura;
 
     @author Pablo Bozzolo
 
-    API KEY de desarrollo "928e15a2d14d4a6292345f04960f4bd3"
+    API KEY de desarrollo "928e15xxxxxxxxxxxxxxxxx"
 
     Metodos
 
