@@ -3467,4 +3467,439 @@ class MakeCommand implements ICommand
 
         $this->namespace = $original_namespace;
     }
+
+    /*
+        Creates a migration within a package using autodiscovery
+
+        Usage: php com make migrations:package {package_name} {migration_name} [options]
+
+        Example: php com make migrations:package zippy categories --create
+                 php com make migrations:package web-test users --table=users --edit
+                 php com make migrations:package zippy products --table=products --class_name=ProductsAddDescription
+                 php com make migrations:package web-test orders --create --table=orders
+                 php com make migrations:package zippy categories --remove
+    */
+    function migrations_package(...$opt)
+    {
+        if (count($opt) < 2) {
+            StdOut::print("\nError: Package name and migration name are required.\n");
+            StdOut::print("Usage: php com make migrations:package {package_name} {migration_name} [options]\n");
+            StdOut::print("Example: php com make migrations:package zippy categories --create\n\n");
+            return;
+        }
+
+        // Extract package name and migration name
+        $package_name = array_shift($opt);
+        $migration_name = array_shift($opt);
+
+        // Validate package name format (lowercase, alphanumeric, dashes, underscores, and optional author:package format)
+        if (!preg_match('/^([a-z0-9_-]+:)?[a-z0-9_-]+$/', $package_name)) {
+            StdOut::print("\nError: Invalid package name '$package_name'. Use format 'package' or 'author:package'.\n\n");
+            return;
+        }
+
+        // Use autodiscovery to find package (supports both 'package' and 'author:package' formats)
+        if (strpos($package_name, ':') !== false) {
+            // Format: author:package
+            $package_info = find_package_by_full_name(str_replace(':', '/', $package_name));
+        } else {
+            // Format: package
+            $package_info = find_package_by_name($package_name);
+        }
+
+        if ($package_info === null) {
+            StdOut::print("\nError: Package '$package_name' not found in any known location.\n");
+            StdOut::print("Available packages:\n");
+            $packages = get_packages();
+            foreach ($packages as $pkg_path) {
+                $parts = explode(DIRECTORY_SEPARATOR, rtrim($pkg_path, DIRECTORY_SEPARATOR));
+                if (count($parts) >= 2) {
+                    $name = array_pop($parts);
+                    $author = array_pop($parts);
+                    StdOut::print("  - $author/$name\n");
+                }
+            }
+            StdOut::print("\n");
+            return;
+        }
+
+        // Build paths using discovered package info
+        $package_base = rtrim($package_info['path'], DIRECTORY_SEPARATOR);
+
+        // Build relative path to migrations directory
+        $relative_path = '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
+                       'packages' . DIRECTORY_SEPARATOR . $package_info['author'] . DIRECTORY_SEPARATOR .
+                       $package_info['name'] . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';
+
+        // Use the helper method
+        $this->createMigrationInContext(
+            'package',
+            $package_info['full_name'],
+            $package_base,
+            $relative_path,
+            $migration_name,
+            $opt
+        );
+    }
+
+    /*
+        Creates a controller within a package using autodiscovery
+
+        Usage: php com make controller:package {package_name} {controller_name} [options]
+
+        Example: php com make controller:package zippy MyController
+                 php com make controller:package web-test UserController --force
+    */
+    function controller_package(...$opt)
+    {
+        if (count($opt) < 2) {
+            StdOut::print("\nError: Package name and controller name are required.\n");
+            StdOut::print("Usage: php com make controller:package {package_name} {controller_name}\n");
+            StdOut::print("Example: php com make controller:package zippy MyController\n\n");
+            return;
+        }
+
+        // Extract package name and controller name
+        $package_name = array_shift($opt);
+        $controller_name = array_shift($opt);
+
+        // Validate package name format (supports both 'package' and 'author:package' formats)
+        if (!preg_match('/^([a-z0-9_-]+:)?[a-z0-9_-]+$/', $package_name)) {
+            StdOut::print("\nError: Invalid package name '$package_name'. Use format 'package' or 'author:package'.\n\n");
+            return;
+        }
+
+        // Use autodiscovery to find package
+        if (strpos($package_name, ':') !== false) {
+            $package_info = find_package_by_full_name(str_replace(':', '/', $package_name));
+        } else {
+            $package_info = find_package_by_name($package_name);
+        }
+
+        if ($package_info === null) {
+            StdOut::print("\nError: Package '$package_name' not found.\n\n");
+            return;
+        }
+
+        // Build namespace and destination path
+        $original_namespace = $this->namespace;
+        $this->namespace = $package_info['namespace'];
+
+        $package_base = rtrim($package_info['path'], DIRECTORY_SEPARATOR);
+        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR;
+
+        // Create directory if it doesn't exist
+        if (!file_exists($dest_path)) {
+            Files::mkDirOrFail($dest_path);
+        }
+
+        StdOut::print("\nCreating controller in package '{$package_info['full_name']}'...\n\n");
+
+        // Call the original controller method
+        $namespace = $this->namespace . '\\Controllers';
+        $template_path = self::TEMPLATES . 'Controller.php';
+        $prefix = '';
+        $subfix = 'Controller';
+
+        $this->renderTemplate($controller_name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);
+
+        // Restore original namespace
+        $this->namespace = $original_namespace;
+    }
+
+    /*
+        Creates a middleware within a package using autodiscovery
+
+        Usage: php com make middleware:package {package_name} {middleware_name} [options]
+
+        Example: php com make middleware:package zippy MyMiddleware
+    */
+    function middleware_package(...$opt)
+    {
+        if (count($opt) < 2) {
+            StdOut::print("\nError: Package name and middleware name are required.\n");
+            StdOut::print("Usage: php com make middleware:package {package_name} {middleware_name}\n");
+            StdOut::print("Example: php com make middleware:package zippy MyMiddleware\n\n");
+            return;
+        }
+
+        $package_name = array_shift($opt);
+        $middleware_name = array_shift($opt);
+
+        if (!preg_match('/^([a-z0-9_-]+:)?[a-z0-9_-]+$/', $package_name)) {
+            StdOut::print("\nError: Invalid package name '$package_name'. Use format 'package' or 'author:package'.\n\n");
+            return;
+        }
+
+        // Use autodiscovery
+        if (strpos($package_name, ':') !== false) {
+            $package_info = find_package_by_full_name(str_replace(':', '/', $package_name));
+        } else {
+            $package_info = find_package_by_name($package_name);
+        }
+
+        if ($package_info === null) {
+            StdOut::print("\nError: Package '$package_name' not found.\n\n");
+            return;
+        }
+
+        $original_namespace = $this->namespace;
+        $this->namespace = $package_info['namespace'];
+
+        $package_base = rtrim($package_info['path'], DIRECTORY_SEPARATOR);
+        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Middlewares' . DIRECTORY_SEPARATOR;
+
+        if (!file_exists($dest_path)) {
+            Files::mkDirOrFail($dest_path);
+        }
+
+        StdOut::print("\nCreating middleware in package '{$package_info['full_name']}'...\n\n");
+
+        $namespace = $this->namespace . '\\Middlewares';
+        $template_path = self::TEMPLATES . 'Middleware.php';
+        $this->renderTemplate($middleware_name, '', '', $dest_path, $template_path, $namespace, ...$opt);
+
+        $this->namespace = $original_namespace;
+    }
+
+    /*
+        Creates a lib within a package using autodiscovery
+
+        Usage: php com make lib:package {package_name} {lib_name} [options]
+
+        Example: php com make lib:package zippy MyLib
+    */
+    function lib_package(...$opt)
+    {
+        if (count($opt) < 2) {
+            StdOut::print("\nError: Package name and lib name are required.\n");
+            StdOut::print("Usage: php com make lib:package {package_name} {lib_name}\n");
+            StdOut::print("Example: php com make lib:package zippy MyLib\n\n");
+            return;
+        }
+
+        $package_name = array_shift($opt);
+        $lib_name = array_shift($opt);
+
+        if (!preg_match('/^([a-z0-9_-]+:)?[a-z0-9_-]+$/', $package_name)) {
+            StdOut::print("\nError: Invalid package name '$package_name'. Use format 'package' or 'author:package'.\n\n");
+            return;
+        }
+
+        // Use autodiscovery
+        if (strpos($package_name, ':') !== false) {
+            $package_info = find_package_by_full_name(str_replace(':', '/', $package_name));
+        } else {
+            $package_info = find_package_by_name($package_name);
+        }
+
+        if ($package_info === null) {
+            StdOut::print("\nError: Package '$package_name' not found.\n\n");
+            return;
+        }
+
+        $original_namespace = $this->namespace;
+        $this->namespace = $package_info['namespace'];
+
+        $package_base = rtrim($package_info['path'], DIRECTORY_SEPARATOR);
+        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Libs' . DIRECTORY_SEPARATOR;
+
+        if (!file_exists($dest_path)) {
+            Files::mkDirOrFail($dest_path);
+        }
+
+        StdOut::print("\nCreating lib in package '{$package_info['full_name']}'...\n\n");
+
+        $namespace = $this->namespace . '\\Libs';
+        $template_path = self::TEMPLATES . 'Lib.php';
+        $this->renderTemplate($lib_name, '', '', $dest_path, $template_path, $namespace, ...$opt);
+
+        $this->namespace = $original_namespace;
+    }
+
+    /*
+        Creates a helper within a package using autodiscovery
+
+        Usage: php com make helper:package {package_name} {helper_name} [options]
+
+        Example: php com make helper:package zippy my_helper
+    */
+    function helper_package(...$opt)
+    {
+        if (count($opt) < 2) {
+            StdOut::print("\nError: Package name and helper name are required.\n");
+            StdOut::print("Usage: php com make helper:package {package_name} {helper_name}\n");
+            StdOut::print("Example: php com make helper:package zippy my_helper\n\n");
+            return;
+        }
+
+        $package_name = array_shift($opt);
+        $helper_name = array_shift($opt);
+
+        if (!preg_match('/^([a-z0-9_-]+:)?[a-z0-9_-]+$/', $package_name)) {
+            StdOut::print("\nError: Invalid package name '$package_name'. Use format 'package' or 'author:package'.\n\n");
+            return;
+        }
+
+        // Use autodiscovery
+        if (strpos($package_name, ':') !== false) {
+            $package_info = find_package_by_full_name(str_replace(':', '/', $package_name));
+        } else {
+            $package_info = find_package_by_name($package_name);
+        }
+
+        if ($package_info === null) {
+            StdOut::print("\nError: Package '$package_name' not found.\n\n");
+            return;
+        }
+
+        $package_base = rtrim($package_info['path'], DIRECTORY_SEPARATOR);
+        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Helpers' . DIRECTORY_SEPARATOR;
+
+        if (!file_exists($dest_path)) {
+            Files::mkDirOrFail($dest_path);
+        }
+
+        StdOut::print("\nCreating helper in package '{$package_info['full_name']}'...\n\n");
+
+        $template_path = self::TEMPLATES . 'helper.php';
+        $file_name = $helper_name . '.php';
+        $dest_file = $dest_path . $file_name;
+
+        if (file_exists($template_path)) {
+            $content = file_get_contents($template_path);
+            if ($content !== false) {
+                // Replace placeholders if template has any
+                $updated_content = str_replace('__NAME__', $helper_name, $content);
+                file_put_contents($dest_file, $updated_content);
+                StdOut::print("Created: $dest_file\n");
+            }
+        } else {
+            // Create basic helper file
+            $content = "<?php\n\n";
+            $content .= "/**\n";
+            $content .= " * Helper: $helper_name\n";
+            $content .= " * \n";
+            $content .= " * Package: {$package_info['full_name']}\n";
+            $content .= " */\n\n";
+            $content .= "if (!function_exists('{$helper_name}')) {\n";
+            $content .= "    function {$helper_name}() {\n";
+            $content .= "        // TODO: Implement helper function\n";
+            $content .= "    }\n";
+            $content .= "}\n";
+
+            file_put_contents($dest_file, $content);
+            StdOut::print("Created: $dest_file\n");
+        }
+    }
+
+    /*
+        Creates an interface within a package using autodiscovery
+
+        Usage: php com make interface:package {package_name} {interface_name} [options]
+
+        Example: php com make interface:package zippy MyInterface
+    */
+    function interface_package(...$opt)
+    {
+        if (count($opt) < 2) {
+            StdOut::print("\nError: Package name and interface name are required.\n");
+            StdOut::print("Usage: php com make interface:package {package_name} {interface_name}\n");
+            StdOut::print("Example: php com make interface:package zippy MyInterface\n\n");
+            return;
+        }
+
+        $package_name = array_shift($opt);
+        $interface_name = array_shift($opt);
+
+        if (!preg_match('/^([a-z0-9_-]+:)?[a-z0-9_-]+$/', $package_name)) {
+            StdOut::print("\nError: Invalid package name '$package_name'. Use format 'package' or 'author:package'.\n\n");
+            return;
+        }
+
+        // Use autodiscovery
+        if (strpos($package_name, ':') !== false) {
+            $package_info = find_package_by_full_name(str_replace(':', '/', $package_name));
+        } else {
+            $package_info = find_package_by_name($package_name);
+        }
+
+        if ($package_info === null) {
+            StdOut::print("\nError: Package '$package_name' not found.\n\n");
+            return;
+        }
+
+        $original_namespace = $this->namespace;
+        $this->namespace = $package_info['namespace'];
+
+        $package_base = rtrim($package_info['path'], DIRECTORY_SEPARATOR);
+        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Interfaces' . DIRECTORY_SEPARATOR;
+
+        if (!file_exists($dest_path)) {
+            Files::mkDirOrFail($dest_path);
+        }
+
+        StdOut::print("\nCreating interface in package '{$package_info['full_name']}'...\n\n");
+
+        $namespace = $this->namespace . '\\Interfaces';
+        $template_path = self::TEMPLATES . 'Interface.php';
+        $this->renderTemplate($interface_name, '', '', $dest_path, $template_path, $namespace, ...$opt);
+
+        $this->namespace = $original_namespace;
+    }
+
+    /*
+        Creates a model within a package using autodiscovery
+
+        Usage: php com make model:package {package_name} {model_name} [options]
+
+        Example: php com make model:package zippy Product
+    */
+    function model_package(...$opt)
+    {
+        if (count($opt) < 2) {
+            StdOut::print("\nError: Package name and model name are required.\n");
+            StdOut::print("Usage: php com make model:package {package_name} {model_name}\n");
+            StdOut::print("Example: php com make model:package zippy Product\n\n");
+            return;
+        }
+
+        $package_name = array_shift($opt);
+        $model_name = array_shift($opt);
+
+        if (!preg_match('/^([a-z0-9_-]+:)?[a-z0-9_-]+$/', $package_name)) {
+            StdOut::print("\nError: Invalid package name '$package_name'. Use format 'package' or 'author:package'.\n\n");
+            return;
+        }
+
+        // Use autodiscovery
+        if (strpos($package_name, ':') !== false) {
+            $package_info = find_package_by_full_name(str_replace(':', '/', $package_name));
+        } else {
+            $package_info = find_package_by_name($package_name);
+        }
+
+        if ($package_info === null) {
+            StdOut::print("\nError: Package '$package_name' not found.\n\n");
+            return;
+        }
+
+        $original_namespace = $this->namespace;
+        $this->namespace = $package_info['namespace'];
+
+        $package_base = rtrim($package_info['path'], DIRECTORY_SEPARATOR);
+        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR;
+
+        if (!file_exists($dest_path)) {
+            Files::mkDirOrFail($dest_path);
+        }
+
+        StdOut::print("\nCreating model in package '{$package_info['full_name']}'...\n\n");
+
+        $namespace = $this->namespace . '\\Models';
+        $template_path = self::MODEL_NO_SCHEMA_TEMPLATE; // Use schema-less template for simplicity
+        $this->renderTemplate($model_name, '', 'Model', $dest_path, $template_path, $namespace, ...$opt);
+
+        $this->namespace = $original_namespace;
+    }
 }
