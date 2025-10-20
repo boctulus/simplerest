@@ -161,3 +161,138 @@ if (!function_exists('package_scan_base')) {
     }
 }
 
+if (!function_exists('find_package_by_name')) {
+    /**
+     * Busca un package por su nombre (slug) en todos los packages disponibles
+     *
+     * @param string $package_name Nombre del package (slug), ej: "web-test", "zippy"
+     * @param string $base_path Base path donde buscar (null = PACKAGES_PATH)
+     * @return array|null Array con info del package o null si no se encuentra
+     *
+     * Retorna:
+     * [
+     *   'path' => 'D:\\laragon\\www\\simplerest\\packages\\boctulus\\web-test\\',
+     *   'author' => 'boctulus',
+     *   'name' => 'web-test',
+     *   'namespace' => 'Boctulus\\WebTest',  // extraído de composer.json
+     *   'full_name' => 'boctulus/web-test'
+     * ]
+     */
+    function find_package_by_name(string $package_name, ?string $base_path = null): ?array
+    {
+        $packages = get_packages($base_path);
+
+        foreach ($packages as $package_path) {
+            // Extraer author y name del path
+            // Ej: D:\laragon\www\simplerest\packages\boctulus\web-test\
+            $parts = explode(DIRECTORY_SEPARATOR, rtrim($package_path, DIRECTORY_SEPARATOR));
+
+            // Las últimas 2 partes son author/package
+            if (count($parts) < 2) {
+                continue;
+            }
+
+            $pkg_name = array_pop($parts);
+            $author = array_pop($parts);
+
+            // Comparar el nombre del package (case-insensitive)
+            if (strcasecmp($pkg_name, $package_name) === 0) {
+                // Intentar extraer namespace del composer.json
+                $composer_path = $package_path . 'composer.json';
+                $namespace = null;
+
+                if (file_exists($composer_path)) {
+                    $composer = json_decode(file_get_contents($composer_path), true);
+                    if (isset($composer['autoload']['psr-4'])) {
+                        // Tomar el primer namespace definido
+                        $namespaces = array_keys($composer['autoload']['psr-4']);
+                        if (!empty($namespaces)) {
+                            $namespace = rtrim($namespaces[0], '\\');
+                        }
+                    }
+                }
+
+                // Si no se pudo extraer del composer.json, inferir del author/package
+                if (empty($namespace)) {
+                    $namespace = ucfirst(str_replace(['-', '_'], '', ucwords($author, '-_'))) . '\\' .
+                                 ucfirst(str_replace(['-', '_'], '', ucwords($pkg_name, '-_')));
+                }
+
+                return [
+                    'path' => $package_path,
+                    'author' => $author,
+                    'name' => $pkg_name,
+                    'namespace' => $namespace,
+                    'full_name' => "$author/$pkg_name"
+                ];
+            }
+        }
+
+        return null;
+    }
+}
+
+if (!function_exists('find_package_by_full_name')) {
+    /**
+     * Busca un package por su nombre completo author/package
+     *
+     * @param string $full_name Nombre completo, ej: "boctulus/web-test"
+     * @param string $base_path Base path donde buscar (null = PACKAGES_PATH)
+     * @return array|null Array con info del package o null si no se encuentra
+     */
+    function find_package_by_full_name(string $full_name, ?string $base_path = null): ?array
+    {
+        $parts = explode('/', $full_name);
+        if (count($parts) !== 2) {
+            return null;
+        }
+
+        list($author, $package_name) = $parts;
+
+        $packages = get_packages($base_path);
+
+        foreach ($packages as $package_path) {
+            $path_parts = explode(DIRECTORY_SEPARATOR, rtrim($package_path, DIRECTORY_SEPARATOR));
+
+            if (count($path_parts) < 2) {
+                continue;
+            }
+
+            $pkg_name = array_pop($path_parts);
+            $pkg_author = array_pop($path_parts);
+
+            // Comparar author y package (case-insensitive)
+            if (strcasecmp($pkg_author, $author) === 0 && strcasecmp($pkg_name, $package_name) === 0) {
+                // Extraer namespace del composer.json
+                $composer_path = $package_path . 'composer.json';
+                $namespace = null;
+
+                if (file_exists($composer_path)) {
+                    $composer = json_decode(file_get_contents($composer_path), true);
+                    if (isset($composer['autoload']['psr-4'])) {
+                        $namespaces = array_keys($composer['autoload']['psr-4']);
+                        if (!empty($namespaces)) {
+                            $namespace = rtrim($namespaces[0], '\\');
+                        }
+                    }
+                }
+
+                if (empty($namespace)) {
+                    $namespace = ucfirst(str_replace(['-', '_'], '', ucwords($pkg_author, '-_'))) . '\\' .
+                                 ucfirst(str_replace(['-', '_'], '', ucwords($pkg_name, '-_')));
+                }
+
+                return [
+                    'path' => $package_path,
+                    'author' => $pkg_author,
+                    'name' => $pkg_name,
+                    'namespace' => $namespace,
+                    'full_name' => "$pkg_author/$pkg_name"
+                ];
+            }
+        }
+
+        return null;
+    }
+}
+
