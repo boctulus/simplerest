@@ -240,3 +240,4 @@
 [2025-10-21 10:43:36]	0.8.12	QueryBuilder.md
 [2025-10-21 10:47:40]	0.8.12	Automatic update
 [2025-10-21 11:09:30]	0.8.12	Automatic update
+[2025-10-21 11:11:44]	0.8.12	Restaurado --no-check para com make model
