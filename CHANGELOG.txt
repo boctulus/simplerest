@@ -243,3 +243,4 @@
 [2025-10-21 11:11:44]	0.8.12	Restaurado --no-check para com make model
 [2025-10-21 11:28:11]	0.8.12	Automatic update
 [2025-10-21 14:32:15]	0.8.12	Bug corregido en db.php
+[2025-10-21 14:50:32]	0.8.12	Automatic update
