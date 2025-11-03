@@ -63,9 +63,16 @@
       "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\fix_producto_marcas.php\")",
       "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\move_schemas.php\")",
       "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\move_api_controllers.php\")",
-      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\app\\Models\\pos_laravel\")",
-      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\app\\Schemas\\pos_laravel\")",
-      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\app\\Controllers\\api\")"
+      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\app\\Models\\laravel_pos\")",
+      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\app\\Schemas\\laravel_pos\")",
+      "Bash(cmd /c \"rd /s /q D:\\laragon\\www\\simplerest\\app\\Controllers\\api\")",
+      "Bash(for file in ColumnTableNotFoundException.php EmptySchemaException.php FileNotFoundException.php InvalidValidationException.php NotFileButDirectoryException.php NotImplementedException.php SchemaException.php TableAlreadyExistsException.php TableNotFoundException.php UnreadableFileException.php)",
+      "Bash(do sed -i 's/protected \\$errorCode/protected static string \\$errorCode/g' \"$file\")",
+      "Bash(done)",
+      "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\packages\\boctulus\\friendlypos-web\\src\\Models\\TestProductoModel.php && del D:\\laragon\\www\\simplerest\\packages\\boctulus\\friendlypos-web\\src\\Models\\TestSinSchemaModel.php\")",
+      "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\packages\\boctulus\\friendlypos-web\\src\\Models\\SomeModel.php\")",
+      "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\packages\\boctulus\\friendlypos-web\\src\\Models\\TestFormatModel.php\")",
+      "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\app\\Models\\main\\SomeModel.php && del D:\\laragon\\www\\simplerest\\app\\Models\\main\\OtherModel.php\")"
     ],
     "deny": [],
     "ask": []

@@ -4,5 +4,5 @@ namespace Boctulus\Simplerest\Core\Exceptions;
 
 class FileNotFoundException extends BaseException
 {
-    protected $errorCode = 'FILES>FILE_NOT_FOUND';
+    protected static string $errorCode = 'FILES>FILE_NOT_FOUND';
 }

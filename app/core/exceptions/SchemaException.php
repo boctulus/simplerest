@@ -4,5 +4,5 @@ namespace Boctulus\Simplerest\Core\Exceptions;
 
 class SchemaException extends BaseException
 {
-    protected $errorCode = 'DB>SCHEMA_ERROR';
+    protected static string $errorCode = 'DB>SCHEMA_ERROR';
 }
