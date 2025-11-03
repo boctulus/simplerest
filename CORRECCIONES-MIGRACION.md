@@ -279,14 +279,14 @@ use Fpdf\Fpdf;
 **Solución:**
 
 **Models movidos (26 modelos):**
-- Origen: `app/Models/pos_laravel/`
+- Origen: `app/Models/laravel_pos/`
 - Destino: `packages/boctulus/friendlypos-web/src/Models/`
-- Namespace cambiado de `Boctulus\Simplerest\Models\pos_laravel` a `Boctulus\FriendlyposWeb\Models`
+- Namespace cambiado de `Boctulus\Simplerest\Models\laravel_pos` a `Boctulus\FriendlyposWeb\Models`
 
 **Schemas movidos (53 schemas):**
-- Origen: `app/Schemas/pos_laravel/`
+- Origen: `app/Schemas/laravel_pos/`
 - Destino: `packages/boctulus/friendlypos-web/src/Schemas/`
-- Namespace cambiado de `simplerest\schemas\pos_laravel` a `Boctulus\FriendlyposWeb\Schemas`
+- Namespace cambiado de `simplerest\schemas\laravel_pos` a `Boctulus\FriendlyposWeb\Schemas`
 
 **Controllers API movidos (182 controladores):**
 - Origen: `app/Controllers/api/`
@@ -316,7 +316,7 @@ $caja->save();
 
 **✅ CORRECTO (Query Builder):**
 ```php
-DB::getConnection('pos_laravel');
+DB::getConnection('laravel_pos');
 
 DB::table('caja_venta')->create([
     'idCarrito' => 0,
@@ -324,7 +324,7 @@ DB::table('caja_venta')->create([
     'idEmpresa' => Auth::empresaId()
 ]);
 
-DB::closeConnection('pos_laravel');
+DB::closeConnection('laravel_pos');
 ```
 
 ### Manejo de Conexiones
@@ -333,7 +333,7 @@ DB::closeConnection('pos_laravel');
 
 ```php
 // Abrir conexión
-DB::getConnection('pos_laravel');
+DB::getConnection('laravel_pos');
 
 // Operaciones de BD
 $ventas = DB::table('venta')
@@ -342,7 +342,7 @@ $ventas = DB::table('venta')
     ->get();
 
 // Cerrar conexión
-DB::closeConnection('pos_laravel');
+DB::closeConnection('laravel_pos');
 ```
 
 ### Uso de table() sin Schemas
@@ -435,6 +435,6 @@ packages/boctulus/friendlypos-web/
 **Estado:** ✅ Completado y verificado
 
 **Archivos originales eliminados:**
-- ✅ `app/Models/pos_laravel/` (movidos al package)
-- ✅ `app/Schemas/pos_laravel/` (movidos al package)
+- ✅ `app/Models/laravel_pos/` (movidos al package)
+- ✅ `app/Schemas/laravel_pos/` (movidos al package)
 - ✅ `app/Controllers/api/` (movidos al package)

@@ -112,7 +112,7 @@ function get_model_instance(string $model_name, $fetch_mode = 'ASSOC', bool $reu
         return $instance[$model_name];
     }
 
-    if (!Strings::startsWith('\\Boctulus\\Simplerest\\', $model_name)){
+    if (!Strings::startsWith(Config::get('namespace') . '\\', $model_name)){
         $model = get_model_namespace() . $model_name;
     } else {
         $model = $model_name;
@@ -355,10 +355,28 @@ function get_users_table(){
     return $users_table;
 }
 
-function get_model_namespace($tenant_id = null){
-    if ($tenant_id == null){
+/*
+    Setea un namespace para una conexion de base de datos
+
+    Caso de uso: dentro de un package a fin de que se 
+    puedan cargar los modelos dentro del mismo
+*/
+function set_model_namespace($tenant_id, $namespace){
+    Config::set("db_namespace.$tenant_id", $namespace);
+}
+
+function get_model_namespace($tenant_id = null)
+{
+    if ($tenant_id === null){
         $tenant_id = DB::getCurrentConnectionId(true);
-    }   
+    } else {
+        // Si hay seteado un namespace para una conexion de base de datos, se devuelve
+        $namespace =  Config::get("db_namespace.$tenant_id");
+
+        if ($namespace !== null){
+            return $namespace . '\\Models\\';
+        }
+    }  
 
     if ($tenant_id == Config::get()['db_connection_default']){
         $extra = Config::get()['db_connection_default'] . '\\';
@@ -372,31 +390,23 @@ function get_model_namespace($tenant_id = null){
         }
     }
 
-    return '\\Boctulus\\Simplerest\\Models\\' . $extra;
+    return Config::get('namespace') . '\\Models\\' . $extra;
 }
 
 function get_model_name($table_name, $tenant_id = null){
     if ($tenant_id == null){
         $tenant_id = DB::getCurrentConnectionId(true);
-    }   
-
-    if ($tenant_id == Config::get()['db_connection_default']){
-        $extra = Config::get()['db_connection_default'] . '\\';
-    } else {
-        $group = DB::getTenantGroupName($tenant_id);
-
-        if ($group){
-            $extra = $group . '\\'; 
-        } else {
-            $extra = '';
-        }
     }
 
-    return '\\Boctulus\\Simplerest\\Models\\' . $extra . Strings::snakeToCamel($table_name). 'Model';
+    $namespace = get_model_namespace($tenant_id);
+
+    // get_model_namespace() ya retorna el namespace completo incluyendo \Models\
+    // por lo que no es necesario agregarlo aquí
+    return $namespace . Strings::snakeToCamel($table_name). 'Model';
 }
 
 function get_api_namespace($resource_name){
-    return '\\Boctulus\\Simplerest\\Controllers\\API\\' . Strings::snakeToCamel($resource_name);
+    return Config::get('namespace') . '\\Controllers\\API\\' . Strings::snakeToCamel($resource_name);
 }
 
 function get_user_model_name(){
@@ -470,7 +480,7 @@ function get_schema_name($table_name, $tenant_id = null){
         }
     }
 
-    return '\\Boctulus\\Simplerest\\Schemas\\' . $extra . Strings::snakeToCamel($table_name). 'Schema';
+    return Config::get('namespace') . '\\Schemas\\' . $extra . Strings::snakeToCamel($table_name). 'Schema';
 }
 
 function has_schema($table_name, $tenant_id = null){

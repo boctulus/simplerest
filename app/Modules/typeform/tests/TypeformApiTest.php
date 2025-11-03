@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Modules\Typeform\Tests;
 
-use Boctulus\Simplerest\core\libs\TestCase;
+use Boctulus\Simplerest\Core\libs\TestCase;
 use Boctulus\Simplerest\controllers\TypeformController;
 
 class TypeformApiTest extends TestCase
@@ -96,7 +96,7 @@ class TypeformApiTest extends TestCase
     function testTypeformConfigurationAccess()
     {
         // Test that configuration is accessible
-        $config = \Boctulus\Simplerest\core\libs\Config::get('Typeform');
+        $config = \Boctulus\Simplerest\Core\libs\Config::get('Typeform');
         
         $this->assertNotEmpty($config, 'Typeform configuration should be accessible');
         $this->assertIsArray($config, 'Typeform configuration should be an array');
@@ -179,8 +179,8 @@ class TypeformApiTest extends TestCase
         ];
         
         // Mock MailWP to avoid sending real emails
-        $original_mailer = \Boctulus\Simplerest\core\libs\Config::get('email.default_mailer_class');
-        \Boctulus\Simplerest\core\libs\Config::set('email.default_mailer_class', \Boctulus\Simplerest\core\libs\MailMock::class);
+        $original_mailer = \Boctulus\Simplerest\Core\libs\Config::get('email.default_mailer_class');
+        \Boctulus\Simplerest\Core\libs\Config::set('email.default_mailer_class', \Boctulus\Simplerest\Core\libs\MailMock::class);
         
         $registration_id = \Boctulus\Simplerest\custom_post_types\TypeformRegistrationCPT::createRegistration($formData, 8);
         
@@ -193,7 +193,7 @@ class TypeformApiTest extends TestCase
         echo "✓ Email notification system works correctly\n";
         
         // Restore original mailer
-        \Boctulus\Simplerest\core\libs\Config::set('email.default_mailer_class', $original_mailer);
+        \Boctulus\Simplerest\Core\libs\Config::set('email.default_mailer_class', $original_mailer);
         
         // Clean up
         wp_delete_post($registration_id, true);
