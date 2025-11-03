@@ -20,4 +20,8 @@ Un pseudo-ORM que solo use arrays asociativos y que ofrezca un save() que agrupe
 
 # Implementacion (discusion)
 
+https://chatgpt.com/c/68f7e6a5-4718-8320-9a2e-d35a17cf1b91 <<< 
 https://chatgpt.com/c/68f4a1b5-f788-8322-8d2f-71c08ad8f5e6
+
+
+> php com db:test_orm
