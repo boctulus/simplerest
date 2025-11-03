@@ -82,7 +82,12 @@ $dteData = [
             'CmnaOrigen' => 'Santiago'
         ],
         'Receptor' => [
-            'RUTRecep' => '66666666-6'  // RUT genérico para boletas
+            'RUTRecep' => '66666666-6',  // RUT genérico para boletas
+            // 'RznSocRecep' => 'Test',
+			// 'GiroRecep' => 'Giro',
+			// 'DirRecep' => 'Dirección',
+			// 'CmnaRecep' => 'Comuna',
+			// 'CiudadRecep' => 'Ciudad',
         ],
         'Totales' => [
             'MntNeto' => 10000,
@@ -94,14 +99,22 @@ $dteData = [
     ],
     'Detalle' => [
         [
-            'NroLinDet' => 1,
             'NmbItem' => 'Servicio de Desarrollo Web',
+            // 'DscItem': 'Descripción del item 2',
+            'NroLinDet' => 1,            
             'QtyItem' => 1,
             'PrcItem' => 11900,
-            'MontoItem' => 11900
+            'MontoItem' => 11900,
+            // 'UnmdItem': 'KG',
         ]
     ]
 ];
+
+/*
+    Comparar con
+
+    https://github.com/kripper/superfactura-api-python/blob/master/ejemplo-2.py
+*/
 
 // Opciones de respuesta que deseas recibir
 $responseOptions = ['PDF', 'FOLIO', 'TIMBRE'];
