@@ -4,5 +4,5 @@ namespace Boctulus\Simplerest\Core\Exceptions;
 
 class ColumnTableNotFoundException extends BaseException
 {
-    protected $errorCode = 'DB>COLUMN_NOT_FOUND';
+    protected static string $errorCode = 'DB>COLUMN_NOT_FOUND';
 }

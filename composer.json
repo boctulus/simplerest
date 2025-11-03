@@ -52,7 +52,8 @@
          "Boctulus\\WebTest\\":"packages/boctulus/web-test/src",
          "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src",
          "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src",
-         "Boctulus\\OpenfacturaSdk\\": "packages/boctulus/openfactura-sdk/src"
+         "Boctulus\\OpenfacturaSdk\\": "packages/boctulus/openfactura-sdk/src",
+         "Boctulus\\FriendlyposWeb\\": "packages/boctulus/friendlypos-web/src"
       },
       "exclude-from-classmap": [
          "app/Core/Templates/",

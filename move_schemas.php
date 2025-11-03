@@ -1,6 +1,6 @@
 <?php
 
-$src_dir = 'D:\\laragon\\www\\simplerest\\app\\Schemas\\pos_laravel';
+$src_dir = 'D:\\laragon\\www\\simplerest\\app\\Schemas\\laravel_pos';
 $dst_dir = 'D:\\laragon\\www\\simplerest\\packages\\boctulus\\friendlypos-web\\src\\Schemas';
 
 // Crear directorio destino
@@ -20,7 +20,7 @@ foreach ($files as $file) {
 
     // Cambiar namespace
     $content = str_replace(
-        'namespace simplerest\\schemas\\pos_laravel;',
+        'namespace simplerest\\schemas\\laravel_pos;',
         'namespace Boctulus\\FriendlyposWeb\\Schemas;',
         $content
     );

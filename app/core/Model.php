@@ -27,7 +27,40 @@ class Model
 	protected $orm_attributes = [];
 	protected $exists = false;
 	protected $original = [];
-	
+
+	// Hidratation
+	static function hydratate($instance, array $attributes)
+	{
+		// Set ORM attributes (the actual data)
+		$instance->orm_attributes = $attributes;
+
+		// Mark as existing record
+		$instance->exists = true;
+
+		// Store original state for dirty checking
+		$instance->original = $attributes;
+
+		return $instance;
+	}
+
+	static function findOrFail($id)
+	{
+		$instance = new static(true); // true = connect to DB
+
+		// Use find() to set up the where clause
+		$instance->find($id);
+
+		// Check if record exists
+		if (!$instance->exists()) {
+			throw new \Exception("Resource for `{$instance->table_name}` and id={$id} doesn't exist");
+		}
+
+		// Get the actual data (first record)
+		$data = $instance->first();
+
+		// "Hidratacion"
+		return static::hydratate($instance, $data);
+	}
 
 	function __construct(bool $connect = false, $schema = null, bool $load_config = true)
 	{

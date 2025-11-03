@@ -1833,10 +1833,13 @@ class MakeCommand implements ICommand
 
             Strings::replace('__SCHEMA_CLASS__', "{$this->camel_case}Schema", $file);
 
-            $uuid = $this->getUuid();
-            if ($uuid) {
-                $imports[] = 'use Boctulus\Simplerest\Core\Traits\Uuids;';
-                $traits[] = 'use Uuids;';
+            // Only check for UUID if we're allowed to access the database
+            if (!$no_check) {
+                $uuid = $this->getUuid();
+                if ($uuid) {
+                    $imports[] = 'use Boctulus\Simplerest\Core\Traits\Uuids;';
+                    $traits[] = 'use Uuids;';
+                }
             }
 
             if ($schemaless) {
@@ -3859,8 +3862,9 @@ class MakeCommand implements ICommand
     {
         if (count($opt) < 2) {
             StdOut::print("\nError: Package name and model name are required.\n");
-            StdOut::print("Usage: php com make model:package {package_name} {model_name}\n");
-            StdOut::print("Example: php com make model:package zippy Product\n\n");
+            StdOut::print("Usage: php com make model:package {package_name} {model_name} [--no-schema | -x]\n");
+            StdOut::print("Example: php com make model:package zippy Product\n");
+            StdOut::print("Example: php com make model:package zippy Product --no-schema\n\n");
             return;
         }
 
@@ -3870,6 +3874,27 @@ class MakeCommand implements ICommand
         if (!preg_match('/^([a-z0-9_-]+:)?[a-z0-9_-]+$/', $package_name)) {
             StdOut::print("\nError: Invalid package name '$package_name'. Use format 'package' or 'author:package'.\n\n");
             return;
+        }
+
+        // Check for --no-schema flag
+        $schemaless = false;
+        $unignore = false;
+        $remove = false;
+        $force = false;
+
+        foreach ($opt as $o) {
+            if (preg_match('/^(--no-schema|-x)$/', $o)) {
+                $schemaless = true;
+            }
+            if (preg_match('/^(--even-ignored|--unignore|-u|--retry|-r)$/', $o)) {
+                $unignore = true;
+            }
+            if (preg_match('/^(--force|-f)$/', $o)) {
+                $force = true;
+            }
+            if (preg_match('/^(--remove|--delete|-d)$/', $o)) {
+                $remove = true;
+            }
         }
 
         // Use autodiscovery
@@ -3884,22 +3909,75 @@ class MakeCommand implements ICommand
             return;
         }
 
-        $original_namespace = $this->namespace;
-        $this->namespace = $package_info['namespace'];
+        // Setup model name processing
+        $this->setup($model_name);
+        $filename = $this->camel_case . 'Model.php';
 
+        // Determine paths
         $package_base = rtrim($package_info['path'], DIRECTORY_SEPARATOR);
-        $dest_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR;
+        $models_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Models' . DIRECTORY_SEPARATOR;
+        $schemas_path = $package_base . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Schemas' . DIRECTORY_SEPARATOR;
 
-        if (!file_exists($dest_path)) {
-            Files::mkDirOrFail($dest_path);
+        if (!file_exists($models_path)) {
+            Files::mkDirOrFail($models_path);
         }
+
+        $dest_path = $models_path . $filename;
 
         StdOut::print("\nCreating model in package '{$package_info['full_name']}'...\n\n");
 
-        $namespace = $this->namespace . '\\Models';
-        $template_path = self::MODEL_NO_SCHEMA_TEMPLATE; // Use schema-less template for simplicity
-        $this->renderTemplate($model_name, '', 'Model', $dest_path, $template_path, $namespace, ...$opt);
+        // Check file protection
+        $protected = $unignore ? false : $this->hasFileProtection($filename, $dest_path, $opt);
+        $remove_file = $this->forDeletion($filename, $dest_path, $opt);
 
-        $this->namespace = $original_namespace;
+        if ($remove_file) {
+            $ok = $this->write($dest_path, '', $protected, true);
+            return;
+        }
+
+        // Load template
+        $template = $schemaless ? self::MODEL_NO_SCHEMA_TEMPLATE : self::MODEL_TEMPLATE;
+        $file = file_get_contents($template);
+
+        // Replace namespace
+        $namespace = $package_info['namespace'] . '\\Models';
+        $file = str_replace('namespace Boctulus\Simplerest\Models', "namespace $namespace", $file);
+
+        // Replace class name
+        $file = str_replace('__NAME__', $this->camel_case . 'Model', $file);
+
+        // Replace MyModel import to use correct namespace
+        $file = str_replace('use Boctulus\Simplerest\Models\MyModel', 'use Boctulus\Simplerest\Core\Model as MyModel', $file);
+
+        $imports = [];
+
+        if (!$schemaless) {
+            // Add schema import
+            $schema_class = $this->camel_case . 'Schema';
+            $imports[] = "use {$package_info['namespace']}\\Schemas\\{$schema_class};";
+
+            // Replace schema class reference
+            $file = str_replace('__SCHEMA_CLASS__', $schema_class, $file);
+        } else {
+            // For schemaless models, set table name
+            $file = str_replace('__TABLE_NAME__', $this->snake_case, $file);
+        }
+
+        // Replace imports placeholder
+        if (!empty($imports)) {
+            $file = str_replace('### IMPORTS', implode("\n", $imports), $file);
+        } else {
+            $file = str_replace('### IMPORTS', '', $file);
+        }
+
+        // Clean up empty placeholders (remove entire lines)
+        $file = preg_replace('/^\s*### TRAITS\s*$/m', '', $file);
+        $file = preg_replace('/^\s*### PROPERTIES\s*$/m', '', $file);
+
+        // Remove excessive blank lines (more than 2 consecutive)
+        $file = preg_replace('/\n{3,}/', "\n\n", $file);
+
+        // Write the file
+        $this->write($dest_path, $file, $protected);
     }
 }
