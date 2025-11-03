@@ -27,14 +27,14 @@ foreach ($files as $file) {
 
     // Cambiar referencias a schemas
     $content = str_replace(
-        'use simplerest\\schemas\\pos_laravel\\',
+        'use simplerest\\schemas\\laravel_pos\\',
         'use Boctulus\\FriendlyposWeb\\Schemas\\',
         $content
     );
 
     // Cambiar referencias a models
     $content = str_replace(
-        'use Boctulus\\Simplerest\\Models\\pos_laravel\\',
+        'use Boctulus\\Simplerest\\Models\\laravel_pos\\',
         'use Boctulus\\FriendlyposWeb\\Models\\',
         $content
     );

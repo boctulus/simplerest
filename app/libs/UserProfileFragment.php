@@ -3,8 +3,8 @@
 namespace Boctulus\Simplerest\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Strings;
-use Boctulus\Simplerest\core\libs\Fragment;
-use Boctulus\Simplerest\core\libs\ViewModel;
+use Boctulus\Simplerest\Core\libs\Fragment;
+use Boctulus\Simplerest\Core\libs\ViewModel;
 
 /*
     https://claude.ai/chat/2da02df7-b710-49b0-b42a-17a435233b49

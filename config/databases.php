@@ -42,8 +42,8 @@ return
 			]
 		],
 
-		// POS WEB realizado por Sr. Jorge en Laravel
-		'pos_laravel' => [
+		// POS WEB realizado por Sr. Jorge en Laravel sobre la DB `appfrien_pventas`
+		'laravel_pos' => [
 			'host'		=> env('DB_HOST', '127.0.0.1'),
 			'port'		=> env('DB_PORT'),
 			'driver' 	=> env('DB_CONNECTION'),

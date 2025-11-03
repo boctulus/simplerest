@@ -126,7 +126,7 @@ use Boctulus\FriendlyposWeb\Libs\QRCode\...;
 **SimpleRest DB:**
 ```php
 // Abrir conexión
-DB::getConnection('pos_laravel');
+DB::getConnection('laravel_pos');
 
 // Queries (compatible con Laravel)
 DB::table('venta')
@@ -136,12 +136,12 @@ DB::table('venta')
   ->get();
 
 // Cerrar conexión
-DB::closeConnection('pos_laravel');
+DB::closeConnection('laravel_pos');
 ```
 
 **Cambios necesarios en GestorComprobante:**
-- Línea 658, 996: Añadir `DB::getConnection('pos_laravel')` al inicio
-- Al final de métodos: Añadir `DB::closeConnection('pos_laravel')`
+- Línea 658, 996: Añadir `DB::getConnection('laravel_pos')` al inicio
+- Al final de métodos: Añadir `DB::closeConnection('laravel_pos')`
 
 ### 4.3 Autenticación: auth() Helper
 
@@ -200,7 +200,7 @@ ROOT_PATH . '/public/pdf/dte/1/39/'
 ## Fase 5: Integración con Models y Schemas
 
 ### 5.1 Models Ya Generados
-**Ubicación:** `app/Models/pos_laravel/`
+**Ubicación:** `app/Models/laravel_pos/`
 
 **Modelos disponibles:**
 - `VentaModel.php`
@@ -220,11 +220,11 @@ $venta = VentaModel::find($id_venta);
 ```
 
 ### 5.2 Schemas Ya Generados
-**Ubicación:** `app/Schemas/pos_laravel/`
+**Ubicación:** `app/Schemas/laravel_pos/`
 
 **Uso:**
 ```php
-use simplerest\schemas\pos_laravel\VentaSchema;
+use simplerest\schemas\laravel_pos\VentaSchema;
 
 // Validaciones, etc.
 ```
@@ -291,7 +291,7 @@ packages/boctulus/friendlypos_web/
 return [
     // Conexión a BD
     'database' => [
-        'connection' => 'pos_laravel',
+        'connection' => 'laravel_pos',
     ],
 
     // Rutas
@@ -460,8 +460,8 @@ composer require setasign/fpdf
 ## Referencias
 - **Análisis DB:** `packages/boctulus/openfactura-sdk/Analisis-DB.md`
 - **DTOs OpenFactura:** `packages/boctulus/openfactura-sdk/src/DTO/`
-- **Schemas:** `app/Schemas/pos_laravel/`
-- **Models:** `app/Models/pos_laravel/`
+- **Schemas:** `app/Schemas/laravel_pos/`
+- **Models:** `app/Models/laravel_pos/`
 - **API Controllers:** `app/Controllers/api/`
 
 ---
