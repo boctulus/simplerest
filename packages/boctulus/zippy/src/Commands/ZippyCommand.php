@@ -36,7 +36,7 @@ class ZippyCommand implements ICommand
         $strategy = $opts['strategy'] ?? null;
 
         DB::setConnection('zippy');
-        
+
         CategoryMapper::configure([
             'default_strategy' => 'llm',
             'strategies_order' => ['llm', 'fuzzy'],
@@ -47,7 +47,7 @@ class ZippyCommand implements ICommand
         ]);
 
         $query = DB::table('products');
-        
+
         if ($limit) {
             $query->limit((int)$limit);
         }
@@ -63,12 +63,12 @@ class ZippyCommand implements ICommand
             try {
                 $productId = is_array($product) ? ($product['ean'] ?? $product['id']) : ($product->ean ?? $product->id);
                 echo "[$processed/$total] Procesando producto ID/EAN: $productId\n";
-                
+
                 $categories = CategoryMapper::resolveProduct($product, true);
-                
+
                 if (!empty($categories)) {
                     echo "  → Categorías asignadas: " . implode(', ', $categories) . "\n";
-                    
+
                     if (!$dryRun) {
                         DB::table('products')
                             ->where('ean', $productId)
@@ -79,9 +79,8 @@ class ZippyCommand implements ICommand
                 } else {
                     echo "  → No se encontraron categorías\n";
                 }
-                
+
                 $processed++;
-                
             } catch (\Exception $e) {
                 $errors++;
                 dd($e->getMessage(), "→ ERROR");
@@ -92,11 +91,11 @@ class ZippyCommand implements ICommand
         echo "\nResumen:\n";
         echo "- Productos procesados: $processed\n";
         echo "- Errores: $errors\n";
-        
+
         if ($dryRun) {
             echo "- MODO SIMULACIÓN: No se realizaron cambios en la BD\n";
         }
-        
+
         DB::closeConnection();
     }
 
@@ -120,9 +119,9 @@ class ZippyCommand implements ICommand
         $query = DB::table('products');
 
         if ($onlyUnmapped) {
-            $query->where(function($q) {
+            $query->where(function ($q) {
                 $q->whereNull('categories')
-                  ->orWhereRaw("JSON_LENGTH(categories) = 0");
+                    ->orWhereRaw("JSON_LENGTH(categories) = 0");
             });
         }
 
@@ -241,7 +240,7 @@ class ZippyCommand implements ICommand
         StdOut::print("⚠ Función clearCache() aún no implementada en CategoryMapper.\n");
     }
 
-        /**
+    /**
      * Setea el parent_slug de una categoría existente
      *
      * Uso:
@@ -249,63 +248,63 @@ class ZippyCommand implements ICommand
      *  php com zippy category set --slug=dairy.milk --parent=NULL   // desempareja
      */
     protected function category_set(...$options)
-{
-    DB::setConnection('zippy');
+    {
+        DB::setConnection('zippy');
 
-    $opts = $this->parseOptions($options);
+        $opts = $this->parseOptions($options);
 
-    $slug = $opts['slug'] ?? $opts['s'] ?? null;
-    $parent = array_key_exists('parent', $opts) ? $opts['parent'] : (array_key_exists('p', $opts) ? $opts['p'] : null);
+        $slug = $opts['slug'] ?? $opts['s'] ?? null;
+        $parent = array_key_exists('parent', $opts) ? $opts['parent'] : (array_key_exists('p', $opts) ? $opts['p'] : null);
 
-    if (empty($slug)) {
-        dd(['error' => 'Missing --slug'], 'Set category parent');
-        DB::closeConnection();
-        return;
-    }
-
-    // Normalizar caso especial para NULL (permitir NULL o 'NULL' o 'null')
-    if (is_string($parent) && (strtoupper($parent) === 'NULL' || $parent === 'null')) {
-        $parent = null;
-    }
-
-    // Verificar que la categoría destino exista
-    $cat = DB::selectOne("SELECT id, slug, name, parent_slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$slug]);
-    if (!$cat) {
-        dd(['error' => 'Category not found', 'slug' => $slug], 'Set category parent');
-        DB::closeConnection();
-        return;
-    }
-
-    $parentId = null;
-
-    // Si se pasó un parent no-nulo, verificar que exista y obtener su ID
-    if ($parent !== null && $parent !== '') {
-        $parentData = DB::selectOne("SELECT id, slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$parent]);
-        if (!$parentData) {
-            dd(['error' => 'Parent category not found', 'parent' => $parent], 'Set category parent');
+        if (empty($slug)) {
+            dd(['error' => 'Missing --slug'], 'Set category parent');
             DB::closeConnection();
             return;
         }
-        // Extraer el parent_id
-        $parentId = is_array($parentData) ? $parentData['id'] : $parentData->id;
+
+        // Normalizar caso especial para NULL (permitir NULL o 'NULL' o 'null')
+        if (is_string($parent) && (strtoupper($parent) === 'NULL' || $parent === 'null')) {
+            $parent = null;
+        }
+
+        // Verificar que la categoría destino exista
+        $cat = DB::selectOne("SELECT id, slug, name, parent_slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$slug]);
+        if (!$cat) {
+            dd(['error' => 'Category not found', 'slug' => $slug], 'Set category parent');
+            DB::closeConnection();
+            return;
+        }
+
+        $parentId = null;
+
+        // Si se pasó un parent no-nulo, verificar que exista y obtener su ID
+        if ($parent !== null && $parent !== '') {
+            $parentData = DB::selectOne("SELECT id, slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$parent]);
+            if (!$parentData) {
+                dd(['error' => 'Parent category not found', 'parent' => $parent], 'Set category parent');
+                DB::closeConnection();
+                return;
+            }
+            // Extraer el parent_id
+            $parentId = is_array($parentData) ? $parentData['id'] : $parentData->id;
+        }
+
+        // Ejecutar update incluyendo tanto parent_slug como parent_id
+        if ($parent === null) {
+            DB::update("UPDATE categories SET parent_slug = NULL, parent_id = NULL, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$slug]);
+        } else {
+            DB::update("UPDATE categories SET parent_slug = ?, parent_id = ?, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$parent, $parentId, $slug]);
+        }
+
+        DB::closeConnection();
+
+        dd([
+            'ok' => true,
+            'slug' => $slug,
+            'parent' => $parent,
+            'parent_id' => $parentId
+        ], 'Category parent updated');
     }
-
-    // Ejecutar update incluyendo tanto parent_slug como parent_id
-    if ($parent === null) {
-        DB::update("UPDATE categories SET parent_slug = NULL, parent_id = NULL, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$slug]);
-    } else {
-        DB::update("UPDATE categories SET parent_slug = ?, parent_id = ?, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$parent, $parentId, $slug]);
-    }
-
-    DB::closeConnection();
-
-    dd([
-        'ok' => true,
-        'slug' => $slug,
-        'parent' => $parent,
-        'parent_id' => $parentId
-    ], 'Category parent updated');
-}
 
     /**
      * Lista categorías raw detectadas en products
@@ -317,6 +316,8 @@ class ZippyCommand implements ICommand
     {
         $opts = $this->parseOptions($options);
         $limit = $opts['limit'] ?? 100;
+
+        dd("\r\nLimit: $limit");
 
         StdOut::print("=== Categorías raw detectadas en productos ===\n");
 
@@ -355,32 +356,52 @@ class ZippyCommand implements ICommand
         StdOut::print("Categorías únicas encontradas: " . count($unique) . "\n\n");
 
         foreach ($unique as $idx => $raw) {
-            $parentDisplay = '';
+            $displayLine = "[" . ($idx + 1) . "] {$raw}";
 
-            // Intentar resolver la categoría usando CategoryMapper (si está disponible)
+            // Intentar resolver la categoría usando CategoryMapper
             try {
                 // resolve devuelve un array de slug(s) o vacío
                 $resolved = \Boctulus\Zippy\Libs\CategoryMapper::resolve($raw, false);
 
-                if (!empty($resolved) && is_array($resolved)) {
-                    // Tomamos el primer slug resuelto para mostrar su parent (si existe)
-                    $mappedSlug = $resolved[0] ?? null;
+                // dd($resolved);
+
+                if (!empty($resolved) && is_array($resolved) && $resolved['score'] >= 90) {
+                    // Tomamos el slug resuelto
+                    $mappedSlug = $resolved['category_slug'] ?? null;
 
                     if ($mappedSlug) {
-                        $cat = DB::selectOne("SELECT parent_slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$mappedSlug]);
-                        $parentSlug = is_array($cat) ? ($cat['parent_slug'] ?? null) : ($cat->parent_slug ?? null);
+                        // Agregar el slug mapeado
+                        $displayLine .= " → {$mappedSlug}";
 
+                        // dd("$raw → {$mappedSlug}", 'Resolved category debug'); // raw
+
+                        // Buscar TANTO parent_slug COMO parent_id de esta categoría
+                        $cat = DB::selectOne("SELECT parent_slug, parent_id FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$mappedSlug]);
+
+                        $parentSlug = is_array($cat) ? ($cat['parent_slug'] ?? null) : ($cat->parent_slug ?? null);
+                        $parentId = is_array($cat) ? ($cat['parent_id'] ?? null) : ($cat->parent_id ?? null);
+
+                        // Si tiene padre, buscar el nombre del padre y mostrarlo entre corchetes
                         if (!empty($parentSlug)) {
-                            $parentDisplay = " [{$parentSlug}]";
+                            // Buscar la categoría padre para obtener su nombre
+                            $parentCat = DB::selectOne("SELECT name FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$parentSlug]);
+
+                            if ($parentCat) {
+                                $parentName = is_array($parentCat) ? ($parentCat['name'] ?? $parentSlug) : ($parentCat->name ?? $parentSlug);
+                                $displayLine .= " [{$parentName}]";
+                            } else {
+                                // Si no se encuentra el padre, mostrar el slug entre corchetes
+                                $displayLine .= " [{$parentSlug}]";
+                            }
                         }
                     }
                 }
             } catch (\Throwable $e) {
-                // En caso de error con CategoryMapper, seguimos sin parentDisplay
-                $parentDisplay = '';
+                // En caso de error con CategoryMapper, continuamos sin información adicional
+                // No agregamos nada al displayLine
             }
 
-            StdOut::print("[" . ($idx + 1) . "] {$raw}{$parentDisplay}\n");
+            StdOut::print($displayLine . "\n");
         }
 
         DB::closeConnection();
@@ -416,13 +437,13 @@ class ZippyCommand implements ICommand
     /**
      * Lista categorías existentes en la tabla categories
      *
-     * Uso: php com zippy category list_all
+     * Uso: php com zippy category all
      */
-    protected function category_list_all()
+    protected function category_all()
     {
         DB::setConnection('zippy');
 
-        $rows = DB::table('categories')->select('id','slug','name','parent_slug')->get();
+        $rows = DB::table('categories')->select('id', 'slug', 'name', 'parent_slug')->get();
 
         DB::closeConnection();
 
@@ -467,7 +488,12 @@ class ZippyCommand implements ICommand
         $id = uniqid('cat_');
 
         DB::insert("INSERT INTO categories (id, name, slug, parent_slug, image_url, store_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())", [
-            $id, $name, $slug, $parent, $image_url, $store_id
+            $id,
+            $name,
+            $slug,
+            $parent,
+            $image_url,
+            $store_id
         ]);
 
         DB::closeConnection();
@@ -1042,7 +1068,7 @@ COMANDOS DE PROCESAMIENTO DE PRODUCTOS
 COMANDOS DE GESTIÓN DE CATEGORÍAS
 ═══════════════════════════════════════════════════════════════
 
-  category list_all
+  category all
     Lista todas las categorías existentes en la tabla categories
 
   category create --name="<nombre>" [options]
@@ -1111,7 +1137,8 @@ EJEMPLOS DE USO
   php com zippy test_mapping --raw="Aceites Y Condimentos"
 
   # Gestión de categorías
-  php com zippy category list_all
+  php com zippy category_list --limit=50  // LISTA CATEGORÍAS RAW EN PRODUCTS
+  php com zippy category all  // LISTA TODAS LAS CATEGORÍAS
   php com zippy category create --name="Leche y derivados" --slug=dairy.milk --parent=dairy
   php com zippy category create_mapping --slug=dairy.milk --raw="Leche entera 1L" --source=mercado
   php com zippy category resolve --text="Leche entera 1L marca tradicional"
