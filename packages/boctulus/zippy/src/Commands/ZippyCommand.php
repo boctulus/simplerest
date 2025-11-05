@@ -249,58 +249,63 @@ class ZippyCommand implements ICommand
      *  php com zippy category set --slug=dairy.milk --parent=NULL   // desempareja
      */
     protected function category_set(...$options)
-    {
-        DB::setConnection('zippy');
+{
+    DB::setConnection('zippy');
 
-        $opts = $this->parseOptions($options);
+    $opts = $this->parseOptions($options);
 
-        $slug = $opts['slug'] ?? $opts['s'] ?? null;
-        $parent = array_key_exists('parent', $opts) ? $opts['parent'] : (array_key_exists('p', $opts) ? $opts['p'] : null);
+    $slug = $opts['slug'] ?? $opts['s'] ?? null;
+    $parent = array_key_exists('parent', $opts) ? $opts['parent'] : (array_key_exists('p', $opts) ? $opts['p'] : null);
 
-        if (empty($slug)) {
-            dd(['error' => 'Missing --slug'], 'Set category parent');
-            DB::closeConnection();
-            return;
-        }
-
-        // Normalizar caso especial para NULL (permitir NULL o 'NULL' o 'null')
-        if (is_string($parent) && (strtoupper($parent) === 'NULL' || $parent === 'null')) {
-            $parent = null;
-        }
-
-        // Verificar que la categoría destino exista
-        $cat = DB::selectOne("SELECT id, slug, name, parent_slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$slug]);
-        if (!$cat) {
-            dd(['error' => 'Category not found', 'slug' => $slug], 'Set category parent');
-            DB::closeConnection();
-            return;
-        }
-
-        // Si se pasó un parent no-nulo, verificar que exista (si se pasó vacío string lo tratamos como error)
-        if ($parent !== null && $parent !== '') {
-            $parentExists = DB::selectOne("SELECT id, slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$parent]);
-            if (!$parentExists) {
-                dd(['error' => 'Parent category not found', 'parent' => $parent], 'Set category parent');
-                DB::closeConnection();
-                return;
-            }
-        }
-
-        // Ejecutar update (usar NULL en la BD si $parent === null)
-        if ($parent === null) {
-            DB::update("UPDATE categories SET parent_slug = NULL, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$slug]);
-        } else {
-            DB::update("UPDATE categories SET parent_slug = ?, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$parent, $slug]);
-        }
-
+    if (empty($slug)) {
+        dd(['error' => 'Missing --slug'], 'Set category parent');
         DB::closeConnection();
-
-        dd([
-            'ok' => true,
-            'slug' => $slug,
-            'parent' => $parent
-        ], 'Category parent updated');
+        return;
     }
+
+    // Normalizar caso especial para NULL (permitir NULL o 'NULL' o 'null')
+    if (is_string($parent) && (strtoupper($parent) === 'NULL' || $parent === 'null')) {
+        $parent = null;
+    }
+
+    // Verificar que la categoría destino exista
+    $cat = DB::selectOne("SELECT id, slug, name, parent_slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$slug]);
+    if (!$cat) {
+        dd(['error' => 'Category not found', 'slug' => $slug], 'Set category parent');
+        DB::closeConnection();
+        return;
+    }
+
+    $parentId = null;
+
+    // Si se pasó un parent no-nulo, verificar que exista y obtener su ID
+    if ($parent !== null && $parent !== '') {
+        $parentData = DB::selectOne("SELECT id, slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$parent]);
+        if (!$parentData) {
+            dd(['error' => 'Parent category not found', 'parent' => $parent], 'Set category parent');
+            DB::closeConnection();
+            return;
+        }
+        // Extraer el parent_id
+        $parentId = is_array($parentData) ? $parentData['id'] : $parentData->id;
+    }
+
+    // Ejecutar update incluyendo tanto parent_slug como parent_id
+    if ($parent === null) {
+        DB::update("UPDATE categories SET parent_slug = NULL, parent_id = NULL, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$slug]);
+    } else {
+        DB::update("UPDATE categories SET parent_slug = ?, parent_id = ?, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$parent, $parentId, $slug]);
+    }
+
+    DB::closeConnection();
+
+    dd([
+        'ok' => true,
+        'slug' => $slug,
+        'parent' => $parent,
+        'parent_id' => $parentId
+    ], 'Category parent updated');
+}
 
     /**
      * Lista categorías raw detectadas en products
