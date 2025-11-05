@@ -1,0 +1,33 @@
+
+Necesito clasificar unos productos que tengo en la base de datos "zippy" de MYSQL bajo la tabla "products"
+
+Puedes consultar la tabla usando comandos "php com"
+
+```
+$ php com sql
+
+BOCTULUS\SIMPLEREST\COMMANDS\SQL HELP
+
+sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]    
+
+List contents of a table
+
+ℹ  {db} in this case is DB NAME, not "db name connection"
+
+Examples:
+
+php com sql list 'main.users'                              List first 10 records from users table
+php com sql list 'main.users' --limit=20                   List first 20 records
+php com sql list 'main.users' --offset=10 --limit=5        List 5 records starting from offset 10
+php com sql list 'main.users' --format=table               Display results as ASCII table
+php com sql list 'db_195.products' --limit=50 --format=table
+```
+
+Hay categorias que podrian tener que crearse o existir ya pero con otro nombre con lo que tendrian que "mapearse"
+
+Si ejecutas comandos del grupo de comandos "php com zippy" podras ver que posibilidades hay.
+
+Necesito que proceses el primer lote de 200 products.
+
+
+Nota: solo debes operar a traves de comandos "php com"
