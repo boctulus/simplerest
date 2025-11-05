@@ -13,5 +13,5 @@ En este framewor de PHP esos comandos se acceden con `php com` y la ayuda la sol
 
 Notas:
 
-El author es SIEMPRE "Pablo Bozzolo (boctulus)", el arquitecto de software y no "Claude Code" o similar.
+El author es SIEMPRE "Pablo Bozzolo (boctulus)", el arquitecto de software y no "Gemini" o similar.
 

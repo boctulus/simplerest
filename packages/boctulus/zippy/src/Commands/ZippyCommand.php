@@ -241,10 +241,72 @@ class ZippyCommand implements ICommand
         StdOut::print("⚠ Función clearCache() aún no implementada en CategoryMapper.\n");
     }
 
+        /**
+     * Setea el parent_slug de una categoría existente
+     *
+     * Uso:
+     *  php com zippy category set --slug=dairy.milk --parent=dairy
+     *  php com zippy category set --slug=dairy.milk --parent=NULL   // desempareja
+     */
+    protected function category_set(...$options)
+    {
+        DB::setConnection('zippy');
+
+        $opts = $this->parseOptions($options);
+
+        $slug = $opts['slug'] ?? $opts['s'] ?? null;
+        $parent = array_key_exists('parent', $opts) ? $opts['parent'] : (array_key_exists('p', $opts) ? $opts['p'] : null);
+
+        if (empty($slug)) {
+            dd(['error' => 'Missing --slug'], 'Set category parent');
+            DB::closeConnection();
+            return;
+        }
+
+        // Normalizar caso especial para NULL (permitir NULL o 'NULL' o 'null')
+        if (is_string($parent) && (strtoupper($parent) === 'NULL' || $parent === 'null')) {
+            $parent = null;
+        }
+
+        // Verificar que la categoría destino exista
+        $cat = DB::selectOne("SELECT id, slug, name, parent_slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$slug]);
+        if (!$cat) {
+            dd(['error' => 'Category not found', 'slug' => $slug], 'Set category parent');
+            DB::closeConnection();
+            return;
+        }
+
+        // Si se pasó un parent no-nulo, verificar que exista (si se pasó vacío string lo tratamos como error)
+        if ($parent !== null && $parent !== '') {
+            $parentExists = DB::selectOne("SELECT id, slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$parent]);
+            if (!$parentExists) {
+                dd(['error' => 'Parent category not found', 'parent' => $parent], 'Set category parent');
+                DB::closeConnection();
+                return;
+            }
+        }
+
+        // Ejecutar update (usar NULL en la BD si $parent === null)
+        if ($parent === null) {
+            DB::update("UPDATE categories SET parent_slug = NULL, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$slug]);
+        } else {
+            DB::update("UPDATE categories SET parent_slug = ?, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$parent, $slug]);
+        }
+
+        DB::closeConnection();
+
+        dd([
+            'ok' => true,
+            'slug' => $slug,
+            'parent' => $parent
+        ], 'Category parent updated');
+    }
+
     /**
      * Lista categorías raw detectadas en products
-     * 
-     * Son categorias unicas (se eliminan duplicados de la lista de resultados)
+     * Muestra entre corchetes la categoria padre si existe para la categoría mapeada (si se puede resolver)
+     *
+     * Uso: php com zippy category_list --limit=100
      */
     public function category_list(...$options)
     {
@@ -252,6 +314,8 @@ class ZippyCommand implements ICommand
         $limit = $opts['limit'] ?? 100;
 
         StdOut::print("=== Categorías raw detectadas en productos ===\n");
+
+        DB::setConnection('zippy');
 
         $raw1 = DB::table('products')
             ->selectRaw('DISTINCT catego_raw1 as raw')
@@ -286,8 +350,35 @@ class ZippyCommand implements ICommand
         StdOut::print("Categorías únicas encontradas: " . count($unique) . "\n\n");
 
         foreach ($unique as $idx => $raw) {
-            StdOut::print("[" . ($idx + 1) . "] {$raw}\n");
+            $parentDisplay = '';
+
+            // Intentar resolver la categoría usando CategoryMapper (si está disponible)
+            try {
+                // resolve devuelve un array de slug(s) o vacío
+                $resolved = \Boctulus\Zippy\Libs\CategoryMapper::resolve($raw, false);
+
+                if (!empty($resolved) && is_array($resolved)) {
+                    // Tomamos el primer slug resuelto para mostrar su parent (si existe)
+                    $mappedSlug = $resolved[0] ?? null;
+
+                    if ($mappedSlug) {
+                        $cat = DB::selectOne("SELECT parent_slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$mappedSlug]);
+                        $parentSlug = is_array($cat) ? ($cat['parent_slug'] ?? null) : ($cat->parent_slug ?? null);
+
+                        if (!empty($parentSlug)) {
+                            $parentDisplay = " [{$parentSlug}]";
+                        }
+                    }
+                }
+            } catch (\Throwable $e) {
+                // En caso de error con CategoryMapper, seguimos sin parentDisplay
+                $parentDisplay = '';
+            }
+
+            StdOut::print("[" . ($idx + 1) . "] {$raw}{$parentDisplay}\n");
         }
+
+        DB::closeConnection();
     }
 
     /**
