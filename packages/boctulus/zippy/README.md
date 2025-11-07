@@ -1,195 +1,508 @@
+# Zippy - Category Mapping System
 
-# Zippy - Category mapping quick guide
+Sistema de mapeo inteligente de categorías para productos usando LLM y matching difuso.
 
-Este README explica el flujo para probar CategoryMapper y las utilidades relacionadas.
+## 📋 Tabla de Contenidos
 
-## Requisitos previos
-- Base de datos `zippy` migrada (ejecuta tus migrations del paquete).
-- Ollama (u otro proveedor LLM configurado por `LLMFactory::ollama()`) corriendo localmente si vas a usar la estrategia `llm`.
-- Asegúrate de que `Boctulus\LLMProviders\Factory\LLMFactory::ollama()` esté disponible y configurado.
+- [Requisitos Previos](#requisitos-previos)
+- [Arquitectura](#arquitectura)
+- [Comandos CLI](#comandos-cli)
+- [Flujos de Trabajo](#flujos-de-trabajo)
+- [Configuración](#configuración)
+- [Estrategias de Matching](#estrategias-de-matching)
 
-## Archivos relevantes
-- `src/Libs/CategoryMapper.php` — Lógica principal para resolver y crear mappings/categorías.
-- `src/Strategies/LLMMatchingStrategy.php` — Estrategia LLM (parseo de respuesta ajustado para sugerencias de nuevas categorías).
-- `src/Strategies/FuzzyMatchingStrategy.php` — Estrategia de matching difuso.
-- `src/Commands/ZippyCommand.php` — Comandos CLI para gestionar categorías, productos y diagnósticos.
-- `config/cli_routes.php` — Comandos CLI registrados (deprecados, usar ZippyCommand).
+## Requisitos Previos
 
-## Comandos CLI (orden recomendado de pruebas)
+- Base de datos `zippy` migrada (ejecuta las migrations del paquete)
+- Ollama corriendo localmente para usar estrategia LLM
+- PHP 7.4+ con extensiones necesarias
+- Composer dependencies instaladas
 
-### Ver ayuda completa
-```bash
-php com zippy help
+## Arquitectura
+
+### Componentes Principales
+
+- **CategoryMapper** (`src/Libs/CategoryMapper.php`): Lógica central de resolución y mapeo
+- **LLMMatchingStrategy** (`src/Strategies/LLMMatchingStrategy.php`): Estrategia basada en LLM
+- **FuzzyMatchingStrategy** (`src/Strategies/FuzzyMatchingStrategy.php`): Estrategia de matching difuso
+- **ZippyCommand** (`src/Commands/ZippyCommand.php`): Interfaz CLI para gestión
+
+### Estructura de Base de Datos
+
+```sql
+-- Tabla: categories
+CREATE TABLE categories (
+  id VARCHAR(21) PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  slug VARCHAR(150) UNIQUE,
+  parent_id VARCHAR(21),
+  parent_slug VARCHAR(150),
+  image_url VARCHAR(255),
+  store_id VARCHAR(30),
+  proposed_by ENUM('human', 'llm', 'neural network') DEFAULT 'llm',
+  is_approved BOOLEAN DEFAULT FALSE,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP,
+  deleted_at TIMESTAMP NULL
+);
+
+-- Tabla: category_mappings (alias)
+-- Almacena mappings de textos raw a categorías
 ```
 
-### 1. Listar categorías existentes
-```bash
-php com zippy category list_all
-```
-Lista todas las categorías de la tabla `categories`.
+## Comandos CLI
 
-### 2. Listar categorías raw de productos
-```bash
-php com zippy category_list --limit=100
-```
-Lista categorías únicas extraídas de los campos `catego_raw1`, `catego_raw2`, `catego_raw3` de productos.
+Todos los comandos siguen el patrón: `php com zippy <namespace> <comando> [opciones]`
 
-### 3. Crear una categoría manual (opcional)
+### 📦 Namespace: product
+
+#### `product process`
+Procesa productos individualmente y actualiza sus categorías.
+
+```bash
+php com zippy product process --limit=100 --dry-run
+```
+
+**Opciones:**
+- `--limit=N`: Cantidad de productos (default: 100)
+- `--dry-run`: Modo simulación
+- `--strategy=X`: llm|fuzzy
+
+#### `product batch`
+Procesamiento batch optimizado para grandes volúmenes.
+
+```bash
+php com zippy product batch --limit=1000 --only-unmapped --dry-run
+```
+
+**Opciones:**
+- `--limit=N`: Cantidad de productos
+- `--offset=N`: Offset para paginación
+- `--only-unmapped`: Solo productos sin categorías
+- `--dry-run`: Modo simulación
+
+### 🏷️ Namespace: category
+
+#### Gestión Básica
+
+##### `category all`
+Lista todas las categorías existentes.
+
+```bash
+php com zippy category all
+```
+
+##### `category list_raw`
+Lista categorías raw detectadas en productos (campos catego_raw1/2/3).
+
+```bash
+php com zippy category list_raw --limit=100
+```
+
+Muestra formato: `[N] categoria_raw → slug_mapeado [Padre]`
+
+##### `category create`
+Crea una nueva categoría.
+
 ```bash
 php com zippy category create --name="Leche y derivados" --slug=dairy.milk --parent=dairy
 ```
-**Opciones:**
-- `--name="<nombre>"`: (Requerido) Nombre de la categoría
-- `--slug=<slug>`: (Opcional) Slug de la categoría. Si no se especifica, se genera automáticamente del nombre
-- `--parent=<slug>`: (Opcional) Slug del padre
-- `--image_url=<url>`: (Opcional) URL de imagen
-- `--store_id=<id>`: (Opcional) ID de tienda
 
-### 4. Crear un mapping manual (alias)
+**Opciones:**
+- `--name="X"`: Nombre (REQUERIDO)
+- `--slug=X`: Slug (opcional, se genera del nombre)
+- `--parent=X`: Slug del padre
+- `--image_url=X`: URL de imagen
+- `--store_id=X`: ID de tienda
+
+##### `category set`
+Establece o cambia el padre de una categoría.
+
 ```bash
-php com zippy category create_mapping --slug=dairy.milk --raw="Leche entera 1L marca tradicional" --source=mercado
+php com zippy category set --slug=dairy.milk --parent=dairy
+php com zippy category set --slug=dairy.milk --parent=NULL  # Desemparentar
 ```
-**Opciones:**
-- `--slug=<slug>`: (Requerido) Slug de categoría existente
-- `--raw="<texto>"`: (Requerido) Texto raw a mapear
-- `--source=<fuente>`: (Opcional) Fuente del mapping
 
-### 5. Probar mapeo de una categoría raw
+#### Pruebas y Resolución
+
+##### `category test`
+Prueba mapeo de una categoría raw sin guardar.
+
 ```bash
-php com zippy test_mapping --raw="Aceites Y Condimentos" --strategy=llm
+php com zippy category test --raw="Aceites Y Condimentos" --strategy=llm
 ```
-**Opciones:**
-- `--raw="<valor>"`: (Requerido) Texto de la categoría a probar
-- `--strategy=<estrategia>`: (Opcional) `llm` o `fuzzy`. Por defecto: `llm`
 
-### 6. Probar resolver con texto suelto (invoca LLM)
+##### `category resolve`
+Resuelve categoría usando LLM (texto suelto).
+
 ```bash
 php com zippy category resolve --text="Leche entera 1L marca tradicional"
 ```
-**Opciones:**
-- `--text="<texto>"`: (Requerido) Texto a resolver
 
-### 7. Probar resolver para un producto (slots + description)
+##### `category resolve_product`
+Resuelve categorías para un producto completo.
+
 ```bash
-php com zippy category resolve_product --raw1="Leche entera 1L" --raw2="" --description="Pack de 6 leches 1L"
+php com zippy category resolve_product \
+  --raw1="Leche entera" \
+  --raw2="" \
+  --description="Pack de 6 leches 1L" \
+  --ean=7501234567890
 ```
-**Opciones:**
-- `--raw1="<texto>"`: Categoría raw 1
-- `--raw2="<texto>"`: Categoría raw 2
-- `--raw3="<texto>"`: Categoría raw 3
-- `--description="<texto>"`: Descripción del producto
-- `--ean=<ean>`: EAN del producto
 
-### 8. Ejecutar pruebas duras del LLM (hard_tests)
+##### `category create_mapping`
+Crea un mapping (alias) manual.
+
 ```bash
-php com zippy ollama hard_tests
+php com zippy category create_mapping \
+  --slug=dairy.milk \
+  --raw="Leche entera 1L" \
+  --source=mercado
 ```
-Este comando ejecuta tests hardcodeados y muestra cada respuesta LLM (útil para debugging).
-Asegúrate de que `LLMMatchingStrategy::isAvailable()` devuelva `true` (Ollama corriendo).
 
-### 9. Listar modelos Ollama disponibles
+#### Diagnóstico
+
+##### `category find_missing_parents`
+Encuentra categorías padre referenciadas que no existen.
+
+```bash
+php com zippy category find_missing_parents
+```
+
+##### `category find_orphans`
+Encuentra categorías huérfanas (padre no existe).
+
+```bash
+php com zippy category find_orphans
+```
+
+##### `category report_issues`
+Reporte completo de problemas de integridad.
+
+```bash
+php com zippy category report_issues
+```
+
+Genera reporte con:
+- Padres faltantes
+- Categorías huérfanas
+- Resumen de problemas
+
+##### `category generate_create_commands`
+Genera comandos para crear categorías padre faltantes.
+
+```bash
+php com zippy category generate_create_commands
+```
+
+Output ejemplo:
+```bash
+# Commands to create missing parent categories:
+
+php com zippy category create --name="Dairy" --slug=dairy
+php com zippy category create --name="Bakery" --slug=bakery
+
+# Total commands: 2
+```
+
+#### Utilidades
+
+##### `category clear_cache`
+Limpia el caché de CategoryMapper.
+
+```bash
+php com zippy category clear_cache
+```
+
+### 🤖 Namespace: ollama
+
+#### `ollama test_strategy`
+Lista modelos Ollama disponibles.
+
 ```bash
 php com zippy ollama test_strategy
 ```
 
-## Comandos de diagnóstico de categorías
+#### `ollama hard_tests`
+Ejecuta pruebas hardcodeadas del LLM.
 
-Estos comandos ayudan a identificar y solucionar problemas de integridad en la estructura de categorías:
-
-### 1. Encontrar categorías padre faltantes
 ```bash
-php com zippy category find_missing_parents
+php com zippy ollama hard_tests
 ```
-- Busca todos los `parent_slug` que se referencian pero no existen como categorías.
-- Muestra cuántas categorías hijas tiene cada padre faltante.
-- Útil para detectar padres que deberían crearse.
 
-### 2. Encontrar categorías huérfanas
-```bash
-php com zippy category find_orphans
-```
-- Lista todas las categorías cuyo `parent_slug` no existe en la base de datos.
-- Muestra el ID, slug, nombre y el padre faltante de cada categoría huérfana.
-- Ayuda a identificar categorías que quedaron con referencias inválidas.
+Ejecuta tests predefinidos con categorías de ejemplo para validar respuestas LLM.
 
-### 3. Reporte completo de problemas
-```bash
-php com zippy category report_issues
-```
-- Genera un reporte combinado con padres faltantes y categorías huérfanas.
-- Incluye un resumen con totales y el estado general de integridad.
-- Útil para tener una vista completa de todos los problemas.
+## Flujos de Trabajo
 
-### 4. Generar comandos de creación automática
-```bash
-php com zippy category generate_create_commands
-```
-- Analiza los padres faltantes y genera los comandos `php com zippy` necesarios para crearlos.
-- Los comandos generados incluyen un nombre sugerido basado en el slug.
-- Copia y ejecuta los comandos generados para resolver rápidamente los problemas.
+### 🔹 Flujo 1: Setup Inicial y Diagnóstico
 
-### Ejemplo de flujo de diagnóstico y corrección
+**Objetivo:** Verificar estado de categorías y corregir problemas estructurales.
 
 ```bash
-# 1. Revisar si hay problemas
+# 1. Ver estado actual
+php com zippy category all
+
+# 2. Identificar problemas
 php com zippy category report_issues
 
-# 2. Generar comandos para crear categorías faltantes
+# 3. Generar comandos de corrección
 php com zippy category generate_create_commands
 
-# 3. Ejecutar los comandos generados (copiar y pegar cada línea)
+# 4. Crear categorías faltantes (copiar y ejecutar output del paso 3)
 php com zippy category create --name="Dairy" --slug=dairy
 php com zippy category create --name="Bakery" --slug=bakery
 
-# 4. Verificar que se resolvieron los problemas
+# 5. Verificar corrección
 php com zippy category report_issues
 ```
 
-## Notas operativas
-- **Creación automática de categorías:** Si LLM sugiere `is_new: true` con `sugested_name`, `CategoryMapper` creará una nueva fila en `categories` con `id = uniqid('cat_')`, slug normalizado y creará un `category_mappings` desde el `raw_value`.
-- **Umbrales:** Por defecto LLM threshold = 0.7 (70%). Ajusta en `CategoryMapper::configure()` o pasando configuración en tus scripts antes de invocar resolve/resolveProduct.
-- **Registro/Debug:** Si necesitas más verbosidad en LLM, crea la estrategia con `verbose=true` o ajusta `llm_verbose` en `CategoryMapper::configure`.
+### 🔹 Flujo 2: Exploración y Testing
 
-## Comandos de procesamiento en batch
+**Objetivo:** Explorar datos y probar estrategias de mapeo.
 
-### 1. Procesar categorías de productos
 ```bash
-php com zippy process_categories --limit=100 --dry-run
-```
-**Opciones:**
-- `--limit=<N>`: Limitar cantidad de productos
-- `--offset=<N>`: Offset para paginación
-- `--only-unmapped`: Solo productos sin categorías asignadas
-- `--dry-run`: No guardar cambios (modo simulación)
+# 1. Ver categorías raw en productos
+php com zippy category list_raw --limit=100
 
-### 2. Procesar productos y actualizar categorías
+# 2. Probar mapeo de una categoría específica
+php com zippy category test --raw="Aceites Y Condimentos"
+
+# 3. Probar resolución con LLM
+php com zippy category resolve --text="Leche entera 1L marca tradicional"
+
+# 4. Validar respuestas LLM con tests predefinidos
+php com zippy ollama hard_tests
+```
+
+### 🔹 Flujo 3: Procesamiento en Producción
+
+**Objetivo:** Procesar productos y asignar categorías en producción.
+
 ```bash
-php com zippy products_process_categories --limit=100 --dry-run
-```
-**Opciones:**
-- `--limit=<N>`: Limitar cantidad (default: 100)
-- `--dry-run`: No guardar cambios
-- `--strategy=<estrategia>`: Estrategia a usar
+# 1. Verificar integridad antes de procesar
+php com zippy category report_issues
 
-### 3. Limpiar caché
+# 2. Prueba con pocos productos en dry-run
+php com zippy product process --limit=10 --dry-run
+
+# 3. Procesar batch pequeño real
+php com zippy product process --limit=100
+
+# 4. Procesar grandes volúmenes (solo sin mapear)
+php com zippy product batch --limit=1000 --only-unmapped
+
+# 5. Procesar todo el catálogo en batches
+php com zippy product batch --limit=5000 --offset=0
+php com zippy product batch --limit=5000 --offset=5000
+# ...continuar con offsets
+```
+
+### 🔹 Flujo 4: Validación de LLM
+
+**Objetivo:** Verificar configuración y respuestas del LLM.
+
 ```bash
-php com zippy clear_cache
+# 1. Verificar modelos disponibles
+php com zippy ollama test_strategy
+
+# 2. Ejecutar tests predefinidos
+php com zippy ollama hard_tests
+
+# 3. Probar con categorías reales
+php com zippy category test --raw="Aceites Y Condimentos" --strategy=llm
+
+# 4. Probar resolución de producto completo
+php com zippy category resolve_product \
+  --raw1="Aceites" \
+  --raw2="Condimentos" \
+  --description="Aceite de oliva extra virgen 500ml"
 ```
-Limpia el caché de CategoryMapper (⚠ pendiente implementar).
 
-## Flujo recomendado en pruebas reales
-1. Ejecuta `php com zippy category list_all` para comprobar el estado de las categorías.
-2. Ejecuta `php com zippy category_list` para ver categorías raw de productos.
-3. Inserta manualmente algunas categorías de referencia (si tu catálogo no las tiene).
-4. Ejecuta `php com zippy category resolve` o `php com zippy test_mapping` para algunos `raw` representativos.
-   - Si LLM sugiere categorías existentes, `CategoryMapper` guardará mappings automáticamente.
-   - Si LLM sugiere nuevas categorías, las creará (y mapeará).
-5. Revisa la tabla `category_mappings` y `categories` para confirmar resultados.
-6. Ejecuta diagnósticos con `php com zippy category report_issues` para verificar integridad.
-7. Corre `php com zippy process_categories` o `php com zippy products_process_categories` (si quieres procesar lotes) cuando estés satisfecho con la calidad.
+## Configuración
 
-## Problemas comunes
-- LLM no disponible: los comandos LLM fallarán. Asegúrate de que Ollama corra y esté accesible.
-- Respuestas LLM fuera de formato: la estrategia intenta extraer JSON del texto. Si tu LLM no respeta el formato, corrige el prompt o ajusta `parseResponse`.
+### CategoryMapper
 
+Configurar antes de usar:
+
+```php
+CategoryMapper::configure([
+    'default_strategy' => 'llm',
+    'strategies_order' => ['llm', 'fuzzy'],
+    'llm_model' => 'qwen2.5:3b',
+    'llm_temperature' => 0.2,
+    'thresholds' => [
+        'fuzzy' => 0.40,  // 40% similaridad mínima
+        'llm' => 0.70,    // 70% confianza mínima
+    ]
+]);
+```
+
+### Opciones de Configuración
+
+| Opción | Tipo | Default | Descripción |
+|--------|------|---------|-------------|
+| `default_strategy` | string | 'llm' | Estrategia por defecto |
+| `strategies_order` | array | ['llm', 'fuzzy'] | Orden de estrategias a probar |
+| `llm_model` | string | 'qwen2.5:3b' | Modelo Ollama a usar |
+| `llm_temperature` | float | 0.2 | Temperatura del LLM (0-1) |
+| `llm_verbose` | bool | false | Logging detallado |
+| `thresholds` | array | - | Umbrales por estrategia |
+
+## Estrategias de Matching
+
+### LLM Strategy (Recomendada)
+
+Usa modelos de lenguaje (Ollama) para clasificación inteligente.
+
+**Ventajas:**
+- Entiende contexto y sinónimos
+- Puede sugerir nuevas categorías
+- Alta precisión con buen prompt
+
+**Desventajas:**
+- Requiere Ollama corriendo
+- Más lenta que fuzzy
+- Consume recursos
+
+**Configuración:**
+```php
+CategoryMapper::configure([
+    'default_strategy' => 'llm',
+    'llm_model' => 'qwen2.5:3b',
+    'llm_temperature' => 0.2,
+    'thresholds' => ['llm' => 0.70]
+]);
+```
+
+### Fuzzy Strategy
+
+Usa similaridad de texto (Levenshtein, etc).
+
+**Ventajas:**
+- Rápida y eficiente
+- No requiere servicios externos
+- Buena para typos y variaciones
+
+**Desventajas:**
+- No entiende contexto
+- Requiere texto muy similar
+- Solo matching exacto
+
+**Configuración:**
+```php
+CategoryMapper::configure([
+    'default_strategy' => 'fuzzy',
+    'thresholds' => ['fuzzy' => 0.40]
+]);
+```
+
+### Estrategia Híbrida (Recomendada)
+
+Prueba LLM primero, fallback a fuzzy.
+
+```php
+CategoryMapper::configure([
+    'strategies_order' => ['llm', 'fuzzy'],
+    'thresholds' => [
+        'llm' => 0.70,
+        'fuzzy' => 0.40
+    ]
+]);
+```
+
+## Creación Automática de Categorías
+
+Cuando LLM sugiere categorías nuevas:
+
+1. `CategoryMapper` detecta `is_new: true` en respuesta LLM
+2. Extrae `suggested_name` y `suggested_slug`
+3. Crea nueva fila en tabla `categories` con:
+   - `id`: `uniqid('cat_')`
+   - `slug`: normalizado del suggested_slug
+   - `proposed_by`: 'llm'
+   - `is_approved`: false
+4. Crea mapping automático en `category_mappings`
+
+**Revisar categorías propuestas:**
+```sql
+SELECT * FROM categories 
+WHERE proposed_by = 'llm' 
+  AND is_approved = FALSE;
+```
+
+## Problemas Comunes
+
+### LLM no disponible
+
+**Síntoma:** Comandos LLM fallan con error de conexión.
+
+**Solución:**
+```bash
+# Verificar Ollama
+ollama list
+
+# Iniciar Ollama si no está corriendo
+ollama serve
+
+# Descargar modelo si es necesario
+ollama pull qwen2.5:3b
+```
+
+### Respuestas LLM fuera de formato
+
+**Síntoma:** `parseResponse` falla al extraer JSON.
+
+**Solución:** Ajustar prompt en `LLMMatchingStrategy` o cambiar temperatura:
+
+```php
+CategoryMapper::configure([
+    'llm_temperature' => 0.1  // Más determinista
+]);
+```
+
+### Categorías huérfanas
+
+**Síntoma:** `category find_orphans` muestra categorías sin padre válido.
+
+**Solución:**
+```bash
+# 1. Ver reporte
+php com zippy category report_issues
+
+# 2. Crear padres faltantes
+php com zippy category generate_create_commands
+
+# 3. Ejecutar comandos generados
+# ...
+
+# 4. O actualizar hijos manualmente
+php com zippy category set --slug=dairy.milk --parent=dairy
+```
+
+## Mejores Prácticas
+
+1. **Siempre usar dry-run primero** al procesar productos en batch
+2. **Verificar integridad** con `category report_issues` antes de procesar
+3. **Procesar en lotes pequeños** inicialmente para validar calidad
+4. **Revisar categorías propuestas por LLM** antes de aprobar
+5. **Mantener umbrales conservadores** (>70% para LLM, >40% para fuzzy)
+6. **Monitorear logs** en modo verbose para debugging
+
+## Ayuda
+
+Para ver ayuda completa en CLI:
+
+```bash
+php com zippy help
+```
+
+## Contribuir
+
+Al agregar nuevos comandos:
+
+1. Mantener patrón de namespaces (`product`, `category`, `ollama`)
+2. Usar métodos protected con prefijo `{namespace}_`
+3. Documentar opciones y ejemplos en `help()`
+4. Actualizar este README
 

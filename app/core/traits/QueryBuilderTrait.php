@@ -2603,7 +2603,7 @@ trait QueryBuilderTrait
 	// }
 
 	/*
-		Refactoring por Claude para compatibilidad con Laravel
+		Refactoring por para compatibilidad con Laravel
 
 		https://claude.ai/chat/3331ae1f-5190-4789-b27a-8faa347b1973
 	*/
@@ -2615,6 +2615,11 @@ trait QueryBuilderTrait
 			$conjunction = $args[1] ?? 'AND';
 			$this->_where($conditions, 'AND', $conjunction);
 			return $this;
+		}
+
+		// Caso Laravel: where({callable})
+		if ((count($args) == 1) && is_callable($args[0])) {
+			return $this->group($args[0]);
 		}
 
 		// Caso Laravel: where($field, $operator, $value) o where($field, $value)
