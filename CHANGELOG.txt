@@ -260,3 +260,4 @@
 [2025-11-05 19:49:08]	0.8.12	Automatic update
 [2025-11-05 22:31:32]	0.8.12	Automatic update
 [2025-11-05 22:32:16]	0.8.12	Automatic update
+[2025-11-07 17:51:02]	0.8.12	puede reemplazar group({callback}) por where({callback}) y seguira funcionando dada azucar sintactica que forma parte de la compatibilidad con Laravel query builder

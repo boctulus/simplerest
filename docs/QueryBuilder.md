@@ -1111,6 +1111,8 @@ Ej:
 	->get();
 
 
+Nota: puede reemplazar group({callback}) por where({callback}) y seguira funcionando dada azucar sintactica que forma parte de la compatibilidad con Laravel query builder.
+
 # not
 
 El operador not() niega todo un grupo de condiciones. Ej:
