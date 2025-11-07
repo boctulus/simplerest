@@ -13,6 +13,9 @@ use Boctulus\Zippy\Libs\CategoryMapper;
  * Zippy Command
  *
  * Comandos para gestionar categorías y productos del sistema Zippy
+ * 
+ * Ver 2.0 
+ * 
  */
 class ZippyCommand implements ICommand
 {
@@ -23,12 +26,74 @@ class ZippyCommand implements ICommand
         DB::setConnection('zippy');
     }
 
+    // ================================================================
+    // ROUTER: PRODUCT
+    // ================================================================
+
     /**
-     * Procesa productos y actualiza sus categorías
-     * 
-     * Uso: php com zippy products_process_categories --limit=100 --dry-run
+     * Router para comandos de productos
+     *
+     * Uso: php com zippy product <subcomando> [options]
      */
-    public function products_process_categories(...$options)
+    public function product($subcommand = null, ...$options)
+    {
+        if (empty($subcommand)) {
+            StdOut::print("Error: Se requiere un subcomando.\n");
+            StdOut::print("Uso: php com zippy product <subcomando> [options]\n");
+            StdOut::print("Ejecuta 'php com zippy help' para ver todos los subcomandos disponibles.\n");
+            return;
+        }
+
+        $method = 'product_' . $subcommand;
+
+        if (!method_exists($this, $method)) {
+            StdOut::print("Error: Subcomando '$subcommand' no existe.\n");
+            StdOut::print("Ejecuta 'php com zippy help' para ver los subcomandos disponibles.\n");
+            return;
+        }
+
+        $this->$method(...$options);
+    }
+
+    // Test product processing
+    function product_test(...$options)
+    {
+        if (is_array($options) && (count($options) == 1) && is_numeric($options[0])) {
+            $productId = $options[0];
+        } else {
+            $opts      = $this->parseOptions($options);
+            $productId = $opts['id'] ?? null;
+        }
+
+        CategoryMapper::configure([
+            'default_strategy' => 'llm',
+            'strategies_order' => ['llm', 'fuzzy'],
+            'thresholds' => [
+                'fuzzy' => 0.40,
+                'llm' => 0.70,
+            ]
+        ]);
+
+        $product = DB::table('products')
+        ->find($productId);
+
+        dd("Procesando producto ID/EAN: $productId");
+
+        $categories = CategoryMapper::resolveProduct($product, true);
+
+        dd($categories, 'Categorias resueltas');
+
+        if (!empty($categories)) {
+            dd("  → No se encontraron categorías\n\n---------------------------------------\n");
+        }
+    }
+
+    /**
+     * Procesa productos y actualiza sus categorías (proceso individual)
+     * 
+     * Uso: php com zippy product process --limit=100 --dry-run
+     */
+    protected function product_process(...$options)
     {
         $opts = $this->parseOptions($options);
         $limit = $opts['limit'] ?? 100;
@@ -60,11 +125,15 @@ class ZippyCommand implements ICommand
         echo "Procesando $total productos...\n";
 
         foreach ($products as $product) {
+            dd($product, 'P');
+
             try {
-                $productId = is_array($product) ? ($product['ean'] ?? $product['id']) : ($product->ean ?? $product->id);
+                $productId = is_array($product) ? ($product['ean'] ?? $product['id']) : ($product['ean'] ?? $product['id']);
                 echo "[$processed/$total] Procesando producto ID/EAN: $productId\n";
 
                 $categories = CategoryMapper::resolveProduct($product, true);
+
+                dd($categories, 'Categorias resueltas');
 
                 if (!empty($categories)) {
                     echo "  → Categorías asignadas: " . implode(', ', $categories) . "\n";
@@ -77,7 +146,7 @@ class ZippyCommand implements ICommand
                             ]);
                     }
                 } else {
-                    echo "  → No se encontraron categorías\n";
+                    echo "\n  → No se encontraron categorías\n\n---------------------------------------\n\n";
                 }
 
                 $processed++;
@@ -100,9 +169,11 @@ class ZippyCommand implements ICommand
     }
 
     /**
-     * Procesa categorías de productos en batch
+     * Procesa categorías de productos en batch (optimizado para grandes volúmenes)
+     * 
+     * Uso: php com zippy product batch --limit=1000 --dry-run
      */
-    public function process_categories(...$options)
+    protected function product_batch(...$options)
     {
         $opts = $this->parseOptions($options);
         $limit = $opts['limit'] ?? null;
@@ -110,7 +181,7 @@ class ZippyCommand implements ICommand
         $onlyUnmapped = $opts['only_unmapped'] ?? false;
         $dryRun = $opts['dry_run'] ?? false;
 
-        StdOut::print("=== Procesando categorías de productos ===\n");
+        StdOut::print("=== Procesamiento batch de productos ===\n");
 
         if ($dryRun) {
             StdOut::print("⚠ Modo DRY-RUN activado: no se guardarán cambios\n");
@@ -186,10 +257,41 @@ class ZippyCommand implements ICommand
         $this->map_stats();
     }
 
+    // ================================================================
+    // ROUTER: CATEGORY
+    // ================================================================
+
+    /**
+     * Router para comandos de categorías
+     *
+     * Uso: php com zippy category <subcomando> [options]
+     */
+    public function category($subcommand = null, ...$options)
+    {
+        if (empty($subcommand)) {
+            StdOut::print("Error: Se requiere un subcomando.\n");
+            StdOut::print("Uso: php com zippy category <subcomando> [options]\n");
+            StdOut::print("Ejecuta 'php com zippy help' para ver todos los subcomandos disponibles.\n");
+            return;
+        }
+
+        $method = 'category_' . $subcommand;
+
+        if (!method_exists($this, $method)) {
+            StdOut::print("Error: Subcomando '$subcommand' no existe.\n");
+            StdOut::print("Ejecuta 'php com zippy help' para ver los subcomandos disponibles.\n");
+            return;
+        }
+
+        $this->$method(...$options);
+    }
+
     /**
      * Prueba el mapeo de una categoría raw sin guardar
+     * 
+     * Uso: php com zippy category test --raw="Aceites Y Condimentos" --strategy=llm
      */
-    public function test_mapping(...$options)
+    protected function category_test(...$options)
     {
         $opts = $this->parseOptions($options);
         $raw = $opts['raw'] ?? null;
@@ -197,7 +299,7 @@ class ZippyCommand implements ICommand
 
         if (empty($raw)) {
             StdOut::print("Error: Debes proporcionar un valor raw con --raw=\"valor\"\n");
-            StdOut::print("Ejemplo: php com zippy test_mapping --raw=\"Aceites Y Condimentos\"\n");
+            StdOut::print("Ejemplo: php com zippy category test --raw=\"Aceites Y Condimentos\"\n");
             return;
         }
 
@@ -222,97 +324,26 @@ class ZippyCommand implements ICommand
         } else {
             StdOut::print("❌ No se pudo asignar categoría\n");
         }
-
-        // TODO: Implementar getStats() en CategoryMapper
-        // $stats = CategoryMapper::getStats();
-        // StdOut::print("\nEstadísticas de mapeo:\n");
-        // foreach ($stats as $key => $value) {
-        //     StdOut::print("- " . ucfirst(str_replace('_', ' ', $key)) . ": $value\n");
-        // }
     }
 
     /**
      * Limpia el caché de CategoryMapper
+     * 
+     * Uso: php com zippy category clear_cache
      */
-    public function clear_cache()
+    protected function category_clear_cache()
     {
         // TODO: Implementar clearCache() en CategoryMapper
         StdOut::print("⚠ Función clearCache() aún no implementada en CategoryMapper.\n");
     }
 
     /**
-     * Setea el parent_slug de una categoría existente
-     *
-     * Uso:
-     *  php com zippy category set --slug=dairy.milk --parent=dairy
-     *  php com zippy category set --slug=dairy.milk --parent=NULL   // desempareja
-     */
-    protected function category_set(...$options)
-    {
-        DB::setConnection('zippy');
-
-        $opts = $this->parseOptions($options);
-
-        $slug = $opts['slug'] ?? $opts['s'] ?? null;
-        $parent = array_key_exists('parent', $opts) ? $opts['parent'] : (array_key_exists('p', $opts) ? $opts['p'] : null);
-
-        if (empty($slug)) {
-            dd(['error' => 'Missing --slug'], 'Set category parent');
-            DB::closeConnection();
-            return;
-        }
-
-        // Normalizar caso especial para NULL (permitir NULL o 'NULL' o 'null')
-        if (is_string($parent) && (strtoupper($parent) === 'NULL' || $parent === 'null')) {
-            $parent = null;
-        }
-
-        // Verificar que la categoría destino exista
-        $cat = DB::selectOne("SELECT id, slug, name, parent_slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$slug]);
-        if (!$cat) {
-            dd(['error' => 'Category not found', 'slug' => $slug], 'Set category parent');
-            DB::closeConnection();
-            return;
-        }
-
-        $parentId = null;
-
-        // Si se pasó un parent no-nulo, verificar que exista y obtener su ID
-        if ($parent !== null && $parent !== '') {
-            $parentData = DB::selectOne("SELECT id, slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$parent]);
-            if (!$parentData) {
-                dd(['error' => 'Parent category not found', 'parent' => $parent], 'Set category parent');
-                DB::closeConnection();
-                return;
-            }
-            // Extraer el parent_id
-            $parentId = is_array($parentData) ? $parentData['id'] : $parentData->id;
-        }
-
-        // Ejecutar update incluyendo tanto parent_slug como parent_id
-        if ($parent === null) {
-            DB::update("UPDATE categories SET parent_slug = NULL, parent_id = NULL, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$slug]);
-        } else {
-            DB::update("UPDATE categories SET parent_slug = ?, parent_id = ?, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$parent, $parentId, $slug]);
-        }
-
-        DB::closeConnection();
-
-        dd([
-            'ok' => true,
-            'slug' => $slug,
-            'parent' => $parent,
-            'parent_id' => $parentId
-        ], 'Category parent updated');
-    }
-
-    /**
      * Lista categorías raw detectadas en products
-     * Muestra entre corchetes la categoria padre si existe para la categoría mapeada (si se puede resolver)
+     * Muestra entre corchetes la categoria padre si existe
      *
-     * Uso: php com zippy category_list --limit=100
+     * Uso: php com zippy category list_raw --limit=100
      */
-    public function category_list(...$options)
+    protected function category_list_raw(...$options)
     {
         $opts = $this->parseOptions($options);
         $limit = $opts['limit'] ?? 100;
@@ -358,47 +389,33 @@ class ZippyCommand implements ICommand
         foreach ($unique as $idx => $raw) {
             $displayLine = "[" . ($idx + 1) . "] {$raw}";
 
-            // Intentar resolver la categoría usando CategoryMapper
             try {
-                // resolve devuelve un array de slug(s) o vacío
                 $resolved = \Boctulus\Zippy\Libs\CategoryMapper::resolve($raw, false);
 
-                // dd($resolved);
-
                 if (!empty($resolved) && is_array($resolved) && $resolved['score'] >= 90) {
-                    // Tomamos el slug resuelto
                     $mappedSlug = $resolved['category_slug'] ?? null;
 
                     if ($mappedSlug) {
-                        // Agregar el slug mapeado
                         $displayLine .= " → {$mappedSlug}";
 
-                        // dd("$raw → {$mappedSlug}", 'Resolved category debug'); // raw
-
-                        // Buscar TANTO parent_slug COMO parent_id de esta categoría
                         $cat = DB::selectOne("SELECT parent_slug, parent_id FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$mappedSlug]);
 
                         $parentSlug = is_array($cat) ? ($cat['parent_slug'] ?? null) : ($cat->parent_slug ?? null);
-                        $parentId = is_array($cat) ? ($cat['parent_id'] ?? null) : ($cat->parent_id ?? null);
 
-                        // Si tiene padre, buscar el nombre del padre y mostrarlo entre corchetes
                         if (!empty($parentSlug)) {
-                            // Buscar la categoría padre para obtener su nombre
                             $parentCat = DB::selectOne("SELECT name FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$parentSlug]);
 
                             if ($parentCat) {
                                 $parentName = is_array($parentCat) ? ($parentCat['name'] ?? $parentSlug) : ($parentCat->name ?? $parentSlug);
                                 $displayLine .= " [{$parentName}]";
                             } else {
-                                // Si no se encuentra el padre, mostrar el slug entre corchetes
                                 $displayLine .= " [{$parentSlug}]";
                             }
                         }
                     }
                 }
             } catch (\Throwable $e) {
-                // En caso de error con CategoryMapper, continuamos sin información adicional
-                // No agregamos nada al displayLine
+                // Continuar sin información adicional
             }
 
             StdOut::print($displayLine . "\n");
@@ -408,34 +425,7 @@ class ZippyCommand implements ICommand
     }
 
     /**
-     * Router para comandos de categorías
-     *
-     * Uso: php com zippy category <subcomando> [options]
-     */
-    public function category($subcommand = null, ...$options)
-    {
-        if (empty($subcommand)) {
-            StdOut::print("Error: Se requiere un subcomando.\n");
-            StdOut::print("Uso: php com zippy category <subcomando> [options]\n");
-            StdOut::print("Ejecuta 'php com zippy help' para ver todos los subcomandos disponibles.\n");
-            return;
-        }
-
-        // Mapear subcomandos a métodos
-        $method = 'category_' . $subcommand;
-
-        if (!method_exists($this, $method)) {
-            StdOut::print("Error: Subcomando '$subcommand' no existe.\n");
-            StdOut::print("Ejecuta 'php com zippy help' para ver los subcomandos disponibles.\n");
-            return;
-        }
-
-        // Llamar al método correspondiente
-        $this->$method(...$options);
-    }
-
-    /**
-     * Lista categorías existentes en la tabla categories
+     * Lista todas las categorías existentes en la tabla categories
      *
      * Uso: php com zippy category all
      */
@@ -473,11 +463,9 @@ class ZippyCommand implements ICommand
         }
 
         if (empty($slug)) {
-            // normalizar nombre como slug si no se pasa slug
             $slug = Strings::normalize($name);
         }
 
-        // check exists
         $exists = DB::selectOne("SELECT id FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$slug]);
         if ($exists) {
             dd(['error' => 'Category slug already exists', 'slug' => $slug, 'id' => $exists['id']], 'Create category');
@@ -499,6 +487,65 @@ class ZippyCommand implements ICommand
         DB::closeConnection();
 
         dd(['ok' => true, 'id' => $id, 'slug' => $slug, 'name' => $name], 'Created category');
+    }
+
+    /**
+     * Setea el parent_slug de una categoría existente
+     *
+     * Uso: php com zippy category set --slug=dairy.milk --parent=dairy
+     */
+    protected function category_set(...$options)
+    {
+        DB::setConnection('zippy');
+
+        $opts = $this->parseOptions($options);
+
+        $slug = $opts['slug'] ?? $opts['s'] ?? null;
+        $parent = array_key_exists('parent', $opts) ? $opts['parent'] : (array_key_exists('p', $opts) ? $opts['p'] : null);
+
+        if (empty($slug)) {
+            dd(['error' => 'Missing --slug'], 'Set category parent');
+            DB::closeConnection();
+            return;
+        }
+
+        if (is_string($parent) && (strtoupper($parent) === 'NULL' || $parent === 'null')) {
+            $parent = null;
+        }
+
+        $cat = DB::selectOne("SELECT id, slug, name, parent_slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$slug]);
+        if (!$cat) {
+            dd(['error' => 'Category not found', 'slug' => $slug], 'Set category parent');
+            DB::closeConnection();
+            return;
+        }
+
+        $parentId = null;
+
+        if ($parent !== null && $parent !== '') {
+            $parentData = DB::selectOne("SELECT id, slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$parent]);
+            if (!$parentData) {
+                dd(['error' => 'Parent category not found', 'parent' => $parent], 'Set category parent');
+                DB::closeConnection();
+                return;
+            }
+            $parentId = is_array($parentData) ? $parentData['id'] : $parentData->id;
+        }
+
+        if ($parent === null) {
+            DB::update("UPDATE categories SET parent_slug = NULL, parent_id = NULL, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$slug]);
+        } else {
+            DB::update("UPDATE categories SET parent_slug = ?, parent_id = ?, updated_at = NOW() WHERE slug = ? AND deleted_at IS NULL", [$parent, $parentId, $slug]);
+        }
+
+        DB::closeConnection();
+
+        dd([
+            'ok' => true,
+            'slug' => $slug,
+            'parent' => $parent,
+            'parent_id' => $parentId
+        ], 'Category parent updated');
     }
 
     /**
@@ -545,7 +592,6 @@ class ZippyCommand implements ICommand
             return;
         }
 
-        // Configure mapper (uses default LLM thresholds, override if needed)
         CategoryMapper::configure([
             'strategies_order' => ['llm'],
             'thresholds' => ['llm' => 0.70]
@@ -559,7 +605,7 @@ class ZippyCommand implements ICommand
     /**
      * Prueba resolver para un producto (slots + description)
      *
-     * Uso: php com zippy category resolve_product --raw1="Leche entera" --raw2="" --description="Pack de 6 leches 1L"
+     * Uso: php com zippy category resolve_product --raw1="Leche entera" --description="Pack de 6 leches 1L"
      */
     protected function category_resolve_product(...$options)
     {
@@ -592,7 +638,6 @@ class ZippyCommand implements ICommand
     {
         DB::setConnection('zippy');
 
-        // Obtener todos los parent_slug únicos que se están usando
         $usedParents = DB::select("
             SELECT DISTINCT parent_slug
             FROM categories
@@ -606,7 +651,6 @@ class ZippyCommand implements ICommand
         foreach ($usedParents as $row) {
             $parentSlug = is_array($row) ? $row['parent_slug'] : $row->parent_slug;
 
-            // Verificar si existe una categoría con ese slug
             $exists = DB::selectOne("
                 SELECT id, slug, name
                 FROM categories
@@ -616,7 +660,6 @@ class ZippyCommand implements ICommand
             ", [$parentSlug]);
 
             if (!$exists) {
-                // Contar cuántas categorías tienen este padre inexistente
                 $count = DB::selectOne("
                     SELECT COUNT(*) as total
                     FROM categories
@@ -652,7 +695,6 @@ class ZippyCommand implements ICommand
     {
         DB::setConnection('zippy');
 
-        // Obtener todas las categorías que tienen parent_slug
         $categoriesWithParent = DB::select("
             SELECT id, slug, name, parent_slug
             FROM categories
@@ -670,7 +712,6 @@ class ZippyCommand implements ICommand
             $name = is_array($row) ? $row['name'] : $row->name;
             $parentSlug = is_array($row) ? $row['parent_slug'] : $row->parent_slug;
 
-            // Verificar si el padre existe
             $parentExists = DB::selectOne("
                 SELECT id, name
                 FROM categories
@@ -714,7 +755,6 @@ class ZippyCommand implements ICommand
             'summary' => []
         ];
 
-        // 1. Encontrar padres faltantes
         $usedParents = DB::select("
             SELECT DISTINCT parent_slug
             FROM categories
@@ -751,7 +791,6 @@ class ZippyCommand implements ICommand
             }
         }
 
-        // 2. Encontrar categorías huérfanas
         $categoriesWithParent = DB::select("
             SELECT id, slug, name, parent_slug
             FROM categories
@@ -785,7 +824,6 @@ class ZippyCommand implements ICommand
             }
         }
 
-        // 3. Resumen
         $report['summary'] = [
             'total_missing_parents' => count($report['missing_parents']),
             'total_orphan_categories' => count($report['orphan_categories']),
@@ -808,7 +846,6 @@ class ZippyCommand implements ICommand
     {
         DB::setConnection('zippy');
 
-        // Obtener todos los parent_slug únicos que se están usando
         $usedParents = DB::select("
             SELECT DISTINCT parent_slug
             FROM categories
@@ -822,7 +859,6 @@ class ZippyCommand implements ICommand
         foreach ($usedParents as $row) {
             $parentSlug = is_array($row) ? $row['parent_slug'] : $row->parent_slug;
 
-            // Verificar si existe una categoría con ese slug
             $exists = DB::selectOne("
                 SELECT id
                 FROM categories
@@ -832,11 +868,10 @@ class ZippyCommand implements ICommand
             ", [$parentSlug]);
 
             if (!$exists) {
-                // Generar un nombre capitalizado basado en el slug
                 $suggestedName = ucwords(str_replace(['-', '_', '.'], ' ', $parentSlug));
 
                 $commands[] = sprintf(
-                    'php com zippy category_create --name="%s" --slug=%s',
+                    'php com zippy category create --name="%s" --slug=%s',
                     $suggestedName,
                     $parentSlug
                 );
@@ -856,6 +891,10 @@ class ZippyCommand implements ICommand
         }
     }
 
+    // ================================================================
+    // ROUTER: OLLAMA
+    // ================================================================
+
     /**
      * Router para comandos de Ollama
      *
@@ -870,7 +909,6 @@ class ZippyCommand implements ICommand
             return;
         }
 
-        // Mapear subcomandos a métodos
         $method = 'ollama_' . $subcommand;
 
         if (!method_exists($this, $method)) {
@@ -879,7 +917,6 @@ class ZippyCommand implements ICommand
             return;
         }
 
-        // Llamar al método correspondiente
         $this->$method(...$options);
     }
 
@@ -901,7 +938,6 @@ class ZippyCommand implements ICommand
      */
     protected function ollama_hard_tests()
     {
-        // Textos hardcodeados para prueba
         $tests = [
             'Leche entera 1L marca tradicional',
             'Pan de molde integral 500g',
@@ -911,7 +947,6 @@ class ZippyCommand implements ICommand
             'Detergente líquido para ropa 3L',
         ];
 
-        // Categorías hardcodeadas (formato que LLMMatchingStrategy espera: slug => [name, parent_slug?])
         $availableCategories = [
             'dairy.milk' => ['name' => 'Leche y derivados', 'parent_slug' => 'dairy'],
             'bakery.bread' => ['name' => 'Panadería', 'parent_slug' => 'bakery'],
@@ -919,10 +954,8 @@ class ZippyCommand implements ICommand
             'personalcare.toothpaste' => ['name' => 'Cuidado personal / Pasta dental', 'parent_slug' => 'personalcare'],
             'beverages.juice' => ['name' => 'Bebidas / Jugos', 'parent_slug' => 'beverages'],
             'home.detergent' => ['name' => 'Limpieza del hogar / Detergentes', 'parent_slug' => 'home'],
-            // puedes añadir más categorías aquí si lo deseas
         ];
 
-        // Verificar disponibilidad Ollama
         if (!\Boctulus\Zippy\Strategies\LLMMatchingStrategy::isAvailable()) {
             dd([
                 'error' => 'Ollama no disponible',
@@ -930,15 +963,14 @@ class ZippyCommand implements ICommand
             ], 'LLM availability');
         }
 
-        // Instanciar estrategia (ajusta modelo/temperature/maxTokens/verbose aquí si quieres)
         $strategy = new \Boctulus\Zippy\Strategies\LLMMatchingStrategy(
-            'qwen2.5:1.5b', // modelo
-            0.2,           // temperatura
-            500,           // max tokens
-            true           // verbose: útil en debugging
+            'qwen2.5:1.5b',
+            0.2,
+            500,
+            true
         );
 
-        $threshold = 0.70; // 70% threshold
+        $threshold = 0.70;
 
         $results = [];
 
@@ -950,19 +982,13 @@ class ZippyCommand implements ICommand
                 $res = ['error' => 'exception', 'message' => $e->getMessage()];
             }
 
-            // dd($res, 'LLM Response');
-
-            // Normalizar salida para inspección: si hay match, extraer slug posible
             $matched_slug = null;
             $matched_name = null;
             $confidence = null;
             $reasoning = null;
 
             if (is_array($res) && isset($res['category'])) {
-                // recordar: parseResponse devuelve la data de category tal como en $availableCategories[$slug]
-                // pero no devuelve el slug directamente; intentamos inferirlo buscando la referencia en availableCategories
                 foreach ($availableCategories as $slug => $catData) {
-                    // comparar por referencia de nombre (funciona con este ejemplo sencillo)
                     if (
                         (is_array($res['category']) && isset($res['category']['name']) && $res['category']['name'] === $catData['name'])
                         || (is_object($res['category']) && (($res['category']->name ?? null) === $catData['name']))
@@ -976,7 +1002,6 @@ class ZippyCommand implements ICommand
                 $confidence = $res['score'] ?? null;
                 $reasoning = $res['reasoning'] ?? null;
             } else {
-                // en caso de null o error dejamos los campos como null o mensaje de error
                 if (is_array($res) && isset($res['error'])) {
                     $reasoning = $res['message'] ?? ($res['error'] ?? 'unknown error');
                 } else {
@@ -994,14 +1019,15 @@ class ZippyCommand implements ICommand
             ];
         }
 
-        // Mostrar todo en una sola salida para inspección
         dd($results, 'Hardcoded classification tests (OLLAMA LLMMatchingStrategy)');
     }
 
-    // parseOptions() ahora está disponible en CommandTrait
+    // ================================================================
+    // UTILIDADES Y ESTADÍSTICAS
+    // ================================================================
 
     /**
-     * Muestra estadísticas de mappings de categorías (cant de categorias mapeadas, sin revisar, etc)
+     * Muestra estadísticas de mappings de categorías
      */
     public function map_stats()
     {
@@ -1024,6 +1050,10 @@ class ZippyCommand implements ICommand
         // DE MOMENTO --ANULADO--
     }
 
+    // ================================================================
+    // AYUDA
+    // ================================================================
+
     /**
      * Ayuda del comando
      */
@@ -1031,126 +1061,214 @@ class ZippyCommand implements ICommand
     {
         $str = <<<STR
 
-ZIPPY COMMAND - Gestión de categorías y productos
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                         ZIPPY COMMAND HELP                                ║
+║                  Gestión de categorías y productos                        ║
+╚═══════════════════════════════════════════════════════════════════════════╝
 
-═══════════════════════════════════════════════════════════════
-COMANDOS DE PROCESAMIENTO DE PRODUCTOS
-═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
+📦 COMANDOS DE PRODUCTOS
+═══════════════════════════════════════════════════════════════════════════
 
-  process_categories [options]
-    Procesa categorías de productos en batch
+  product process [options]
+    Procesa productos individualmente y actualiza sus categorías
+    
     Opciones:
-      --limit=N           Limitar cantidad
+      --limit=N           Cantidad de productos a procesar (default: 100)
+      --dry-run           Modo simulación, no guarda cambios
+      --strategy=X        Estrategia a usar (llm|fuzzy)
+    
+    Ejemplo:
+      php com zippy product process --limit=50 --dry-run
+
+  product batch [options]
+    Procesamiento batch optimizado para grandes volúmenes
+    
+    Opciones:
+      --limit=N           Cantidad de productos a procesar
       --offset=N          Offset para paginación
-      --only-unmapped     Solo productos sin categories
-      --dry-run           No guardar cambios
+      --only-unmapped     Solo productos sin categorías asignadas
+      --dry-run           Modo simulación, no guarda cambios
+    
+    Ejemplo:
+      php com zippy product batch --limit=1000 --only-unmapped
 
-  products_process_categories [options]
-    Procesa productos y actualiza sus categorías
-    Opciones:
-      --limit=N           Limitar cantidad (default: 100)
-      --dry-run           No guardar cambios
-      --strategy=X        Estrategia a usar
-
-  test_mapping --raw="<value>" [options]
-    Prueba el mapeo de una categoría sin guardar
-    Opciones:
-      --raw="valor"       Texto a probar (requerido)
-      --strategy=X        llm|fuzzy (default: llm)
-
-  category_list [--limit=100]
-    Lista categorías raw encontradas en productos
-
-  clear_cache
-    Limpia el caché de CategoryMapper
-
-═══════════════════════════════════════════════════════════════
-COMANDOS DE GESTIÓN DE CATEGORÍAS
-═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
+🏷️  COMANDOS DE CATEGORÍAS - GESTIÓN BÁSICA
+═══════════════════════════════════════════════════════════════════════════
 
   category all
     Lista todas las categorías existentes en la tabla categories
+    
+    Ejemplo:
+      php com zippy category all
+
+  category list_raw [--limit=N]
+    Lista categorías raw detectadas en productos (catego_raw1/2/3)
+    Muestra la categoría mapeada y su padre entre corchetes
+    
+    Opciones:
+      --limit=N           Cantidad máxima a mostrar (default: 100)
+    
+    Ejemplo:
+      php com zippy category list_raw --limit=50
 
   category create --name="<nombre>" [options]
     Crea una nueva categoría
+    
     Opciones:
-      --name="X"          Nombre de la categoría (requerido)
-      --slug=X            Slug (opcional, se genera del nombre)
+      --name="X"          Nombre de la categoría (REQUERIDO)
+      --slug=X            Slug (opcional, se genera automáticamente)
       --parent=X          Slug del padre (opcional)
       --image_url=X       URL de imagen (opcional)
       --store_id=X        ID de tienda (opcional)
+    
+    Ejemplo:
+      php com zippy category create --name="Leche y derivados" --slug=dairy.milk --parent=dairy
 
-  category create_mapping --slug=<slug> --raw="<texto>" [options]
-    Crea un mapping (alias) de categoría
+  category set --slug=<slug> --parent=<parent>
+    Establece o cambia el padre de una categoría existente
+    
     Opciones:
-      --slug=X            Slug de categoría existente (requerido)
-      --raw="texto"       Texto raw a mapear (requerido)
-      --source=X          Fuente del mapping (opcional)
+      --slug=X            Slug de la categoría a modificar (REQUERIDO)
+      --parent=X          Slug del nuevo padre (usar NULL para desemparentar)
+    
+    Ejemplo:
+      php com zippy category set --slug=dairy.milk --parent=dairy
+      php com zippy category set --slug=dairy.milk --parent=NULL
+
+═══════════════════════════════════════════════════════════════════════════
+🧪 COMANDOS DE CATEGORÍAS - PRUEBAS Y RESOLUCIÓN
+═══════════════════════════════════════════════════════════════════════════
+
+  category test --raw="<texto>" [--strategy=X]
+    Prueba el mapeo de una categoría raw sin guardar
+    
+    Opciones:
+      --raw="X"           Texto a probar (REQUERIDO)
+      --strategy=X        Estrategia: llm|fuzzy (default: llm)
+    
+    Ejemplo:
+      php com zippy category test --raw="Aceites Y Condimentos"
 
   category resolve --text="<texto>"
-    Prueba resolver con texto suelto (invoca LLM)
+    Resuelve categoría usando LLM (texto suelto)
+    
     Opciones:
-      --text="X"          Texto a resolver (requerido)
+      --text="X"          Texto a resolver (REQUERIDO)
+    
+    Ejemplo:
+      php com zippy category resolve --text="Leche entera 1L marca tradicional"
 
   category resolve_product [options]
-    Prueba resolver para un producto (slots + description)
+    Resuelve categorías para un producto completo (múltiples campos)
+    
     Opciones:
       --raw1="X"          Categoría raw 1
       --raw2="X"          Categoría raw 2
       --raw3="X"          Categoría raw 3
       --description="X"   Descripción del producto
       --ean=X             EAN del producto
+    
+    Ejemplo:
+      php com zippy category resolve_product --raw1="Leche" --description="Pack 6x1L"
 
-═══════════════════════════════════════════════════════════════
-COMANDOS DE DIAGNÓSTICO DE CATEGORÍAS
-═══════════════════════════════════════════════════════════════
+  category create_mapping --slug=<slug> --raw="<texto>" [--source=X]
+    Crea un mapping (alias) manual de categoría
+    
+    Opciones:
+      --slug=X            Slug de categoría existente (REQUERIDO)
+      --raw="X"           Texto raw a mapear (REQUERIDO)
+      --source=X          Fuente del mapping (opcional)
+    
+    Ejemplo:
+      php com zippy category create_mapping --slug=dairy.milk --raw="Leche entera 1L"
+
+═══════════════════════════════════════════════════════════════════════════
+🔍 COMANDOS DE DIAGNÓSTICO
+═══════════════════════════════════════════════════════════════════════════
 
   category find_missing_parents
-    Encuentra categorías padre que se referencian pero no existen
+    Encuentra categorías padre referenciadas que no existen
+    
+    Ejemplo:
+      php com zippy category find_missing_parents
 
   category find_orphans
-    Encuentra categorías huérfanas (cuyo padre no existe)
+    Encuentra categorías huérfanas (padre no existe)
+    
+    Ejemplo:
+      php com zippy category find_orphans
 
   category report_issues
-    Genera un reporte combinado de problemas de categorías
+    Reporte completo: padres faltantes + categorías huérfanas
+    
+    Ejemplo:
+      php com zippy category report_issues
 
   category generate_create_commands
-    Genera comandos para crear las categorías padre faltantes
+    Genera comandos listos para crear categorías padre faltantes
+    
+    Ejemplo:
+      php com zippy category generate_create_commands
 
-═══════════════════════════════════════════════════════════════
-COMANDOS DE PRUEBA OLLAMA/LLM
-═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
+🤖 COMANDOS OLLAMA/LLM
+═══════════════════════════════════════════════════════════════════════════
 
   ollama test_strategy
-    Prueba modelos disponibles en Ollama
+    Lista modelos Ollama disponibles
+    
+    Ejemplo:
+      php com zippy ollama test_strategy
 
   ollama hard_tests
-    Ejecuta pruebas hardcodeadas del LLM
+    Ejecuta pruebas hardcodeadas del LLM con categorías de ejemplo
+    
+    Ejemplo:
+      php com zippy ollama hard_tests
 
-═══════════════════════════════════════════════════════════════
-EJEMPLOS DE USO
-═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════════════════
+🛠️  UTILIDADES
+═══════════════════════════════════════════════════════════════════════════
 
-  # Procesamiento de productos
-  php com zippy process_categories --limit=100 --dry-run
-  php com zippy products_process_categories --limit=50
-  php com zippy test_mapping --raw="Aceites Y Condimentos"
+  category clear_cache
+    Limpia el caché de CategoryMapper (pendiente implementar)
+    
+    Ejemplo:
+      php com zippy category clear_cache
 
-  # Gestión de categorías
-  php com zippy category_list --limit=50  // LISTA CATEGORÍAS RAW EN PRODUCTS
-  php com zippy category all  // LISTA TODAS LAS CATEGORÍAS
-  php com zippy category create --name="Leche y derivados" --slug=dairy.milk --parent=dairy
-  php com zippy category create_mapping --slug=dairy.milk --raw="Leche entera 1L" --source=mercado
-  php com zippy category resolve --text="Leche entera 1L marca tradicional"
+═══════════════════════════════════════════════════════════════════════════
+📋 FLUJOS DE TRABAJO RECOMENDADOS
+═══════════════════════════════════════════════════════════════════════════
 
-  # Diagnóstico
-  php com zippy category find_missing_parents
-  php com zippy category report_issues
-  php com zippy category generate_create_commands
+🔹 FLUJO 1: Setup inicial y diagnóstico
+   1. php com zippy category all
+   2. php com zippy category find_missing_parents
+   3. php com zippy category generate_create_commands
+   4. php com zippy category create --name="..." --slug=...
+   5. php com zippy category report_issues
 
-  # Pruebas LLM
-  php com zippy ollama test_strategy
-  php com zippy ollama hard_tests
+🔹 FLUJO 2: Exploración y testing
+   1. php com zippy category list_raw --limit=100
+   2. php com zippy category test --raw="Aceites Y Condimentos"
+   3. php com zippy category resolve --text="Leche entera 1L"
+   4. php com zippy ollama hard_tests
+
+🔹 FLUJO 3: Procesamiento en producción
+   1. php com zippy category report_issues
+   2. php com zippy product test --id={id}
+   3. php com zippy product process --limit=10 --dry-run
+   4. php com zippy product process --limit=100
+   5. php com zippy product batch --limit=1000 --only-unmapped
+
+🔹 FLUJO 4: Validación de LLM
+   1. php com zippy ollama test_strategy
+   2. php com zippy ollama hard_tests
+   3. php com zippy category test --raw="..." --strategy=llm
+   4. php com zippy category resolve_product --raw1="..."
+
+═══════════════════════════════════════════════════════════════════════════
 
 STR;
 
