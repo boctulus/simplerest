@@ -264,3 +264,4 @@
 [2025-11-08 09:59:24]	0.8.12	php com zippy product process_one OK
 [2025-11-08 12:04:44]	0.8.12	Automatic update
 [2025-11-08 12:32:45]	0.8.12	Automatic update
+[2025-11-08 12:42:27]	0.8.12	Nuevos comandos `php com sql`
