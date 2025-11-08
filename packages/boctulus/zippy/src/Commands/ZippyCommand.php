@@ -56,18 +56,33 @@ class ZippyCommand implements ICommand
     }
 
     // Test product processing
-    function product_test(...$options)
+    function product_process_one(...$options)
     {
-        if (is_array($options) && (count($options) == 1) && is_numeric($options[0])) {
-            $productId = $options[0];
-        } else {
-            $opts      = $this->parseOptions($options);
-            $productId = $opts['id'] ?? null;
+        // Buscar el EAN como primer argumento posicional (numérico)
+        $ean = null;
+        $remainingOpts = [];
+
+        foreach ($options as $opt) {
+            if (is_numeric($opt) && $ean === null) {
+                $ean = $opt;
+            } else {
+                $remainingOpts[] = $opt;
+            }
+        }
+
+        // Parsear opciones restantes
+        $opts = $this->parseOptions($remainingOpts);
+        $dryRun = $opts['dry_run'] ?? false;
+
+        // Si no encontramos EAN posicional, buscar en opciones
+        if ($ean === null) {
+            $ean = $opts['ean'] ?? null;
         }
 
         CategoryMapper::configure([
             'default_strategy' => 'llm',
             'strategies_order' => ['llm', 'fuzzy'],
+            'llm_model' => 'qwen2.5:1.5b',
             'thresholds' => [
                 'fuzzy' => 0.40,
                 'llm' => 0.70,
@@ -75,15 +90,26 @@ class ZippyCommand implements ICommand
         ]);
 
         $product = DB::table('products')
-        ->find($productId);
+        ->where('ean', $ean)->getOne();
 
-        dd("Procesando producto ID/EAN: $productId");
+        dd($product, "Procesando producto con EAN: $ean" . ($dryRun ? " (DRY-RUN)" : ""));
 
         $categories = CategoryMapper::resolveProduct($product, true);
 
         dd($categories, 'Categorias resueltas');
 
-        if (!empty($categories)) {
+        if ($categories) {
+            if (!$dryRun) {
+                DB::table('products')
+                ->where('ean', $ean)
+                ->update([
+                    'categories' => json_encode($categories)
+                ]);
+                echo "  ✅ Categorías guardadas: " . implode(', ', $categories) . "\n";
+            } else {
+                echo "  ℹ️  DRY-RUN: Categorías que se asignarían: " . implode(', ', $categories) . "\n";
+            }
+        } else {
             dd("  → No se encontraron categorías\n\n---------------------------------------\n");
         }
     }
@@ -95,9 +121,9 @@ class ZippyCommand implements ICommand
      */
     protected function product_process(...$options)
     {
-        $opts = $this->parseOptions($options);
-        $limit = $opts['limit'] ?? 100;
-        $dryRun = $opts['dry_run'] ?? false;
+        $opts     = $this->parseOptions($options);
+        $limit    = $opts['limit'] ?? 100;
+        $dryRun   = $opts['dry_run'] ?? false;
         $strategy = $opts['strategy'] ?? null;
 
         DB::setConnection('zippy');
@@ -105,6 +131,7 @@ class ZippyCommand implements ICommand
         CategoryMapper::configure([
             'default_strategy' => 'llm',
             'strategies_order' => ['llm', 'fuzzy'],
+            'llm_model' => 'qwen2.5:1.5b',
             'thresholds' => [
                 'fuzzy' => 0.40,
                 'llm' => 0.70,
@@ -114,7 +141,7 @@ class ZippyCommand implements ICommand
         $query = DB::table('products');
 
         if ($limit) {
-            $query->limit((int)$limit);
+            $query->limit((int) $limit);
         }
 
         $products = $query->get();
@@ -128,8 +155,8 @@ class ZippyCommand implements ICommand
             dd($product, 'P');
 
             try {
-                $productId = is_array($product) ? ($product['ean'] ?? $product['id']) : ($product['ean'] ?? $product['id']);
-                echo "[$processed/$total] Procesando producto ID/EAN: $productId\n";
+                $ean = is_array($product) ? $product['ean'] : $product->ean;
+                echo "[$processed/$total] Procesando producto con EAN: $ean\n";
 
                 $categories = CategoryMapper::resolveProduct($product, true);
 
@@ -140,7 +167,7 @@ class ZippyCommand implements ICommand
 
                     if (!$dryRun) {
                         DB::table('products')
-                            ->where('ean', $productId)
+                            ->where('ean', $ean)
                             ->update([
                                 'categories' => json_encode($categories)
                             ]);
@@ -220,30 +247,30 @@ class ZippyCommand implements ICommand
 
         foreach ($products as $product) {
             $processed++;
-            $productId = is_array($product) ? ($product['id'] ?? null) : ($product->id ?? null);
+            $ean = is_array($product) ? ($product['id'] ?? null) : ($product->id ?? null);
 
             try {
                 $categories = CategoryMapper::resolveProduct($product, true);
 
                 if (empty($categories)) {
-                    StdOut::print("[{$processed}/{$total}] Producto ID {$productId}: Sin categorías detectadas\n");
+                    StdOut::print("[{$processed}/{$total}] Producto ID {$ean}: Sin categorías detectadas\n");
                     continue;
                 }
 
                 $categoriesJson = json_encode($categories);
 
-                StdOut::print("[{$processed}/{$total}] Producto ID {$productId}: " . implode(', ', $categories) . "\n");
+                StdOut::print("[{$processed}/{$total}] Producto ID {$ean}: " . implode(', ', $categories) . "\n");
 
                 if (!$dryRun) {
                     DB::table('products')
-                        ->where(['id', $productId])
+                        ->where(['id', $ean])
                         ->update([
                             'categories' => $categoriesJson
                         ]);
                     $updated++;
                 }
             } catch (\Exception $e) {
-                StdOut::print("[{$processed}/{$total}] ERROR en producto ID {$productId}: " . $e->getMessage() . "\n");
+                StdOut::print("[{$processed}/{$total}] ERROR en producto ID {$ean}: " . $e->getMessage() . "\n");
                 $errors++;
             }
         }
@@ -1257,10 +1284,9 @@ class ZippyCommand implements ICommand
 
 🔹 FLUJO 3: Procesamiento en producción
    1. php com zippy category report_issues
-   2. php com zippy product test --id={id}
-   3. php com zippy product process --limit=10 --dry-run
-   4. php com zippy product process --limit=100
-   5. php com zippy product batch --limit=1000 --only-unmapped
+   2. php com zippy product process_one {ean_code} [ --dry-run ]
+   3. php com zippy product process --limit=10 [ --dry-run ]
+   4. php com zippy product batch --limit=1000 [ --only-unmapped ]
 
 🔹 FLUJO 4: Validación de LLM
    1. php com zippy ollama test_strategy
