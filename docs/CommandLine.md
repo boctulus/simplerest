@@ -242,6 +242,51 @@ El comando `sql` permite ejecutar operaciones SQL desde la línea de comandos.
 
 ## Subcomandos disponibles
 
+### sql find
+
+Busca un registro específico por su clave primaria (primary key).
+
+#### Sintaxis
+
+```bash
+php com sql find '{db}.{table}' --id={value} [--format=table]
+```
+
+#### Parámetros
+
+- `{db}.{table}`: Nombre de la conexión de base de datos y tabla en formato `conexion.tabla`
+- `--id={value}`: (Requerido) Valor de la clave primaria a buscar
+- `--format=table`: Formato de salida (opcional):
+  - Sin especificar: formato simple (un registro por bloque)
+  - `table`: formato de tabla ASCII con bordes
+
+#### Características
+
+- Detecta automáticamente el nombre del campo de clave primaria desde el schema
+- Soporta claves primarias con cualquier nombre (no solo 'id')
+- Requiere que exista un schema para la tabla en `app/Schemas/{db}/`
+
+#### Ejemplos
+
+```bash
+# Buscar producto con ean = 217548
+php com sql find 'zippy.products' --id=217548
+
+# Buscar usuario con ID 5 y mostrar en formato tabla
+php com sql find 'main.users' --id=5 --format=table
+
+# Buscar registro en tabla con clave primaria personalizada
+php com sql find 'main.orders' --id=ORD-12345
+```
+
+#### Notas
+
+- El comando obtiene automáticamente el nombre del campo primary key del schema
+- Si la tabla no tiene schema, el comando mostrará un error con instrucciones
+- Funciona con primary keys de cualquier tipo (int, string, uuid, etc.)
+
+---
+
 ### sql list
 
 Lista el contenido de una tabla específica con soporte para paginación y formato de tabla.
@@ -249,15 +294,15 @@ Lista el contenido de una tabla específica con soporte para paginación y forma
 #### Sintaxis
 
 ```bash
-php com sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]
+php com sql list '{db}.{table}' [--take=N|--limit=N] [--skip=M|--offset=M] [--format=table]
 ```
 
 #### Parámetros
 
 - `{db}.{table}`: Nombre de la conexión de base de datos y tabla en formato `conexion.tabla`
-- `--offset=N`: Número de registros a saltar (opcional, por defecto: 0)
-- `--limit=N`: Número máximo de registros a mostrar (opcional, por defecto: 10)
-- `--format=table`: Formato de salida. Valores posibles:
+- `--take=N` o `--limit=N`: Número máximo de registros a mostrar (opcional, por defecto: 10)
+- `--skip=M` o `--offset=M`: Número de registros a saltar (opcional, por defecto: 0)
+- `--format=table`: Formato de salida (opcional):
   - Sin especificar: formato simple (un registro por bloque)
   - `table`: formato de tabla ASCII con bordes
 
@@ -267,25 +312,133 @@ php com sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]
 # Listar los primeros 10 registros de la tabla users
 php com sql list 'main.users'
 
-# Listar los primeros 20 registros
+# Listar los primeros 20 registros (sintaxis con --take)
+php com sql list 'main.users' --take=20
+
+# Listar los primeros 20 registros (sintaxis con --limit)
 php com sql list 'main.users' --limit=20
 
 # Listar 5 registros empezando desde el registro 10
+php com sql list 'main.users' --skip=10 --take=5
+
+# Sintaxis alternativa con --offset y --limit
 php com sql list 'main.users' --offset=10 --limit=5
 
 # Mostrar resultados en formato de tabla ASCII
 php com sql list 'main.users' --format=table
 
 # Listar 50 productos de otra conexión en formato tabla
-php com sql list 'db_195.products' --limit=50 --format=table
+php com sql list 'zippy.products' --take=50 --format=table
 ```
 
 #### Notas
 
+- Soporta tanto la sintaxis `--take/--skip` como `--limit/--offset`
 - La conexión de base de datos especificada debe estar registrada en `db_connections`
 - El formato de tabla ASCII es útil para visualizar datos tabulares de manera más clara
-- Si no se especifica `--limit`, por defecto se muestran 10 registros
-- El formato simple muestra cada registro en un bloque separado con sus campos
+- Si no se especifica límite, por defecto se muestran 10 registros
+
+---
+
+### sql search
+
+Busca registros en una tabla que contengan un texto específico en sus campos de tipo texto.
+
+#### Sintaxis
+
+```bash
+php com sql search '{db}.{table}' --search='text' [--take=N] [--skip=M] [--format=table]
+```
+
+#### Parámetros
+
+- `{db}.{table}`: Nombre de la conexión de base de datos y tabla en formato `conexion.tabla`
+- `--search='text'`: (Requerido) Texto a buscar en los campos
+- `--take=N` o `--limit=N`: Número máximo de registros a mostrar (opcional, por defecto: 10)
+- `--skip=M` o `--offset=M`: Número de registros a saltar (opcional, por defecto: 0)
+- `--format=table`: Formato de salida (opcional):
+  - Sin especificar: formato simple (un registro por bloque)
+  - `table`: formato de tabla ASCII con bordes
+
+#### Características
+
+- Busca automáticamente en todos los campos de tipo STR y TEXT del schema
+- Usa condiciones OR para buscar en múltiples campos simultáneamente
+- Realiza búsqueda con LIKE (coincidencia parcial)
+- Requiere que exista un schema para la tabla
+
+#### Ejemplos
+
+```bash
+# Buscar productos que contengan 'MEDALLON'
+php com sql search 'zippy.products' --search='MEDALLON'
+
+# Buscar productos que contengan 'POLLO' y limitar a 5 resultados
+php com sql search 'zippy.products' --search='POLLO' --take=5
+
+# Buscar usuarios que contengan 'john' y mostrar en formato tabla
+php com sql search 'main.users' --search='john' --format=table
+
+# Buscar con paginación
+php com sql search 'zippy.products' --search='MB' --skip=10 --take=5
+```
+
+#### Notas
+
+- Requiere que exista un schema para determinar qué campos son de texto
+- Busca solo en campos de tipo STR y TEXT definidos en el schema
+- La búsqueda es case-sensitive o case-insensitive según la configuración de la base de datos
+- Si no hay schema, el comando mostrará un error con instrucciones
+
+---
+
+## Formatos de Salida
+
+Todos los comandos SQL soportan dos formatos de salida:
+
+### Formato Simple (por defecto)
+
+Muestra cada registro en bloques separados con formato clave-valor:
+
+```
+Found 2 record(s):
+
+Record #1:
+  ean: 217548
+  description: MEDALLON POLLO MB CONG.
+  brand: MB
+  ...
+
+Record #2:
+  ean: 231408
+  description: MEDALLON CARNE VACUNA CH.
+  brand: SOMBRA DE TORO
+  ...
+```
+
+### Formato Tabla (--format=table)
+
+Muestra los registros en una tabla ASCII con bordes:
+
+```
++--------+-------------------------+-------+
+| ean    | description             | brand |
++--------+-------------------------+-------+
+| 217548 | MEDALLON POLLO MB CONG. | MB    |
+| 231408 | MEDALLON CARNE VACUNA   | ST    |
++--------+-------------------------+-------+
+
+2 record(s) found
+```
+
+---
+
+## Notas Generales
+
+- **Conexiones**: El parámetro `{db}` se refiere al nombre de la conexión en `config/databases.php`, no al nombre de la base de datos
+- **Schemas**: Los comandos `find` y `search` requieren que exista un schema en `app/Schemas/{db}/{Table}Schema.php`
+- **Validación**: Todos los comandos validan que la conexión exista antes de ejecutar
+- **Errores**: Los mensajes de error son descriptivos e incluyen sugerencias para resolver problemas
 
 # Zippy Command
 
