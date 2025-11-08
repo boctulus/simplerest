@@ -344,10 +344,18 @@ class ZippyCommand implements ICommand
         StdOut::print("Probando mapeo para: \"$raw\"\n");
         StdOut::print("Estrategia: $strategy\n\n");
 
-        $result = CategoryMapper::resolve($raw, false, $strategy);
+        $result = CategoryMapper::resolve($raw);
 
         if (!empty($result)) {
-            StdOut::print("✅ Categoría asignada: " . implode(', ', $result) . "\n");
+            StdOut::print("✅ Resultado del mapeo:\n");
+            StdOut::print("   • Slug: " . ($result['category_slug'] ?? 'N/A') . "\n");
+            StdOut::print("   • ID: " . ($result['category_id'] ?? 'N/A') . "\n");
+            StdOut::print("   • Creada: " . (($result['created'] ?? false) ? 'Sí' : 'No') . "\n");
+            StdOut::print("   • Score: " . ($result['score'] ?? 0) . "\n");
+            StdOut::print("   • Razón: " . ($result['reasoning'] ?? 'N/A') . "\n");
+            if (isset($result['found_in'])) {
+                StdOut::print("   • Encontrada en: " . $result['found_in'] . "\n");
+            }
         } else {
             StdOut::print("❌ No se pudo asignar categoría\n");
         }

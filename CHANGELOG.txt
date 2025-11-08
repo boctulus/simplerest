@@ -265,3 +265,4 @@
 [2025-11-08 12:04:44]	0.8.12	Automatic update
 [2025-11-08 12:32:45]	0.8.12	Automatic update
 [2025-11-08 12:42:27]	0.8.12	Nuevos comandos `php com sql`
+[2025-11-08 12:42:41]	0.8.12	Nuevos comandos `php com sql`

@@ -3110,12 +3110,14 @@ Ej:
 
 Ej:
 
-  php com crud {table} --list [ --take={n} ] [ --skip={m} ]
-  php com crud {table} --search='word word word ...' [ --take={n} ] [ --skip={m} ]
-  php com crud {table} --find={id} 
-  php com crud {table} --find={id} --delete
-  php com crud {table} --find={id} --edit --field={campo} --value={valor}
+  php com sql {db_connection}.{table} --list [ --take={n} ] [ --skip={m} ]
+  php com sql {db_connection}.{table} --search='word word word ...' [ --take={n} ] [ --skip={m} ]
+  php com sql {db_connection}.{table} --find={id} 
 
+FALTAN IMPLEMENTAR:
+
+  php com sql {db_connection}.{table} --find={id} --delete
+  php com sql {db_connection}.{table} --find={id} --edit --field={campo} --value={valor}
 
 
 [ UPDATE COMMAND ]
@@ -3132,16 +3134,6 @@ Ej:
 
       2) Correr UPDATE sobre "Solución Binaria"
 
-
-[ MAILER ]
-
-- Posibilitar enviar *correos* con *templates*  +++++++
-
-  Mails::sendMail()  
-
-    implementando $mail->addAttachment()
-
-- Resolver tema del correo => sendMail() con plantillas
 
 ----------------
 
