@@ -1,0 +1,29 @@
+.modal-tabs .nav-tabs {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-tabs .tab-content {
+  overflow-y: auto;
+}
+
+/* Spinner de carga para modales */
+.modal-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: 0.5rem;
+}
+
+/* Overlay oscuro para tema oscuro */
+.theme-dark .modal-loading-overlay {
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(2px) !important;
+}
