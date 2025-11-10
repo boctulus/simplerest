@@ -136,6 +136,9 @@ WebRouter::post("firebase-test/storage", function() use ($route) {
 	render($module->test_storage());
 });
 
+// Components System Routes
+WebRouter::get('components', 'ComponentsController@index');
+WebRouter::get('components/examples', 'ComponentsController@examples');
 
 WebRouter::get('mem', function(){
 	dd(System::getMemoryLimit(), 'Memory limit');

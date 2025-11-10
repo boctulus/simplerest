@@ -1,0 +1,33 @@
+.select2-plus-container {
+  width: 100%;
+}
+
+.select2-plus-container .input-group {
+  width: 100%;
+}
+
+.select2-plus-container .select2-plus-select {
+  flex: 1;
+}
+
+.select2-plus-container .btn-plus {
+  border-left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+}
+
+.select2-plus-container .btn-plus:hover {
+  background-color: #f8f9fa;
+}
+
+/* Fix Select2 integration with input-group */
+.select2-plus-container .select2-container {
+  flex: 1;
+}
+
+.select2-plus-container .select2-container .select2-selection {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
