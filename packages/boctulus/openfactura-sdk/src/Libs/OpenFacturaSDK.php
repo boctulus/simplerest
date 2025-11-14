@@ -49,6 +49,10 @@ use Boctulus\OpenfacturaSdk\Interfaces\IOpenFactura;
     https://docsapi-openfactura.haulmer.com/
     https://www.openfactura.cl/factura-electronica/api/
     https://www.sii.cl/factura_electronica/formato_dte.pdf
+
+    De haber alguna duda, revisar:
+
+    D:\laragon\www\friendapp\app\Services\OpenFacturaService.php [!]
 }
 */
 class OpenFacturaSDK implements IOpenFactura
