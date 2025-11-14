@@ -1496,7 +1496,7 @@ class ZippyCommand implements ICommand
    4. php com zippy category create --name="..." --slug=...
    5. php com zippy category report_issues
 
-🔹 FLUJO 2: Exploración y testing con categorias
+🔹 FLUJO 2: Exploración y testing con marcas  [ REVISAR HAY ERRORES ]
    1. php com zippy brand categorize --limit=10 --dry-run
    2. php com zippy brand categorize
    3. php com zippy brand categorize --limit=50
