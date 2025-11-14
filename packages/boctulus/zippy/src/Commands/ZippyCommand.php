@@ -314,8 +314,33 @@ class ZippyCommand implements ICommand
     }
 
     /**
+     * Router para comandos de marcas
+     *
+     * Uso: php com zippy brand <subcomando> [options]
+     */
+    public function brand($subcommand = null, ...$options)
+    {
+        if (empty($subcommand)) {
+            StdOut::print("Error: Se requiere un subcomando.\n");
+            StdOut::print("Uso: php com zippy brand <subcomando> [options]\n");
+            StdOut::print("Ejecuta 'php com zippy help' para ver todos los subcomandos disponibles.\n");
+            return;
+        }
+
+        $method = 'brand_' . $subcommand;
+
+        if (!method_exists($this, $method)) {
+            StdOut::print("Error: Subcomando '$subcommand' no existe.\n");
+            StdOut::print("Ejecuta 'php com zippy help' para ver los subcomandos disponibles.\n");
+            return;
+        }
+
+        $this->$method(...$options);
+    }
+
+    /**
      * Prueba el mapeo de una categoría raw sin guardar
-     * 
+     *
      * Uso: php com zippy category test --raw="Aceites Y Condimentos" --strategy=llm
      */
     protected function category_test(...$options)
@@ -926,6 +951,180 @@ class ZippyCommand implements ICommand
         }
     }
 
+    /**
+     * Lista todas las marcas únicas del campo brand en la tabla products
+     *
+     * Uso: php com zippy brand list_raw [--limit=100]
+     */
+    protected function brand_list_raw(...$options)
+    {
+        $opts = $this->parseOptions($options);
+        $limit = $opts['limit'] ?? null;
+
+        StdOut::print("=== Marcas detectadas en productos ===\n");
+
+        DB::setConnection('zippy');
+
+        $query = DB::table('products')
+            ->selectRaw('DISTINCT brand')
+            ->whereNotNull('brand')
+            ->whereRaw("brand != ''")
+            ->orderBy('brand', 'ASC');
+
+        if ($limit !== null) {
+            $query->limit((int)$limit);
+        }
+
+        $brands = $query->get();
+
+        DB::closeConnection();
+
+        $total = count($brands);
+        StdOut::print("Marcas únicas encontradas: {$total}\n\n");
+
+        foreach ($brands as $idx => $row) {
+            $brand = is_array($row) ? $row['brand'] : $row->brand;
+            $displayLine = "[" . ($idx + 1) . "] {$brand}";
+            StdOut::print($displayLine . "\n");
+        }
+    }
+
+    /**
+     * Categoriza cada marca usando LLM y crea registros en brand_categories
+     *
+     * Uso: php com zippy brand categorize [--limit=100] [--dry-run]
+     */
+    protected function brand_categorize(...$options)
+    {
+        $opts = $this->parseOptions($options);
+        $limit = $opts['limit'] ?? null;
+        $dryRun = $opts['dry_run'] ?? false;
+
+        StdOut::print("=== Categorizando marcas con LLM ===\n");
+
+        if ($dryRun) {
+            StdOut::print("⚠ Modo DRY-RUN activado: no se guardarán cambios\n\n");
+        }
+
+        DB::setConnection('zippy');
+
+        // Obtener marcas únicas
+        $query = DB::table('products')
+            ->selectRaw('DISTINCT brand')
+            ->whereNotNull('brand')
+            ->whereRaw("brand != ''")
+            ->orderBy('brand', 'ASC');
+
+        if ($limit !== null) {
+            $query->limit((int)$limit);
+        }
+
+        $brands = $query->get();
+        $total = count($brands);
+
+        StdOut::print("Marcas a procesar: {$total}\n\n");
+
+        // Configurar CategoryMapper para usar LLM
+        CategoryMapper::configure([
+            'default_strategy' => 'llm',
+            'strategies_order' => ['llm'],
+            'llm_model' => 'qwen2.5:1.5b',
+            'llm_temperature' => 0.2,
+            'thresholds' => [
+                'llm' => 0.70,
+            ]
+        ]);
+
+        $processed = 0;
+        $saved = 0;
+        $errors = 0;
+
+        foreach ($brands as $row) {
+            $processed++;
+            $brand = is_array($row) ? $row['brand'] : $row->brand;
+
+            try {
+                StdOut::print("[{$processed}/{$total}] Procesando marca: {$brand}\n");
+
+                // Resolver categoría usando el LLM
+                $result = CategoryMapper::resolve($brand, false);
+
+                if (empty($result) || !isset($result['category_slug'])) {
+                    StdOut::print("  ⚠ No se pudo categorizar\n\n");
+                    continue;
+                }
+
+                $categorySlug = $result['category_slug'];
+                $score = $result['score'] ?? 0;
+                $reasoning = $result['reasoning'] ?? 'N/A';
+
+                StdOut::print("  → Categoría: {$categorySlug}\n");
+                StdOut::print("  → Score: {$score}\n");
+                StdOut::print("  → Razón: {$reasoning}\n");
+
+                if (!$dryRun) {
+                    // Buscar brand_id en la tabla brands
+                    $brandRecord = DB::selectOne("SELECT id FROM brands WHERE brand = ? AND deleted_at IS NULL LIMIT 1", [$brand]);
+
+                    if (!$brandRecord) {
+                        // Crear registro en brands si no existe
+                        $brandId = DB::table('brands')->insertGetId([
+                            'brand' => $brand,
+                            'normalized_brand' => Strings::normalize($brand),
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+                    } else {
+                        $brandId = is_array($brandRecord) ? $brandRecord['id'] : $brandRecord->id;
+                    }
+
+                    // Buscar category_id
+                    $categoryRecord = DB::selectOne("SELECT id FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$categorySlug]);
+
+                    if (!$categoryRecord) {
+                        StdOut::print("  ⚠ Categoría {$categorySlug} no existe en la tabla categories\n\n");
+                        continue;
+                    }
+
+                    $categoryId = is_array($categoryRecord) ? $categoryRecord['id'] : $categoryRecord->id;
+
+                    // Verificar si ya existe el registro en brand_categories
+                    $exists = DB::selectOne("SELECT id FROM brand_categories WHERE brand_id = ? AND category_id = ? AND deleted_at IS NULL LIMIT 1", [$brandId, $categoryId]);
+
+                    if (!$exists) {
+                        // Crear registro en brand_categories
+                        DB::table('brand_categories')->insert([
+                            'brand_id' => $brandId,
+                            'category_id' => $categoryId,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+
+                        StdOut::print("  ✅ Registro guardado en brand_categories\n\n");
+                        $saved++;
+                    } else {
+                        StdOut::print("  ℹ️  Registro ya existe en brand_categories\n\n");
+                    }
+                } else {
+                    StdOut::print("  ℹ️  DRY-RUN: No se guardó\n\n");
+                }
+
+            } catch (\Exception $e) {
+                $errors++;
+                StdOut::print("  ❌ ERROR: " . $e->getMessage() . "\n\n");
+                continue;
+            }
+        }
+
+        DB::closeConnection();
+
+        StdOut::print("\n=== Resumen ===\n");
+        StdOut::print("Procesadas: {$processed}\n");
+        StdOut::print("Guardadas: " . ($dryRun ? "0 (dry-run)" : $saved) . "\n");
+        StdOut::print("Errores: {$errors}\n");
+    }
+
+
     // ================================================================
     // ROUTER: OLLAMA
     // ================================================================
@@ -1220,6 +1419,19 @@ class ZippyCommand implements ICommand
       php com zippy category create_mapping --slug=dairy.milk --raw="Leche entera 1L"
 
 ═══════════════════════════════════════════════════════════════════════════
+🧪 COMANDOS DE MARCAS - PRUEBAS Y RESOLUCIÓN
+═══════════════════════════════════════════════════════════════════════════
+
+    # Categorizar las primeras 10 marcas en modo simulación
+    php com zippy brand categorize --limit=10 --dry-run
+
+    # Categorizar todas las marcas y guardar en BD
+    php com zippy brand categorize
+
+    # Categorizar las primeras 50 marcas
+    php com zippy brand categorize --limit=50
+
+═══════════════════════════════════════════════════════════════════════════
 🔍 COMANDOS DE DIAGNÓSTICO
 ═══════════════════════════════════════════════════════════════════════════
 
@@ -1284,19 +1496,23 @@ class ZippyCommand implements ICommand
    4. php com zippy category create --name="..." --slug=...
    5. php com zippy category report_issues
 
-🔹 FLUJO 2: Exploración y testing
+🔹 FLUJO 2: Exploración y testing con categorias
+   1. php com zippy brand categorize --limit=10 --dry-run
+   2. php com zippy brand categorize
+   3. php com zippy brand categorize --limit=50
+
+🔹 FLUJO 3: Exploración y testing con categorias
    1. php com zippy category list_raw --limit=100
    2. php com zippy category test --raw="Aceites Y Condimentos"
    3. php com zippy category resolve --text="Leche entera 1L"
-   4. php com zippy ollama hard_tests
 
-🔹 FLUJO 3: Procesamiento en producción
+🔹 FLUJO 4: Procesamiento en producción
    1. php com zippy category report_issues
    2. php com zippy product process_one {ean_code} [ --dry-run ]
    3. php com zippy product process --limit=10 [ --dry-run ]
    4. php com zippy product batch --limit=1000 [ --only-unmapped ]
 
-🔹 FLUJO 4: Validación de LLM
+🔹 FLUJO 5: Validación de LLM
    1. php com zippy ollama test_strategy
    2. php com zippy ollama hard_tests
    3. php com zippy category test --raw="..." --strategy=llm

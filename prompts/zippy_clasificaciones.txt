@@ -32,11 +32,61 @@ Necesito que proceses el primer lote de 200 products.
 
 Nota: solo debes operar a traves de comandos "php com"
 
-# RESUMEN DEL TODO
 
+# MARCAS  <------ PRIORITARIO
+
+Crea un comando dentro del grupo "zippy" definido dentro del package "zippy" que releve todas las marcas tal, nombre brand_list_raw() que haga un SELECT DISTINCT
+
+Crea un comando que utilizando un LLM, categorice casda marca y cree entonces un registro en la tabla `brand-categories`.
+
+Ahora si, actualiza el metodo que resuelve la categoria de los productos para que comience utilizando informacion de la tabla `brand-categories` y si hay coincidencia esa categoria deba ser al menos la categoria padre. No podria asignarse una categoria que no tenga como padre o padre del padre,..etc a la categoria encontrada en `brand-categories`
+
+Tablas:
+
+- brands (migracion: `2025_11_14_160000000_create_brands.php`)
+- brand_categories (migracion: `2025_11_14_170000000_create_brand_categories.php`)
+
+
+# RESUMEN DEL TO-DO
 
 Debo clasificar en categorias todos los products de la base de datos "zippy". Las categorias correspondientes podrian no existir por lo que debes apoyarte en los comandos "php com zippy" para que se vayan resolviendo y asignando.
 
 Lee la documentacion del package "zippy".
 
 Si necesitas consultar la base de datos "zippy" puedes apoyarte en los comandos "php com sql"
+
+Si usas --limit para procesar el resto, recuerda luego usar --offset
+
+
+# NOTAS
+
+- Puedes analizar y tener en consideracion un "resumen ejecutivo" realizado por un LLM, el cual puede o ser correcto y debe tomarse como algo orientativo el siguiente documento:
+
+D:\laragon\www\simplerest\packages\boctulus\zippy\RESUMEN-EJECUTIVO.md
+
+- NO PROCESES MAS DE 100 PRODUCTOS A LA VEZ..... DEBERIAN SER SUFICIENTES PARA ENTENDER SI TODO FUNCIONA Y SINO, DEBES PARAR, ANALIZAR Y REPORTARME.
+
+- Deberias revisar manualmente la clasificacion de los primeros 100 productos y luego al azar (con offset y limit) unos 50 productos mas como control de calidad para ajustar el threshold configurado porque hay que tener cuidado con productos como "PC EXO 5260 RETAIL DTI2" que fueron clasificados a pesar de no dar indicios de su categoria.
+
+Solo despues de ajustar el threshod debes avanzar significativamente hasta terminar.
+
+- Control de calidad:
+
+Es obligatorio hacer un control de calidad revisando manualmente los primeros 50 productos y si pasa la prueba, los siguientes 50 y asi hasta los primeros 200 productos asegurando correcta clasificacion.
+
+Algunos errores obvios:
+```
+A "NOTE DELL LAT U I7 16G512" se le asigna ["golosinas"]
+
+A "AIRE ACON BGH BS52WCCR FC" se le asigna ["frutas-y-verduras"]
+
+A "CALEF CTZ 9000TB GN" que es claramente un calefactor o algo similar se le asigna ["gourmetfood"] lo cual es doblemente incorrecto porque "gourmetfood" en todo caso seria "gourmet" o "gourmet food" o "gourmet-food" pero no "gourmetfood"
+```
+
+Puedes usar el comando "php com sql find" con --edit para resetear (por en NULL) las categorias errorneamente asignadas antes de volver a intentar re-clasificar. Sino ejecuta directamente `UPDATE `products` SET `categories`=null WHERE 1;` para la base de datos `zippy`
+
+- Ajusta CategoryMapper.php si has encontrado un error.
+
+Luego de corregir CategoryMapper.php si encuentras contiene errores, debes generar un reporte en un archivo .md dentro del modulo en `packages\boctulus\zippy\docs\issues\`
+
+- Si alguna categoria o producto o mapping de categorias queda con error en la base de datos, asegurate de que quede corregido al final del proceso.

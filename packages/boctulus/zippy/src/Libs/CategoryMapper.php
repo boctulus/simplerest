@@ -162,15 +162,15 @@ class CategoryMapper
      *  - source (e.g. 'llm')
      *  - score (number)
      *  - reasoning (string)
-     * 
-     * - Utiliza primero static::findCategory() con los $category_slots 
-     * Si hay resultado, retornarlo (no seguir) 
-     * 
-     * - Sino, utiliza la strategy por defecto (Ej: LLMMatchingStrategy) para enviando todos los campos en $slots conjuntamente 
-     * con las *categorias existentes devueltas por static::getCategories() 
-     * 
-     * El prompt a usar pide que devuelva una categoria con nivel de confidence suficientemente alto o null / array. 
-     * 
+     *
+     * - Utiliza primero static::findCategory() con los $category_slots
+     * Si hay resultado, lo evalúa antes de retornarlo para evitar mapeos incorrectos
+     *
+     * - Sino, utiliza la strategy por defecto (Ej: LLMMatchingStrategy) para enviando todos los campos en $slots conjuntamente
+     * con las *categorias existentes devueltas por static::getCategories()
+     *
+     * El prompt a usar pide que devuelva una categoria con nivel de confidence suficientemente alto o null / array.
+     *
      */
     public static function resolve(string $raw): array
     {
@@ -184,14 +184,29 @@ class CategoryMapper
         // 1) Buscar coincidencia exacta en categories / mappings
         $found = static::findCategory($raw);
         if ($found) {
-            return [
-                'category_slug' => $found['category_slug'],
-                'category_id' => $found['category_id'] ?? null,
-                'found_in' => $found['found_in'],
-                'created' => false,
-                'score' => 100,
-                'reasoning' => 'Exact match in ' . $found['found_in']
-            ];
+            // Antes de retornar la coincidencia exacta, verificar si es razonable
+            // Comparar si la coincidencia exacta tiene sentido dada la descripción del producto
+            $normalizedRaw = strtolower(Strings::normalize($raw));
+            $categorySlug = $found['category_slug'];
+
+            // Verificar si hay palabras en el producto que no encajan con la categoría encontrada
+            // Por ejemplo, si el producto contiene "PC", "COMPUTER", "CELULAR", etc. pero está categorizado como "golosinas"
+            $isSuspiciousMapping = static::isSuspiciousMapping($normalizedRaw, $categorySlug);
+
+            if ($isSuspiciousMapping) {
+                // Si la coincidencia parece incorrecta, intentar LLM antes de usar el mapping
+                Logger::log("Suspicious mapping detected: '$raw' -> '$categorySlug'. Trying LLM analysis instead.");
+            } else {
+                // La coincidencia parece razonable, retornarla
+                return [
+                    'category_slug' => $found['category_slug'],
+                    'category_id' => $found['category_id'] ?? null,
+                    'found_in' => $found['found_in'],
+                    'created' => false,
+                    'score' => 100,
+                    'reasoning' => 'Exact match in ' . $found['found_in']
+                ];
+            }
         }
 
         // 2) Preparar categorías disponibles
@@ -324,6 +339,19 @@ class CategoryMapper
             // Si ninguna de las condiciones anteriores, continuar con la siguiente estrategia
         }
 
+        // Si no se pudo resolver con LLM pero había una coincidencia anterior, usarla
+        // pero solo si no fue marcada como sospechosa
+        if ($found && !$isSuspiciousMapping) {
+            return [
+                'category_slug' => $found['category_slug'],
+                'category_id' => $found['category_id'] ?? null,
+                'found_in' => $found['found_in'],
+                'created' => false,
+                'score' => 100,
+                'reasoning' => 'Exact match in ' . $found['found_in']
+            ];
+        }
+
         // No se resolvió
         return [
             'category_slug' => null,
@@ -335,7 +363,124 @@ class CategoryMapper
             'is_new' => false
         ];
     }
-    
+
+    /**
+     * Verifica si un mapeo es sospechoso comparando palabras clave
+     */
+    private static function isSuspiciousMapping(string $normalizedRaw, string $categorySlug): bool
+    {
+        // Palabras clave que indican categorías tecnológicas/electrónicas
+        $techKeywords = ['pc', 'comput', 'laptop', 'notebook', 'celular', 'telefono', 'smartphone',
+                        'tablet', 'smart', 'teclado', 'mouse', 'monitor', 'cpu', 'ram', 'hdd',
+                        'ssd', 'camara', 'fono', 'audifon', 'cargador', 'parlante', 'impresor', 'fono', 'cam',
+                        'dell', 'acer', 'lenovo', 'hp', 'note', 'lat', 'i7', 'i5', 'i3', 'intel', 'amd',
+                        'aire acon', 'aireacond', 'aireacondicionado', 'heladera', 'led', 'bgh', 'ctz',
+                        'calefactor', 'calef', 'electro', 'electronic', 'tech', 'tecnologia', 'aire',
+                        'acondicionado', 'bgh', 'bgw', 'calefon', 'calefón', 'termotanque', 'electrodomestico',
+                        'electrodoméstico', 'aparato', 'electronic'];
+
+        // Palabras clave para embutidos/carnes que no deberían estar en 'golosinas' o 'frutas-y-verduras' o 'gourmetfood'
+        $meatKeywords = ['salchi', 'chori', 'embuti', 'jamon', 'jamón', 'mortadela', 'salame', 'peperoni',
+                        'vienna', 'viena', 'frankfurt', 'knackwurst', 'hamburguesa', 'medallon', 'medallón',
+                        'tocino', 'pavo', 'pollo', 'carne', 'vacuna', 'porcina', 'cerdo', 'embut', 'embuti',
+                        'salami', 'salam', 'chori', 'churri', 'bondiola', 'morcilla', 'salame'];
+
+        // Palabras clave que indican categorías de ropa/vestimenta
+        $clothingKeywords = ['remera', 'pantalon', 'campera', 'zapat', 'calzado', 'vestido',
+                            'short', 'buzo', 'camisa', 'medias', 'calza', 'abrig', 'sombrer', 'gorro'];
+
+        // Palabras clave que indican categorías de hogar/bazar
+        $homeKeywords = ['utensilio', 'cocina', 'plato', 'vaso', 'cuchara', 'tenedor', 'cuchillo',
+                        'sarten', 'olla', 'jarra', 'copa', 'taza', 'cubiertos', 'menaje'];
+
+        // Palabras clave para identificar productos frescos que no deberían estar en otras categorías
+        $freshKeywords = ['dce/', 'dce /', 'batata', 'papa', 'membrillo', 'fruta', 'verdura', 'zanahoria',
+                         'cebolla', 'tomate', 'lechuga', 'frut', 'verd', 'fresc', 'naranja', 'manzana'];
+
+        // Palabras clave para panadería que no debería estar en 'frescos'
+        $bakeryKeywords = ['pan ', 'pana', 'panb', 'pani', 'panl', 'panr', 'pano', 'panc', 'panet',
+                          'panque', 'bizco', 'pionono', 'gallet', 'tostada', 'harina'];
+
+        // Palabras clave para productos de bebidas
+        $drinkKeywords = ['agua', 'gaseosa', 'bebida', 'cerveza', 'vino', 'whisky', 'coca', 'pepsi',
+                         'jugo', 'soda', 'tonica', 'gintonic', 'fernet', 'vodka', 'ron', 'bebidas'];
+
+        // Obtener todas las palabras del texto normalizado
+        $words = explode(' ', $normalizedRaw);
+
+        // Verificar si hay coincidencias de palabras clave
+        foreach ($words as $word) {
+            // Si el producto parece tecnológico pero está en categorías de comida, es sospechoso
+            foreach ($techKeywords as $techWord) {
+                if (strpos($word, $techWord) !== false) {
+                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'frescos', 'panaderia', 'lacteos', 'carnes', 'verduleria', 'almacen', 'gourmetfood', 'premium snacks and treats', 'gourmet food'])) {
+                        return true;
+                    }
+                }
+            }
+
+            // Si el producto parece de embutidos pero está en categorías incorrectas, es sospechoso
+            foreach ($meatKeywords as $meatWord) {
+                if (strpos($word, $meatWord) !== false) {
+                    if (in_array($categorySlug, ['golosinas', 'frutas-y-verduras', 'gourmetfood', 'bebidas', 'panaderia'])) {
+                        return true;
+                    }
+                }
+            }
+
+            // Si el producto parece de ropa pero está en comestibles, es sospechoso
+            foreach ($clothingKeywords as $clothingWord) {
+                if (strpos($word, $clothingWord) !== false) {
+                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'frescos', 'panaderia', 'lacteos', 'carnes', 'verduleria', 'almacen', 'gourmetfood'])) {
+                        return true;
+                    }
+                }
+            }
+
+            // Si el producto parece de hogar/bazar pero está en comestibles, es sospechoso
+            foreach ($homeKeywords as $homeWord) {
+                if (strpos($word, $homeWord) !== false) {
+                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'frescos', 'panaderia', 'lacteos', 'carnes', 'verduleria', 'almacen', 'gourmetfood'])) {
+                        return true;
+                    }
+                }
+            }
+
+            // Si el producto parece fresco pero está en categorías incorrectas
+            foreach ($freshKeywords as $freshWord) {
+                if (strpos($word, $freshWord) !== false) {
+                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'galletitas', 'almacen', 'lacteos', 'carnes', 'embutidos', 'gourmetfood']) && !in_array($categorySlug, ['frescos', 'verduleria'])) {
+                        return true;
+                    }
+                }
+            }
+
+            // Si el producto parece de panadería pero está en "frescos" o categorías incorrectas
+            foreach ($bakeryKeywords as $bakeryWord) {
+                if (strpos($word, $bakeryWord) !== false) {
+                    if ($categorySlug === 'frescos') {
+                        return true;
+                    }
+                }
+            }
+
+            // Si el producto parece bebida pero no está en bebidas
+            foreach ($drinkKeywords as $drinkWord) {
+                if (strpos($word, $drinkWord) !== false) {
+                    if ($categorySlug !== 'bebidas' && !in_array($categorySlug, ['golosinas', 'frescos', 'panaderia', 'gourmetfood'])) {
+                        // En este caso es más permisivo, bebidas pueden estar en otras categorías en ciertos casos
+                        // Solo lo consideramos sospechoso si está en categorías claramente inapropiadas
+                        if (in_array($categorySlug, ['golosinas', 'frescos', 'panaderia', 'gourmetfood'])) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Resuelve categorías para un producto completo
      *
