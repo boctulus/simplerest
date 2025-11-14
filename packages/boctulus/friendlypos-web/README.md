@@ -2,6 +2,29 @@
 
 Package friendlypos_web by --author:boctulus.
 
+## Motivation
+
+Este package provee servicios varios a un POS WEB. Es complementario a "openfactura-sdk" para facturacion electronica.
+
+- Utilizar "openfactura-sdk" y sobre el construir una API REST con autenticacion y persistir en base de datos lo necesario. 
+
+- Utilizar "phpqrcode" para generar codigos QR desde `third_party\phpqrcode`
+
+https://phpqrcode.sourceforge.net/
+
+Otra opcion que aparece incluida en el proyecto original es "php-qrcode" basado en proyecto de "Kazuhiko Arase"
+
+https://github.com/chillerlan/php-qrcode
+
+- Utilizar "fpdf" para generar PDFs dado que el proyecto original utiliza "LaravelFpdf"
+
+- Utilizar "SimpleXLSX" desde  `third_party\phpqrcode\shuchkin` para procesar archivos XLS / XLSX
+
+- Utilizar "html5-qrcode.min.js", una cross-platform HTML5 QR code reader si se necesitara poder escanear codigos QR desde el POS WEB
+
+https://github.com/mebjas/html5-qrcodea cross-platform HTML5 QR code reade
+
+
 ## Installation
 
 1. Add the package namespace to `composer.json` autoload section:
