@@ -965,17 +965,13 @@ class ZippyCommand implements ICommand
 
         DB::setConnection('zippy');
 
-        $query = DB::table('products')
-            ->selectRaw('DISTINCT brand')
-            ->whereNotNull('brand')
-            ->whereRaw("brand != ''")
-            ->orderBy('brand', 'ASC');
-
+        $sql = "SELECT DISTINCT brand FROM products WHERE brand IS NOT NULL AND brand != '' ORDER BY brand ASC";
+        
         if ($limit !== null) {
-            $query->limit((int)$limit);
+            $sql .= " LIMIT " . (int)$limit;
         }
 
-        $brands = $query->get();
+        $brands = DB::select($sql);
 
         DB::closeConnection();
 
@@ -1008,19 +1004,17 @@ class ZippyCommand implements ICommand
 
         DB::setConnection('zippy');
 
-        // Obtener marcas únicas
-        $query = DB::table('products')
-            ->selectRaw('DISTINCT brand')
-            ->whereNotNull('brand')
-            ->whereRaw("brand != ''")
-            ->orderBy('brand', 'ASC');
-
+        // Obtener marcas únicas usando SQL directo
+        $sql = "SELECT DISTINCT brand FROM products WHERE brand IS NOT NULL AND brand != '' ORDER BY brand ASC";
+        
         if ($limit !== null) {
-            $query->limit((int)$limit);
+            $sql .= " LIMIT " . (int)$limit;
         }
 
-        $brands = $query->get();
+        $brands = DB::select($sql);
         $total = count($brands);
+
+        dd($brands,'BRANDS'); exit; //
 
         StdOut::print("Marcas a procesar: {$total}\n\n");
 
@@ -1038,6 +1032,7 @@ class ZippyCommand implements ICommand
         $processed = 0;
         $saved = 0;
         $errors = 0;
+
 
         foreach ($brands as $row) {
             $processed++;
@@ -1068,12 +1063,9 @@ class ZippyCommand implements ICommand
 
                     if (!$brandRecord) {
                         // Crear registro en brands si no existe
-                        $brandId = DB::table('brands')->insertGetId([
-                            'brand' => $brand,
-                            'normalized_brand' => Strings::normalize($brand),
-                            'created_at' => date('Y-m-d H:i:s'),
-                            'updated_at' => date('Y-m-d H:i:s')
-                        ]);
+                        $normalizedBrand = Strings::normalize($brand);
+                        DB::insert("INSERT INTO brands (brand, normalized_brand, created_at, updated_at) VALUES (?, ?, NOW(), NOW())", [$brand, $normalizedBrand]);
+                        $brandId = DB::lastInsertId();
                     } else {
                         $brandId = is_array($brandRecord) ? $brandRecord['id'] : $brandRecord->id;
                     }
@@ -1093,12 +1085,7 @@ class ZippyCommand implements ICommand
 
                     if (!$exists) {
                         // Crear registro en brand_categories
-                        DB::table('brand_categories')->insert([
-                            'brand_id' => $brandId,
-                            'category_id' => $categoryId,
-                            'created_at' => date('Y-m-d H:i:s'),
-                            'updated_at' => date('Y-m-d H:i:s')
-                        ]);
+                        DB::insert("INSERT INTO brand_categories (brand_id, category_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())", [$brandId, $categoryId]);
 
                         StdOut::print("  ✅ Registro guardado en brand_categories\n\n");
                         $saved++;
@@ -1496,10 +1483,10 @@ class ZippyCommand implements ICommand
    4. php com zippy category create --name="..." --slug=...
    5. php com zippy category report_issues
 
-🔹 FLUJO 2: Exploración y testing con marcas  [ REVISAR HAY ERRORES ]
-   1. php com zippy brand categorize --limit=10 --dry-run
-   2. php com zippy brand categorize
-   3. php com zippy brand categorize --limit=50
+🔹 FLUJO 2: Exploración y testing con marcas  [ REVISAR ]
+   1. php com zippy brand list_raw
+   2. php com zippy brand categorize --limit=10
+   3. php com zippy brand categorize
 
 🔹 FLUJO 3: Exploración y testing con categorias
    1. php com zippy category list_raw --limit=100
