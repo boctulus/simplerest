@@ -643,6 +643,35 @@ class SqlCommand implements ICommand
 		$count = count($results);
 		StdOut::print("\r\n$count record(s) found\r\n");
 	}
+	
+	/**
+	 * Show subcommands (alias to describe database)
+	 *
+	 * Usage:
+	 *   php com sql show tables '{connection}'
+	 */
+	function show(...$args) {
+		if (empty($args)) {
+			StdOut::print("Error: show subcommand required (tables)\r\n");
+			StdOut::print("Usage: php com sql show tables '{connection}'\r\n");
+			return;
+		}
+
+		$sub = array_shift($args);
+
+		switch ($sub) {
+			case 'tables':
+				// Delegate to describeDatabase to avoid duplicated logic
+				$this->describeDatabase(...$args);
+				break;
+
+			default:
+				StdOut::print("Error: Invalid show subcommand '$sub'. Use 'tables'.\r\n");
+				$this->help();
+				return;
+		}
+	}
+
 
 	function help($name = null, ...$args){
 		$str = <<<STR
@@ -650,7 +679,11 @@ class SqlCommand implements ICommand
 		
 		sql describe database '{connection}'                          List tables in database
 		sql describe table '{connection}.{table}'                     List fields in table
-		
+	
+		# SHOW
+
+		sql show tables '{connection}'                                List tables in connection (alias for 'describe database')
+
 		# LIST
 
 		sql list '{connection}'                                       List tables in database (alias for 'describe database') 
