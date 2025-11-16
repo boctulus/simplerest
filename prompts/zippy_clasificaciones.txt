@@ -35,9 +35,7 @@ Nota: solo debes operar a traves de comandos "php com"
 
 # MARCAS  <------ PRIORITARIO
 
-Crea un comando dentro del grupo "zippy" definido dentro del package "zippy" que releve todas las marcas tal, nombre brand_list_raw() que haga un SELECT DISTINCT
-
-Crea un comando que utilizando un LLM, categorice casda marca y cree entonces un registro en la tabla `brand-categories`.
+Se requiere que el comando `php com zippy brand categorize [ --limit= ] [ --dry-run ]` utilice un LLM, categorice casa marca y cree entonces un registro en la tabla `brand-categories`. Si no hubiera una seguridad absoluta para asignar la categoria (Ej: "ZUCAR FLAKES" hace referencia a un alimento azucarado) ya sea porque es demasiado obvio o porque la marca es conocida (Ej: XIAOMI lo es para smartphones) entonces de alguna forma de marcarse como "DUDOSA" o algo similar.
 
 Ahora si, actualiza el metodo que resuelve la categoria de los productos para que comience utilizando informacion de la tabla `brand-categories` y si hay coincidencia esa categoria deba ser al menos la categoria padre. No podria asignarse una categoria que no tenga como padre o padre del padre,..etc a la categoria encontrada en `brand-categories`
 
