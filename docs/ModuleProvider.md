@@ -86,7 +86,7 @@ Add the ModuleProvider to the `providers` array in `config/config.php`:
 ```php
 'providers' => [
     // ... other providers
-    Boctulus\Simplerest\Modules\xeni\ModuleProvider::class,
+    Boctulus\Simplerest\Modules\Xeni\ModuleProvider::class,
     // ... other providers
 ],
 ```
