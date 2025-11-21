@@ -14,7 +14,8 @@ class TestController extends Controller
     private const SECRET = 'M$72tYWz$3ZJJ71';
     private const BASE_URL = 'https://uat.travelapi.ai';
 
-    private $token;
+    private $signature;
+    private $timestamp;
     private $hotelId;
     private $rateKey;
     private $bookingId;
@@ -51,31 +52,34 @@ class TestController extends Controller
 
     /**
      * UI-Level Explanation:
-     * This test authenticates with the Xeni API to get a session token.
+     * This test authenticates with the Xeni API to get a session signature.
      * In a real UI, this would happen automatically in the background
      * before making any other API calls. The user wouldn't see it.
      */
     public function test_auth()
     {
         echo "<h2>Testing Authentication...</h2>";
-        echo "<p>Attempting to authenticate with Xeni API using provided credentials...</p>";
+        echo "<p>Attempting to generate a signature from Xeni API...</p>";
 
-        // Intentar autenticación con credenciales en el cuerpo (método estándar)
         $client = new ApiClient(self::BASE_URL);
+        
+        $this->timestamp = time();
+
         $payload = [
-            'key' => self::API_KEY,
-            'secret' => self::SECRET
+            'api_key' => self::API_KEY,
+            'secret' => self::SECRET,
+            'timestamp' => $this->timestamp
         ];
 
         $client->setHeaders([
             'Content-Type' => 'application/json'
-        ])->post('/auth/login', $payload);
+        ])->post('/identity/v2/auth/generate', $payload);
 
         $response = $client->getResponse();
 
-        if ($client->status() == 200 && !empty($response['data']['token'])) {
-            $this->token = $response['data']['token'];
-            echo "<p>✓ Authentication successful. Token received.</p>";
+        if ($client->status() == 200 && !empty($response['data']['signature'])) {
+            $this->signature = $response['data']['signature'];
+            echo "<p>✓ Authentication successful. Signature received.</p>";
             return true;
         } else {
             echo "<p>✗ Authentication failed. HTTP Code: " . $client->status() . "</p>";
@@ -88,6 +92,16 @@ class TestController extends Controller
         return false;
     }
 
+    private function getAuthHeader(): string
+    {
+        return sprintf(
+            'XN api_key=%s,signature=%s,timestamp=%s',
+            self::API_KEY,
+            $this->signature,
+            $this->timestamp
+        );
+    }
+
     /**
      * UI-Level Explanation:
      * This test searches for hotels based on specific criteria.
@@ -98,8 +112,8 @@ class TestController extends Controller
     {
         echo "<h2>Testing Hotel Search...</h2>";
 
-        if (empty($this->token)) {
-            echo "<p>Skipping hotel search: No authentication token available.</p>";
+        if (empty($this->signature)) {
+            echo "<p>Skipping hotel search: No authentication signature available.</p>";
             return false;
         }
 
@@ -129,7 +143,7 @@ class TestController extends Controller
         ];
 
         $client->setHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
+            'Authorization' => $this->getAuthHeader(),
             'Content-Type' => 'application/json'
         ])
         ->post('/hotels/search', $payload);
@@ -161,8 +175,8 @@ class TestController extends Controller
     public function test_hotel_rates()
     {
         echo "<h2>Testing Hotel Rates...</h2>";
-        if (empty($this->token)) {
-            echo "<p>Skipping rates test: No authentication token available.</p>";
+        if (empty($this->signature)) {
+            echo "<p>Skipping rates test: No authentication signature available.</p>";
             return false;
         }
 
@@ -178,7 +192,7 @@ class TestController extends Controller
         ];
 
         $client->setHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
+            'Authorization' => $this->getAuthHeader(),
             'Content-Type' => 'application/json'
         ])
         ->post('/hotels/rates', $payload);
@@ -219,8 +233,8 @@ class TestController extends Controller
     public function test_hotel_booking()
     {
         echo "<h2>Testing Hotel Booking...</h2>";
-        if (empty($this->token)) {
-            echo "<p>Skipping booking test: No authentication token available.</p>";
+        if (empty($this->signature)) {
+            echo "<p>Skipping booking test: No authentication signature available.</p>";
             return false;
         }
 
@@ -256,7 +270,7 @@ class TestController extends Controller
         ];
 
         $client->setHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
+            'Authorization' => $this->getAuthHeader(),
             'Content-Type' => 'application/json'
         ])
         ->post('/hotels/booking', $payload);
@@ -290,8 +304,8 @@ class TestController extends Controller
     public function test_booking_cancellation()
     {
         echo "<h2>Testing Booking Cancellation...</h2>";
-        if (empty($this->token)) {
-            echo "<p>Skipping cancellation test: No authentication token available.</p>";
+        if (empty($this->signature)) {
+            echo "<p>Skipping cancellation test: No authentication signature available.</p>";
             return false;
         }
 
@@ -307,7 +321,7 @@ class TestController extends Controller
         ];
 
         $client->setHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
+            'Authorization' => $this->getAuthHeader(),
             'Content-Type' => 'application/json'
         ])
         ->delete('/hotels/booking/cancel', $payload);

@@ -260,6 +260,7 @@ return [
 		Boctulus\WebTest\ServiceProvider::class,
 		Boctulus\LLMProviders\ServiceProvider::class,
 		Boctulus\FriendlyposWeb\ServiceProvider::class,
+		Boctulus\Simplerest\Modules\xeni\ModuleProvider::class,
 		// ...
 		//boctulus\hello_world\HelloServiceProvider::class
 	],
