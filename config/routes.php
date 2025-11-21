@@ -13,11 +13,7 @@ use Boctulus\Simplerest\Modules\Typeform\Typeform;
 
 $route = WebRouter::getInstance();
 
-WebRouter::get('/test/xeni', 'XeniTestController@index');
-
-# Ruta sobre el modulo no funciona
-WebRouter::get('xeni/test', 'Boctulus\Simplerest\Modules\xeni\Controllers\TestController@first_test');
-
+WebRouter::get('xeni/test', 'Boctulus\Simplerest\Modules\xeni\Controllers\TestController@index');
 
 WebRouter::get('sitemap.xml', function(){
 	$sitemap = new SiteMap();
