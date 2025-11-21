@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\modules\xeni\Libs;
+namespace Boctulus\Simplerest\modules\Xeni\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Strings;
 

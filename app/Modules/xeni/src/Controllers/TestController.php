@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Modules\xeni\Controllers;
+namespace Boctulus\Simplerest\Modules\Xeni\Controllers;
 
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\Simplerest\Core\Libs\ApiClient;
