@@ -120,7 +120,10 @@ class OpenFacturaControllerTest extends TestCase
 
         // Create a mock request object
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn($requestBody);
 
         // Create a mock response object that allows for chaining
         $mockResponse = $this->getMockBuilder(Response::class)
@@ -160,7 +163,10 @@ class OpenFacturaControllerTest extends TestCase
         $requestBody = ['someOtherData' => 'value'];
 
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn($requestBody);
 
         // Create a mock response object that allows for chaining
         $mockResponse = $this->getMockBuilder(Response::class)
@@ -196,7 +202,10 @@ class OpenFacturaControllerTest extends TestCase
     {
         // Create a mock request object (though this method doesn't use the body)
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
@@ -224,7 +233,10 @@ class OpenFacturaControllerTest extends TestCase
     public function testGetDTEStatusWithEmptyToken()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -260,7 +272,10 @@ class OpenFacturaControllerTest extends TestCase
         ];
 
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn($requestBody);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
@@ -287,7 +302,10 @@ class OpenFacturaControllerTest extends TestCase
         $requestBody = ['folio' => 12345]; // Missing 'fecha'
 
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn($requestBody);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -327,7 +345,10 @@ class OpenFacturaControllerTest extends TestCase
         ];
 
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn($requestBody);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
@@ -362,7 +383,10 @@ class OpenFacturaControllerTest extends TestCase
         ];
 
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn($requestBody);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -392,7 +416,10 @@ class OpenFacturaControllerTest extends TestCase
     public function testGetTaxpayerWithValidRUT()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
@@ -418,7 +445,10 @@ class OpenFacturaControllerTest extends TestCase
     public function testGetTaxpayerWithEmptyRUT()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -449,7 +479,10 @@ class OpenFacturaControllerTest extends TestCase
     public function testHealthMethod()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
