@@ -221,32 +221,4 @@ WebRouter::get('admin/pagina-dos', function(){
 //	render($content);
 //});
 
-/*
-	OpenFactura API Routes (Facturación Electrónica Chile)
-	Expone el SDK de OpenFactura para consumo desde NodeJS
-*/
-WebRouter::group('api/openfactura', function() {
-	// Health check
-	WebRouter::get('health', 'OpenFacturaController@health');
-
-	// DTEs
-	WebRouter::post('dte/emit', 'OpenFacturaController@emitDTE');
-	WebRouter::get('dte/status/{token}', 'OpenFacturaController@getDTEStatus');
-	WebRouter::post('dte/anular-guia', 'OpenFacturaController@anularGuiaDespacho');
-	WebRouter::post('dte/anular', 'OpenFacturaController@anularDTE');
-
-	// Contribuyentes
-	WebRouter::get('taxpayer/{rut}', 'OpenFacturaController@getTaxpayer');
-
-	// Organización
-	WebRouter::get('organization', 'OpenFacturaController@getOrganization');
-
-	// Registros
-	WebRouter::get('sales-registry/{year}/{month}', 'OpenFacturaController@getSalesRegistry');
-	WebRouter::get('purchase-registry/{year}/{month}', 'OpenFacturaController@getPurchaseRegistry');
-
-	// Documentos
-	WebRouter::get('document/{rut}/{type}/{folio}', 'OpenFacturaController@getDocument');
-});
-
 

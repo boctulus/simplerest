@@ -7,6 +7,14 @@ use Boctulus\Simplerest\Core\Response;
 use Boctulus\OpenfacturaSdk\Factory\OpenFacturaSDKFactory;
 use Boctulus\OpenfacturaSdk\Mocks\OpenFacturaSDKMock;
 
+require_once __DIR__ . '/bootstrap.php';
+
+/**
+ * Prueba unitaria
+ *
+ * Ejecutar con: `./vendor/bin/phpunit {ruta de este archivo}` desde el root del proyecto
+ */
+
 /**
  * OpenFacturaControllerTest
  * 
@@ -20,46 +28,18 @@ class OpenFacturaControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Store original environment values
         $this->originalEnv = [
             'OPENFACTURA_SANDBOX' => getenv('OPENFACTURA_SANDBOX'),
             'OPENFACTURA_API_KEY_DEV' => getenv('OPENFACTURA_API_KEY_DEV'),
             'OPENFACTURA_API_KEY_PROD' => getenv('OPENFACTURA_API_KEY_PROD'),
         ];
-        
+
         // Set test environment variables
         putenv('OPENFACTURA_SANDBOX=true');
         putenv('OPENFACTURA_API_KEY_DEV=test_api_key');
         putenv('OPENFACTURA_API_KEY_PROD=prod_api_key');
-        
-        // Create mock Request and Response objects
-        $this->mockRequest = $this->createMock(Request::class);
-        $this->mockResponse = $this->createMock(Response::class);
-        
-        // Set global request/response objects if needed by the framework
-        if (!function_exists('request')) {
-            function request() {
-                static $mockRequest = null;
-                if ($mockRequest === null) {
-                    $mockRequest = $GLOBALS['mockRequest'] ?? $this->createMock(Request::class);
-                }
-                return $mockRequest;
-            }
-        }
-        
-        if (!function_exists('response')) {
-            function response() {
-                static $mockResponse = null;
-                if ($mockResponse === null) {
-                    $mockResponse = $GLOBALS['mockResponse'] ?? $this->createMock(Response::class);
-                }
-                return $mockResponse;
-            }
-        }
-        
-        // Create the controller instance
-        $this->controller = new OpenFacturaController();
     }
     
     protected function tearDown(): void
@@ -81,7 +61,18 @@ class OpenFacturaControllerTest extends TestCase
      */
     public function testControllerInstantiation()
     {
-        $this->assertInstanceOf(OpenFacturaController::class, $this->controller);
+        // Create mock Request and Response objects
+        $mockRequest = $this->createMock(Request::class);
+        $mockResponse = $this->createMock(Response::class);
+
+        // Set global request/response objects
+        $GLOBALS['mockRequest'] = $mockRequest;
+        $GLOBALS['mockResponse'] = $mockResponse;
+
+        // Create the controller instance
+        $controller = new OpenFacturaController();
+
+        $this->assertInstanceOf(OpenFacturaController::class, $controller);
     }
     
     /**
@@ -112,34 +103,33 @@ class OpenFacturaControllerTest extends TestCase
                 ],
             ]
         ];
-        
+
         // Create a mock request object
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
-        
-        // Replace the request function behavior
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         // Create a mock response object
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
             ->method('status')
             ->with($this->logicalOr(200, 500)); // Could be 200 for success or 500 for SDK mock error
-        
+
         $mockResponse->expects($this->atLeastOnce())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
                        isset($data['timestamp']);
             }));
-            
+
+        // Set global request/response objects
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         // Create a new controller instance to use the global mocks
         $controller = new OpenFacturaController();
-        
-        // This test will primarily check that no PHP errors occur
+
+        // This test will primarily check that no PHP errors occur during controller initialization
         $this->assertInstanceOf(OpenFacturaController::class, $controller);
     }
     
@@ -149,29 +139,28 @@ class OpenFacturaControllerTest extends TestCase
     public function testEmitDTENoDteData()
     {
         $requestBody = ['someOtherData' => 'value'];
-        
+
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
             ->method('status')
             ->with(400);
-        
+
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
-                       $data['success'] === false && 
-                       isset($data['error']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
+                       $data['success'] === false &&
+                       isset($data['error']) &&
                        strpos($data['error'], 'dteData') !== false;
             }));
-            
+
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
     }
     
@@ -183,24 +172,23 @@ class OpenFacturaControllerTest extends TestCase
         // Create a mock request object (though this method doesn't use the body)
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn([]);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
             ->method('status')
             ->with($this->logicalOr(200, 500));
-        
+
         $mockResponse->expects($this->atLeastOnce())
             ->method('json');
-            
+
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
-        
+
         // Call the method directly to test its behavior
         $result = $this->invokeMethod($controller, 'getDTEStatus', ['valid_token']);
-        
+
         $this->assertTrue(true); // If we reach here, no fatal errors occurred
     }
     
@@ -211,26 +199,25 @@ class OpenFacturaControllerTest extends TestCase
     {
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn([]);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
             ->method('status')
             ->with(400);
-        
+
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
-                       $data['success'] === false && 
-                       isset($data['error']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
+                       $data['success'] === false &&
+                       isset($data['error']) &&
                        strpos($data['error'], 'Token') !== false;
             }));
-            
+
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
         $result = $this->invokeMethod($controller, 'getDTEStatus', ['']);
     }
@@ -285,15 +272,16 @@ class OpenFacturaControllerTest extends TestCase
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
-                       $data['success'] === false && 
-                       isset($data['error']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
+                       $data['success'] === false &&
+                       isset($data['error']) &&
                        (strpos($data['error'], 'folio') !== false || strpos($data['error'], 'fecha') !== false);
             }));
-            
+
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
     }
     
@@ -349,26 +337,25 @@ class OpenFacturaControllerTest extends TestCase
         
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
             ->method('status')
             ->with(400);
-        
+
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
-                       $data['success'] === false && 
-                       isset($data['error']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
+                       $data['success'] === false &&
+                       isset($data['error']) &&
                        strpos($data['error'], '61') !== false;
             }));
-            
+
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
     }
     
@@ -379,22 +366,21 @@ class OpenFacturaControllerTest extends TestCase
     {
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn([]);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
             ->method('status')
             ->with($this->logicalOr(200, 500));
-        
+
         $mockResponse->expects($this->atLeastOnce())
             ->method('json');
-            
+
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
         $result = $this->invokeMethod($controller, 'getTaxpayer', ['76399751-9']);
-        
+
         $this->assertTrue(true);
     }
     
@@ -405,26 +391,25 @@ class OpenFacturaControllerTest extends TestCase
     {
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn([]);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
             ->method('status')
             ->with(400);
-        
+
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
-                       $data['success'] === false && 
-                       isset($data['error']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
+                       $data['success'] === false &&
+                       isset($data['error']) &&
                        strpos($data['error'], 'RUT') !== false;
             }));
-            
+
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
         $result = $this->invokeMethod($controller, 'getTaxpayer', ['']);
     }
@@ -436,21 +421,20 @@ class OpenFacturaControllerTest extends TestCase
     {
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn([]);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
             ->method('status')
             ->with($this->logicalOr(200, 500));
-        
+
         $mockResponse->expects($this->atLeastOnce())
             ->method('json');
-            
+
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
-        
+
         $this->assertTrue(true);
     }
     
