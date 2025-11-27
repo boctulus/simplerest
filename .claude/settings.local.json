@@ -73,7 +73,8 @@
       "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\packages\\boctulus\\friendlypos-web\\src\\Models\\SomeModel.php\")",
       "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\packages\\boctulus\\friendlypos-web\\src\\Models\\TestFormatModel.php\")",
       "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\app\\Models\\main\\SomeModel.php && del D:\\laragon\\www\\simplerest\\app\\Models\\main\\OtherModel.php\")",
-      "Bash(nul)"
+      "Bash(nul)",
+      "Bash(test:*)"
     ],
     "deny": [],
     "ask": []

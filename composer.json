@@ -45,8 +45,6 @@
    "autoload":{
       "psr-4":{
          "Boctulus\\Simplerest\\":"app/",
-         "Boctulus\\Simplerest\\Modules\\Xeni\\": "app/Modules/Xeni/src/",
-         "Boctulus\\Simplerest\\Modules\\ComponentTest\\": "app/Modules/ComponentTest/src/",
          "Boctulus\\FineGrainedACL\\":"packages/boctulus/fine-grained-acl/src",
          "Boctulus\\BasicACL\\":"packages/boctulus/basic-acl/src",
          "Boctulus\\Zippy\\":"packages/boctulus/zippy/src",

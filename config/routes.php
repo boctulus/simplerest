@@ -9,6 +9,7 @@ use Boctulus\Simplerest\Core\WebRouter;
 use Boctulus\Simplerest\Libs\Debug;
 use Boctulus\Simplerest\Modules\TaxCalc\TaxCalc;
 use Boctulus\Simplerest\Modules\Typeform\Typeform;
+use Boctulus\FriendlyposWeb\Controllers\OpenFacturaController;
 
 
 $route = WebRouter::getInstance();

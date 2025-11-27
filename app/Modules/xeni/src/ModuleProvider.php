@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Modules\xeni;
+namespace Boctulus\Simplerest\Modules\Xeni;
 
 use Boctulus\Simplerest\Core\ServiceProvider;
 

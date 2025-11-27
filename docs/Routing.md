@@ -20,6 +20,15 @@
   - [Configuración de Rutas Web](#configuración-de-rutas-web)
   - [Configuración de Rutas CLI](#configuración-de-rutas-cli)
   - [Configuración de Package](#configuración-de-package)
+- [Routing en Modules](#routing-en-modules)
+  - [Diferencias entre Modules y Packages](#diferencias-entre-modules-y-packages)
+  - [Estructura de un Module](#estructura-de-un-module)
+  - [Configuración de Rutas Web en Modules](#configuración-de-rutas-web-en-modules)
+  - [ModuleProvider](#moduleprovider)
+  - [Registro del Module](#registro-del-module)
+  - [Autoloading de Modules](#autoloading-de-modules)
+  - [Ventajas de los Modules](#ventajas-de-los-modules)
+  - [Cuándo usar Modules vs Packages](#cuándo-usar-modules-vs-packages)
 - [Front Controller](#front-controller)
 - [Arquitectura de Handlers](#arquitectura-de-handlers)
   - [Concepto](#concepto)
@@ -745,6 +754,224 @@ php com llm ollama:prompt "¿Cuál es la capital de Francia?"
 php com llm ollama:prompt "Escribe un poema sobre la IA" "mistral"
 ```
 
+
+---
+
+## Routing en Modules
+
+Los módulos son componentes autocontenidos que viven dentro de `app/Modules/` y pueden definir sus propias rutas web y CLI de manera similar a los packages, pero con una diferencia fundamental: **no requieren configuración en composer.json**.
+
+### Diferencias entre Modules y Packages
+
+| Aspecto | Modules | Packages |
+|---------|---------|----------|
+| **Ubicación** | `app/Modules/{ModuleName}/` | `packages/{vendor}/{package}/` |
+| **Autoloading** | ✅ Autoloader personalizado del framework | Composer PSR-4 |
+| **composer.json** | ❌ **NO requerido** | ✅ Requerido |
+| **Distribución** | Copiar carpeta directamente | Via Composer/Packagist |
+| **Configuración** | Solo registro en `config/config.php` | composer.json + config.php |
+| **Portabilidad** | Alta (copiar y pegar) | Media (requiere Composer) |
+
+### Estructura de un Module
+
+```
+app/
+└── Modules/
+    └── ModuleName/
+        ├── assets/
+        ├── config/
+        │   └── routes.php          # Rutas web (WebRouter)
+        ├── database/
+        ├── docs/
+        ├── src/
+        │   ├── Controllers/
+        │   ├── ModuleProvider.php   # ← Punto de entrada
+        │   └── ...
+        ├── tests/
+        └── views/
+```
+
+### Configuración de Rutas Web en Modules
+
+Archivo: `app/Modules/Xeni/config/routes.php`
+
+```php
+<?php
+
+use Boctulus\Simplerest\Core\WebRouter;
+
+// Rutas web del módulo
+WebRouter::get('xeni/v1/test', 'Boctulus\Simplerest\Modules\Xeni\Controllers\V1TestController@index');
+WebRouter::get('xeni/test', 'Boctulus\Simplerest\Modules\Xeni\Controllers\TestController@index');
+
+// Usando grupos
+WebRouter::group('xeni', function() {
+    WebRouter::get('dashboard', 'Boctulus\Simplerest\Modules\Xeni\Controllers\DashboardController@index');
+    WebRouter::get('users', 'Boctulus\Simplerest\Modules\Xeni\Controllers\UserController@list');
+    WebRouter::get('users/{id}', 'Boctulus\Simplerest\Modules\Xeni\Controllers\UserController@show');
+});
+```
+
+### ModuleProvider
+
+El ModuleProvider es similar al ServiceProvider de los packages, pero específico para módulos:
+
+```php
+<?php
+
+namespace Boctulus\Simplerest\Modules\Xeni;
+
+use Boctulus\Simplerest\Core\ServiceProvider;
+
+class ModuleProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap the application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        // Cargar rutas del módulo
+        $routesPath = __DIR__ . '/../config/routes.php';
+        if (file_exists($routesPath)) {
+            include $routesPath;
+        }
+    }
+
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        // Registrar servicios del módulo si es necesario
+    }
+}
+```
+
+### Registro del Module
+
+**Opción 1: Registro Manual** (Recomendado)
+
+Agregar el ModuleProvider al array `providers` en `config/config.php`:
+
+```php
+'providers' => [
+    // ... otros providers
+    Boctulus\Simplerest\Modules\Xeni\ModuleProvider::class,
+    // ... otros providers
+],
+```
+
+**¡Eso es todo!** El módulo ya está funcionando. No es necesario modificar `composer.json`.
+
+**Opción 2: Auto-Discovery** (Experimental)
+
+El framework incluye soporte para auto-discovery de módulos, permitiendo que los ModuleProviders se registren automáticamente sin necesidad de agregarlos manualmente al `config.php`.
+
+⚠️ **Nota**: Esta feature está disponible pero requiere verificar si está habilitada en tu instalación. El registro manual es más explícito y recomendado para producción.
+
+Si el auto-discovery está habilitado, el framework escaneará automáticamente `app/Modules/*/src/ModuleProvider.php` y los registrará. Sin embargo, el registro manual es preferible porque:
+
+- ✅ Más explícito y fácil de rastrear
+- ✅ Mejor control sobre qué módulos están activos
+- ✅ Evita overhead de escaneo de archivos
+- ✅ Mejor para entornos de producción
+
+### Autoloading de Modules
+
+El framework incluye un autoloader personalizado que carga automáticamente las clases de módulos siguiendo la convención:
+
+**Namespace**: `Boctulus\Simplerest\Modules\{ModuleName}\...`
+**Ubicación**: `app/Modules/{ModuleName}/src/...`
+
+**Ejemplo**:
+- Clase: `Boctulus\Simplerest\Modules\Xeni\Controllers\TestController`
+- Archivo: `app/Modules/Xeni/src/Controllers/TestController.php`
+
+El autoloader se registra automáticamente en `app.php` después del autoloader de Composer, proporcionando carga de clases transparente sin necesidad de `composer.json`.
+
+### Uso desde HTTP
+
+```bash
+# Rutas definidas en el ModuleProvider
+GET /xeni/v1/test
+GET /xeni/test
+GET /xeni/dashboard
+GET /xeni/users
+GET /xeni/users/123
+```
+
+### Ventajas de los Modules
+
+✅ **Sin composer.json**: No necesitas agregar nada al autoload de Composer
+✅ **Autoloading automático**: El framework carga las clases transparentemente
+✅ **Portabilidad**: Copia el módulo a otro proyecto y registra el provider
+✅ **Simplicidad**: Solo un paso de configuración (registro en config.php)
+✅ **Ideal para WordPress**: Perfecto para portar funcionalidad a plugins WP
+✅ **Rápido desarrollo**: Menos overhead que packages completos
+
+### Cuándo usar Modules vs Packages
+
+**Usa Modules cuando:**
+- Desarrolles funcionalidad específica del proyecto actual
+- Necesites portabilidad rápida sin dependencias de Composer
+- Estés creando plugins WordPress basados en SimpleRest
+- No requieras distribución pública vía Packagist
+- Quieras desarrollo ágil sin configuración de composer.json
+
+**Usa Packages cuando:**
+- La funcionalidad sea reutilizable entre múltiples proyectos
+- Necesites versionado semántico con Composer
+- Planees distribución pública o privada vía Packagist
+- Requieras gestión de dependencias propias
+- Necesites tests aislados e integración continua
+
+### Ejemplo Completo: Module ComponentTest
+
+Este módulo de ejemplo muestra componentes UI:
+
+**Estructura**:
+```
+app/Modules/ComponentTest/
+├── config/
+│   └── routes.php
+├── src/
+│   ├── Controllers/
+│   │   └── ComponentsController.php
+│   └── ModuleProvider.php
+└── views/
+    └── components.php
+```
+
+**Rutas** (`config/routes.php`):
+```php
+<?php
+
+use Boctulus\Simplerest\Core\WebRouter;
+
+WebRouter::group('components', function() {
+    WebRouter::get('test', 'Boctulus\Simplerest\Modules\ComponentTest\Controllers\ComponentsController@index');
+    WebRouter::get('demo', 'Boctulus\Simplerest\Modules\ComponentTest\Controllers\ComponentsController@demo');
+});
+```
+
+**Registro** (`config/config.php`):
+```php
+'providers' => [
+    // ...
+    Boctulus\Simplerest\Modules\ComponentTest\ModuleProvider::class,
+    // ...
+],
+```
+
+**Uso**:
+```bash
+GET /components/test
+GET /components/demo
+```
 
 ---
 
