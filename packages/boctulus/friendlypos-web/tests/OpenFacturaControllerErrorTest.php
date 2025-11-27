@@ -6,7 +6,18 @@ use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Response;
 use Boctulus\OpenfacturaSdk\Mocks\OpenFacturaSDKMock;
 
-require_once __DIR__ . '/bootstrap.php';
+
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+require_once __DIR__ . '/../../../../vendor/autoload.php';
+
+if (php_sapi_name() != "cli") {
+  return;
+}
+
+require_once __DIR__ . '/../../../../app.php';
 
 /**
  * Prueba unitaria
@@ -346,45 +357,45 @@ class OpenFacturaControllerErrorTest extends TestCase
     {
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn([]);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
             ->method('status')
             ->with(500);
-        
+
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
-                       $data['success'] === false && 
-                       isset($data['error']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
+                       $data['success'] === false &&
+                       isset($data['error']) &&
                        !empty($data['error']);
             }));
-            
+
+        // Set global request/response objects before creating the controller
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
-        
+
         // Access the SDK property and replace it with a mock that throws an exception
         $reflection = new \ReflectionClass($controller);
         $sdkProperty = $reflection->getProperty('sdk');
         $sdkProperty->setAccessible(true);
-        
+
         $mockSdk = $this->getMockBuilder(OpenFacturaSDKMock::class)
             ->disableOriginalConstructor()
             ->getMock();
-            
+
         $mockSdk->method('getOrganization')
             ->willThrowException(new Exception('SDK Error: Failed to get organization info'));
-        
+
         $sdkProperty->setValue($controller, $mockSdk);
-        
+
         // Call the method to trigger the flow
         $reflection->getMethod('getOrganization')->invoke($controller);
-        
+
         $this->assertTrue(true);
     }
     
@@ -395,45 +406,45 @@ class OpenFacturaControllerErrorTest extends TestCase
     {
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn([]);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
             ->method('status')
             ->with(500);
-        
+
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
-                       $data['success'] === false && 
-                       isset($data['error']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
+                       $data['success'] === false &&
+                       isset($data['error']) &&
                        !empty($data['error']);
             }));
-            
+
+        // Set global request/response objects before creating the controller
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
-        
+
         // Access the SDK property and replace it with a mock that throws an exception
         $reflection = new \ReflectionClass($controller);
         $sdkProperty = $reflection->getProperty('sdk');
         $sdkProperty->setAccessible(true);
-        
+
         $mockSdk = $this->getMockBuilder(OpenFacturaSDKMock::class)
             ->disableOriginalConstructor()
             ->getMock();
-            
+
         $mockSdk->method('getSalesRegistry')
             ->willThrowException(new Exception('SDK Error: Failed to get sales registry'));
-        
+
         $sdkProperty->setValue($controller, $mockSdk);
-        
+
         // Call the method to trigger the flow
         $result = $this->invokeMethod($controller, 'getSalesRegistry', ['2025', '01']);
-        
+
         $this->assertTrue(true);
     }
     
@@ -444,45 +455,45 @@ class OpenFacturaControllerErrorTest extends TestCase
     {
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn([]);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
             ->method('status')
             ->with(503); // Service Unavailable
-        
+
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
-                       $data['success'] === false && 
-                       isset($data['error']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
+                       $data['success'] === false &&
+                       isset($data['error']) &&
                        !empty($data['error']);
             }));
-            
+
+        // Set global request/response objects before creating the controller
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
+
         $controller = new OpenFacturaController();
-        
+
         // Access the SDK property and replace it with a mock that throws an exception
         $reflection = new \ReflectionClass($controller);
         $sdkProperty = $reflection->getProperty('sdk');
         $sdkProperty->setAccessible(true);
-        
+
         $mockSdk = $this->getMockBuilder(OpenFacturaSDKMock::class)
             ->disableOriginalConstructor()
             ->getMock();
-            
+
         $mockSdk->method('checkApiStatus')
             ->willThrowException(new Exception('SDK Error: API is unavailable'));
-        
+
         $sdkProperty->setValue($controller, $mockSdk);
-        
+
         // Call the method to trigger the flow
         $reflection->getMethod('health')->invoke($controller);
-        
+
         $this->assertTrue(true);
     }
     
