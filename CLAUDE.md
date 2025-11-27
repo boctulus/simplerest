@@ -123,6 +123,8 @@ Es recomendable busques la documentacion de "routing" (sera algun archivo con ex
 
 No es necesario que ocupes el routes.php principal para el caso de packages/ Cada package puede tener su propio routes.php si hay un ServiceProvider. Revisa la documentacion y otros packages del framework. Podrias estar duplicando codigo de rutas.
 
+Si las rutas no funcionan en un package es posible el package no este correctamente registrado. Importante ejecutar `composer dumpautoload` luego de cualquier registro / actualizacion en el "composer.json" para regenerar el autoload.
+
 
 ## Prácticas Obligatorias
 
@@ -159,11 +161,17 @@ Para principios de desarrollo de alto nivel y modos de trabajo adaptativos, cons
 
 Este documento complementa las directivas operacionales de CLAUDE.md con frameworks mentales y principios filosóficos de desarrollo.
 
+
 ### 3. Testing
 
 - **Unit tests:** Jest para lógica de negocio. Folder: tests/
 - **E2E tests:** Playwright o Selenium para flujos completos
 - Usar / actualiza las credenciales de `docs/login-credentials.md`
+
+#### 3.1 Unit tests
+
+Leer `docs/unit-tests-pruebas-unitarias.md`
+
 
 ### 4. Generar / actualizar documentación
 
