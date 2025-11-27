@@ -6,7 +6,17 @@ use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Response;
 use Boctulus\OpenfacturaSdk\Mocks\OpenFacturaSDKMock;
 
-require_once __DIR__ . '/bootstrap.php';
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+require_once __DIR__ . '/../../../../vendor/autoload.php';
+
+if (php_sapi_name() != "cli") {
+  return;
+}
+
+require_once __DIR__ . '/../../../../app.php';
 
 /**
  * Prueba unitaria
