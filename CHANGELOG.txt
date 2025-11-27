@@ -293,3 +293,4 @@
 [2025-11-27 18:22:33]	0.8.12	OK Tests?
 [2025-11-27 18:33:29]	0.8.12	DOC pruebas unitarias
 [2025-11-27 18:46:29]	0.8.12	Pruebas unitarias -OK
+[2025-11-27 19:03:13]	0.8.12	DOC mejorada

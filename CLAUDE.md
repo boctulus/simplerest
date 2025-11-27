@@ -168,6 +168,15 @@ Este documento complementa las directivas operacionales de CLAUDE.md con framewo
 - **E2E tests:** Playwright o Selenium para flujos completos
 - Usar / actualiza las credenciales de `docs/login-credentials.md`
 
+Importante:
+
+La URL base es la que se define en el archivo `.env` bajo la clave APP_URL
+
+Ej:
+```
+APP_URL=http://simplerest.lan
+```
+
 #### 3.1 Unit tests
 
 Leer `docs/unit-tests-pruebas-unitarias.md`
