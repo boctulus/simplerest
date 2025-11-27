@@ -279,3 +279,5 @@
 [2025-11-21 13:31:02]	0.8.12	ModuleProvider working OK
 [2025-11-21 13:37:07]	0.8.12	DOC ModuleProvider
 [2025-11-21 13:41:42]	0.8.12	Automatic update
+[2025-11-21 10:38:57]\t0.8.12\tModuleProvider: Modules no longer require composer.json entries. Custom autoloader added for automatic module class loading
+[2025-11-27 15:30:32]	0.8.12	Automatic update
