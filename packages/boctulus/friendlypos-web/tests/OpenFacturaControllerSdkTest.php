@@ -174,8 +174,8 @@ class OpenFacturaControllerSdkTest extends TestCase
                        isset($data['timestamp']);
             }));
 
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         // Create the controller instance
         $controller = new OpenFacturaController();
@@ -212,8 +212,8 @@ class OpenFacturaControllerSdkTest extends TestCase
                        isset($data['timestamp']);
             }));
 
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         // Create the controller instance
         $controller = new OpenFacturaController();
@@ -261,7 +261,10 @@ class OpenFacturaControllerSdkTest extends TestCase
         ];
         
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn($requestBody);
         
         $GLOBALS['mockRequest'] = $mockRequest;
         
@@ -314,7 +317,10 @@ class OpenFacturaControllerSdkTest extends TestCase
     public function testGetDTEStatusCompleteFlow()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
         
         $GLOBALS['mockRequest'] = $mockRequest;
         
@@ -356,7 +362,10 @@ class OpenFacturaControllerSdkTest extends TestCase
     public function testHealthCompleteFlow()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
         
         $GLOBALS['mockRequest'] = $mockRequest;
         
