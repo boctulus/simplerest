@@ -18,7 +18,7 @@ This document complements the guidelines in CLAUDE.md and should be used in conj
 
 When encountering complex requirements in the low-code framework:
 
-1. **Technical Observer**: Assess feasibility within the Node.js/Express/Firebase stack
+1. **Technical Observer**: Assess feasibility within current stack
 2. **Architecture Observer**: Consider how the solution fits with the modular system
 3. **Performance Observer**: Evaluate impact on Typesense search, Firebase sync, and UI responsiveness
 4. **Integration Observer**: Plan for Firebase ↔ Typesense synchronization and UI component integration

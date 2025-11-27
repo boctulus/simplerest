@@ -117,6 +117,13 @@ php com help
 - Consulta la documentación específica del módulo / componente / paquete dentro del modulo / componente / paquete suele haber un archivo .md y tambien verifica dentro de `docs\`
 - Antes de emprender el desarrollo de una libreria compleja que por su caracter general podria existir ya desarrollada (ya sea como libreria, pacakge, etc) debes hacer una busqueda para asegurarte no exista ya una solucion "open source" que se pueda utilizar. En caso de existir pero tener una API distinta a la solicitada evaluar construir un adapter o wrapper sobre la misma. 
 
+#### Routing
+
+Es recomendable busques la documentacion de "routing" (sera algun archivo con extension .md) del framework.
+
+No es necesario que ocupes el routes.php principal para el caso de packages/ Cada package puede tener su propio routes.php si hay un ServiceProvider. Revisa la documentacion y otros packages del framework. Podrias estar duplicando codigo de rutas.
+
+
 ## Prácticas Obligatorias
 
 -   Tener en cuenta los patrones existentes y seguirlos con la salvedad de que si fuera necesario cambiar o implementar uno nuevo debe exponerse el problema, justificar el nuevo patron y consultar antes de implementar.  
