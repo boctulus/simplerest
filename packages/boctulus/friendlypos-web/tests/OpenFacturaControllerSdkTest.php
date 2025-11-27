@@ -50,7 +50,7 @@ class OpenFacturaControllerSdkTest extends TestCase
         putenv('OPENFACTURA_API_KEY_DEV=test_api_key');
         putenv('OPENFACTURA_API_KEY_PROD=prod_api_key');
     }
-    
+
     protected function tearDown(): void
     {
         // Restore original environment values
@@ -61,7 +61,11 @@ class OpenFacturaControllerSdkTest extends TestCase
                 putenv($key); // Remove the environment variable
             }
         }
-        
+
+        // Reset singleton instances to clean state
+        \Boctulus\Simplerest\Core\Request::setInstance(null);
+        \Boctulus\Simplerest\Core\Response::setInstance(null);
+
         parent::tearDown();
     }
     
@@ -74,9 +78,9 @@ class OpenFacturaControllerSdkTest extends TestCase
         $mockRequest = $this->createMock(Request::class);
         $mockResponse = $this->createMock(Response::class);
 
-        // Set global request/response objects
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         // Create the controller instance
         $controller = new OpenFacturaController();
