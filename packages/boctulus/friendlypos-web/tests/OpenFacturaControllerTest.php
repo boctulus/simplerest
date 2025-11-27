@@ -122,11 +122,16 @@ class OpenFacturaControllerTest extends TestCase
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
 
-        // Create a mock response object
-        $mockResponse = $this->createMock(Response::class);
+        // Create a mock response object that allows for chaining
+        $mockResponse = $this->getMockBuilder(Response::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // Configure the status method to return the same instance for chaining
         $mockResponse->expects($this->atLeastOnce())
             ->method('status')
-            ->with($this->logicalOr(200, 500)); // Could be 200 for success or 500 for SDK mock error
+            ->with($this->logicalOr(200, 500))
+            ->willReturn($mockResponse);
 
         $mockResponse->expects($this->atLeastOnce())
             ->method('json')
@@ -157,10 +162,15 @@ class OpenFacturaControllerTest extends TestCase
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
 
-        $mockResponse = $this->createMock(Response::class);
+        // Create a mock response object that allows for chaining
+        $mockResponse = $this->getMockBuilder(Response::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $mockResponse->expects($this->once())
             ->method('status')
-            ->with(400);
+            ->with(400)
+            ->willReturn($mockResponse);
 
         $mockResponse->expects($this->once())
             ->method('json')
@@ -231,8 +241,9 @@ class OpenFacturaControllerTest extends TestCase
                        strpos($data['error'], 'Token') !== false;
             }));
 
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
         $result = $this->invokeMethod($controller, 'getDTEStatus', ['']);
@@ -247,24 +258,24 @@ class OpenFacturaControllerTest extends TestCase
             'folio' => 12345,
             'fecha' => '2025-01-15'
         ];
-        
+
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
             ->method('status')
             ->with($this->logicalOr(200, 500));
-        
+
         $mockResponse->expects($this->atLeastOnce())
             ->method('json');
-            
-        $GLOBALS['mockResponse'] = $mockResponse;
-        
+
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
+
         $controller = new OpenFacturaController();
-        
+
         $this->assertTrue(true); // If we reach here, no fatal errors occurred
     }
     
@@ -274,17 +285,15 @@ class OpenFacturaControllerTest extends TestCase
     public function testAnularGuiaDespachoMissingData()
     {
         $requestBody = ['folio' => 12345]; // Missing 'fecha'
-        
+
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
             ->method('status')
             ->with(400);
-        
+
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
@@ -295,8 +304,9 @@ class OpenFacturaControllerTest extends TestCase
                        (strpos($data['error'], 'folio') !== false || strpos($data['error'], 'fecha') !== false);
             }));
 
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
     }
@@ -315,24 +325,24 @@ class OpenFacturaControllerTest extends TestCase
                 ],
             ]
         ];
-        
+
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
-        
-        $GLOBALS['mockRequest'] = $mockRequest;
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
             ->method('status')
             ->with($this->logicalOr(200, 500));
-        
+
         $mockResponse->expects($this->atLeastOnce())
             ->method('json');
-            
-        $GLOBALS['mockResponse'] = $mockResponse;
-        
+
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
+
         $controller = new OpenFacturaController();
-        
+
         $this->assertTrue(true); // If we reach here, no fatal errors occurred
     }
     
@@ -350,7 +360,7 @@ class OpenFacturaControllerTest extends TestCase
                 ],
             ]
         ];
-        
+
         $mockRequest = $this->createMock(Request::class);
         $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
 
@@ -369,8 +379,9 @@ class OpenFacturaControllerTest extends TestCase
                        strpos($data['error'], '61') !== false;
             }));
 
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
     }
@@ -391,8 +402,9 @@ class OpenFacturaControllerTest extends TestCase
         $mockResponse->expects($this->atLeastOnce())
             ->method('json');
 
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
         $result = $this->invokeMethod($controller, 'getTaxpayer', ['76399751-9']);
@@ -423,8 +435,9 @@ class OpenFacturaControllerTest extends TestCase
                        strpos($data['error'], 'RUT') !== false;
             }));
 
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
         $result = $this->invokeMethod($controller, 'getTaxpayer', ['']);
@@ -446,8 +459,9 @@ class OpenFacturaControllerTest extends TestCase
         $mockResponse->expects($this->atLeastOnce())
             ->method('json');
 
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
 
