@@ -30,6 +30,47 @@ if (!file_exists(ROOT_PATH . 'vendor'. DIRECTORY_SEPARATOR .'autoload.php')){
 
 require_once __DIR__.'/vendor/autoload.php';
 
+/*
+    Custom autoloader for Modules
+
+    This autoloader allows modules to be loaded without requiring composer.json entries.
+    Modules follow the namespace convention: Boctulus\Simplerest\Modules\{ModuleName}\...
+    Files are located in: app/Modules/{ModuleName}/src/...
+*/
+spl_autoload_register(function ($class) {
+    $namespace_prefix = 'Boctulus\\Simplerest\\Modules\\';
+
+    // Check if the class uses the Modules namespace
+    if (strpos($class, $namespace_prefix) !== 0) {
+        return;
+    }
+
+    // Remove the base namespace prefix
+    $relative_class = substr($class, strlen($namespace_prefix));
+
+    // Split by namespace separator to get module name
+    $parts = explode('\\', $relative_class);
+    if (count($parts) < 1) {
+        return;
+    }
+
+    $module_name = $parts[0];
+    $class_path = implode('\\', array_slice($parts, 1));
+
+    // Convert namespace to file path
+    $file_path = str_replace('\\', DIRECTORY_SEPARATOR, $class_path);
+
+    // Build the full file path
+    $file = __DIR__ . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Modules'
+          . DIRECTORY_SEPARATOR . $module_name . DIRECTORY_SEPARATOR . 'src'
+          . DIRECTORY_SEPARATOR . $file_path . '.php';
+
+    // If the file exists, require it
+    if (file_exists($file)) {
+        require_once $file;
+    }
+});
+
 if (class_exists('Dotenv\\Dotenv')){
     $class  = Dotenv\Dotenv::class;
     $dotenv = $class::createImmutable(__DIR__);
