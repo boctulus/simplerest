@@ -35,6 +35,8 @@ Esta carpeta contiene o podria contentener documentación crítica del proyecto.
 
 Ademas leer el archivo `README.md` a nivel de root del proyecto. 
 
+Debes leer la documentacion pertinente interna al module / package / component que vayas a utilizar que generalmente son archivos .md internos.
+
 
 ### Archivos Clave en `docs/`
 
@@ -115,6 +117,15 @@ php com help
 - Consulta la documentación específica del módulo / componente / paquete dentro del modulo / componente / paquete suele haber un archivo .md y tambien verifica dentro de `docs\`
 - Antes de emprender el desarrollo de una libreria compleja que por su caracter general podria existir ya desarrollada (ya sea como libreria, pacakge, etc) debes hacer una busqueda para asegurarte no exista ya una solucion "open source" que se pueda utilizar. En caso de existir pero tener una API distinta a la solicitada evaluar construir un adapter o wrapper sobre la misma. 
 
+#### Routing
+
+Es recomendable busques la documentacion de "routing" (sera algun archivo con extension .md) del framework.
+
+No es necesario que ocupes el routes.php principal para el caso de packages/ Cada package puede tener su propio routes.php si hay un ServiceProvider. Revisa la documentacion y otros packages del framework. Podrias estar duplicando codigo de rutas.
+
+Si las rutas no funcionan en un package es posible el package no este correctamente registrado. Importante ejecutar `composer dumpautoload` luego de cualquier registro / actualizacion en el "composer.json" para regenerar el autoload.
+
+
 ## Prácticas Obligatorias
 
 -   Tener en cuenta los patrones existentes y seguirlos con la salvedad de que si fuera necesario cambiar o implementar uno nuevo debe exponerse el problema, justificar el nuevo patron y consultar antes de implementar.  
@@ -150,11 +161,26 @@ Para principios de desarrollo de alto nivel y modos de trabajo adaptativos, cons
 
 Este documento complementa las directivas operacionales de CLAUDE.md con frameworks mentales y principios filosóficos de desarrollo.
 
+
 ### 3. Testing
 
 - **Unit tests:** Jest para lógica de negocio. Folder: tests/
 - **E2E tests:** Playwright o Selenium para flujos completos
 - Usar / actualiza las credenciales de `docs/login-credentials.md`
+
+Importante:
+
+La URL base es la que se define en el archivo `.env` bajo la clave APP_URL
+
+Ej:
+```
+APP_URL=http://simplerest.lan
+```
+
+#### 3.1 Unit tests
+
+Leer `docs/unit-tests-pruebas-unitarias.md`
+
 
 ### 4. Generar / actualizar documentación
 
