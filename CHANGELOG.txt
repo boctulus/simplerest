@@ -292,3 +292,4 @@
 [2025-11-27 18:12:03]	0.8.12	Automatic update
 [2025-11-27 18:22:33]	0.8.12	OK Tests?
 [2025-11-27 18:33:29]	0.8.12	DOC pruebas unitarias
+[2025-11-27 18:46:29]	0.8.12	Pruebas unitarias -OK
