@@ -6,6 +6,14 @@ use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Response;
 use Boctulus\OpenfacturaSdk\Mocks\OpenFacturaSDKMock;
 
+require_once __DIR__ . '/bootstrap.php';
+
+/**
+ * Prueba unitaria
+ *
+ * Ejecutar con: `./vendor/bin/phpunit {ruta de este archivo}` desde el root del proyecto
+ */
+
 /**
  * OpenFacturaControllerSdkTest
  * 
@@ -19,21 +27,18 @@ class OpenFacturaControllerSdkTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Store original environment values
         $this->originalEnv = [
             'OPENFACTURA_SANDBOX' => getenv('OPENFACTURA_SANDBOX'),
             'OPENFACTURA_API_KEY_DEV' => getenv('OPENFACTURA_API_KEY_DEV'),
             'OPENFACTURA_API_KEY_PROD' => getenv('OPENFACTURA_API_KEY_PROD'),
         ];
-        
+
         // Set test environment variables
         putenv('OPENFACTURA_SANDBOX=true');
         putenv('OPENFACTURA_API_KEY_DEV=test_api_key');
         putenv('OPENFACTURA_API_KEY_PROD=prod_api_key');
-        
-        // Create the controller instance
-        $this->controller = new OpenFacturaController();
     }
     
     protected function tearDown(): void
@@ -55,13 +60,24 @@ class OpenFacturaControllerSdkTest extends TestCase
      */
     public function testSdkInitialization()
     {
+        // Create mock Request and Response objects
+        $mockRequest = $this->createMock(Request::class);
+        $mockResponse = $this->createMock(Response::class);
+
+        // Set global request/response objects
+        $GLOBALS['mockRequest'] = $mockRequest;
+        $GLOBALS['mockResponse'] = $mockResponse;
+
+        // Create the controller instance
+        $controller = new OpenFacturaController();
+
         // Use reflection to access the private sdk property
-        $reflection = new \ReflectionClass($this->controller);
+        $reflection = new \ReflectionClass($controller);
         $sdkProperty = $reflection->getProperty('sdk');
         $sdkProperty->setAccessible(true);
-        
-        $sdk = $sdkProperty->getValue($this->controller);
-        
+
+        $sdk = $sdkProperty->getValue($controller);
+
         // The SDK should be initialized and should be the mock if we're in test environment
         $this->assertNotNull($sdk);
     }
@@ -127,37 +143,36 @@ class OpenFacturaControllerSdkTest extends TestCase
      */
     public function testSuccessResponse()
     {
-        $reflection = new \ReflectionClass($this->controller);
-        $method = $reflection->getMethod('success');
-        $method->setAccessible(true);
-        
+        // Create mock Request and Response objects
+        $mockRequest = $this->createMock(Request::class);
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
             ->method('status')
             ->with(200);
-        
+
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
-                       $data['success'] === true && 
-                       isset($data['data']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
+                       $data['success'] === true &&
+                       isset($data['data']) &&
                        isset($data['timestamp']);
             }));
-        
+
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
-        // Temporarily replace the response function to use our mock
-        if (!function_exists('response')) {
-            function response() {
-                return $GLOBALS['mockResponse'];
-            }
-        }
-        
+
+        // Create the controller instance
+        $controller = new OpenFacturaController();
+
+        $reflection = new \ReflectionClass($controller);
+        $method = $reflection->getMethod('success');
+        $method->setAccessible(true);
+
         // This will call response()->status() and response()->json()
-        $result = $method->invoke($this->controller, ['test' => 'data'], 200);
-        
+        $result = $method->invoke($controller, ['test' => 'data'], 200);
+
         $this->assertNull($result); // The method returns void, just checks that no error occurred
     }
     
@@ -166,37 +181,36 @@ class OpenFacturaControllerSdkTest extends TestCase
      */
     public function testErrorResponse()
     {
-        $reflection = new \ReflectionClass($this->controller);
-        $method = $reflection->getMethod('error');
-        $method->setAccessible(true);
-        
+        // Create mock Request and Response objects
+        $mockRequest = $this->createMock(Request::class);
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
             ->method('status')
             ->with(400);
-        
+
         $mockResponse->expects($this->once())
             ->method('json')
             ->with($this->callback(function($data) {
-                return is_array($data) && 
-                       isset($data['success']) && 
-                       $data['success'] === false && 
-                       isset($data['error']) && 
+                return is_array($data) &&
+                       isset($data['success']) &&
+                       $data['success'] === false &&
+                       isset($data['error']) &&
                        isset($data['timestamp']);
             }));
-        
+
+        $GLOBALS['mockRequest'] = $mockRequest;
         $GLOBALS['mockResponse'] = $mockResponse;
-        
-        // Temporarily replace the response function to use our mock
-        if (!function_exists('response')) {
-            function response() {
-                return $GLOBALS['mockResponse'];
-            }
-        }
-        
+
+        // Create the controller instance
+        $controller = new OpenFacturaController();
+
+        $reflection = new \ReflectionClass($controller);
+        $method = $reflection->getMethod('error');
+        $method->setAccessible(true);
+
         // This will call response()->status() and response()->json()
-        $result = $method->invoke($this->controller, 'Test error message', 400);
-        
+        $result = $method->invoke($controller, 'Test error message', 400);
+
         $this->assertNull($result); // The method returns void, just checks that no error occurred
     }
     
