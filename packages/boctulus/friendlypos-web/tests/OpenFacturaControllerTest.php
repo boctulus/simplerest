@@ -151,8 +151,10 @@ class OpenFacturaControllerTest extends TestCase
         // Create a new controller instance to use the global mocks
         $controller = new OpenFacturaController();
 
-        // This test will primarily check that no PHP errors occur during controller initialization
-        $this->assertInstanceOf(OpenFacturaController::class, $controller);
+        // Invoke the method being tested
+        $reflection = new \ReflectionClass($controller);
+        $method = $reflection->getMethod('emitDTE');
+        $method->invoke($controller);
     }
     
     /**
@@ -193,8 +195,13 @@ class OpenFacturaControllerTest extends TestCase
         \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
+
+        // Invoke the method being tested
+        $reflection = new \ReflectionClass($controller);
+        $method = $reflection->getMethod('emitDTE');
+        $method->invoke($controller);
     }
-    
+
     /**
      * Test getDTEStatus method with valid token
      */
@@ -291,9 +298,12 @@ class OpenFacturaControllerTest extends TestCase
 
         $controller = new OpenFacturaController();
 
-        $this->assertTrue(true); // If we reach here, no fatal errors occurred
+        // Invoke the method being tested
+        $reflection = new \ReflectionClass($controller);
+        $method = $reflection->getMethod('anularGuiaDespacho');
+        $method->invoke($controller);
     }
-    
+
     /**
      * Test anularGuiaDespacho method with missing data
      */
@@ -327,8 +337,13 @@ class OpenFacturaControllerTest extends TestCase
         \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
+
+        // Invoke the method being tested
+        $reflection = new \ReflectionClass($controller);
+        $method = $reflection->getMethod('anularGuiaDespacho');
+        $method->invoke($controller);
     }
-    
+
     /**
      * Test anularDTE method with valid data
      */
@@ -364,9 +379,12 @@ class OpenFacturaControllerTest extends TestCase
 
         $controller = new OpenFacturaController();
 
-        $this->assertTrue(true); // If we reach here, no fatal errors occurred
+        // Invoke the method being tested
+        $reflection = new \ReflectionClass($controller);
+        $method = $reflection->getMethod('anularDTE');
+        $method->invoke($controller);
     }
-    
+
     /**
      * Test anularDTE method with wrong DTE type
      */
@@ -408,8 +426,13 @@ class OpenFacturaControllerTest extends TestCase
         \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
+
+        // Invoke the method being tested
+        $reflection = new \ReflectionClass($controller);
+        $method = $reflection->getMethod('anularDTE');
+        $method->invoke($controller);
     }
-    
+
     /**
      * Test getTaxpayer method with valid RUT
      */
@@ -498,7 +521,10 @@ class OpenFacturaControllerTest extends TestCase
 
         $controller = new OpenFacturaController();
 
-        $this->assertTrue(true);
+        // Invoke the method being tested
+        $reflection = new \ReflectionClass($controller);
+        $method = $reflection->getMethod('health');
+        $method->invoke($controller);
     }
     
     /**
