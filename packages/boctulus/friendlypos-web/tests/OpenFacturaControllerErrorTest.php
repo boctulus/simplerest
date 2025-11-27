@@ -100,7 +100,10 @@ class OpenFacturaControllerErrorTest extends TestCase
 
         // Create mock Request and Response objects
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn($requestBody);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -117,9 +120,9 @@ class OpenFacturaControllerErrorTest extends TestCase
                        !empty($data['error']);
             }));
 
-        // Set global request/response objects before creating the controller
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances before creating the controller
+        Request::setInstance($mockRequest);
+        Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
 
@@ -149,7 +152,10 @@ class OpenFacturaControllerErrorTest extends TestCase
     public function testGetDTEStatusWithSdkException()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -166,9 +172,9 @@ class OpenFacturaControllerErrorTest extends TestCase
                        !empty($data['error']);
             }));
 
-        // Set global request/response objects before creating the controller
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances before creating the controller
+        Request::setInstance($mockRequest);
+        Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
 
@@ -203,7 +209,10 @@ class OpenFacturaControllerErrorTest extends TestCase
         ];
 
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn($requestBody);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -220,9 +229,9 @@ class OpenFacturaControllerErrorTest extends TestCase
                        !empty($data['error']);
             }));
 
-        // Set global request/response objects before creating the controller
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances before creating the controller
+        Request::setInstance($mockRequest);
+        Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
 
@@ -262,7 +271,10 @@ class OpenFacturaControllerErrorTest extends TestCase
         ];
 
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn($requestBody);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn($requestBody);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -279,9 +291,9 @@ class OpenFacturaControllerErrorTest extends TestCase
                        !empty($data['error']);
             }));
 
-        // Set global request/response objects before creating the controller
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances before creating the controller
+        Request::setInstance($mockRequest);
+        Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
 
@@ -311,7 +323,10 @@ class OpenFacturaControllerErrorTest extends TestCase
     public function testGetTaxpayerWithSdkException()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -328,9 +343,9 @@ class OpenFacturaControllerErrorTest extends TestCase
                        !empty($data['error']);
             }));
 
-        // Set global request/response objects before creating the controller
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances before creating the controller
+        Request::setInstance($mockRequest);
+        Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
 
@@ -360,7 +375,10 @@ class OpenFacturaControllerErrorTest extends TestCase
     public function testGetOrganizationWithSdkException()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -377,9 +395,9 @@ class OpenFacturaControllerErrorTest extends TestCase
                        !empty($data['error']);
             }));
 
-        // Set global request/response objects before creating the controller
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances before creating the controller
+        Request::setInstance($mockRequest);
+        Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
 
@@ -409,7 +427,10 @@ class OpenFacturaControllerErrorTest extends TestCase
     public function testGetSalesRegistryWithSdkException()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -426,9 +447,9 @@ class OpenFacturaControllerErrorTest extends TestCase
                        !empty($data['error']);
             }));
 
-        // Set global request/response objects before creating the controller
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances before creating the controller
+        Request::setInstance($mockRequest);
+        Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
 
@@ -458,7 +479,10 @@ class OpenFacturaControllerErrorTest extends TestCase
     public function testHealthWithSdkException()
     {
         $mockRequest = $this->createMock(Request::class);
-        $mockRequest->method('getBody')->with(true)->willReturn([]);
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with(true)
+            ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -475,9 +499,9 @@ class OpenFacturaControllerErrorTest extends TestCase
                        !empty($data['error']);
             }));
 
-        // Set global request/response objects before creating the controller
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances before creating the controller
+        Request::setInstance($mockRequest);
+        Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
 
