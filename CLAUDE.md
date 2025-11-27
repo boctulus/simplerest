@@ -35,6 +35,8 @@ Esta carpeta contiene o podria contentener documentación crítica del proyecto.
 
 Ademas leer el archivo `README.md` a nivel de root del proyecto. 
 
+Debes leer la documentacion pertinente interna al module / package / component que vayas a utilizar que generalmente son archivos .md internos.
+
 
 ### Archivos Clave en `docs/`
 
