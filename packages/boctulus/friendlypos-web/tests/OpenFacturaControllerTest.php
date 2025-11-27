@@ -7,7 +7,17 @@ use Boctulus\Simplerest\Core\Response;
 use Boctulus\OpenfacturaSdk\Factory\OpenFacturaSDKFactory;
 use Boctulus\OpenfacturaSdk\Mocks\OpenFacturaSDKMock;
 
-require_once __DIR__ . '/bootstrap.php';
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+require_once __DIR__ . '/../../../../vendor/autoload.php';
+
+if (php_sapi_name() != "cli") {
+  return;
+}
+
+require_once __DIR__ . '/../../../../app.php';
 
 /**
  * Prueba unitaria
@@ -41,7 +51,7 @@ class OpenFacturaControllerTest extends TestCase
         putenv('OPENFACTURA_API_KEY_DEV=test_api_key');
         putenv('OPENFACTURA_API_KEY_PROD=prod_api_key');
     }
-    
+
     protected function tearDown(): void
     {
         // Restore original environment values
@@ -52,7 +62,11 @@ class OpenFacturaControllerTest extends TestCase
                 putenv($key); // Remove the environment variable
             }
         }
-        
+
+        // Reset singleton instances to clean state
+        \Boctulus\Simplerest\Core\Request::setInstance(null);
+        \Boctulus\Simplerest\Core\Response::setInstance(null);
+
         parent::tearDown();
     }
     
@@ -65,9 +79,9 @@ class OpenFacturaControllerTest extends TestCase
         $mockRequest = $this->createMock(Request::class);
         $mockResponse = $this->createMock(Response::class);
 
-        // Set global request/response objects
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         // Create the controller instance
         $controller = new OpenFacturaController();
@@ -122,9 +136,9 @@ class OpenFacturaControllerTest extends TestCase
                        isset($data['timestamp']);
             }));
 
-        // Set global request/response objects
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         // Create a new controller instance to use the global mocks
         $controller = new OpenFacturaController();
@@ -158,8 +172,9 @@ class OpenFacturaControllerTest extends TestCase
                        strpos($data['error'], 'dteData') !== false;
             }));
 
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
     }
@@ -181,8 +196,9 @@ class OpenFacturaControllerTest extends TestCase
         $mockResponse->expects($this->atLeastOnce())
             ->method('json');
 
-        $GLOBALS['mockRequest'] = $mockRequest;
-        $GLOBALS['mockResponse'] = $mockResponse;
+        // Set singleton instances for testing
+        \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
+        \Boctulus\Simplerest\Core\Response::setInstance($mockResponse);
 
         $controller = new OpenFacturaController();
 
