@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\modules\Xeni;
+namespace Boctulus\Simplerest\Modules\Xeni;
 
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;

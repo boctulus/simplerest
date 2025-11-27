@@ -91,6 +91,16 @@ Add the ModuleProvider to the `providers` array in `config/config.php`:
 ],
 ```
 
+**That's it!** No need to modify `composer.json`. The framework includes a custom autoloader that automatically loads module classes following the namespace convention `Boctulus\Simplerest\Modules\{ModuleName}\...`
+
+### Important Notes About Autoloading
+
+- **No composer.json required**: Modules do NOT need to be added to the `composer.json` autoload section
+- **Automatic class loading**: The framework's custom autoloader handles module classes automatically
+- **Namespace convention**: Module classes must follow the namespace pattern: `Boctulus\Simplerest\Modules\{ModuleName}\...`
+- **File location**: Module source files must be located in `app/Modules/{ModuleName}/src/`
+- **Zero configuration**: Simply register the ModuleProvider in `config.php` and you're done
+
 ## File Structure Convention
 
 Recommended module structure:
@@ -169,11 +179,35 @@ ModuleProviders follow the same pattern as package ServiceProviders, ensuring co
 
 The main difference is that ModuleProviders are for application modules (in `app/Modules/`) while package ServiceProviders are for external packages (in `packages/`).
 
+## How Module Autoloading Works
+
+The framework includes a custom PSR-4-compliant autoloader specifically designed for modules. This autoloader is registered in `app.php` immediately after Composer's autoloader.
+
+### Autoloader Logic
+
+When a class is requested that follows the pattern `Boctulus\Simplerest\Modules\{ModuleName}\...`, the autoloader:
+
+1. Extracts the module name from the namespace
+2. Converts the remaining namespace to a file path
+3. Looks for the file in `app/Modules/{ModuleName}/src/`
+4. Automatically loads the file if it exists
+
+### Example
+
+For the class `Boctulus\Simplerest\Modules\Xeni\Controllers\TestController`:
+
+- Module name: `Xeni`
+- Class path: `Controllers\TestController`
+- File location: `app/Modules/Xeni/src/Controllers/TestController.php`
+
+This happens automatically with no configuration needed.
+
 ## Troubleshooting
 
 Common issues and solutions:
 
 1. **Route not found**: Ensure the ModuleProvider is registered in `config/config.php`
 2. **Include path errors**: Verify the path in the `boot()` method is correct relative to the ModuleProvider file
-3. **Namespace issues**: Confirm the namespace matches the actual file location
+3. **Namespace issues**: Confirm the namespace matches the actual file location (`Boctulus\Simplerest\Modules\{ModuleName}\...`)
 4. **File permissions**: Ensure the application has read access to the ModuleProvider and routes files
+5. **Class not found**: Verify the file is located in the `src/` directory within your module and follows the correct namespace convention
