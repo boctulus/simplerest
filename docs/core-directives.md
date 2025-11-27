@@ -167,12 +167,12 @@ When writing code, adhere to these principles:
 
 For specific coding conventions and technology stack requirements, refer to **CLAUDE.md**:
 
-- **Code Format Standards** (CLAUDE.md:330-333):
+- **Code Format Standards**:
   - ES Modules (import/export), not require()
   - Async/await patterns over callbacks
   - Naming conventions: camelCase for variables, PascalCase for classes
 
-- **Database Architecture** (CLAUDE.md:335-338):
+- **Database Architecture**:
   - Firebase as source of truth
   - Typesense read-only for search (unidirectional sync)
   - Models manage synchronization automatically
