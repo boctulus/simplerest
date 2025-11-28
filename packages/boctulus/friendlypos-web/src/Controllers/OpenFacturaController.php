@@ -119,6 +119,7 @@ class OpenFacturaController extends Controller
     {
         $headers = request()->getHeaders() ?? [];
         $body = request()->getBody(true); // true = decode JSON
+        $query = $_GET ?? []; // Query parameters
 
         // Normalize header keys case-insensitive
         $normalizedHeaders = [];
@@ -132,7 +133,7 @@ class OpenFacturaController extends Controller
         $apiKey = null;
         $sandbox = null;
 
-        // Header priority (case-insensitive)
+        // Priority 1: Headers (case-insensitive)
         if (isset($normalizedHeaders['x-openfactura-api-key'])) {
             $h = $normalizedHeaders['x-openfactura-api-key'];
             $apiKey = is_array($h) ? ($h[0] ?? null) : $h;
@@ -143,7 +144,18 @@ class OpenFacturaController extends Controller
             $sandbox = is_array($h) ? ($h[0] ?? null) : $h;
         }
 
-        // If not in headers, try body (if provided and is array)
+        // Priority 2: Query parameters (if not in headers)
+        if ($apiKey === null && isset($query['api_key'])) {
+            $apiKey = $query['api_key'];
+        }
+        if ($apiKey === null && isset($query['apiKey'])) {
+            $apiKey = $query['apiKey'];
+        }
+        if ($sandbox === null && isset($query['sandbox'])) {
+            $sandbox = $query['sandbox'];
+        }
+
+        // Priority 3: Body (if not in headers or query)
         if ($apiKey === null && is_array($body)) {
             $apiKey = $body['api_key'] ?? $body['apiKey'] ?? null;
         }
@@ -406,7 +418,7 @@ class OpenFacturaController extends Controller
                 return $this->error('Año y mes son requeridos', 400);
             }
 
-            if (filter_var($year, FILTER_VALIDATE_INT) === false || filter_var($month, FILTER_VALIDATE_INT) === false) {
+            if (!is_numeric($year) || !is_numeric($month)) {
                 return $this->error('Año y mes deben ser numéricos', 400);
             }
 
@@ -443,7 +455,7 @@ class OpenFacturaController extends Controller
                 return $this->error('Año y mes son requeridos', 400);
             }
 
-            if (filter_var($year, FILTER_VALIDATE_INT) === false || filter_var($month, FILTER_VALIDATE_INT) === false) {
+            if (!is_numeric($year) || !is_numeric($month)) {
                 return $this->error('Año y mes deben ser numéricos', 400);
             }
 
@@ -481,7 +493,7 @@ class OpenFacturaController extends Controller
             }
 
             // Validar tipo y folio
-            if (filter_var($type, FILTER_VALIDATE_INT) === false || filter_var($folio, FILTER_VALIDATE_INT) === false) {
+            if (!is_numeric($type) || !is_numeric($folio)) {
                 return $this->error('Tipo y folio deben ser numéricos', 400);
             }
 
