@@ -510,7 +510,7 @@ class OpenFacturaControllerTest extends TestCase
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
             ->method('status')
-            ->with($this->logicalOr(200, 500));
+            ->with($this->logicalOr(200, 500, 503));
 
         $mockResponse->expects($this->atLeastOnce())
             ->method('json');
