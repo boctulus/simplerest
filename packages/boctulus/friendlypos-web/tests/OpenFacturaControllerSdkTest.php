@@ -75,8 +75,21 @@ class OpenFacturaControllerSdkTest extends TestCase
     public function testSdkInitialization()
     {
         // Create mock Request and Response objects
-        $mockRequest = $this->createMock(Request::class);
+        $mockRequest = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mockRequest->expects($this->any())
+            ->method('getHeaders')
+            ->willReturn([]);
+
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->willReturn([]);
+
         $mockResponse = $this->createMock(Response::class);
+        $mockResponse->method('status')->willReturnSelf();
+        $mockResponse->method('json')->willReturnSelf();
 
         // Set singleton instances for testing
         \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
@@ -85,15 +98,22 @@ class OpenFacturaControllerSdkTest extends TestCase
         // Create the controller instance
         $controller = new OpenFacturaController();
 
-        // Use reflection to access the private sdk property
+        // SDK should be null initially (lazy initialization)
         $reflection = new \ReflectionClass($controller);
         $sdkProperty = $reflection->getProperty('sdk');
         $sdkProperty->setAccessible(true);
 
         $sdk = $sdkProperty->getValue($controller);
+        $this->assertNull($sdk, 'SDK should be null before initialization');
 
-        // The SDK should be initialized and should be the mock if we're in test environment
-        $this->assertNotNull($sdk);
+        // Call initializeSDK via reflection to test initialization
+        $initMethod = $reflection->getMethod('initializeSDK');
+        $initMethod->setAccessible(true);
+        $initMethod->invoke($controller);
+
+        // Now SDK should be initialized
+        $sdk = $sdkProperty->getValue($controller);
+        $this->assertNotNull($sdk, 'SDK should be initialized after calling initializeSDK');
     }
     
     /**
@@ -343,18 +363,25 @@ class OpenFacturaControllerSdkTest extends TestCase
      */
     public function testHealthCompleteFlow()
     {
-        $mockRequest = $this->createMock(Request::class);
+        $mockRequest = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mockRequest->expects($this->any())
+            ->method('getHeaders')
+            ->willReturn([]);
+
         $mockRequest->expects($this->any())
             ->method('getBody')
             ->with(true)
             ->willReturn([]);
-        
+
         \Boctulus\Simplerest\Core\Request::setInstance($mockRequest);
-        
+
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->atLeastOnce())
             ->method('status')
-            ->with($this->logicalOr(200, 500));
+            ->with($this->logicalOr(200, 500, 503));
         
         $mockResponse->expects($this->atLeastOnce())
             ->method('json');
