@@ -426,7 +426,14 @@ class OpenFacturaControllerErrorTest extends TestCase
      */
     public function testGetSalesRegistryWithSdkException()
     {
-        $mockRequest = $this->createMock(Request::class);
+        $mockRequest = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mockRequest->expects($this->any())
+            ->method('getHeaders')
+            ->willReturn([]);
+
         $mockRequest->expects($this->any())
             ->method('getBody')
             ->with(true)
