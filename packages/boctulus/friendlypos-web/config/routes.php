@@ -54,6 +54,6 @@ WebRouter::group('api/openfactura', function() {
     // Obtener documento específico
     WebRouter::get('document/{rut}/{type}/{folio}', 'Boctulus\FriendlyposWeb\Controllers\OpenFacturaController@getDocument');
 
-    // Health check
+    // Health check (url: `/api/openfactura/health`)
     WebRouter::get('health', 'Boctulus\FriendlyposWeb\Controllers\OpenFacturaController@health');
 });
