@@ -126,6 +126,16 @@ No es necesario que ocupes el routes.php principal para el caso de packages/ Cad
 Si las rutas no funcionan en un package es posible el package no este correctamente registrado. Importante ejecutar `composer dumpautoload` luego de cualquier registro / actualizacion en el "composer.json" para regenerar el autoload.
 
 
+#### Consumo de API
+
+Cuando debas consumir APIs utiliza la clase ApiClient en vez usar funciones CURL directamente.
+
+Documentacion:
+```
+docs/ApiClient.md
+```
+
+
 ## Prácticas Obligatorias
 
 -   Tener en cuenta los patrones existentes y seguirlos con la salvedad de que si fuera necesario cambiar o implementar uno nuevo debe exponerse el problema, justificar el nuevo patron y consultar antes de implementar.  
@@ -215,7 +225,7 @@ D:\Docker o D:\Pabloo\Docker
 NO BORRES TABLAS O REGISTROS O DOCUMENTOS EN LA FUENTE DE VERDAD (MySQL o cualquier otra) SIN JUSTIFICACION. Solo puedes borrar datos de prueba pero debes evitar borrar "tablas maestro" (o colecciones maestro). De ser necesario el borrado pide autorizacion.
 
 
-## Notas
+## Obligatorio
 
 SIEMPRE se debe probar antes de considerar que una tarea fue completada. 
 
