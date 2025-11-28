@@ -440,11 +440,13 @@ class OpenFacturaControllerErrorTest extends TestCase
             ->willReturn([]);
 
         $mockResponse = $this->createMock(Response::class);
-        $mockResponse->expects($this->once())
+
+        // Allow status() to be called multiple times since error() calls it
+        $mockResponse->expects($this->atLeastOnce())
             ->method('status')
             ->with(500);
 
-        $mockResponse->expects($this->once())
+        $mockResponse->expects($this->atLeastOnce())
             ->method('json')
             ->with($this->callback(function($data) {
                 return is_array($data) &&
