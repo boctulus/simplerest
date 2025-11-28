@@ -43,13 +43,14 @@ function makeRequest($method, $endpoint, $data = null, $headers = []) {
 
     $client->request($url, $method, null, $headers);
 
+    $data  = $client->getResponse(true)['data'] ?? []; 
     $error = $client->getError();
 
     return [
         'success' => empty($error),
         'http_code' => $client->getStatus(),
         'error' => $client->getError(),
-        'response' => $client->getResponse(true),
+        'response' => $data,
         'raw_response' => $client->getRawResponse()
     ];
 }
