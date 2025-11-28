@@ -5,6 +5,7 @@ namespace Boctulus\FriendlyposWeb\Controllers;
 
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\OpenfacturaSdk\Factory\OpenFacturaSDKFactory;
+use Boctulus\Simplerest\Core\Libs\Logger;
 
 /**
  * OpenFacturaController
@@ -122,7 +123,10 @@ class OpenFacturaController extends Controller
         // Normalize header keys case-insensitive
         $normalizedHeaders = [];
         foreach ($headers as $k => $v) {
-            $normalizedHeaders[strtolower($k)] = $v;
+            // Skip numeric keys (indexed arrays)
+            if (is_string($k)) {
+                $normalizedHeaders[strtolower($k)] = $v;
+            }
         }
 
         $apiKey = null;
@@ -543,11 +547,14 @@ class OpenFacturaController extends Controller
     private function success($data, int $statusCode = 200)
     {
         response()->status($statusCode);
-        return response()->json([
+        response()->json([
             'success' => true,
             'data' => $data,
             'timestamp' => date('Y-m-d H:i:s')
         ]);
+
+        // Return null to let WebRouter use response()->get()
+        return null;
     }
 
     /**
@@ -587,6 +594,9 @@ class OpenFacturaController extends Controller
             }
         }
 
-        return response()->json($payload);
+        response()->json($payload);
+
+        // Return null to let WebRouter use response()->get()
+        return null;
     }
 }
