@@ -16,28 +16,85 @@ use Boctulus\OpenfacturaSdk\Factory\OpenFacturaSDKFactory;
  */
 class OpenFacturaController extends Controller
 {
-    private $sdk;
-    private $apiKey;
-    private $sandbox;
+    private string $apiKey;
+    private bool $sandbox;
 
     public function __construct()
     {
         parent::__construct();
 
-        // Cargar configuración desde .env
-        $this->sandbox = env('OPENFACTURA_SANDBOX', 'true') === 'true';
+        // Leer sandbox como booleano
+        $this->sandbox = env('OPENFACTURA_SANDBOX', true);
 
+        // Inicializar apiKey
+        $this->loadApiKey();
+    }
+
+    private function loadApiKey(): void
+    {
         $this->apiKey = $this->sandbox
             ? env('OPENFACTURA_API_KEY_DEV')
             : env('OPENFACTURA_API_KEY_PROD');
+    }
+
+    /**
+     * Cambiar dinámicamente el modo sandbox/producción
+     */
+    public function useSandbox(bool $value = true): void
+    {
+        $this->sandbox = $value;
+        $this->loadApiKey(); // SIEMPRE recargar key, sea dev o prod
+    }
+
+    /**
+     * Inicializa el SDK con los valores actuales (env o sobrescritos)
+     */
+    private function initializeSDK($apiKey = null, $sandbox = null)
+    {
+        // Usar los valores sobrescritos si se proporcionan, de lo contrario usar los predeterminados
+        $effectiveApiKey = $apiKey ?? $this->apiKey;
+        $effectiveSandbox = $sandbox ?? $this->sandbox;
 
         // Inicializar SDK
-        $this->sdk = OpenFacturaSDKFactory::make($this->apiKey, $this->sandbox, false);
+        $sdk = OpenFacturaSDKFactory::make($effectiveApiKey, $effectiveSandbox, false);
 
         // Habilitar caché en sandbox para desarrollo
-        if ($this->sandbox) {
-            $this->sdk->setCache(3600); // 1 hora
+        if ($effectiveSandbox) {
+            $sdk->setCache(3600); // 1 hora
         }
+
+        return $sdk;
+    }
+
+    /**
+     * Extrae apiKey y sandbox de los headers o body de la request
+     */
+    private function getOverrideParams()
+    {
+        $headers = request()->getHeaders();
+        $body = request()->getBody(true); // true = decode JSON
+
+        // Extraer de headers (prioritario)
+        $apiKey = $headers['X-Openfactura-Api-Key'][0] ?? null;
+        $sandbox = $headers['X-Openfactura-Sandbox'][0] ?? null;
+
+        // Si no están en headers, intentar desde body
+        if ($apiKey === null && is_array($body)) {
+            $apiKey = $body['api_key'] ?? null;
+        }
+        if ($sandbox === null && is_array($body)) {
+            $sandbox = $body['sandbox'] ?? null;
+        }
+
+        // Convertir sandbox a booleano si está presente
+        if ($sandbox !== null) {
+            $sandbox = filter_var($sandbox, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        return [
+            'api_key' => $apiKey,
+            'sandbox' => $sandbox
+        ];
     }
 
     /**
@@ -52,10 +109,21 @@ class OpenFacturaController extends Controller
      *   "sendEmail": null,            // Opcional
      *   "idempotencyKey": null        // Opcional (se genera automático si no se envía)
      * }
+     *
+     * Headers Opcionales:
+     * - X-Openfactura-Api-Key: API Key para sobrescribir la del .env
+     * - X-Openfactura-Sandbox: true/false para sobrescribir el modo sandbox del .env
+     *
+     * Opciones en Body (alternativa a headers):
+     * - api_key: API Key para sobrescribir la del .env
+     * - sandbox: true/false para sobrescribir el modo sandbox del .env
      */
     public function emitDTE()
     {
         try {
+            $overrideParams = $this->getOverrideParams();
+            $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
+
             $data = request()->getBody(true); // true = decode JSON
 
             // Validaciones básicas
@@ -69,7 +137,7 @@ class OpenFacturaController extends Controller
             $idempotencyKey = $data['idempotencyKey'] ?? 'dte_' . uniqid() . '_' . time();
 
             // Emitir DTE
-            $response = $this->sdk->emitirDTE(
+            $response = $sdk->emitirDTE(
                 $dteData,
                 $responseOptions,
                 null,
@@ -91,15 +159,22 @@ class OpenFacturaController extends Controller
      * GET /api/openfactura/dte/status/{token}
      *
      * Consulta el estado de un DTE previamente emitido
+     *
+     * Headers Opcionales:
+     * - X-Openfactura-Api-Key: API Key para sobrescribir la del .env
+     * - X-Openfactura-Sandbox: true/false para sobrescribir el modo sandbox del .env
      */
     public function getDTEStatus($token = null)
     {
         try {
+            $overrideParams = $this->getOverrideParams();
+            $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
+
             if (empty($token)) {
                 return $this->error('Token es requerido', 400);
             }
 
-            $status = $this->sdk->getDTEStatus($token);
+            $status = $sdk->getDTEStatus($token);
 
             return $this->success($status);
 
@@ -118,17 +193,24 @@ class OpenFacturaController extends Controller
      *   "folio": 12345,
      *   "fecha": "2025-01-15"
      * }
+     *
+     * Headers Opcionales:
+     * - X-Openfactura-Api-Key: API Key para sobrescribir la del .env
+     * - X-Openfactura-Sandbox: true/false para sobrescribir el modo sandbox del .env
      */
     public function anularGuiaDespacho()
     {
         try {
+            $overrideParams = $this->getOverrideParams();
+            $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
+
             $data = request()->getBody(true);
 
             if (!isset($data['folio']) || !isset($data['fecha'])) {
                 return $this->error('Campos "folio" y "fecha" son requeridos', 400);
             }
 
-            $response = $this->sdk->anularGuiaDespacho($data['folio'], $data['fecha']);
+            $response = $sdk->anularGuiaDespacho($data['folio'], $data['fecha']);
 
             return $this->success($response);
 
@@ -147,10 +229,17 @@ class OpenFacturaController extends Controller
      *   "dteData": { ... },  // Datos de la Nota de Crédito
      *   "responseOptions": ["PDF", "FOLIO"]
      * }
+     *
+     * Headers Opcionales:
+     * - X-Openfactura-Api-Key: API Key para sobrescribir la del .env
+     * - X-Openfactura-Sandbox: true/false para sobrescribir el modo sandbox del .env
      */
     public function anularDTE()
     {
         try {
+            $overrideParams = $this->getOverrideParams();
+            $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
+
             $data = request()->getBody(true);
 
             if (!isset($data['dteData'])) {
@@ -166,7 +255,7 @@ class OpenFacturaController extends Controller
             $responseOptions = $data['responseOptions'] ?? ['PDF', 'FOLIO'];
             $idempotencyKey = 'anular_' . uniqid() . '_' . time();
 
-            $response = $this->sdk->emitirDTE(
+            $response = $sdk->emitirDTE(
                 $data['dteData'],
                 $responseOptions,
                 null,
@@ -185,15 +274,22 @@ class OpenFacturaController extends Controller
      * GET /api/openfactura/taxpayer/{rut}
      *
      * Consulta datos de un contribuyente por RUT
+     *
+     * Headers Opcionales:
+     * - X-Openfactura-Api-Key: API Key para sobrescribir la del .env
+     * - X-Openfactura-Sandbox: true/false para sobrescribir el modo sandbox del .env
      */
     public function getTaxpayer($rut = null)
     {
         try {
+            $overrideParams = $this->getOverrideParams();
+            $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
+
             if (empty($rut)) {
                 return $this->error('RUT es requerido', 400);
             }
 
-            $taxpayer = $this->sdk->getTaxpayer($rut);
+            $taxpayer = $sdk->getTaxpayer($rut);
 
             return $this->success($taxpayer);
 
@@ -206,11 +302,18 @@ class OpenFacturaController extends Controller
      * GET /api/openfactura/organization
      *
      * Obtiene información de la organización configurada
+     *
+     * Headers Opcionales:
+     * - X-Openfactura-Api-Key: API Key para sobrescribir la del .env
+     * - X-Openfactura-Sandbox: true/false para sobrescribir el modo sandbox del .env
      */
     public function getOrganization()
     {
         try {
-            $organization = $this->sdk->getOrganization();
+            $overrideParams = $this->getOverrideParams();
+            $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
+
+            $organization = $sdk->getOrganization();
 
             return $this->success($organization);
 
@@ -223,15 +326,22 @@ class OpenFacturaController extends Controller
      * GET /api/openfactura/sales-registry/{year}/{month}
      *
      * Obtiene el registro de ventas de un período
+     *
+     * Headers Opcionales:
+     * - X-Openfactura-Api-Key: API Key para sobrescribir la del .env
+     * - X-Openfactura-Sandbox: true/false para sobrescribir el modo sandbox del .env
      */
     public function getSalesRegistry($year = null, $month = null)
     {
         try {
+            $overrideParams = $this->getOverrideParams();
+            $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
+
             if (empty($year) || empty($month)) {
                 return $this->error('Año y mes son requeridos', 400);
             }
 
-            $registry = $this->sdk->getSalesRegistry($year, $month);
+            $registry = $sdk->getSalesRegistry($year, $month);
 
             return $this->success($registry);
 
@@ -244,15 +354,22 @@ class OpenFacturaController extends Controller
      * GET /api/openfactura/purchase-registry/{year}/{month}
      *
      * Obtiene el registro de compras de un período
+     *
+     * Headers Opcionales:
+     * - X-Openfactura-Api-Key: API Key para sobrescribir la del .env
+     * - X-Openfactura-Sandbox: true/false para sobrescribir el modo sandbox del .env
      */
     public function getPurchaseRegistry($year = null, $month = null)
     {
         try {
+            $overrideParams = $this->getOverrideParams();
+            $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
+
             if (empty($year) || empty($month)) {
                 return $this->error('Año y mes son requeridos', 400);
             }
 
-            $registry = $this->sdk->getPurchaseRegistry($year, $month);
+            $registry = $sdk->getPurchaseRegistry($year, $month);
 
             return $this->success($registry);
 
@@ -265,15 +382,22 @@ class OpenFacturaController extends Controller
      * GET /api/openfactura/document/{rut}/{type}/{folio}
      *
      * Obtiene un documento específico por RUT, tipo y folio
+     *
+     * Headers Opcionales:
+     * - X-Openfactura-Api-Key: API Key para sobrescribir la del .env
+     * - X-Openfactura-Sandbox: true/false para sobrescribir el modo sandbox del .env
      */
     public function getDocument($rut = null, $type = null, $folio = null)
     {
         try {
+            $overrideParams = $this->getOverrideParams();
+            $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
+
             if (empty($rut) || empty($type) || empty($folio)) {
                 return $this->error('RUT, tipo y folio son requeridos', 400);
             }
 
-            $document = $this->sdk->getDocumentByRutTypeFolio($rut, $type, $folio);
+            $document = $sdk->getDocumentByRutTypeFolio($rut, $type, $folio);
 
             return $this->success($document);
 
@@ -286,18 +410,29 @@ class OpenFacturaController extends Controller
      * GET /api/openfactura/health
      *
      * Health check del servicio
+     *
+     * Headers Opcionales:
+     * - X-Openfactura-Api-Key: API Key para sobrescribir la del .env
+     * - X-Openfactura-Sandbox: true/false para sobrescribir el modo sandbox del .env
      */
     public function health()
     {
         try {
-            $apiStatus = $this->sdk->checkApiStatus();
+            $overrideParams = $this->getOverrideParams();
+            $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
+
+            $apiStatus = $sdk->checkApiStatus();
+
+            // Determine which sandbox value to display (the one used for this request)
+            $effectiveSandbox = $overrideParams['sandbox'] ?? $this->sandbox;
 
             return $this->success([
                 'service' => 'OpenFactura API',
                 'status' => 'healthy',
-                'sandbox' => $this->sandbox,
+                'sandbox' => $effectiveSandbox,
                 'api_status' => $apiStatus,
-                'timestamp' => date('Y-m-d H:i:s')
+                'timestamp' => date('Y-m-d H:i:s'),
+                'using_override' => $overrideParams['api_key'] !== null || $overrideParams['sandbox'] !== null
             ]);
 
         } catch (\Exception $e) {
