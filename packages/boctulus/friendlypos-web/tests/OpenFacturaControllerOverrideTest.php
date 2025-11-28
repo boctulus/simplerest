@@ -1,9 +1,28 @@
 <?php
 
-use Boctulus\FriendlyposWeb\Controllers\OpenFacturaController;
 use PHPUnit\Framework\TestCase;
-use Boctulus\Simplerest\Core\Libs\Request;
-use Boctulus\Simplerest\Core\Libs\Response;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Response;
+use Boctulus\OpenfacturaSdk\Mocks\OpenFacturaSDKMock;
+use Boctulus\FriendlyposWeb\Controllers\OpenFacturaController;
+
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+
+require_once __DIR__ . '/../../../../vendor/autoload.php';
+
+if (php_sapi_name() != "cli") {
+  return;
+}
+
+require_once __DIR__ . '/../../../../app.php';
+
+/**
+ * Prueba unitaria
+ *
+ * Ejecutar con: `./vendor/bin/phpunit {ruta de este archivo}` desde el root del proyecto
+ */
 
 /**
  * Tests para verificar que la funcionalidad de sobrescritura de API Key y Sandbox mode funciona correctamente
@@ -28,8 +47,6 @@ class OpenFacturaControllerOverrideTest extends TestCase
         putenv('OPENFACTURA_SANDBOX=true');
         putenv('OPENFACTURA_API_KEY_DEV=dev_test_key');
         putenv('OPENFACTURA_API_KEY_PROD=prod_test_key');
-
-        $this->controller = new OpenFacturaController();
     }
 
     protected function tearDown(): void
@@ -44,6 +61,10 @@ class OpenFacturaControllerOverrideTest extends TestCase
                 putenv($key);
             }
         }
+
+        // Reset singleton instances to clean state
+        Request::setInstance(null);
+        Response::setInstance(null);
     }
 
     /**
@@ -51,7 +72,7 @@ class OpenFacturaControllerOverrideTest extends TestCase
      */
     public function testControllerUsesApiKeyFromHeaders()
     {
-        // Mock a request with custom API key in headers
+        // Create the controller after setting up the mock
         $this->mockRequest([
             'headers' => [
                 'X-Openfactura-Api-Key' => ['custom_api_key_from_header']
@@ -59,8 +80,9 @@ class OpenFacturaControllerOverrideTest extends TestCase
             'body' => []
         ]);
 
-        $overrideParams = $this->invokeMethod($this->controller, 'getOverrideParams');
-        
+        $controller = new OpenFacturaController();
+        $overrideParams = $this->invokeMethod($controller, 'getOverrideParams');
+
         $this->assertEquals('custom_api_key_from_header', $overrideParams['api_key']);
         $this->assertNull($overrideParams['sandbox']); // Should be null since it's not provided
     }
@@ -78,8 +100,9 @@ class OpenFacturaControllerOverrideTest extends TestCase
             'body' => []
         ]);
 
-        $overrideParams = $this->invokeMethod($this->controller, 'getOverrideParams');
-        
+        $controller = new OpenFacturaController();
+        $overrideParams = $this->invokeMethod($controller, 'getOverrideParams');
+
         $this->assertNull($overrideParams['api_key']); // Should be null since it's not provided
         $this->assertFalse($overrideParams['sandbox']); // Should be false
     }
@@ -98,8 +121,9 @@ class OpenFacturaControllerOverrideTest extends TestCase
             'body' => []
         ]);
 
-        $overrideParams = $this->invokeMethod($this->controller, 'getOverrideParams');
-        
+        $controller = new OpenFacturaController();
+        $overrideParams = $this->invokeMethod($controller, 'getOverrideParams');
+
         $this->assertEquals('custom_api_key', $overrideParams['api_key']);
         $this->assertTrue($overrideParams['sandbox']); // Should be true
     }
@@ -117,8 +141,9 @@ class OpenFacturaControllerOverrideTest extends TestCase
             ]
         ]);
 
-        $overrideParams = $this->invokeMethod($this->controller, 'getOverrideParams');
-        
+        $controller = new OpenFacturaController();
+        $overrideParams = $this->invokeMethod($controller, 'getOverrideParams');
+
         $this->assertEquals('custom_api_key_from_body', $overrideParams['api_key']);
         $this->assertNull($overrideParams['sandbox']); // Should be null since it's not provided
     }
@@ -136,8 +161,9 @@ class OpenFacturaControllerOverrideTest extends TestCase
             ]
         ]);
 
-        $overrideParams = $this->invokeMethod($this->controller, 'getOverrideParams');
-        
+        $controller = new OpenFacturaController();
+        $overrideParams = $this->invokeMethod($controller, 'getOverrideParams');
+
         $this->assertNull($overrideParams['api_key']); // Should be null since it's not provided
         $this->assertFalse($overrideParams['sandbox']); // Should be false
     }
@@ -159,8 +185,9 @@ class OpenFacturaControllerOverrideTest extends TestCase
             ]
         ]);
 
-        $overrideParams = $this->invokeMethod($this->controller, 'getOverrideParams');
-        
+        $controller = new OpenFacturaController();
+        $overrideParams = $this->invokeMethod($controller, 'getOverrideParams');
+
         // Headers should take precedence over body
         $this->assertEquals('api_key_from_header', $overrideParams['api_key']);
         $this->assertTrue($overrideParams['sandbox']); // Should be true from headers
@@ -181,17 +208,18 @@ class OpenFacturaControllerOverrideTest extends TestCase
             'body' => []
         ]);
 
+        $controller = new OpenFacturaController();
         // Use reflection to access private initializeSDK method
-        $reflection = new \ReflectionClass($this->controller);
+        $reflection = new \ReflectionClass($controller);
         $method = $reflection->getMethod('initializeSDK');
         $method->setAccessible(true);
-        
+
         // Initialize SDK with override parameters
-        $sdk = $method->invoke($this->controller, 'override_api_key', false);
-        
+        $sdk = $method->invoke($controller, 'override_api_key', false);
+
         // Since we can't easily test the SDK directly, let's test the parameters it should receive
         // We'll do this by checking if the parameters are correctly passed to the SDK factory
-        
+
         // This test is focused on the controller logic, not the SDK itself
         $this->assertNotNull($sdk); // Should be able to create the SDK instance
     }
@@ -206,14 +234,15 @@ class OpenFacturaControllerOverrideTest extends TestCase
             'body' => []
         ]);
 
+        $controller = new OpenFacturaController();
         // Use reflection to access private initializeSDK method
-        $reflection = new \ReflectionClass($this->controller);
+        $reflection = new \ReflectionClass($controller);
         $method = $reflection->getMethod('initializeSDK');
         $method->setAccessible(true);
-        
+
         // Initialize SDK with no override parameters (should use defaults)
-        $sdk = $method->invoke($this->controller, null, null);
-        
+        $sdk = $method->invoke($controller, null, null);
+
         $this->assertNotNull($sdk); // Should be able to create the SDK instance
     }
 
@@ -222,16 +251,34 @@ class OpenFacturaControllerOverrideTest extends TestCase
      */
     private function mockRequest($requestData)
     {
-        $request = $this->getMockBuilder(Request::class)
+        // Create a mock for the Request class
+        $mockRequest = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
             ->getMock();
-        
-        $request->method('getHeaders')->willReturn($requestData['headers']);
-        $request->method('getBody')->with(true)->willReturn($requestData['body']);
-        
-        // Mock the global request() function to return our mock
-        // This is tricky since request() is likely a global function
-        // For this test, we'll directly test the getOverrideParams method instead
+
+        // Ensure headers and body exist in the request data
+        $headers = $requestData['headers'] ?? [];
+        $body = $requestData['body'] ?? [];
+
+        // Configure the mock to return the provided headers and body
+        $mockRequest->expects($this->any())
+            ->method('getHeaders')
+            ->willReturn($headers);
+
+        $mockRequest->expects($this->any())
+            ->method('getBody')
+            ->with($this->anything())
+            ->willReturn($body);
+
+        // Set the mock as the singleton instance for testing
+        Request::setInstance($mockRequest);
+
+        // Also create and set a basic response mock
+        $mockResponse = $this->getMockBuilder(Response::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        Response::setInstance($mockResponse);
     }
 
     /**
