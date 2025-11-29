@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fcfd63f483390a563be7b6e95711f65e",
+    "content-hash": "69a122feac033a2321ec7c61159f7eb8",
     "packages": [
         {
             "name": "beste/clock",
@@ -207,33 +207,6 @@
                 }
             ],
             "time": "2025-09-11T23:36:19+00:00"
-        },
-        {
-            "name": "boctulus/dummyapi",
-            "version": "dev-master",
-            "dist": {
-                "type": "path",
-                "url": "packages/boctulus/dummyapi",
-                "reference": "7c5279a3d497fa56ef9d5f5c3cec86b65d600ffd"
-            },
-            "type": "library",
-            "extra": {
-                "simplerest": {
-                    "providers": [
-                        "Boctulus\\Dummyapi\\ServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Boctulus\\Dummyapi\\": "src/"
-                }
-            },
-            "description": "Package DummyApi by boctulus",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
         },
         {
             "name": "boctulus/shopifyconnector",
@@ -4914,7 +4887,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "boctulus/dummyapi": 20,
         "boctulus/shopifyconnector": 20
     },
     "prefer-stable": true,
