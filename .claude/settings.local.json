@@ -74,7 +74,8 @@
       "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\packages\\boctulus\\friendlypos-web\\src\\Models\\TestFormatModel.php\")",
       "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\app\\Models\\main\\SomeModel.php && del D:\\laragon\\www\\simplerest\\app\\Models\\main\\OtherModel.php\")",
       "Bash(nul)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
