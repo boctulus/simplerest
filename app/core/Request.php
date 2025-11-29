@@ -16,25 +16,110 @@ use Boctulus\Simplerest\Core\Libs\Url;
 
 class Request  implements \ArrayAccess, Arrayable
 {
-    protected static $query_arr;
-    protected static $raw;
-    protected static $body;
-    protected static $params;
-    protected static $headers;
-    protected static $accept_encoding;
-    protected static $content_type;
+    protected $query_arr;
+    protected $raw;
+    protected $body;
+    protected $params;
+    protected $headers;
+    protected $accept_encoding;
+    protected $content_type;
     protected static $instance;
 
-    protected        $as_object = true;
+    protected $as_object = true;
 
-    protected function __construct() { }
+    protected function __construct() {
+        $this->initializeRequest();
+    }
+
+    private function initializeRequest(): void
+    {
+        if (php_sapi_name() != 'cli'){
+            if (isset($_SERVER['QUERY_STRING'])){
+                $this->query_arr = url::queryString();
+            }
+
+            /*
+                Accept encoding
+
+                Accept-Encoding: gzip
+                Accept-Encoding: compress
+                Accept-Encoding: deflate
+                Accept-Encoding: br
+                Accept-Encoding: identity
+                Accept-Encoding: *
+
+                https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
+            */
+
+            $headers = $this->getHeadersStatic();
+
+            $accept_encoding_header = $headers['Accept-Encoding'] ?? null;
+
+            if (!empty($accept_encoding_header)){
+                $this->accept_encoding = $accept_encoding_header;
+            } else {
+                if (!empty($this->query_arr["accept_encoding"])){
+                    $this->accept_encoding = Arrays::shift($this->accept_encoding, 'accept_encoding');
+                }
+            }
+
+            /*
+                Content-Type
+
+                Para form-data sería multipart/form-data o un derivado como
+                'multipart/form-data; boundary=--------------------------240766805501822956475464'
+            */
+
+            $content_type_header = $headers['Content-Type'] ?? null;
+
+            if (!empty($content_type_header)){
+                $this->content_type = $content_type_header;
+
+            } else {
+                if (!empty($this->query_arr["content_type"])){
+                    $this->content_type = Arrays::shift($this->accept_encoding, 'content_type');
+                }
+            }
+
+            // Content-Type
+            $is_form_data = (bool) Strings::startsWith('multipart/form-data', $this->content_type);
+            $is_json      = ($this->content_type == 'application/json');
+
+            $this->raw  = file_get_contents("php://input");
+
+            // Si el el Content-Type es para json,.... decode
+
+            $this->body = ($is_json && !empty($this->raw)) ? Url::bodyDecode($this->raw) : $this->raw;
+
+            $this->headers = $this->getHeadersStatic();
+
+            $tmp = [];
+            foreach ($this->headers as $key => $val){
+                $tmp[strtolower($key)] = $val;
+            }
+            $this->headers = $tmp;
+
+        } else {
+            // CLI mode: parse options from $argv
+            $this->query_arr = [];
+            $this->headers = [];
+            $this->body = [];
+
+            global $argv;
+            if (isset($argv)) {
+                $this->query_arr = $this->parseCliOptions($argv);
+            }
+        }
+    }
 
     function as_array(){
         $this->as_object = false;
         return $this;
     }
 
-    static function getHeaders() {
+    // Note: getHeaders() is now an instance method (see line ~408)
+    // Keeping this static method for backward compatibility
+    static function getHeadersStatic() {
         if (function_exists('apache_request_headers')) {
             return apache_request_headers();
         }
@@ -67,87 +152,20 @@ class Request  implements \ArrayAccess, Arrayable
 
     static function getInstance() : Request {
         if(static::$instance == NULL){
-            if (php_sapi_name() != 'cli'){
-                if (isset($_SERVER['QUERY_STRING'])){
-                    static::$query_arr = url::queryString();
-                }
-
-                /*
-                    Accept encoding
-
-                    Accept-Encoding: gzip
-                    Accept-Encoding: compress
-                    Accept-Encoding: deflate
-                    Accept-Encoding: br
-                    Accept-Encoding: identity
-                    Accept-Encoding: *
-
-                    https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
-                */
-
-                $headers = static::getHeaders();
-
-                $accept_encoding_header = $headers['Accept-Encoding'] ?? null;
-
-                if (!empty($accept_encoding_header)){
-                    static::$accept_encoding = $accept_encoding_header;
-                } else {
-                    if (!empty(static::$query_arr["accept_encoding"])){
-                        static::$accept_encoding = Arrays::shift(static::$accept_encoding, 'accept_encoding');
-                    }
-                }
-
-                /*
-                    Content-Type
-
-                    Para form-data sería multipart/form-data o un derivado como
-                    'multipart/form-data; boundary=--------------------------240766805501822956475464'
-                */
-
-                $content_type_header = $headers['Content-Type'] ?? null;
-
-                if (!empty($content_type_header)){
-                    static::$content_type = $content_type_header;
-
-                } else {
-                    if (!empty(static::$query_arr["content_type"])){
-                        static::$content_type = Arrays::shift(static::$accept_encoding, 'content_type');
-                    }
-                }
-
-                // Content-Type
-                $is_form_data = (bool) Strings::startsWith('multipart/form-data', static::$content_type);
-                $is_json      = (static::$content_type == 'application/json');
-
-                static::$raw  = file_get_contents("php://input");
-
-                // Si el Content-Type es para json,.... decode
-
-                static::$body = ($is_json && !empty(static::$raw)) ? Url::bodyDecode(static::$raw) : static::$raw;
-
-                static::$headers = apache_request_headers();
-
-                $tmp = [];
-                foreach (static::$headers as $key => $val){
-                    $tmp[strtolower($key)] = $val;
-                }
-                static::$headers = $tmp;
-
-            } else {
-                // CLI mode: parse options from $argv
-                static::$query_arr = [];
-                static::$headers = [];
-                static::$body = [];
-
-                global $argv;
-                if (isset($argv)) {
-                    static::$query_arr = static::parseCliOptions($argv);
-                }
-            }
             static::$instance = new static();
         }
 
-        return self::$instance; // cambio de static a self 11-mar-2025
+        return static::$instance;
+    }
+
+    /**
+     * For testing purposes only - allows setting a mock Request instance
+     *
+     * @param Request|null $instance
+     */
+    public static function setInstance(?Request $instance): void
+    {
+        static::$instance = $instance;
     }
 
     /**
@@ -179,7 +197,7 @@ class Request  implements \ArrayAccess, Arrayable
     }
 
     function getRaw(){
-        return static::$raw;
+        return $this->raw;
     }
 
     function getFormData(){
@@ -224,27 +242,27 @@ class Request  implements \ArrayAccess, Arrayable
     }
     
     function setParams($params){
-        static::$params = $params;
-        return static::getInstance();
+        $this->params = $params;
+        return $this;
     }
 
     function getPaginatorParams(){
         $param_names    = Config::get()['paginator']['params'];
         $page_name      = $param_names['page'];
         $page_size_name = $param_names['pageSize'];
-        
+
         return [
-            'page'     => static::shiftQuery($page_name),
-            'pageSize' => static::shiftQuery($page_size_name),
-        ];    
+            'page'     => $this->shiftQuery($page_name),
+            'pageSize' => $this->shiftQuery($page_size_name),
+        ];
     }
 
     function headers(){
-        return static::$headers;
+        return $this->headers;
     }
 
     function header(string $key){
-        return static::$headers[strtolower($key)] ?? NULL;
+        return $this->headers[strtolower($key)] ?? NULL;
     }
 
     // alias
@@ -255,48 +273,48 @@ class Request  implements \ArrayAccess, Arrayable
     function shiftHeader(string $key){
         $key = strtolower($key);
 
-        $out = static::$headers[$key] ?? null;
-        unset(static::$headers[$key]);
+        $out = $this->headers[$key] ?? null;
+        unset($this->headers[$key]);
 
         return $out;
     }
 
     function isAjax(): bool
     {
-        return static::header('X-Requested-With') == 'XMLHttpRequest';
+        return $this->header('X-Requested-With') == 'XMLHttpRequest';
     }
 
     function getAuth(){
-        $token = $this->shiftQuery('token'); 
+        $token = $this->shiftQuery('token');
 
         if (!empty($token)){
             return "Bearer $token";
         }
 
-        return static::$headers['authorization'] ?? null;
+        return $this->headers['authorization'] ?? null;
     }
-    
+
     /*
         Se refiere solo a si tiene el campo Autorization en headers o ... via url pero es de tipo JWT
     */
     function hasAuth(){
-        return $this->getAuth() != NULL; 
+        return $this->getAuth() != NULL;
     }
 
     function getApiKey(){
-        return  static::$headers['x-api-key'] ?? 
-                $this->shiftQuery('api_key') ??                
+        return  $this->headers['x-api-key'] ??
+                $this->shiftQuery('api_key') ??
                 NULL;
     }
 
     function hasApiKey(){
-        return $this->getApiKey() != NULL; 
+        return $this->getApiKey() != NULL;
     }
 
     function getTenantId(){
-        return  
+        return
             $this->shiftQuery('tenantid') ??
-            static::$headers['x-tenant-id'] ??             
+            $this->headers['x-tenant-id'] ??
             NULL;
     }
 
@@ -324,32 +342,32 @@ class Request  implements \ArrayAccess, Arrayable
         return !is_cli() && !empty($this->authMethod());
     }
 
-    /*  
+    /*
         https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
     */
     function acceptEncoding() {
-        if (static::$accept_encoding){
-            return static::$accept_encoding;
+        if ($this->accept_encoding){
+            return $this->accept_encoding;
         }
 
-        return static::shiftHeader('Accept-Encoding');
+        return $this->shiftHeader('Accept-Encoding');
     }
 
     function gzip(){
-        return in_array('gzip', explode(',', static::acceptEncoding() ?? ''));
+        return in_array('gzip', explode(',', $this->acceptEncoding() ?? ''));
     }
 
     function deflate(){
-        return in_array('deflate', explode(',', static::acceptEncoding() ?? ''));
+        return in_array('deflate', explode(',', $this->acceptEncoding() ?? ''));
     }
 
     function getQuery($key = null)
     {
         if ($key == null)
-            return static::$query_arr;
-        else 
-             return static::$query_arr[$key] ?? null;   
-    }    
+            return $this->query_arr;
+        else
+             return $this->query_arr[$key] ?? null;
+    }
 
     // getter destructivo sobre $query_arr
     function shiftQuery($key, $default_value = NULL, $fn = null)
@@ -360,9 +378,9 @@ class Request  implements \ArrayAccess, Arrayable
             return $arr[$key];
         }
 
-        if (isset(static::$query_arr[$key])){
-            $out = static::$query_arr[$key];
-            unset(static::$query_arr[$key]);
+        if (isset($this->query_arr[$key])){
+            $out = $this->query_arr[$key];
+            unset($this->query_arr[$key]);
             $arr[$key] = $out;
         } else {
             $out = $default_value;
@@ -374,22 +392,41 @@ class Request  implements \ArrayAccess, Arrayable
 
         return $out;
     }
-    
+
     function has($key){
-        return is_array(static::$query_arr) && array_key_exists($key, static::$query_arr);
+        return is_array($this->query_arr) && array_key_exists($key, $this->query_arr);
     }
 
     function get($key, $default_value = null){
-        return static::$query_arr[$key] ?? $default_value;
+        return $this->query_arr[$key] ?? $default_value;
     }
 
     function getParam($index){
-        return static::$params[$index];
-    } 
+        return $this->params[$index];
+    }
 
     function getParams(){
-        return static::$params;
-    } 
+        return $this->params;
+    }
+
+    /**
+     * Instance method wrapper for static getHeaders()
+     * Allows mocking in unit tests
+     */
+    function getHeaders() {
+        if (function_exists('apache_request_headers')) {
+            return apache_request_headers();
+        }
+        // alternativa para obtener los encabezados en otros servidores
+        $headers = [];
+        foreach ($_SERVER as $key => $value) {
+            if (strpos($key, 'HTTP_') === 0) {
+                $header = str_replace('_', '-', strtolower(substr($key, 5)));
+                $headers[$header] = $value;
+            }
+        }
+        return $headers;
+    }
 
     function getBody(?bool $as_obj = null)
     {
@@ -397,13 +434,13 @@ class Request  implements \ArrayAccess, Arrayable
             $as_obj = $this->as_object;
         }
 
-        return $as_obj ? (object) static::$body : static::$body;
+        return $as_obj ? (object) $this->body : $this->body;
     }
 
     function getBodyDecoded(){
-        $content_type = static::getHeader('Content-Type');
-        $data         = static::$raw;
-       
+        $content_type = $this->getHeader('Content-Type');
+        $data         = $this->raw;
+
         if (!empty($content_type))
         {
             // Podría ser un switch-case aceptando otros MIMEs
@@ -425,24 +462,24 @@ class Request  implements \ArrayAccess, Arrayable
     }
 
     function getBodyParam($key){
-        return static::$body[$key] ?? NULL;
+        return $this->body[$key] ?? NULL;
     }
 
     // getter destructivo sobre el body
     function shiftBodyParam($key){
-        if (!isset(static::$body[$key])){
+        if (!isset($this->body[$key])){
             return NULL;
         }
 
-        $ret = static::$body[$key];
+        $ret = $this->body[$key];
 
-        unset(static::$body[$key]);
+        unset($this->body[$key]);
         return $ret;
     }
     
     /**
      * Devuelve una opción (query, body, param o header) por su nombre.
-     * 
+     *
      * Orden de búsqueda:
      * 1. Query string (?key=)
      * 2. Cuerpo (body json o form-data)
@@ -472,18 +509,18 @@ class Request  implements \ArrayAccess, Arrayable
         }
 
         // 2. Body (si no se encontró antes)
-        if ($value === null && is_array(static::$body) && array_key_exists($key, static::$body)) {
-            $value = static::$body[$key];
+        if ($value === null && is_array($this->body) && array_key_exists($key, $this->body)) {
+            $value = $this->body[$key];
         }
 
         // 3. Parámetros de ruta
-        if ($value === null && isset(static::$params[$key])) {
-            $value = static::$params[$key];
+        if ($value === null && isset($this->params[$key])) {
+            $value = $this->params[$key];
         }
 
         // 4. Headers (en minúsculas)
-        if ($value === null && isset(static::$headers[strtolower($key)])) {
-            $value = static::$headers[strtolower($key)];
+        if ($value === null && isset($this->headers[strtolower($key)])) {
+            $value = $this->headers[strtolower($key)];
         }
 
         $cache[$key] = $value ?? $default;
@@ -508,25 +545,25 @@ class Request  implements \ArrayAccess, Arrayable
     #[\ReturnTypeWillChange]
     function offsetSet($offset, $value) {
         if (is_null($offset)) {
-            static::$params[] = $value;
+            $this->params[] = $value;
         } else {
-            static::$params[$offset] = $value;
+            $this->params[$offset] = $value;
         }
     }
 
     #[\ReturnTypeWillChange]
     function offsetExists($offset) {
-        return isset(static::$params[$offset]);
+        return isset($this->params[$offset]);
     }
 
     #[\ReturnTypeWillChange]
     function offsetUnset($offset) {
-        unset(static::$params[$offset]);
+        unset($this->params[$offset]);
     }
 
     #[\ReturnTypeWillChange]
     function offsetGet($offset) {
-        return isset(static::$params[$offset]) ? static::$params[$offset] : null;
+        return isset($this->params[$offset]) ? $this->params[$offset] : null;
     }
 
     // Antes method()
@@ -539,13 +576,13 @@ class Request  implements \ArrayAccess, Arrayable
         }
 
         if ($asked_method == null && ($config['method_override']['by_header'] ?? null)){
-            $asked_method  =  $this->header('X-HTTP-Method-Override'); 
+            $asked_method  =  $this->header('X-HTTP-Method-Override');
         }
 
         if ($asked_method == NULL){
             $asked_method = $_SERVER['REQUEST_METHOD'] ?? NULL;
         }
-        
+
         return $asked_method;
     }
 
@@ -557,10 +594,10 @@ class Request  implements \ArrayAccess, Arrayable
         return $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
     }
 
-    /* Arrayable Interface */ 
+    /* Arrayable Interface */
 
     function toArray(){
-        return static::$params;
+        return $this->params;
     }
 
 }
