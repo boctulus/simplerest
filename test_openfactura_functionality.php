@@ -60,10 +60,14 @@ function makeRequest($method, $endpoint, $data = null, $headers = []) {
 // );
 // exit;
 
-// Test 1: Health Check - This should work without API key
+// Test 1: Health Check - This should work without API key, but we'll test with one as well
 echo "1. Testing Health Check Endpoint\n";
 echo "-------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/health');
+$headers_with_key = [
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
+];
+$result = makeRequest('GET', '/api/openfactura/health', null, $headers_with_key);
 
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
@@ -77,7 +81,11 @@ echo "\n";
 // Test 2: Emit DTE - Should fail without proper data
 echo "2. Testing Emit DTE Endpoint\n";
 echo "---------------------------\n";
-$result = makeRequest('POST', '/api/openfactura/dte/emit', ['dteData' => []]);
+$headers_with_key = [
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
+];
+$result = makeRequest('POST', '/api/openfactura/dte/emit', ['dteData' => []], $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -89,7 +97,11 @@ echo "\n";
 // Test 3: Get DTE Status - Should fail without token
 echo "3. Testing Get DTE Status Endpoint\n";
 echo "----------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/dte/status/invalid_token');
+$headers_with_key = [
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
+];
+$result = makeRequest('GET', '/api/openfactura/dte/status/invalid_token', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -101,10 +113,14 @@ echo "\n";
 // Test 4: Anular Guia Despacho - Should fail without proper data
 echo "4. Testing Anular Guia Despacho Endpoint\n";
 echo "---------------------------------------\n";
+$headers_with_key = [
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
+];
 $result = makeRequest('POST', '/api/openfactura/dte/anular-guia', [
     'folio' => 12345,
     'fecha' => '2025-01-15'
-]);
+], $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -116,6 +132,10 @@ echo "\n";
 // Test 5: Anular DTE - Should fail without proper data
 echo "5. Testing Anular DTE Endpoint\n";
 echo "-----------------------------\n";
+$headers_with_key = [
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
+];
 $result = makeRequest('POST', '/api/openfactura/dte/anular', [
     'dteData' => [
         'Encabezado' => [
@@ -124,7 +144,7 @@ $result = makeRequest('POST', '/api/openfactura/dte/anular', [
             ]
         ]
     ]
-]);
+], $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -136,7 +156,11 @@ echo "\n";
 // Test 6: Get Taxpayer - Should fail without valid RUT
 echo "6. Testing Get Taxpayer Endpoint\n";
 echo "-------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/taxpayer/12345678-9');
+$headers_with_key = [
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
+];
+$result = makeRequest('GET', '/api/openfactura/taxpayer/12345678-9', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -148,7 +172,11 @@ echo "\n";
 // Test 7: Get Organization
 echo "7. Testing Get Organization Endpoint\n";
 echo "-----------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/organization');
+$headers_with_key = [
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
+];
+$result = makeRequest('GET', '/api/openfactura/organization', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -160,7 +188,11 @@ echo "\n";
 // Test 8: Get Sales Registry
 echo "8. Testing Get Sales Registry Endpoint\n";
 echo "-------------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/sales-registry/2025/01');
+$headers_with_key = [
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
+];
+$result = makeRequest('GET', '/api/openfactura/sales-registry/2025/01', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -172,7 +204,11 @@ echo "\n";
 // Test 9: Get Purchase Registry
 echo "9. Testing Get Purchase Registry Endpoint\n";
 echo "----------------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/purchase-registry/2025/01');
+$headers_with_key = [
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
+];
+$result = makeRequest('GET', '/api/openfactura/purchase-registry/2025/01', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -184,7 +220,11 @@ echo "\n";
 // Test 10: Get Document
 echo "10. Testing Get Document Endpoint\n";
 echo "---------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/document/12345678-9/33/12345');
+$headers_with_key = [
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
+];
+$result = makeRequest('GET', '/api/openfactura/document/12345678-9/33/12345', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -197,8 +237,8 @@ echo "\n";
 echo "11. Testing Endpoint with Custom API Key Header\n";
 echo "----------------------------------------------\n";
 $headers = [
-    'X-Openfactura-Api-Key: your_test_api_key_here',
-    'X-Openfactura-Sandbox: true'
+    'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
+    'X-Openfactura-Sandbox' => 'true'
 ];
 $result = makeRequest('GET', '/api/openfactura/health', null, $headers);
 if ($result['success']) {
