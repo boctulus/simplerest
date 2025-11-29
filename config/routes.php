@@ -215,7 +215,6 @@ WebRouter::get('admin/pagina-dos', function(){
 	render($content);
 });
 
-
 //WebRouter::get('admin', function(){
 //	$content = "Panel de Admin";
 //	render($content);
