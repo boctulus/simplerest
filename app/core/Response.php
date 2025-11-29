@@ -9,24 +9,24 @@ use Boctulus\Simplerest\Core\Libs\Url;
 
 class Response
 {
-    static protected $data;
-    static protected $to_be_encoded;
-    static protected $headers = []; 
-    static protected $http_code = NULL;
-    static protected $http_code_msg = '';
-    static protected $instance = NULL;
-    static protected $version = '2';
-    static protected $config;
-    static protected $pretty;
-    static protected $paginator_params;
-    static protected $as_object = false;
-    static protected $fake_status_codes = false; // send 200 instead
-    static protected $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+    protected $data;
+    protected $to_be_encoded;
+    protected $headers = [];
+    protected $http_code = NULL;
+    protected $http_code_msg = '';
+    protected static $instance = NULL;
+    protected $version = '2';
+    protected $config;
+    protected $pretty;
+    protected $paginator_params;
+    protected $as_object = false;
+    protected $fake_status_codes = false; // send 200 instead
+    protected $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
 
 
-    protected function __construct() { 
-        static::$config = Config::get();
-        static::$pretty = static::$config['pretty'];
+    protected function __construct() {
+        $this->config = Config::get();
+        $this->pretty = $this->config['pretty'];
     }
 
     public function __destruct()
@@ -34,11 +34,27 @@ class Response
         DB::closeAllConnections();
     }    
 
-    static function getInstance(){        
+    static function getInstance(){
+        // For backward compatibility we maintain the singleton instance
         if(static::$instance == NULL){
             static::$instance = new static();
         }
         return static::$instance;
+    }
+
+    // Method to create a new instance (non-singleton)
+    static function create(){
+        return new static();
+    }
+
+    /**
+     * For testing purposes only - allows setting a mock Response instance
+     *
+     * @param Response|null $instance
+     */
+    public static function setInstance(?Response $instance): void
+    {
+        static::$instance = $instance;
     }
 
     static protected function header(string $header, bool $replace = true, int $response_code = 0){
@@ -78,24 +94,24 @@ class Response
     }    
 
     function asObject(bool $val = true){
-        static::$as_object = $val;
+        $this->as_object = $val;
     }
 
     function addHeaders(array $headers)
     {
-        static::$headers = $headers;
-        return static::getInstance();
+        $this->headers = $headers;
+        return $this;
     }
-  
+
     function addHeader(string $header)
     {
-        static::$headers[] = $header;
-        return static::getInstance();
+        $this->headers[] = $header;
+        return $this;
     }
 
     // Alias de addHeader()
     function setHeader(string $header){
-        return static::addHeader($header);
+        return $this->addHeader($header);
     }
 
     /**
@@ -120,40 +136,40 @@ class Response
 
     function code(int $http_code, string $msg = '')
     {
-        static::$http_code_msg = $msg;
-        static::$http_code = $http_code;
-        return static::getInstance();
+        $this->http_code_msg = $msg;
+        $this->http_code = $http_code;
+        return $this;
     }
 
     function setPretty(bool $state){
-        static::$pretty = $state;
-        return static::getInstance();
+        $this->pretty = $state;
+        return $this;
     }
 
     protected function do_encode($data)
-    {       
+    {
         $this->header('Content-type:application/json;charset=utf-8');
 
-        $options = static::$pretty ? static::$options | JSON_PRETTY_PRINT : static::$pretty;
-        
-        return json_encode($data, $options);  
+        $options = $this->pretty ? $this->options | JSON_PRETTY_PRINT : $this->pretty;
+
+        return json_encode($data, $options);
     }
 
     function encode(){
-        static::$to_be_encoded = true;
-        return static::getInstance();
+        $this->to_be_encoded = true;
+        return $this;
     }
 
     function setPaginatorParams($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
         $formatter = Config::get()['paginator']['formatter'];
-       
-        static::$to_be_encoded    = true; 
 
-        static::$paginator_params = $formatter(
+        $this->to_be_encoded    = true;
+
+        $this->paginator_params = $formatter(
             $row_count, $count, $current_page, $page_count, $page_size, $nextUrl
         );
 
-        return static::getInstance();
+        return $this;
     }
 
     function send($data, $http_code = NULL){
@@ -161,18 +177,18 @@ class Response
             return $this->error($data, $http_code);
         }
 
-        $http_code = $http_code != NULL ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
+        $http_code = $http_code != NULL ? $http_code : ($this->http_code !== null ? $this->http_code : 200);
 
         if (php_sapi_name() != 'cli' && !headers_sent()) {
-            header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
-        }    
+            header(trim('HTTP/'.$this->version.' '.$http_code.' '.$this->http_code_msg));
+        }
 
-        if (static::$as_object || is_object($data) || is_array($data)) {
+        if ($this->as_object || is_object($data) || is_array($data)) {
             $arr = [];
 
-            if (static::$config['paginator']['position'] == 'TOP'){
-                if (static::$paginator_params != NULL){
-                    $arr = array_merge($arr, static::$paginator_params);
+            if ($this->config['paginator']['position'] == 'TOP'){
+                if ($this->paginator_params != NULL){
+                    $arr = array_merge($arr, $this->paginator_params);
                 }
             }
 
@@ -184,22 +200,22 @@ class Response
             }
 
             $data = array_merge([
-                    'data' => $data, 
+                    'data' => $data,
                     'status_code' => $http_code,
                     'error' => []
             ], $arr);
 
-            static::$http_code = $http_code; //
+            $this->http_code = $http_code; //
 
-            if (static::$config['paginator']['position'] == 'BOTTOM'){                
-                if (static::$paginator_params != NULL){
-                    $data = array_merge($data, static::$paginator_params);
+            if ($this->config['paginator']['position'] == 'BOTTOM'){
+                if ($this->paginator_params != NULL){
+                    $data = array_merge($data, $this->paginator_params);
                 }
-            }          
-        }     
+            }
+        }
 
-        static::$instance->set( $data );
-        return static::$instance;   	
+        $this->set( $data );
+        return $this;
     }
 
     private function zip($data){
@@ -211,15 +227,15 @@ class Response
     } 
 
     function sendCode(int $http_code){
-        static::$instance->set( json_encode(['status_code' => $http_code]) );
-          
-        if (!static::$fake_status_codes){    
-            http_response_code($http_code);
-        }   
+        $this->set( json_encode(['status_code' => $http_code]) );
 
-        static::$http_code = $http_code; //
-        
-        return static::$instance; 
+        if (!$this->fake_status_codes){
+            http_response_code($http_code);
+        }
+
+        $this->http_code = $http_code; //
+
+        return $this;
     }
  
 
@@ -233,12 +249,12 @@ class Response
 
     // send as JSON
     function sendJson($data, $http_code = null, ?string $error_msg = null){
-        $http_code = $http_code != null ? $http_code : (static::$http_code !== null ? static::$http_code : 200);
-        
-        self::$to_be_encoded = true; 
+        $http_code = $http_code != null ? $http_code : ($this->http_code !== null ? $this->http_code : 200);
+
+        $this->to_be_encoded = true;
 
         if (php_sapi_name() != 'cli' && !headers_sent()) {
-            header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
+            header(trim('HTTP/'.$this->version.' '.$http_code.' '.$this->http_code_msg));
         }
 
         /*
@@ -248,17 +264,17 @@ class Response
             $data = $data['data'];
         }
 
-        $res = [ 
-            'data' => $data, 
+        $res = [
+            'data' => $data,
             'status_code' => $http_code,
             'error' => $error_msg ?? ''
         ];
 
-        static::$http_code = $http_code; //
+        $this->http_code = $http_code; //
 
-        static::$instance->set($res);
+        $this->set($res);
 
-        return static::$instance; 
+        return $this;
     }
 
 
@@ -282,25 +298,25 @@ class Response
         if (php_sapi_name() != 'cli'){
             if (!headers_sent()) {
                 if ($http_code == NULL)
-                    if (static::$http_code != NULL)
-                        $http_code = static::$http_code;
+                    if ($this->http_code != NULL)
+                        $http_code = $this->http_code;
                     else
                         $http_code = 500;
-        
-                if ($http_code != NULL && !static::$fake_status_codes)
-                    header(trim('HTTP/'.static::$version.' '.$http_code.' '.static::$http_code_msg));
-            }   
+
+                if ($http_code != NULL && !$this->fake_status_codes)
+                    header(trim('HTTP/'.$this->version.' '.$http_code.' '.$this->http_code_msg));
+            }
         }
-        
-        static::$http_code = $http_code; //
+
+        $this->http_code = $http_code; //
         $res['status'] = $http_code;
 
         /*
             https://www.baeldung.com/rest-api-error-handling-best-practices
         */
-        
+
         // Parche 14-Nov-2022 -modificado en 2023-
-        
+
         if (Url::isPostman() || Url::isInsomnia()){
             if (is_string($detail)){
                 $detail = trim($detail);
@@ -308,34 +324,39 @@ class Response
             }
         }
 
-        $res['error'] = [ 
+        $res['error'] = [
             'type'     => $type    ?? null,
             'code'     => $code    ?? null,
             'message'  => $message,
             'detail'   => $detail,
             'location' => $location  // <--- location deberia ser rellado automaticamente leyendo el stack
         ];
-       
-        static::$instance->set($res);  
-        static::$instance->flush();
+
+        $this->set($res);
+        $this->flush();
 
         exit;
     }
 
-    function set($data){        
-        static::$data = $data;
-        return static::$instance; 
+    function set($data){
+        $this->data = $data;
+        return $this;
     }
 
-    function get(){ 
+    function get(){
         // Parche aplicado el 14-Nov-2022
-        
-        if (is_array(static::$data)){
-            $this->header('Content-type:application/json;charset=utf-8');
-            return json_encode(static::$data);
+
+        // If already marked to be encoded, return raw data (will be encoded in flush())
+        if ($this->to_be_encoded) {
+            return $this->data;
         }
-        
-        return static::$data; 
+
+        if (is_array($this->data)){
+            $this->header('Content-type:application/json;charset=utf-8');
+            return json_encode($this->data);
+        }
+
+        return $this->data;
     }
 
     function __toString()
@@ -344,7 +365,7 @@ class Response
     }
 
     function isEmpty(){
-        return static::$data == null;
+        return $this->data == null;
     }
 
     /*
@@ -358,51 +379,51 @@ class Response
         // print_r(['Memory usage'=> System::getMemoryUsage()]);
         // print_r("<br>");
 
-        // var_dump(static::$data);
+        // var_dump($this->data);
 
-        if (self::$to_be_encoded){
-            static::$data = $this->do_encode(static::$data);
+        if ($this->to_be_encoded){
+            $this->data = $this->do_encode($this->data);
             $this->header('Content-type:application/json;charset=utf-8');
-        } else {
+        } else{
             $accept = request()->header('Accept');
 
             if (Strings::startsWith('application/json', $accept)){
-                self::$to_be_encoded = true;
+                $this->to_be_encoded = true;
 
-                static::$data = $this->do_encode(static::$data);
+                $this->data = $this->do_encode($this->data);
                 $this->header('Content-type:application/json;charset=utf-8');
             }
         }
 
         $cli = (php_sapi_name() == 'cli');
 
-        if (isset(static::$data['error']) && !empty(static::$data['error'])){
+        if (isset($this->data['error']) && !empty($this->data['error'])){
             // print_r('*'); // *
 
-            $message  = static::$data['error']['message'] ?? '--';
-            $type     = static::$data['error']['type'] ?? '--';
-            $code     = static::$data['error']['code'] ?? '--';
-            $detail   = static::$data['error']['detail'] ?? '--';
-            $location = static::$data['error']['location'] ?? '--';
+            $message  = $this->data['error']['message'] ?? '--';
+            $type     = $this->data['error']['type'] ?? '--';
+            $code     = $this->data['error']['code'] ?? '--';
+            $detail   = $this->data['error']['detail'] ?? '--';
+            $location = $this->data['error']['location'] ?? '--';
 
             if (is_array($detail)){
                 $detail = json_encode($detail);
             }
-            
-            if (is_array($detail) || !self::$to_be_encoded){
-                echo $this->do_encode(static::$data);
+
+            if (is_array($detail) || !$this->to_be_encoded){
+                echo $this->do_encode($this->data);
             } else {
                 echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -| Location: $location -|Detail: $detail" .  PHP_EOL. PHP_EOL;
             }
-            
+
         } else {
-            if (is_array(static::$data) && !self::$to_be_encoded){
-                echo $this->do_encode(static::$data);
+            if (is_array($this->data) && !$this->to_be_encoded){
+                echo $this->do_encode($this->data);
             } else {
-                echo static::$data; 
-            }                            
+                echo $this->data;
+            }
         }
-        
+
         exit;
     }
 
@@ -449,6 +470,31 @@ class Response
             'status_code' => $http_code,
             'error' => $error_msg
         ], $extra);
+    }
+
+    function status(int $http_code)
+    {
+        if (php_sapi_name() != 'cli' && !headers_sent()) {
+            $httpCodeMsg = $this->http_code_msg;
+            header(trim('HTTP/' . $this->version . ' ' . $http_code . ' ' . $httpCodeMsg));
+        }
+
+        $this->http_code = $http_code;
+        return $this;
+    }
+
+    function json($data)
+    {
+        $this->to_be_encoded = true;
+
+        $response = [
+            'data' => $data,
+            'status_code' => $this->http_code ?? 200,
+            'error' => []
+        ];
+
+        $this->set($response);
+        return $this;
     }
 
     static function formatError($error_msg, $error_code = null){

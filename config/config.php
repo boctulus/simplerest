@@ -252,7 +252,6 @@ return [
 	*/
 
 	'providers' => [
-		Boctulus\DummyApi\ServiceProvider::class,
 		Boctulus\FineGrainedACL\FineGrainedAclServiceProvider::class,
 		//Boctulus\BasicACL\BasicAclServiceProvider::class,
 		Boctulus\Zippy\ServiceProvider::class,
@@ -265,7 +264,7 @@ return [
 		//boctulus\hello_world\HelloServiceProvider::class
 	],
 
-	
+
 	/*
 		Cache
 	*/
