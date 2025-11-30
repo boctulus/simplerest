@@ -14,7 +14,6 @@ class Response
     protected $headers = [];
     protected $http_code = NULL;
     protected $http_code_msg = '';
-    protected static $instance = NULL;
     protected $version = '2';
     protected $config;
     protected $pretty;
@@ -22,7 +21,7 @@ class Response
     protected $as_object = false;
     protected $fake_status_codes = false; // send 200 instead
     protected $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
-
+    protected static $instance = NULL;    
 
     protected function __construct() {
         $this->config = Config::get();
@@ -502,5 +501,131 @@ class Response
             'message' => $error_msg,
             'code'    => $error_code
         ];
+    }
+
+    // ==================== PHASE 2: Immutable Methods (PSR-7 inspired) ====================
+
+    /**
+     * Return a new instance with the specified status code
+     *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the instance, and MUST return a new instance with
+     * the modified status code.
+     *
+     * @param int $code The 3-digit integer result code to set
+     * @param string $reasonPhrase The reason phrase to use (optional)
+     * @return self A new instance with the specified status code
+     */
+    public function withStatus(int $code, string $reasonPhrase = ''): self
+    {
+        if ($code < 100 || $code > 599) {
+            throw new \InvalidArgumentException('Invalid HTTP status code');
+        }
+
+        $new = clone $this;
+        $new->http_code = $code;
+        $new->http_code_msg = $reasonPhrase;
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance with the specified header
+     *
+     * @param string $name Header name
+     * @param string|string[] $value Header value(s)
+     * @return self A new instance with the specified header
+     */
+    public function withHeader(string $name, $value): self
+    {
+        $new = clone $this;
+
+        if ($new->headers === null) {
+            $new->headers = [];
+        }
+
+        $headerString = is_array($value) ? implode(', ', $value) : $value;
+        $new->headers[] = "$name: $headerString";
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance with the specified added header value
+     *
+     * @param string $name Header name
+     * @param string|string[] $value Header value(s) to add
+     * @return self A new instance with the added header value
+     */
+    public function withAddedHeader(string $name, $value): self
+    {
+        $new = clone $this;
+
+        if ($new->headers === null) {
+            $new->headers = [];
+        }
+
+        $headerString = is_array($value) ? implode(', ', $value) : $value;
+        $new->headers[] = "$name: $headerString";
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance without the specified header
+     *
+     * @param string $name Header name to remove
+     * @return self A new instance without the specified header
+     */
+    public function withoutHeader(string $name): self
+    {
+        $new = clone $this;
+
+        if ($new->headers !== null) {
+            $new->headers = array_filter($new->headers, function($header) use ($name) {
+                return stripos($header, $name . ':') !== 0;
+            });
+            $new->headers = array_values($new->headers); // Re-index array
+        }
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance with the specified body
+     *
+     * @param mixed $body The new body data
+     * @return self A new instance with the specified body
+     */
+    public function withBody($body): self
+    {
+        $new = clone $this;
+        $new->data = $body;
+        return $new;
+    }
+
+    /**
+     * Return a new instance with JSON body and appropriate headers
+     *
+     * Convenience method for creating JSON responses
+     *
+     * @param mixed $data The data to encode as JSON
+     * @param int $status HTTP status code
+     * @return self A new instance with JSON body
+     */
+    public function withJson($data, int $status = 200): self
+    {
+        $new = clone $this;
+        $new->http_code = $status;
+        $new->to_be_encoded = true;
+        $new->data = $data;
+
+        // Add Content-Type header
+        if ($new->headers === null) {
+            $new->headers = [];
+        }
+        $new->headers[] = 'Content-Type: application/json';
+
+        return $new;
     }
 }
