@@ -183,7 +183,8 @@ class OpenFacturaController extends Controller
     public function emitDTE()
     {
         try {
-            $data = request()->getBody(true); // true = decode JSON
+            // IMPORTANTE: getBody(false) devuelve array, getBody(true) devuelve objeto
+            $data = request()->getBody(false); // false = decode JSON como array
 
             // Validaciones básicas ANTES de inicializar SDK
             if (!is_array($data) || !isset($data['dteData'])) {
@@ -268,7 +269,7 @@ class OpenFacturaController extends Controller
     public function anularGuiaDespacho()
     {
         try {
-            $data = request()->getBody(true);
+            $data = request()->getBody(false); // false = decode JSON como array
 
             // Validaciones ANTES de inicializar SDK
             if (!is_array($data) || !isset($data['folio']) || !isset($data['fecha'])) {
@@ -316,7 +317,7 @@ class OpenFacturaController extends Controller
     public function anularDTE()
     {
         try {
-            $data = request()->getBody(true);
+            $data = request()->getBody(false); // false = decode JSON como array
 
             // Validaciones ANTES de inicializar SDK
             if (!is_array($data) || !isset($data['dteData'])) {

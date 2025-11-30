@@ -270,6 +270,9 @@ class Request  implements \ArrayAccess, Arrayable
         return $this->header($key);
     }
 
+    /**
+     * @deprecated Use withHeader() / withoutHeader() for immutable operations
+     */
     function shiftHeader(string $key){
         $key = strtolower($key);
 
@@ -350,6 +353,7 @@ class Request  implements \ArrayAccess, Arrayable
             return $this->accept_encoding;
         }
 
+        // @deprecated Use withHeader() / withoutHeader() for immutable operations
         return $this->shiftHeader('Accept-Encoding');
     }
 
@@ -370,6 +374,9 @@ class Request  implements \ArrayAccess, Arrayable
     }
 
     // getter destructivo sobre $query_arr
+    /**
+     * @deprecated Use withQueryParam() / withoutQueryParam() for immutable operations
+     */
     function shiftQuery($key, $default_value = NULL, $fn = null)
     {
         static $arr = [];
@@ -434,7 +441,30 @@ class Request  implements \ArrayAccess, Arrayable
             $as_obj = $this->as_object;
         }
 
-        return $as_obj ? (object) $this->body : $this->body;
+        $body = $this->body;
+
+        // Si el cuerpo es un string (no decodificado), decodificarlo como JSON
+        if (is_string($body)) {
+            $decoded = json_decode($body, $as_obj); // Decodificar como array si $as_obj es false/null, como objeto si $as_obj es true
+            if ($decoded !== null && json_last_error() === JSON_ERROR_NONE) {
+                $body = $decoded;
+            } else {
+                // Si no es JSON válido, devolver como string
+                return $body;
+            }
+        }
+
+        // Si $as_obj es true y body es array, convertir a objeto
+        if ($as_obj === true && is_array($body)) {
+            return (object) $body;
+        }
+        // Si $as_obj es false/null y body es objeto, convertir a array
+        else if (($as_obj === false || $as_obj === null) && is_object($body)) {
+            return (array) $body;
+        }
+
+        // Devolver el cuerpo tal cual está si ya tiene el formato correcto
+        return $body;
     }
 
     function getBodyDecoded(){
@@ -466,6 +496,9 @@ class Request  implements \ArrayAccess, Arrayable
     }
 
     // getter destructivo sobre el body
+    /**
+     * @deprecated Use withBody() for immutable operations
+     */
     function shiftBodyParam($key){
         if (!isset($this->body[$key])){
             return NULL;
@@ -598,6 +631,129 @@ class Request  implements \ArrayAccess, Arrayable
 
     function toArray(){
         return $this->params;
+    }
+
+    // ==================== PHASE 2: Immutable Methods (PSR-7 inspired) ====================
+
+    /**
+     * Return a new instance with the specified query parameter
+     *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the instance, and MUST return a new instance with
+     * the modified query parameter.
+     *
+     * @param string $key The query parameter key
+     * @param mixed $value The query parameter value
+     * @return self A new instance with the specified query parameter
+     */
+    public function withQueryParam(string $key, $value): self
+    {
+        $new = clone $this;
+
+        if ($new->query_arr === null) {
+            $new->query_arr = [];
+        }
+
+        $new->query_arr[$key] = $value;
+        return $new;
+    }
+
+    /**
+     * Return a new instance without the specified query parameter
+     *
+     * @param string $key The query parameter key to remove
+     * @return self A new instance without the specified query parameter
+     */
+    public function withoutQueryParam(string $key): self
+    {
+        $new = clone $this;
+
+        if (isset($new->query_arr[$key])) {
+            unset($new->query_arr[$key]);
+        }
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance with the specified header
+     *
+     * @param string $name Header name
+     * @param string|string[] $value Header value(s)
+     * @return self A new instance with the specified header
+     */
+    public function withHeader(string $name, $value): self
+    {
+        $new = clone $this;
+
+        if ($new->headers === null) {
+            $new->headers = [];
+        }
+
+        $lowerName = strtolower($name);
+        $new->headers[$lowerName] = is_array($value) ? implode(', ', $value) : $value;
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance with the specified added header value
+     *
+     * @param string $name Header name
+     * @param string|string[] $value Header value(s) to add
+     * @return self A new instance with the added header value
+     */
+    public function withAddedHeader(string $name, $value): self
+    {
+        $new = clone $this;
+
+        if ($new->headers === null) {
+            $new->headers = [];
+        }
+
+        $lowerName = strtolower($name);
+
+        if (isset($new->headers[$lowerName])) {
+            $existing = $new->headers[$lowerName];
+            $newValue = is_array($value) ? implode(', ', $value) : $value;
+            $new->headers[$lowerName] = $existing . ', ' . $newValue;
+        } else {
+            $new->headers[$lowerName] = is_array($value) ? implode(', ', $value) : $value;
+        }
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance without the specified header
+     *
+     * @param string $name Header name to remove
+     * @return self A new instance without the specified header
+     */
+    public function withoutHeader(string $name): self
+    {
+        $new = clone $this;
+
+        $lowerName = strtolower($name);
+
+        if (isset($new->headers[$lowerName])) {
+            unset($new->headers[$lowerName]);
+        }
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance with the specified body
+     *
+     * @param mixed $body The new body (array, object, or string)
+     * @return self A new instance with the specified body
+     */
+    public function withBody($body): self
+    {
+        $new = clone $this;
+        $new->body = $body;
+        return $new;
     }
 
 }
