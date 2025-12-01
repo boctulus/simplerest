@@ -6,6 +6,7 @@ namespace Boctulus\FriendlyposWeb\Controllers;
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\OpenfacturaSdk\Factory\OpenFacturaSDKFactory;
 use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\FriendlyposWeb\Helpers\DteDataTransformer;
 
 /**
  * OpenFacturaController
@@ -199,6 +200,16 @@ class OpenFacturaController extends Controller
             $sendEmail = $data['sendEmail'] ?? null;
             $idempotencyKey = $data['idempotencyKey'] ?? ('dte_' . uniqid('', true) . '_' . time());
 
+            // Transformar DTE data para ajustar formato segun tipo
+            $dteData = DteDataTransformer::transform($dteData);
+
+            // For invoices (TipoDTE: 33), ensure the response options follow the correct order
+            $tipoDte = $dteData['Encabezado']['IdDoc']['TipoDTE'] ?? null;
+            if ($tipoDte == 33) {
+                // Ensure response options for invoice type contain all needed formats in the proper order
+                $responseOptions = self::adjustResponseOptionsForInvoice($responseOptions);
+            }
+
             // Emitir DTE
             $response = $sdk->emitirDTE(
                 $dteData,
@@ -337,11 +348,15 @@ class OpenFacturaController extends Controller
             $overrideParams = $this->getOverrideParams();
             $sdk = $this->initializeSDK($overrideParams['api_key'], $overrideParams['sandbox']);
 
+            $dteData = $data['dteData'];
             $responseOptions = $data['responseOptions'] ?? ['PDF', 'FOLIO'];
             $idempotencyKey = 'anular_' . uniqid('', true) . '_' . time();
 
+            // Transformar DTE data para ajustar formato segun tipo
+            $dteData = DteDataTransformer::transform($dteData);
+
             $response = $sdk->emitirDTE(
-                $data['dteData'],
+                $dteData,
                 $responseOptions,
                 null,
                 null,
@@ -546,6 +561,36 @@ class OpenFacturaController extends Controller
             }
             return $this->error('Service unhealthy', 503);
         }
+    }
+
+    /**
+     * Adjust response options for invoice type (TipoDTE: 33)
+     * Ensures the correct order and presence of all required response types
+     *
+     * @param array $responseOptions
+     * @return array
+     */
+    private function adjustResponseOptionsForInvoice(array $responseOptions): array
+    {
+        // Ensure the required elements for invoices are present in the correct order
+        $requiredOptions = ['XML', 'PDF', 'TIMBRE', 'FOLIO'];
+
+        // Create a unique array with required options first, followed by any additional options
+        $result = [];
+        foreach ($requiredOptions as $option) {
+            if (in_array($option, $responseOptions)) {
+                $result[] = $option;
+            }
+        }
+
+        // Add any additional options that aren't in our required list
+        foreach ($responseOptions as $option) {
+            if (!in_array($option, $requiredOptions) && !in_array($option, $result)) {
+                $result[] = $option;
+            }
+        }
+
+        return array_values($result);
     }
 
     /**
