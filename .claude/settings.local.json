@@ -75,7 +75,11 @@
       "Bash(cmd /c \"del D:\\laragon\\www\\simplerest\\app\\Models\\main\\SomeModel.php && del D:\\laragon\\www\\simplerest\\app\\Models\\main\\OtherModel.php\")",
       "Bash(nul)",
       "Bash(test:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(ssh boctulus@159.203.75.234 \"cat /var/www/html/app/Core/Response.php | grep -A 10 ''function status''\")",
+      "Bash(ssh:*)",
+      "Bash(scp:*)",
+      "Bash(powershell.exe -File winpush.ps1 \"Add status() and json() methods to Response class\")"
     ],
     "deny": [],
     "ask": []
