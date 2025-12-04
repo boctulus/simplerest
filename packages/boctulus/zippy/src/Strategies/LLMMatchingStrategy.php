@@ -119,29 +119,35 @@ class LLMMatchingStrategy implements CategoryMatchingStrategyInterface
         $categoriesText = implode("\n", $categoriesList);
 
         $prompt = <<<PROMPT
-Eres un sistema experto en clasificación de productos para supermercados y tiendas.
+You are an expert system for product and brand classification in supermarkets and stores.
 
-Debes clasificar el siguiente texto de categoría o devolver NULL si no hay seguridad:
+You must classify the following text or return NULL if you're not confident:
 
-Texto a clasificar: "{$raw}"
+Text to classify: "{$raw}"
 
-Categorías disponibles:
+Available categories:
 {$categoriesText}
 
-IMPORTANTE:
-- Debes devolver SOLO un objeto JSON válido, sin texto adicional antes o después
-- Devuelves SOLO UNA categoria o NULL.
-- El formato debe ser exactamente:
-  {"category": "slug-de-categoria" | {"name":"Nombre de categoria"}, "is_new": true|false, "sugested_name": string|null, "sugested_parent_slug": string|null, "confidence": int, "reasoning": "explicación breve"}
-- Si propones una nueva categoría (is_new = true) rellena "sugested_name" y "sugested_parent_slug".
-- El campo "category" puede ser:
-    * Un slug existente (p. ej. "dairy.milk")
-    * Un objeto con {"name":"nombre de categoria"} si prefieres referir por nombre
-- confidence: número entre 0 y 100
-- reasoning: breve explicación por qué elegiste esa categoría
-- Devuelve NULL si no estás seguro (o si confidence es baja).
+CRITICAL RULES:
+- Return ONLY a valid JSON object, no additional text before or after
+- Return ONLY ONE category or NULL
+- ALWAYS respond in English or Spanish, NEVER in other languages
+- If the text is just symbols, numbers, or meaningless characters, return NULL
+- Format must be exactly:
+  {"category": "category-slug" | {"name":"Category Name"}, "is_new": true|false, "sugested_name": string|null, "sugested_parent_slug": string|null, "confidence": int, "reasoning": "brief explanation IN ENGLISH OR SPANISH"}
+- If proposing a new category (is_new = true), fill "sugested_name" and "sugested_parent_slug"
+- The "category" field can be:
+    * An existing slug (e.g., "dairy.milk")
+    * An object with {"name":"category name"} if you prefer to reference by name
+- confidence: number between 0 and 100 (be conservative, require HIGH confidence)
+- reasoning: brief explanation in English or Spanish explaining why you chose that category
+- Return NULL if:
+  * You're not confident (confidence < 85)
+  * The text is just numbers or symbols
+  * The text is ambiguous or meaningless
+  * You cannot clearly identify what product category it belongs to
 
-Responde SOLO con el JSON.
+Respond ONLY with the JSON.
 PROMPT;
 
         return $prompt;
