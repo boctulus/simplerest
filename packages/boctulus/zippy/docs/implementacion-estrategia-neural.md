@@ -42,7 +42,9 @@ Output: panaderia (score > threshold)
 ### Componentes
 
 1. **Tokenización**: Divide descripción en palabras individuales
-2. **Stop Words**: Filtra palabras irrelevantes (de, con, etc.)
+2. **Stop Words**: Filtra palabras irrelevantes
+   - **Fuente:** `etc/stop-words-es.txt` (770+ palabras en español)
+   - **Adicionales:** Medidas y abreviaturas del dominio (kg, gr, ml, etc.)
 3. **Pesos**: Cada palabra tiene peso por categoría (0.0-1.0)
 4. **Scoring**: Suma ponderada de pesos
 5. **Threshold**: Mínimo score para aceptar clasificación (0.50)

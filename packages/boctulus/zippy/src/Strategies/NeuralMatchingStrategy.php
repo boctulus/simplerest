@@ -28,15 +28,42 @@ class NeuralMatchingStrategy
 
     public function __construct()
     {
-        // Stop words comunes en español que no aportan clasificación
-        $this->stopWords = [
-            'de', 'del', 'la', 'el', 'los', 'las', 'un', 'una', 'unos', 'unas',
-            'con', 'sin', 'para', 'por', 'en', 'a', 'o', 'y', 'e', 'u',
+        // Cargar stop words desde archivo
+        $this->loadStopWords();
+
+        // Agregar stop words específicas del dominio (medidas, abreviaturas)
+        $domainStopWords = [
             'kg', 'gr', 'cm3', 'ml', 'unidad', 'pack', 'x',
-            'c/', 's/', 'd/', 'trbk', 'pers', 'may', 'gr', 'med',
+            'c/', 's/', 'd/', 'trbk', 'pers', 'may', 'med',
         ];
 
+        $this->stopWords = array_merge($this->stopWords, $domainStopWords);
+
         $this->loadWeights();
+    }
+
+    /**
+     * Carga stop words desde archivo
+     */
+    protected function loadStopWords()
+    {
+        $stopWordsFile = __DIR__ . '/../../etc/stop-words-es.txt';
+
+        if (!file_exists($stopWordsFile)) {
+            Logger::log("NeuralMatchingStrategy: Stop words file not found: $stopWordsFile");
+            $this->stopWords = [];
+            return;
+        }
+
+        $content = file_get_contents($stopWordsFile);
+        $words = explode("\n", $content);
+
+        // Filtrar líneas vacías y normalizar
+        $this->stopWords = array_filter(array_map('trim', $words), function($word) {
+            return !empty($word) && strlen($word) > 0;
+        });
+
+        Logger::log("NeuralMatchingStrategy: Loaded " . count($this->stopWords) . " stop words from file");
     }
 
     /**
