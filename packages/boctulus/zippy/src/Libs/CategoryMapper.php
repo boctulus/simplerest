@@ -181,6 +181,9 @@ class CategoryMapper
 
         static::init();
 
+        // Inicializar variable para evitar undefined variable
+        $isSuspiciousMapping = false;
+
         // 1) Buscar coincidencia exacta en categories / mappings
         $found = static::findCategory($raw);
         if ($found) {
@@ -394,12 +397,16 @@ class CategoryMapper
                         'sarten', 'olla', 'jarra', 'copa', 'taza', 'cubiertos', 'menaje'];
 
         // Palabras clave para identificar productos frescos que no deberían estar en otras categorías
-        $freshKeywords = ['dce/', 'dce /', 'batata', 'papa', 'membrillo', 'fruta', 'verdura', 'zanahoria',
+        // REMOVED 'dce' from here
+        $freshKeywords = ['batata', 'papa', 'membrillo', 'fruta', 'verdura', 'zanahoria',
                          'cebolla', 'tomate', 'lechuga', 'frut', 'verd', 'fresc', 'naranja', 'manzana'];
+
+        // Palabras clave para dulces/golosinas
+        $sweetKeywords = ['dce/', 'dce /', 'dulce', 'mermelada', 'jalea', 'chocolate', 'caramelo', 'alfajor'];
 
         // Palabras clave para panadería que no debería estar en 'frescos'
         $bakeryKeywords = ['pan ', 'pana', 'panb', 'pani', 'panl', 'panr', 'pano', 'panc', 'panet',
-                          'panque', 'bizco', 'pionono', 'gallet', 'tostada', 'harina'];
+                          'panque', 'bizco', 'pionono', 'gallet', 'tostada', 'harina', 'grisin', 't/emp', 'tapas', 'empanada'];
 
         // Palabras clave para productos de bebidas
         $drinkKeywords = ['agua', 'gaseosa', 'bebida', 'cerveza', 'vino', 'whisky', 'coca', 'pepsi',
@@ -413,7 +420,7 @@ class CategoryMapper
             // Si el producto parece tecnológico pero está en categorías de comida, es sospechoso
             foreach ($techKeywords as $techWord) {
                 if (strpos($word, $techWord) !== false) {
-                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'frescos', 'panaderia', 'lacteos', 'carnes', 'verduleria', 'almacen', 'gourmetfood', 'premium snacks and treats', 'gourmet food'])) {
+                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'frescos', 'panaderia', 'lacteos', 'carnes', 'verduleria', 'almacen', 'gourmetfood', 'premium snacks and treats', 'gourmet food', 'frutas-y-verduras', 'frutas y verduras'])) {
                         return true;
                     }
                 }
@@ -422,7 +429,7 @@ class CategoryMapper
             // Si el producto parece de embutidos pero está en categorías incorrectas, es sospechoso
             foreach ($meatKeywords as $meatWord) {
                 if (strpos($word, $meatWord) !== false) {
-                    if (in_array($categorySlug, ['golosinas', 'frutas-y-verduras', 'gourmetfood', 'bebidas', 'panaderia'])) {
+                    if (in_array($categorySlug, ['golosinas', 'frutas-y-verduras', 'frutas y verduras', 'gourmetfood', 'bebidas', 'panaderia'])) {
                         return true;
                     }
                 }
@@ -431,7 +438,7 @@ class CategoryMapper
             // Si el producto parece de ropa pero está en comestibles, es sospechoso
             foreach ($clothingKeywords as $clothingWord) {
                 if (strpos($word, $clothingWord) !== false) {
-                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'frescos', 'panaderia', 'lacteos', 'carnes', 'verduleria', 'almacen', 'gourmetfood'])) {
+                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'frescos', 'panaderia', 'lacteos', 'carnes', 'verduleria', 'almacen', 'gourmetfood', 'frutas-y-verduras'])) {
                         return true;
                     }
                 }
@@ -440,7 +447,7 @@ class CategoryMapper
             // Si el producto parece de hogar/bazar pero está en comestibles, es sospechoso
             foreach ($homeKeywords as $homeWord) {
                 if (strpos($word, $homeWord) !== false) {
-                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'frescos', 'panaderia', 'lacteos', 'carnes', 'verduleria', 'almacen', 'gourmetfood'])) {
+                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'frescos', 'panaderia', 'lacteos', 'carnes', 'verduleria', 'almacen', 'gourmetfood', 'frutas-y-verduras'])) {
                         return true;
                     }
                 }
@@ -449,7 +456,16 @@ class CategoryMapper
             // Si el producto parece fresco pero está en categorías incorrectas
             foreach ($freshKeywords as $freshWord) {
                 if (strpos($word, $freshWord) !== false) {
-                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'galletitas', 'almacen', 'lacteos', 'carnes', 'embutidos', 'gourmetfood']) && !in_array($categorySlug, ['frescos', 'verduleria'])) {
+                    if (in_array($categorySlug, ['golosinas', 'bebidas', 'galletitas', 'almacen', 'lacteos', 'carnes', 'embutidos', 'gourmetfood']) && !in_array($categorySlug, ['frescos', 'verduleria', 'frutas-y-verduras'])) {
+                        return true;
+                    }
+                }
+            }
+
+            // Si el producto parece dulce pero está en frescos/verduras
+            foreach ($sweetKeywords as $sweetWord) {
+                if (strpos($word, $sweetWord) !== false) {
+                    if (in_array($categorySlug, ['frescos', 'verduleria', 'frutas-y-verduras', 'carnes', 'bebidas'])) {
                         return true;
                     }
                 }
@@ -458,7 +474,7 @@ class CategoryMapper
             // Si el producto parece de panadería pero está en "frescos" o categorías incorrectas
             foreach ($bakeryKeywords as $bakeryWord) {
                 if (strpos($word, $bakeryWord) !== false) {
-                    if ($categorySlug === 'frescos') {
+                    if (in_array($categorySlug, ['frescos', 'verduleria', 'frutas-y-verduras', 'carnes', 'bebidas'])) {
                         return true;
                     }
                 }
@@ -484,7 +500,7 @@ class CategoryMapper
     /**
      * Resuelve categorías para un producto completo
      *
-     * @param array|object $product Producto con campos catego_raw1 / catego_raw2 / catego_raw3 y opcional description
+     * @param array|object $product Producto con campos catego_raw1 / catego_raw2 / catego_raw3 y opcional description y brand
      * @param bool $useDescription Si debe analizar description como fallback
      * @return array Array de slugs únicos de categorias a las que pertenece
      */
@@ -502,21 +518,83 @@ class CategoryMapper
         $category_slots = ['catego_raw1', 'catego_raw2', 'catego_raw3'];
 
         $resultSlugs = [];
+        $brandCategorySlug = null;
+        $brandCategoryId = null;
+
+        // 0) Verificar si el producto tiene marca y si esa marca tiene categoría en brand_categories
+        if (!empty($product['brand'])) {
+            $brand = $product['brand'];
+
+            // Buscar la marca en la tabla brands
+            $brandRecord = DB::selectOne("
+                SELECT b.id
+                FROM brands b
+                WHERE b.brand = ? AND b.deleted_at IS NULL
+                LIMIT 1
+            ", [$brand]);
+
+            if ($brandRecord) {
+                $brandId = is_array($brandRecord) ? $brandRecord['id'] : $brandRecord->id;
+
+                // Buscar la categoría de la marca con mejor confidence_level
+                $brandCategoryRecord = DB::selectOne("
+                    SELECT bc.category_id, c.slug, bc.confidence_level
+                    FROM brand_categories bc
+                    JOIN categories c ON bc.category_id = c.id
+                    WHERE bc.brand_id = ? AND bc.deleted_at IS NULL AND c.deleted_at IS NULL
+                    ORDER BY
+                        CASE bc.confidence_level
+                            WHEN 'high' THEN 1
+                            WHEN 'medium' THEN 2
+                            WHEN 'low' THEN 3
+                            WHEN 'doubtful' THEN 4
+                            ELSE 5
+                        END
+                    LIMIT 1
+                ", [$brandId]);
+
+                if ($brandCategoryRecord) {
+                    $brandCategorySlug = is_array($brandCategoryRecord) ? $brandCategoryRecord['slug'] : $brandCategoryRecord->slug;
+                    $brandCategoryId = is_array($brandCategoryRecord) ? $brandCategoryRecord['category_id'] : $brandCategoryRecord->category_id;
+
+                    // Usar la categoría de la marca como categoría padre
+                    $resultSlugs[] = $brandCategorySlug;
+                }
+            }
+        }
 
         // 1) Intentar coincidencias directas (findCategory) para cada slot
         foreach ($category_slots as $slot) {
             if (!empty($product[$slot])) {
                 $found = static::findCategory($product[$slot]);
                 if ($found && !empty($found['category_slug'])) {
-                    $resultSlugs[] = $found['category_slug'];
-                    // don't continue trying to resolve this slot
+                    $candidateSlug = $found['category_slug'];
+
+                    // Si tenemos una categoría de marca, validar que la categoría encontrada sea compatible
+                    if ($brandCategorySlug && !static::isCategoryCompatible($candidateSlug, $brandCategorySlug)) {
+                        // La categoría no es compatible, intentar resolver con estrategias
+                        $resolved = static::resolve($product[$slot]);
+                        if (!empty($resolved['category_slug']) && static::isCategoryCompatible($resolved['category_slug'], $brandCategorySlug)) {
+                            $resultSlugs[] = $resolved['category_slug'];
+                        }
+                        continue;
+                    }
+
+                    $resultSlugs[] = $candidateSlug;
                     continue;
                 }
 
                 // Si no hay coincidencia directa, intentar resolver con estrategias
                 $resolved = static::resolve($product[$slot]);
                 if (!empty($resolved['category_slug'])) {
-                    $resultSlugs[] = $resolved['category_slug'];
+                    $candidateSlug = $resolved['category_slug'];
+
+                    // Si tenemos una categoría de marca, validar compatibilidad
+                    if ($brandCategorySlug && !static::isCategoryCompatible($candidateSlug, $brandCategorySlug)) {
+                        continue; // Saltar categorías no compatibles
+                    }
+
+                    $resultSlugs[] = $candidateSlug;
                 }
             }
         }
@@ -525,7 +603,12 @@ class CategoryMapper
         if (empty($resultSlugs) && $useDescription && !empty($product['description'])) {
             $resolved = static::resolve($product['description']);
             if (!empty($resolved['category_slug'])) {
-                $resultSlugs[] = $resolved['category_slug'];
+                $candidateSlug = $resolved['category_slug'];
+
+                // Si tenemos una categoría de marca, validar compatibilidad
+                if (!$brandCategorySlug || static::isCategoryCompatible($candidateSlug, $brandCategorySlug)) {
+                    $resultSlugs[] = $candidateSlug;
+                }
             }
         }
 
@@ -533,6 +616,51 @@ class CategoryMapper
         $unique = array_values(array_unique(array_filter($resultSlugs)));
 
         return $unique;
+    }
+
+    /**
+     * Verifica si una categoría es compatible con la categoría de la marca
+     * Una categoría es compatible si es la misma, es hija, nieta, etc. de la categoría de la marca
+     *
+     * @param string $categorySlug Slug de la categoría a validar
+     * @param string $brandCategorySlug Slug de la categoría de la marca
+     * @return bool
+     */
+    private static function isCategoryCompatible(string $categorySlug, string $brandCategorySlug): bool
+    {
+        // Si son la misma categoría, es compatible
+        if ($categorySlug === $brandCategorySlug) {
+            return true;
+        }
+
+        static::init();
+
+        // Buscar la categoría candidata
+        $category = DB::selectOne("
+            SELECT parent_slug
+            FROM categories
+            WHERE slug = ? AND deleted_at IS NULL
+            LIMIT 1
+        ", [$categorySlug]);
+
+        if (!$category) {
+            return false;
+        }
+
+        $parentSlug = is_array($category) ? ($category['parent_slug'] ?? null) : ($category->parent_slug ?? null);
+
+        // Si no tiene padre, no es compatible (a menos que sean la misma, ya verificado arriba)
+        if (!$parentSlug) {
+            return false;
+        }
+
+        // Si el padre es la categoría de la marca, es compatible
+        if ($parentSlug === $brandCategorySlug) {
+            return true;
+        }
+
+        // Recursivamente verificar si algún ancestro es la categoría de la marca
+        return static::isCategoryCompatible($parentSlug, $brandCategorySlug);
     }
 
 
@@ -552,7 +680,7 @@ class CategoryMapper
             'llm_verbose' => false,
             'thresholds' => [
                 'fuzzy' => 0.40,
-                'llm' => 0.70,
+                'llm' => 0.85,
             ]
         ], $config);
 

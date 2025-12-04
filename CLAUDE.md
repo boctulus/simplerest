@@ -231,6 +231,12 @@ SIEMPRE se debe probar antes de considerar que una tarea fue completada.
 
 Si ya se ha fallado mas de dos (2) veces en una tarea que involucra una UI, deberia ensayarse de ser posible con CURL y de no ser posible con Playwright o Selenium.
 
+## Diferencias clave
+
+- Ten mucho cuidado porque este framework utiliza funciones de la clase String para contains() etc con parametros en orden distinto que las funciones nativas de PHP. 
+
+- Hay algunas diferencias sutiles entre los comandos del Query Builder de SimpleRest y Laravel, en particular DB::table() requiere archivo schema para el modelo (se genera con un comando) mientras que el helper table() no lo necesita.
+
 
 ## Autoría
 **El author es SIEMPRE:**
