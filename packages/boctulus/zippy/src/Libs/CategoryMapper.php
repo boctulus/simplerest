@@ -5,6 +5,7 @@ namespace Boctulus\Zippy\Libs;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Zippy\Strategies\LLMMatchingStrategy;
+use Boctulus\Zippy\Strategies\NeuralMatchingStrategy;
 use Boctulus\Simplerest\Core\Libs\Logger;
 
 /*
@@ -748,9 +749,9 @@ class CategoryMapper
     public static function configure(array $config = []): void
     {
         self::$config = array_merge([
-            'default_strategy' => 'llm',
-            'fallback_strategy' => 'fuzzy',
-            'strategies_order' => ['llm'],
+            'default_strategy' => 'neural',
+            'fallback_strategy' => 'llm',
+            'strategies_order' => ['neural', 'llm'],  // Neural primero, LLM como fallback
             'batch_size' => 1,
             'llm_model' => 'qwen2.5:3b',
             'llm_temperature' => 0.2,
@@ -758,13 +759,15 @@ class CategoryMapper
             'llm_verbose' => false,
             'thresholds' => [
                 'fuzzy' => 0.40,
-                'llm' => 0.70,  // Reducido de 0.85 a 0.70 para ser menos estricto
+                'neural' => 0.50,  // Threshold para estrategia neural
+                'llm' => 0.70,     // Reducido de 0.85 a 0.70 para ser menos estricto
             ]
         ], $config);
 
         // Inicializar estrategias por defecto
         if (empty(self::$strategies)) {
             self::$strategies = [
+                'neural' => new NeuralMatchingStrategy(),
                 'llm' => new LLMMatchingStrategy(
                     self::$config['llm_model'],
                     self::$config['llm_temperature'],

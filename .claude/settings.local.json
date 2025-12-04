@@ -14,7 +14,9 @@
       "Bash(php com zippy product process:*)",
       "Bash(php com zippy brand sync:*)",
       "Bash(php com zippy brand categorize:*)",
-      "Bash(php com zippy ollama test_strategy)"
+      "Bash(php com zippy ollama test_strategy)",
+      "Bash(php com sql:*)",
+      "Bash(php:*)"
     ],
     "deny": [],
     "ask": []
