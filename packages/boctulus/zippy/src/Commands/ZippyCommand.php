@@ -115,15 +115,18 @@ class ZippyCommand implements ICommand
     }
 
     /**
-     * Procesa productos y actualiza sus categorías (proceso individual)
+     * Procesa productos y actualiza sus categorías
      * 
-     * Uso: php com zippy product process --limit=100 --dry-run
+     * Uso: 
+     *   php com zippy product process --limit=100 --dry-run
+     *   php com zippy product process --limit=50 --batch-size=10  (modo batch)
      */
     protected function product_process(...$options)
     {
         $opts     = $this->parseOptions($options);
         $limit    = $opts['limit'] ?? 100;
         $dryRun   = $opts['dry_run'] ?? false;
+        $batchSize = $opts['batch_size'] ?? 1; // Default: 1 (secuencial)
         $strategy = $opts['strategy'] ?? null;
 
         DB::setConnection('zippy');
@@ -134,7 +137,7 @@ class ZippyCommand implements ICommand
             'llm_model' => 'qwen2.5:1.5b',
             'thresholds' => [
                 'fuzzy' => 0.40,
-                'llm' => 0.85,
+                'llm' => 0.70,  // Usa el threshold reducido
             ]
         ]);
 
@@ -145,22 +148,84 @@ class ZippyCommand implements ICommand
         }
 
         $products = $query->get();
-        $processed = 0;
-        $errors = 0;
-
         $total = count($products);
+        
         echo "Procesando $total productos...\n";
 
-        foreach ($products as $product) {
-            dd($product, 'P');
+        if ($batchSize > 1) {
+            echo "🚀 Modo BATCH activado (batch_size=$batchSize)\n\n";
+            $this->processProductsInBatch($products, $batchSize, $dryRun);
+        } else {
+            echo "Modo SECUENCIAL\n\n";
+            $this->processProductsSequential($products, $dryRun);
+        }
 
+        DB::closeConnection();
+    }
+
+    /**
+     * Procesa productos en modo batch
+     */
+    protected function processProductsInBatch($products, int $batchSize, bool $dryRun)
+    {
+        $total = count($products);
+        $processed = 0;
+        $errors = 0;
+        
+        // Convertir objetos a arrays para compatibilidad
+        $productsArray = [];
+        foreach ($products as $product) {
+            $productsArray[] = is_array($product) ? $product : (array)$product;
+        }
+        
+        echo "Procesando en batches de $batchSize...\n";
+        $results = CategoryMapper::resolveBatch($productsArray, $batchSize);
+        
+        foreach ($productsArray as $idx => $product) {
+            $ean = $product['ean'];
+            $categories = $results[$idx] ?? [];
+            
+            echo "[$processed/$total] EAN: $ean\n";
+            
+            if (!empty($categories)) {
+                echo "  → Categorías: " . implode(', ', $categories) . "\n";
+                
+                if (!$dryRun) {
+                    DB::table('products')
+                        ->where('ean', $ean)
+                        ->update(['categories' => json_encode($categories)]);
+                }
+            } else {
+                echo "  → No se encontraron categorías\n";
+            }
+            
+            $processed++;
+        }
+        
+        echo "\nResumen:\n";
+        echo "- Productos procesados: $processed\n";
+        echo "- Errores: $errors\n";
+        
+        if ($dryRun) {
+            echo "- MODO SIMULACIÓN: No se realizaron cambios en la BD\n";
+        }
+    }
+
+    /**
+     * Procesa productos en modo secuencial (original)
+     */
+    protected function processProductsSequential($products, bool $dryRun)
+    {
+        $processed = 0;
+        $errors = 0;
+        $total = count($products);
+
+        foreach ($products as $product) {
             try {
                 $ean = is_array($product) ? $product['ean'] : $product->ean;
                 echo "[$processed/$total] Procesando producto con EAN: $ean\n";
 
                 $categories = CategoryMapper::resolveProduct($product, true);
-
-                dd($categories, 'Categorias resueltas');
 
                 if (!empty($categories)) {
                     echo "  → Categorías asignadas: " . implode(', ', $categories) . "\n";
@@ -179,7 +244,7 @@ class ZippyCommand implements ICommand
                 $processed++;
             } catch (\Exception $e) {
                 $errors++;
-                dd($e->getMessage(), "→ ERROR");
+                echo "→ ERROR: " . $e->getMessage() . "\n";
                 continue;
             }
         }
@@ -191,8 +256,6 @@ class ZippyCommand implements ICommand
         if ($dryRun) {
             echo "- MODO SIMULACIÓN: No se realizaron cambios en la BD\n";
         }
-
-        DB::closeConnection();
     }
 
     /**
@@ -1088,13 +1151,16 @@ class ZippyCommand implements ICommand
     /**
      * Categoriza cada marca usando LLM y crea registros en brand_categories
      *
-     * Uso: php com zippy brand categorize [--limit=100] [--dry-run]
+     * Uso: 
+     *   php com zippy brand categorize [--limit=100] [--dry-run]
+     *   php com zippy brand categorize --limit=50 --batch-size=10  (modo batch)
      */
     protected function brand_categorize(...$options)
     {
         $opts = $this->parseOptions($options);
         $limit = $opts['limit'] ?? null;
         $dryRun = $opts['dry_run'] ?? false;
+        $batchSize = $opts['batch_size'] ?? 1; // Default: 1 (secuencial)
 
         StdOut::print("=== Categorizando marcas con LLM ===\n");
 
@@ -1124,14 +1190,110 @@ class ZippyCommand implements ICommand
             'llm_temperature' => 0.2,
             'llm_verbose' => false,
             'thresholds' => [
-                'llm' => 0.90,  // Alta calidad, threshold estricto
+                'llm' => 0.70,  // Threshold reducido (era 0.85)
             ]
         ]);
 
+        if ($batchSize > 1) {
+            StdOut::print("🚀 Modo BATCH activado (batch_size=$batchSize)\n\n");
+            $this->processBrandsInBatch($brands, $batchSize, $dryRun);
+        } else {
+            StdOut::print("Modo SECUENCIAL\n\n");
+            $this->processBrandsSequential($brands, $dryRun);
+        }
+
+        DB::closeConnection();
+    }
+
+    /**
+     * Procesa marcas en modo batch
+     */
+    protected function processBrandsInBatch($brands, int $batchSize, bool $dryRun)
+    {
+        $total = count($brands);
         $processed = 0;
         $saved = 0;
         $errors = 0;
 
+        // Convertir a array plano de marcas
+        $brandNames = [];
+        foreach ($brands as $row) {
+            $brandNames[] = is_array($row) ? $row['brand'] : $row->brand;
+        }
+
+        // Obtener categorías disponibles
+        $availableCategories = CategoryMapper::getCategories();
+        
+        // Obtener estrategia LLM
+        $strategies = CategoryMapper::getStrategies();
+        $llmStrategy = $strategies['llm'] ?? null;
+        
+        if (!$llmStrategy) {
+            StdOut::print("ERROR: No hay estrategia LLM disponible\n");
+            return;
+        }
+
+        $threshold = 0.70;
+
+        // Procesar en batches
+        $batches = array_chunk($brandNames, $batchSize, true);
+
+        foreach ($batches as $batch) {
+            try {
+                // Llamada batch al LLM
+                $batchResults = $llmStrategy->matchBatch($batch, $availableCategories, $threshold);
+
+                // Procesar resultados
+                foreach ($batch as $idx => $brand) {
+                    $processed++;
+                    StdOut::print("[{$processed}/{$total}] Procesando marca: {$brand}\n");
+
+                    if (isset($batchResults[$idx]) && $batchResults[$idx]) {
+                        $result = $batchResults[$idx];
+                        $categorySlug = $result['category'];
+                        $score = $result['score'] ?? 0;
+                        $reasoning = $result['reasoning'] ?? 'N/A';
+
+                        $confidenceLevel = static::determineConfidenceLevel($brand, $score, $categorySlug);
+
+                        StdOut::print("  → Categoría: {$categorySlug}\n");
+                        StdOut::print("  → Score: {$score}\n");
+                        StdOut::print("  → Confianza: {$confidenceLevel}\n");
+                        StdOut::print("  → Razón: {$reasoning}\n");
+
+                        if (!$dryRun) {
+                            if ($this->saveBrandCategorization($brand, $categorySlug, $confidenceLevel)) {
+                                $saved++;
+                            }
+                        } else {
+                            StdOut::print("  ℹ️  DRY-RUN: No se guardó\n\n");
+                        }
+                    } else {
+                        StdOut::print("  ⚠ No se pudo categorizar\n\n");
+                    }
+                }
+            } catch (\Exception $e) {
+                $errors++;
+                StdOut::print("  ❌ ERROR en batch: " . $e->getMessage() . "\n\n");
+                // Continuar con siguiente batch
+            }
+        }
+
+        StdOut::print("\n=== Resumen ===\n");
+        StdOut::print("Procesadas: {$processed}\n");
+        StdOut::print("Guardadas: " . ($dryRun ? "0 (dry-run)" : $saved) . "\n");
+        StdOut::print("Errores: {$errors}\n");
+    }
+
+    /**
+     * Procesa marcas en modo secuencial (original)
+     */
+    protected function processBrandsSequential($brands, bool $dryRun)
+    {
+        $total = count($brands);
+        $processed = 0;
+        $saved = 0;
+        $errors = 0;
 
         foreach ($brands as $row) {
             $processed++;
@@ -1161,39 +1323,8 @@ class ZippyCommand implements ICommand
                 StdOut::print("  → Razón: {$reasoning}\n");
 
                 if (!$dryRun) {
-                    // Buscar brand_id en la tabla brands
-                    $brandRecord = DB::selectOne("SELECT id FROM brands WHERE brand = ? AND deleted_at IS NULL LIMIT 1", [$brand]);
-
-                    if (!$brandRecord) {
-                        // Crear registro en brands si no existe
-                        $normalizedBrand = Strings::normalize($brand);
-                        DB::insert("INSERT INTO brands (brand, normalized_brand, created_at, updated_at) VALUES (?, ?, NOW(), NOW())", [$brand, $normalizedBrand]);
-                        $brandId = DB::lastInsertId();
-                    } else {
-                        $brandId = is_array($brandRecord) ? $brandRecord['id'] : $brandRecord->id;
-                    }
-
-                    // Buscar category_id
-                    $categoryRecord = DB::selectOne("SELECT id FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$categorySlug]);
-
-                    if (!$categoryRecord) {
-                        StdOut::print("  ⚠ Categoría {$categorySlug} no existe en la tabla categories\n\n");
-                        continue;
-                    }
-
-                    $categoryId = is_array($categoryRecord) ? $categoryRecord['id'] : $categoryRecord->id;
-
-                    // Verificar si ya existe el registro en brand_categories
-                    $exists = DB::selectOne("SELECT id FROM brand_categories WHERE brand_id = ? AND category_id = ? AND deleted_at IS NULL LIMIT 1", [$brandId, $categoryId]);
-
-                    if (!$exists) {
-                        // Crear registro en brand_categories con confidence_level
-                        DB::insert("INSERT INTO brand_categories (brand_id, category_id, confidence_level, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())", [$brandId, $categoryId, $confidenceLevel]);
-
-                        StdOut::print("  ✅ Registro guardado en brand_categories\n\n");
+                    if ($this->saveBrandCategorization($brand, $categorySlug, $confidenceLevel)) {
                         $saved++;
-                    } else {
-                        StdOut::print("  ℹ️  Registro ya existe en brand_categories\n\n");
                     }
                 } else {
                     StdOut::print("  ℹ️  DRY-RUN: No se guardó\n\n");
@@ -1206,12 +1337,51 @@ class ZippyCommand implements ICommand
             }
         }
 
-        DB::closeConnection();
-
         StdOut::print("\n=== Resumen ===\n");
         StdOut::print("Procesadas: {$processed}\n");
         StdOut::print("Guardadas: " . ($dryRun ? "0 (dry-run)" : $saved) . "\n");
         StdOut::print("Errores: {$errors}\n");
+    }
+
+    /**
+     * Guarda la categorización de una marca
+     */
+    protected function saveBrandCategorization(string $brand, string $categorySlug, string $confidenceLevel): bool
+    {
+        // Buscar brand_id en la tabla brands
+        $brandRecord = DB::selectOne("SELECT id FROM brands WHERE brand = ? AND deleted_at IS NULL LIMIT 1", [$brand]);
+
+        if (!$brandRecord) {
+            // Crear registro en brands si no existe
+            $normalizedBrand = Strings::normalize($brand);
+            $brandId = DB::insert("INSERT INTO brands (brand, normalized_brand, created_at, updated_at) VALUES (?, ?, NOW(), NOW())", [$brand, $normalizedBrand]);
+        } else {
+            $brandId = is_array($brandRecord) ? $brandRecord['id'] : $brandRecord->id;
+        }
+
+        // Buscar category_id
+        $categoryRecord = DB::selectOne("SELECT id FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$categorySlug]);
+
+        if (!$categoryRecord) {
+            StdOut::print("  ⚠ Categoría {$categorySlug} no existe en la tabla categories\n\n");
+            return false;
+        }
+
+        $categoryId = is_array($categoryRecord) ? $categoryRecord['id'] : $categoryRecord->id;
+
+        // Verificar si ya existe el registro en brand_categories
+        $exists = DB::selectOne("SELECT id FROM brand_categories WHERE brand_id = ? AND category_id = ? AND deleted_at IS NULL LIMIT 1", [$brandId, $categoryId]);
+
+        if (!$exists) {
+            // Crear registro en brand_categories con confidence_level
+            DB::insert("INSERT INTO brand_categories (brand_id, category_id, confidence_level, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())", [$brandId, $categoryId, $confidenceLevel]);
+
+            StdOut::print("  ✅ Registro guardado en brand_categories\n\n");
+            return true;
+        } else {
+            StdOut::print("  ℹ️  Registro ya existe en brand_categories\n\n");
+            return false;
+        }
     }
 
     /**
@@ -1268,6 +1438,110 @@ class ZippyCommand implements ICommand
             return 'low';
         } else {
             return 'doubtful';
+        }
+    }
+
+    // ================================================================
+    // ROUTER: BRAND_CATEGORIES
+    // ================================================================
+
+    /**
+     * Router para comandos de brand_categories
+     *
+     * Uso: php com zippy brand_categories <subcomando> [options]
+     */
+    public function brand_categories($subcommand = null, ...$options)
+    {
+        if (empty($subcommand)) {
+            StdOut::print("Error: Se requiere un subcomando.\n");
+            StdOut::print("Uso: php com zippy brand_categories <subcomando> [options]\n");
+            StdOut::print("Ejecuta 'php com zippy help' para ver todos los subcomandos disponibles.\n");
+            return;
+        }
+
+        $method = 'brand_categories_' . $subcommand;
+
+        if (!method_exists($this, $method)) {
+            StdOut::print("Error: Subcomando '$subcommand' no existe.\n");
+            StdOut::print("Ejecuta 'php com zippy help' para ver los subcomandos disponibles.\n");
+            return;
+        }
+
+        $this->$method(...$options);
+    }
+
+    /**
+     * Lista las relaciones marca-categoría con nombres legibles
+     *
+     * Uso: php com zippy brand_categories list [--limit=N] [--offset=N]
+     */
+    protected function brand_categories_list(...$options)
+    {
+        $opts = $this->parseOptions($options);
+        $limit = $opts['limit'] ?? 100;
+        $offset = $opts['offset'] ?? 0;
+
+        StdOut::print("=== Relaciones Marca-Categoría ===\n\n");
+
+        DB::setConnection('zippy');
+
+        $sql = "
+            SELECT 
+                bc.id as bc_id,
+                b.id as brand_id,
+                b.brand,
+                c.id as category_id,
+                c.name as category_name,
+                c.slug as category_slug,
+                bc.confidence_level,
+                bc.created_at
+            FROM brand_categories bc
+            JOIN brands b ON bc.brand_id = b.id
+            JOIN categories c ON bc.category_id = c.id
+            WHERE bc.deleted_at IS NULL
+              AND b.deleted_at IS NULL
+              AND c.deleted_at IS NULL
+            ORDER BY b.brand ASC, c.name ASC
+            LIMIT ? OFFSET ?
+        ";
+
+        $results = DB::select($sql, [$limit, $offset]);
+
+        DB::closeConnection();
+
+        $total = count($results);
+        StdOut::print("Mostrando {$total} relaciones (limit={$limit}, offset={$offset})\n\n");
+
+        if ($total === 0) {
+            StdOut::print("No hay relaciones marca-categoría registradas.\n");
+            return;
+        }
+
+        foreach ($results as $idx => $row) {
+            $num = $offset + $idx + 1;
+            $brand = is_array($row) ? $row['brand'] : $row->brand;
+            $categoryName = is_array($row) ? $row['category_name'] : $row->category_name;
+            $categorySlug = is_array($row) ? $row['category_slug'] : $row->category_slug;
+            $confidenceLevel = is_array($row) ? $row['confidence_level'] : $row->confidence_level;
+            $brandId = is_array($row) ? $row['brand_id'] : $row->brand_id;
+            $categoryId = is_array($row) ? $row['category_id'] : $row->category_id;
+            $bcId = is_array($row) ? $row['bc_id'] : $row->bc_id;
+
+            // Formatear confidence level con emoji
+            $confidenceEmoji = match($confidenceLevel) {
+                'high' => '🟢',
+                'medium' => '🟡',
+                'low' => '🟠',
+                'doubtful' => '🔴',
+                default => '⚪'
+            };
+
+            StdOut::print("[{$num}] {$brand} [brand_id: {$brandId}] → {$categoryName} [category_id: {$categoryId}]\n");
+            StdOut::print("     Slug: {$categorySlug} | Confianza: {$confidenceEmoji} {$confidenceLevel} | ID: {$bcId}\n\n");
+        }
+
+        if ($total === $limit) {
+            StdOut::print("\n💡 Tip: Hay más resultados. Usa --offset=" . ($offset + $limit) . " para ver la siguiente página.\n");
         }
     }
 

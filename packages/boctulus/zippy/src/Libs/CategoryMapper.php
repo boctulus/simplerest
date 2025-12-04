@@ -402,11 +402,16 @@ class CategoryMapper
                          'cebolla', 'tomate', 'lechuga', 'frut', 'verd', 'fresc', 'naranja', 'manzana'];
 
         // Palabras clave para dulces/golosinas
-        $sweetKeywords = ['dce/', 'dce /', 'dulce', 'mermelada', 'jalea', 'chocolate', 'caramelo', 'alfajor'];
+        $sweetKeywords = ['dce/', 'dce ', 'dce', 'dulce de', 'dulce', 'mermelada', 'jalea', 'chocolate', 'caramelo', 'alfajor', 'golosina'];
 
         // Palabras clave para panadería que no debería estar en 'frescos'
         $bakeryKeywords = ['pan ', 'pana', 'panb', 'pani', 'panl', 'panr', 'pano', 'panc', 'panet',
                           'panque', 'bizco', 'pionono', 'gallet', 'tostada', 'harina', 'grisin', 't/emp', 'tapas', 'empanada'];
+
+        // Palabras clave para pastas que no deberían estar en 'frescos' o 'frutas-y-verduras'
+        $pastaKeywords = ['fid', 'fideos', 'fideo', 'pasta', 'tallarin', 'tallarines', 'raviole', 'ravioles',
+                         'ñoquis', 'canelones', 'lasagna', 'lasaña', 'spaguetti', 'espagueti', 'macarron',
+                         'penne', 'rigatoni', 'fetuccini', 'capeletti'];
 
         // Palabras clave para productos de bebidas
         $drinkKeywords = ['agua', 'gaseosa', 'bebida', 'cerveza', 'vino', 'whisky', 'coca', 'pepsi',
@@ -483,12 +488,18 @@ class CategoryMapper
             // Si el producto parece bebida pero no está en bebidas
             foreach ($drinkKeywords as $drinkWord) {
                 if (strpos($word, $drinkWord) !== false) {
-                    if ($categorySlug !== 'bebidas' && !in_array($categorySlug, ['golosinas', 'frescos', 'panaderia', 'gourmetfood'])) {
-                        // En este caso es más permisivo, bebidas pueden estar en otras categorías en ciertos casos
-                        // Solo lo consideramos sospechoso si está en categorías claramente inapropiadas
-                        if (in_array($categorySlug, ['golosinas', 'frescos', 'panaderia', 'gourmetfood'])) {
-                            return true;
-                        }
+                    // Si el producto parece bebida pero NO está en bebidas, es sospechoso
+                    if ($categorySlug !== 'bebidas' && in_array($categorySlug, ['golosinas', 'frescos', 'panaderia', 'gourmetfood', 'frutas-y-verduras', 'galletitas'])) {
+                        return true;
+                    }
+                }
+            }
+
+            // Si el producto parece pasta pero está en categorías incorrectas
+            foreach ($pastaKeywords as $pastaWord) {
+                if (strpos($word, $pastaWord) !== false) {
+                    if (in_array($categorySlug, ['frescos', 'verduleria', 'frutas-y-verduras', 'carnes', 'bebidas', 'golosinas'])) {
+                        return true;
                     }
                 }
             }
@@ -663,6 +674,73 @@ class CategoryMapper
         return static::isCategoryCompatible($parentSlug, $brandCategorySlug);
     }
 
+    /**
+     * Resuelve múltiples productos en batch usando LLM
+     *
+     * @param array $products Array de productos
+     * @param int $batch_size Tamaño del batch (default: 10)
+     * @return array Categorías resueltas indexadas por posición
+     */
+    public static function resolveBatch(array $products, int $batchSize = 10): array
+    {
+        static::init();
+        
+        if (empty(self::$config)) {
+            static::configure();
+        }
+        
+        $availableCategories = static::getCategories();
+        $threshold = self::$config['thresholds']['llm'] ?? 0.70;
+        
+        $strategies = static::getStrategies();
+        $llmStrategy = $strategies['llm'] ?? null;
+        
+        if (!$llmStrategy) {
+            // Fallback to sequential processing
+            $results = [];
+            foreach ($products as $idx => $product) {
+                $results[$idx] = static::resolveProduct($product);
+            }
+            return $results;
+        }
+        
+        $results = [];
+        $batches = array_chunk($products, $batchSize, true);
+        
+        foreach ($batches as $batch) {
+            $rawTexts = [];
+            $indices = [];
+            
+            foreach ($batch as $idx => $product) {
+                // Combinar catego_raw1, catego_raw2, catego_raw3, description
+                $parts = array_filter([
+                    $product['catego_raw1'] ?? '',
+                    $product['catego_raw2'] ?? '',
+                    $product['catego_raw3'] ?? '',
+                    $product['description'] ?? ''
+                ]);
+                $text = implode(' | ', $parts);
+                
+                $rawTexts[] = $text;
+                $indices[] = $idx;
+            }
+            
+            // Llamada batch al LLM
+            $batchResults = $llmStrategy->matchBatch($rawTexts, $availableCategories, $threshold);
+            
+            // Mapear resultados
+            foreach ($indices as $i => $originalIdx) {
+                if (isset($batchResults[$i]) && $batchResults[$i]) {
+                    $results[$originalIdx] = [$batchResults[$i]['category']];
+                } else {
+                    $results[$originalIdx] = [];
+                }
+            }
+        }
+        
+        return $results;
+    }
+
 
      /**
      * Configura las estrategias de matching
@@ -680,7 +758,7 @@ class CategoryMapper
             'llm_verbose' => false,
             'thresholds' => [
                 'fuzzy' => 0.40,
-                'llm' => 0.85,
+                'llm' => 0.70,  // Reducido de 0.85 a 0.70 para ser menos estricto
             ]
         ], $config);
 
