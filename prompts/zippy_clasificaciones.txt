@@ -15,11 +15,8 @@ List contents of a table
 
 Examples:
 
-php com sql list 'main.users'                              List first 10 records from users table
-php com sql list 'main.users' --limit=20                   List first 20 records
-php com sql list 'main.users' --offset=10 --limit=5        List 5 records starting from offset 10
-php com sql list 'main.users' --format=table               Display results as ASCII table
-php com sql list 'db_195.products' --limit=50 --format=table
+php com sql list zippy.products
+php com sql list zippy.products --limit=50 --format=table
 ```
 
 Nota: hay mas comandos disponibles.
@@ -33,7 +30,7 @@ Necesito que proceses el primer lote de 200 products.
 Nota: solo debes operar a traves de comandos "php com"
 
 
-# MARCAS  <------ PRIORITARIO
+# MARCAS 
 
 Se requiere que el comando `php com zippy brand categorize [ --limit= ] [ --dry-run ]` utilice un LLM, categorice casa marca y cree entonces un registro en la tabla `brand-categories`. Si no hubiera una seguridad absoluta para asignar la categoria (Ej: "ZUCAR FLAKES" hace referencia a un alimento azucarado) ya sea porque es demasiado obvio o porque la marca es conocida (Ej: XIAOMI lo es para smartphones) entonces de alguna forma de marcarse como "DUDOSA" o algo similar.
 
@@ -44,8 +41,6 @@ Tablas:
 - brands (migracion: `2025_11_14_160000000_create_brands.php`)
 - brand_categories (migracion: `2025_11_14_170000000_create_brand_categories.php`)
 
-
-# RESUMEN DEL TO-DO
 
 Debo clasificar en categorias todos los products de la base de datos "zippy". Las categorias correspondientes podrian no existir por lo que debes apoyarte en los comandos "php com zippy" para que se vayan resolviendo y asignando.
 
@@ -62,9 +57,9 @@ Si usas --limit para procesar el resto, recuerda luego usar --offset
 
 D:\laragon\www\simplerest\packages\boctulus\zippy\RESUMEN-EJECUTIVO.md
 
-- NO PROCESES MAS DE 100 PRODUCTOS A LA VEZ..... DEBERIAN SER SUFICIENTES PARA ENTENDER SI TODO FUNCIONA Y SINO, DEBES PARAR, ANALIZAR Y REPORTARME.
+- NO PROCESES MAS DE 20 PRODUCTOS HASTA ENTENDER SI TODO FUNCIONA Y SINO, DEBES PARAR, ANALIZAR Y REPORTARME.
 
-- Deberias revisar manualmente la clasificacion de los primeros 100 productos y luego al azar (con offset y limit) unos 50 productos mas como control de calidad para ajustar el threshold configurado porque hay que tener cuidado con productos como "PC EXO 5260 RETAIL DTI2" que fueron clasificados a pesar de no dar indicios de su categoria.
+- Deberias revisar *manualmente* (no con scripts) la clasificacion de los primeros 50 productos y luego al azar (con offset y limit) unos 50 productos mas como control de calidad para ajustar el threshold configurado porque hay que tener cuidado con productos como "PC EXO 5260 RETAIL DTI2" que fueron clasificados a pesar de no dar indicios de su categoria.
 
 Solo despues de ajustar el threshod debes avanzar significativamente hasta terminar.
 
@@ -88,3 +83,82 @@ Puedes usar el comando "php com sql find" con --edit para resetear (por en NULL)
 Luego de corregir CategoryMapper.php si encuentras contiene errores, debes generar un reporte en un archivo .md dentro del modulo en `packages\boctulus\zippy\docs\issues\`
 
 - Si alguna categoria o producto o mapping de categorias queda con error en la base de datos, asegurate de que quede corregido al final del proceso.
+
+
+D:\laragon\www\simplerest\packages\boctulus\zippy\src\Libs\CategoryMapper.php
+
+
+● 📊 Control de Calidad - Clasificación de 50 Productos
+
+  Resumen General
+
+  - Procesados: 50 productos
+  - Clasificados con éxito: 40 productos (80%)
+  - No clasificados: 10 productos (20%)
+  - Errores: 0
+
+  ✅ Clasificaciones CORRECTAS (mejoras significativas)
+
+  1. PEPSI COLA (165058, 298941) → bebidas ✅ (antes era "gourmetfood")
+  2. EXO MINI RT320 (161801) → electro ✅ (antes era "golosinas")
+  3. PC EXO 5260 (176910) → electro ✅ (antes era "frutas-y-verduras")
+  4. FUNDA PARA CELULAR SAMSUNG (184665) → electro ✅
+  5. DELL notebooks (608715, 608717) → electro ✅
+  6. BGH (609679, 610338) → electro ✅
+  7. ARCOR productos (113857, 291318, 702732, 702733) → golosinas ✅
+  8. PAN ARABES (705875) → panaderia ✅
+  9. CHORIZO ALEMAN (705384) → embutidos ✅
+
+  🎯 El sistema de brand_categories está funcionando correctamente!
+
+  ⚠️ Clasificaciones INCORRECTAS (necesitan corrección)
+
+  1. HARINA TOSTADA (102369) → clasificada como gourmetfood
+    - Debería ser: almacen o alimentos-secos
+  2. CALEF CTZ 9000TB GN (106400) → clasificada como premium snacks and treats category
+    - Debería ser: electro o electrodomesticos (es un calefactor)
+    - Problema: Marca CTZ no está en brand_categories
+  3. GRISINES (177233, 181538) → clasificados como frutas-y-verduras
+    - Debería ser: galletitas o panificados
+  4. DCE/BATATA productos (varios) → clasificados como frutas-y-verduras
+    - Problema: "DCE" es dulce de batata, debería ser golosinas o dulces
+  5. T/EMP productos (172297, 172298) → clasificados como frutas-y-verduras
+    - Problema: Son tapas de empanadas, deberían ser pastas o panificados
+  6. MEDALLON productos (217548, 231408, 231409) → clasificados como frutas-y-verduras
+    - Debería ser: congelados o carnes
+  7. FID LA BNA P CINTA (296366) → clasificada como frutas-y-verduras
+    - Problema: Son fideos, deberían ser pastas
+  8. CALEF CTZ GN (607260) → clasificada como frutas-y-verduras
+    - Debería ser: electro (es calefactor)
+
+  🔍 Análisis de Problemas
+
+  Problema Principal: La categoría frutas-y-verduras sigue siendo usada como "catch-all" para productos ambiguos.
+
+  Causas identificadas:
+  1. Threshold 0.90 es muy estricto: Rechaza muchos casos legítimos y luego el fallback asigna categorías incorrectas
+  2. Marcas sin categorizar: CTZ, LA JUVENTUD, ESNAOLA, etc. no tienen brand_categories
+  3. Palabras clave confusas: "DCE" (dulce), "T/EMP" (tapas empanadas), "MEDALLON" no se reconocen correctamente
+
+  💡 Recomendaciones
+
+  1. Agregar marcas faltantes a brand_categories:
+    - CTZ → electro (calefactores)
+    - LA JUVENTUD → pastas (tapas de empanadas)
+    - ESNAOLA → golosinas (dulces)
+  2. Bajar threshold a 0.85 para mejorar cobertura sin sacrificar calidad excesivamente
+  3. Mejorar mapeo de palabras clave:
+    - "CALEF" → electro/electrodomesticos
+    - "DCE" (dulce de...) → golosinas/dulces
+    - "T/EMP" (tapas empanadas) → pastas/panificados
+    - "MEDALLON" → carnes/congelados
+    - "GRISINES" → galletitas/panificados
+
+TO-DO
+
+- Usando comandos "php com sql list zippy" y "php com sql list zippy.{tabla}" investigar el estado de las tablas (tienen datos? son coherentes?)
+
+- Revisar el estado de los comandos del paquete "zippy"
+
+- Cumplir con los objetivos de clasificacion cuyo objetivo final es clasificar los productos.
+

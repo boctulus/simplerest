@@ -85,7 +85,7 @@ class ZippyCommand implements ICommand
             'llm_model' => 'qwen2.5:1.5b',
             'thresholds' => [
                 'fuzzy' => 0.40,
-                'llm' => 0.70,
+                'llm' => 0.90,
             ]
         ]);
 
@@ -134,7 +134,7 @@ class ZippyCommand implements ICommand
             'llm_model' => 'qwen2.5:1.5b',
             'thresholds' => [
                 'fuzzy' => 0.40,
-                'llm' => 0.70,
+                'llm' => 0.85,
             ]
         ]);
 
@@ -362,7 +362,7 @@ class ZippyCommand implements ICommand
             'llm_temperature' => 0.2,
             'thresholds' => [
                 'fuzzy' => 0.40,
-                'llm' => 0.70,
+                'llm' => 0.90,
             ]
         ]);
 
@@ -450,7 +450,7 @@ class ZippyCommand implements ICommand
             $displayLine = "[" . ($idx + 1) . "] {$raw}";
 
             try {
-                $resolved = \Boctulus\Zippy\Libs\CategoryMapper::resolve($raw, false);
+                $resolved = \Boctulus\Zippy\Libs\CategoryMapper::resolve($raw);
 
                 if (!empty($resolved) && is_array($resolved) && $resolved['score'] >= 90) {
                     $mappedSlug = $resolved['category_slug'] ?? null;
@@ -986,6 +986,106 @@ class ZippyCommand implements ICommand
     }
 
     /**
+     * Sincroniza/puebla la tabla brands con todas las marcas encontradas en products
+     *
+     * Uso: php com zippy brand sync
+     */
+    protected function brand_sync(...$options)
+    {
+        StdOut::print("=== Sincronizando tabla brands con productos ===\n\n");
+
+        DB::setConnection('zippy');
+
+        // Obtener todas las marcas únicas de la tabla products
+        $sql = "SELECT DISTINCT brand FROM products WHERE brand IS NOT NULL AND brand != '' ORDER BY brand ASC";
+        $brands = DB::select($sql);
+        $total = count($brands);
+
+        StdOut::print("Marcas únicas encontradas en products: {$total}\n\n");
+
+        $inserted = 0;
+        $skipped = 0;
+        $invalid = 0;
+
+        foreach ($brands as $row) {
+            $brand = is_array($row) ? $row['brand'] : $row->brand;
+
+            // Validar si la marca es válida
+            if (!static::isValidBrand($brand)) {
+                $invalid++;
+                continue;
+            }
+
+            $normalizedBrand = Strings::normalize($brand);
+
+            // Verificar si ya existe
+            $exists = DB::selectOne("SELECT id FROM brands WHERE brand = ? AND deleted_at IS NULL LIMIT 1", [$brand]);
+
+            if ($exists) {
+                $skipped++;
+                continue;
+            }
+
+            // Insertar nueva marca
+            DB::insert("INSERT INTO brands (brand, normalized_brand, created_at, updated_at) VALUES (?, ?, NOW(), NOW())", [$brand, $normalizedBrand]);
+            $inserted++;
+
+            if ($inserted % 50 == 0) {
+                StdOut::print("  Procesadas {$inserted} marcas...\n");
+            }
+        }
+
+        DB::closeConnection();
+
+        StdOut::print("\n=== Resumen ===\n");
+        StdOut::print("Total de marcas: {$total}\n");
+        StdOut::print("Insertadas: {$inserted}\n");
+        StdOut::print("Ya existían: {$skipped}\n");
+        StdOut::print("Inválidas (excluidas): {$invalid}\n");
+    }
+
+    /**
+     * Valida si una marca es válida para ser categorizada
+     *
+     * @param string $brand
+     * @return bool
+     */
+    protected static function isValidBrand(string $brand): bool
+    {
+        $brand = trim($brand);
+
+        // Rechazar marcas vacías
+        if (empty($brand)) {
+            return false;
+        }
+
+        // Rechazar marcas de 1 solo carácter
+        if (mb_strlen($brand) < 2) {
+            return false;
+        }
+
+        // Rechazar marcas que son 100% números (usando regex)
+        if (preg_match('/^[0-9]+$/', $brand)) {
+            return false;
+        }
+
+        // Rechazar marcas que son solo símbolos (sin letras ni números)
+        if (!preg_match('/[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9]/', $brand)) {
+            return false;
+        }
+
+        // Contar cuántos caracteres alfabéticos tiene
+        $alphaCount = preg_match_all('/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/u', $brand);
+
+        // Si no tiene al menos 2 caracteres alfabéticos, rechazar
+        if ($alphaCount < 2) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Categoriza cada marca usando LLM y crea registros en brand_categories
      *
      * Uso: php com zippy brand categorize [--limit=100] [--dry-run]
@@ -1004,9 +1104,9 @@ class ZippyCommand implements ICommand
 
         DB::setConnection('zippy');
 
-        // Obtener marcas únicas usando SQL directo
-        $sql = "SELECT DISTINCT brand FROM products WHERE brand IS NOT NULL AND brand != '' ORDER BY brand ASC";
-        
+        // Obtener marcas desde la tabla brands (ya filtradas)
+        $sql = "SELECT brand FROM brands WHERE deleted_at IS NULL ORDER BY brand ASC";
+
         if ($limit !== null) {
             $sql .= " LIMIT " . (int)$limit;
         }
@@ -1014,18 +1114,17 @@ class ZippyCommand implements ICommand
         $brands = DB::select($sql);
         $total = count($brands);
 
-        dd($brands,'BRANDS'); exit; //
-
         StdOut::print("Marcas a procesar: {$total}\n\n");
 
         // Configurar CategoryMapper para usar LLM
         CategoryMapper::configure([
             'default_strategy' => 'llm',
             'strategies_order' => ['llm'],
-            'llm_model' => 'qwen2.5:1.5b',
+            'llm_model' => 'qwen2.5-coder:7b-instruct-q4_K_M',
             'llm_temperature' => 0.2,
+            'llm_verbose' => false,
             'thresholds' => [
-                'llm' => 0.70,
+                'llm' => 0.90,  // Alta calidad, threshold estricto
             ]
         ]);
 
@@ -1042,7 +1141,7 @@ class ZippyCommand implements ICommand
                 StdOut::print("[{$processed}/{$total}] Procesando marca: {$brand}\n");
 
                 // Resolver categoría usando el LLM
-                $result = CategoryMapper::resolve($brand, false);
+                $result = CategoryMapper::resolve($brand);
 
                 if (empty($result) || !isset($result['category_slug'])) {
                     StdOut::print("  ⚠ No se pudo categorizar\n\n");
@@ -1053,8 +1152,12 @@ class ZippyCommand implements ICommand
                 $score = $result['score'] ?? 0;
                 $reasoning = $result['reasoning'] ?? 'N/A';
 
+                // Determinar confidence_level basándose en score y marca conocida
+                $confidenceLevel = static::determineConfidenceLevel($brand, $score, $categorySlug);
+
                 StdOut::print("  → Categoría: {$categorySlug}\n");
                 StdOut::print("  → Score: {$score}\n");
+                StdOut::print("  → Confianza: {$confidenceLevel}\n");
                 StdOut::print("  → Razón: {$reasoning}\n");
 
                 if (!$dryRun) {
@@ -1084,8 +1187,8 @@ class ZippyCommand implements ICommand
                     $exists = DB::selectOne("SELECT id FROM brand_categories WHERE brand_id = ? AND category_id = ? AND deleted_at IS NULL LIMIT 1", [$brandId, $categoryId]);
 
                     if (!$exists) {
-                        // Crear registro en brand_categories
-                        DB::insert("INSERT INTO brand_categories (brand_id, category_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())", [$brandId, $categoryId]);
+                        // Crear registro en brand_categories con confidence_level
+                        DB::insert("INSERT INTO brand_categories (brand_id, category_id, confidence_level, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())", [$brandId, $categoryId, $confidenceLevel]);
 
                         StdOut::print("  ✅ Registro guardado en brand_categories\n\n");
                         $saved++;
@@ -1109,6 +1212,63 @@ class ZippyCommand implements ICommand
         StdOut::print("Procesadas: {$processed}\n");
         StdOut::print("Guardadas: " . ($dryRun ? "0 (dry-run)" : $saved) . "\n");
         StdOut::print("Errores: {$errors}\n");
+    }
+
+    /**
+     * Determina el nivel de confianza para la categorización de una marca
+     *
+     * @param string $brand Nombre de la marca
+     * @param float $score Score del LLM (0-100)
+     * @param string $categorySlug Slug de la categoría asignada
+     * @return string 'high', 'medium', 'low', o 'doubtful'
+     */
+    protected static function determineConfidenceLevel(string $brand, float $score, string $categorySlug): string
+    {
+        $brandLower = strtolower($brand);
+
+        // Marcas conocidas con alta confianza por categoría
+        $wellKnownBrands = [
+            'tecnologia' => ['xiaomi', 'samsung', 'apple', 'dell', 'hp', 'lenovo', 'acer', 'asus',
+                            'lg', 'sony', 'microsoft', 'intel', 'amd', 'nvidia', 'canon', 'nikon',
+                            'philips', 'motorola', 'huawei', 'nokia', 'alcatel', 'bgh', 'noblex'],
+            'electrodomesticos' => ['bgh', 'whirlpool', 'philco', 'samsung', 'lg', 'drean', 'philips',
+                                   'electrolux', 'ariston', 'longvie', 'ctz', 'atma', 'liliana'],
+            'bebidas' => ['coca-cola', 'pepsi', 'fanta', 'sprite', 'quilmes', 'brahma', 'heineken',
+                         'budweiser', 'corona', 'stella artois', 'schneider', 'andes', 'isenbeck'],
+            'lacteos' => ['la serenisima', 'sancor', 'ilolay', 'milkaut', 'tregar', 'danone',
+                         'mastellone', 'verónica', 'williner'],
+            'golosinas' => ['arcor', 'bonafide', 'cadbury', 'nestle', 'ferrero', 'mars', 'toblerone',
+                           'milka', 'kit kat', 'snickers', 'twix', 'aguila', 'georgalos', 'esnaola'],
+            'panificados' => ['bimbo', 'fargo', 'lactal', 'pan blanco', 'don satur', 'bagley'],
+            'pastas' => ['la juventud', 'la salteña', 'matarazzo', 'lucchetti', 'don vicente'],
+            'alimentos' => ['knorr', 'maggi', 'hellmanns', 'natura', 'danica', 'molto', 'lucchetti',
+                          'matarazzo', 'marolio', 'molinos', 'arcor', 'la virginia'],
+        ];
+
+        // Verificar si es una marca conocida
+        $isWellKnown = false;
+        foreach ($wellKnownBrands as $cat => $brands) {
+            if (in_array($brandLower, $brands)) {
+                $isWellKnown = true;
+                break;
+            }
+        }
+
+        // Lógica de determinación de confianza:
+        // 1. Score >= 85 y marca conocida: high
+        // 2. Score >= 70: medium
+        // 3. Score >= 50 pero < 70: low
+        // 4. Score < 50: doubtful
+
+        if ($score >= 85 && $isWellKnown) {
+            return 'high';
+        } elseif ($score >= 70) {
+            return 'medium';
+        } elseif ($score >= 50) {
+            return 'low';
+        } else {
+            return 'doubtful';
+        }
     }
 
 
