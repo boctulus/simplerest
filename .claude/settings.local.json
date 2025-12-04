@@ -16,7 +16,8 @@
       "Bash(php com zippy brand categorize:*)",
       "Bash(php com zippy ollama test_strategy)",
       "Bash(php com sql:*)",
-      "Bash(php:*)"
+      "Bash(php:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []
