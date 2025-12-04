@@ -156,9 +156,17 @@ D:\laragon\www\simplerest\packages\boctulus\zippy\src\Libs\CategoryMapper.php
 
 TO-DO
 
+- Supongo es posible hacer llamadas el bloque de digamos 20 productos o categorias a la vez. El size del bloque podria ajustarse segun las capacidades del modelo. Podrias implementar a nivel de libreria y luego a nivel de comandos con el parametro opciona --block={size}
+
+Implementar procesamiento por lotes (batch processing)
+
 - Usando comandos "php com sql list zippy" y "php com sql list zippy.{tabla}" investigar el estado de las tablas (tienen datos? son coherentes?)
 
 - Revisar el estado de los comandos del paquete "zippy"
 
 - Cumplir con los objetivos de clasificacion cuyo objetivo final es clasificar los productos.
 
+
+Notas:
+
+No clasifiques marcas ni productos manualmente
