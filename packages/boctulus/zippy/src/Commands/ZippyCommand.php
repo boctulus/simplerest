@@ -132,12 +132,13 @@ class ZippyCommand implements ICommand
         DB::setConnection('zippy');
 
         CategoryMapper::configure([
-            'default_strategy' => 'llm',
-            'strategies_order' => ['llm', 'fuzzy'],
+            'default_strategy' => 'neural',
+            'strategies_order' => ['neural', 'llm'],
             'llm_model' => 'qwen2.5:1.5b',
             'thresholds' => [
+                'neural' => 0.50,  // Estrategia neural con perceptrones
                 'fuzzy' => 0.40,
-                'llm' => 0.70,  // Usa el threshold reducido
+                'llm' => 0.70,     // LLM como fallback
             ]
         ]);
 
@@ -310,23 +311,23 @@ class ZippyCommand implements ICommand
 
         foreach ($products as $product) {
             $processed++;
-            $ean = is_array($product) ? ($product['id'] ?? null) : ($product->id ?? null);
+            $ean = is_array($product) ? ($product['ean'] ?? null) : ($product->ean ?? null);
 
             try {
                 $categories = CategoryMapper::resolveProduct($product, true);
 
                 if (empty($categories)) {
-                    StdOut::print("[{$processed}/{$total}] Producto ID {$ean}: Sin categorías detectadas\n");
+                    StdOut::print("[{$processed}/{$total}] Producto EAN {$ean}: Sin categorías detectadas\n");
                     continue;
                 }
 
                 $categoriesJson = json_encode($categories);
 
-                StdOut::print("[{$processed}/{$total}] Producto ID {$ean}: " . implode(', ', $categories) . "\n");
+                StdOut::print("[{$processed}/{$total}] Producto EAN {$ean}: " . implode(', ', $categories) . "\n");
 
                 if (!$dryRun) {
                     DB::table('products')
-                        ->where(['id', $ean])
+                        ->where('ean', '=', $ean)
                         ->update([
                             'categories' => $categoriesJson
                         ]);
@@ -419,18 +420,19 @@ class ZippyCommand implements ICommand
         }
 
         CategoryMapper::configure([
-            'default_strategy' => 'llm',
-            'strategies_order' => ['llm', 'fuzzy'],
+            'default_strategy' => 'neural',
+            'strategies_order' => ['neural', 'llm'],
             'llm_model' => 'qwen2.5:3b',
             'llm_temperature' => 0.2,
             'thresholds' => [
+                'neural' => 0.50,
                 'fuzzy' => 0.40,
                 'llm' => 0.90,
             ]
         ]);
 
         StdOut::print("Probando mapeo para: \"$raw\"\n");
-        StdOut::print("Estrategia: $strategy\n\n");
+        StdOut::print("Estrategia: neural + llm fallback\n\n");
 
         $result = CategoryMapper::resolve($raw);
 
@@ -716,8 +718,11 @@ class ZippyCommand implements ICommand
         }
 
         CategoryMapper::configure([
-            'strategies_order' => ['llm'],
-            'thresholds' => ['llm' => 0.70]
+            'strategies_order' => ['neural', 'llm'],
+            'thresholds' => [
+                'neural' => 0.50,
+                'llm' => 0.70
+            ]
         ]);
 
         $res = CategoryMapper::resolve($text);
@@ -743,8 +748,11 @@ class ZippyCommand implements ICommand
         ];
 
         CategoryMapper::configure([
-            'strategies_order' => ['llm'],
-            'thresholds' => ['llm' => 0.70]
+            'strategies_order' => ['neural', 'llm'],
+            'thresholds' => [
+                'neural' => 0.50,
+                'llm' => 0.70
+            ]
         ]);
 
         $res = CategoryMapper::resolveProduct($product, true);
@@ -1184,13 +1192,14 @@ class ZippyCommand implements ICommand
 
         // Configurar CategoryMapper para usar LLM
         CategoryMapper::configure([
-            'default_strategy' => 'llm',
-            'strategies_order' => ['llm'],
+            'default_strategy' => 'neural',
+            'strategies_order' => ['neural', 'llm'],
             'llm_model' => 'qwen2.5-coder:7b-instruct-q4_K_M',
             'llm_temperature' => 0.2,
             'llm_verbose' => false,
             'thresholds' => [
-                'llm' => 0.70,  // Threshold reducido (era 0.85)
+                'neural' => 0.50,  // Estrategia neural con perceptrones
+                'llm' => 0.70,     // LLM como fallback
             ]
         ]);
 
@@ -1233,7 +1242,7 @@ class ZippyCommand implements ICommand
             return;
         }
 
-        $threshold = 0.70;
+        $threshold = 0.50;  // Neural strategy threshold
 
         // Procesar en batches
         $batches = array_chunk($brandNames, $batchSize, true);
@@ -1625,7 +1634,7 @@ class ZippyCommand implements ICommand
             true
         );
 
-        $threshold = 0.70;
+        $threshold = 0.50;  // Neural strategy threshold
 
         $results = [];
 
