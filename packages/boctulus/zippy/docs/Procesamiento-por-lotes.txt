@@ -1,0 +1,44 @@
+# Procesamiento por lotes ("en BATCH")
+
+## Procesamiento en lotes de categorias
+
+php com zippy brand categorize --limit=50 --batch-size=10
+
+## Procesamiento en batch de productos
+
+Ej:
+
+php com zippy product process --limit=50 --batch-size=10
+php com zippy product batch --limit=50 
+
+Diferencias:
+
+php com zippy product process --limit=50 --batch-size=10
+
+┌─────────────────────────────────────┐
+│  Procesa 50 productos               │
+│  ├─ En grupos internos de 10        │
+│  ├─ Logging más detallado           │
+│  ├─ Progress bar por cada producto  │
+│  └─ Más lento pero más informativo  │
+└─────────────────────────────────────┘
+
+php com zippy product batch --limit=50
+
+┌─────────────────────────────────────┐
+│  Procesa 50 productos               │
+│  ├─ En un solo batch optimizado     │
+│  ├─ Logging mínimo                  │
+│  ├─ Sin progress bar individual     │
+│  └─ Más rápido, ideal para volumen  │
+└─────────────────────────────────────┘
+
+Comparación Directa
+
+| Aspecto          | product process    | product batch       |
+|------------------|--------------------|---------------------|
+| Velocidad        | Más lento          | Más rápido          |
+| Logging          | Detallado          | Mínimo              |
+| Uso              | Testing, debugging | Producción, volumen |
+| batch-size       | Configurable       | Automático          |
+| Recomendado para | <100 productos     | 100+ productos      |
