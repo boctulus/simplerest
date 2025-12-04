@@ -1,3 +1,11 @@
+# Detectar cualquier cambio (untracked, modified, deleted, renamed)
+$changes = git status --porcelain
+
+if (-not $changes) {
+    Write-Host "No hay cambios para commitear. No se realizará commit ni push."
+    exit 0
+}
+
 # Ejecutar el script de actualización de versión
 .\update_version.ps1
 
@@ -19,10 +27,12 @@ $changelog_line = "[$datetime]`t$last_version`t$msg"
 # Agregar la línea al archivo CHANGELOG.txt
 Add-Content -Path "CHANGELOG.txt" -Value $changelog_line
 
-# Asegurarnos de que CHANGELOG.txt también se incluya en el commit
+# Asegurar que CHANGELOG.txt también se incluya en el commit
 git add CHANGELOG.txt
 
-# Ejecutar los comandos de Git
-git add -A 
+# Agregar TODOS los cambios (incluye modificados, eliminados y untracked)
+git add -A
+
+# Ejecutar commit y push
 git commit -m "$msg"
 git push
