@@ -23,6 +23,6 @@ Add-Content -Path "CHANGELOG.txt" -Value $changelog_line
 git add CHANGELOG.txt
 
 # Ejecutar los comandos de Git
-git add *
+git add -A 
 git commit -m "$msg"
 git push
