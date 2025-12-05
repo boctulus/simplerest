@@ -1,9 +1,25 @@
 # Reporte de Implementación: Red Neuronal para Clasificación de Productos
 
 **Fecha**: 2025-12-05
+**Última Actualización**: 2025-12-05 (Sistema Híbrido v2.0)
 **Autor**: Pablo Bozzolo (boctulus)
 **Package**: boctulus/zippy
 **Sistema**: SimpleRest Framework
+
+---
+
+## 🆕 ACTUALIZACIÓN: Sistema Híbrido v2.0
+
+**IMPORTANTE**: El sistema ahora gestiona los pesos desde **base de datos** en lugar de código hardcoded.
+
+### Cambios Principales
+
+✅ **Pesos en BD**: Tabla `neural_weights` con 127 pesos iniciales
+✅ **Gestión CLI**: Comandos `php com zippy weights seed/list/clear`
+✅ **Backward Compatibility**: Fallback automático a hardcoded si BD vacía
+✅ **Palabras Agregadas**: fruta, frutas, verdura, verduras, pan, vino, chorizo
+
+**Ver documentación completa**: `docs/hybrid-weights-system.md`
 
 ---
 
@@ -18,6 +34,14 @@ Se implementó exitosamente un sistema de clasificación de productos basado en 
 | **Total de productos** | 14,353 | 100% |
 | **Productos clasificados** | 8,672 | **60.42%** |
 | **Productos sin clasificar** | 5,681 | 39.58% |
+
+### Sistema de Pesos (v2.0)
+
+| Fuente | Pesos | Estado |
+|--------|-------|--------|
+| **Base de Datos** (neural_weights) | 127 | ✅ Activo |
+| **Hardcoded** (fallback) | 265 | 🔄 Backup |
+| **Mappings Manuales** | Variable | ✅ Prioridad máxima |
 
 ---
 
