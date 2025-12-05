@@ -4,6 +4,7 @@ vendor/
 *.rar
 *.tar
 uploads/
+backups/
 logs/
 tmp/
 storage/security/
