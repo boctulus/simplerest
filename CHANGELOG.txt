@@ -317,3 +317,4 @@
 [2025-12-04 23:09:50]	0.8.12	Red neuronal implementada
 [2025-12-04 23:44:51]	0.8.12	Automatic update
 [2025-12-05 07:58:53]	0.8.12	New ORM Methods - Laravel-like Active Record pattern
+[2025-12-05 08:10:29]	0.8.12	Documentacion ORM
