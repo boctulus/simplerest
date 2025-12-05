@@ -1,8 +1,5 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Exceptions;
+namespace Boctulus\Simplerest\Core\exceptions;
 
-class TableAlreadyExistsException extends BaseException
-{
-    protected static string $errorCode = 'DB>TABLE_ALREADY_EXISTS';
-}
+class TableAlreadyExistsException extends \Exception {}

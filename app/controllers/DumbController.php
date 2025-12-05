@@ -66,6 +66,7 @@ use Boctulus\Simplerest\Core\Libs\Update;
 use Boctulus\Simplerest\Libs\Ingredient1;
 use Boctulus\Simplerest\Libs\Ingredient2;
 use Symfony\Component\DomCrawler\Crawler;
+use Boctulus\Simplerest\Core\Libs\ChatGPT;
 use Boctulus\Simplerest\Core\Libs\DBCache;
 use Boctulus\Simplerest\Core\Libs\Factory;
 
@@ -74,6 +75,7 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\VarDump;
 
 use PhpParser\Node\Scalar\MagicConst\File;
+use Boctulus\Simplerest\Core\Libs\ClaudeAI;
 use Boctulus\Simplerest\Core\Libs\CSSUtils;
 use Boctulus\Simplerest\Core\Libs\Hardware;
 use Boctulus\Simplerest\Core\Libs\JobQueue;
@@ -148,7 +150,6 @@ use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Boctulus\Simplerest\Libs\Scrapers\LeroyMerlinScraper;
 use Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs\WordPress;
 use Boctulus\Simplerest\Core\Libs\code_cleaner\AngularCleaner;
-use Boctulus\Simplerest\Core\Exceptions\MiddlewareNotFoundException;
 use Boctulus\Simplerest\Modules\CiudadesCL\CiudadesCLShortcode;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Boctulus\Simplerest\Core\Libs\code_cleaner\BootstrapCleaner;
@@ -1530,29 +1531,29 @@ class DumbController extends Controller
         }
     }
 
-    // /*
-    //     Genera migraciones a partir de la tabla 'tbl_scritp_tablas'
-    // */
-    // function gen_scripts()
-    // {
-    //     $mk = new MakeCommand();
+    /*
+        Genera migraciones a partir de la tabla 'tbl_scritp_tablas'
+    */
+    function gen_scripts()
+    {
+        $mk = new MakeCommand();
 
-    //     $rows = DB::table('tbl_scritp_tablas')
-    //         ->orderBy(['scr_intOrden' => 'ASC'])
-    //         ->get();
+        $rows = DB::table('tbl_scritp_tablas')
+            ->orderBy(['scr_intOrden' => 'ASC'])
+            ->get();
 
-    //     foreach ($rows as $row) {
-    //         $orden = str_pad($row['scr_intOrden'], 4, "0", STR_PAD_LEFT);
-    //         $name  = strtolower("$orden-{$row['scr_varNombre']}-{$row['scr_varModulo']}");
-    //         $script = $row['scr_lonScritp'];
+        foreach ($rows as $row) {
+            $orden = str_pad($row['scr_intOrden'], 4, "0", STR_PAD_LEFT);
+            $name  = strtolower("$orden-{$row['scr_varNombre']}-{$row['scr_varModulo']}");
+            $script = $row['scr_lonScritp'];
 
-    //         $folder = "compania";
+            $folder = "compania";
 
-    //         $class_name = Strings::snakeToCamel("{$row['scr_varNombre']}_{$row['scr_varModulo']}_{$row['scr_intOrden']}");
+            $class_name = Strings::snakeToCamel("{$row['scr_varNombre']}_{$row['scr_varModulo']}_{$row['scr_intOrden']}");
 
-    //         $mk->migration("$name", "--dir=$folder", "--from_script=\"$script\"", "--class_name=$class_name");
-    //     }
-    // }
+            $mk->migration("$name", "--dir=$folder", "--from_script=\"$script\"", "--class_name=$class_name");
+        }
+    }
 
     function mid()
     {
@@ -1569,17 +1570,17 @@ class DumbController extends Controller
         dd($affected);
     }
 
-    // function migrate()
-    // {
-    //     $mgr = new \MigrationsCommand();
+    function migrate()
+    {
+        $mgr = new \MigrationsCommand();
 
-    //     $folder = 'compania';
-    //     $tenant = 'db_100';
+        $folder = 'compania';
+        $tenant = 'db_100';
 
-    //     StdOut::hideResponse();
+        StdOut::hideResponse();
 
-    //     $mgr->migrate("--dir=$folder", "--to=$tenant");
-    // }
+        $mgr->migrate("--dir=$folder", "--to=$tenant");
+    }
 
     function get_pks()
     {
@@ -1669,15 +1670,15 @@ class DumbController extends Controller
         dd(Schema::getAutoIncrementField('bar'));
     }
 
-    // function mk()
-    // {
-    //     $tenant = "db_100";
+    function mk()
+    {
+        $tenant = "db_100";
 
-    //     StdOut::hideResponse();
+        StdOut::hideResponse();
 
-    //     $mk = new MakeCommand();
-    //     $mk->any("all", "-s", "-m", "--from:$tenant");
-    // }
+        $mk = new MakeCommand();
+        $mk->any("all", "-s", "-m", "--from:$tenant");
+    }
 
     function error()
     {
@@ -7193,9 +7194,9 @@ class DumbController extends Controller
     */
     function test_add_sub_dates()
     {
-        $date = '23 Dec 2025';
+        $date = '31 Aug 2025';
 
-        $d = 60;
+        $d = 21;
 
         dd(
             Date::addDays($date, $d),
@@ -9918,6 +9919,13 @@ class DumbController extends Controller
         );
     }
 
+    function test_github_lib()
+    {
+        dd(
+            GitHub::diff(ROOT_PATH, 'D:\www\apis')
+        );
+    }
+
     function test_m()
     {
         // $git_installed = Memoization::memoize('git executable', function() {
@@ -10681,9 +10689,9 @@ class DumbController extends Controller
     //     );
     // }
 
-    // function test_table_export(){
-    //     dd(DatabaseBackup::exportTableAsCSV('roles'), 'PATH');
-    // }
+    function test_table_export(){
+        dd(DatabaseBackup::exportTableAsCSV('roles'), 'PATH');
+    }
     
     function test_set_env(){
         // valor
@@ -12465,20 +12473,6 @@ class DumbController extends Controller
         $data = array ( 'categorias' => '', 'precio' => '', 'descripcion' => '', 'marca' => '', 'ean' => '', 'imagen' => '', 'precio_raw' => '');
 
         var_dump(Strings::isEmpty($data) ); // true
-        exit;
-    }
-
-    // ok
-    function test_string_normalization(){
-        $raw = "   Café ";
-        var_dump(Strings::normalize($raw));
-        exit;
-    }
-
-    function get_packages(){
-       dd(package_scan_base(VENDOR_PATH));
-       // dd(get_packages_from_all_sources());
-       exit;    
     }
 
     

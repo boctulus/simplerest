@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers;
+namespace Boctulus\Simplerest\controllers;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Files;

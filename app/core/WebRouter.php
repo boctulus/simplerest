@@ -4,6 +4,7 @@ namespace Boctulus\Simplerest\Core;
 
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Msg;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\Url;
 
@@ -56,7 +57,7 @@ class WebRouter
             }   
     
             if ($path === false || ! Url::urlCheck($_SERVER['REQUEST_URI']) ){
-                $res->error('Malformed URL', 400); 
+                $res->error(Msg::MALFORMED_URL, 400); 
             }
                 
             $_params = explode('/', $path);
@@ -300,6 +301,7 @@ class WebRouter
                         static::$ck_params[$verb][$uri][] = $p->name;
                     }
                 } elseif (is_string($ck)) {
+                    $namespace = Strings::contains('\\', $ck) ? '' : namespace_url(true) . 'Controllers\\';
                     $pos = strpos($ck, '@');
                     if ($pos === false){
                         $ctrl = $ck;
@@ -309,15 +311,7 @@ class WebRouter
                         $method = substr($ck, $pos+1);
                     }
 
-                    // Check if the controller string already contains a full namespace
-                    // Note: Strings::contains() uses (needle, haystack) order which is opposite to PHP's str_contains()
-                    if (Strings::contains('\\', $ctrl)) {
-                        $class_name = $ctrl;
-                    } else {
-                        // Use the application's namespace for controllers without full namespace
-                        $class_name = namespace_url(true) . 'Controllers\\' . $ctrl;
-                    }
-
+                    $class_name = "{$namespace}{$ctrl}";
                     if (!class_exists($class_name)){
                         throw new \InvalidArgumentException("Controller class $class_name not found");
                     }

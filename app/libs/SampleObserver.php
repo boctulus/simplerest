@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Libs;
+namespace Boctulus\Simplerest\libs;
 
 use Boctulus\Simplerest\Core\Interfaces\IObserver;
 

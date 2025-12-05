@@ -1,8 +1,5 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Exceptions;
+namespace Boctulus\Simplerest\Core\exceptions;
 
-class EmptySchemaException extends BaseException
-{
-    protected static string $errorCode = 'DB>EMPTY_SCHEMA';
-}
+class EmptySchemaException extends \Exception {}

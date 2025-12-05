@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Boctulus\Simplerest\Core\Libs;
+namespace Boctulus\Simplerest\Core\Libs;;
 
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Traits\ErrorReporting;

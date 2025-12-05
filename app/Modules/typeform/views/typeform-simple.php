@@ -65,10 +65,10 @@ $title = 'Typeform - Activación Boletas Electrónicas';
     <title><?= $title ?></title>
 
     <!-- jQuery -->
-    <script src="<?= plugins_url('assets/third_party/jquery/3.x/jquery.min.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+    <script src="<?= plugins_url('assets/third_party/jquery/3.x/jquery.min.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
 
     <!-- Typeform CSS -->
-    <link rel="stylesheet" href="<?= plugins_url('app/modules/Typeform/assets/css/typeform.css', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>">
+    <link rel="stylesheet" href="<?= plugins_url('app/modules/Typeform/assets/css/typeform.css', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>">
 
 </head>
 <body class="typeform-page">
@@ -95,27 +95,27 @@ $title = 'Typeform - Activación Boletas Electrónicas';
 
     <footer id="footer">
         <!-- Typeform JavaScript files in correct dependency order -->
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/validation.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/rut-formatter.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/document-types-logic.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <!-- <script src="<?= plugins_url('app/modules/Typeform/assets/js/conditional-steps.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script> -->
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/validation.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/rut-formatter.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/document-types-logic.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <!-- <script src="<?= plugins_url('app/modules/Typeform/assets/js/conditional-steps.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script> -->
         <!-- New simple conditional logic -->
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/step-conditional-logic.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/step-navigation.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/form-summary-simple.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/floating-controls.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/data-persistence.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/form-handlers.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/step-manager.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/form-submission.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
-        <script src="<?= plugins_url('app/modules/Typeform/assets/js/typeform.js', \Boctulus\Simplerest\Core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/step-conditional-logic.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/step-navigation.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/form-summary-simple.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/floating-controls.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/data-persistence.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/form-handlers.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/step-manager.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/form-submission.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
+        <script src="<?= plugins_url('app/modules/Typeform/assets/js/typeform.js', \Boctulus\Simplerest\core\Constants::ROOT_PATH . 'index.php') ?>"></script>
 
         <script>
         // Localize AJAX data
         const typeform_ajax = {
             ajaxurl: '<?= admin_url('admin-ajax.php') ?>',
             nonce: '<?= wp_create_nonce('typeform_ajax_nonce') ?>',
-            api_base_url: '<?= \Boctulus\Simplerest\Core\libs\Config::get('Typeform.api_base_url') ?>'
+            api_base_url: '<?= \Boctulus\Simplerest\core\libs\Config::get('Typeform.api_base_url') ?>'
         };
         </script>
     </footer>

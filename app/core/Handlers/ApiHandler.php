@@ -3,6 +3,7 @@
 namespace Boctulus\Simplerest\Core\Handlers;
 
 use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Msg;
 use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Response;
 
@@ -22,13 +23,13 @@ class ApiHandler
         $sub = (int) $config['remove_api_slug'];
 
         if (!isset($params[1 - $sub])){
-            $res->error('Missing API version', 400, 'Internal error - missing api version in URL');
+            $res->error(Msg::MISSING_API_VERSION['text']);
         }
 
         $api_version = $params[1 - $sub];
 
         if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $api_version, $matches) ){
-            $res->error('Invalid API version format', 400, 'Internal error - invalid API version format');
+            $res->error(Msg::INVALID_FORMAT_API_VERSION['text']);
         }
 
         $controller = $params[2 - $sub] ?? NULL;

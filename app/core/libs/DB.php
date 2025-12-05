@@ -800,6 +800,9 @@ class DB
 		return $result;
     }
 		
+	//
+	// https://laravel.com/docs/5.0/database
+	//
 	public static function select(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, bool $only_one = false, bool $close_cursor = false, bool $tb_prefix = true, &$st = null){
 		if ($vals === null){
 			$vals = [];
@@ -934,7 +937,7 @@ class DB
 		return static::select($raw_sql, $vals, $fetch_mode, $tenant_id, false, true, $st);
 	}
 
-	public static function selectOne(string $raw_sql, ?Array $vals = null, $fetch_mode = 'ASSOC', ?string $tenant_id = null){
+	public static function selectOne(string $raw_sql, ?Array $vals = null, $fetch_mode = 'ASSOC', ?string $tenant_id = null, bool $only_one = false){
 		return static::select($raw_sql, $vals, $fetch_mode, $tenant_id, true);
 	}
 

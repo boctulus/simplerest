@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Transformers;
+namespace Boctulus\Simplerest\transformers;
 
 use Boctulus\Simplerest\Core\Controllers\Controller;
 

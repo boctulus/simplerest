@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Boctulus\Simplerest\Core\Libs;
+namespace Boctulus\Simplerest\Core\libs;
 
 use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Request;
@@ -112,11 +112,6 @@ class Strings
 		return static::toCase($filter, $input);
 	}
 
-	/*
-		Filtra caracteres no permitidos en un string
-
-		Mejora posible: envolver $allowedCharsRegex entre () para evitar colisiones si contiene grupos complejos o ranges como A-Z0-9_.
-	*/
 	static function replaceNonAllowedChars($input, $allowedCharsRegex = 'a-z0-9-', $replace = '-', $case_sensitive = false) {
         // Añade la bandera 'i' para hacer la expresión regular insensible a mayúsculas y minúsculas si $case_sensitive es false
         $modifiers = $case_sensitive ? '' : 'i';
@@ -126,47 +121,13 @@ class Strings
 
 	/*
 		Elimina caracteres especiales
-
-		Mejora posible: podría añadirse removeMultipleSpaces internamente si el propósito es “limpiar” por completo.
-
-		Posible cambio de nombre a: removeSpecialChars
 	*/	
 	static function cleanString(string $str) {
 		return static::replaceNonAllowedChars($str, 'a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ-', '');
 	}
 
 	/*
-		Sanitiza un string para dejar solo caracteres alfanuméricos, guiones y espacios
-
-		Combina varias transformaciones comunes (acentos, BOM, underscores, allowed chars).
-	*/
-	static function sanitize($str, bool $replace_accents = true, bool $trim = false, $allowed = 'a-z0-9- ') 
-	{
-		// Si hay caracteres BOM entonces deben primero convertirse los acentos y recien entonces remover los BOM
-		if ($replace_accents){
-			$str = Strings::accents2Ascii($str);
-			$str = Strings::fixBOM($str);
-		}
-
-		$str = str_replace('_', '-', $str);
-		
-		if (!empty($allowed)){
-			$str = static::replaceNonAllowedChars($str, $allowed, '');
-		}
-
-		if ($trim){
-			$str = static::trim($str);
-		}
-		
-		return $str;
-	}
-
-	/*
-		Elimina caracteres duplicados (guiones, espacios, etc)
-
-		Posible mejora: podría reemplazarse con regex /({$haystack})\1+/
-
-		Posible cambio de nombre a: removeDuplicateChars 
+		Elimina caracteres duplicados
 	*/
 	static function replaceDupes($str, $haystack) {
 		 // Reemplaza repetidamente hasta que no haya más repeticiones sucesivas
@@ -179,66 +140,6 @@ class Strings
 
 	static function removeMultipleSpaces($str){
 		return static::replaceDupes($str, ' ');
-	}
-
-	 /**
-     * Normaliza string: lowercase, quita acentos, signos, espacios múltiples
-	 * 
-	 * Normalizar nombres de productos, categorías o etiquetas.
-     *
-	 * Usos:
-	 * 
-     * Mejorar la búsqueda o comparación entre textos (por ejemplo, comparar “Música Pop” y “musica-pop”).
-     *
-     * Preparar strings para generar slugs, identificadores, claves, o indexación.
-     *
-	 * Es una versión “light” de una función de slugify, pero sin reemplazar espacios por guiones. Es más neutral.
-	 * 
-	 * Posible cambio de nombre a: normalizeString
-     */
-    static function normalize($raw): string
-    {
-        if (empty($raw)) return '';
-
-        $s = mb_strtolower(trim($raw), 'UTF-8');
-
-        // Quitar acentos
-        $trans = [
-            'á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ñ'=>'n','ü'=>'u',
-            'à'=>'a','è'=>'e','ì'=>'i','ò'=>'o','ù'=>'u',
-            'â'=>'a','ê'=>'e','î'=>'i','ô'=>'o','û'=>'u',
-            'ä'=>'a','ë'=>'e','ï'=>'i','ö'=>'o','ü'=>'u',
-        ];
-        $s = strtr($s, $trans);
-
-        // Eliminar caracteres no alfanuméricos (permitir espacios, &, -)
-        $s = preg_replace('/[^a-z0-9\s&\-]/', ' ', $s);
-
-        // Múltiples espacios -> uno solo
-        $s = preg_replace('/\s+/', ' ', trim($s));
-
-        return trim($s);
-    }
-
-	/*
-		Genera un slug a partir de un string (compatible con WP)
-
-		Ej:
-
-		dd(Strings::slug('lo que EL viento se llevó de España 2022')); 
-
-		Posibles mejoras: agregar opcional limit o transliteración avanzada (iconv) para mayor robustez internacional.
-	*/
-	static function slug(string $str)
-	{
-		$str = str_replace('/', '', $str);
-		$str = static::sanitize($str, true, true);
-		$str = mb_strtolower($str);
-		$str = str_replace(' ', '-', $str);
-		$str = str_replace('.', '', $str); //
-		$str = static::replaceDupes($str, '-');
-		
-		return trim($str, '-');
 	}
 
 	/*
@@ -2614,6 +2515,46 @@ class Strings
 			return $input;
 		}
 	}	
+
+	static function sanitize($str, bool $replace_accents = true, bool $trim = false, $allowed = 'a-z0-9- ') 
+	{
+		// Si hay caracteres BOM entonces deben primero convertirse los acentos y recien entonces remover los BOM
+		if ($replace_accents){
+			$str = Strings::accents2Ascii($str);
+			$str = Strings::fixBOM($str);
+		}
+
+		$str = str_replace('_', '-', $str);
+		
+		if (!empty($allowed)){
+			$str = static::replaceNonAllowedChars($str, $allowed, '');
+		}
+
+		if ($trim){
+			$str = static::trim($str);
+		}
+		
+		return $str;
+	}
+
+	/*
+		Genera un slug a partir de un string (compatible con WP)
+
+		Ej:
+
+		dd(Strings::slug('lo que EL viento se llevó de España 2022')); 
+	*/
+	static function slug(string $str)
+	{
+		$str = str_replace('/', '', $str);
+		$str = static::sanitize($str, true, true);
+		$str = mb_strtolower($str);
+		$str = str_replace(' ', '-', $str);
+		$str = str_replace('.', '', $str); //
+		$str = static::replaceDupes($str, '-');
+		
+		return trim($str, '-');
+	}
 
 	/*
 		Extrae emails de un string
