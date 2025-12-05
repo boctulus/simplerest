@@ -17,7 +17,8 @@
       "Bash(php com zippy ollama test_strategy)",
       "Bash(php com sql:*)",
       "Bash(php:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(composer dumpautoload:*)"
     ],
     "deny": [],
     "ask": []
