@@ -10,3 +10,4 @@ storage/security/
 .env
 .codegpt
 composer.json.tmp
+exports/main_db_export.sql
