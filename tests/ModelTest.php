@@ -670,6 +670,8 @@ class ModelTest extends TestCase
 
   function test_inner_join()
   {
+    DB::getConnection();
+    
     //    
     $m = (new Model())->table('other_permissions', 'op')
       ->join('folders', 'op.folder_id', '=', 'folders.id')
@@ -1015,6 +1017,8 @@ class ModelTest extends TestCase
 
   function test_groups()
   {
+    DB::getConnection();
+
     // group
     $m = (new Model())
       ->table('products')
