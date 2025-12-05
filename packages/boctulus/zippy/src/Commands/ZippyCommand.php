@@ -1849,17 +1849,58 @@ class ZippyCommand implements ICommand
       php com zippy category create_mapping --slug=dairy.milk --raw="Leche entera 1L"
 
 ═══════════════════════════════════════════════════════════════════════════
-🧪 COMANDOS DE MARCAS - PRUEBAS Y RESOLUCIÓN
+🏷️  COMANDOS DE MARCAS - GESTIÓN Y CONSULTA
 ═══════════════════════════════════════════════════════════════════════════
 
-    # Categorizar las primeras 10 marcas en modo simulación
-    php com zippy brand categorize --limit=10 --dry-run
+  brand_categories list [--limit=N] [--offset=N]
+    Lista todas las relaciones entre marcas y categorías
+    Muestra marca, categoría asignada, nivel de confianza y metadatos
 
-    # Categorizar todas las marcas y guardar en BD
-    php com zippy brand categorize
+    Opciones:
+      --limit=N           Cantidad de relaciones a mostrar (default: 100)
+      --offset=N          Offset para paginación (default: 0)
 
-    # Categorizar las primeras 50 marcas
-    php com zippy brand categorize --limit=50
+    Ejemplo:
+      php com zippy brand_categories list
+      php com zippy brand_categories list --limit=50 --offset=100
+
+═══════════════════════════════════════════════════════════════════════════
+🧪 COMANDOS DE MARCAS - CATEGORIZACIÓN AUTOMÁTICA
+═══════════════════════════════════════════════════════════════════════════
+
+  brand list_raw [--limit=N]
+    Lista todas las marcas únicas encontradas en la tabla products
+
+    Opciones:
+      --limit=N           Cantidad máxima a mostrar (opcional)
+
+    Ejemplo:
+      php com zippy brand list_raw
+      php com zippy brand list_raw --limit=50
+
+  brand sync
+    Sincroniza/puebla la tabla brands con todas las marcas de products
+    Crea registros en brands para marcas que no existen
+
+    Ejemplo:
+      php com zippy brand sync
+
+  brand categorize [--limit=N] [--dry-run]
+    Categoriza marcas automáticamente usando IA/ML
+
+    Opciones:
+      --limit=N           Cantidad de marcas a categorizar
+      --dry-run           Modo simulación, no guarda cambios
+
+    Ejemplos:
+      # Categorizar las primeras 10 marcas en modo simulación
+      php com zippy brand categorize --limit=10 --dry-run
+
+      # Categorizar todas las marcas y guardar en BD
+      php com zippy brand categorize
+
+      # Categorizar las primeras 50 marcas
+      php com zippy brand categorize --limit=50
 
 ═══════════════════════════════════════════════════════════════════════════
 🔍 COMANDOS DE DIAGNÓSTICO
@@ -1895,15 +1936,52 @@ class ZippyCommand implements ICommand
 
   ollama test_strategy
     Lista modelos Ollama disponibles
-    
+
     Ejemplo:
       php com zippy ollama test_strategy
 
   ollama hard_tests
     Ejecuta pruebas hardcodeadas del LLM con categorías de ejemplo
-    
+
     Ejemplo:
       php com zippy ollama hard_tests
+
+═══════════════════════════════════════════════════════════════════════════
+🧠 COMANDOS DE PESOS NEURONALES (Neural Weights)
+═══════════════════════════════════════════════════════════════════════════
+
+  weights seed [--force]
+    Pobla la tabla neural_weights con pesos hardcoded
+    Útil para inicializar el sistema de categorización por keywords
+
+    Opciones:
+      --force             Sobrescribe pesos existentes (default: no)
+
+    Ejemplo:
+      php com zippy weights seed
+      php com zippy weights seed --force
+
+  weights list [--category=slug] [--limit=N]
+    Lista los pesos almacenados en neural_weights
+
+    Opciones:
+      --category=slug     Filtrar por categoría específica
+      --limit=N           Cantidad máxima a mostrar (default: 100)
+
+    Ejemplo:
+      php com zippy weights list
+      php com zippy weights list --category=electro
+      php com zippy weights list --limit=50
+
+  weights clear [--confirm]
+    Limpia todos los pesos de la tabla neural_weights
+    ADVERTENCIA: Operación destructiva
+
+    Opciones:
+      --confirm           Confirmar la eliminación (REQUERIDO)
+
+    Ejemplo:
+      php com zippy weights clear --confirm
 
 ═══════════════════════════════════════════════════════════════════════════
 🛠️  UTILIDADES

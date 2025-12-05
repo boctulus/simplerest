@@ -21,7 +21,8 @@
       "Bash(composer dumpautoload:*)",
       "Bash(./vendor/bin/phpunit:*)",
       "Bash(git checkout:*)",
-      "Bash(del scriptstmptest_static_methods.php)"
+      "Bash(del scriptstmptest_static_methods.php)",
+      "Bash(mysqldump:*)"
     ],
     "deny": [],
     "ask": []
