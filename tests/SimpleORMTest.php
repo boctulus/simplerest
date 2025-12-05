@@ -302,7 +302,7 @@ class SimpleORMTest extends TestCase
         $this->expectExceptionMessage("requires static::\$table");
 
         // Model base no tiene $table definida
-        Model::query();
+        Model::query(); 
     }
 
     /**
