@@ -281,10 +281,8 @@ class ZippyCommand implements ICommand
         $query = DB::table('products');
 
         if ($onlyUnmapped) {
-            $query->where(function ($q) {
-                $q->whereNull('categories')
-                    ->orWhereRaw("JSON_LENGTH(categories) = 0");
-            });
+            // Filtrar productos sin categorías o con array vacío
+            $query->whereRaw("(categories IS NULL OR categories = '[]' OR categories = '' OR JSON_LENGTH(categories) = 0)");
         }
 
         if ($limit) {
@@ -588,8 +586,13 @@ class ZippyCommand implements ICommand
         }
 
         if (empty($slug)) {
-            $slug = Strings::normalize($name);
-        }
+            // Normalizar manualmente si no hay slug
+            $slug = mb_strtolower($name, 'UTF-8');
+            $slug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
+            $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+            $slug = preg_replace('/-+/', '-', $slug);
+            $slug = trim($slug, '-');
+       }
 
         $exists = DB::selectOne("SELECT id FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$slug]);
         if ($exists) {
@@ -2447,5 +2450,51 @@ STR;
         DB::statement("TRUNCATE TABLE neural_weights");
 
         StdOut::print("✅ Tabla neural_weights limpiada ({$count} registros eliminados)\n", 'green');
+    }
+
+    /**
+     * Parsea las opciones pasadas al comando
+     * 
+     * Soporta formatos:
+     *   --key=value
+     *   --key:value  
+     *   --flag (devuelve true)
+     * 
+     * @param array $args Argumentos del comando
+     * @return array Opciones parseadas
+     */
+    protected function parseOptions(array $args): array
+    {
+        $options = [];
+
+        foreach ($args as $arg) {
+            // Formato: --key=value o --key:value
+            if (preg_match('/^--([^=:]+)[=:](.+)$/', $arg, $matches)) {
+                $key = str_replace('-', '_', $matches[1]);
+                $value = $matches[2];
+                
+                // Convertir a booleano si es necesario
+                if (strtolower($value) === 'true') {
+                    $value = true;
+                } elseif (strtolower($value) === 'false') {
+                    $value = false;
+                } elseif (is_numeric($value)) {
+                    $value = (int)$value;
+                }
+                
+                $options[$key] = $value;
+            }
+            // Formato: --flag (sin valor)
+            elseif (preg_match('/^--([^=:]+)$/', $arg, $matches)) {
+                $key = str_replace('-', '_', $matches[1]);
+                $options[$key] = true;
+            }
+            // Formato: -k (flag corto)
+            elseif (preg_match('/^-([a-z])$/i', $arg, $matches)) {
+                $options[$matches[1]] = true;
+            }
+        }
+
+        return $options;
     }
 }
