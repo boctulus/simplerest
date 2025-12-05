@@ -2125,6 +2125,7 @@ STR;
             StdOut::print("Uso: php com zippy weights <subcomando> [options]\n");
             StdOut::print("Subcomandos disponibles:\n");
             StdOut::print("  seed      - Poblar tabla neural_weights desde definición hardcoded\n");
+            StdOut::print("  train     - Entrenar red neuronal con productos categorizados\n");
             StdOut::print("  list      - Listar todos los pesos en BD\n");
             StdOut::print("  clear     - Limpiar tabla neural_weights\n");
             return;
@@ -2419,6 +2420,155 @@ STR;
         if ($total > $limit) {
             StdOut::print("   (Mostrando primeros {$limit}. Usa --limit=N para ver más)\n", 'yellow');
         }
+    }
+
+    /**
+     * Entrena la red neuronal analizando productos ya categorizados
+     * 
+     * Uso: php com zippy weights train [--limit=5000] [--min-freq=3]
+     */
+    protected function weights_train(...$options)
+    {
+        $opts = $this->parseOptions($options);
+        $limit = $opts['limit'] ?? 5000;
+        $minFreq = $opts['min_freq'] ?? 3; // Mínima frecuencia para considerar una palabra
+        
+        DB::setConnection('zippy');
+        
+        StdOut::print("🧠 Iniciando entrenamiento de red neuronal...\n");
+        
+        // 1. Obtener productos categorizados
+        $products = DB::table('products')
+            ->select('description', 'categories')
+            ->whereNotNull('categories')
+            ->whereRaw("categories != '[]' AND categories != ''")
+            ->limit($limit)
+            ->get();
+            
+        $totalProducts = count($products);
+        StdOut::print("Analizando {$totalProducts} productos categorizados.\n");
+        
+        if ($totalProducts === 0) {
+            StdOut::print("❌ No hay productos categorizados para entrenar.\n");
+            return;
+        }
+
+        // 2. Construir corpus
+        $categoryWords = []; // [category => [word => count]]
+        $wordGlobalFreq = []; // [word => count]
+        $totalWords = 0;
+        
+        foreach ($products as $p) {
+            $cats = json_decode($p->categories, true);
+            if (!is_array($cats)) continue;
+            
+            // Normalizar descripción
+            $desc = $p->description;
+            // Usar una normalización más suave para palabras clave (mantener espacios para separar)
+            $desc = mb_strtolower($desc, 'UTF-8');
+            $desc = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $desc);
+            $desc = preg_replace('/[^a-z0-9\s]+/', '', $desc); // Solo letras, números y espacios
+            
+            $words = array_filter(explode(' ', $desc), function($w) {
+                return strlen($w) > 2; // Ignorar palabras muy cortas
+            });
+            
+            foreach ($cats as $catSlug) {
+                if (!isset($categoryWords[$catSlug])) {
+                    $categoryWords[$catSlug] = [];
+                }
+                
+                foreach ($words as $word) {
+                    if (!isset($categoryWords[$catSlug][$word])) {
+                        $categoryWords[$catSlug][$word] = 0;
+                    }
+                    $categoryWords[$catSlug][$word]++;
+                    
+                    if (!isset($wordGlobalFreq[$word])) {
+                        $wordGlobalFreq[$word] = 0;
+                    }
+                    $wordGlobalFreq[$word]++;
+                    $totalWords++;
+                }
+            }
+        }
+        
+        // 3. Calcular pesos y guardar
+        // Peso = (Freq en Cat / Total Freq en Cat) * (1 / (Freq Global / Total Words)) 
+        // Simplificado: Relevancia = Freq en Cat / Freq Global
+        // Si una palabra aparece 10 veces en total, y 9 son en "electro", es muy relevante para electro (0.9)
+        
+        $newWeights = [];
+        $count = 0;
+        
+        StdOut::print("Calculando pesos...\n");
+        
+        foreach ($categoryWords as $catSlug => $words) {
+            foreach ($words as $word => $freqInCat) {
+                if ($freqInCat < $minFreq) continue;
+                
+                $freqGlobal = $wordGlobalFreq[$word];
+                
+                // Probabilidad condicional: P(Cat|Word)
+                // Qué probabilidad hay de que sea esta categoría dado que aparece esta palabra
+                $weight = $freqInCat / $freqGlobal;
+                
+                // Penalizar palabras que aparecen en demasiadas categorías distintas (stopwords de dominio)
+                // (Opcional, por ahora confiamos en el ratio)
+                
+                if ($weight >= 0.5) { // Solo guardar si es medianamente relevante
+                    $newWeights[] = [
+                        'word' => $word,
+                        'category_slug' => $catSlug,
+                        'weight' => number_format($weight, 3),
+                        'source' => 'trained',
+                        'usage_count' => 0,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ];
+                    $count++;
+                }
+            }
+        }
+        
+        if (empty($newWeights)) {
+            StdOut::print("⚠ No se generaron pesos nuevos (quizás aumentar dataset o bajar min-freq).\n");
+            return;
+        }
+        
+        // Guardar en BD
+        // Opcional: Limpiar pesos 'trained' anteriores para re-entrenar limpio
+        // DB::table('neural_weights')->where('source', 'trained')->delete();
+        
+        StdOut::print("Guardando {$count} nuevos pesos...\n");
+        
+        // Insertar en chunks
+        $chunks = array_chunk($newWeights, 500);
+        foreach ($chunks as $chunk) {
+            // Usar insertIgnore o similar si fuera posible, o loop para updateOrInsert
+            // Por simplicidad y rendimiento en batch:
+            foreach ($chunk as $row) {
+                $exists = DB::table('neural_weights')
+                    ->where('word', $row['word'])
+                    ->where('category_slug', $row['category_slug'])
+                    ->exists();
+                    
+                if ($exists) {
+                    DB::table('neural_weights')
+                        ->where('word', $row['word'])
+                        ->where('category_slug', $row['category_slug'])
+                        ->update([
+                            'weight' => $row['weight'],
+                            'source' => 'trained', // Sobrescribir hardcoded si el entrenado es mejor? O mantener source?
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+                } else {
+                    DB::table('neural_weights')->insert($row);
+                }
+            }
+        }
+        
+        StdOut::print("✅ Entrenamiento finalizado.\n");
     }
 
     /**
