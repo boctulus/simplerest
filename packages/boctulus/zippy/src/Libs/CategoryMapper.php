@@ -58,11 +58,35 @@ class CategoryMapper
     }
 
     /**
+     * Normaliza un string para usarlo como slug o clave normalizada
+     * Convierte a minúsculas, elimina acentos, y reemplaza espacios y caracteres especiales por guiones
+     */
+    private static function normalizeString(string $str): string
+    {
+        // Convertir a minúsculas
+        $str = mb_strtolower($str, 'UTF-8');
+        
+        // Eliminar acentos
+        $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
+        
+        // Reemplazar caracteres no alfanúmericos por guiones
+        $str = preg_replace('/[^a-z0-9]+/', '-', $str);
+        
+        // Eliminar guiones duplicados
+        $str = preg_replace('/-+/', '-', $str);
+        
+        // Eliminar guiones al inicio y al final
+        $str = trim($str, '-');
+        
+        return $str;
+    }
+
+    /**
      * Guarda un alias entre un nombre alternativo de categoría y una categoría existente
      */
     public static function saveCategoryAlias(string $category_slug, string $raw_value, ?string $source = null): void
     {
-        $normalized = Strings::normalize($raw_value);
+        $normalized = static::normalizeString($raw_value);
 
         static::init();
 
@@ -114,7 +138,7 @@ class CategoryMapper
     {
         static::init();
 
-        $normalized = Strings::normalize($category);
+        $normalized = static::normalizeString($category);
 
         // Buscar en categories por slug exacto
         $cat = DB::selectOne("
@@ -190,7 +214,7 @@ class CategoryMapper
         if ($found) {
             // Antes de retornar la coincidencia exacta, verificar si es razonable
             // Comparar si la coincidencia exacta tiene sentido dada la descripción del producto
-            $normalizedRaw = strtolower(Strings::normalize($raw));
+            $normalizedRaw = strtolower(static::normalizeString($raw));
             $categorySlug = $found['category_slug'];
 
             // Verificar si hay palabras en el producto que no encajan con la categoría encontrada
@@ -262,7 +286,7 @@ class CategoryMapper
                 }
 
                 // Crear slug propuesto (normalize)
-                $newSlug = Strings::normalize($suggestedName);
+                $newSlug = static::normalizeString($suggestedName);
 
                 // Verificar que no exista
                 $exists = DB::selectOne("SELECT id, slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$newSlug]);
