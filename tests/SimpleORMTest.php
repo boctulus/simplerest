@@ -23,6 +23,13 @@ use Boctulus\Simplerest\Core\Libs\DB;
  * Test del ORM Layer - Static Methods & Hydration
  */
 
+/*
+    * Requiere PHPUnit y una configuración adecuada de la base de datos.
+    *
+    * Ejecuta con: ./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/SimpleORMTest.php   
+    *
+*/
+
 class SimpleORMTest extends TestCase
 {
     protected static $tablesCreated = false;
