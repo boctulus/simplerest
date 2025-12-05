@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Traits;
+namespace Boctulus\Simplerest\core\traits;
 
 use \Boctulus\Simplerest\Core\Libs\InMemoryCache;
 use \Boctulus\Simplerest\Core\Libs\DBCache;

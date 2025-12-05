@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Pages\Admin;
+namespace Boctulus\Simplerest\pages\admin;
 
 
 class Home  /* extends Page */

@@ -595,7 +595,7 @@ class Url
     }
 
     static function currentUrl(){
-        if (php_sapi_name() === 'cli'){
+        if (is_cli()){
             return '';
         }
 
@@ -610,8 +610,8 @@ class Url
     static function getHostname($url = null, bool $include_protocol = false)
     {
         static $cachedHostnames = [];
-
-        if (php_sapi_name() === 'cli' && empty($url)){
+     
+        if (is_cli() && empty($url)){
             return Config::get()['app_url'];
         }
 

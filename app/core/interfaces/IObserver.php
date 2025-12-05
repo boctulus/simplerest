@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Interfaces;
+namespace Boctulus\Simplerest\core\interfaces;
 
 interface IObserver {
     

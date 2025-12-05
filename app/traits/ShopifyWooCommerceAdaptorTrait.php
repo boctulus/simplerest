@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Traits;
+namespace Boctulus\Simplerest\traits;
 
 trait ShopifyWooCommerceAdaptorTrait
 {

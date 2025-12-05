@@ -1,7 +1,5 @@
 <?php
 
-namespace Boctulus\Simplerest\Commands;
-
 use Boctulus\Simplerest\Core\Interfaces\ICommand;
 use Boctulus\Simplerest\Core\Interfaces\IMigration;
 use Boctulus\Simplerest\Core\Libs\Config;

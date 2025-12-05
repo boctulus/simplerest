@@ -70,7 +70,7 @@ class FrontController
 
             // 5. Validar existencia de clase y método
             if (!class_exists($class_name)){
-                $res->error('Class Not Found', 404, "Internal error - controller class $class_name not found");
+                $res->error(Msg::CLASS_NOT_FOUND, 404, "Internal error - controller class $class_name not found");
             }
 
             if (!method_exists($class_name, $method)){

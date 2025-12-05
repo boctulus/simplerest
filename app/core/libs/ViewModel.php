@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Libs;
+namespace Boctulus\Simplerest\core\libs;
 
 use Boctulus\Simplerest\Core\Libs\Strings;
 

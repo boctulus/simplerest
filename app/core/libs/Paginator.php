@@ -67,7 +67,7 @@ class Paginator
      * @param int $offset
      * @param int $limit
     */
-    function __construct($attributes = null, $order = null, int $offset = 0, $limit = null) {
+    function __construct($attributes = null, array $order = null, int $offset = 0, int $limit = null) {
         $this->order = $order;
         $this->offset = $offset;
         $this->limit = $limit;
@@ -85,11 +85,6 @@ class Paginator
             
             foreach($this->orders as $field => $_order){
                 $order = strtoupper($_order);
-
-                if (!is_string($field)){
-                    $type = gettype($field);
-                    throw new \InvalidArgumentException("'Field '$field' must be a string, '$type' given!");
-                }
 
                 if ((preg_match('/^[a-z0-9\-_\.]+$/i',$field) != 1)){
                     throw new \InvalidArgumentException("Field '$field' is not a valid field");

@@ -1,7 +1,5 @@
 <?php
 
-namespace Boctulus\Simplerest\Background\Cronjobs;
-
 use Boctulus\Simplerest\Core\Libs\CronJob;
 use Boctulus\Simplerest\Core\Libs\Logger;
 
