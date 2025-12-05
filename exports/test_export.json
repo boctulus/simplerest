@@ -1,0 +1,576 @@
+[
+    {
+        "id": 35,
+        "db": "edu",
+        "path": null,
+        "filename": "2025_02_23_136560811_users_table.php",
+        "created_at": null
+    },
+    {
+        "id": 42,
+        "db": "edu",
+        "path": null,
+        "filename": "2025_02_23_136561168_categories.php",
+        "created_at": null
+    },
+    {
+        "id": 43,
+        "db": "edu",
+        "path": null,
+        "filename": "2025_02_23_136561201_courses.php",
+        "created_at": null
+    },
+    {
+        "id": 44,
+        "db": "edu",
+        "path": null,
+        "filename": "2025_02_23_136561213_course_details.php",
+        "created_at": null
+    },
+    {
+        "id": 45,
+        "db": "edu",
+        "path": null,
+        "filename": "2025_02_23_136561227_course_student.php",
+        "created_at": null
+    },
+    {
+        "id": 46,
+        "db": "edu",
+        "path": null,
+        "filename": "2025_02_23_136562927_add_active_to_courses.php",
+        "created_at": null
+    },
+    {
+        "id": 47,
+        "db": "edu",
+        "path": null,
+        "filename": "2025_02_23_136571490_create_tags_table.php",
+        "created_at": null
+    },
+    {
+        "id": 49,
+        "db": "edu",
+        "path": null,
+        "filename": "2025_02_23_136571514_create_course_tag_table.php",
+        "created_at": null
+    },
+    {
+        "id": 65,
+        "db": "main-2",
+        "path": null,
+        "filename": "2025_03_07_137595629_create_prompts_table.php",
+        "created_at": null
+    },
+    {
+        "id": 462,
+        "db": null,
+        "path": null,
+        "filename": "0000_00_00_00000000_migrations.php",
+        "created_at": null
+    },
+    {
+        "id": 464,
+        "db": null,
+        "path": null,
+        "filename": "0000_10_00_27971573_sp_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 465,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_12_27909143_roles.php",
+        "created_at": null
+    },
+    {
+        "id": 466,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_13_27908784_user_roles.php",
+        "created_at": null
+    },
+    {
+        "id": 467,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27902963_user_tb_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 468,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27905675_user_sp_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 469,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27910162_api_keys.php",
+        "created_at": null
+    },
+    {
+        "id": 470,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27910163_options.php",
+        "created_at": null
+    },
+    {
+        "id": 471,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27910581_files.php",
+        "created_at": null
+    },
+    {
+        "id": 472,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27911560_collections.php",
+        "created_at": null
+    },
+    {
+        "id": 473,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27912250_folders.php",
+        "created_at": null
+    },
+    {
+        "id": 474,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27912251_folder_other_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 475,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27912601_folder_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 476,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_15_27970786_email_notifications.php",
+        "created_at": null
+    },
+    {
+        "id": 477,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_15_27971359_webhooks.php",
+        "created_at": null
+    },
+    {
+        "id": 478,
+        "db": null,
+        "path": null,
+        "filename": "2021_11_19_33615227_user_sp_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 479,
+        "db": null,
+        "path": null,
+        "filename": "2021_11_19_33615377_user_tb_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 492,
+        "db": null,
+        "path": null,
+        "filename": "0000_10_00_27971573_sp_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 493,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_12_27909143_roles.php",
+        "created_at": null
+    },
+    {
+        "id": 494,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_13_27908784_user_roles.php",
+        "created_at": null
+    },
+    {
+        "id": 495,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27902963_user_tb_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 496,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27905675_user_sp_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 497,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27910162_api_keys.php",
+        "created_at": null
+    },
+    {
+        "id": 498,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27910163_options.php",
+        "created_at": null
+    },
+    {
+        "id": 499,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27910581_files.php",
+        "created_at": null
+    },
+    {
+        "id": 500,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27911560_collections.php",
+        "created_at": null
+    },
+    {
+        "id": 501,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27912250_folders.php",
+        "created_at": null
+    },
+    {
+        "id": 502,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27912251_folder_other_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 503,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27912601_folder_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 504,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_15_27970786_email_notifications.php",
+        "created_at": null
+    },
+    {
+        "id": 505,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_15_27971359_webhooks.php",
+        "created_at": null
+    },
+    {
+        "id": 506,
+        "db": null,
+        "path": null,
+        "filename": "2021_11_19_33615227_user_sp_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 507,
+        "db": null,
+        "path": null,
+        "filename": "2021_11_19_33615377_user_tb_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 520,
+        "db": null,
+        "path": null,
+        "filename": "0000_10_00_27971573_sp_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 521,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_12_27909143_roles.php",
+        "created_at": null
+    },
+    {
+        "id": 522,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_13_27908784_user_roles.php",
+        "created_at": null
+    },
+    {
+        "id": 523,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27902963_user_tb_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 524,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27905675_user_sp_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 525,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27910162_api_keys.php",
+        "created_at": null
+    },
+    {
+        "id": 526,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27910163_options.php",
+        "created_at": null
+    },
+    {
+        "id": 527,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27910581_files.php",
+        "created_at": null
+    },
+    {
+        "id": 528,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27911560_collections.php",
+        "created_at": null
+    },
+    {
+        "id": 529,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27912250_folders.php",
+        "created_at": null
+    },
+    {
+        "id": 530,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27912251_folder_other_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 531,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_14_27912601_folder_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 532,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_15_27970786_email_notifications.php",
+        "created_at": null
+    },
+    {
+        "id": 533,
+        "db": null,
+        "path": null,
+        "filename": "2021_09_15_27971359_webhooks.php",
+        "created_at": null
+    },
+    {
+        "id": 534,
+        "db": null,
+        "path": null,
+        "filename": "2021_11_19_33615227_user_sp_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 535,
+        "db": null,
+        "path": null,
+        "filename": "2021_11_19_33615377_user_tb_permissions.php",
+        "created_at": null
+    },
+    {
+        "id": 615,
+        "db": null,
+        "path": null,
+        "filename": "0000_00_00_00000001_users.php",
+        "created_at": null
+    },
+    {
+        "id": 708,
+        "db": null,
+        "path": null,
+        "filename": "0000_00_00_00000001_migrations_add_path.php",
+        "created_at": null
+    },
+    {
+        "id": 709,
+        "db": null,
+        "path": null,
+        "filename": "2021_11_20_33704817_files.php",
+        "created_at": null
+    },
+    {
+        "id": 710,
+        "db": null,
+        "path": null,
+        "filename": "2021_12_07_35172655_files.php",
+        "created_at": null
+    },
+    {
+        "id": 711,
+        "db": null,
+        "path": null,
+        "filename": "2022_01_23_39212347_background_process.php",
+        "created_at": null
+    },
+    {
+        "id": 712,
+        "db": null,
+        "path": null,
+        "filename": "2022_01_27_39547394_jobs.php",
+        "created_at": null
+    },
+    {
+        "id": 713,
+        "db": null,
+        "path": null,
+        "filename": "2022_01_27_39580642_job_process.php",
+        "created_at": null
+    },
+    {
+        "id": 714,
+        "db": null,
+        "path": null,
+        "filename": "2022_01_27_39580642_job_workers.php",
+        "created_at": null
+    },
+    {
+        "id": 715,
+        "db": null,
+        "path": null,
+        "filename": "2023_04_04_76851467_todo.php",
+        "created_at": null
+    },
+    {
+        "id": 716,
+        "db": null,
+        "path": null,
+        "filename": "2023_04_30_79089668_timezones.php",
+        "created_at": null
+    },
+    {
+        "id": 717,
+        "db": null,
+        "path": null,
+        "filename": "2023_05_28_81527410_cache_table.php",
+        "created_at": null
+    },
+    {
+        "id": 723,
+        "db": null,
+        "path": null,
+        "filename": "2023_11_11_95882147_queue.php",
+        "created_at": null
+    },
+    {
+        "id": 725,
+        "db": null,
+        "path": null,
+        "filename": "2025_03_22_138854516_some.php",
+        "created_at": null
+    },
+    {
+        "id": 726,
+        "db": null,
+        "path": "D:\/laragon\/www\/simplerest\/app\/Modules\/FriendlyPOS\/database\/migrations",
+        "filename": "2025_10_12_156504584_test_migration.php",
+        "created_at": null
+    },
+    {
+        "id": 727,
+        "db": null,
+        "path": "D:\/laragon\/www\/simplerest\/packages\/boctulus\/zippy\/database\/migrations",
+        "filename": "2025_10_06_155991224_products.php",
+        "created_at": null
+    },
+    {
+        "id": 733,
+        "db": "zippy",
+        "path": "D:\/laragon\/www\/simplerest\/packages\/boctulus\/zippy\/database\/migrations",
+        "filename": "2025_10_06_155991224_products.php",
+        "created_at": null
+    },
+    {
+        "id": 736,
+        "db": null,
+        "path": "D:\/laragon\/www\/simplerest\/packages\/boctulus\/zippy\/database\/migrations",
+        "filename": "2025_10_12_156503456_categories.php",
+        "created_at": null
+    },
+    {
+        "id": 737,
+        "db": "zippy",
+        "path": "D:\/laragon\/www\/simplerest\/packages\/boctulus\/zippy\/database\/migrations",
+        "filename": "2025_10_12_156503456_categories.php",
+        "created_at": null
+    },
+    {
+        "id": 740,
+        "db": null,
+        "path": "D:\/laragon\/www\/simplerest\/packages\/boctulus\/zippy\/database\/migrations",
+        "filename": "2025_10_14_156666928_create_category_mappings.php",
+        "created_at": null
+    },
+    {
+        "id": 742,
+        "db": null,
+        "path": "D:\/laragon\/www\/simplerest\/packages\/boctulus\/zippy\/database\/migrations",
+        "filename": "2025_11_14_160000000_create_brands.php",
+        "created_at": null
+    },
+    {
+        "id": 743,
+        "db": null,
+        "path": "D:\/laragon\/www\/simplerest\/packages\/boctulus\/zippy\/database\/migrations",
+        "filename": "2025_11_14_170000000_create_brand_categories.php",
+        "created_at": null
+    },
+    {
+        "id": 744,
+        "db": null,
+        "path": "D:\/laragon\/www\/simplerest\/packages\/boctulus\/zippy\/database\/migrations",
+        "filename": "2025_12_05_161149088_neural_weights.php",
+        "created_at": null
+    },
+    {
+        "id": 745,
+        "db": null,
+        "path": "D:\/laragon\/www\/simplerest\/packages\/boctulus\/zippy\/database\/migrations",
+        "filename": "2025_10_06_155991224_products.php",
+        "created_at": null
+    },
+    {
+        "id": 746,
+        "db": null,
+        "path": "D:\/laragon\/www\/simplerest\/packages\/boctulus\/zippy\/database\/migrations",
+        "filename": "2025_10_12_156503456_categories.php",
+        "created_at": null
+    }
+]

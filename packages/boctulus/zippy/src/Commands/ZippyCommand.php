@@ -1954,4 +1954,347 @@ STR;
 
         dd($str);
     }
+
+    // ================================================================
+    // ROUTER: WEIGHTS (Neural Network Weights Management)
+    // ================================================================
+
+    /**
+     * Router para comandos de pesos de red neuronal
+     *
+     * Uso: php com zippy weights <subcomando> [options]
+     */
+    public function weights($subcommand = null, ...$options)
+    {
+        if (empty($subcommand)) {
+            StdOut::print("Error: Se requiere un subcomando.\n");
+            StdOut::print("Uso: php com zippy weights <subcomando> [options]\n");
+            StdOut::print("Subcomandos disponibles:\n");
+            StdOut::print("  seed      - Poblar tabla neural_weights desde definición hardcoded\n");
+            StdOut::print("  list      - Listar todos los pesos en BD\n");
+            StdOut::print("  clear     - Limpiar tabla neural_weights\n");
+            return;
+        }
+
+        $method = 'weights_' . $subcommand;
+
+        if (!method_exists($this, $method)) {
+            StdOut::print("Error: Subcomando '$subcommand' no existe.\n");
+            StdOut::print("Ejecuta 'php com zippy weights' para ver los subcomandos disponibles.\n");
+            return;
+        }
+
+        $this->$method(...$options);
+    }
+
+    /**
+     * Pobla la tabla neural_weights con los pesos hardcoded
+     *
+     * Uso: php com zippy weights seed [--force]
+     */
+    protected function weights_seed(...$options)
+    {
+        $opts = $this->parseOptions($options);
+        $force = $opts['force'] ?? false;
+
+        DB::setConnection('zippy');
+
+        // Verificar si ya hay datos
+        $existingCount = DB::select("SELECT COUNT(*) as count FROM neural_weights")[0]->count ?? 0;
+
+        if ($existingCount > 0 && !$force) {
+            StdOut::print("⚠️  La tabla neural_weights ya tiene {$existingCount} registros.", 'yellow');
+            StdOut::print("   Usa --force para sobrescribir.", 'yellow');
+            StdOut::print("\n   php com zippy weights seed --force\n");
+            return;
+        }
+
+        if ($force && $existingCount > 0) {
+            StdOut::print("🗑️  Limpiando {$existingCount} registros existentes...", 'yellow');
+            DB::statement("TRUNCATE TABLE neural_weights");
+        }
+
+        StdOut::print("\n🧠 Poblando tabla neural_weights...\n", 'green');
+
+        // Obtener IDs de categorías
+        $categories = DB::select("
+            SELECT id, slug, name
+            FROM categories
+            WHERE deleted_at IS NULL
+        ");
+
+        $categoryMap = [];
+        foreach ($categories as $cat) {
+            $slug = is_array($cat) ? $cat['slug'] : $cat->slug;
+            $id = is_array($cat) ? $cat['id'] : $cat->id;
+            $categoryMap[$slug] = $id;
+        }
+
+        // Definición de pesos (hardcoded)
+        $keywordWeights = [
+            'electro' => [
+                'calefactor' => 0.9,
+                'notebook' => 0.9,
+                'computadora' => 0.9,
+                'celular' => 0.9,
+                'telefono' => 0.9,
+                'monitor' => 0.9,
+                'teclado' => 0.8,
+                'mouse' => 0.8,
+                'aire' => 0.7,
+                'heladera' => 0.9,
+                'freezer' => 0.9,
+                'lavarropas' => 0.9,
+                'microondas' => 0.9,
+                'smart' => 0.7,
+                'tv' => 0.9,
+                'televisor' => 0.9,
+                'funda' => 0.6,
+                'cargador' => 0.7,
+                'cable' => 0.6,
+            ],
+            'panaderia' => [
+                'pan' => 0.8,
+                'integral' => 0.7,
+                'lactal' => 0.8,
+                'molde' => 0.7,
+                'sandwich' => 0.8,
+                'arabes' => 0.8,
+                'salvado' => 0.7,
+                'semillas' => 0.7,
+                'saborizado' => 0.6,
+                'galletitas' => 0.8,
+                'galletas' => 0.8,
+                'pasta' => 0.6,
+                'pascualina' => 0.8,
+                'empanada' => 0.8,
+                'hojaldre' => 0.7,
+                'matera' => 0.7,
+            ],
+            'bebidas' => [
+                'tinto' => 0.8,
+                'blanco' => 0.7,
+                'rosado' => 0.8,
+                'vino' => 0.9,
+                'cerveza' => 0.9,
+                'agua' => 0.8,
+                'gaseosa' => 0.9,
+                'jugo' => 0.9,
+                'cola' => 0.8,
+                'limonada' => 0.8,
+                'naranja' => 0.6,
+            ],
+            'embutidos' => [
+                'frankfurt' => 0.9,
+                'viena' => 0.9,
+                'aleman' => 0.7,
+                'parrillero' => 0.8,
+                'salame' => 0.9,
+                'jamon' => 0.9,
+                'mortadela' => 0.9,
+                'longaniza' => 0.9,
+                'chorizo' => 0.9,
+            ],
+            'congelados' => [
+                'cong' => 0.8,
+                'congelado' => 0.9,
+                'frozen' => 0.9,
+                'pollo' => 0.7,
+                'carne' => 0.6,
+                'vacuna' => 0.7,
+                'cerdo' => 0.8,
+                'pescado' => 0.8,
+                'mozzarella' => 0.6,
+            ],
+            'almacen' => [
+                'arroz' => 0.9,
+                'azucar' => 0.9,
+                'harina' => 0.9,
+                'aceite' => 0.9,
+                'sal' => 0.7,
+                'vinagre' => 0.9,
+                'pasta' => 0.7,
+                'salsa' => 0.8,
+                'pure' => 0.8,
+                'conserva' => 0.8,
+                'lata' => 0.6,
+                'trit' => 0.7,
+                'tritado' => 0.8,
+                'perita' => 0.7,
+                'sopa' => 0.9,
+                'ramen' => 0.9,
+                'caldo' => 0.9,
+                'fideo' => 0.8,
+                'membrillo' => 0.9,
+                'batata' => 0.9,
+                'cayote' => 0.9,
+                'veloce' => 0.7,
+                'mermelada' => 0.9,
+                'dulce' => 0.8,
+                'condimento' => 0.8,
+                'aderezo' => 0.8,
+                'polvo' => 0.7,
+            ],
+            'golosinas' => [
+                'caramelo' => 0.9,
+                'chupet' => 0.9,
+                'chupetín' => 0.9,
+                'chicle' => 0.9,
+                'chocolate' => 0.8,
+                'choco' => 0.7,
+                'cacao' => 0.7,
+                'cereal' => 0.7,
+                'barra' => 0.6,
+                'oblea' => 0.8,
+                'wafer' => 0.8,
+            ],
+            'frutas-y-verduras' => [
+                'fruta' => 0.8,
+                'frutas' => 0.8,
+                'verdura' => 0.8,
+                'verduras' => 0.8,
+                'arandano' => 0.8,
+                'frutilla' => 0.8,
+                'durazno' => 0.8,
+                'manzana' => 0.7,
+                'ciruela' => 0.8,
+                'banana' => 0.8,
+                'naranja' => 0.7,
+                'mandarina' => 0.8,
+                'limon' => 0.7,
+                'pera' => 0.8,
+                'uva' => 0.8,
+            ],
+            'limpieza' => [
+                'detergente' => 0.9,
+                'lavandina' => 0.9,
+                'jabon' => 0.8,
+                'esponja' => 0.9,
+                'trapo' => 0.8,
+                'rejilla' => 0.8,
+                'limpiador' => 0.9,
+                'desinfectante' => 0.9,
+                'cloro' => 0.8,
+                'negra' => 0.6,
+            ],
+        ];
+
+        $totalInserted = 0;
+        $now = date('Y-m-d H:i:s');
+
+        foreach ($keywordWeights as $categorySlug => $words) {
+            if (!isset($categoryMap[$categorySlug])) {
+                StdOut::print("⚠️  Categoría '$categorySlug' no encontrada en BD, saltando...", 'yellow');
+                continue;
+            }
+
+            $categoryId = $categoryMap[$categorySlug];
+            $categoryName = $categories[array_search($categorySlug, array_column($categories, 'slug'))]->name ?? $categorySlug;
+
+            StdOut::print("📂 $categoryName ($categorySlug): ", 'cyan');
+
+            $inserted = 0;
+            foreach ($words as $word => $weight) {
+                DB::statement("
+                    INSERT INTO neural_weights
+                    (word, category_slug, weight, source, usage_count, last_used_at, created_at, updated_at)
+                    VALUES (?, ?, ?, 'hardcoded', 0, NULL, ?, ?)
+                ", [$word, $categorySlug, $weight, $now, $now]);
+                $inserted++;
+                $totalInserted++;
+            }
+
+            StdOut::print("{$inserted} palabras\n", 'green');
+        }
+
+        StdOut::print("\n✅ Seed completado: {$totalInserted} pesos insertados\n", 'green');
+        StdOut::print("   Total categorías procesadas: " . count($keywordWeights) . "\n");
+    }
+
+    /**
+     * Lista todos los pesos en la tabla neural_weights
+     *
+     * Uso: php com zippy weights list [--category=slug] [--limit=N]
+     */
+    protected function weights_list(...$options)
+    {
+        $opts = $this->parseOptions($options);
+        $category = $opts['category'] ?? null;
+        $limit = $opts['limit'] ?? 100;
+
+        DB::setConnection('zippy');
+
+        $whereClause = $category ? "WHERE category_slug = ?" : "";
+        $params = $category ? [$category] : [];
+
+        $weights = DB::select("
+            SELECT * FROM neural_weights
+            $whereClause
+            LIMIT $limit
+        ", $params);
+
+        $total = DB::select("SELECT COUNT(*) as count FROM neural_weights")[0]->count ?? 0;
+
+        StdOut::print("\n📊 Pesos en neural_weights\n", 'cyan');
+        StdOut::print("─────────────────────────────────────────\n");
+
+        if (empty($weights)) {
+            StdOut::print("⚠️  No hay pesos en la tabla\n", 'yellow');
+            StdOut::print("   Ejecuta: php com zippy weights seed\n");
+            return;
+        }
+
+        foreach ($weights as $w) {
+            $word = is_array($w) ? $w['word'] : $w->word;
+            $cat = is_array($w) ? $w['category_slug'] : $w->category_slug;
+            $weight = is_array($w) ? $w['weight'] : $w->weight;
+            $source = is_array($w) ? $w['source'] : $w->source;
+            $usage = is_array($w) ? $w['usage_count'] : $w->usage_count;
+
+            StdOut::print(sprintf(
+                "%-20s %-25s %s (source: %s, used: %dx)\n",
+                $word,
+                $cat,
+                $weight,
+                $source,
+                $usage
+            ));
+        }
+
+        StdOut::print("\n📈 Total en BD: {$total} pesos\n", 'green');
+        if ($total > $limit) {
+            StdOut::print("   (Mostrando primeros {$limit}. Usa --limit=N para ver más)\n", 'yellow');
+        }
+    }
+
+    /**
+     * Limpia la tabla neural_weights
+     *
+     * Uso: php com zippy weights clear [--confirm]
+     */
+    protected function weights_clear(...$options)
+    {
+        $opts = $this->parseOptions($options);
+        $confirm = $opts['confirm'] ?? false;
+
+        if (!$confirm) {
+            StdOut::print("⚠️  ADVERTENCIA: Esto eliminará TODOS los pesos de la tabla neural_weights\n", 'yellow');
+            StdOut::print("   Para confirmar, ejecuta:\n");
+            StdOut::print("   php com zippy weights clear --confirm\n");
+            return;
+        }
+
+        DB::setConnection('zippy');
+
+        $count = DB::select("SELECT COUNT(*) as count FROM neural_weights")[0]->count ?? 0;
+
+        if ($count === 0) {
+            StdOut::print("ℹ️  La tabla neural_weights ya está vacía\n", 'cyan');
+            return;
+        }
+
+        DB::statement("TRUNCATE TABLE neural_weights");
+
+        StdOut::print("✅ Tabla neural_weights limpiada ({$count} registros eliminados)\n", 'green');
+    }
 }
