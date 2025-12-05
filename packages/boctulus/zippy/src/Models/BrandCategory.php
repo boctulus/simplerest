@@ -2,6 +2,7 @@
 
 namespace Boctulus\Zippy\Models;
 
+use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Model as MyModel;
 use Boctulus\Zippy\Schemas\BrandCategorySchema;
 
@@ -22,7 +23,7 @@ class BrandCategory extends MyModel
 		$this->table_name = 'brand_categories';
 
 		// Set connection to zippy database
-		$this->setConn(\Boctulus\Simplerest\Core\Libs\DB::getConnection('zippy'));
+		$this->setConn(DB::getConnection('zippy'));
 	}
 }
 
