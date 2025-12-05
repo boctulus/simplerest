@@ -61,7 +61,7 @@ class CategoryMapper
      * Normaliza un string para usarlo como slug o clave normalizada
      * Convierte a minúsculas, elimina acentos, y reemplaza espacios y caracteres especiales por guiones
      */
-    private static function normalizeString(string $str): string
+    public static function normalizeString(string $str): string
     {
         // Convertir a minúsculas
         $str = mb_strtolower($str, 'UTF-8');
