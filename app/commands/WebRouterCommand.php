@@ -1,7 +1,5 @@
 <?php
 
-namespace Boctulus\Simplerest\Commands;
-
 use Boctulus\Simplerest\Core\WebRouter;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Interfaces\ICommand;

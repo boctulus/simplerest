@@ -825,12 +825,8 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function orderBy($o)
+	function orderBy(array $o)
 	{
-		if (is_string($o)) {
-			$o = array_map('trim', explode(',', $o));
-		}
-
 		$this->order = array_merge($this->order, $o);
 		return $this;
 	}
@@ -921,32 +917,10 @@ trait QueryBuilderTrait
 		return $this->random();
 	}
 
-	/*
-		Formas validas de enviar fields:
-
-		$model->select('id, name, email'); // Laravel style
-		$model->select(['id', 'name', 'email']); // as array
-		$model->select('id', 'name', 'email'); // as string
-	*/
 	function select($fields)
 	{
-		// Captura todos los argumentos pasados
-		$args = func_get_args();
-
-		if (count($args) > 1) {
-			// Si hay más de un argumento, los tratamos como lista de campos
-			$fields = array_map('trim', $args);
-		} else {
-			// Solo un argumento
-			$fields = $args[0];
-
-			if (is_string($fields)) {
-				// Si es una cadena, dividir por coma
-				$fields = array_map('trim', explode(',', $fields));
-			} elseif (!is_array($fields)) {
-				// Cualquier otro tipo (seguridad)
-				$fields = [$fields];
-			}
+		if (is_string($fields)) {
+			$fields = array_map('trim', explode(',', $fields));
 		}
 
 		$this->fields = $fields;
@@ -2603,7 +2577,7 @@ trait QueryBuilderTrait
 	// }
 
 	/*
-		Refactoring por para compatibilidad con Laravel
+		Refactoring por Claude para compatibilidad con Laravel
 
 		https://claude.ai/chat/3331ae1f-5190-4789-b27a-8faa347b1973
 	*/
@@ -2615,11 +2589,6 @@ trait QueryBuilderTrait
 			$conjunction = $args[1] ?? 'AND';
 			$this->_where($conditions, 'AND', $conjunction);
 			return $this;
-		}
-
-		// Caso Laravel: where({callable})
-		if ((count($args) == 1) && is_callable($args[0])) {
-			return $this->group($args[0]);
 		}
 
 		// Caso Laravel: where($field, $operator, $value) o where($field, $value)

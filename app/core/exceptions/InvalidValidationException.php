@@ -1,8 +1,7 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Exceptions;
+namespace Boctulus\Simplerest\Core\exceptions;
 
-class InvalidValidationException extends BaseException
-{
-    protected static string $errorCode = 'VALIDATION>INVALID_VALIDATION';
+class InvalidValidationException extends \InvalidArgumentException {
+
 }

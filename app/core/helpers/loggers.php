@@ -31,13 +31,9 @@ function dump($object, ?string $path = null, $append = false){
 /*
     Requiere que este habilitado el modo debug
 */
-function log_error($error, $details = null){
+function log_error($error){
     if (!Config::get()['debug']){
         return;
-    }
-
-    if ($details != null){
-        $error .= "\n" . print_r($details, true);
     }
 
     return Logger::logError($error);

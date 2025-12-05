@@ -3,6 +3,7 @@
 namespace Boctulus\Simplerest\Core\Handlers;
 
 use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Msg;
 use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Response;
 
@@ -34,7 +35,7 @@ class AuthHandler
         $api_version = $params[1 - $sub];
 
         if (!preg_match('/^v[0-9]+(\.+[0-9]+)?$/', $api_version, $matches) ){
-            $res->error('Invalid API version format', 400, 'Internal error - invalid API version format');
+            $res->error(Msg::INVALID_FORMAT_API_VERSION['text']);
         }
 
         $class_name = str_replace('/', "\\", $class_name);

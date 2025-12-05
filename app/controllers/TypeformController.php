@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers;
+namespace Boctulus\Simplerest\controllers;
 
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\Simplerest\Core\Libs\Session;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 use Boctulus\Simplerest\Core\Libs\ApiClient;
 use Boctulus\Simplerest\Core\Exceptions\NotImplementedException;
