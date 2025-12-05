@@ -67,13 +67,52 @@ class NeuralMatchingStrategy
     }
 
     /**
-     * Carga pesos desde category_mappings y crea pesos basados en frecuencia
+     * Carga pesos usando sistema híbrido:
+     * 1. Primero intenta desde BD (neural_weights)
+     * 2. Si BD vacía, usa pesos hardcoded como fallback
+     * 3. Siempre carga category_mappings (peso 1.0)
      */
     protected function loadWeights()
     {
         DB::setConnection('zippy');
 
-        // Obtener mappings manuales (peso alto)
+        // PASO 1: Intentar cargar desde neural_weights (BD)
+        $dbWeights = DB::select("
+            SELECT word, category_slug, weight
+            FROM neural_weights
+        ");
+
+        $loadedFromDB = false;
+
+        if (!empty($dbWeights)) {
+            Logger::log("NeuralMatchingStrategy: Loading weights from database (neural_weights table)");
+
+            foreach ($dbWeights as $row) {
+                $word = is_array($row) ? strtolower($row['word']) : strtolower($row->word);
+                $categorySlug = is_array($row) ? $row['category_slug'] : $row->category_slug;
+                $weight = is_array($row) ? (float)$row['weight'] : (float)$row->weight;
+
+                if (!isset($this->weights[$word])) {
+                    $this->weights[$word] = [];
+                }
+
+                $this->weights[$word][$categorySlug] = [
+                    'weight' => $weight,
+                    'category_id' => null // Se llenará desde category_mappings si existe
+                ];
+            }
+
+            $loadedFromDB = true;
+            Logger::log("NeuralMatchingStrategy: Loaded " . count($dbWeights) . " weights from database");
+        }
+
+        // PASO 2: Si BD está vacía, usar pesos hardcoded como fallback
+        if (!$loadedFromDB) {
+            Logger::log("NeuralMatchingStrategy: Database empty, using hardcoded weights as fallback");
+            $this->addKeywordWeights();
+        }
+
+        // PASO 3: Siempre cargar category_mappings (tienen prioridad máxima)
         $mappings = DB::select("
             SELECT raw_value, normalized, category_slug, category_id
             FROM category_mappings
@@ -85,21 +124,20 @@ class NeuralMatchingStrategy
             $categorySlug = is_array($mapping) ? $mapping['category_slug'] : $mapping->category_slug;
             $categoryId = is_array($mapping) ? $mapping['category_id'] : $mapping->category_id;
 
-            // Peso alto para mappings manuales
             if (!isset($this->weights[$word])) {
                 $this->weights[$word] = [];
             }
 
+            // Peso máximo para mappings confirmados (override cualquier otro)
             $this->weights[$word][$categorySlug] = [
-                'weight' => 1.0,  // Peso máximo para mappings confirmados
+                'weight' => 1.0,
                 'category_id' => $categoryId
             ];
         }
 
-        // Agregar pesos adicionales para palabras clave conocidas
-        $this->addKeywordWeights();
-
-        Logger::log("NeuralMatchingStrategy: Loaded " . count($this->weights) . " word weights");
+        $totalWords = count($this->weights);
+        $source = $loadedFromDB ? "database" : "hardcoded";
+        Logger::log("NeuralMatchingStrategy: Total {$totalWords} words loaded (source: {$source} + mappings)");
     }
 
     /**
