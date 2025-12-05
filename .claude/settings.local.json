@@ -18,7 +18,9 @@
       "Bash(php com sql:*)",
       "Bash(php:*)",
       "Bash(dir:*)",
-      "Bash(composer dumpautoload:*)"
+      "Bash(composer dumpautoload:*)",
+      "Bash(./vendor/bin/phpunit:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []
