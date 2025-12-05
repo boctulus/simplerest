@@ -1554,6 +1554,72 @@ class ZippyCommand implements ICommand
         }
     }
 
+    /**
+     * Counts the total number of brand-category relationships
+     *
+     * Uso: php com zippy brand_categories count
+     */
+    protected function brand_categories_count()
+    {
+        StdOut::print("=== Conteo de Relaciones Marca-Categoría ===\n\n");
+
+        DB::setConnection('zippy');
+
+        // Contar todas las relaciones activas en brand_categories
+        $sql = "
+            SELECT
+                COUNT(*) as total
+            FROM brand_categories bc
+            JOIN brands b ON bc.brand_id = b.id
+            JOIN categories c ON bc.category_id = c.id
+            WHERE bc.deleted_at IS NULL
+              AND b.deleted_at IS NULL
+              AND c.deleted_at IS NULL
+        ";
+
+        $result = DB::selectOne($sql);
+        $total = is_array($result) ? $result['total'] : $result->total;
+
+        // Contar relaciones por nivel de confianza
+        $byConfidence = DB::select("
+            SELECT
+                bc.confidence_level,
+                COUNT(*) as count
+            FROM brand_categories bc
+            JOIN brands b ON bc.brand_id = b.id
+            JOIN categories c ON bc.category_id = c.id
+            WHERE bc.deleted_at IS NULL
+              AND b.deleted_at IS NULL
+              AND c.deleted_at IS NULL
+            GROUP BY bc.confidence_level
+            ORDER BY bc.confidence_level
+        ");
+
+        DB::closeConnection();
+
+        StdOut::print("Total de relaciones marca-categoría: {$total}\n\n");
+
+        if (!empty($byConfidence)) {
+            StdOut::print("Distribución por nivel de confianza:\n");
+            foreach ($byConfidence as $row) {
+                $level = is_array($row) ? $row['confidence_level'] : $row->confidence_level;
+                $count = is_array($row) ? $row['count'] : $row->count;
+
+                // Formatear confidence level con emoji
+                $confidenceEmoji = match($level) {
+                    'high' => '🟢',
+                    'medium' => '🟡',
+                    'low' => '🟠',
+                    'doubtful' => '🔴',
+                    default => '⚪'
+                };
+
+                StdOut::print("  {$confidenceEmoji} {$level}: {$count} relaciones\n");
+            }
+            StdOut::print("\n");
+        }
+    }
+
 
     // ================================================================
     // ROUTER: OLLAMA
@@ -1863,6 +1929,13 @@ class ZippyCommand implements ICommand
     Ejemplo:
       php com zippy brand_categories list
       php com zippy brand_categories list --limit=50 --offset=100
+
+  brand_categories count
+    Muestra el conteo total de relaciones entre marcas y categorías
+    Incluye distribución por nivel de confianza
+
+    Ejemplo:
+      php com zippy brand_categories count
 
 ═══════════════════════════════════════════════════════════════════════════
 🧪 COMANDOS DE MARCAS - CATEGORIZACIÓN AUTOMÁTICA
