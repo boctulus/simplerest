@@ -24,18 +24,21 @@ El ORM (Object-Relational Mapping) de SimpleRest proporciona una interfaz orient
 
 ## Introducción
 
-El ORM de SimpleRest trabaja con **instancias de modelos** que proporcionan acceso completo al Query Builder y a las capacidades de relaciones automáticas.
+El ORM de SimpleRest ofrece dos estilos de trabajo:
+
+1. **Tradicional**: Usando instancias del modelo y el Query Builder completo
+2. **Laravel-like**: Usando métodos estáticos al estilo Active Record
+
+Ambos estilos se pueden combinar según las necesidades de tu aplicación.
 
 ```php
-// Crear instancia y usar Query Builder
-$brandModel = new Brand(true);
-$results = $brandModel->where('active', 1)->get();
+// Estilo tradicional
+$model = new Brand(true);
+$results = $model->where('active', 1)->get();
 
-// Con relaciones automáticas (usando schemas)
-$results = $brandModel->connectTo(['categories'])->get();
+// Estilo Laravel-like
+$results = Brand::where('active', 1)->get();
 ```
-
-**Nota importante:** A diferencia de Laravel/Eloquent, SimpleRest **no usa métodos estáticos** (como `Model::where()`). Siempre debes crear una instancia del modelo primero.
 
 ---
 
@@ -125,14 +128,16 @@ class User extends Model
 
 ## Trabajando con Modelos
 
-SimpleRest trabaja exclusivamente con **instancias de modelos**. No hay métodos estáticos al estilo Laravel/Eloquent.
+### Modo Tradicional (Instancias)
+
+Este es el modo más potente, con acceso completo al Query Builder.
 
 ```php
 <?php
 
 use Boctulus\Simplerest\Models\User;
 
-// ✓ CORRECTO: Crear instancia conectada a la BD
+// Crear instancia conectada a la BD
 $userModel = new User(true);
 
 // Consultas
@@ -162,19 +167,38 @@ $total = $userModel->where('active', 1)->count();
 $exists = $userModel->where('email', 'john@example.com')->exists();
 ```
 
-**❌ NO FUNCIONA (métodos estáticos):**
+### Modo Laravel-like (Métodos Estáticos)
+
+Más limpio para consultas simples.
 
 ```php
-// ✗ Esto NO funciona en SimpleRest
-$user = ->where('email', 'john@example.com')->first();
-$user = ->findOrFail(123);
-$userId = ->create([...]);
+<?php
+
+use Boctulus\Simplerest\Models\User;
+
+// Consultas simples
+$user = User::where('email', 'john@example.com')->first();
+
+// Búsqueda por ID
+$user = User::findOrFail(123);
+
+// Crear registro
+$userId = User::create([
+    'name' => 'John Doe',
+    'email' => 'john@example.com',
+]);
+
+// Verificar existencia
+$exists = User::where('email', 'john@example.com')->exists();
 ```
 
-**Por qué no hay métodos estáticos:**
-- SimpleRest prioriza la flexibilidad y el control explícito sobre las conexiones
-- Las instancias permiten mejor manejo de múltiples conexiones (multi-tenant)
-- El diseño favorece la claridad sobre la brevedad del código
+**⚠️ Limitaciones del Modo Estático:**
+
+- No todos los métodos del Query Builder están disponibles como estáticos
+- Para consultas complejas, usa el modo tradicional
+- Los resultados de `first()` y `get()` son arrays, no objetos
+
+Ver [ORM-Laravel-like.md](ORM-Laravel-like.md) para más detalles.
 
 ---
 
@@ -186,7 +210,7 @@ $userId = ->create([...]);
 use Boctulus\Simplerest\Models\User;
 
 // Crear un registro
-$userId = ->create([
+$userId = User::create([
     'name' => 'John Doe',
     'email' => 'john@example.com',
     'age' => 30,
@@ -196,14 +220,14 @@ $userId = ->create([
 echo "Usuario creado con ID: $userId";
 
 // Crear múltiples registros
-->create([
+User::create([
     ['name' => 'Alice', 'email' => 'alice@example.com'],
     ['name' => 'Bob', 'email' => 'bob@example.com'],
     ['name' => 'Charlie', 'email' => 'charlie@example.com'],
 ]);
 
 // Crear o ignorar duplicados
-$userId = ->create([
+$userId = User::create([
     'email' => 'john@example.com',
     'name' => 'John Doe',
 ], true); // ignore_duplicates = true
@@ -212,32 +236,18 @@ $userId = ->create([
 ### Read (Leer)
 
 ```php
-// Obtener todos los registros (arrays por defecto)
-$users = ->where('active', 1)->get();
-// Resultado: [['id' => 1, 'name' => 'John'], ...]
+// Obtener todos los registros
+$users = User::where('active', 1)->get();
 
 // Obtener primer registro
-$user = ->where('email', 'john@example.com')->first();
-// Resultado: ['id' => 1, 'name' => 'John', 'email' => 'john@example.com']
+$user = User::where('email', 'john@example.com')->first();
 
 // Buscar por ID
-$user = ->findOrFail(123);
+$user = User::findOrFail(123);
 
 // Obtener solo ciertos campos
 $userModel = new User(true);
 $users = $userModel->select(['id', 'name', 'email'])
-                   ->where('active', 1)
-                   ->get();
-
-// Obtener como objetos en lugar de arrays
-$userModel = new User(true);
-$users = $userModel->asObject()
-                   ->where('active', 1)
-                   ->get();
-// Resultado: [stdClass{id: 1, name: 'John'}, ...]
-
-// O usando setFetchMode
-$users = $userModel->setFetchMode('OBJ')
                    ->where('active', 1)
                    ->get();
 
@@ -247,30 +257,10 @@ $paginated = $userModel->where('active', 1)
                        ->paginate(15); // 15 por página
 
 // Ordenamiento
-$users = ->where('active', 1)
+$users = User::where('active', 1)
             ->orderBy('created_at', 'DESC')
             ->limit(10)
             ->get();
-```
-
-**Modos de Fetch:**
-
-```php
-$userModel = new User(true);
-
-// Arrays asociativos (default)
-$users = $userModel->assoc()->get();
-$users = $userModel->setFetchMode('ASSOC')->get();
-
-// Objetos stdClass
-$users = $userModel->asObject()->get();
-$users = $userModel->setFetchMode('OBJ')->get();
-
-// Array de una sola columna
-$names = $userModel->column()
-                   ->select(['name'])
-                   ->get();
-// Resultado: ['John', 'Jane', 'Bob']
 ```
 
 ### Update (Actualizar)
@@ -339,18 +329,18 @@ $userModel->where('id', 123)->restore();
 use Boctulus\Simplerest\Models\User;
 
 // WHERE simple
-$users = ->where('active', 1)->get();
+$users = User::where('active', 1)->get();
 
 // WHERE con operador
-$users = ->where('age', '>', 18)->get();
+$users = User::where('age', '>', 18)->get();
 
 // Múltiples WHERE (AND)
-$users = ->where('active', 1)
+$users = User::where('active', 1)
             ->where('age', '>', 18)
             ->get();
 
 // WHERE con array
-$users = ->where([
+$users = User::where([
     ['active', 1],
     ['age', '>', 18],
     ['role', 'admin'],
@@ -431,76 +421,28 @@ $stats = $userModel->select(['role', 'COUNT(*) as total'])
 
 ### Joins
 
-SimpleRest ofrece dos formas de hacer JOINs:
-
-#### 1. JOINs Automáticos (con Schemas)
-
-Usa `connectTo()` para JOINs automáticos basados en relaciones del schema:
-
 ```php
 use Boctulus\Simplerest\Models\User;
 
 $userModel = new User(true);
 
-// JOIN automático usando schema
-$results = $userModel->connectTo(['profiles'])
-                     ->where('users.active', 1)
-                     ->get();
-
-// SimpleRest automáticamente genera:
-// LEFT JOIN profiles ON users.id = profiles.user_id
-
-// Múltiples JOINs automáticos
-$results = $userModel->connectTo(['profiles', 'roles'])
-                     ->get();
-
-// Genera automáticamente:
-// LEFT JOIN profiles ON users.id = profiles.user_id
-// LEFT JOIN roles ON users.role_id = roles.id
-```
-
-**Ventajas:**
-- ✅ No necesitas especificar las columnas de relación
-- ✅ Automáticamente califica los campos para evitar ambigüedad
-- ✅ Funciona con relaciones n:m (tablas pivot)
-- ✅ Más mantenible - cambios en schema se reflejan automáticamente
-
-#### 2. JOINs Manuales (sin Schemas)
-
-Para mayor control o cuando no uses schemas:
-
-```php
-use Boctulus\Simplerest\Models\User;
-
-$userModel = new User(true);
-
-// INNER JOIN manual
+// INNER JOIN
 $results = $userModel->join('profiles', 'users.id', 'profiles.user_id')
                      ->select(['users.*', 'profiles.bio'])
                      ->where('users.active', 1)
                      ->get();
 
-// LEFT JOIN manual
+// LEFT JOIN
 $results = $userModel->leftJoin('profiles', 'users.id', 'profiles.user_id')
                      ->select(['users.*', 'profiles.bio'])
                      ->get();
 
-// RIGHT JOIN
-$results = $userModel->rightJoin('profiles', 'users.id', 'profiles.user_id')
-                     ->get();
-
-// Múltiples joins manuales
+// Múltiples joins
 $results = $userModel->join('profiles', 'users.id', 'profiles.user_id')
                      ->join('roles', 'users.role_id', 'roles.id')
                      ->select(['users.*', 'profiles.bio', 'roles.name as role_name'])
                      ->get();
 ```
-
-**Cuándo usar JOINs manuales:**
-- Consultas complejas con condiciones especiales
-- JOINs con tablas que no están en el schema
-- Mayor control sobre el tipo de JOIN (INNER, LEFT, RIGHT)
-- Condiciones de JOIN no estándar
 
 ---
 
@@ -652,21 +594,14 @@ class User extends Model
 
 ### Cargar Relaciones (Eager Loading)
 
-El método `connectTo()` realiza **JOINs automáticos** basándose en las relaciones definidas en el schema. No necesitas especificar las columnas ni las condiciones del JOIN manualmente.
-
 ```php
 use Boctulus\Simplerest\Models\User;
 
 $userModel = new User(true);
 
-// Cargar usuarios con sus posts (JOIN automático)
-$users = $userModel->connectTo(['posts'])
+// Cargar usuarios con sus posts
+$users = $userModel->connectTo('posts')
                    ->get();
-
-// SimpleRest automáticamente:
-// 1. Detecta la relación users -> posts desde el schema
-// 2. Genera el JOIN: LEFT JOIN posts ON users.id = posts.user_id
-// 3. Califica automáticamente los campos (users.id, posts.title, etc.)
 
 // Resultado incluye posts automáticamente:
 /*
@@ -684,22 +619,10 @@ $users = $userModel->connectTo(['posts'])
 ]
 */
 
-// Cargar múltiples relaciones (múltiples JOINs automáticos)
+// Cargar múltiples relaciones
 $users = $userModel->connectTo(['posts', 'profile'])
                    ->get();
-
-// Equivalente manual (sin connectTo):
-$users = $userModel->leftJoin('posts', 'users.id', 'posts.user_id')
-                   ->leftJoin('profiles', 'users.id', 'profiles.user_id')
-                   ->get();
 ```
-
-**Ventajas de connectTo():**
-- ✅ JOINs automáticos basados en el schema
-- ✅ No necesitas recordar las columnas de relación
-- ✅ Calificación automática de campos (evita ambigüedad)
-- ✅ Manejo automático de relaciones complejas (n:m con tablas pivot)
-- ✅ Código más limpio y mantenible
 
 ### Tipos de Relaciones
 
@@ -832,7 +755,7 @@ class User extends Model
 
 ```php
 // Usar método helper
-$user = ->findOrFail(123);
+$user = User::findOrFail(123);
 $profile = $user->profile();
 $posts = $user->posts();
 
@@ -1006,12 +929,12 @@ class User extends Model
 
 ```php
 // Los mutadores se aplican automáticamente
-$userId = ->create([
+$userId = User::create([
     'email' => '  JOHN@EXAMPLE.COM  ', // Se guarda como 'john@example.com'
     'name' => 'john doe',
 ]);
 
-$user = ->findOrFail($userId);
+$user = User::findOrFail($userId);
 echo $user->name; // Output: "John Doe" (aplicó ucwords)
 ```
 
@@ -1067,7 +990,7 @@ class User extends Model
 use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 
 try {
-    ->create([
+    User::create([
         'name' => 'Jo', // Muy corto
         'email' => 'invalid-email', // Email inválido
         'age' => 15, // Menor de edad
@@ -1098,7 +1021,7 @@ DB::beginTransaction();
 
 try {
     // Crear usuario
-    $userId = ->create([
+    $userId = User::create([
         'name' => 'John Doe',
         'email' => 'john@example.com',
     ]);
@@ -1133,7 +1056,7 @@ try {
 
 ```php
 // ✓ Bueno
-$user = ->where('email', 'john@example.com')->first();
+$user = User::where('email', 'john@example.com')->first();
 
 // ✗ Innecesariamente complejo
 $userModel = new User(true);
@@ -1295,7 +1218,7 @@ class User extends Model
 ```php
 // Registro
 try {
-    $userId = ->create([
+    $userId = User::create([
         'name' => 'John Doe',
         'email' => 'john@example.com',
         'password' => 'secret123', // Se hasheará automáticamente

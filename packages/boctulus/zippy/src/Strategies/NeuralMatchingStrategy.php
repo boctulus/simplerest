@@ -210,6 +210,19 @@ class NeuralMatchingStrategy
                 'trit' => 0.7,  // tomate triturado
                 'tritado' => 0.8,
                 'perita' => 0.7,  // tomate perita
+                'sopa' => 0.9,
+                'ramen' => 0.9,
+                'caldo' => 0.9,
+                'fideo' => 0.8,
+                'membrillo' => 0.9,  // dulce de membrillo
+                'batata' => 0.9,  // dulce de batata
+                'cayote' => 0.9,  // dulce de cayote
+                'veloce' => 0.7,  // marca de pasta
+                'mermelada' => 0.9,
+                'dulce' => 0.8,
+                'condimento' => 0.8,
+                'aderezo' => 0.8,
+                'polvo' => 0.7,  // polvo para preparar
             ],
             'golosinas' => [
                 'caramelo' => 0.9,
@@ -225,14 +238,17 @@ class NeuralMatchingStrategy
                 'wafer' => 0.8,
             ],
             'frutas-y-verduras' => [
-                'membrillo' => 0.9,
-                'batata' => 0.9,
-                'cayote' => 0.9,
                 'arandano' => 0.8,
                 'frutilla' => 0.8,
                 'durazno' => 0.8,
                 'manzana' => 0.7,
                 'ciruela' => 0.8,
+                'banana' => 0.8,
+                'naranja' => 0.7,
+                'mandarina' => 0.8,
+                'limon' => 0.7,
+                'pera' => 0.8,
+                'uva' => 0.8,
             ],
             'limpieza' => [
                 'detergente' => 0.9,
