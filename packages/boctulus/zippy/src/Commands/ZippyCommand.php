@@ -144,6 +144,10 @@ class ZippyCommand implements ICommand
 
         $query = DB::table('products');
 
+        if (isset($opts['ean'])) {
+            $query->where('ean', $opts['ean']);
+        }
+
         if ($limit) {
             $query->limit((int) $limit);
         }
@@ -2125,7 +2129,6 @@ STR;
             StdOut::print("Uso: php com zippy weights <subcomando> [options]\n");
             StdOut::print("Subcomandos disponibles:\n");
             StdOut::print("  seed      - Poblar tabla neural_weights desde definición hardcoded\n");
-            StdOut::print("  train     - Entrenar red neuronal con productos categorizados\n");
             StdOut::print("  list      - Listar todos los pesos en BD\n");
             StdOut::print("  clear     - Limpiar tabla neural_weights\n");
             return;
@@ -2198,6 +2201,7 @@ STR;
                 'mouse' => 0.8,
                 'aire' => 0.7,
                 'heladera' => 0.9,
+                'helad' => 0.9, // Abreviatura común
                 'freezer' => 0.9,
                 'lavarropas' => 0.9,
                 'microondas' => 0.9,
@@ -2207,6 +2211,16 @@ STR;
                 'funda' => 0.6,
                 'cargador' => 0.7,
                 'cable' => 0.6,
+            ],
+            'hogar-y-bazar' => [
+                'cocina' => 0.9,
+                'horno' => 0.9,
+                'anafe' => 0.9,
+                'bazar' => 0.8,
+                'cama' => 0.9,
+                'colchon' => 0.9,
+                'sarten' => 0.8,
+                'olla' => 0.8,
             ],
             'panaderia' => [
                 'pan' => 0.8,
@@ -2321,16 +2335,19 @@ STR;
                 'uva' => 0.8,
             ],
             'limpieza' => [
-                'detergente' => 0.9,
+                'det' => 0.95, // Peso muy alto para desambiguar
+                'detergente' => 0.95,
                 'lavandina' => 0.9,
-                'jabon' => 0.8,
-                'esponja' => 0.9,
-                'trapo' => 0.8,
-                'rejilla' => 0.8,
+                'jabon' => 0.9,
+                'suavizante' => 0.9,
+                'desodorante' => 0.8,
                 'limpiador' => 0.9,
-                'desinfectante' => 0.9,
-                'cloro' => 0.8,
-                'negra' => 0.6,
+                'trapo' => 0.8,
+                'esponja' => 0.8,
+                'escoba' => 0.8,
+                'mopa' => 0.8,
+                'papel' => 0.7,
+                'rollo' => 0.7,
             ],
         ];
 
@@ -2431,7 +2448,7 @@ STR;
     {
         $opts = $this->parseOptions($options);
         $limit = $opts['limit'] ?? 5000;
-        $minFreq = $opts['min_freq'] ?? 3; // Mínima frecuencia para considerar una palabra
+        $minFreq = $opts['min_freq'] ?? 2; // Reducido a 2 para capturar más palabras
         
         DB::setConnection('zippy');
         
@@ -2459,11 +2476,17 @@ STR;
         $totalWords = 0;
         
         foreach ($products as $p) {
-            $cats = json_decode($p->categories, true);
+            // Manejar objeto o array
+            $categoriesRaw = is_array($p) ? ($p['categories'] ?? null) : ($p->categories ?? null);
+            $descriptionRaw = is_array($p) ? ($p['description'] ?? null) : ($p->description ?? null);
+
+            if (empty($categoriesRaw)) continue;
+
+            $cats = json_decode($categoriesRaw, true);
             if (!is_array($cats)) continue;
             
             // Normalizar descripción
-            $desc = $p->description;
+            $desc = (string)$descriptionRaw;
             // Usar una normalización más suave para palabras clave (mantener espacios para separar)
             $desc = mb_strtolower($desc, 'UTF-8');
             $desc = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $desc);
@@ -2537,35 +2560,29 @@ STR;
         }
         
         // Guardar en BD
-        // Opcional: Limpiar pesos 'trained' anteriores para re-entrenar limpio
-        // DB::table('neural_weights')->where('source', 'trained')->delete();
-        
         StdOut::print("Guardando {$count} nuevos pesos...\n");
         
-        // Insertar en chunks
+        // Insertar en chunks usando SQL directo para evitar problemas con Modelos
         $chunks = array_chunk($newWeights, 500);
         foreach ($chunks as $chunk) {
-            // Usar insertIgnore o similar si fuera posible, o loop para updateOrInsert
-            // Por simplicidad y rendimiento en batch:
+            $values = [];
+            $bindings = [];
+            
             foreach ($chunk as $row) {
-                $exists = DB::table('neural_weights')
-                    ->where('word', $row['word'])
-                    ->where('category_slug', $row['category_slug'])
-                    ->exists();
-                    
-                if ($exists) {
-                    DB::table('neural_weights')
-                        ->where('word', $row['word'])
-                        ->where('category_slug', $row['category_slug'])
-                        ->update([
-                            'weight' => $row['weight'],
-                            'source' => 'trained', // Sobrescribir hardcoded si el entrenado es mejor? O mantener source?
-                            'updated_at' => date('Y-m-d H:i:s')
-                        ]);
-                } else {
-                    DB::table('neural_weights')->insert($row);
-                }
+                $values[] = "(?, ?, ?, ?, ?, ?, ?)";
+                $bindings[] = $row['word'];
+                $bindings[] = $row['category_slug'];
+                $bindings[] = $row['weight'];
+                $bindings[] = $row['source'];
+                $bindings[] = $row['usage_count'];
+                $bindings[] = $row['created_at'];
+                $bindings[] = $row['updated_at'];
             }
+            
+            $sql = "INSERT INTO neural_weights (word, category_slug, weight, source, usage_count, created_at, updated_at) VALUES " . implode(', ', $values);
+            $sql .= " ON DUPLICATE KEY UPDATE weight = VALUES(weight), source = VALUES(source), updated_at = VALUES(updated_at)";
+            
+            DB::statement($sql, $bindings);
         }
         
         StdOut::print("✅ Entrenamiento finalizado.\n");
@@ -2603,13 +2620,78 @@ STR;
     }
 
     /**
+     * Shows diagnostic statistics for product categories
+     * Shows how many products have and don't have assigned categories
+     *
+     * Uso: php com zippy product stats_categories
+     */
+    protected function product_stats_categories()
+    {
+        StdOut::print("=== Diagnóstico de Categorías de Productos ===\n\n");
+
+        DB::setConnection('zippy');
+
+        // Total products
+        $totalProducts = DB::table('products')->count();
+
+        // Products with categories (not null, not empty string, not empty JSON array)
+        $withCategories = DB::selectOne("
+            SELECT COUNT(*) as count
+            FROM products
+            WHERE categories IS NOT NULL
+              AND categories != ''
+              AND categories != '[]'
+              AND JSON_LENGTH(categories) > 0
+        ");
+
+        // Products without categories (null, empty string, or empty JSON array)
+        $withoutCategories = DB::selectOne("
+            SELECT COUNT(*) as count
+            FROM products
+            WHERE categories IS NULL
+               OR categories = ''
+               OR categories = '[]'
+               OR JSON_LENGTH(categories) = 0
+        ");
+
+        $withCatCount = is_array($withCategories) ? $withCategories['count'] : $withCategories->count;
+        $withoutCatCount = is_array($withoutCategories) ? $withoutCategories['count'] : $withoutCategories->count;
+
+        // Calculate percentages
+        $withCatPct = $totalProducts > 0 ? round(($withCatCount / $totalProducts) * 100, 2) : 0;
+        $withoutCatPct = $totalProducts > 0 ? round(($withoutCatCount / $totalProducts) * 100, 2) : 0;
+
+        StdOut::print("📊 ESTADÍSTICAS DE CATEGORÍAS DE PRODUCTOS\n");
+        StdOut::print("─────────────────────────────────────────\n");
+        StdOut::print("Total de productos: {$totalProducts}\n\n");
+
+        StdOut::print("✅ Con categorías asignadas: {$withCatCount} ({$withCatPct}%)\n");
+        StdOut::print("❌ Sin categorías asignadas: {$withoutCatCount} ({$withoutCatPct}%)\n\n");
+
+        // Additional breakdown by raw categories (catego_raw1, catego_raw2, catego_raw3)
+        StdOut::print("🔍 ANÁLISIS ADICIONAL DE CATEGORÍAS RAW\n");
+        StdOut::print("─────────────────────────────────────────\n");
+
+        // Count products with raw categories
+        $rawCat1Count = DB::table('products')->whereNotNull('catego_raw1')->where('catego_raw1', '!=', '')->count();
+        $rawCat2Count = DB::table('products')->whereNotNull('catego_raw2')->where('catego_raw2', '!=', '')->count();
+        $rawCat3Count = DB::table('products')->whereNotNull('catego_raw3')->where('catego_raw3', '!=', '')->count();
+
+        StdOut::print("Con catego_raw1: {$rawCat1Count}\n");
+        StdOut::print("Con catego_raw2: {$rawCat2Count}\n");
+        StdOut::print("Con catego_raw3: {$rawCat3Count}\n\n");
+
+        DB::closeConnection();
+    }
+
+    /**
      * Parsea las opciones pasadas al comando
-     * 
+     *
      * Soporta formatos:
      *   --key=value
-     *   --key:value  
+     *   --key:value
      *   --flag (devuelve true)
-     * 
+     *
      * @param array $args Argumentos del comando
      * @return array Opciones parseadas
      */
@@ -2622,7 +2704,7 @@ STR;
             if (preg_match('/^--([^=:]+)[=:](.+)$/', $arg, $matches)) {
                 $key = str_replace('-', '_', $matches[1]);
                 $value = $matches[2];
-                
+
                 // Convertir a booleano si es necesario
                 if (strtolower($value) === 'true') {
                     $value = true;
@@ -2631,7 +2713,7 @@ STR;
                 } elseif (is_numeric($value)) {
                     $value = (int)$value;
                 }
-                
+
                 $options[$key] = $value;
             }
             // Formato: --flag (sin valor)
