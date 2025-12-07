@@ -8,6 +8,7 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Interfaces\ICommand;
 use Boctulus\Simplerest\Core\Traits\CommandTrait;
 use Boctulus\Zippy\Libs\CategoryMapper;
+use Boctulus\Zippy\Libs\CategoryUtils;
 
 /**
  * Zippy Command
@@ -678,6 +679,126 @@ class ZippyCommand implements ICommand
             'parent' => $parent,
             'parent_id' => $parentId
         ], 'Category parent updated');
+    }
+
+    /**
+     * Fusiona múltiples categorías en una sola
+     *
+     * Proceso:
+     * 1. La primera categoría (--target) se mantiene como definitiva
+     * 2. Las demás categorías (--sources) se eliminan (soft delete)
+     * 3. Actualiza todas las referencias en category_mappings, brand_categories y products
+     *
+     * Uso: php com zippy category merge --target=cat_123 --sources=cat_456,cat_789 [--dry-run]
+     */
+    protected function category_merge(...$options)
+    {
+        DB::setConnection('zippy');
+
+        $opts = $this->parseOptions($options);
+
+        $target_id = $opts['target'] ?? null;
+        $sources_str = $opts['sources'] ?? null;
+        $dry_run = isset($opts['dry-run']) || isset($opts['dry_run']);
+
+        if (empty($target_id) || empty($sources_str)) {
+            StdOut::print("Error: Se requieren --target y --sources\n\n");
+            StdOut::print("Uso: php com zippy category merge --target=cat_xxx --sources=cat_yyy,cat_zzz [--dry-run]\n\n");
+            StdOut::print("Donde:\n");
+            StdOut::print("  --target     ID de la categoría que se mantendrá (definitiva)\n");
+            StdOut::print("  --sources    IDs de las categorías a fusionar (separadas por comas)\n");
+            StdOut::print("  --dry-run    Simula la fusión sin realizar cambios\n\n");
+            StdOut::print("Ejemplo:\n");
+            StdOut::print("  php com zippy category merge --target=cat_675ca59cb8ad9 --sources=cat_675ca5a1b02f0,cat_675ca5a8ac9a8\n\n");
+            return;
+        }
+
+        // Parsear source IDs
+        $source_ids = array_map('trim', explode(',', $sources_str));
+
+        // Obtener información de categorías para mostrar
+        $target = table('categories')
+            ->where(['id' => $target_id])
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (!$target) {
+            StdOut::print("❌ Error: La categoría destino (ID: $target_id) no existe o está eliminada\n");
+            return;
+        }
+
+        $sources = table('categories')
+            ->whereIn('id', $source_ids)
+            ->whereNull('deleted_at')
+            ->get();
+
+        if (count($sources) !== count($source_ids)) {
+            StdOut::print("❌ Error: Una o más categorías origen no existen o están eliminadas\n");
+            return;
+        }
+
+        // Mostrar resumen
+        StdOut::print("\n╔═══════════════════════════════════════════════════════════════════╗\n");
+        StdOut::print("║     FUSIÓN DE CATEGORÍAS - ZIPPY                                 ║\n");
+        StdOut::print("╚═══════════════════════════════════════════════════════════════════╝\n\n");
+
+        if ($dry_run) {
+            StdOut::print("🔍 MODO DRY-RUN: No se realizarán cambios\n\n");
+        }
+
+        StdOut::print("📌 Categoría DESTINO (se mantendrá):\n");
+        StdOut::print("   • {$target['name']} (ID: {$target['id']}, slug: {$target['slug']})\n\n");
+
+        StdOut::print("🗑️  Categorías a FUSIONAR (se eliminarán):\n");
+        foreach ($sources as $source) {
+            StdOut::print("   • {$source['name']} (ID: {$source['id']}, slug: {$source['slug']})\n");
+        }
+        StdOut::print("\n");
+
+        if ($dry_run) {
+            StdOut::print("✅ Validación completada. Ejecuta sin --dry-run para aplicar cambios.\n\n");
+            return;
+        }
+
+        // Confirmar acción
+        StdOut::print("⚠️  Esta acción actualizará referencias en:\n");
+        StdOut::print("   - category_mappings\n");
+        StdOut::print("   - brand_categories\n");
+        StdOut::print("   - products (campo JSON 'categories')\n");
+        StdOut::print("   - Las categorías origen se eliminarán (soft delete)\n\n");
+
+        // Ejecutar fusión
+        try {
+            $all_ids = array_merge([$target_id], $source_ids);
+            $stats = CategoryUtils::merge(...$all_ids);
+
+            StdOut::print("╔═══════════════════════════════════════════════════════════════════╗\n");
+            StdOut::print("║  RESULTADO DE LA FUSIÓN                                          ║\n");
+            StdOut::print("╚═══════════════════════════════════════════════════════════════════╝\n\n");
+
+            StdOut::print("✅ Categoría definitiva: {$stats['target_category']}\n\n");
+
+            StdOut::print("📊 Estadísticas:\n");
+            StdOut::print("   • Categorías fusionadas: {$stats['categories_deleted']}\n");
+            StdOut::print("   • category_mappings actualizados: {$stats['category_mappings_updated']}\n");
+            StdOut::print("   • brand_categories actualizados: {$stats['brand_categories_updated']}\n");
+            StdOut::print("   • Productos actualizados: {$stats['products_updated']}\n\n");
+
+            if (!empty($stats['merged_categories'])) {
+                StdOut::print("🗑️  Categorías eliminadas:\n");
+                foreach ($stats['merged_categories'] as $merged) {
+                    StdOut::print("   • $merged\n");
+                }
+                StdOut::print("\n");
+            }
+
+            StdOut::print("✅ Fusión completada exitosamente\n\n");
+
+        } catch (\Exception $e) {
+            StdOut::print("\n❌ Error durante la fusión: " . $e->getMessage() . "\n\n");
+        }
+
+        DB::closeConnection();
     }
 
     /**
@@ -1919,14 +2040,29 @@ class ZippyCommand implements ICommand
 
   category set --slug=<slug> --parent=<parent>
     Establece o cambia el padre de una categoría existente
-    
+
     Opciones:
       --slug=X            Slug de la categoría a modificar (REQUERIDO)
       --parent=X          Slug del nuevo padre (usar NULL para desemparentar)
-    
+
     Ejemplo:
       php com zippy category set --slug=dairy.milk --parent=dairy
       php com zippy category set --slug=dairy.milk --parent=NULL
+
+  category merge --target=<id> --sources=<ids> [--dry-run]
+    Fusiona múltiples categorías duplicadas en una sola (la categoría destino)
+    Actualiza automáticamente todas las referencias en:
+    - category_mappings, brand_categories, products
+    - Las categorías origen se eliminan (soft delete)
+
+    Opciones:
+      --target=X          ID de la categoría que se mantendrá (definitiva)
+      --sources=X,Y,Z     IDs de las categorías a fusionar (separadas por comas)
+      --dry-run           Simula la fusión sin realizar cambios
+
+    Ejemplo:
+      php com zippy category merge --target=cat_xxx --sources=cat_yyy,cat_zzz --dry-run
+      php com zippy category merge --target=cat_675ca59cb8ad9 --sources=cat_675ca5a1b02f0,cat_675ca5a8ac9a8
 
 ═══════════════════════════════════════════════════════════════════════════
 🧪 COMANDOS DE CATEGORÍAS - PRUEBAS Y RESOLUCIÓN
@@ -2042,27 +2178,35 @@ class ZippyCommand implements ICommand
 
   category find_missing_parents
     Encuentra categorías padre referenciadas que no existen
-    
+
     Ejemplo:
       php com zippy category find_missing_parents
 
   category find_orphans
     Encuentra categorías huérfanas (padre no existe)
-    
+
     Ejemplo:
       php com zippy category find_orphans
 
   category report_issues
     Reporte completo: padres faltantes + categorías huérfanas
-    
+
     Ejemplo:
       php com zippy category report_issues
 
   category generate_create_commands
     Genera comandos listos para crear categorías padre faltantes
-    
+
     Ejemplo:
       php com zippy category generate_create_commands
+
+  product report_issues
+    Reporte de problemas en productos:
+    - Categorías huérfanas (slugs en products que no existen en categories)
+    - Productos sin categorías asignadas
+
+    Ejemplo:
+      php com zippy product report_issues
 
 ═══════════════════════════════════════════════════════════════════════════
 🤖 COMANDOS OLLAMA/LLM
@@ -2902,18 +3046,6 @@ STR;
         DB::closeConnection();
     }
 
-    /**
-     * Wrapper para products report_issues
-     */
-    protected function products(...$options)
-    {
-        if (empty($options) || $options[0] !== 'report_issues') {
-            StdOut::print("Uso: php com zippy products report_issues\n");
-            return;
-        }
-
-        $this->product_report_issues();
-    }
 
     /**
      * Parsea las opciones pasadas al comando
