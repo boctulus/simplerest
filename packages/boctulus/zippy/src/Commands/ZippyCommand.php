@@ -2739,6 +2739,183 @@ STR;
     }
 
     /**
+     * Reporta problemas e inconsistencias en productos
+     *
+     * Verifica:
+     * - Productos con categorías que no existen en la tabla categories
+     * - Productos sin categorías asignadas
+     * - Categorías inválidas o con formato incorrecto
+     *
+     * Uso: php com zippy products report_issues
+     *
+     * @author Pablo Bozzolo (boctulus)
+     */
+    protected function product_report_issues()
+    {
+        StdOut::print("\n╔═══════════════════════════════════════════════════════════════════╗\n");
+        StdOut::print("║     REPORTE DE PROBLEMAS EN PRODUCTOS - ZIPPY                    ║\n");
+        StdOut::print("╚═══════════════════════════════════════════════════════════════════╝\n\n");
+
+        DB::setConnection('zippy');
+
+        // Obtener todas las categorías válidas
+        $valid_categories = DB::table('categories')
+            ->whereNull('deleted_at')
+            ->pluck('slug');
+
+        $valid_slugs = array_flip($valid_categories);
+
+        StdOut::print("Categorías válidas en el sistema: " . count($valid_categories) . "\n\n");
+
+        // Obtener todos los productos
+        $products = DB::table('products')->get();
+        $total_products = count($products);
+
+        $orphaned_categories = [];
+        $products_with_orphans = [];
+        $products_without_categories = [];
+
+        foreach ($products as $product) {
+            // Verificar productos sin categorías
+            if (empty($product['categories'])) {
+                $products_without_categories[] = [
+                    'ean' => $product['ean'],
+                    'description' => $product['description'],
+                ];
+                continue;
+            }
+
+            $categories = json_decode($product['categories'], true);
+
+            if (!is_array($categories)) {
+                continue;
+            }
+
+            // Verificar categorías huérfanas
+            foreach ($categories as $cat_slug) {
+                if (empty($cat_slug)) {
+                    continue;
+                }
+
+                if (!isset($valid_slugs[$cat_slug])) {
+                    if (!isset($orphaned_categories[$cat_slug])) {
+                        $orphaned_categories[$cat_slug] = 0;
+                    }
+                    $orphaned_categories[$cat_slug]++;
+
+                    $products_with_orphans[] = [
+                        'ean' => $product['ean'],
+                        'description' => $product['description'],
+                        'invalid_category' => $cat_slug,
+                    ];
+                }
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // REPORTE 1: CATEGORÍAS HUÉRFANAS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        StdOut::print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+        StdOut::print("1. CATEGORÍAS HUÉRFANAS EN PRODUCTOS\n");
+        StdOut::print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+
+        if (empty($orphaned_categories)) {
+            StdOut::print("✅ No se encontraron categorías huérfanas\n\n");
+        } else {
+            StdOut::print("⚠️  Categorías inexistentes encontradas:\n\n");
+
+            arsort($orphaned_categories);
+
+            foreach ($orphaned_categories as $slug => $count) {
+                StdOut::print(sprintf("  • '%s': %d productos\n", $slug, $count));
+            }
+
+            StdOut::print("\n━━ Primeros 10 productos afectados:\n\n");
+
+            $shown = 0;
+            foreach ($products_with_orphans as $product) {
+                if ($shown >= 10) break;
+
+                StdOut::print(sprintf("[%s] %s\n", $product['ean'], substr($product['description'], 0, 60)));
+                StdOut::print(sprintf("  → Categoría inválida: '%s'\n\n", $product['invalid_category']));
+
+                $shown++;
+            }
+
+            if (count($products_with_orphans) > 10) {
+                StdOut::print("... y " . (count($products_with_orphans) - 10) . " productos más\n\n");
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // REPORTE 2: PRODUCTOS SIN CATEGORÍAS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        StdOut::print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+        StdOut::print("2. PRODUCTOS SIN CATEGORÍAS ASIGNADAS\n");
+        StdOut::print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+
+        $without_count = count($products_without_categories);
+
+        if ($without_count === 0) {
+            StdOut::print("✅ Todos los productos tienen categorías asignadas\n\n");
+        } else {
+            $percentage = round(($without_count / $total_products) * 100, 2);
+            StdOut::print("⚠️  Productos sin categorías: {$without_count} ({$percentage}% del total)\n\n");
+
+            StdOut::print("━━ Primeros 10 productos sin categorías:\n\n");
+
+            $shown = 0;
+            foreach ($products_without_categories as $product) {
+                if ($shown >= 10) break;
+
+                StdOut::print(sprintf("[%s] %s\n\n", $product['ean'], substr($product['description'], 0, 60)));
+
+                $shown++;
+            }
+
+            if ($without_count > 10) {
+                StdOut::print("... y " . ($without_count - 10) . " productos más\n\n");
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // RESUMEN
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        StdOut::print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+        StdOut::print("RESUMEN\n");
+        StdOut::print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+
+        StdOut::print("📦 Total productos analizados: {$total_products}\n");
+        StdOut::print("⚠️  Productos con categorías huérfanas: " . count($products_with_orphans) . "\n");
+        StdOut::print("❌ Productos sin categorías: {$without_count}\n");
+        StdOut::print("🏷️  Categorías inexistentes detectadas: " . count($orphaned_categories) . "\n\n");
+
+        if (count($orphaned_categories) > 0) {
+            StdOut::print("💡 Sugerencia: Ejecuta los siguientes scripts para corregir:\n");
+            StdOut::print("   php scripts/tmp/cleanup_deleted_categories.php --dry-run\n");
+            StdOut::print("   php scripts/tmp/cleanup_deleted_categories.php\n\n");
+        }
+
+        DB::closeConnection();
+    }
+
+    /**
+     * Wrapper para products report_issues
+     */
+    protected function products(...$options)
+    {
+        if (empty($options) || $options[0] !== 'report_issues') {
+            StdOut::print("Uso: php com zippy products report_issues\n");
+            return;
+        }
+
+        $this->product_report_issues();
+    }
+
+    /**
      * Parsea las opciones pasadas al comando
      *
      * Soporta formatos:

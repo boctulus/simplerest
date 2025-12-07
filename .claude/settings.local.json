@@ -22,7 +22,10 @@
       "Bash(./vendor/bin/phpunit:*)",
       "Bash(git checkout:*)",
       "Bash(del scriptstmptest_static_methods.php)",
-      "Bash(mysqldump:*)"
+      "Bash(mysqldump:*)",
+      "Bash(del scriptstmpconsolidate_categories.php)",
+      "Bash(del scriptstmpconsolidate_categories_sql.php)",
+      "Bash(del scriptstmpanalyze_categories.php)"
     ],
     "deny": [],
     "ask": []
