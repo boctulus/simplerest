@@ -250,4 +250,125 @@ class CategoryUtils
 
         return $stats;
     }
+    /**
+     * Finds potential duplicates in a table column using an inverted index approach.
+     *
+     * @param string $table Table name
+     * @param string $column Column name to check for duplicates (e.g. 'name')
+     * @param float $threshold Similarity threshold (0.0 to 1.0)
+     * @param int $minTokenLength Minimum length of tokens to index
+     * @param int $limit Max candidates to return
+     * @return array
+     */
+    public static function findDupes(string $table, string $column, float $threshold = 0.8, int $minTokenLength = 3, int $limit = 100, string $pk = 'id'): array
+    {
+        DB::setConnection('zippy');
+
+        // 1. Fetch data
+        $rows = DB::table($table)
+            ->select($pk, $column)
+            ->whereNotNull($column)
+            ->whereRaw("LENGTH($column) > 0")
+            ->get();
+
+        $count = count($rows);
+        if ($count < 2) {
+            return [];
+        }
+
+        // 2. Build Inverted Index
+        $index = []; 
+        $data = []; 
+
+        foreach ($rows as $row) {
+            $id = $row[$pk];
+            $text = mb_strtolower($row[$column]);
+            $data[$id] = $text;
+
+            // Tokenize
+            $tokens = preg_split('/[^a-z0-9]+/u', $text, -1, PREG_SPLIT_NO_EMPTY);
+            $uniqueTokens = array_unique($tokens);
+
+            foreach ($uniqueTokens as $token) {
+                if (mb_strlen($token) < $minTokenLength) {
+                    continue;
+                }
+                $index[$token][] = $id;
+            }
+        }
+
+        // 3. Find Candidates
+        $candidates = [];
+
+        foreach ($data as $idA => $textA) {
+            $tokensA = preg_split('/[^a-z0-9]+/u', $textA, -1, PREG_SPLIT_NO_EMPTY);
+            $uniqueTokensA = array_unique($tokensA);
+            
+            $potentialMatches = [];
+
+            foreach ($uniqueTokensA as $token) {
+                if (mb_strlen($token) < $minTokenLength || !isset($index[$token])) {
+                    continue;
+                }
+                foreach ($index[$token] as $idB) {
+                    if ($idA == $idB) continue;
+                    $potentialMatches[$idB] = ($potentialMatches[$idB] ?? 0) + 1;
+                }
+            }
+
+            // Filter candidates that share enough tokens to be worth checking
+            // Heuristic: Must share at least 1 significant token.
+            // For better performance on very large sets, we could require more overlap.
+
+            foreach ($potentialMatches as $idB => $sharedCount) {
+                 // Optimization: Avoid double checking pairs (A, B) and (B, A)
+                 // We only check if idA < idB
+                 if ($idA >= $idB) continue; // String comparison if IDs are strings, numeric if int.
+
+                 $textB = $data[$idB];
+                 
+                 // Calculate Similarity Score
+                 // Jaccard for tokens
+                 $tokensB = preg_split('/[^a-z0-9]+/u', $textB, -1, PREG_SPLIT_NO_EMPTY);
+                 $intersection = count(array_intersect($tokensA, $tokensB));
+                 $union = count(array_unique(array_merge($tokensA, $tokensB)));
+                 
+                 $jaccard = $union > 0 ? $intersection / $union : 0;
+
+                 // Combined Score: Jaccard is fast. If Jaccard is decent, check Levenshtein for precision?
+                 // Let's stick to a robust similarity for now. 
+                 // Similar_text is expensive. Levenshtein is O(N*M).
+                 // Use `similar_text` percentage or `levenshtein` normalized.
+                 
+                 // Let's use similar_text for higher quality but it is slow.
+                 // Given 14k rows, O(N*average_candidates) might be OK if candidates are sparse.
+                 
+                 if ($jaccard < 0.3) { // Skip if token overlap is low
+                     continue; 
+                 }
+
+                 similar_text($textA, $textB, $percent);
+                 $score = $percent / 100.0;
+                 
+                 if ($score >= $threshold) {
+                     $candidates[] = [
+                         'id1' => $idA,
+                         'text1' => $textA,
+                         'id2' => $idB,
+                         'text2' => $textB,
+                         'score' => round($score, 4)
+                     ];
+                 }
+            }
+        }
+
+        // Sort by score desc using usort for PHP < 8.0 compatibility or robustness
+        usort($candidates, function($a, $b) {
+            return $b['score'] <=> $a['score'];
+        });
+
+        // Limit results
+        return array_slice($candidates, 0, $limit);
+    }
 }
+
