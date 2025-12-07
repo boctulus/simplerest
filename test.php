@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Zippy\Libs\CategoryUtils;
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\TemporaryExceptionHandler;
@@ -22,10 +23,23 @@ $handler = new TemporaryExceptionHandler();
 
 try {
 
-    $res = DB::table('sp_permissions')->pluck('name');
-    dd($res);
+    DB::getConnection('zippy');
+    
+    // Obtén una categoría aleatoria usando la conexión 'zippy'
+    $cat = table('categories')
+        ->whereNull('deleted_at')
+        ->orderByRaw('RAND()')
+        ->select('id')
+        ->first();
 
+    if (!$cat) {
+        throw new \Exception('No categories found');
+    }
 
+    dd(
+        $cat, CategoryUtils::breadcrumb($cat['id'])
+    );
+    
 } catch (\Exception $e) {
     // Llama al método del trait
     $handler->exception_handler($e);

@@ -917,11 +917,18 @@ trait QueryBuilderTrait
 		return $this->random();
 	}
 
-	function select($fields)
+	function select(...$fields)
 	{
-		if (is_string($fields)) {
-			$fields = array_map('trim', explode(',', $fields));
+		// Si se pasó un solo argumento que es un array, usarlo directamente
+		if (count($fields) === 1 && is_array($fields[0])) {
+			$fields = $fields[0];
 		}
+		// Si se pasó un solo argumento que es string, podría contener comas
+		else if (count($fields) === 1 && is_string($fields[0])) {
+			$fields = array_map('trim', explode(',', $fields[0]));
+		}
+		// Si se pasaron múltiples argumentos, usarlos directamente (estilo Laravel)
+		// No hacemos nada más ya que $fields ya es un array
 
 		$this->fields = $fields;
 		return $this;
@@ -2023,7 +2030,11 @@ trait QueryBuilderTrait
 		$st = $this->bind($q);
 
 		if ($this->exec && $st->execute()) {
-			return (bool) $st->fetch(\PDO::FETCH_NUM)[0];
+			$result = $st->fetch(\PDO::FETCH_NUM);
+			if ($result === false) {
+				return false;
+			}
+			return (bool) $result[0];
 		} else
 			return false;
 	}
@@ -3140,12 +3151,18 @@ trait QueryBuilderTrait
 				} elseif (isset($vars[$ix]) && isset($this->schema['attr_types'][$vars[$ix]])) {
 					$const = $this->schema['attr_types'][$vars[$ix]];
 					$type = constant("PDO::PARAM_{$const}");
-				} elseif (is_int($val))
+				} elseif (is_int($val)) {
 					$type = \PDO::PARAM_INT;
-				elseif (is_bool($val))
+				} elseif (is_bool($val)) {
 					$type = \PDO::PARAM_BOOL;
-				elseif (is_string($val))
+				} elseif (is_float($val)) {
+					$type = \PDO::PARAM_STR; // Using STR for float to avoid precision issues
+				} elseif (is_string($val)) {
 					$type = \PDO::PARAM_STR;
+				} else {
+					// Default to string if type is unknown
+					$type = \PDO::PARAM_STR;
+				}
 			}
 
 			$st->bindValue($ix + 1, $val, $type);
@@ -3577,15 +3594,21 @@ trait QueryBuilderTrait
 				} elseif (isset($vars[$ix]) && $this->schema != NULL && isset($this->schema['attr_types'][$vars[$ix]])) {
 					$const = $this->schema['attr_types'][$vars[$ix]];
 					$type = constant("PDO::PARAM_{$const}");
-				} elseif (is_int($val))
+				} elseif (is_int($val)) {
 					$type = \PDO::PARAM_INT;
-				elseif (is_bool($val))
+				} elseif (is_bool($val)) {
 					$type = \PDO::PARAM_BOOL;
-				elseif (is_string($val))
+				} elseif (is_float($val)) {
+					$type = \PDO::PARAM_STR; // Using STR for float to avoid precision issues
+				} elseif (is_string($val)) {
 					$type = \PDO::PARAM_STR;
+				} else {
+					// Default to string if type is unknown
+					$type = \PDO::PARAM_STR;
+				}
 			}
 
-			// dd($type, "TYPE");	
+			// dd($type, "TYPE");
 			// dd([$vals[$ix], $symbols[$ix], $type]);
 
 			$st->bindParam($symbols[$ix], $vals[$ix], $type);
