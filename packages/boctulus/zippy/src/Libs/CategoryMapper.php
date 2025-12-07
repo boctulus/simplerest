@@ -59,26 +59,14 @@ class CategoryMapper
 
     /**
      * Normaliza un string para usarlo como slug o clave normalizada
-     * Convierte a minúsculas, elimina acentos, y reemplaza espacios y caracteres especiales por guiones
+     * Usa Strings::slug() para garantizar consistencia en todo el sistema
+     *
+     * @param string $str String a normalizar
+     * @return string Slug normalizado
      */
     private static function normalizeString(string $str): string
     {
-        // Convertir a minúsculas
-        $str = mb_strtolower($str, 'UTF-8');
-        
-        // Eliminar acentos
-        $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
-        
-        // Reemplazar caracteres no alfanúmericos por guiones
-        $str = preg_replace('/[^a-z0-9]+/', '-', $str);
-        
-        // Eliminar guiones duplicados
-        $str = preg_replace('/-+/', '-', $str);
-        
-        // Eliminar guiones al inicio y al final
-        $str = trim($str, '-');
-        
-        return $str;
+        return Strings::slug($str);
     }
 
     /**
@@ -285,8 +273,8 @@ class CategoryMapper
                     continue;
                 }
 
-                // Crear slug propuesto (normalize)
-                $newSlug = static::normalizeString($suggestedName);
+                // Crear slug propuesto usando Strings::slug() para garantizar formato correcto
+                $newSlug = Strings::slug($suggestedName);
 
                 // Verificar que no exista
                 $exists = DB::selectOne("SELECT id, slug FROM categories WHERE slug = ? AND deleted_at IS NULL LIMIT 1", [$newSlug]);
