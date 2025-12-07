@@ -2242,6 +2242,12 @@ class ZippyCommand implements ICommand
     Ejemplo:
       php com zippy category report_issues
 
+  category find_dupes [--threshold=0.8] [--limit=100]
+    Detecta posibles duplicados en la tabla categories (campo name)
+    
+    Ejemplo:
+      php com zippy category find_dupes --limit=20
+
   category generate_create_commands
     Genera comandos listos para crear categorías padre faltantes
 
@@ -2329,6 +2335,7 @@ class ZippyCommand implements ICommand
    3. php com zippy category generate_create_commands
    4. php com zippy category create --name="..." --slug=...
    5. php com zippy category report_issues
+   6. php com zippy category find_dupes --limit=20
 
 🔹 FLUJO 2: Exploración y testing con marcas  [ REVISAR ]
    1. php com zippy brand list_raw
