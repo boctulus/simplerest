@@ -377,13 +377,13 @@ class Strings
 		}
 
 		if ($num === null){
-			throw new \InvalidArgumentException("'$num' can not be null");
+			throw new \InvalidArgumentException("Argument can not be null");
 		}
 	
 		if ($num === false){
-			throw new \InvalidArgumentException("'$num' can not be false");
+			throw new \InvalidArgumentException("Argument can not be false");
 		}
-
+		
 		if (!is_numeric($num)){
 			throw new \Exception("Conversion for '$num' failed");
 		}

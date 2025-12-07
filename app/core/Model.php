@@ -7,21 +7,57 @@ use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Traits\ExceptionHandler;
 use Boctulus\Simplerest\Core\Traits\InsertWithSubResourcesTrait;
-// use Boctulus\Simplerest\Core\Traits\RelationshipTrait;
+use Boctulus\Simplerest\Core\Traits\RelationshipTrait;
 use Boctulus\Simplerest\Core\Traits\QueryBuilderTrait;
 use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
 
-class Model 
-{	
+class Model
+{
 	use ExceptionHandler;
 	use QueryBuilderTrait;
-	use SubResourceHandler;	
-	// use RelationshipTrait;
+	use SubResourceHandler;
+	use RelationshipTrait;
 	use InsertWithSubResourcesTrait;
-	
+
 	public    $exec = true;
 	protected $schema;
-	
+
+	// ORM properties
+	protected static $table;
+	protected $orm_attributes = [];
+	protected $exists = false;
+	protected $original = [];
+
+	// Hidratation
+	static function hydratate($instance, array $attributes)
+	{
+		// Set ORM attributes (the actual data)
+		$instance->orm_attributes = $attributes;
+
+		// Mark as existing record
+		$instance->exists = true;
+
+		// Store original state for dirty checking
+		$instance->original = $attributes;
+
+		return $instance;
+	}
+
+	static function findOrFail($id)
+	{
+		$instance = new static(true); // true = connect to DB
+
+		// Use find() to set up the where clause and get data
+		$data = $instance->find($id)->first();
+
+		// Check if record exists
+		if (!$data || empty($data)) {
+			throw new \Exception("Resource for `{$instance->table_name}` and id={$id} doesn't exist");
+		}
+
+		// "Hidratacion"
+		return static::hydratate($instance, $data);
+	}
 
 	function __construct(bool $connect = false, $schema = null, bool $load_config = true)
 	{
@@ -170,6 +206,81 @@ class Model
 
 	function getConn(){
 		return $this->conn;
+	}
+
+	/*
+		ORM Methods - Laravel-like Active Record pattern
+
+		https://chatgpt.com/c/68f49b1c-7170-8321-8c87-7351564630d2
+	*/
+
+	/**
+	 * Static query() method - returns a new query builder instance
+	 * Usage: Model::query()->where(...)->get()
+	 *
+	 * @throws \BadMethodCallException if static::$table is not defined
+	 */
+	static function query()
+	{
+		if (!isset(static::$table)) {
+			throw new \BadMethodCallException(
+				"Static method query() requires static::\$table to be defined in " . static::class
+			);
+		}
+
+		return new static(true);
+	}
+
+	/**
+	 * Static all() method - get all records
+	 *
+	 * @throws \BadMethodCallException if static::$table is not defined
+	 */
+	static function all()
+	{
+		if (!isset(static::$table)) {
+			throw new \BadMethodCallException(
+				"Static method all() requires static::\$table to be defined in " . static::class
+			);
+		}
+
+		$instance = new static(true);
+		return $instance->get();
+	}
+
+	/**
+	 * Check if the model instance exists in the database
+	 */
+	function exists()
+	{
+		return $this->exists;
+	}
+
+	/**
+	 * Get an ORM attribute value
+	 */
+	function __get($key)
+	{
+		if (array_key_exists($key, $this->orm_attributes)) {
+			return $this->orm_attributes[$key];
+		}
+		return null;
+	}
+
+	/**
+	 * Set an ORM attribute value
+	 */
+	function __set($key, $value)
+	{
+		$this->orm_attributes[$key] = $value;
+	}
+
+	/**
+	 * Check if an ORM attribute is set
+	 */
+	function __isset($key)
+	{
+		return isset($this->orm_attributes[$key]);
 	}
 
 }

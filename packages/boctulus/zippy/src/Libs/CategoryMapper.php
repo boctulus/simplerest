@@ -803,6 +803,62 @@ class CategoryMapper
     }
 
     /**
+     * Obtiene las estrategias configuradas
+     */
+    public static function getStrategies(): array
+    {
+        if (empty(self::$strategies)) {
+            static::configure();
+        }
+        return self::$strategies;
+    }
+
+    /**
+     * Genera el breadcrumb para una categoría
+     * Ej: / Root / Hogar / Electro
+     * 
+     * @param string $slug Slug de la categoría
+     * @param array|null $categoriesMap Map de categorías (slug => data). Si es null, se carga de BD.
+     * @return string
+     */
+    public static function getBreadcrumb(string $slug, ?array $categoriesMap = null): string
+    {
+        if ($categoriesMap === null) {
+            $categoriesMap = static::getCategories();
+        }
+
+        if (!isset($categoriesMap[$slug])) {
+            return '';
+        }
+
+        $category = $categoriesMap[$slug];
+        
+        // Handle both array and object structures just in case
+        $name = is_array($category) ? ($category['name'] ?? '') : ($category->name ?? '');
+        $parentSlug = is_array($category) ? ($category['parent_slug'] ?? null) : ($category->parent_slug ?? null);
+
+        $path = [$name];
+
+        // Recursivamente construir el path hacia arriba
+        $visited = [$slug => true];
+        
+        while (!empty($parentSlug) && isset($categoriesMap[$parentSlug])) {
+            if (isset($visited[$parentSlug])) {
+                break; // Cycle detected
+            }
+            $visited[$parentSlug] = true;
+
+            $category = $categoriesMap[$parentSlug];
+            $name = is_array($category) ? ($category['name'] ?? '') : ($category->name ?? '');
+            $parentSlug = is_array($category) ? ($category['parent_slug'] ?? null) : ($category->parent_slug ?? null);
+            
+            array_unshift($path, $name);
+        }
+
+        return '/ ' . implode(' / ', $path);
+    }
+
+    /**
      * Establece las estrategias de matching a usar
      */
     public static function setStrategies(array $strategies): void
@@ -811,13 +867,328 @@ class CategoryMapper
     }
 
     /**
-     * Obtiene las estrategias configuradas
+     * Realiza un merge completo de categorías duplicadas
+     *
+     * Este método consolida categorías duplicadas actualizando todas las referencias en:
+     * - category_mappings
+     * - brand_categories
+     * - categories.parent_slug
+     * - products.categories (campo JSON)
+     *
+     * @param array $translations Mapeo de traducciones: slug_actual => [nuevo_slug, nuevo_nombre]
+     *                           Ejemplo: ['gourmet food' => ['comida-gourmet', 'Comida Gourmet']]
+     * @param bool $verbose Si debe mostrar mensajes detallados durante el proceso
+     * @return array Estadísticas del proceso de merge
+     *
+     * @author Pablo Bozzolo (boctulus)
+     * Software Architect
      */
-    public static function getStrategies(): array
+    public static function mergeCategories(array $translations, bool $verbose = true): array
     {
-        if (empty(self::$strategies)) {
-            self::configure(); // Inicializar con valores por defecto
+        static::init();
+
+        $stats = [
+            'renamed' => 0,
+            'deleted' => 0,
+            'mappings_updated' => 0,
+            'brands_updated' => 0,
+            'parent_refs_updated' => 0,
+            'products_updated' => 0
+        ];
+
+        if ($verbose) {
+            echo "=================================================================\n";
+            echo "  MERGE DE CATEGORÍAS\n";
+            echo "=================================================================\n\n";
         }
-        return self::$strategies;
+
+        // Paso 1: Análisis de duplicados
+        if ($verbose) {
+            echo "📋 Paso 1: Analizando duplicados que se consolidarán...\n\n";
+        }
+
+        $consolidation_map = [];
+        foreach ($translations as $old_slug => [$new_slug, $new_name]) {
+            if (!isset($consolidation_map[$new_slug])) {
+                $consolidation_map[$new_slug] = [
+                    'target_name' => $new_name,
+                    'sources' => []
+                ];
+            }
+            $consolidation_map[$new_slug]['sources'][] = $old_slug;
+        }
+
+        if ($verbose) {
+            foreach ($consolidation_map as $target_slug => $info) {
+                if (count($info['sources']) > 1) {
+                    echo "⚠️  Múltiples categorías se consolidarán en '$target_slug':\n";
+                    foreach ($info['sources'] as $source) {
+                        echo "   - $source\n";
+                    }
+                    echo "\n";
+                }
+            }
+        }
+
+        // Paso 2: Obtener todas las categorías
+        if ($verbose) {
+            echo "📋 Paso 2: Obteniendo categorías existentes...\n\n";
+        }
+
+        $all_categories = DB::table('categories')
+            ->select(['id', 'slug', 'name', 'parent_slug'])
+            ->get();
+
+        $categories_by_slug = [];
+        foreach ($all_categories as $cat) {
+            $categories_by_slug[$cat['slug']] = $cat;
+        }
+
+        if ($verbose) {
+            echo "Total de categorías en BD: " . count($all_categories) . "\n\n";
+        }
+
+        // Paso 3: Determinar qué categoría mantener para cada grupo
+        if ($verbose) {
+            echo "🎯 Paso 3: Determinando categorías a mantener y eliminar...\n\n";
+        }
+
+        $merge_plan = [];
+
+        foreach ($consolidation_map as $target_slug => $info) {
+            $existing_sources = [];
+
+            // Buscar cuáles de las categorías fuente realmente existen
+            foreach ($info['sources'] as $source_slug) {
+                if (isset($categories_by_slug[$source_slug])) {
+                    $existing_sources[] = [
+                        'slug' => $source_slug,
+                        'id' => $categories_by_slug[$source_slug]['id'],
+                        'name' => $categories_by_slug[$source_slug]['name'],
+                    ];
+                }
+            }
+
+            if (empty($existing_sources)) {
+                if ($verbose) {
+                    echo "⏭️  '$target_slug': No existen categorías fuente, se omite\n\n";
+                }
+                continue;
+            }
+
+            // Decidir cuál mantener
+            $keep_category = null;
+            $delete_categories = [];
+
+            // Verificar si ya existe una con el slug objetivo
+            if (isset($categories_by_slug[$target_slug])) {
+                $keep_category = $categories_by_slug[$target_slug];
+                $delete_categories = $existing_sources;
+                if ($verbose) {
+                    echo "✅ '$target_slug': Ya existe, se eliminarán " . count($delete_categories) . " duplicados\n";
+                }
+            } else {
+                // Mantener la primera y renombrarla
+                $keep_category = $existing_sources[0];
+                $keep_category['new_slug'] = $target_slug;
+                $keep_category['new_name'] = $info['target_name'];
+                $delete_categories = array_slice($existing_sources, 1);
+                if ($verbose) {
+                    echo "🔄 '$target_slug': Se renombrará '{$keep_category['slug']}' y se eliminarán " . count($delete_categories) . " duplicados\n";
+                }
+            }
+
+            if ($verbose) {
+                foreach ($existing_sources as $src) {
+                    echo "   - {$src['slug']} (ID: {$src['id']})\n";
+                }
+                echo "\n";
+            }
+
+            $merge_plan[$target_slug] = [
+                'keep' => $keep_category,
+                'delete' => $delete_categories,
+                'target_name' => $info['target_name']
+            ];
+        }
+
+        // Paso 4: Ejecutar merge
+        if ($verbose) {
+            echo "🔄 Paso 4: Ejecutando merge de categorías...\n\n";
+        }
+
+        foreach ($merge_plan as $target_slug => $plan) {
+            if ($verbose) {
+                echo "Procesando grupo: $target_slug\n";
+                echo str_repeat('-', 60) . "\n";
+            }
+
+            $keep_id = $plan['keep']['id'];
+            $keep_slug = $plan['keep']['slug'];
+
+            // Si necesita renombrar la categoría que vamos a mantener
+            if (isset($plan['keep']['new_slug']) && $plan['keep']['new_slug'] !== $keep_slug) {
+                if ($verbose) {
+                    echo "  🔄 Renombrando categoría principal:\n";
+                    echo "     '$keep_slug' → '{$plan['keep']['new_slug']}'\n";
+                    echo "     '{$plan['keep']['name']}' → '{$plan['target_name']}'\n";
+                }
+
+                DB::table('categories')
+                    ->where(['id' => $keep_id])
+                    ->update([
+                        'slug' => $plan['keep']['new_slug'],
+                        'name' => $plan['target_name'],
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+
+                $stats['renamed']++;
+                $keep_slug = $plan['keep']['new_slug']; // Actualizar para siguientes operaciones
+            }
+
+            // Procesar categorías a eliminar
+            foreach ($plan['delete'] as $del_cat) {
+                if ($verbose) {
+                    echo "\n  🗑️  Eliminando duplicado: {$del_cat['slug']} (ID: {$del_cat['id']})\n";
+                }
+
+                // 1. Actualizar category_mappings
+                $mappings = DB::table('category_mappings')
+                    ->where(['category_id' => $del_cat['id']])
+                    ->update([
+                        'category_id' => $keep_id,
+                        'category_slug' => $target_slug,
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+
+                // También actualizar por category_slug
+                $mappings += DB::table('category_mappings')
+                    ->where(['category_slug' => $del_cat['slug']])
+                    ->where('category_id', '!=', $keep_id)
+                    ->update([
+                        'category_id' => $keep_id,
+                        'category_slug' => $target_slug,
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+
+                if ($mappings > 0 && $verbose) {
+                    echo "     ↳ $mappings mappings actualizados\n";
+                }
+                $stats['mappings_updated'] += $mappings;
+
+                // 2. Actualizar brand_categories
+                $brands = DB::update("
+                    UPDATE brand_categories
+                    SET category_id = ?, updated_at = NOW()
+                    WHERE category_id = ?
+                ", [$keep_id, $del_cat['id']]);
+
+                if ($brands > 0 && $verbose) {
+                    echo "     ↳ $brands relaciones marca-categoría actualizadas\n";
+                }
+                $stats['brands_updated'] += $brands;
+
+                // 3. Actualizar parent_slug en categorías hijas
+                $children = DB::table('categories')
+                    ->where(['parent_slug' => $del_cat['slug']])
+                    ->update([
+                        'parent_slug' => $target_slug,
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+
+                if ($children > 0 && $verbose) {
+                    echo "     ↳ $children categorías hijas actualizadas\n";
+                }
+                $stats['parent_refs_updated'] += $children;
+
+                // 4. Actualizar campo JSON en products
+                $products = DB::select("
+                    SELECT ean, categories
+                    FROM products
+                    WHERE JSON_CONTAINS(categories, ?)
+                ", [json_encode($del_cat['slug'])]);
+
+                foreach ($products as $product) {
+                    $categories_array = json_decode($product['categories'], true) ?? [];
+
+                    // Reemplazar el slug antiguo por el nuevo
+                    $updated_categories = array_map(function($cat) use ($del_cat, $target_slug) {
+                        return $cat === $del_cat['slug'] ? $target_slug : $cat;
+                    }, $categories_array);
+
+                    // Eliminar duplicados si los hubiera
+                    $updated_categories = array_unique($updated_categories);
+
+                    DB::table('products')
+                        ->where(['ean' => $product['ean']])
+                        ->update([
+                            'categories' => json_encode(array_values($updated_categories)),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+
+                    $stats['products_updated']++;
+                }
+
+                if (count($products) > 0 && $verbose) {
+                    echo "     ↳ " . count($products) . " productos actualizados (campo JSON)\n";
+                }
+
+                // 5. Eliminar la categoría duplicada
+                DB::table('categories')
+                    ->where(['id' => $del_cat['id']])
+                    ->delete();
+
+                if ($verbose) {
+                    echo "     ✅ Categoría eliminada\n";
+                }
+                $stats['deleted']++;
+            }
+
+            if ($verbose) {
+                echo "\n";
+            }
+        }
+
+        // Paso 5: Actualizar referencias restantes de parent_slug
+        if ($verbose) {
+            echo "🔄 Paso 5: Actualizando referencias de parent_slug...\n\n";
+        }
+
+        foreach ($translations as $old_slug => [$new_slug, $new_name]) {
+            if ($old_slug !== $new_slug) {
+                $updated = DB::table('categories')
+                    ->where(['parent_slug' => $old_slug])
+                    ->update([
+                        'parent_slug' => $new_slug,
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+
+                if ($updated > 0) {
+                    if ($verbose) {
+                        echo "  ✏️  Actualizadas $updated referencias de '$old_slug' → '$new_slug'\n";
+                    }
+                    $stats['parent_refs_updated'] += $updated;
+                }
+            }
+        }
+
+        // Resumen final
+        if ($verbose) {
+            echo "\n";
+            echo "=================================================================\n";
+            echo "  RESUMEN DE MIGRACIÓN\n";
+            echo "=================================================================\n\n";
+            echo "✅ Categorías renombradas: {$stats['renamed']}\n";
+            echo "🗑️  Categorías eliminadas (duplicados): {$stats['deleted']}\n";
+            echo "🔗 Mappings actualizados: {$stats['mappings_updated']}\n";
+            echo "🏷️  Relaciones marca-categoría actualizadas: {$stats['brands_updated']}\n";
+            echo "👶 Referencias parent_slug actualizadas: {$stats['parent_refs_updated']}\n";
+            echo "📦 Productos actualizados: {$stats['products_updated']}\n\n";
+            echo "✨ Proceso completado exitosamente!\n\n";
+        }
+
+        return $stats;
     }
+
+
 }
