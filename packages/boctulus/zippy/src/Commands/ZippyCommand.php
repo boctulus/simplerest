@@ -802,6 +802,54 @@ class ZippyCommand implements ICommand
     }
 
     /**
+     * Finds duplicate products based on name similarity
+     *
+     * Usage: php com zippy category find_dupes --threshold=0.85 --limit=50
+     */
+    protected function category_find_dupes(...$options)
+    {
+        $opts = $this->parseOptions($options);
+        $threshold = $opts['threshold'] ?? 0.8;
+        $limit = $opts['limit'] ?? 100;
+        $table = 'categories';
+        $column = 'name'; 
+        $pk = 'id'; 
+
+        StdOut::print("Searching for duplicates in '{$table}.{$column}' with threshold {$threshold}...\n");
+
+        try {
+            $dupes = CategoryUtils::findDupes($table, $column, (float)$threshold, 3, (int)$limit, $pk);
+
+            if (empty($dupes)) {
+                StdOut::print("No duplicates found.\n");
+                return;
+            }
+
+            StdOut::print("Found " . count($dupes) . " potential duplicates:\n\n");
+            
+            // Simple table output
+            $mask = "| %-20.20s | %-40.40s | %-20.20s | %-40.40s | %-6s |\n";
+            printf($mask, 'ID 1', 'Name 1', 'ID 2', 'Name 2', 'Score');
+            printf($mask, str_repeat('-', 20), str_repeat('-', 40), str_repeat('-', 20), str_repeat('-', 40), str_repeat('-', 6));
+
+            foreach ($dupes as $d) {
+                 printf($mask, 
+                    $d['id1'], 
+                    substr($d['text1'], 0, 40), 
+                    $d['id2'], 
+                    substr($d['text2'], 0, 40), 
+                    $d['score']
+                );
+            }
+            
+            StdOut::print("\n");
+
+        } catch (\Exception $e) {
+            StdOut::print("Error: " . $e->getMessage() . "\n");
+        }
+    }
+
+    /**
      * Crea un mapping (alias) de categoría
      *
      * Uso: php com zippy category create_mapping --slug=dairy.milk --raw="Leche entera 1L" --source=mercado
