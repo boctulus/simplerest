@@ -1030,6 +1030,54 @@ class ZippyCommand implements ICommand
     }
 
     /**
+     * Muestra las categorías como un árbol
+     * Genera el string del breadcrumb para cada categoría, ordena alfabéticamente y los muestra
+     *
+     * Uso: php com zippy category tree
+     */
+
+    protected function category_tree()
+    {
+        DB::setConnection('zippy');
+
+        // Obtener todas las categorías desde la base de datos usando CategoryMapper
+        $categoryMap = CategoryMapper::getCategories();
+
+        if (empty($categoryMap)) {
+            StdOut::print("No hay categorías para mostrar.\n");
+            DB::closeConnection();
+            return;
+        }
+
+        // Generar breadcrumbs para cada categoría
+        $breadcrumbs = [];
+        foreach ($categoryMap as $slug => $category) {
+            $breadcrumb = CategoryMapper::getBreadcrumb($slug, $categoryMap);
+            $breadcrumbs[] = [
+                'breadcrumb' => $breadcrumb,
+                'slug'       => $slug,
+                'category'   => $category
+            ];
+        }
+
+        // Ordenar el array de breadcrumbs alfabéticamente
+        usort($breadcrumbs, function ($a, $b) {
+            return strcmp($a['breadcrumb'], $b['breadcrumb']);
+        });
+
+        StdOut::print("=== Árbol de Categorías (ordenado alfabéticamente por breadcrumb) ===\n\n");
+        StdOut::print("Total: " . count($breadcrumbs) . " categorías\n\n");
+
+        // Mostrar breadcrumbs ordenados
+        foreach ($breadcrumbs as $index => $item) {
+             $slug = $item['slug'];
+            StdOut::print(($index + 1) . ". " . $item['breadcrumb'] . " (slug: " . $slug . ")\n");
+        }
+
+        DB::closeConnection();
+    }
+
+    /**
      * Lista todas las marcas únicas del campo brand en la tabla products
      *
      * Uso: php com zippy brand list_raw [--limit=100]
@@ -1836,9 +1884,15 @@ class ZippyCommand implements ICommand
 
   category all
     Lista todas las categorías existentes en la tabla categories
-    
+
     Ejemplo:
       php com zippy category all
+
+  category tree
+    Muestra las categorías como un árbol en formato breadcrumb ordenado alfabéticamente
+
+    Ejemplo:
+      php com zippy category tree
 
   category list_raw [--limit=N]
     Lista categorías raw detectadas en productos (catego_raw1/2/3)
