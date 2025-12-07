@@ -25,7 +25,9 @@
       "Bash(mysqldump:*)",
       "Bash(del scriptstmpconsolidate_categories.php)",
       "Bash(del scriptstmpconsolidate_categories_sql.php)",
-      "Bash(del scriptstmpanalyze_categories.php)"
+      "Bash(del scriptstmpanalyze_categories.php)",
+      "Bash(del scriptstmpanalyze_category_mappings.php)",
+      "Bash(del scriptstmpconsolidate_category_mappings_sql.php)"
     ],
     "deny": [],
     "ask": []
