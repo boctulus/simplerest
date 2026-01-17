@@ -8,6 +8,31 @@ La clase `Request` implementa el patrón Singleton y proporciona una interfaz un
 $req = Request::getInstance();
 ```
 
+## Testabilidad
+
+La clase Request presenta desafíos para pruebas unitarias debido a su dependencia de estados globales:
+
+- Utiliza superglobales ($_SERVER, $_POST, etc.) y funciones externas (apache_request_headers, file_get_contents)
+- Depende de funciones como `php_sapi_name()` que no se pueden simular fácilmente
+- No proporciona métodos específicos para inyectar dependencias o estados simulados
+- Para pruebas unitarias, se recomienda envolver esta clase en una abstracción o usar patrones como el Adapter para facilitar la simulación
+
+## Métodos estáticos
+
+### `getHeaders()`
+Obtiene todos los headers de la petición.
+
+```php
+$headers = Request::getHeaders();
+```
+
+### `isBrowser()`
+Verifica si la petición proviene de un navegador.
+
+```php
+$isBrowser = Request::isBrowser();
+```
+
 ## Métodos principales
 
 ### Query String / CLI Options
@@ -53,6 +78,14 @@ $limit = $req->shiftQuery('limit', 10, function($value) {
 
 ### Body / Payload
 
+#### `as_array()`
+Configura la instancia para que retorne arrays en lugar de objetos.
+
+```php
+// Como array
+$data = $req->as_array()->getBody();
+```
+
 #### `getBody(?bool $as_obj = null)`
 Obtiene el cuerpo de la petición. Retorna array u objeto según configuración.
 
@@ -62,6 +95,10 @@ $data = $req->as_array()->getBody();
 
 // Como objeto (por defecto)
 $data = $req->getBody();
+
+// Forzar retorno como objeto o array
+$data = $req->getBody(true);  // como objeto
+$data = $req->getBody(false); // como array
 ```
 
 #### `getBodyDecoded()`
@@ -434,6 +471,8 @@ Soporta method override mediante:
 - Query string: `?_method=PUT`
 - Header: `X-HTTP-Method-Override: PUT`
 
+La funcionalidad de method override se puede habilitar/deshabilitar en la configuración del framework.
+
 ### Form Data
 
 #### `getFormData()`
@@ -519,6 +558,14 @@ Obtiene el User-Agent del cliente (estático).
 $userAgent = Request::user_agent();
 ```
 
+#### `getRaw()`
+Obtiene el cuerpo sin procesar de la petición.
+
+```php
+$req = Request::getInstance();
+$rawBody = $req->getRaw();
+```
+
 ### Paginación
 
 #### `getPaginatorParams()`
@@ -536,6 +583,17 @@ Establece parámetros de ruta (usado internamente por el router).
 
 ```php
 $req->setParams(['id' => 123, 'slug' => 'my-product']);
+```
+
+#### `getQuery($key = null)`
+Obtiene todos los parámetros del query string o un parámetro específico.
+
+```php
+// Obtener todos los parámetros
+$params = $req->getQuery();
+
+// Obtener un parámetro específico
+$value = $req->getQuery('param_name');
 ```
 
 #### `getParam($index)`
@@ -561,6 +619,22 @@ Alias de `getBodyDecoded()`.
 $data = $req->json();
 ```
 
+### Form Data
+
+#### `getFormData()`
+Obtiene datos de formulario ($_POST).
+
+```php
+$formData = $req->getFormData();
+```
+
+#### `parseFormData()`
+Parsea form data, incluyendo JSON enviado como `application/x-www-form-urlencoded`.
+
+```php
+$data = $req->parseFormData();
+```
+
 ### Código de respuesta
 
 #### `getCode()`
@@ -568,6 +642,18 @@ Obtiene el código HTTP actual.
 
 ```php
 $code = $req->getCode();
+```
+
+### Arrayable Interface
+
+#### `toArray()`
+Convierte los parámetros de ruta en un array.
+
+```php
+$req = Request::getInstance();
+$req->setParams(['id' => 123, 'slug' => 'my-product']);
+
+$array = $req->toArray(); // ['id' => 123, 'slug' => 'my-product']
 ```
 
 ## Soporte CLI

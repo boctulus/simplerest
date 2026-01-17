@@ -1,3 +1,6 @@
+# Borro basura
+bash -c "rm -f nul"
+
 # Detectar cualquier cambio (untracked, modified, deleted, renamed)
 $changes = git status --porcelain
 

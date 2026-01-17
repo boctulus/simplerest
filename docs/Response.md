@@ -18,8 +18,11 @@ La clase `Response` implementa el patrón Singleton y proporciona una interfaz u
 ## Instanciación
 
 ```php
-// Forma explícita
+// Forma explícita (Singleton)
 $res = Response::getInstance();
+
+// Crear nueva instancia (no singleton)
+$res = Response::create();
 
 // Usando helper (recomendado)
 response()->send($data);
@@ -27,6 +30,28 @@ response()->send($data);
 // Usando Factory (alternativa)
 Factory::response()->send($data);
 ```
+
+## Testabilidad
+
+La clase Response está diseñada para facilitar las pruebas unitarias:
+
+- Proporciona un método `setInstance()` que permite inyectar instancias simuladas (mocks) para pruebas:
+  ```php
+  // Inyectar una instancia simulada para pruebas
+  Response::setInstance($mockResponse);
+
+  // Ejecutar la lógica a probar
+  $result = someFunctionUnderTest();
+
+  // Verificar comportamiento
+  $this->assertEquals($expected, $result);
+
+  // Restaurar instancia original después de la prueba
+  Response::setInstance(null);
+  ```
+
+- Soporta creación de nuevas instancias con `create()` para pruebas aisladas
+- Es adecuada para pruebas unitarias debido a su diseño con inyección de dependencias
 
 ## Métodos principales
 
@@ -356,6 +381,71 @@ Ejecuta un callback condicionalmente.
 response()->when($isDev, function($res) {
     $res->setPretty(true);
 })->send($data);
+```
+
+#### `status($http_code)`
+Establece el código de estado HTTP sin enviar la respuesta.
+
+```php
+response()
+    ->status(201)
+    ->send($data);
+```
+
+#### `json($data)`
+Envía datos como respuesta JSON con formato estándar.
+
+```php
+response()->json([
+    'id' => 123,
+    'name' => 'Product A'
+]);
+```
+
+## Métodos inmutables (PSR-7 inspirados)
+
+Los siguientes métodos siguen el patrón PSR-7 y devuelven una nueva instancia con la modificación aplicada, manteniendo la inmutabilidad.
+
+#### `withStatus($code, $reasonPhrase = '')`
+Devuelve una nueva instancia con el código de estado especificado.
+
+```php
+$newResponse = response()->withStatus(201, 'Created');
+```
+
+#### `withHeader($name, $value)`
+Devuelve una nueva instancia con el header especificado.
+
+```php
+$newResponse = response()->withHeader('Content-Type', 'application/json');
+```
+
+#### `withAddedHeader($name, $value)`
+Devuelve una nueva instancia con el header agregado.
+
+```php
+$newResponse = response()->withAddedHeader('X-Custom-Header', 'value');
+```
+
+#### `withoutHeader($name)`
+Devuelve una nueva instancia sin el header especificado.
+
+```php
+$newResponse = response()->withoutHeader('X-Unwanted-Header');
+```
+
+#### `withBody($body)`
+Devuelve una nueva instancia con el cuerpo especificado.
+
+```php
+$newResponse = response()->withBody(['data' => 'example']);
+```
+
+#### `withJson($data, $status = 200)`
+Devuelve una nueva instancia con cuerpo JSON y headers apropiados.
+
+```php
+$newResponse = response()->withJson(['id' => 1, 'name' => 'Product'], 201);
 ```
 
 ## Patrones de uso
