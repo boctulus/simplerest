@@ -27,7 +27,15 @@
       "Bash(del scriptstmpconsolidate_categories_sql.php)",
       "Bash(del scriptstmpanalyze_categories.php)",
       "Bash(del scriptstmpanalyze_category_mappings.php)",
-      "Bash(del scriptstmpconsolidate_category_mappings_sql.php)"
+      "Bash(del scriptstmpconsolidate_category_mappings_sql.php)",
+      "Bash(wsl ssh:*)",
+      "Bash(wsl scp boctulus@159.203.75.234:/var/www/simplerest/core.tar.gz boctulus@159.203.75.234:/var/www/simplerest/tests.tar.gz boctulus@159.203.75.234:/var/www/simplerest/packages_boctulus.tar.gz /mnt/d/laragon/www/simplerest/)",
+      "Bash(wsl bash -c \"scp boctulus@159.203.75.234:/var/www/simplerest/core.tar.gz boctulus@159.203.75.234:/var/www/simplerest/tests.tar.gz boctulus@159.203.75.234:/var/www/simplerest/packages_boctulus.tar.gz ''/mnt/d/laragon/www/simplerest/''\")",
+      "Bash(wsl bash -c \"ls -la /mnt/d/laragon/www/simplerest/ | head -5\")",
+      "Bash(wsl bash -c \"cd /mnt/d/laragon/www/simplerest && scp boctulus@159.203.75.234:/var/www/simplerest/*.tar.gz .\")",
+      "Bash(wsl bash -c \"ssh boctulus@159.203.75.234 ''cd /var/www/simplerest && tar -czvf docs.tar.gz docs'' && cd /mnt/d/laragon/www/simplerest && scp boctulus@159.203.75.234:/var/www/simplerest/docs.tar.gz .\")",
+      "Bash(wsl bash -c \"ssh boctulus@159.203.75.234 ''cd /var/www/simplerest && rm -f docs.tar.gz && find docs -type f \\\\\\\\\\( -name \"\"*.md\"\" -o -name \"\"*.txt\"\" \\\\\\\\\\) | tar -czvf docs.tar.gz -T - && ls -lh docs.tar.gz''\")",
+      "Bash(wsl bash:*)"
     ],
     "deny": [],
     "ask": []
