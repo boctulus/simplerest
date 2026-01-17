@@ -13,6 +13,7 @@ storage/security/
 *.zip
 *.rar
 *.tar
+*.tar.gz
 .dev-env
 winpush.bat
 test-*.php
