@@ -21,7 +21,7 @@ El sistema soporta **3 formas** de enviar una API key personalizada, con el sigu
 ### 1. Headers (Prioridad ALTA) ✅ RECOMENDADO
 
 ```bash
-curl -X GET "http://example.com/api/openfactura/health" \
+curl -X GET "http://example.com/api/v1/openfactura/health" \
   -H "Content-Type: application/json" \
   -H "X-Openfactura-Api-Key: YOUR_API_KEY" \
   -H "X-Openfactura-Sandbox: true"
@@ -35,13 +35,13 @@ curl -X GET "http://example.com/api/openfactura/health" \
 ### 2. Query Parameters (Prioridad MEDIA)
 
 ```bash
-curl -X GET "http://example.com/api/openfactura/health?api_key=YOUR_API_KEY&sandbox=true" \
+curl -X GET "http://example.com/api/v1/openfactura/health?api_key=YOUR_API_KEY&sandbox=true" \
   -H "Content-Type: application/json"
 ```
 
 También soporta camelCase:
 ```bash
-curl -X GET "http://example.com/api/openfactura/health?apiKey=YOUR_API_KEY&sandbox=true" \
+curl -X GET "http://example.com/api/v1/openfactura/health?apiKey=YOUR_API_KEY&sandbox=true" \
   -H "Content-Type: application/json"
 ```
 
@@ -56,7 +56,7 @@ curl -X GET "http://example.com/api/openfactura/health?apiKey=YOUR_API_KEY&sandb
 ### 3. Body (Prioridad BAJA)
 
 ```bash
-curl -X POST "http://example.com/api/openfactura/dte/emit" \
+curl -X POST "http://example.com/api/v1/openfactura/dte/emit" \
   -H "Content-Type: application/json" \
   -d '{
     "api_key": "YOUR_API_KEY",
@@ -67,7 +67,7 @@ curl -X POST "http://example.com/api/openfactura/dte/emit" \
 
 También soporta camelCase:
 ```bash
-curl -X POST "http://example.com/api/openfactura/dte/emit" \
+curl -X POST "http://example.com/api/v1/openfactura/dte/emit" \
   -H "Content-Type: application/json" \
   -d '{
     "apiKey": "YOUR_API_KEY",
@@ -98,14 +98,14 @@ Si se envía la API key por múltiples canales, el sistema usa este orden:
 
 ```bash
 # No es necesario enviar api_key, usará la del .env
-curl -X GET "http://simplerest.lan/api/openfactura/health" \
+curl -X GET "http://simplerest.lan/api/v1/openfactura/health" \
   -H "Content-Type: application/json"
 ```
 
 ### Ejemplo 2: Override con headers (recomendado)
 
 ```bash
-curl -X GET "http://simplerest.lan/api/openfactura/health" \
+curl -X GET "http://simplerest.lan/api/v1/openfactura/health" \
   -H "Content-Type: application/json" \
   -H "X-Openfactura-Api-Key: 928e15a2d14d4a6292345f04960f4bd3" \
   -H "X-Openfactura-Sandbox: true"
@@ -114,14 +114,14 @@ curl -X GET "http://simplerest.lan/api/openfactura/health" \
 ### Ejemplo 3: Override con query params
 
 ```bash
-curl -X GET "http://simplerest.lan/api/openfactura/sales-registry/2024/11?api_key=928e15a2d14d4a6292345f04960f4bd3&sandbox=true" \
+curl -X GET "http://simplerest.lan/api/v1/openfactura/sales-registry/2024/11?api_key=928e15a2d14d4a6292345f04960f4bd3&sandbox=true" \
   -H "Content-Type: application/json"
 ```
 
 ### Ejemplo 4: Override con body
 
 ```bash
-curl -X POST "http://simplerest.lan/api/openfactura/dte/emit" \
+curl -X POST "http://simplerest.lan/api/v1/openfactura/dte/emit" \
   -H "Content-Type: application/json" \
   -d '{
     "api_key": "928e15a2d14d4a6292345f04960f4bd3",

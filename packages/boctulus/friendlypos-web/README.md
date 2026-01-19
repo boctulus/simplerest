@@ -74,7 +74,7 @@ Puedes proporcionar parámetros personalizados usando headers HTTP:
 
 Ejemplo de solicitud con headers:
 ```bash
-curl -X POST http://tu-servidor/api/openfactura/dte/emit \
+curl -X POST http://tu-servidor/api/v1/openfactura/dte/emit \
   -H "X-Openfactura-Api-Key: mi_api_key_personalizada" \
   -H "X-Openfactura-Sandbox: true" \
   -H "Content-Type: application/json" \
@@ -93,7 +93,7 @@ Alternativamente, puedes incluir los parámetros en el body de la solicitud:
 
 Ejemplo de solicitud con parámetros en el body:
 ```bash
-curl -X POST http://tu-servidor/api/openfactura/dte/emit \
+curl -X POST http://tu-servidor/api/v1/openfactura/dte/emit \
   -H "Content-Type: application/json" \
   -d '{
     "api_key": "mi_api_key_personalizada",

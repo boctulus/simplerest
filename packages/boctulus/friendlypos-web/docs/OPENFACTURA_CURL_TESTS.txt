@@ -3,54 +3,54 @@
 ## Base URL: http://simplerest.lan
 
 ## 1. Health Check (should work immediately)
-curl -X GET "http://simplerest.lan/api/openfactura/health" \
+curl -X GET "http://simplerest.lan/api/v1/openfactura/health" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## 2. Emit DTE (will fail without proper data)
-curl -X POST "http://simplerest.lan/api/openfactura/dte/emit" \
+curl -X POST "http://simplerest.lan/api/v1/openfactura/dte/emit" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"dteData": {}}'
 
 ## 3. Get DTE Status (will fail without valid token)
-curl -X GET "http://simplerest.lan/api/openfactura/dte/status/invalid_token" \
+curl -X GET "http://simplerest.lan/api/v1/openfactura/dte/status/invalid_token" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## 4. Anular Guia Despacho (will fail without proper data)
-curl -X POST "http://simplerest.lan/api/openfactura/dte/anular-guia" \
+curl -X POST "http://simplerest.lan/api/v1/openfactura/dte/anular-guia" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"folio": 12345, "fecha": "2025-01-15"}'
 
 ## 5. Anular DTE (will fail without proper data)
-curl -X POST "http://simplerest.lan/api/openfactura/dte/anular" \
+curl -X POST "http://simplerest.lan/api/v1/openfactura/dte/anular" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{"dteData": {}}'
 
 ## 6. Get Taxpayer (will fail without valid RUT)
-curl -X GET "http://simplerest.lan/api/openfactura/taxpayer/12345678-9" \
+curl -X GET "http://simplerest.lan/api/v1/openfactura/taxpayer/12345678-9" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## 7. Get Organization (should work if API key is valid)
-curl -X GET "http://simplerest.lan/api/openfactura/organization" \
+curl -X GET "http://simplerest.lan/api/v1/openfactura/organization" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## 8. Get Sales Registry (will fail without valid year/month)
-curl -X GET "http://simplerest.lan/api/openfactura/sales-registry/2025/01" \
+curl -X GET "http://simplerest.lan/api/v1/openfactura/sales-registry/2025/01" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## 9. Get Purchase Registry (will fail without valid year/month)
-curl -X GET "http://simplerest.lan/api/openfactura/purchase-registry/2025/01" \
+curl -X GET "http://simplerest.lan/api/v1/openfactura/purchase-registry/2025/01" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"
 
 ## 10. Get Document (will fail without valid parameters)
-curl -X GET "http://simplerest.lan/api/openfactura/document/12345678-9/33/12345" \
+curl -X GET "http://simplerest.lan/api/v1/openfactura/document/12345678-9/33/12345" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json"

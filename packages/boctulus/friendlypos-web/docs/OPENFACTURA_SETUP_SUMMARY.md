@@ -12,16 +12,16 @@
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/openfactura/dte/emit` | Emit a DTE (Documento Tributario Electrónico) |
-| GET | `/api/openfactura/dte/status/{token}` | Get status of a previously emitted DTE |
-| POST | `/api/openfactura/dte/anular-guia` | Cancel a Despacho Guía (shipping guide) |
-| POST | `/api/openfactura/dte/anular` | Cancel a DTE using a credit note |
-| GET | `/api/openfactura/taxpayer/{rut}` | Get taxpayer information by RUT |
-| GET | `/api/openfactura/organization` | Get organization information |
-| GET | `/api/openfactura/sales-registry/{year}/{month}` | Get sales registry for a period |
-| GET | `/api/openfactura/purchase-registry/{year}/{month}` | Get purchase registry for a period |
-| GET | `/api/openfactura/document/{rut}/{type}/{folio}` | Get specific document by RUT, type and folio |
-| GET | `/api/openfactura/health` | Health check of the service |
+| POST | `/api/v1/openfactura/dte/emit` | Emit a DTE (Documento Tributario Electrónico) |
+| GET | `/api/v1/openfactura/dte/status/{token}` | Get status of a previously emitted DTE |
+| POST | `/api/v1/openfactura/dte/anular-guia` | Cancel a Despacho Guía (shipping guide) |
+| POST | `/api/v1/openfactura/dte/anular` | Cancel a DTE using a credit note |
+| GET | `/api/v1/openfactura/taxpayer/{rut}` | Get taxpayer information by RUT |
+| GET | `/api/v1/openfactura/organization` | Get organization information |
+| GET | `/api/v1/openfactura/sales-registry/{year}/{month}` | Get sales registry for a period |
+| GET | `/api/v1/openfactura/purchase-registry/{year}/{month}` | Get purchase registry for a period |
+| GET | `/api/v1/openfactura/document/{rut}/{type}/{folio}` | Get specific document by RUT, type and folio |
+| GET | `/api/v1/openfactura/health` | Health check of the service |
 
 ### 3. Environment Configuration
 - Environment variables are properly configured in `.env` file:
@@ -37,7 +37,7 @@
 ## How to Test:
 
 ### Via Web Browser or API Client:
-- Health check: `GET http://simplerest.lan/api/openfactura/health`
+- Health check: `GET http://simplerest.lan/api/v1/openfactura/health`
 
 ### Via Command Line:
 ```bash
