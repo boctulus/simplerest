@@ -19,7 +19,14 @@ class DteDataTransformer
         
         // Adjust structure for invoice type (TipoDTE: 33)
         $tipoDte = $dteData['Encabezado']['IdDoc']['TipoDTE'] ?? null;
-        
+
+        /*  
+            En el Servicio de Impuestos Internos (SII) de Chile, 
+            el código 33 => `Factura Electrónica` (para ventas a empresas y contribuyentes que recuperan IVA) y 
+            el código 39 => `Boleta Electrónica` (para ventas a consumidor final, con IVA incluido en el precio)
+        */
+
+        // Si es Factura Electrónica (TipoDTE: 33), se ajusta la estructura a la de Boleta Electrónica
         if ($tipoDte == 33) {
             $dteData = self::adjustInvoiceStructure($dteData);
         }

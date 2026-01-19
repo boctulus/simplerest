@@ -67,7 +67,7 @@ $headers_with_key = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('GET', '/api/openfactura/health', null, $headers_with_key);
+$result = makeRequest('GET', '/api/v1/openfactura/health', null, $headers_with_key);
 
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
@@ -85,7 +85,7 @@ $headers_with_key = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('POST', '/api/openfactura/dte/emit', ['dteData' => []], $headers_with_key);
+$result = makeRequest('POST', '/api/v1/openfactura/dte/emit', ['dteData' => []], $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -101,7 +101,7 @@ $headers_with_key = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('GET', '/api/openfactura/dte/status/invalid_token', null, $headers_with_key);
+$result = makeRequest('GET', '/api/v1/openfactura/dte/status/invalid_token', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -117,7 +117,7 @@ $headers_with_key = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('POST', '/api/openfactura/dte/anular-guia', [
+$result = makeRequest('POST', '/api/v1/openfactura/dte/anular-guia', [
     'folio' => 12345,
     'fecha' => '2025-01-15'
 ], $headers_with_key);
@@ -136,7 +136,7 @@ $headers_with_key = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('POST', '/api/openfactura/dte/anular', [
+$result = makeRequest('POST', '/api/v1/openfactura/dte/anular', [
     'dteData' => [
         'Encabezado' => [
             'IdDoc' => [
@@ -160,7 +160,7 @@ $headers_with_key = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('GET', '/api/openfactura/taxpayer/12345678-9', null, $headers_with_key);
+$result = makeRequest('GET', '/api/v1/openfactura/taxpayer/12345678-9', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -176,7 +176,7 @@ $headers_with_key = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('GET', '/api/openfactura/organization', null, $headers_with_key);
+$result = makeRequest('GET', '/api/v1/openfactura/organization', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -192,7 +192,7 @@ $headers_with_key = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('GET', '/api/openfactura/sales-registry/2025/01', null, $headers_with_key);
+$result = makeRequest('GET', '/api/v1/openfactura/sales-registry/2025/01', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -208,7 +208,7 @@ $headers_with_key = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('GET', '/api/openfactura/purchase-registry/2025/01', null, $headers_with_key);
+$result = makeRequest('GET', '/api/v1/openfactura/purchase-registry/2025/01', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -224,7 +224,7 @@ $headers_with_key = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('GET', '/api/openfactura/document/12345678-9/33/12345', null, $headers_with_key);
+$result = makeRequest('GET', '/api/v1/openfactura/document/12345678-9/33/12345', null, $headers_with_key);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
@@ -240,7 +240,7 @@ $headers = [
     'X-Openfactura-Api-Key' => '928e15a2d14d4a6292345f04960f4bd3',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('GET', '/api/openfactura/health', null, $headers);
+$result = makeRequest('GET', '/api/v1/openfactura/health', null, $headers);
 if ($result['success']) {
     echo "Status: {$result['http_code']}\n";
     echo "Response: " . json_encode($result['response'], JSON_PRETTY_PRINT) . "\n";
