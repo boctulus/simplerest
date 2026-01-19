@@ -12,16 +12,16 @@ echo "Testing OpenFactura API Routes Registration\n";
 echo "===========================================\n\n";
 
 $routes = [
-    ['GET', '/api/openfactura/health'],
-    ['POST', '/api/openfactura/dte/emit'],
-    ['GET', '/api/openfactura/dte/status/{token}'],
-    ['POST', '/api/openfactura/dte/anular-guia'],
-    ['POST', '/api/openfactura/dte/anular'],
-    ['GET', '/api/openfactura/taxpayer/{rut}'],
-    ['GET', '/api/openfactura/organization'],
-    ['GET', '/api/openfactura/sales-registry/{year}/{month}'],
-    ['GET', '/api/openfactura/purchase-registry/{year}/{month}'],
-    ['GET', '/api/openfactura/document/{rut}/{type}/{folio}']
+    ['GET', '/api/v1/openfactura/health'],
+    ['POST', '/api/v1/openfactura/dte/emit'],
+    ['GET', '/api/v1/openfactura/dte/status/{token}'],
+    ['POST', '/api/v1/openfactura/dte/anular-guia'],
+    ['POST', '/api/v1/openfactura/dte/anular'],
+    ['GET', '/api/v1/openfactura/taxpayer/{rut}'],
+    ['GET', '/api/v1/openfactura/organization'],
+    ['GET', '/api/v1/openfactura/sales-registry/{year}/{month}'],
+    ['GET', '/api/v1/openfactura/purchase-registry/{year}/{month}'],
+    ['GET', '/api/v1/openfactura/document/{rut}/{type}/{folio}']
 ];
 
 echo "Checking if routes are properly configured...\n\n";

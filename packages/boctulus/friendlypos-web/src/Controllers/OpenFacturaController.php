@@ -7,6 +7,7 @@ use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\OpenfacturaSdk\Factory\OpenFacturaSDKFactory;
 use Boctulus\Simplerest\Core\Libs\Logger;
 use Boctulus\FriendlyposWeb\Helpers\DteDataTransformer;
+use Boctulus\Simplerest\Core\Libs\Files;
 
 /**
  * OpenFacturaController
@@ -177,7 +178,7 @@ class OpenFacturaController extends Controller
     }
 
     /**
-     * POST /api/openfactura/dte/emit
+     * POST /api/v1/openfactura/dte/emit
      *
      * Emite un DTE (Documento Tributario Electrónico)
      */
@@ -187,6 +188,10 @@ class OpenFacturaController extends Controller
             // IMPORTANTE: getBody(false) devuelve array, getBody(true) devuelve objeto
             $data = request()->getBody(false); // false = decode JSON como array
 
+            Logger::log('emitDTE request received');
+            Logger::dd($data, 'emitDTE request data');
+            Files::dump($data, LOGS_PATH . 'emitDTE_request_data.json', false);
+            
             // Validaciones básicas ANTES de inicializar SDK
             if (!is_array($data) || !isset($data['dteData'])) {
                 return $this->error('Campo "dteData" es requerido', 400);
@@ -219,9 +224,16 @@ class OpenFacturaController extends Controller
                 $idempotencyKey
             );
 
+            Files::dump($response, LOGS_PATH . 'emitDTE_response_data.json', false);
+
             return $this->success($response);
 
         } catch (\InvalidArgumentException $e) {
+            Logger::logError('emitDTE error: ' . $e->getMessage(). json_encode([
+                    'exception' => get_class($e),
+                    'trace' => $e->getTraceAsString()
+            ]));
+
             return $this->error($e->getMessage(), 400);
         } catch (\Throwable $e) {
             // En producción no devolver trace; usar APP_DEBUG para decidir
@@ -233,20 +245,17 @@ class OpenFacturaController extends Controller
                 ]);
             }
 
-            // Log internal en vez de revelar información
-            if (function_exists('log_error')) {
-                log_error('emitDTE error: ' . $e->getMessage(), [
+            Logger::logError('emitDTE error: ' . $e->getMessage(). json_encode([
                     'exception' => get_class($e),
                     'trace' => $e->getTraceAsString()
-                ]);
-            }
-
+            ]));
+           
             return $this->error('Error al emitir DTE', 500);
         }
     }
 
     /**
-     * GET /api/openfactura/dte/status/{token}
+     * GET /api/v1/openfactura/dte/status/{token}
      *
      * Consulta el estado de un DTE previamente emitido
      */
@@ -273,7 +282,7 @@ class OpenFacturaController extends Controller
     }
 
     /**
-     * POST /api/openfactura/dte/anular-guia
+     * POST /api/v1/openfactura/dte/anular-guia
      *
      * Anula una Guía de Despacho (DTE tipo 52)
      */
@@ -321,7 +330,7 @@ class OpenFacturaController extends Controller
     }
 
     /**
-     * POST /api/openfactura/dte/anular
+     * POST /api/v1/openfactura/dte/anular
      *
      * Anula un DTE mediante una Nota de Crédito (DTE tipo 61)
      */
@@ -373,7 +382,7 @@ class OpenFacturaController extends Controller
     }
 
     /**
-     * GET /api/openfactura/taxpayer/{rut}
+     * GET /api/v1/openfactura/taxpayer/{rut}
      *
      * Consulta datos de un contribuyente por RUT
      */
@@ -400,7 +409,7 @@ class OpenFacturaController extends Controller
     }
 
     /**
-     * GET /api/openfactura/organization
+     * GET /api/v1/openfactura/organization
      *
      * Obtiene información de la organización configurada
      */
@@ -422,7 +431,7 @@ class OpenFacturaController extends Controller
     }
 
     /**
-     * GET /api/openfactura/sales-registry/{year}/{month}
+     * GET /api/v1/openfactura/sales-registry/{year}/{month}
      *
      * Obtiene el registro de ventas de un período
      */
@@ -459,7 +468,7 @@ class OpenFacturaController extends Controller
     }
 
     /**
-     * GET /api/openfactura/purchase-registry/{year}/{month}
+     * GET /api/v1/openfactura/purchase-registry/{year}/{month}
      *
      * Obtiene el registro de compras de un período
      */
@@ -496,7 +505,7 @@ class OpenFacturaController extends Controller
     }
 
     /**
-     * GET /api/openfactura/document/{rut}/{type}/{folio}
+     * GET /api/v1/openfactura/document/{rut}/{type}/{folio}
      *
      * Obtiene un documento específico por RUT, tipo y folio
      */
@@ -528,7 +537,7 @@ class OpenFacturaController extends Controller
     }
 
     /**
-     * GET /api/openfactura/health
+     * GET /api/v1/openfactura/health
      *
      * Health check del servicio
      */

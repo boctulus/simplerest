@@ -70,7 +70,7 @@ function makeRequest($method, $endpoint, $data = null, $headers = []) {
 // Test 1: Health Check - This should work without API key
 echo "1. Testing Health Check Endpoint\n";
 echo "-------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/health');
+$result = makeRequest('GET', '/api/v1/openfactura/health');
 echo "Status: {$result['status']}\n";
 if ($result['error']) {
     echo "Error: {$result['error']}\n";
@@ -85,7 +85,7 @@ echo "\n";
 // Test 2: Emit DTE - Should fail without proper data
 echo "2. Testing Emit DTE Endpoint\n";
 echo "---------------------------\n";
-$result = makeRequest('POST', '/api/openfactura/dte/emit', ['dteData' => []]);
+$result = makeRequest('POST', '/api/v1/openfactura/dte/emit', ['dteData' => []]);
 echo "Status: {$result['status']}\n";
 if ($result['error']) {
     echo "Error: {$result['error']}\n";
@@ -100,7 +100,7 @@ echo "\n";
 // Test 3: Get DTE Status - Should fail without token
 echo "3. Testing Get DTE Status Endpoint\n";
 echo "----------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/dte/status/invalid_token');
+$result = makeRequest('GET', '/api/v1/openfactura/dte/status/invalid_token');
 echo "Status: {$result['status']}\n";
 if ($result['error']) {
     echo "Error: {$result['error']}\n";
@@ -115,7 +115,7 @@ echo "\n";
 // Test 4: Anular Guia Despacho - Should fail without proper data
 echo "4. Testing Anular Guia Despacho Endpoint\n";
 echo "---------------------------------------\n";
-$result = makeRequest('POST', '/api/openfactura/dte/anular-guia', [
+$result = makeRequest('POST', '/api/v1/openfactura/dte/anular-guia', [
     'folio' => 12345,
     'fecha' => '2025-01-15'
 ]);
@@ -133,7 +133,7 @@ echo "\n";
 // Test 5: Anular DTE - Should fail without proper data
 echo "5. Testing Anular DTE Endpoint\n";
 echo "-----------------------------\n";
-$result = makeRequest('POST', '/api/openfactura/dte/anular', [
+$result = makeRequest('POST', '/api/v1/openfactura/dte/anular', [
     'dteData' => [
         'Encabezado' => [
             'IdDoc' => [
@@ -156,7 +156,7 @@ echo "\n";
 // Test 6: Get Taxpayer - Should fail without valid RUT
 echo "6. Testing Get Taxpayer Endpoint\n";
 echo "-------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/taxpayer/12345678-9');
+$result = makeRequest('GET', '/api/v1/openfactura/taxpayer/12345678-9');
 echo "Status: {$result['status']}\n";
 if ($result['error']) {
     echo "Error: {$result['error']}\n";
@@ -171,7 +171,7 @@ echo "\n";
 // Test 7: Get Organization
 echo "7. Testing Get Organization Endpoint\n";
 echo "-----------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/organization');
+$result = makeRequest('GET', '/api/v1/openfactura/organization');
 echo "Status: {$result['status']}\n";
 if ($result['error']) {
     echo "Error: {$result['error']}\n";
@@ -186,7 +186,7 @@ echo "\n";
 // Test 8: Get Sales Registry
 echo "8. Testing Get Sales Registry Endpoint\n";
 echo "-------------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/sales-registry/2025/01');
+$result = makeRequest('GET', '/api/v1/openfactura/sales-registry/2025/01');
 echo "Status: {$result['status']}\n";
 if ($result['error']) {
     echo "Error: {$result['error']}\n";
@@ -201,7 +201,7 @@ echo "\n";
 // Test 9: Get Purchase Registry
 echo "9. Testing Get Purchase Registry Endpoint\n";
 echo "----------------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/purchase-registry/2025/01');
+$result = makeRequest('GET', '/api/v1/openfactura/purchase-registry/2025/01');
 echo "Status: {$result['status']}\n";
 if ($result['error']) {
     echo "Error: {$result['error']}\n";
@@ -216,7 +216,7 @@ echo "\n";
 // Test 10: Get Document
 echo "10. Testing Get Document Endpoint\n";
 echo "---------------------------------\n";
-$result = makeRequest('GET', '/api/openfactura/document/12345678-9/33/12345');
+$result = makeRequest('GET', '/api/v1/openfactura/document/12345678-9/33/12345');
 echo "Status: {$result['status']}\n";
 if ($result['error']) {
     echo "Error: {$result['error']}\n";
@@ -235,7 +235,7 @@ $headers = [
     'X-Openfactura-Api-Key' => 'your_test_api_key_here',
     'X-Openfactura-Sandbox' => 'true'
 ];
-$result = makeRequest('GET', '/api/openfactura/health', null, $headers);
+$result = makeRequest('GET', '/api/v1/openfactura/health', null, $headers);
 echo "Status: {$result['status']}\n";
 if ($result['error']) {
     echo "Error: {$result['error']}\n";

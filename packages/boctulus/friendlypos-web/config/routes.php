@@ -26,7 +26,7 @@ use Boctulus\Simplerest\Core\WebRouter;
 
     Rutas para integración con OpenFactura (facturación electrónica Chile)
 */
-WebRouter::group('api/openfactura', function() {
+WebRouter::group('api/v1/openfactura', function() {
     // Emisión de DTE
     WebRouter::post('dte/emit', 'Boctulus\FriendlyposWeb\Controllers\OpenFacturaController@emitDTE');
 
@@ -54,6 +54,6 @@ WebRouter::group('api/openfactura', function() {
     // Obtener documento específico
     WebRouter::get('document/{rut}/{type}/{folio}', 'Boctulus\FriendlyposWeb\Controllers\OpenFacturaController@getDocument');
 
-    // Health check (url: `/api/openfactura/health`)
+    // Health check (url: `/api/v1/openfactura/health`)
     WebRouter::get('health', 'Boctulus\FriendlyposWeb\Controllers\OpenFacturaController@health');
 });
