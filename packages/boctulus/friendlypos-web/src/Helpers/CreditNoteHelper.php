@@ -45,9 +45,7 @@ class CreditNoteHelper
 
         // Agregar customer si está presente
         if (isset($options['customer'])) {
-            $payload['customer'] = [
-                'customer' => $options['customer']
-            ];
+            $payload['customer'] = $options['customer'];
         }
 
         // Agregar customizePage si está presente
@@ -151,13 +149,7 @@ class CreditNoteHelper
                 $errors[] = 'Falta Encabezado->IdDoc->FchEmis';
             }
 
-            // Validar campos específicos de NC
-            if (isset($idDoc['IndNoRebaja']) && $idDoc['IndNoRebaja'] == 1) {
-                // Si es anulación, debe tener RazonAnulacion
-                if (!isset($idDoc['RazonAnulacion']) || empty($idDoc['RazonAnulacion'])) {
-                    $errors[] = 'Si IndNoRebaja=1, debe incluir RazonAnulacion';
-                }
-            }
+            // NOTA: IndNoRebaja es opcional, RazonAnulacion NO va en IdDoc
         }
 
         // Validar Emisor
@@ -244,6 +236,7 @@ class CreditNoteHelper
             'Encabezado' => [
                 'IdDoc' => [
                     'TipoDTE' => 61,
+                    'Folio' => 0,  // 0 = El servidor asigna el folio automáticamente
                     'FchEmis' => $params['fechaEmision'] ?? date('Y-m-d'),
                 ],
                 'Emisor' => $params['emisor'],
@@ -257,11 +250,10 @@ class CreditNoteHelper
         // Agregar campos opcionales de IdDoc
         if (isset($params['indNoRebaja']) && $params['indNoRebaja']) {
             $dteData['Encabezado']['IdDoc']['IndNoRebaja'] = 1;
-
-            if (isset($params['razonAnulacion'])) {
-                $dteData['Encabezado']['IdDoc']['RazonAnulacion'] = $params['razonAnulacion'];
-            }
         }
+
+        // NOTA: RazonAnulacion NO va en IdDoc según esquema SII
+        // La razón debe ir en Referencia->RazonRef
 
         // Procesar items
         if (isset($params['items']) && is_array($params['items'])) {

@@ -5,8 +5,7 @@
         "TipoDTE": 61,
         "Folio": 0,
         "FchEmis": "2026-01-20",
-        "IndNoRebaja": 1,
-        "RazonAnulacion": "Anulación de documento por solicitud del cliente"
+        "IndNoRebaja": 1
       },
       "Emisor": {
         "RUTEmisor": "76795561-8",
@@ -46,7 +45,7 @@
         "FolioRef": 631563,
         "FchRef": "2026-01-17",
         "CodRef": 1,
-        "RazonRef": "Alguna referencia",
+        "RazonRef": "Anulación de documento por solicitud del cliente",
         "IndGlobal": 1
       }
     ]

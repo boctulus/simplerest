@@ -107,8 +107,7 @@ $dteData = [
         'IdDoc' => [
             'TipoDTE' => 61,
             'FchEmis' => '2026-01-20',
-            'IndNoRebaja' => 1, // Si es anulación (no rebaja stock)
-            'RazonAnulacion' => 'Anulación por solicitud del cliente'
+            'IndNoRebaja' => 1 // Si es anulación (no rebaja stock)
         ],
         'Emisor' => [
             'RUTEmisor' => '76795561-8',
@@ -226,11 +225,10 @@ $params = [
         'FolioRef' => 631563,
         'FchRef' => '2026-01-17',
         'CodRef' => 1,
-        'RazonRef' => 'Anulación de documento',
+        'RazonRef' => 'Anulación de documento por solicitud del cliente',
         'IndGlobal' => 1
     ],
-    'indNoRebaja' => true,
-    'razonAnulacion' => 'Anulación por solicitud del cliente'
+    'indNoRebaja' => true
 ];
 
 $dteData = CreditNoteHelper::createFromParams($params);
@@ -256,10 +254,9 @@ $params = [
         'FolioRef' => 123456,
         'FchRef' => '2026-01-15',
         'CodRef' => 1,          // Anula
-        'RazonRef' => 'Cliente devuelve producto'
+        'RazonRef' => 'Cliente devuelve producto - Devolución de producto'
     ],
-    'indNoRebaja' => true,
-    'razonAnulacion' => 'Devolución de producto'
+    'indNoRebaja' => true
 ];
 
 $dteData = CreditNoteHelper::createFromParams($params);
@@ -309,6 +306,23 @@ $params = [
 
 ## Testing
 
+### Configuración del Ambiente (Sandbox vs Producción)
+
+Todos los scripts de testing leen la configuración del archivo `.env` para determinar si usar sandbox o producción:
+
+```env
+# .env
+OPENFACTURA_SANDBOX=true                              # true = Sandbox, false = Producción
+OPENFACTURA_API_KEY_DEV="928e15a2d14d4a..."          # API Key de Desarrollo (Sandbox)
+OPENFACTURA_API_KEY_PROD="04f1d39392684b..."         # API Key de Producción
+```
+
+**Para cambiar entre modos:**
+1. **Sandbox (Desarrollo):** `OPENFACTURA_SANDBOX=true` - Usa `OPENFACTURA_API_KEY_DEV` y `https://dev-api.haulmer.com`
+2. **Producción:** `OPENFACTURA_SANDBOX=false` - Usa `OPENFACTURA_API_KEY_PROD` y `https://api.haulmer.com`
+
+⚠️ **IMPORTANTE:** Asegúrate de tener configuradas ambas API keys en `.env` antes de ejecutar los tests.
+
 ### Opción 1: Script PHP
 
 ```bash
@@ -316,10 +330,12 @@ php tests/test_credit_note_emit.php
 ```
 
 Este script:
+- ✅ Lee configuración de `.env` (OPENFACTURA_SANDBOX)
+- ✅ Usa la API key correspondiente al modo
 - ✅ Crea DTE usando `createFromParams()`
 - ✅ Valida la estructura
 - ✅ Construye payload completo
-- ✅ Emite a OpenFactura
+- ✅ Emite a OpenFactura (sandbox o producción según .env)
 - ✅ Guarda logs en `logs/`
 
 ### Opción 2: CURL (Linux/Mac)
@@ -328,11 +344,15 @@ Este script:
 bash tests/test_credit_note_curl.sh
 ```
 
+Lee `.env` automáticamente y usa el modo configurado.
+
 ### Opción 3: PowerShell (Windows)
 
 ```powershell
 powershell -File tests\test_credit_note_curl.ps1
 ```
+
+Lee `.env` automáticamente y usa el modo configurado.
 
 ### Opción 4: CURL Manual
 
@@ -386,14 +406,19 @@ curl -X POST "http://simplerest.lan/api/v1/openfactura/dte/emit" \
 ]
 ```
 
-### Error: "Si IndNoRebaja=1, debe incluir RazonAnulacion"
+### Error: "Este elemento no es esperado" (RazonAnulacion)
 
-**Causa:** `IndNoRebaja=1` pero falta `RazonAnulacion`
+**Causa:** El campo `RazonAnulacion` NO debe ir en `IdDoc` según el esquema del SII
 
-**Solución:**
+**Solución:** La razón de la anulación va en `Referencia->RazonRef`, NO en `IdDoc`:
 ```php
-'indNoRebaja' => true,
-'razonAnulacion' => 'Razón de la anulación'
+'referencia' => [
+    'TpoDocRef' => 39,
+    'FolioRef' => 123456,
+    'FchRef' => '2026-01-15',
+    'CodRef' => 1,
+    'RazonRef' => 'Razón de la anulación'  // ← Aquí va la razón
+]
 ```
 
 ### Validar antes de emitir
@@ -445,10 +470,12 @@ if (!$validation['valid']) {
 
 ### Opcionales pero Recomendados
 
-- `IndNoRebaja` (1 si es anulación, 0 si rebaja)
-- `RazonAnulacion` (si `IndNoRebaja=1`)
+- `IndNoRebaja` (1 si es anulación, 0 si rebaja) - Va en `IdDoc`
+- `RazonRef` (razón de la NC) - Va en `Referencia`, NO en `IdDoc`
 - `customer` (para autoservicio)
 - `customizePage` (para personalización)
+
+**IMPORTANTE:** `RazonAnulacion` NO es un campo válido en `IdDoc` según el esquema del SII. La razón debe ir en `Referencia->RazonRef`.
 
 ---
 
