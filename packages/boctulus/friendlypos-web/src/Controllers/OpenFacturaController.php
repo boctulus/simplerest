@@ -188,8 +188,8 @@ class OpenFacturaController extends Controller
             // IMPORTANTE: getBody(false) devuelve array, getBody(true) devuelve objeto
             $data = request()->getBody(false); // false = decode JSON como array
 
-            Logger::log('emitDTE request received');
-            Logger::dd($data, 'emitDTE request data');
+            Logger::log('[OpenFacturaController] emitDTE request received');
+            Logger::dd($data, '[OpenFacturaController] emitDTE request data');
             Files::dump($data, LOGS_PATH . 'emitDTE_request_data.json', false);
             
             // Validaciones básicas ANTES de inicializar SDK
