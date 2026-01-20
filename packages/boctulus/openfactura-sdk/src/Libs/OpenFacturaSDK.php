@@ -101,36 +101,40 @@ class OpenFacturaSDK implements IOpenFactura
      *
      * @param array $dteData Datos del DTE según formato SII.
      * @param array $responseOptions Tipos de respuesta deseados (e.g., ['PDF', 'FOLIO']).
-     * @param array|null $custom Campos personalizados (informationNote, paymentNote).
+     * @param array|null $custom Campos personalizados (informationNote, paymentNote, origin).
      * @param array|null $sendEmail Opciones de envío de email (to, CC, BCC).
      * @param string|null $idempotencyKey Clave de idempotencia para evitar duplicados.
+     * @param array|null $customer Datos del cliente (fullName, email) - Importante para NC.
+     * @param array|null $customizePage Personalización de página (externalReference).
+     * @param array|null $selfService Configuración de autoservicio (documentReference, issueBoleta, allowFactura) - Importante para NC.
      * @return mixed Respuesta de la API.
      */
-    public function emitirDTE($dteData, $responseOptions = [], $custom = null, $sendEmail = null, $idempotencyKey = null) {
+    public function emitirDTE($dteData, $responseOptions = [], $custom = null, $sendEmail = null, $idempotencyKey = null, $customer = null, $customizePage = null, $selfService = null) {
         $body = array_filter([
             'dte' => $dteData,
             'response' => $responseOptions,
             'custom' => $custom,
-            'sendEmail' => $sendEmail
+            'sendEmail' => $sendEmail,
+            'customer' => $customer,
+            'customizePage' => $customizePage,
+            'selfService' => $selfService
         ], function ($value) {
             return $value !== null && $value !== [];
         });
 
         $url = $this->base_url . '/v2/dte/document';
 
-        // REQUEST efectivamente enviado
-        // Files::dump(json_encode($body, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOGS_PATH . 'v2-dte-document.json', false);
-        // Logger::dd('OpenFacturaSDK emitirDTE endpoint', $url);
-        // Logger::dd($this->apiClient->getRequestHeaders(), 'Headers');
-        
-        Files::dump($this->apiClient->dump(), LOGS_PATH . 'OpenFacturaSDK-emitirDTE-ApiClient.txt', false);
-
         if ($idempotencyKey) {
             $this->apiClient->addHeader('Idempotency-Key', $idempotencyKey);
         }
 
+        $this->apiClient->setBody($body, true);
+
+        // Dump DESPUÉS de setear el body
+        Files::dump($this->apiClient->dump(), LOGS_PATH . 'OpenFacturaSDK-emitirDTE-ApiClient.txt', false);
+        Files::dump(json_encode($body, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOGS_PATH . 'OpenFacturaSDK-emitirDTE-body.json', false);
+
         $response = $this->apiClient
-            ->setBody($body, true)
             ->request($url, 'POST')
             ->data();
 

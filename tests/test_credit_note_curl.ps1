@@ -13,15 +13,40 @@ Write-Host "TEST: Emisión de Nota de Crédito con PowerShell"
 Write-Host "========================================"
 Write-Host ""
 
-# Configuración
+# Leer .env si existe
+$envFile = Join-Path (Split-Path $PSScriptRoot -Parent) ".env"
+if (Test-Path $envFile) {
+    Get-Content $envFile | ForEach-Object {
+        if ($_ -match '^\s*([^#][^=]+)=(.*)$') {
+            $name = $matches[1].Trim()
+            $value = $matches[2].Trim()
+            Set-Item -Path "env:$name" -Value $value
+        }
+    }
+}
+
+# Determinar modo sandbox
+$SANDBOX_STR = if ($env:OPENFACTURA_SANDBOX) { $env:OPENFACTURA_SANDBOX } else { "true" }
+$SANDBOX = $SANDBOX_STR -eq "true"
+
+# Seleccionar API key según modo
+if ($SANDBOX) {
+    $API_KEY = $env:OPENFACTURA_API_KEY_DEV
+    $MODE = "SANDBOX (Desarrollo)"
+} else {
+    $API_KEY = $env:OPENFACTURA_API_KEY_PROD
+    $MODE = "PRODUCCIÓN"
+}
+
 $BASE_URL = if ($env:APP_URL) { $env:APP_URL } else { "http://simplerest.lan" }
-$API_KEY = if ($env:OPENFACTURA_API_KEY_DEV) { $env:OPENFACTURA_API_KEY_DEV } else { "928e15a2d14d4a6292345f04960f4bd3" }
 $ENDPOINT = "$BASE_URL/api/v1/openfactura/dte/emit"
 
 Write-Host "Configuración:"
+Write-Host "  - Modo: $MODE"
 Write-Host "  - Base URL: $BASE_URL"
 Write-Host "  - API Key: $($API_KEY.Substring(0, 10))..."
 Write-Host "  - Endpoint: $ENDPOINT"
+Write-Host "  - OPENFACTURA_SANDBOX: $SANDBOX_STR"
 Write-Host ""
 
 # Construir el payload JSON
@@ -34,7 +59,6 @@ $payload = @{
                 Folio = 0
                 FchEmis = "2026-01-20"
                 IndNoRebaja = 1
-                RazonAnulacion = "Anulación de documento por solicitud del cliente"
             }
             Emisor = @{
                 RUTEmisor = "76795561-8"
@@ -90,7 +114,7 @@ try {
     $headers = @{
         "Content-Type" = "application/json"
         "X-Openfactura-Api-Key" = $API_KEY
-        "X-Openfactura-Sandbox" = "true"
+        "X-Openfactura-Sandbox" = $SANDBOX_STR
     }
 
     $response = Invoke-RestMethod -Uri $ENDPOINT -Method Post -Headers $headers -Body $payload

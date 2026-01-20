@@ -15,15 +15,32 @@ echo "TEST: Emisión de Nota de Crédito con CURL"
 echo "========================================"
 echo ""
 
-# Configuración
+# Leer .env para determinar modo
+if [ -f "$(dirname "$0")/../.env" ]; then
+    source "$(dirname "$0")/../.env"
+fi
+
+# Determinar modo sandbox
+SANDBOX="${OPENFACTURA_SANDBOX:-true}"
+
+# Seleccionar API key según modo
+if [ "$SANDBOX" = "true" ]; then
+    API_KEY="${OPENFACTURA_API_KEY_DEV}"
+    MODE="SANDBOX (Desarrollo)"
+else
+    API_KEY="${OPENFACTURA_API_KEY_PROD}"
+    MODE="PRODUCCIÓN"
+fi
+
 BASE_URL="${APP_URL:-http://simplerest.lan}"
-API_KEY="${OPENFACTURA_API_KEY_DEV:-928e15a2d14d4a6292345f04960f4bd3}"
 ENDPOINT="$BASE_URL/api/v1/openfactura/dte/emit"
 
 echo "Configuración:"
+echo "  - Modo: $MODE"
 echo "  - Base URL: $BASE_URL"
 echo "  - API Key: ${API_KEY:0:10}..."
 echo "  - Endpoint: $ENDPOINT"
+echo "  - OPENFACTURA_SANDBOX: $SANDBOX"
 echo ""
 
 # Construir el payload JSON
@@ -36,8 +53,7 @@ read -r -d '' PAYLOAD << 'EOF'
         "TipoDTE": 61,
         "Folio": 0,
         "FchEmis": "2026-01-20",
-        "IndNoRebaja": 1,
-        "RazonAnulacion": "Anulación de documento por solicitud del cliente"
+        "IndNoRebaja": 1
       },
       "Emisor": {
         "RUTEmisor": "76795561-8",
@@ -93,7 +109,7 @@ echo ""
 curl -X POST "$ENDPOINT" \
   -H "Content-Type: application/json" \
   -H "X-Openfactura-Api-Key: $API_KEY" \
-  -H "X-Openfactura-Sandbox: true" \
+  -H "X-Openfactura-Sandbox: $SANDBOX" \
   -d "$PAYLOAD" \
   -w "\n\nHTTP Status: %{http_code}\n" \
   -s | jq '.'
