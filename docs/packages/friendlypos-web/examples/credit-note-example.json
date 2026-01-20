@@ -1,0 +1,55 @@
+{
+  "dteData": {
+    "Encabezado": {
+      "IdDoc": {
+        "TipoDTE": 61,
+        "Folio": 0,
+        "FchEmis": "2026-01-20",
+        "IndNoRebaja": 1,
+        "RazonAnulacion": "Anulación de documento por solicitud del cliente"
+      },
+      "Emisor": {
+        "RUTEmisor": "76795561-8",
+        "RznSoc": "HAULMER SPA",
+        "GiroEmis": "COMERCIO",
+        "Acteco": 479110,
+        "DirOrigen": "Pasaje Los Pajaritos 8357",
+        "CmnaOrigen": "Santiago"
+      },
+      "Receptor": {
+        "RUTRecep": "76795561-8",
+        "RznSocRecep": "HAULMER SPA",
+        "GiroRecep": "COMERCIO",
+        "DirRecep": "Pasaje Los Pajaritos 8357",
+        "CmnaRecep": "Santiago"
+      },
+      "Totales": {
+        "MntNeto": 84,
+        "TasaIVA": 19,
+        "IVA": 16,
+        "MntTotal": 100
+      }
+    },
+    "Detalle": [
+      {
+        "NroLinDet": 1,
+        "NmbItem": "AAAA",
+        "QtyItem": 1,
+        "PrcItem": 84,
+        "MontoItem": 84
+      }
+    ],
+    "Referencia": [
+      {
+        "NroLinRef": 1,
+        "TpoDocRef": 39,
+        "FolioRef": 631563,
+        "FchRef": "2026-01-17",
+        "CodRef": 1,
+        "RazonRef": "Alguna referencia",
+        "IndGlobal": 1
+      }
+    ]
+  },
+  "responseOptions": ["PDF", "FOLIO", "TIMBRE"]
+}

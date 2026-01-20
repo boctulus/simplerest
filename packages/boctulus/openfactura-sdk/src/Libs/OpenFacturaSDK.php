@@ -2,9 +2,12 @@
 
 namespace Boctulus\OpenfacturaSdk\Libs;
 
-use Boctulus\Simplerest\Core\Exceptions\NotImplementedException;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Core\Libs\VarDump;
 use Boctulus\Simplerest\Core\Libs\ApiClient;
 use Boctulus\OpenfacturaSdk\Interfaces\IOpenFactura;
+use Boctulus\Simplerest\Core\Exceptions\NotImplementedException;
 
 /*
     SDK para OpenFactura
@@ -25,7 +28,7 @@ use Boctulus\OpenfacturaSdk\Interfaces\IOpenFactura;
 
     Manejo de Idempotencia
 
-    El método emitirDTE permite configurar una clave de idempotencia mediante Idempotency-Key, lo cual es una práctica recomendada por la documentación para evitar duplicados en reintentos. 
+    El método emitirDTE permite configurar una clave de idempotencia mediante "Idempotency-Key", lo cual es una práctica recomendada por la documentación para evitar duplicados en reintentos. 
 
     if ($idempotencyKey) {
         $this->apiClient->setHeader('Idempotency-Key', $idempotencyKey);
@@ -113,13 +116,22 @@ class OpenFacturaSDK implements IOpenFactura
             return $value !== null && $value !== [];
         });
 
+        $url = $this->base_url . '/v2/dte/document';
+
+        // REQUEST efectivamente enviado
+        // Files::dump(json_encode($body, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOGS_PATH . 'v2-dte-document.json', false);
+        // Logger::dd('OpenFacturaSDK emitirDTE endpoint', $url);
+        // Logger::dd($this->apiClient->getRequestHeaders(), 'Headers');
+        
+        Files::dump($this->apiClient->dump(), LOGS_PATH . 'OpenFacturaSDK-emitirDTE-ApiClient.txt', false);
+
         if ($idempotencyKey) {
             $this->apiClient->addHeader('Idempotency-Key', $idempotencyKey);
         }
 
         $response = $this->apiClient
             ->setBody($body, true)
-            ->request($this->base_url . '/v2/dte/document', 'POST')
+            ->request($url, 'POST')
             ->data();
 
         if ($idempotencyKey) {

@@ -16,21 +16,27 @@ class DteDataTransformer
     {
         // Clean RUT fields by removing dots
         $dteData = self::cleanRutFields($dteData);
-        
+
         // Adjust structure for invoice type (TipoDTE: 33)
         $tipoDte = $dteData['Encabezado']['IdDoc']['TipoDTE'] ?? null;
 
-        /*  
-            En el Servicio de Impuestos Internos (SII) de Chile, 
-            el código 33 => `Factura Electrónica` (para ventas a empresas y contribuyentes que recuperan IVA) y 
+        /*
+            En el Servicio de Impuestos Internos (SII) de Chile,
+            el código 33 => `Factura Electrónica` (para ventas a empresas y contribuyentes que recuperan IVA)
             el código 39 => `Boleta Electrónica` (para ventas a consumidor final, con IVA incluido en el precio)
+            el código 61 => `Nota de Crédito Electrónica` (para anular o corregir documentos)
         */
 
         // Si es Factura Electrónica (TipoDTE: 33), se ajusta la estructura a la de Boleta Electrónica
         if ($tipoDte == 33) {
             $dteData = self::adjustInvoiceStructure($dteData);
         }
-        
+
+        // Si es Nota de Crédito (TipoDTE: 61), se ajusta la estructura
+        if ($tipoDte == 61) {
+            $dteData = self::adjustCreditNoteStructure($dteData);
+        }
+
         return $dteData;
     }
 
@@ -123,6 +129,77 @@ class DteDataTransformer
     }
 
     /**
+     * Adjust the structure for credit note type (TipoDTE: 61)
+     *
+     * @param array $dteData
+     * @return array
+     */
+    private static function adjustCreditNoteStructure(array $dteData): array
+    {
+        // Ajustar campos de Emisor para NC
+        if (isset($dteData['Encabezado']['Emisor'])) {
+            $emisor = $dteData['Encabezado']['Emisor'];
+
+            // Para NC, asegurar que los nombres de campos sean consistentes
+            if (isset($emisor['RznSocEmisor']) && !isset($emisor['RznSoc'])) {
+                $emisor['RznSoc'] = $emisor['RznSocEmisor'];
+                unset($emisor['RznSocEmisor']);
+            }
+
+            if (isset($emisor['GiroEmisor']) && !isset($emisor['GiroEmis'])) {
+                $emisor['GiroEmis'] = $emisor['GiroEmisor'];
+                unset($emisor['GiroEmisor']);
+            }
+
+            // Asegurar Acteco tiene valor
+            if (!isset($emisor['Acteco'])) {
+                $emisor['Acteco'] = 525130; // Valor por defecto
+            }
+
+            $dteData['Encabezado']['Emisor'] = $emisor;
+        }
+
+        // Validar que tenga Referencia (obligatorio para NC)
+        if (!isset($dteData['Referencia']) || empty($dteData['Referencia'])) {
+            throw new \InvalidArgumentException('Nota de Crédito debe incluir al menos una Referencia');
+        }
+
+        // Ajustar campos de Referencia
+        if (isset($dteData['Referencia']) && is_array($dteData['Referencia'])) {
+            foreach ($dteData['Referencia'] as $idx => &$ref) {
+                // Asegurar que NroLinRef esté presente
+                if (!isset($ref['NroLinRef'])) {
+                    $ref['NroLinRef'] = $idx + 1;
+                }
+
+                // CodRef es obligatorio
+                if (!isset($ref['CodRef'])) {
+                    $ref['CodRef'] = 1; // 1=Anula, 2=Corrige monto, 3=Corrige texto
+                }
+
+                // RazonRef debe estar presente
+                if (!isset($ref['RazonRef']) || empty($ref['RazonRef'])) {
+                    $ref['RazonRef'] = 'Anulación de documento';
+                }
+            }
+        }
+
+        // Ajustar Totales para NC
+        if (isset($dteData['Encabezado']['Totales'])) {
+            $totales = $dteData['Encabezado']['Totales'];
+
+            // Asegurar TasaIVA
+            if (!isset($totales['TasaIVA'])) {
+                $totales['TasaIVA'] = 19; // IVA estándar en Chile
+            }
+
+            $dteData['Encabezado']['Totales'] = $totales;
+        }
+
+        return $dteData;
+    }
+
+    /**
      * Process array recursively with a callback function
      *
      * @param array $data
@@ -132,17 +209,17 @@ class DteDataTransformer
     private static function processArray(array $data, callable $callback): array
     {
         $result = [];
-        
+
         foreach ($data as $key => $value) {
             $newValue = $value;
-            
+
             if (is_array($value)) {
                 $newValue = self::processArray($value, $callback);
             }
-            
+
             $result[$key] = $callback($newValue, $key);
         }
-        
+
         return $result;
     }
 }
