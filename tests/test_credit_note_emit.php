@@ -22,13 +22,24 @@ echo "TEST: Emisión de Nota de Crédito (DTE tipo 61)\n";
 echo "========================================\n\n";
 
 try {
-    // 1. Configuración
-    $apiKey = env('OPENFACTURA_API_KEY_DEV');
-    $sandbox = true;
+    // 1. Leer configuración del .env
+    $sandbox = filter_var(env('OPENFACTURA_SANDBOX', true), FILTER_VALIDATE_BOOLEAN);
+
+    // Usar API key correspondiente al modo
+    $apiKey = $sandbox
+        ? env('OPENFACTURA_API_KEY_DEV')
+        : env('OPENFACTURA_API_KEY_PROD');
+
+    if (empty($apiKey)) {
+        throw new \Exception('API Key no configurada en .env. Verifica ' .
+            ($sandbox ? 'OPENFACTURA_API_KEY_DEV' : 'OPENFACTURA_API_KEY_PROD'));
+    }
 
     echo "1. Configuración\n";
+    echo "   - Modo: " . ($sandbox ? 'SANDBOX (Desarrollo)' : 'PRODUCCIÓN') . "\n";
     echo "   - API Key: " . substr($apiKey, 0, 10) . "...\n";
-    echo "   - Sandbox: " . ($sandbox ? 'SI' : 'NO') . "\n\n";
+    echo "   - Variable .env: OPENFACTURA_SANDBOX=" . ($sandbox ? 'true' : 'false') . "\n";
+    echo "   - URL Base: " . ($sandbox ? 'https://dev-api.haulmer.com' : 'https://api.haulmer.com') . "\n\n";
 
     // 2. Crear el DTE de Nota de Crédito usando el helper
     echo "2. Creando estructura de DTE usando CreditNoteHelper\n";
@@ -44,7 +55,7 @@ try {
             'CmnaOrigen' => 'Santiago'
         ],
         'receptor' => [
-            'RUTRecep' => '76795561-8',
+            'RUTRecep' => '93834000-5',
             'RznSocRecep' => 'HAULMER SPA',
             'GiroRecep' => 'COMERCIO',
             'DirRecep' => 'Pasaje Los Pajaritos 8357',
@@ -69,11 +80,10 @@ try {
             'FolioRef' => 631563,    // Folio del documento a anular
             'FchRef' => '2026-01-17',
             'CodRef' => 1,          // 1 = Anula, 2 = Corrige monto, 3 = Corrige texto
-            'RazonRef' => 'Alguna referencia',
+            'RazonRef' => 'Anulación de documento por solicitud del cliente', // La razón va aquí
             'IndGlobal' => 1        // Opcional: Indica si afecta a todo el documento
         ],
-        'indNoRebaja' => true,
-        'razonAnulacion' => 'Anulación de documento por solicitud del cliente'
+        'indNoRebaja' => true  // NOTA: RazonAnulacion NO va en IdDoc, va en Referencia->RazonRef
     ];
 
     $dteData = CreditNoteHelper::createFromParams($params);
@@ -132,7 +142,10 @@ try {
         $payload['response'],
         $payload['custom'] ?? null,
         null, // sendEmail
-        'test_nc_' . time() // idempotencyKey
+        'test_nc_' . time(), // idempotencyKey
+        $payload['customer'] ?? null,
+        $payload['customizePage'] ?? null,
+        $payload['selfService'] ?? null
     );
 
     echo "   Respuesta recibida\n\n";
@@ -140,15 +153,36 @@ try {
     // 7. Procesar respuesta
     echo "7. Resultado\n";
 
-    if (isset($response['error'])) {
-        echo "   ✗ ERROR:\n";
-        echo "   - Mensaje: " . ($response['error']['message'] ?? 'N/A') . "\n";
-        echo "   - Código: " . ($response['error']['code'] ?? 'N/A') . "\n";
+    // Detectar error: si tiene error.code que comience con "OF-" o si falta FOLIO
+    $hasError = isset($response['error']) || !isset($response['FOLIO']);
 
-        if (isset($response['error']['details'])) {
-            echo "   - Detalles:\n";
-            echo "     " . json_encode($response['error']['details'], JSON_PRETTY_PRINT) . "\n";
+    if ($hasError) {
+        echo "   ✗ ERROR:\n";
+
+        if (isset($response['error'])) {
+            echo "   - Mensaje: " . ($response['error']['message'] ?? 'N/A') . "\n";
+            echo "   - Código: " . ($response['error']['code'] ?? 'N/A') . "\n";
+
+            if (isset($response['error']['details'])) {
+                echo "   - Detalles:\n";
+                if (is_array($response['error']['details'])) {
+                    foreach ($response['error']['details'] as $detail) {
+                        if (is_array($detail)) {
+                            echo "     * Campo: " . ($detail['field'] ?? 'N/A') . "\n";
+                            echo "       Issue: " . ($detail['issue'] ?? 'N/A') . "\n";
+                        }
+                    }
+                } else {
+                    echo "     " . json_encode($response['error']['details'], JSON_PRETTY_PRINT) . "\n";
+                }
+            }
+        } else {
+            echo "   - Respuesta sin FOLIO (posible error no estructurado)\n";
+
+            dd(json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), 'Payload enviado para diagnóstico:');
         }
+
+        echo "\n   ⚠ La emisión FALLÓ\n";
     } else {
         echo "   ✓ ÉXITO:\n";
 
@@ -167,6 +201,8 @@ try {
         if (isset($response['TIMBRE'])) {
             echo "   - Timbre: Generado (base64)\n";
         }
+
+        echo "\n   ✅ La emisión fue EXITOSA\n";
     }
 
     // 8. Guardar respuesta completa

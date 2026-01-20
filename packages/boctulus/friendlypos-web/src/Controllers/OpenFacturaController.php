@@ -204,6 +204,10 @@ class OpenFacturaController extends Controller
             $responseOptions = $data['responseOptions'] ?? ['PDF', 'FOLIO', 'TIMBRE'];
             $sendEmail = $data['sendEmail'] ?? null;
             $idempotencyKey = $data['idempotencyKey'] ?? ('dte_' . uniqid('', true) . '_' . time());
+            $customer = $data['customer'] ?? null;
+            $customizePage = $data['customizePage'] ?? null;
+            $selfService = $data['selfService'] ?? null;
+            $custom = $data['custom'] ?? null;
 
             // Transformar DTE data para ajustar formato segun tipo
             $dteData = DteDataTransformer::transform($dteData);
@@ -219,9 +223,12 @@ class OpenFacturaController extends Controller
             $response = $sdk->emitirDTE(
                 $dteData,
                 $responseOptions,
-                null,
+                $custom,
                 $sendEmail,
-                $idempotencyKey
+                $idempotencyKey,
+                $customer,
+                $customizePage,
+                $selfService
             );
 
             Files::dump($response, LOGS_PATH . 'emitDTE_response_data.json', false);
@@ -360,6 +367,10 @@ class OpenFacturaController extends Controller
             $dteData = $data['dteData'];
             $responseOptions = $data['responseOptions'] ?? ['PDF', 'FOLIO'];
             $idempotencyKey = 'anular_' . uniqid('', true) . '_' . time();
+            $customer = $data['customer'] ?? null;
+            $customizePage = $data['customizePage'] ?? null;
+            $selfService = $data['selfService'] ?? null;
+            $custom = $data['custom'] ?? null;
 
             // Transformar DTE data para ajustar formato segun tipo
             $dteData = DteDataTransformer::transform($dteData);
@@ -367,9 +378,12 @@ class OpenFacturaController extends Controller
             $response = $sdk->emitirDTE(
                 $dteData,
                 $responseOptions,
+                $custom,
                 null,
-                null,
-                $idempotencyKey
+                $idempotencyKey,
+                $customer,
+                $customizePage,
+                $selfService
             );
 
             return $this->success($response);
