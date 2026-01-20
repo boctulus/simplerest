@@ -351,3 +351,4 @@
 [2026-01-20 15:20:59]	0.8.12	Automatic update
 [2026-01-20 17:29:04]	0.8.12	Funciona Nota de Debito
 [2026-01-20 17:47:05]	0.8.12	pack.sh
+[2026-01-20 17:49:31]	0.8.12	Ver 2.0 de pack.sh (sin ensayar)
