@@ -32,9 +32,9 @@ class DteDataTransformer
             $dteData = self::adjustInvoiceStructure($dteData);
         }
 
-        // Si es Nota de Crédito (TipoDTE: 61), se ajusta la estructura
-        if ($tipoDte == 61) {
-            $dteData = self::adjustCreditNoteStructure($dteData);
+        // Si es Nota de Crédito (TipoDTE: 61) o Nota de Débito (TipoDTE: 56)
+        if ($tipoDte == 61 || $tipoDte == 56) {
+            $dteData = self::adjustNoteStructure($dteData);
         }
 
         return $dteData;
@@ -129,14 +129,14 @@ class DteDataTransformer
     }
 
     /**
-     * Adjust the structure for credit note type (TipoDTE: 61)
+     * Adjust the structure for note types (NC: 61, ND: 56)
      *
      * @param array $dteData
      * @return array
      */
-    private static function adjustCreditNoteStructure(array $dteData): array
+    private static function adjustNoteStructure(array $dteData): array
     {
-        // Ajustar campos de Emisor para NC
+        // Ajustar campos de Emisor para Notas
         if (isset($dteData['Encabezado']['Emisor'])) {
             $emisor = $dteData['Encabezado']['Emisor'];
 
@@ -159,9 +159,9 @@ class DteDataTransformer
             $dteData['Encabezado']['Emisor'] = $emisor;
         }
 
-        // Validar que tenga Referencia (obligatorio para NC)
+        // Validar que tenga Referencia (obligatorio para Notas)
         if (!isset($dteData['Referencia']) || empty($dteData['Referencia'])) {
-            throw new \InvalidArgumentException('Nota de Crédito debe incluir al menos una Referencia');
+            throw new \InvalidArgumentException('Documento debe incluir al menos una Referencia');
         }
 
         // Ajustar campos de Referencia
