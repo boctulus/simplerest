@@ -195,15 +195,16 @@ class ApiClient
 
     function dump(){
         return [
-            'url'         => $this->url,
-            'verb'        => $this->verb,
-            'headers'     => $this->req_headers,
-            'options'     => $this->options,
-            'body'        => $this->body,
-            'encode_body' => $this->encode_body,
-            'max_retries' => $this->max_retries,
-            'ssl'         => $this->cert_ssl,
-            'cache_path'  => $this->getCachePath()
+            'url'         => $this->url ?? null,
+            'verb'        => $this->verb ?? null,
+            'headers'     => $this->req_headers ?? null,
+            'options'     => $this->options ?? [],
+            'body'        => $this->body ?? null,
+            'encode_body' => $this->encode_body ?? null,
+            'max_retries' => $this->max_retries ?? null,
+            'ssl'         => $this->cert_ssl ?? null,
+            'expiration'  => $this->expiration ?? null,
+            // 'cache_path'  => $this->getCachePath() ?? '',
         ];
     }
 
