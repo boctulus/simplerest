@@ -22,7 +22,7 @@ use Boctulus\Simplerest\Core\Traits\UnitTestCaseSQLTrait;
 use Boctulus\Simplerest\Core\Libs\Validator;
 
 
-define('HOST', $config['APP_URL']);
+define('HOST', $config['app_url']);
 define('BASE_URL', HOST .'/');
 
 // API UNIT TEST
@@ -31,6 +31,7 @@ class ApiTest extends TestCase
     private $uid;
     private $at;
     private $rt;
+    protected $config;
 
 	private function login($credentials){
 		$ch = curl_init();
@@ -127,9 +128,9 @@ class ApiTest extends TestCase
         return $res['data'];
     }
 
-    function __construct() {
-		parent::__construct();
-        $this->config = Config::get();
+    protected function setUp(): void {
+        parent::setUp();
+        $this->config = \Boctulus\Simplerest\Core\Libs\Config::get();
 
         list($this->at, $this->rt) = $this->login(['email' => "tester3@g.c", "password" => "gogogo"]);
         $this->uid = $this->get_me($this->at)['id'];
