@@ -74,7 +74,7 @@ return [
 		Intercepta errores
 	*/
 	
-	'error_handling' => true,
+	'error_handling' => false,
 
 	/*
 		Puede mostrar detalles como consultas SQL fallidas 
@@ -125,7 +125,7 @@ return [
 	/*
 		Response format
 	*/
-	'include_enity_name' => true,
+	'include_enity_name' => false,
 	'nest_sub_resources' => false,	
 
 	'paginator' => [

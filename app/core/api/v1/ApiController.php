@@ -1046,15 +1046,17 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         SUBRECURSOS
                 */
 
-                // if (!empty($props)){    
-                //     $res = $rows;
+                // if (!empty($props)){
+                //     $data_to_send = $rows;
                 // }
-                
+
                 if ($this->config['include_enity_name']){
-                    $res = [$this->table_name => $rows];
+                    $data_to_send = [$this->table_name => $rows];
+                } else {
+                    $data_to_send = $rows;
                 }
 
-                response()->send($res);
+                $res->send($data_to_send);
 
             }
         

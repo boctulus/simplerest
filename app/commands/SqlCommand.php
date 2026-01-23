@@ -32,32 +32,124 @@ class SqlCommand implements ICommand
 	}
 
 	/**
-	 * List contents of a table
+	 * List tables in a database or contents of a specific table
 	 *
-	 * Usage: php com sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]
+	 * Usage: php com sql list '{db}' OR php com sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]
 	 */
 	function list(...$args) {
 		if (empty($args)) {
-			StdOut::print("Error: table argument is required\r\n");
-			StdOut::print("Usage: php com sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]\r\n");
+			StdOut::print("Error: database or table argument is required\r\n");
+			StdOut::print("Usage: php com sql list '{db}' OR php com sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]\r\n");
 			return;
 		}
 
 		$table_arg = array_shift($args);
-		$offset = 0;
-		$limit = 10; // Default limit
-		$format = 'simple'; // Default format
 
-		// Parse options
-		foreach ($args as $arg) {
-			if (Strings::startsWith('--offset=', $arg)) {
-				$offset = (int) substr($arg, 9);
-			} elseif (Strings::startsWith('--limit=', $arg)) {
-				$limit = (int) substr($arg, 8);
-			} elseif (Strings::startsWith('--format=', $arg)) {
-				$format = substr($arg, 9);
+		// Parse table argument: {db} or {db}.{table}
+		if (!Strings::contains('.', $table_arg)) {
+			// Only database name provided - list tables in database
+			$db = $table_arg;
+
+			// Validate connection exists
+			if (!DB::connectionExists($db)) {
+				StdOut::print("Error: Connection '$db' is not registered in db_connections\r\n");
+				return;
+			}
+
+			// Set connection
+			DB::setConnection($db);
+
+			try {
+				// Get list of tables
+				$tables = DB::select("SHOW TABLES");
+
+				if (empty($tables)) {
+					StdOut::print("No tables found in database '$db'\r\n");
+					return;
+				}
+
+				StdOut::print("Tables in database '$db':\r\n");
+				foreach ($tables as $table_row) {
+					// Extract table name from result (different databases return it differently)
+					$table_name = reset($table_row); // Get first value from row
+					StdOut::print("- $table_name\r\n");
+				}
+			} catch (\Exception $e) {
+				StdOut::print("Error: " . $e->getMessage() . "\r\n");
+			}
+		} else {
+			// Database.table format - list contents of table
+			$offset = 0;
+			$limit = 10; // Default limit
+			$format = 'simple'; // Default format
+
+			// Parse options
+			foreach ($args as $arg) {
+				if (Strings::startsWith('--offset=', $arg)) {
+					$offset = (int) substr($arg, 9);
+				} elseif (Strings::startsWith('--limit=', $arg)) {
+					$limit = (int) substr($arg, 8);
+				} elseif (Strings::startsWith('--format=', $arg)) {
+					$format = substr($arg, 9);
+				}
+			}
+
+			list($db, $table) = explode('.', $table_arg, 2);
+
+			// Validate connection exists
+			if (!DB::connectionExists($db)) {
+				StdOut::print("Error: Connection '$db' is not registered in db_connections\r\n");
+				return;
+			}
+
+			// Set connection
+			DB::setConnection($db);
+
+			try {
+				// Build query
+				$query = table($table);
+
+				if ($limit > 0) {
+					$query->limit($limit);
+				}
+
+				if ($offset > 0) {
+					$query->offset($offset);
+				}
+
+				$results = $query->get();
+
+				if (empty($results)) {
+					StdOut::print("No records found\r\n");
+					return;
+				}
+
+				// Display results based on format
+				if ($format === 'table') {
+					$this->displayAsTable($results);
+				} else {
+					$this->displaySimple($results);
+				}
+
+			} catch (\Exception $e) {
+				StdOut::print("Error: " . $e->getMessage() . "\r\n");
 			}
 		}
+	}
+
+	/**
+	 * Describe the structure of a table
+	 *
+	 * Usage: php com sql describe '{db}.{table}'
+	 */
+	function describe(...$args) {
+		if (empty($args)) {
+			StdOut::print("Error: table argument is required\r\n");
+			StdOut::print("Usage: php com sql describe '{db}.{table}'\r\n");
+			return;
+		}
+
+		$table_arg = array_shift($args);
 
 		// Parse table argument: {db}.{table}
 		if (!Strings::contains('.', $table_arg)) {
@@ -77,30 +169,117 @@ class SqlCommand implements ICommand
 		DB::setConnection($db);
 
 		try {
-			// Build query
-			$query = table($table);
+			// Get table structure
+			$structure = DB::select("DESCRIBE `$table`");
 
-			if ($limit > 0) {
-				$query->limit($limit);
-			}
-
-			if ($offset > 0) {
-				$query->offset($offset);
-			}
-
-			$results = $query->get();
-
-			if (empty($results)) {
-				StdOut::print("No records found\r\n");
+			if (empty($structure)) {
+				StdOut::print("No structure found for table '$table'\r\n");
 				return;
 			}
 
-			// Display results based on format
-			if ($format === 'table') {
-				$this->displayAsTable($results);
-			} else {
-				$this->displaySimple($results);
+			StdOut::print("Structure of table '$table' in database '$db':\r\n\r\n");
+			$this->displayAsTable($structure);
+
+		} catch (\Exception $e) {
+			StdOut::print("Error: " . $e->getMessage() . "\r\n");
+		}
+	}
+
+	/**
+	 * Find a record by ID (primary key or id field)
+	 *
+	 * Usage: php com sql find '{db}.{table}' {id}
+	 */
+	function find(...$args) {
+		if (count($args) < 2) {
+			StdOut::print("Error: table and ID arguments are required\r\n");
+			StdOut::print("Usage: php com sql find '{db}.{table}' {id}\r\n");
+			return;
+		}
+
+		$table_arg = array_shift($args);
+		$id = array_shift($args);
+
+		// Parse table argument: {db}.{table}
+		if (!Strings::contains('.', $table_arg)) {
+			StdOut::print("Error: table argument must be in format '{db}.{table}'\r\n");
+			return;
+		}
+
+		list($db, $table) = explode('.', $table_arg, 2);
+
+		// Validate connection exists
+		if (!DB::connectionExists($db)) {
+			StdOut::print("Error: Connection '$db' is not registered in db_connections\r\n");
+			return;
+		}
+
+		// Set connection
+		DB::setConnection($db);
+
+		try {
+			// Use the find method provided by QueryBuilderTrait
+			$query = table($table);
+			$result = $query->find($id)->first();
+
+			if ($result === null) {
+				StdOut::print("No record found with ID '$id' in table '$table'\r\n");
+				return;
 			}
+
+			StdOut::print("Record with ID '$id' in table '$table':\r\n\r\n");
+			$this->displaySimple([$result]);
+
+		} catch (\Exception $e) {
+			StdOut::print("Error: " . $e->getMessage() . "\r\n");
+		}
+	}
+
+	/**
+	 * Find records by field value (WHERE field = value)
+	 *
+	 * Usage: php com sql find_by '{db}.{table}' {field} {value}
+	 */
+	function find_by(...$args) {
+		if (count($args) < 3) {
+			StdOut::print("Error: table, field and value arguments are required\r\n");
+			StdOut::print("Usage: php com sql find_by '{db}.{table}' {field} {value}\r\n");
+			return;
+		}
+
+		$table_arg = array_shift($args);
+		$field = array_shift($args);
+		$value = array_shift($args);
+
+		// Parse table argument: {db}.{table}
+		if (!Strings::contains('.', $table_arg)) {
+			StdOut::print("Error: table argument must be in format '{db}.{table}'\r\n");
+			return;
+		}
+
+		list($db, $table) = explode('.', $table_arg, 2);
+
+		// Validate connection exists
+		if (!DB::connectionExists($db)) {
+			StdOut::print("Error: Connection '$db' is not registered in db_connections\r\n");
+			return;
+		}
+
+		// Set connection
+		DB::setConnection($db);
+
+		try {
+			// Build query to find records by field value
+			$query = table($table)->where([$field, $value]);
+			$results = $query->get();
+
+			if (empty($results)) {
+				StdOut::print("No records found with $field = '$value' in table '$table'\r\n");
+				return;
+			}
+
+			StdOut::print(count($results) . " record(s) found with $field = '$value' in table '$table':\r\n\r\n");
+			$this->displaySimple($results);
 
 		} catch (\Exception $e) {
 			StdOut::print("Error: " . $e->getMessage() . "\r\n");
@@ -183,11 +362,15 @@ class SqlCommand implements ICommand
 
 	function help($name = null, ...$args){
 		$str = <<<STR
-		sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]    List contents of a table
 		sql count '{db}.{table}'                                      Count records in a table
-		sql select "SELECT ..." --connection={db}                     Execute a SELECT query
+		sql describe '{db}.{table}'                                   Show the structure of a table
 		sql export '{db}.{table}' --format=csv|json [--path|--file]=path    Export table data
+		sql find '{db}.{table}' {id}                                  Find a record by ID (primary key or id field)
+		sql find_by '{db}.{table}' {field} {value}                    Find records by field value (WHERE field = value)
+		sql list '{db}'                                               List tables in a database
+		sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]    List contents of a table
 		sql query "SQL QUERY ..." --connection={db}                   Execute a general SQL query
+		sql select "SELECT ..." --connection={db}                     Execute a SELECT query
 		sql statement "SQL STATEMENT ..." --connection={db} [--force] Execute a non-SELECT SQL statement (INSERT, UPDATE, DELETE, etc.); use --force for destructive operations
 		sql statement "SQL STATEMENT ..." --connection={db} [--confirm] Alternative flag for destructive operations
 
@@ -195,17 +378,21 @@ class SqlCommand implements ICommand
 
 		Examples:
 
-		php com sql list 'main.users'                              List first 10 records from users table
-		php com sql list 'main.users' --limit=20                   List first 20 records
-		php com sql list 'main.users' --offset=10 --limit=5        List 5 records starting from offset 10
-		php com sql list 'main.users' --format=table               Display results as ASCII table
+		php com sql count 'main.products'                            Count records in main.products table
+		php com sql describe 'main.users'                            Show structure of users table
+		php com sql export 'main.categories' --format=csv            Export table to CSV
+		php com sql export 'main.products' --format=json --path=/tmp/products.json    Export to specific path
+		php com sql find 'main.users' 123                            Find user with ID 123
+		php com sql find_by 'main.users' email 'john@example.com'    Find user by email
+		php com sql find_by 'main.products' name 'Laptop'            Find products by name
+		php com sql list 'main'                                      List all tables in main database
+		php com sql list 'main.users'                                List first 10 records from users table
+		php com sql list 'main.users' --limit=20                     List first 20 records
+		php com sql list 'main.users' --offset=10 --limit=5          List 5 records starting from offset 10
+		php com sql list 'main.users' --format=table                 Display results as ASCII table
 		php com sql list 'db_195.products' --limit=50 --format=table
-		php com sql count 'zippy.categories'                       Count records in zippy.categories table
-		php com sql select "SELECT COUNT(*) as total FROM products" --connection=zippy    Execute SELECT query
-		php com sql export 'zippy.categories' --format=csv         Export table to CSV
-		php com sql export 'zippy.products' --format=json --path=/tmp/products.json    Export to specific path
-		php com sql export 'zippy.categories' --format=csv --file=/tmp/categories.csv    Export using --file option
-		php com sql query "SELECT COUNT(*) FROM categories" --connection=zippy    Execute general SQL query
+		php com sql select "SELECT COUNT(*) as total FROM products" --connection=main    Execute SELECT query
+		php com sql query "SELECT COUNT(*) FROM categories" --connection=main    Execute general SQL query
 		php com sql statement "INSERT INTO users (name, email) VALUES ('John', 'john@example.com')" --connection=main    Execute INSERT statement
 		php com sql statement "DROP TABLE old_table" --connection=main --force    Execute DROP with confirmation flag
 		php com sql statement "DELETE FROM users" --connection=main --force    Execute DELETE without WHERE clause
@@ -487,7 +674,7 @@ class SqlCommand implements ICommand
 	}
 
 	/**
-	 * Execute a general SQL query (supports SELECT, INSERT, UPDATE, DELETE)
+	 * Execute a general SQL query (supports SELECT, INSERT, UPDATE, DELETE, DESCRIBE, SHOW, etc.)
 	 *
 	 * Usage: php com sql query "SQL QUERY" --connection={db}
 	 */
@@ -517,8 +704,10 @@ class SqlCommand implements ICommand
 		// Check the type of query to determine how to handle it
 		$queryUpper = strtoupper(trim($query));
 
-		// For SELECT queries, use the select method logic
-		if (Strings::startsWith('SELECT', $queryUpper)) {
+		// For SELECT, DESCRIBE, SHOW queries, use select method logic
+		if (Strings::startsWith('SELECT', $queryUpper) ||
+			Strings::startsWith('DESCRIBE', $queryUpper) ||
+			Strings::startsWith('SHOW', $queryUpper)) {
 			DB::setConnection($db);
 
 			try {
@@ -539,7 +728,7 @@ class SqlCommand implements ICommand
 		// For other queries (INSERT, UPDATE, DELETE), execute directly
 		else {
 			// Only allow safe operations
-			$allowed = ['DESCRIBE', 'SHOW'];
+			$allowed = ['INSERT', 'UPDATE', 'DELETE', 'CREATE', 'ALTER', 'DROP', 'TRUNCATE'];
 			$isValid = false;
 
 			foreach ($allowed as $type) {
@@ -551,6 +740,37 @@ class SqlCommand implements ICommand
 
 			if (!$isValid) {
 				StdOut::print("Error: Query type not allowed for security reasons\r\n");
+				return;
+			}
+
+			// Check for potentially destructive operations that require confirmation
+			$isDestructive = false;
+			$message = '';
+
+			// Check for DROP statement
+			if (Strings::startsWith('DROP', $queryUpper)) {
+				$isDestructive = true;
+				$message = "DROP statement detected. This will permanently delete a table or database.";
+			}
+			// Check for TRUNCATE statement
+			elseif (Strings::startsWith('TRUNCATE', $queryUpper)) {
+				$isDestructive = true;
+				$message = "TRUNCATE statement detected. This will permanently delete all data in a table.";
+			}
+			// Check for DELETE without WHERE clause
+			elseif (Strings::startsWith('DELETE', $queryUpper)) {
+				// Check if there's a WHERE clause by looking for it in the query
+				// We'll look for WHERE after DELETE but not in comments or strings
+				if (!preg_match('/\bWHERE\b/i', $query)) {
+					$isDestructive = true;
+					$message = "DELETE statement without WHERE clause detected. This will delete all records in the table.";
+				}
+			}
+
+			// If it's a destructive operation, warn the user
+			if ($isDestructive) {
+				StdOut::print("$message\r\n");
+				StdOut::print("Use 'sql statement' command with --force flag to execute this statement.\r\n");
 				return;
 			}
 
