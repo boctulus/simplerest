@@ -25,37 +25,52 @@ trait ExceptionHandler
        
         $backtrace = null;
         if ($config['debug']) {
-            $e      = new \Exception();
-            $traces = $e->getTrace();
+            $current_e = new \Exception();
+            $traces    = $current_e->getTrace();
 
             foreach ($traces as $tx => $trace){
-                $args = $exception = $trace['args'] ?? null;
+                $args = $trace['args'] ?? null;
 
                 if (empty($args)){
                     continue;
                 }
 
                 foreach ($args as $ax => $arg){
-                    $exception = $traces[$tx]['args'][$ax];
+                    $val = $traces[$tx]['args'][$ax];
 
-                    $trace = $exception->getTraceAsString();
-                    $trace = explode("\n", $trace);
+                    if ($val instanceof \Throwable) {
+                        $trace_str = $val->getTraceAsString();
+                        $trace_arr = explode("\n", $trace_str);
 
-                    $traces[$tx]['args'][$ax] = [
-                        'message' => $exception->getMessage(),
-                        'prev'    => $exception->getPrevious(),
-                        'code'    => $exception->getCode(),
-                        'file'    => $exception->getFile(),
-                        'line'    => $exception->getLine(),
-                        'trace'   => $trace,
-                        'extra'   => [
-                            'db_connection' => $current_conn
-                        ]
-                    ];
+                        $traces[$tx]['args'][$ax] = [
+                            'message' => $val->getMessage(),
+                            'prev'    => $val->getPrevious(),
+                            'code'    => $val->getCode(),
+                            'file'    => $val->getFile(),
+                            'line'    => $val->getLine(),
+                            'trace'   => $trace_arr,
+                            'extra'   => [
+                                'db_connection' => $current_conn
+                            ]
+                        ];
+                    } else {
+                        // For non-throwables, keep-it simple and safe
+                        if (is_object($val)) {
+                            $traces[$tx]['args'][$ax] = 'Object(' . get_class($val) . ')';
+                        } elseif (is_array($val)) {
+                             $traces[$tx]['args'][$ax] = 'Array(' . count($val) . ')';
+                        }
+                        // scalars are kept as is
+                    }
                 }
             }
 
-            $backtrace      = json_encode($traces, JSON_PRETTY_PRINT) . PHP_EOL . PHP_EOL;
+            try {
+                $backtrace      = json_encode($traces, JSON_PRETTY_PRINT) . PHP_EOL . PHP_EOL;
+            } catch (\Throwable $json_err) {
+                $backtrace      = "Could not encode trace: " . $json_err->getMessage();
+            }
+            
             $error_location = 'Error on line number '.$e->getLine().' in file - '.$e->getFile();
 
             if ($config['log_stack_trace']){

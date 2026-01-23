@@ -36,7 +36,11 @@
       "Bash(wsl bash -c \"ssh boctulus@159.203.75.234 ''cd /var/www/simplerest && tar -czvf docs.tar.gz docs'' && cd /mnt/d/laragon/www/simplerest && scp boctulus@159.203.75.234:/var/www/simplerest/docs.tar.gz .\")",
       "Bash(wsl bash -c \"ssh boctulus@159.203.75.234 ''cd /var/www/simplerest && rm -f docs.tar.gz && find docs -type f \\\\\\\\\\( -name \"\"*.md\"\" -o -name \"\"*.txt\"\" \\\\\\\\\\) | tar -czvf docs.tar.gz -T - && ls -lh docs.tar.gz''\")",
       "Bash(wsl bash:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(node com sql find products)",
+      "Bash(node com sql find users:*)",
+      "Bash(vendorbinphpunit testsApiTest.php --filter testgetme)",
+      "Bash(vendor/bin/phpunit:*)"
     ],
     "deny": [],
     "ask": []
