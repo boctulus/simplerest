@@ -74,13 +74,18 @@ class ApiTest extends TestCase
             throw new \Exception("Unexpected http code ($http_code)");
 
 		$res = json_decode($response, true);
-		
+
         if (isset($res['error']) && !empty($res['error']))
-            throw new \Exception($res['error']);	
-        
-        return [$res['data']['access_token'], $res['data']['refresh_token']];
+            throw new \Exception($res['error']);
+
+        $access_token = $res['data']['access_token'];
+        $refresh_token = $res['data']['refresh_token'];
+
+        curl_close($ch);
+
+        return [$access_token, $refresh_token];
     }
-    
+
     private function get_me(string $at){
         $ch = curl_init();
 
@@ -120,12 +125,16 @@ class ApiTest extends TestCase
 
         $res = json_decode($response, true);
 
-      
+
         if (!isset($res['data']['id']) || !isset($res['data']['email']))
-            throw new \Exception("Empty uid or email");       
+            throw new \Exception("Empty uid or email");
+
+        $data = $res['data'];
+
+        curl_close($ch);
 
         // [id, username, emai,... ]
-        return $res['data'];
+        return $data;
     }
 
     protected function setUp(): void {
@@ -184,6 +193,7 @@ class ApiTest extends TestCase
             isset($res['data']['id']) && isset($res['data']['email'])
         );
 
+    curl_close($ch);
     }
     
     /*
@@ -235,7 +245,9 @@ class ApiTest extends TestCase
 
         $model_arr = DB::table('products')->where(['belongs_to', $this->uid])->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
     
     
@@ -298,7 +310,9 @@ class ApiTest extends TestCase
         //dd($item);
         //dd($res['data']);
 
-        $this->assertEquals($item, $res['data']); 
+        $this->assertEquals($item, $res['data']);
+
+    curl_close($ch);
     }
 
     /*
@@ -340,6 +354,8 @@ class ApiTest extends TestCase
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         
         $this->assertEquals($http_code, 404);
+
+    curl_close($ch);
     }
 
     function testpagesize1a()
@@ -394,6 +410,8 @@ class ApiTest extends TestCase
         $this->assertTrue(
             count($res['data']) == min($this->config['paginator']['default_limit'], $cnt)
         );
+
+    curl_close($ch);
     }
 
     function testpagesize1b()
@@ -457,6 +475,8 @@ class ApiTest extends TestCase
         $this->assertTrue(
             count($responseData) == min(5, $cnt)
         );
+
+    curl_close($ch);
     }
 
     private function get_rand_fields($table, $count = 1, $nullables = false){
@@ -580,7 +600,9 @@ class ApiTest extends TestCase
         $model_arr = DB::table('products')
         ->where(['belongs_to' => $this->uid, $field => $vals[0]])->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter001b()
@@ -649,6 +671,8 @@ class ApiTest extends TestCase
         }
 
         $this->assertEquals($model_arr, $responseData);
+
+    curl_close($ch);
     }
 
     function testfilter002()
@@ -727,7 +751,9 @@ class ApiTest extends TestCase
 
         //dd(DB::getQueryLog()); 
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter003()
@@ -786,7 +812,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr, $res['data']); 
+        $this->assertEquals($model_arr, $res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter003b()
@@ -845,7 +873,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr, $res['data']);     
+        $this->assertEquals($model_arr, $res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter004()
@@ -905,6 +935,8 @@ class ApiTest extends TestCase
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
         $this->assertEquals($model_arr, $res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter006()
@@ -957,7 +989,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter007()
@@ -1010,7 +1044,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter008()
@@ -1068,7 +1104,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter009()
@@ -1126,7 +1164,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter010()
@@ -1182,7 +1222,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter011()
@@ -1238,7 +1280,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     /*
@@ -1298,7 +1342,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter013()
@@ -1354,7 +1400,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter014()
@@ -1410,7 +1458,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter015()
@@ -1466,7 +1516,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter016()
@@ -1522,7 +1574,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter017()
@@ -1579,7 +1633,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->orderBy(['cost' => 'ASC'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter018()
@@ -1636,7 +1692,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->orderBy(['created_at' => 'ASC'])->get();
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter019()
@@ -1706,7 +1764,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->limit($this->config['paginator']['default_limit'])->get($fields);
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter020()
@@ -1776,7 +1836,9 @@ class ApiTest extends TestCase
         ])
         ->assoc()->first($fields);
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter021()
@@ -1836,7 +1898,9 @@ class ApiTest extends TestCase
 
         //dd(DB::getQueryLog()); 
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter022()
@@ -1895,7 +1959,9 @@ class ApiTest extends TestCase
 
         //dd(DB::getQueryLog()); 
 
-        $this->assertEquals($model_arr,$res['data']); 
+        $this->assertEquals($model_arr,$res['data']);
+
+    curl_close($ch);
     }
 
     function testfilter023()
@@ -1956,7 +2022,9 @@ class ApiTest extends TestCase
         //dd($model_arr);
         //dd($res['data']);
 
-        $this->assertEquals($model_arr, $res['data']); 
+        $this->assertEquals($model_arr, $res['data']);
+
+    curl_close($ch);
     }
 
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<tests>
+ <testCaseClass name="Boctulus\Simplerest\tests\ApiTest">
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testgetme" name="testgetme" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testgetproducts" name="testgetproducts" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testgetproduct" name="testgetproduct" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testgetproductnotfound" name="testgetproductnotfound" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testpagesize1a" name="testpagesize1a" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testpagesize1b" name="testpagesize1b" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter001" name="testfilter001" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter001b" name="testfilter001b" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter002" name="testfilter002" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter003" name="testfilter003" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter003b" name="testfilter003b" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter004" name="testfilter004" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter006" name="testfilter006" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter007" name="testfilter007" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter008" name="testfilter008" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter009" name="testfilter009" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter010" name="testfilter010" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter011" name="testfilter011" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter012" name="testfilter012" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter013" name="testfilter013" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter014" name="testfilter014" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter015" name="testfilter015" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter016" name="testfilter016" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter017" name="testfilter017" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter018" name="testfilter018" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter019" name="testfilter019" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter020" name="testfilter020" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter021" name="testfilter021" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter022" name="testfilter022" groups="default"/>
+  <testCaseMethod id="Boctulus\Simplerest\tests\ApiTest::testfilter023" name="testfilter023" groups="default"/>
+ </testCaseClass>
+</tests>

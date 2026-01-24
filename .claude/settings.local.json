@@ -40,7 +40,9 @@
       "Bash(node com sql find products)",
       "Bash(node com sql find users:*)",
       "Bash(vendorbinphpunit testsApiTest.php --filter testgetme)",
-      "Bash(vendor/bin/phpunit:*)"
+      "Bash(vendor/bin/phpunit:*)",
+      "Bash(echo:*)",
+      "Bash(node com sql:*)"
     ],
     "deny": [],
     "ask": []
