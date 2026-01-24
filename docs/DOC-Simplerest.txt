@@ -34,6 +34,11 @@ Algunas características:
 - HTML / Form Builder 
 - Cache
 
+A que se asemejaria?
+
+- Supabase (pero self-hosted y más flexible)
+- Laravel + Nova + Sanctum + Horizon (todo junto)
+- Directus (pero framework-first)
 
 Cómo "índice" para buscar documentación puede buscar por las características enumeradas previamente más las siguientes referencias:
 

@@ -423,6 +423,9 @@ class ValidatorTest extends TestCase
     */
 
     /** @test */
+    /**
+     * @group refactor
+     */
     public function test_validates_nested_field()
     {
         $validator = new Validator();

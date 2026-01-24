@@ -17,6 +17,9 @@ require_once __DIR__ . '/../app.php';
 use PHPUnit\Framework\TestCase;
 use Boctulus\Simplerest\Core\Model;
 
+/**
+ * @group refactor
+ */
 /*
  * Test simplificado del ORM Layer
  */

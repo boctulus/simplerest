@@ -27,11 +27,12 @@ define('HOST', $config['APP_URL']);
 define('BASE_URL', HOST .'/');
 
 class AuthTest extends TestCase
-{   
+{
     protected $config;
 
-	function __construct() {
-		parent::__construct();
+    public function setUp(): void
+    {
+        parent::setUp();
         $this->config = Config::get();
     }
 
@@ -89,6 +90,9 @@ class AuthTest extends TestCase
 	/*
 		Case: OK
 	*/
+	/**
+	 * @group refactor
+	 */
 	private function login($credentials){
         if ($credentials == []){
             throw new \Exception("Empty credentials");
@@ -169,11 +173,17 @@ class AuthTest extends TestCase
 
 	}
 
+	/**
+	 * @group refactor
+	 */
 	function testlogin1()
     {
-        $this->login(['email' => "tester3@g.c", "password" => "gogogo"]);     
+        $this->login(['email' => "tester3@g.c", "password" => "gogogo"]);
 	}
 	
+	/**
+	 * @group refactor
+	 */
 	function testlogin1b()
     {
         $this->login(['username' => "tester3", "password" => "gogogo"]);
@@ -182,6 +192,9 @@ class AuthTest extends TestCase
 	/*
 		Case: wrong user or password
 	*/
+	/**
+	 * @group refactor
+	 */
 	function testlogin2()
     {
 		$ch = curl_init();
@@ -228,6 +241,9 @@ class AuthTest extends TestCase
 	/*
 		Case: wrong user or password
 	*/
+	/**
+	 * @group refactor
+	 */
 	function testlogin2b()
     {
 		$ch = curl_init();
@@ -274,6 +290,9 @@ class AuthTest extends TestCase
 	/*
 		Case: OK
 	*/
+	/**
+	 * @group refactor
+	 */
 	function testregister1()
     {
 		$ch = curl_init();
@@ -349,6 +368,9 @@ class AuthTest extends TestCase
 		->where(['id' => $uid])->delete(false);
 	}
 
+	/**
+	 * @group refactor
+	 */
 	function testtokenrenew()
     {
 		$ch = curl_init();

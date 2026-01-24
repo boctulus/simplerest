@@ -917,11 +917,17 @@ trait QueryBuilderTrait
 		return $this->random();
 	}
 
-	function select($fields)
+	function select(...$fields)
 	{
-		if (is_string($fields)) {
-			$fields = array_map('trim', explode(',', $fields));
+		// Laravel compatibility: permite select('field1', 'field2') o select(['field1', 'field2'])
+		if (count($fields) == 1 && is_array($fields[0])) {
+			// select(['field1', 'field2'])
+			$fields = $fields[0];
+		} elseif (count($fields) == 1 && is_string($fields[0])) {
+			// select('field1, field2') - string CSV
+			$fields = array_map('trim', explode(',', $fields[0]));
 		}
+		// else: select('field1', 'field2', 'field3') - múltiples args
 
 		$this->fields = $fields;
 		return $this;
@@ -1859,9 +1865,20 @@ trait QueryBuilderTrait
 			return $output;
 		}
 
+		// DEBUG TEMPORAL
+		// dd([$this->table_name,
+		// 	$fields
+		// ], "GETTING DATA FROM TABLE ======================>");
+
 		// Flujo normal sin relaciones
 		$q  = $this->toSql($fields, $order, $limit, $offset);
 		$st = $this->bind($q);
+
+		// DEBUG TEMPORAL
+		// if ($this->table_name == 'products') {
+		// 	dd($q, "SQL ======================>");
+		// 	dd($this->getBindings(), "BINDINGS ======================>");
+		// }
 
 		$count = null;
 		if ($this->exec && $st->execute()) {
@@ -2437,15 +2454,36 @@ trait QueryBuilderTrait
 			return;
 		}
 
-		// Procesar condiciones para manejar calificadores de tabla
-		$conditions = $this->processWhereCondition($conditions);
+		// Verificar si es un array verdaderamente asociativo (con claves string)
+		// vs un array indexado con índices no consecutivos
+		$has_string_keys = false;
+		foreach (array_keys($conditions) as $key) {
+			if (is_string($key)) {
+				$has_string_keys = true;
+				break;
+			}
+		}
 
-		if (Arrays::isAssoc($conditions)) {
+		if ($has_string_keys) {
+			// Array verdaderamente asociativo: ['op' => 'get', 'entity' => 'products']
 			$conditions = Arrays::nonAssoc($conditions);
+		} else {
+			// Array indexado (puede tener índices no consecutivos): [1 => ['cost', '50', '=']]
+			// Re-indexar para asegurar índices consecutivos desde 0
+			$conditions = array_values($conditions);
 		}
 
 		if (isset($conditions[0]) && is_string($conditions[0]))
 			$conditions = [$conditions];
+
+		// Procesar condiciones para manejar calificadores de tabla
+		// Se hace DESPUÉS de normalizar la estructura
+		foreach ($conditions as &$condition) {
+			if (is_array($condition)) {
+				$condition = $this->processWhereCondition($condition);
+			}
+		}
+		unset($condition);
 
 		$_where = [];
 		$vars   = [];

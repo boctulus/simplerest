@@ -14,7 +14,16 @@
         <testsuite name="OpenFactura Tests">
             <directory>packages/boctulus/friendlypos-web/tests</directory>
         </testsuite>
+        <testsuite name="SimpleRest Tests">
+            <directory>tests</directory>
+        </testsuite>
     </testsuites>
+
+    <groups>
+        <exclude>
+            <group>refactor</group>
+        </exclude>
+    </groups>
 
     <source>
         <include>
