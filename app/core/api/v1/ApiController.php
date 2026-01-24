@@ -613,10 +613,31 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                 $order  = Arrays::shift($_get,'orderBy');
 
-                
+                // Handle order[field]=ASC|DESC format
+                if (isset($_get['order']) && is_array($_get['order'])) {
+                    $order_from_param = [];
+                    foreach ($_get['order'] as $field => $direction) {
+                        $direction = strtoupper($direction);
+                        if ($direction === 'ASC' || $direction === 'DESC') {
+                            $order_from_param[$field] = $direction;
+                        }
+                    }
+
+                    // Merge with existing order if needed
+                    if (!empty($order)) {
+                        $order = array_merge($order, $order_from_param);
+                    } else {
+                        $order = $order_from_param;
+                    }
+
+                    // Remove the 'order' key from $_get so it's not processed as a filter
+                    unset($_get['order']);
+                }
+
+
                 // event hook
                 $this->onGettingAfterCheck2($id);
-                
+
                 #var_export($_get);
 
                 // Importante:
