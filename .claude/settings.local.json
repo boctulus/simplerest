@@ -42,7 +42,8 @@
       "Bash(vendorbinphpunit testsApiTest.php --filter testgetme)",
       "Bash(vendor/bin/phpunit:*)",
       "Bash(echo:*)",
-      "Bash(node com sql:*)"
+      "Bash(node com sql:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []
