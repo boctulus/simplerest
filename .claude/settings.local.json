@@ -44,7 +44,10 @@
       "Bash(echo:*)",
       "Bash(node com sql:*)",
       "Bash(findstr:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(test:*)",
+      "Bash(ls:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

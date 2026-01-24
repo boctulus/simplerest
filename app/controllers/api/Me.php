@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers\api;
+namespace Boctulus\Simplerest\Controllers\Api;
 
 global $api_version;
 
@@ -9,7 +9,7 @@ global $api_version;
 */
 
 if ($api_version == 'v1'){
-    class Me extends \Boctulus\Simplerest\Core\API\v1\MySelf { }
+    class Me extends \Boctulus\Simplerest\Core\Api\v1\MySelf { }
     return;
 }
 
