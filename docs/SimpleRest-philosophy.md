@@ -3,7 +3,6 @@
 ## 1. Introduction
 
 **SimpleRest** is a high-performance PHP framework built from scratch to achieve extreme speed, simplicity, and predictability.
-It has consistently shown to be **up to 10× faster than Laravel** and **up to 100× faster than WordPress**, despite using only PHP and without relying on caching services such as **Redis** or **Memcached**.
 
 ---
 
@@ -176,7 +175,7 @@ This design minimizes filesystem access and I/O waits.
 | ORM                  | QueryBuilder (no objects) | Eloquent (heavy ORM)        | Procedural `$wpdb` |
 | Data Type            | Associative arrays        | Objects                     | Arrays/Objects     |
 | Caching              | Internal, aggressive      | External (Redis/Memcached)  | Limited            |
-| Bootstrap Time       | 3–10 ms                   | 300–500 ms                  | 500–1000 ms        |
+| Bootstrap Time       | A few ms                   | 300–500 ms                  | 500–1000 ms        |
 | Composer Dependency  | Optional                  | Required                    | Optional           |
 | Reflection Usage     | Minimal                   | Extensive                   | Minimal            |
 | AutoEndpoints        | Yes (zero config)         | Partial                     | No                 |

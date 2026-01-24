@@ -2,9 +2,6 @@
 
 use Boctulus\FineGrainedACL\Acl;
 use Boctulus\Simplerest\Core\Libs\Config;
-use Boctulus\Simplerest\Libs\Debug;
-
-
 
 $acl_cache = false;
 $acl_file  = Config::get()['acl_file'];

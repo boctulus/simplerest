@@ -513,10 +513,10 @@ class MakeCommand implements ICommand
         }
 
         $data = file_get_contents($template_path);
-        $data = str_replace('__NAME__', $prefix . $this->camel_case .  $subfix, $data);
+        $data = str_replace('NAME__', $prefix . $this->camel_case .  $subfix, $data);
 
         if (!is_null($namespace)) {
-            $data = str_replace('__NAMESPACE__', $namespace, $data);
+            $data = str_replace('NAMESPACE__', $namespace, $data);
         }
 
         if ($strict) {
@@ -829,8 +829,8 @@ class MakeCommand implements ICommand
 
         // Cargar y personalizar la plantilla
         $data = file_get_contents($template_path);
-        $data = str_replace('__NAME__', $prefix . $this->camel_case . $subfix, $data);
-        $data = str_replace('// namespace __NAMESPACE__;', "namespace $namespace;", $data);
+        $data = str_replace('NAME__', $prefix . $this->camel_case . $subfix, $data);
+        $data = str_replace('// namespace NAMESPACE__;', "namespace $namespace;", $data);
         $data = str_replace('// __METHODS__', $methodsCode, $data);
 
         if ($strict) {
@@ -931,7 +931,7 @@ class MakeCommand implements ICommand
         }
 
         $data = file_get_contents(self::API_TEMPLATE);
-        $data = str_replace('__NAME__', $this->camel_case, $data);
+        $data = str_replace('NAME__', $this->camel_case, $data);
         $data = str_replace('__SOFT_DELETE__', 'true', $data); // debe depender del schema
 
         $this->write($dest_path, $data, $protected);
@@ -1395,7 +1395,7 @@ class MakeCommand implements ICommand
         }
 
         $file = file_get_contents(self::SCHEMA_TEMPLATE);
-        $file = str_replace('__NAME__', $this->camel_case . 'Schema', $file);
+        $file = str_replace('NAME__', $this->camel_case . 'Schema', $file);
 
         // destination
 
@@ -1783,7 +1783,7 @@ class MakeCommand implements ICommand
         $file     = file_get_contents($template);
 
 
-        $file = str_replace('__NAME__', $this->camel_case . 'Model', $file);
+        $file = str_replace('NAME__', $this->camel_case . 'Model', $file);
 
         $imports = [];
         $traits  = [];
@@ -1951,7 +1951,7 @@ class MakeCommand implements ICommand
             */
             if (preg_match('/^--(class_name|class)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)) {
                 $class_name = Strings::snakeToCamel($matches[2]);
-                $file = str_replace('__NAME__', $class_name, $file);
+                $file = str_replace('NAME__', $class_name, $file);
             }
 
             if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o) || Strings::startsWith('--folder=', $o) || Strings::startsWith('--folder:', $o)) {
@@ -2201,11 +2201,11 @@ class MakeCommand implements ICommand
 
         // Si no se especifica class_name, usar clase anónima
         if (empty($class_name) && empty($name)) {
-            $file = str_replace('class __NAME__ implements IMigration', 'return new class implements IMigration', $file);
+            $file = str_replace('class NAME__ implements IMigration', 'return new class implements IMigration', $file);
             $file = trim($file) . ';';
         }
 
-        $file = str_replace('__NAME__', $this->camel_case, $file);
+        $file = str_replace('NAME__', $this->camel_case, $file);
         $file = str_replace('__TB_NAME__', $tb_name, $file);
 
         if (!empty($dir)) {
@@ -2597,7 +2597,7 @@ class MakeCommand implements ICommand
         }
 
         $file = file_get_contents(self::SERVICE_PROVIDER_TEMPLATE);
-        $file = str_replace('__NAME__', $this->camel_case . 'ServiceProvider', $file);
+        $file = str_replace('NAME__', $this->camel_case . 'ServiceProvider', $file);
 
         $this->write($dest_path, $file, $protected, $remove);
     }
@@ -2862,8 +2862,8 @@ class MakeCommand implements ICommand
             $namespace = $this->namespace . '\\modules\\' . $pascalName;
 
             // Reemplazar placeholders en el contenido
-            $content = str_replace('__NAME__', $pascalName, $content);
-            $content = str_replace('__NAMESPACE__', $namespace, $content);
+            $content = str_replace('NAME__', $pascalName, $content);
+            $content = str_replace('NAMESPACE__', $namespace, $content);
 
             // Escribir el archivo parseado en la ubicación destino
             file_put_contents($destFile, $content);
@@ -3143,8 +3143,8 @@ class MakeCommand implements ICommand
             if (file_exists($template)) {
                 $content = file_get_contents($template);
                 if ($content !== false) {
-                    // Reemplazar placeholders __NAME__ y __NAMESPACE__
-                    $updatedContent = str_replace(['__NAME__', '__NAMESPACE__'], [ucfirst($packageName), $namespace], $content);
+                    // Reemplazar placeholders NAME__ y NAMESPACE__
+                    $updatedContent = str_replace(['NAME__', 'NAMESPACE__'], [ucfirst($packageName), $namespace], $content);
                     file_put_contents($destinationFile, $updatedContent);
                     StdOut::print("Copied and updated template to: $destinationFile");
                 } else {

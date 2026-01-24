@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers\api;
+namespace Boctulus\Simplerest\Controllers\Api;
 
 use Boctulus\Simplerest\Controllers\MyApiController;
 use Boctulus\Simplerest\Core\Libs\Factory;

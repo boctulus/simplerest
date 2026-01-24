@@ -1,6 +1,6 @@
 {
 	"name":"boctulus/simplerest",
-   "type":"project",
+   "type":"library",
    "description":"API Rest framework for PHP",
    "keywords":[
       "simplerest",
@@ -31,7 +31,7 @@
 	},
    "scripts":{
       "test": "phpunit --colors=always",
-      "cs": "phpstan analyse app --level=7",
+      "cs": "phpstan analyse src --level=7",
       "pre-autoload-dump":"Google\\Task\\Composer::cleanup"
    },
    "extra":{
@@ -41,7 +41,7 @@
    },
    "autoload":{
       "psr-4":{
-         "Boctulus\\Simplerest\\":"app/",
+         "Boctulus\\Simplerest\\":"src/",
          "Boctulus\\FineGrainedACL\\":"packages/boctulus/fine-grained-acl/src",
          "Boctulus\\BasicACL\\":"packages/boctulus/basic-acl/src",
          "Boctulus\\Zippy\\":"packages/boctulus/zippy/src",
@@ -53,13 +53,13 @@
          "Boctulus\\FriendlyposWeb\\": "packages/boctulus/friendlypos-web/src"
       },
       "exclude-from-classmap": [
-         "app/Core/Templates/",
-         "app/Modules/SimpleHtmlDomParser/"
+         "src/Core/Templates/"
       ]
    },
    "autoload-dev": {
       "psr-4": {
-         "Boctulus\\Simplerest\\Tests\\": "tests/"
+         "Boctulus\\Simplerest\\Tests\\": "tests/",
+         "Boctulus\\Simplerest\\": "app/"
       }
    },
    "repositories": [    
