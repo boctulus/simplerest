@@ -1,0 +1,22 @@
+PHPUnit 10.5.58 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.15
+Configuration: D:\laragon\www\simplerest\phpunit.xml
+
+E..................                                               19 / 19 (100%)
+
+Time: 00:00.215, Memory: 12.00 MB
+
+There was 1 error:
+
+1) Boctulus\Simplerest\tests\ModelTest::test_inner_join
+Exception: No db driver
+
+D:\laragon\www\simplerest\app\Core\Libs\DB.php:395
+D:\laragon\www\simplerest\app\Core\Traits\QueryBuilderTrait.php:484
+D:\laragon\www\simplerest\app\Core\Traits\QueryBuilderTrait.php:1271
+D:\laragon\www\simplerest\app\Core\Traits\QueryBuilderTrait.php:1682
+D:\laragon\www\simplerest\tests\ModelTest.php:686
+
+ERRORS!
+Tests: 19, Assertions: 123, Errors: 1.

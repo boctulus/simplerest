@@ -43,7 +43,8 @@
       "Bash(vendor/bin/phpunit:*)",
       "Bash(echo:*)",
       "Bash(node com sql:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": []
