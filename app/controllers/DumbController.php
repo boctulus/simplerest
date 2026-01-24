@@ -112,14 +112,14 @@ use Boctulus\Simplerest\Core\Libs\StratoScraper;
 use Boctulus\Simplerest\Libs\Scrapers\Curiosite;
 use Boctulus\Simplerest\Models\az\ProductsModel;
 use Boctulus\Simplerest\Modules\EatLeaf\EatLeaf;
-use Boctulus\Simplerest\Controllers\api\Products;
+use Boctulus\Simplerest\Controllers\Api\Products;
 use Boctulus\Simplerest\Core\Libs\Base64Uploader;
 use Boctulus\Simplerest\Core\Libs\DatabaseBackup;
 use Boctulus\Simplerest\Core\Libs\i18n\Translate;
 use Boctulus\Simplerest\Libs\ArbitrageCalculator;
 use Boctulus\Simplerest\Libs\HaulmerSignatureSDK;
 use Boctulus\Simplerest\Libs\LaravelApiGenerator;
-use Boctulus\Simplerest\Core\API\v1\ApiController;
+use Boctulus\Simplerest\Core\Api\v1\ApiController;
 use Boctulus\Simplerest\Core\Libs\ApacheWebServer;
 use Boctulus\Simplerest\Core\Libs\CronJobMananger;
 use Boctulus\Simplerest\Core\Libs\FileMemoization;
@@ -127,7 +127,7 @@ use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
 use Boctulus\Simplerest\Core\Libs\RandomGenerator;
 use Boctulus\Simplerest\Core\Libs\ValidationRules;
 use Boctulus\Simplerest\Libs\NITColombiaValidator;
-use Boctulus\Simplerest\Controllers\api\TblPersona;
+use Boctulus\Simplerest\Controllers\Api\TblPersona;
 use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Form;
 use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Html;
 use Boctulus\Simplerest\Core\Libs\MailFromRemoteWP;
@@ -3747,7 +3747,7 @@ class DumbController extends Controller
 
         Files::copy($ori, $dst, [
             'config/constants.php',
-            'app/controllers/api/Me.php'
+            'app/Controllers/Api/Me.php'
         ]);
     }
 
@@ -3759,7 +3759,7 @@ class DumbController extends Controller
 
         Files::copy($ori, $dst, [
             '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files/config/constants.php',
-            '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files/app/controllers/api/Me.php'
+            '/home/www/html/erp/updates/2021-12-12-0.5.0-alpha/files/app/Controllers/Api/Me.php'
         ]);
     }
 
@@ -12475,6 +12475,9 @@ class DumbController extends Controller
         var_dump(Strings::isEmpty($data) ); // true
     }
 
+    function hello(){
+        echo "Hello World!";
+    }
     
 
 }   // end class

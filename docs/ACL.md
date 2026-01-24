@@ -1,6 +1,60 @@
-### ACL
+# ACL
 
-La implementación del ACL incluye "roles" y permisos individuales (llamados también "scopes") para cada usuario sobre cada tabla expuesta a través de la API.
+## Resumen
+
+Advanced ACL Features
+
+1. Multi-layered Permission System
+- Special Permissions: Global permissions like read_all, write_all, impersonate, grant, etc.
+- Resource Permissions: Table/resource-specific permissions
+- Hierarchical Roles: Roles with inheritance (e.g., admin inherits from registered)
+
+2. Granular Resource Control
+- Permissions at table level: show, show_all, list, list_all, create, update, delete, read, write
+- Row-level permissions possible
+- Attribute-level access control
+
+3. Sophisticated Role Hierarchy
+- Inheritance system where roles can inherit permissions from others
+- Ancestry tracking for complex permission hierarchies
+- Dynamic role checking with isHigherRole() functionality
+
+4. Flexible Permission Checking
+- hasPermission() method checks multiple permission layers
+- Special permissions can override resource permissions
+- Support for both authenticated and unauthenticated access checks
+
+5. Advanced Permission Types
+- Special permissions: Global system-wide permissions
+- Table permissions: Resource-specific permissions
+- Row permissions: Record-level access control (potential implementation)
+- Attribute permissions: Field-level access control (potential implementation)
+
+6. Complex Permission Logic
+- Permission inheritance with safeguards
+- Multiple permission sources (special + resource permissions)
+- Dynamic permission evaluation based on user roles and special permissions
+
+7. Two-Tier ACL System
+- BasicACL: Simpler ACL implementation
+- FineGrainedACL: Advanced, granular permission system
+- Allows for different levels of complexity depending on project needs
+
+8. Database Integration
+- Permissions stored in database tables (sp_permissions, roles, user_tb_permissions, user_sp_permissions)
+- Dynamic loading of permissions from database
+- Support for user-specific permissions beyond role-based permissions
+
+### Comparison with Laravel ACL packages
+
+This ACL system is indeed much more sophisticated than typical Laravel ACL packages like spatie/laravel-permission, offering:
+- More granular control
+- Hierarchical role system
+- Multiple permission types (special + resource)
+- More complex permission inheritance
+- Better integration with the framework's authentication system
+
+The system supports complex enterprise-level permission requirements that would be difficult to achieve with standard Laravel ACL packages.
 
 # Declaración de roles y sus permisos
 

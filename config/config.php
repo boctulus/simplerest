@@ -21,6 +21,11 @@ return [
 
 	'base_url' => '',   
 
+	/*
+		Routers and FrontController
+
+		Dejar todos en true produce mucho delay
+	*/
 	'web_router'       => true,
 	'console_router'   => true,
 	'front_controller' => true,

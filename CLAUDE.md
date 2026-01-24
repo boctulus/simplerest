@@ -5,12 +5,8 @@
 ### Backend
 - PHP
 
-### Frontend
-- **Bootstrap 5** (generalmente utilizado)
-- **jQuery** (generalmente utilizado)
-
 ### Bases de Datos
-- **MySQL** (soporta otras) 
+- MySQL (soporta otras) 
 
 ### Testing & Automation
 - **PHPUnit** (unit testing)
