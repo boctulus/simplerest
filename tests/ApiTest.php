@@ -25,6 +25,9 @@ use Boctulus\Simplerest\Core\Libs\Validator;
 define('HOST', parse_url($config['app_url'], PHP_URL_HOST));
 define('BASE_URL', rtrim($config['app_url'], '/') . '/');
 
+/**
+ * @group refactor
+ */
 // API UNIT TEST
 class ApiTest extends TestCase
 {   

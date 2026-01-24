@@ -668,9 +668,12 @@ class ModelTest extends TestCase
     $this->assertSQLEquals(DB::getLog(), "SELECT cost, size, belongs_to FROM products GROUP BY cost,size,belongs_to HAVING cost >= 100 OR ((SUM(cost) > 500) AND size = '1L') ORDER BY size DESC;");
   }
 
+  /**
+   * @group refactor
+   */
   function test_inner_join()
   {
-    //    
+    //
     $m = (new Model())->table('other_permissions', 'op')
       ->join('folders', 'op.folder_id', '=', 'folders.id')
       ->join('users', 'folders.belongs_to', '=', 'users.id')

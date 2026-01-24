@@ -7,9 +7,9 @@ use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\Url;
 
-class Response
+class Response implements \ArrayAccess 
 {
-    protected $data;
+    protected $data = [];
     protected $to_be_encoded;
     protected $headers = [];
     protected $http_code = NULL;
@@ -22,6 +22,7 @@ class Response
     protected $fake_status_codes = false; // send 200 instead
     protected $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
     protected static $instance = NULL;    
+
 
     protected function __construct() {
         $this->config = Config::get();
@@ -51,9 +52,38 @@ class Response
      *
      * @param Response|null $instance
      */
-    public static function setInstance(?Response $instance): void
+    public static function setInstance($instance): void
     {
         static::$instance = $instance;
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->data[$offset]);
+    }
+
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->data[$offset] ?? null;
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        if ($offset === null) {
+            $this->data[] = $value;
+        } else {
+            $this->data[$offset] = $value;
+        }
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        unset($this->data[$offset]);
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->data;
     }
 
     static protected function header(string $header, bool $replace = true, int $response_code = 0){
@@ -516,7 +546,7 @@ class Response
      * @param string $reasonPhrase The reason phrase to use (optional)
      * @return self A new instance with the specified status code
      */
-    public function withStatus(int $code, string $reasonPhrase = ''): self
+    public function withStatus(int $code, string $reasonPhrase = '')
     {
         if ($code < 100 || $code > 599) {
             throw new \InvalidArgumentException('Invalid HTTP status code');
@@ -536,7 +566,7 @@ class Response
      * @param string|string[] $value Header value(s)
      * @return self A new instance with the specified header
      */
-    public function withHeader(string $name, $value): self
+    public function withHeader(string $name, $value)
     {
         $new = clone $this;
 
@@ -557,7 +587,7 @@ class Response
      * @param string|string[] $value Header value(s) to add
      * @return self A new instance with the added header value
      */
-    public function withAddedHeader(string $name, $value): self
+    public function withAddedHeader(string $name, $value)
     {
         $new = clone $this;
 
@@ -577,7 +607,7 @@ class Response
      * @param string $name Header name to remove
      * @return self A new instance without the specified header
      */
-    public function withoutHeader(string $name): self
+    public function withoutHeader(string $name)
     {
         $new = clone $this;
 
@@ -597,7 +627,7 @@ class Response
      * @param mixed $body The new body data
      * @return self A new instance with the specified body
      */
-    public function withBody($body): self
+    public function withBody($body)
     {
         $new = clone $this;
         $new->data = $body;
@@ -613,7 +643,7 @@ class Response
      * @param int $status HTTP status code
      * @return self A new instance with JSON body
      */
-    public function withJson($data, int $status = 200): self
+    public function withJson($data, int $status = 200)
     {
         $new = clone $this;
         $new->http_code = $status;

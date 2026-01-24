@@ -17,6 +17,7 @@ require_once __DIR__ . '/../app.php';
 use Boctulus\Simplerest\Core\Traits\CommandTrait;
 
 /**
+ * @group refactor
  * Test para CommandTrait
  *
  * Prueba las funcionalidades de parseo de opciones de línea de comandos

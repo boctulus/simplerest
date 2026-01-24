@@ -112,7 +112,7 @@ function get_model_instance(string $model_name, $fetch_mode = 'ASSOC', bool $reu
         return $instance[$model_name];
     }
 
-    if (!Strings::startsWith('\\Boctulus\\Simplerest\\', $model_name)){
+    if (!Strings::startsWith(Config::get()['namespace'] . '\\' , $model_name)){
         $model = get_model_namespace() . $model_name;
     } else {
         $model = $model_name;
@@ -372,7 +372,7 @@ function get_model_namespace($tenant_id = null){
         }
     }
 
-    return '\\Boctulus\\Simplerest\\Models\\' . $extra;
+    return '\\'.Config::get()['namespace'].'\\Models\\' . $extra;
 }
 
 function get_model_name($table_name, $tenant_id = null){
@@ -392,11 +392,11 @@ function get_model_name($table_name, $tenant_id = null){
         }
     }
 
-    return '\\Boctulus\\Simplerest\\Models\\' . $extra . Strings::snakeToCamel($table_name). 'Model';
+    return '\\'.Config::get()['namespace'].'\\Models\\' . $extra . Strings::snakeToCamel($table_name). 'Model';
 }
 
 function get_api_namespace($resource_name){
-    return '\\Boctulus\\Simplerest\\Controllers\\API\\' . Strings::snakeToCamel($resource_name);
+    return '\\'.Config::get()['namespace'].'\\Controllers\\API\\' . Strings::snakeToCamel($resource_name);
 }
 
 function get_user_model_name(){
@@ -470,7 +470,7 @@ function get_schema_name($table_name, $tenant_id = null){
         }
     }
 
-    return '\\Boctulus\\Simplerest\\Schemas\\' . $extra . Strings::snakeToCamel($table_name). 'Schema';
+    return '\\'.Config::get()['namespace'].'\\Schemas\\' . $extra . Strings::snakeToCamel($table_name). 'Schema';
 }
 
 function has_schema($table_name, $tenant_id = null){
