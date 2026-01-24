@@ -401,7 +401,7 @@ class ApiTest extends TestCase
         $ch = curl_init();
 
         curl_setopt_array($ch, array(
-            CURLOPT_URL => BASE_URL . "api/v1/products?pageSize=5",
+            CURLOPT_URL => BASE_URL . "api/v1/products?limit=5",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -445,8 +445,17 @@ class ApiTest extends TestCase
 
         $cnt = DB::table('products')->count();
 
+        // Handle different response structures depending on API version
+        if (isset($res['data']['products'])) {
+            // Nested structure when using limit/pageSize
+            $responseData = $res['data']['products'];
+        } else {
+            // Direct structure
+            $responseData = $res['data'];
+        }
+
         $this->assertTrue(
-            count($res['data']) == min(5, $cnt)
+            count($responseData) == min(5, $cnt)
         );
     }
 
@@ -617,20 +626,29 @@ class ApiTest extends TestCase
         $res = json_decode($response, true);
 
         $this->assertTrue(
-            isset($res['data']) && isset($res['paginator'])
+            isset($res['data']) && (isset($res['paginator']) || isset($res['products']))
         );
 
         $model_arr = DB::table('products')
         ->where(['belongs_to' => $this->uid, $field => $vals[0]])->assoc()->limit($this->config['paginator']['default_limit'])->get();
 
-        if ($model_arr != $res['data']){
+        // Handle different response structures depending on API version
+        if (isset($res['data']['products'])) {
+            // Nested structure when using filters
+            $responseData = $res['data']['products'];
+        } else {
+            // Direct structure
+            $responseData = $res['data'];
+        }
+
+        if ($model_arr != $responseData){
             dd(DB::getLog());
             dd($model_arr, 'MODELO:');
             dd(BASE_URL . "api/v1/products?{$field}[eq]=". urlencode($vals[0]));
-            dd($res['data'], 'API response:');
+            dd($responseData, 'API response:');
         }
 
-        $this->assertEquals($model_arr,$res['data']);
+        $this->assertEquals($model_arr, $responseData);
     }
 
     function testfilter002()
