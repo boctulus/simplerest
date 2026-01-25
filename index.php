@@ -32,5 +32,6 @@ if ($cfg['front_controller']){
     FrontController::resolve();
 } 
 
+
 //throw new Exception('There is no Router or FrontController enabled!');
 
