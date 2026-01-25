@@ -47,7 +47,11 @@
       "Bash(git stash:*)",
       "Bash(test:*)",
       "Bash(ls:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(node web-automation/test_homepage.js:*)",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(npx playwright:*)"
     ],
     "deny": [],
     "ask": []

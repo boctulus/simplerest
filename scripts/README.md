@@ -15,10 +15,13 @@ The packager script performs the following tasks:
 - Cleans the destination directory before packaging to remove any previous artifacts
 - Recursively copies the `src/` directory
 - Copies first-level contents of the `app/` directory
+- Copies the `scripts/init` directory with boot and redirection files
 - Processes configuration files to remove sensitive information
 - Creates necessary directory structure in the destination
 - Excludes development artifacts and sensitive files
 - Sanitizes `.env.example` and `composer.json` files
+- Removes problematic dependencies that reference local packages
+- Minimizes composer dependencies to only essential requirements
 
 ## Usage
 

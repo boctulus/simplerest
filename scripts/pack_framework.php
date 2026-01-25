@@ -115,6 +115,9 @@ class SimpleRestPackager
             // Copy essential root files
             $this->copyEssentialFiles();
 
+            // Copy scripts/init directory
+            $this->copyScriptsInitDirectory();
+
             // Process composer.json
             $this->processComposerJson();
 
@@ -274,7 +277,7 @@ class SimpleRestPackager
     /**
      * Copy essential root files
      */
-    private function copyEssentialFiles(): void 
+    private function copyEssentialFiles(): void
     {
         $essentialFiles = [
             'README.md',
@@ -287,11 +290,11 @@ class SimpleRestPackager
             '.env.example',
             'composer.json',
         ];
-        
+
         foreach ($essentialFiles as $file) {
             $sourceFile = $this->sourceDir . DIRECTORY_SEPARATOR . $file;
             $destFile = $this->destDir . DIRECTORY_SEPARATOR . $file;
-            
+
             if (file_exists($sourceFile) && $this->shouldIncludeFile($file)) {
                 if (!copy($sourceFile, $destFile)) {
                     throw new Exception("Failed to copy file: $sourceFile");
@@ -302,6 +305,22 @@ class SimpleRestPackager
                     echo "Warning: Essential file does not exist: $file\n";
                 }
             }
+        }
+    }
+
+    /**
+     * Copy scripts/init directory
+     */
+    private function copyScriptsInitDirectory(): void
+    {
+        $source = $this->sourceDir . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'init';
+        $dest = $this->destDir . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'init';
+
+        if (is_dir($source)) {
+            $this->copyRecursive($source, $dest);
+            echo "Copied scripts/init directory\n";
+        } else {
+            echo "Warning: Source scripts/init directory does not exist: $source\n";
         }
     }
 
@@ -352,6 +371,67 @@ class SimpleRestPackager
                 }
             }
             $composerData['autoload']['psr-4'] = $filteredAutoload;
+        }
+
+        // Define only the minimal required dependencies
+        $minimalRequire = [
+            'php' => '>=7.4,<8.4',
+            'vlucas/phpdotenv' => '^5.2',
+        ];
+
+        // Process the require section - only keep minimal dependencies
+        $composerData['require'] = $minimalRequire;
+        echo "Cleaned require section to only minimal dependencies\n";
+
+        // Clean up require-dev - only keep essential dev dependencies
+        if (isset($composerData['require-dev'])) {
+            $essentialDev = [];
+            if (isset($composerData['require-dev']['phpunit/phpunit'])) {
+                $essentialDev['phpunit/phpunit'] = $composerData['require-dev']['phpunit/phpunit'];
+            }
+            if (isset($composerData['require-dev']['phpstan/phpstan'])) {
+                $essentialDev['phpstan/phpstan'] = $composerData['require-dev']['phpstan/phpstan'];
+            }
+
+            if (!empty($essentialDev)) {
+                $composerData['require-dev'] = $essentialDev;
+                echo "Cleaned require-dev section to only essential dev dependencies\n";
+            } else {
+                unset($composerData['require-dev']); // Remove if empty
+            }
+        }
+
+        // Also remove problematic entries from preferred-install config
+        if (isset($composerData['config']['preferred-install'])) {
+            $filteredPreferredInstall = [];
+            $problematicDeps = [
+                'boctulus/shopifyconnector',
+                'boctulus/dummyapi',
+                'boctulus/api-client',
+            ];
+
+            foreach ($composerData['config']['preferred-install'] as $dep => $installType) {
+                if (!in_array($dep, $problematicDeps)) {
+                    $filteredPreferredInstall[$dep] = $installType;
+                } else {
+                    echo "Removed problematic preferred-install entry: $dep\n";
+                }
+            }
+
+            // If no valid entries remain, remove the preferred-install config entirely
+            if (empty($filteredPreferredInstall)) {
+                unset($composerData['config']['preferred-install']);
+            } else {
+                $composerData['config']['preferred-install'] = $filteredPreferredInstall;
+            }
+        }
+
+        // Remove extra section if it only contains google api services
+        if (isset($composerData['extra'])) {
+            // If extra section only has google services, remove it
+            if (isset($composerData['extra']['google/apiclient-services']) && count($composerData['extra']) === 1) {
+                unset($composerData['extra']);
+            }
         }
 
         // Write the cleaned composer.json back
@@ -413,31 +493,31 @@ class SimpleRestPackager
     /**
      * Copy directory recursively, excluding specified directories and files
      */
-    private function copyRecursive(string $source, string $dest): void 
+    private function copyRecursive(string $source, string $dest): void
     {
         if (!is_dir($source)) {
             return;
         }
-        
+
         if (!is_dir($dest)) {
             if (!mkdir($dest, 0755, true)) {
                 throw new Exception("Failed to create directory: $dest");
             }
         }
-        
+
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::SELF_FIRST
         );
-        
+
         foreach ($iterator as $item) {
             $relativePath = substr($item->getPathname(), strlen($source) + 1);
             $destPath = $dest . DIRECTORY_SEPARATOR . $relativePath;
-            
+
             // Check if the item should be excluded
             $itemName = basename($item->getPathname());
             $itemDir = dirname($item->getPathname());
-            
+
             // Check if parent directory should be excluded
             $shouldExclude = false;
             $pathParts = explode(DIRECTORY_SEPARATOR, $relativePath);
@@ -447,11 +527,11 @@ class SimpleRestPackager
                     break;
                 }
             }
-            
+
             if ($shouldExclude) {
                 continue;
             }
-            
+
             if ($item->isDir()) {
                 if (!is_dir($destPath)) {
                     if (!mkdir($destPath, 0755, true)) {
@@ -460,12 +540,70 @@ class SimpleRestPackager
                 }
             } elseif ($item->isFile()) {
                 if ($this->shouldIncludeFile($itemName)) {
-                    if (!copy($item->getPathname(), $destPath)) {
-                        throw new Exception("Failed to copy file: {$item->getPathname()} to $destPath");
+                    if (pathinfo($item->getPathname(), PATHINFO_EXTENSION) === 'php') {
+                        // Fix PSR-4 compliance issues by correcting namespace casing
+                        $this->copyAndFixNamespaceCasing($item->getPathname(), $destPath);
+                    } else {
+                        if (!copy($item->getPathname(), $destPath)) {
+                            throw new Exception("Failed to copy file: {$item->getPathname()} to $destPath");
+                        }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Copy PHP file and fix namespace casing issues for PSR-4 compliance
+     */
+    private function copyAndFixNamespaceCasing(string $sourcePath, string $destPath): void
+    {
+        $content = file_get_contents($sourcePath);
+
+        if ($content === false) {
+            throw new Exception("Failed to read file: $sourcePath");
+        }
+
+        // Fix common namespace casing issues
+        $fixedContent = $this->fixNamespaceCasing($content, $sourcePath);
+
+        if (file_put_contents($destPath, $fixedContent) === false) {
+            throw new Exception("Failed to write file: $destPath");
+        }
+    }
+
+    /**
+     * Fix namespace casing issues in PHP file content
+     */
+    private function fixNamespaceCasing(string $content, string $filePath): string
+    {
+        // Map of known problematic namespaces and their correct casing
+        $corrections = [
+            // Fix lowercase exceptions to proper case
+            // 'Boctulus\Simplerest\Core\Exceptions\\' => 'Boctulus\Simplerest\Core\Exceptions\\',
+            // 'Boctulus\Simplerest\Core\Interfaces\\' => 'Boctulus\Simplerest\Core\Interfaces\\',
+            // 'Boctulus\Simplerest\Core\Libs\\' => 'Boctulus\Simplerest\Core\Libs\\',
+            // 'Boctulus\Simplerest\Core\Traits\\' => 'Boctulus\Simplerest\Core\Traits\\',
+            // // More specific corrections
+            // 'Boctulus\Simplerest\Core\Interfaces\IObserver' => 'Boctulus\Simplerest\Core\Interfaces\IObserver',
+            // 'Boctulus\Simplerest\Core\Interfaces\ISubject' => 'Boctulus\Simplerest\Core\Interfaces\ISubject',
+            // 'Boctulus\Simplerest\Core\Libs\EventBus' => 'Boctulus\Simplerest\Core\Libs\EventBus',
+            // 'Boctulus\Simplerest\Core\Libs\Fragment' => 'Boctulus\Simplerest\Core\Libs\Fragment',
+            // 'Boctulus\Simplerest\SW\core\libs\SSE' => 'Boctulus\Simplerest\Core\Libs\SSE',
+            // 'Boctulus\Simplerest\Core\Libs\Strings' => 'Boctulus\Simplerest\Core\Libs\Strings',
+            // 'Boctulus\Simplerest\Core\Libs\ViewModel' => 'Boctulus\Simplerest\Core\Libs\ViewModel',
+            // 'Boctulus\Simplerest\Core\Traits\EventBusTrait' => 'Boctulus\Simplerest\Core\Traits\EventBusTrait',
+        ];
+
+        // Apply corrections
+        foreach ($corrections as $incorrect => $correct) {
+            // Replace in namespace declarations
+            $content = preg_replace('/namespace\s+' . preg_quote($incorrect, '/') . '/', 'namespace ' . $correct, $content);
+            // Replace in class declarations
+            $content = str_replace($incorrect, $correct, $content);
+        }
+
+        return $content;
     }
 
     /**
