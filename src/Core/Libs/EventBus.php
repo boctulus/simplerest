@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\core\libs;
+namespace Boctulus\Simplerest\Core\Libs;
 
 use Boctulus\Simplerest\Core\Interfaces\ISubject;
 use Boctulus\Simplerest\Core\Traits\EventBusTrait;

@@ -4,7 +4,7 @@ namespace Boctulus\ShopifyConnector;
 
 use Boctulus\Simplerest\Core\Libs\Url;
 use Boctulus\Simplerest\Core\Libs\Config;
-use Boctulus\Simplerest\Core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 // use Boctulus\ShopifyConnector\Traits\ShopifyWooCommerceAdaptorTrait;
 
