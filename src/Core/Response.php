@@ -394,7 +394,7 @@ class Response implements \ArrayAccess
     }
 
     function isEmpty(){
-        return $this->data == null;
+        return $this->data == null || (is_array($this->data) && empty($this->data));
     }
 
     /*
