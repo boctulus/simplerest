@@ -108,8 +108,10 @@ class FrontController
             // 8. Ejecutar middlewares
             $handlers['middleware']->run($class_name, $method);
 
-            // 9. Enviar respuesta
-            $res->flush();
+            // 9. Enviar respuesta solo si hay datos
+            if (!$res->isEmpty()){
+                $res->flush();
+            }
             exit;
 
         } catch (\Throwable $e) {
