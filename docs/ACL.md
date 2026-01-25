@@ -45,6 +45,22 @@ Advanced ACL Features
 - Dynamic loading of permissions from database
 - Support for user-specific permissions beyond role-based permissions
 
+### Available Special Permissions
+
+The system defines the following special permissions:
+- 'read_all' - Access records belonging to other users
+- 'read_all_folders' - Access records in folders not shared with the user
+- 'read_all_trashcan' - Access records in trashcan belonging to other users
+- 'write_all' - Modify/delete records belonging to other users
+- 'write_all_folders' - Modify/delete records in folders belonging to other users
+- 'write_all_trashcan' - Permanently delete/restore records belonging to other users
+- 'write_all_collections' - Write records in collections belonging to other users
+- 'fill_all' - Fill any field including non-fillable fields
+- 'grant' - Grant roles and permissions to users
+- 'impersonate' - Impersonate other users
+- 'lock' - Lock/unlock records, modify locked records, delete locked records
+- 'transfer' - Transfer ownership of records
+
 ### Comparison with Laravel ACL packages
 
 This ACL system is indeed much more sophisticated than typical Laravel ACL packages like spatie/laravel-permission, offering:
@@ -312,25 +328,18 @@ En lugar de definir de forma monolítica los alcances de un "admin" éste se pue
 
 Ejemplos:
 
-- "lock" - bloquear /besbloquear un registro 
-- "lock" - modificar un registro bloqueado
-- "lock" - borrar un registro bloqueado. Requiere también de "write_all_trashcan"
-- "lock" - borrar definitivamente un registro bloqueado
-- "lock" - restaurar (undelete) un registro bloqueado
 - "read_all" - acceder a registros de otros usuarios (no incluye los protegidos en folders)
-- "read_all" - listar registros de otros usuarios (no incluye los protegidos en folders pero si colecciones)
-- "read_all_folders" - acceder a registros en folders que no se nos han compartido 
-- "read_all_folders" - listar registros en folders que no se nos han compartido
-- "read_all_trashcan" - acceder a  registros de otros en papelera
-- "read_all_trashcan" - listar registros de otros en papelera
+- "read_all_folders" - acceder a registros en folders que no se nos han compartido
+- "read_all_trashcan" - acceder a registros de otros en papelera
 - "write_all" - modificar / borrar registros de otros usuarios (sin alterar su ownership)
 - "write_all_folders" - modificar / borrar registros de otros usuarios en folders (sin alterar su ownership)
 - "write_all_trashcan" - borrar definitivamente / restaurar registros de otros usuarios
-- "write_all_collections" - escribir los registros de las colecciones de otros usuarios. 
-- "transfer" - tranferir un registro o sea cambiar la propiedad (ownership) de un registro (campo belongs_to)
-- "fill_all" - modificar la fecha de creación 
-- "fill_all" - llenar cualquier campo incluso los no-fillables
+- "write_all_collections" - escribir los registros de las colecciones de otros usuarios
+- "fill_all" - modificar la fecha de creación / llenar cualquier campo incluso los no-fillables
 - "grant" - conceder roles y permisos
+- "impersonate" - suplantar a otros usuarios
+- "lock" - bloquear/desbloquear un registro / modificar un registro bloqueado / borrar un registro bloqueado / borrar definitivamente un registro bloqueado / restaurar (undelete) un registro bloqueado
+- "transfer" - transferir un registro o sea cambiar la propiedad (ownership) de un registro (campo belongs_to)
 
 Como colorario es posible tener muchos roles con caracteristicas de un admin o superadmin.
 
@@ -575,24 +584,24 @@ getEveryPosibleRole()                   						Devuelve todos los roles registrad
 roleExists($rol)                        						Existe el rol?
 getRolePermissions($rol)                						Devuelve todos los permisos para un determinado rol.
 getAncestry($rol)                       						Roles de los ancestros de un usuario.
-isHigherRole($rol1, $rol2)              						Tiene el rol$1 mayor nivel de acceso que $rol2? (2)
+isHigherRole($rol1, $rol2)              						Tiene el rol$1 mayor nivel de acceso que $rol2?
 
 isGuest()                               						Es un visitante no registrado?
-isRegistered()                          						Es un usuario que ha entregado credenciales?    
+isRegistered()                          						Es un usuario que ha entregado credenciales?
 getRoles()                              						Rol o roles de usuario.
 
 hasRole($rol)                          							El usuario posee ese rol? (no considera herencia)
-hasAnyRole([$rol1, ...])               							El usuario posee alguno de esos roles? (no considera herencia)   
+hasAnyRole([$rol1, ...])               							El usuario posee alguno de esos roles? (no considera herencia)
 hasRoleOrHigher($rol)                   						Se tiene el rol o uno "superior" (2)
 hasAnyRoleOrHigher([$rol1, ...])        						Se tiene un rol o uno "superior" (2)
 
-getTbPermissions($table = null)									Retorna permisos sobre recursos (tablas) (1)
+getTbPermissions($table = null, $unpacked = true)				Retorna permisos sobre recursos (tablas) (1)
 getSpPermissions($table = null)									Retorna permisos "especiales" (1)
-getFreshTbPermissions($table = null)							Retorna permisos sobre recursos (tablas)
-getFreshSpPermissions()											Retorna permisos "especiales"
-hasResourcePermission($perm, $tabla)    						El usuario tiene permisos explícitos sobre esa tabla?
-hasSpecialPermission($permiso)          						El usuario tiene ese permiso especial?
-hasPermission($perm, $resource, $uid = null, $row_id = null)	Permisos sobre una tabla o registro 
+getFreshTbPermissions($table = null, $unpacked = true)			Retorna permisos sobre recursos (tablas) frescos desde la base de datos (FineGrainedACL)
+getFreshSpPermissions()											Retorna permisos "especiales" frescos desde la base de datos (FineGrainedACL)
+hasResourcePermission($perm, $tabla, $role_names = null)    	El usuario tiene permisos explícitos sobre esa tabla?
+hasSpecialPermission($permiso, $role_names = null, $uid = null) El usuario tiene ese permiso especial?
+hasPermission($perm, $resource, $uid = null, $row_id = null)	Permisos sobre una tabla o registro
 
 Notas:
 
@@ -640,6 +649,19 @@ La función Acl::hasRolePermissionsOrHigher() *deberá* tener en consideración 
 Es importante resaltar que dado que la clase Acl se serializa por motivos de performance la mayor parte de las propiedades y métodos no pueden ser estáticos ya que propiedades estáticas no pueden ser serializadas y al des-serializar no estarán disponibles llevando a muchos dolores de cabeza. Igualmente por concistencia se desaconseja el uso de métodos estáticos.
 
 Al implementar un service provider para el ACL se debe cumplir de mínima con la interfaz IAcl.
+
+## Diferencias entre BasicACL y FineGrainedACL
+
+### BasicACL
+- Loads roles from the database during initialization
+- Does not provide fresh permission methods
+- Simpler implementation focused on basic role-based access control
+
+### FineGrainedACL
+- Loads both roles and special permissions from the database during initialization
+- Provides `getFreshTbPermissions()` and `getFreshSpPermissions()` methods for real-time permission retrieval from the database
+- Includes `withDefaultConnection()` wrapper for database operations
+- Offers more granular control with real-time permission checking capabilities
 
 
 # Controladores tipo "resource"

@@ -37,7 +37,7 @@ if (!defined('UPDATE_PATH'))
 	define('UPDATE_PATH', ROOT_PATH  . 'Udates' . DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_PATH'))
-    define('CORE_PATH', APP_PATH . 'Core'. DIRECTORY_SEPARATOR);
+    define('CORE_PATH', ROOT_PATH . 'src'. DIRECTORY_SEPARATOR .'Core'. DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_INTERFACE_PATH'))
 	define('CORE_INTERFACE_PATH', CORE_PATH  . 'Interfaces' . DIRECTORY_SEPARATOR);    
