@@ -11,9 +11,12 @@ A robust PHP script that:
 - Creates the required destination directory structure
 - Recursively copies the `src/` directory
 - Copies the first-level contents of the `app/` directory
+- Copies the `scripts/init` directory with boot and redirection files
 - Processes configuration files to remove sensitive information
 - Excludes development artifacts and sensitive files
 - Sanitizes `.env.example` and `composer.json` files
+- Removes problematic dependencies that reference local packages
+- Minimizes composer dependencies to only essential requirements
 
 ### 2. Command-Line Interface (`app/Commands/PackCommand.php`)
 A CLI command that integrates with the SimpleRest framework's command system:

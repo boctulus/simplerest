@@ -4,7 +4,7 @@ namespace Boctulus\Simplerest\Core\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Logger;
 use Boctulus\Simplerest\Core\Libs\System;
-use Boctulus\Simplerest\Core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\SortedIterator;
 use Boctulus\Simplerest\Core\Exceptions\FileNotFoundException;
 use Boctulus\Simplerest\Core\Exceptions\UnreadableFileException;

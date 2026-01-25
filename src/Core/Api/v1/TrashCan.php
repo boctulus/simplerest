@@ -9,7 +9,7 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Libs\Debug;
 use Boctulus\Simplerest\Core\Libs\Validator;
-use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 use Boctulus\Simplerest\Core\Libs\Url;
 
 

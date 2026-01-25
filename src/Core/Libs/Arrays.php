@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Core\Libs;
 
-use Boctulus\Simplerest\Core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Strings;
 
 class Arrays 
 {
