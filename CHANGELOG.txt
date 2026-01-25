@@ -365,3 +365,4 @@
 [2026-01-24 19:38:37]	0.8.12	Automatic update
 [2026-01-25 01:11:28]	0.8.12	Automatic update
 [2026-01-25 01:11:56]	0.8.12	Automatic update
+[2026-01-25 09:17:57]	0.8.12	Core dentro de src/
