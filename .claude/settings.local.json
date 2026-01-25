@@ -51,7 +51,8 @@
       "Bash(node web-automation/test_homepage.js:*)",
       "Bash(npm init:*)",
       "Bash(npm install:*)",
-      "Bash(npx playwright:*)"
+      "Bash(npx playwright:*)",
+      "Bash(vendorbinphpunit testsApiTest.php --list-tests)"
     ],
     "deny": [],
     "ask": []

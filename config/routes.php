@@ -24,6 +24,10 @@ WebRouter::get('sitemap.xml', function(){
 	return $xml;
 });
 
+WebRouter::any('health', function () {
+    return ['ok' => true];
+});
+
 // ...
 
 WebRouter::get('api-test/cors',  'CorsTesterController@get');

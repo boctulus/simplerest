@@ -151,7 +151,7 @@ foreach ($config['providers'] as $provider){
 /*
     TimeZone adjust
 
-    Lo ideal seria que esto este dentro de un package y que se pueda desconectar
+    TO-DO: move away into optional package 
 */
 
 if (isset($config['DateTimeZone'])){
@@ -162,14 +162,14 @@ if (isset($config['DateTimeZone'])){
     }
 }
 
-// Mostrar errores
+// Show errors
 if ((php_sapi_name() === 'cli') || (isset($_GET['show_errors']) && $_GET['show_errors'] == 1)){
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
-	error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 } else {
-	if ($config['debug'] == false){
-		error_reporting(E_ALL & ~E_WARNING);
-		error_reporting(0);
-	}	
+    if ($config['debug'] == false){
+        error_reporting(E_ALL & ~E_WARNING);
+        error_reporting(0);
+    }   
 }
