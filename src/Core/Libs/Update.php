@@ -91,7 +91,7 @@ class Update
 
         $last_ver_dir = null;
 
-        foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
+        foreach (new \DirectoryIterator(UPDATES_PATH) as $fileInfo) {
             if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
             
             $dir = $fileInfo->getBasename();
@@ -128,11 +128,11 @@ class Update
             $update_dir = Update::getLastVersionDirectory();
 
             if (!Files::isAbsolutePath($update_dir)){
-                $update_dir = UPDATE_PATH . $update_dir;
+                $update_dir = UPDATES_PATH . $update_dir;
             }
         }
         
-        $update_dir = UPDATE_PATH . $update_dir . DIRECTORY_SEPARATOR;
+        $update_dir = UPDATES_PATH . $update_dir . DIRECTORY_SEPARATOR;
 
         $tmp_dst = '/tmp/simplerest/';
         
@@ -148,10 +148,10 @@ class Update
             mkdir($tmp_dst . 'updates');
         }
 
-        Files::copy(UPDATE_PATH, $tmp_dst . 'updates', [ basename($update_dir) ]);
+        Files::copy(UPDATES_PATH, $tmp_dst . 'updates', [ basename($update_dir) ]);
         //Files::copy(ROOT_PATH, $tmp_dst, ['app/controllers/UpdateController.php']);
 
-        ZipManager::zip($tmp_dst, UPDATE_PATH . 'update-' . basename($update_dir) . '.zip', [
+        ZipManager::zip($tmp_dst, UPDATES_PATH . 'update-' . basename($update_dir) . '.zip', [
             "completed"
         ]);
     }

@@ -27,7 +27,7 @@ class Constants
 
     public const BACKUP_PATH = self::ROOT_PATH . 'backup/';
 
-    public const UPDATE_PATH = self::ROOT_PATH . 'updates/';
+    public const UPDATES_PATH = self::ROOT_PATH . 'updates/';
 
     public const CORE_PATH = self::APP_PATH . 'core/';
 
