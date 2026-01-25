@@ -36,8 +36,8 @@ if (!defined('APP_PATH'))
 if (!defined('BACKUP_PATH'))
 	define('BACKUP_PATH', ROOT_PATH  . 'backup' . DIRECTORY_SEPARATOR);
 
-if (!defined('UPDATE_PATH'))
-	define('UPDATE_PATH', ROOT_PATH  . 'updates' . DIRECTORY_SEPARATOR);
+if (!defined('UPDATES_PATH'))
+	define('UPDATES_PATH', ROOT_PATH  . 'updates' . DIRECTORY_SEPARATOR);
 
 if (!defined('SRC_PATH'))
     define('SRC_PATH', ROOT_PATH . 'src'. DIRECTORY_SEPARATOR);
