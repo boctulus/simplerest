@@ -6,6 +6,9 @@ if (!defined('ROOT_PATH'))
 if (!defined('CONFIG_PATH'))
 	define('CONFIG_PATH', ROOT_PATH  . 'config' . DIRECTORY_SEPARATOR);
 
+if (!defined('PUBLIC_PATH'))
+    define('PUBLIC_PATH', ROOT_PATH . 'public' . DIRECTORY_SEPARATOR); 
+
 if (!defined('PACKAGES_PATH'))
 	define('PACKAGES_PATH', ROOT_PATH  . 'packages' . DIRECTORY_SEPARATOR);    
 
@@ -31,13 +34,22 @@ if (!defined('APP_PATH'))
     define('APP_PATH', ROOT_PATH . 'app' . DIRECTORY_SEPARATOR);
 
 if (!defined('BACKUP_PATH'))
-	define('BACKUP_PATH', ROOT_PATH  . 'Backup' . DIRECTORY_SEPARATOR);
+	define('BACKUP_PATH', ROOT_PATH  . 'backup' . DIRECTORY_SEPARATOR);
 
 if (!defined('UPDATE_PATH'))
-	define('UPDATE_PATH', ROOT_PATH  . 'Udates' . DIRECTORY_SEPARATOR);
+	define('UPDATE_PATH', ROOT_PATH  . 'updates' . DIRECTORY_SEPARATOR);
+
+if (!defined('SRC_PATH'))
+    define('SRC_PATH', ROOT_PATH . 'src'. DIRECTORY_SEPARATOR);
+
+if (!defined('DATABASE_PATH'))
+    define('DATABASE_PATH', ROOT_PATH . 'database'. DIRECTORY_SEPARATOR);  
+
+if (!defined('ETC_PATH'))
+    define('ETC_PATH', ROOT_PATH . 'etc'. DIRECTORY_SEPARATOR);    
 
 if (!defined('CORE_PATH'))
-    define('CORE_PATH', ROOT_PATH . 'src'. DIRECTORY_SEPARATOR .'Core'. DIRECTORY_SEPARATOR);
+    define('CORE_PATH', SRC_PATH . 'Core'. DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_INTERFACE_PATH'))
 	define('CORE_INTERFACE_PATH', CORE_PATH  . 'Interfaces' . DIRECTORY_SEPARATOR);    
@@ -82,17 +94,11 @@ if (!defined('COMMANDS_PATH')){
     define('COMMANDS_PATH', APP_PATH . 'Commands' . DIRECTORY_SEPARATOR);
 }
 
-if (!defined('DATABASE_PATH'))
-    define('DATABASE_PATH', ROOT_PATH . 'database'. DIRECTORY_SEPARATOR);  
-
 if (!defined('MIGRATIONS_PATH'))
     define('MIGRATIONS_PATH', DATABASE_PATH . 'Migrations'. DIRECTORY_SEPARATOR);   
 
 if (!defined('SEEDERS_PATH'))
-    define('SEEDERS_PATH', DATABASE_PATH . 'seeders'. DIRECTORY_SEPARATOR);   
-
-if (!defined('ETC_PATH'))
-    define('ETC_PATH', ROOT_PATH . 'etc'. DIRECTORY_SEPARATOR);     
+    define('SEEDERS_PATH', DATABASE_PATH . 'seeders'. DIRECTORY_SEPARATOR);    
 
 if (!defined('VIEWS_PATH'))
     define('VIEWS_PATH', APP_PATH .  'Views' . DIRECTORY_SEPARATOR);  
@@ -140,8 +146,6 @@ if (!defined('MIDDLEWARES_PATH'))
 if (!defined('WIDGETS_PATH'))
     define('WIDGETS_PATH', APP_PATH . 'widgets' . DIRECTORY_SEPARATOR);
 
-if (!defined('PUBLIC_PATH'))
-    define('PUBLIC_PATH', ROOT_PATH . 'public' . DIRECTORY_SEPARATOR); 
 
 if (!defined('ASSETS_PATH'))
     define('ASSETS_PATH', PUBLIC_PATH . 'assets' . DIRECTORY_SEPARATOR); 
