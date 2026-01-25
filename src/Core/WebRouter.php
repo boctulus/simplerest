@@ -495,6 +495,44 @@ class WebRouter
         return static::getInstance();
     }
 
+    public static function any(string $uri, $callback){
+        $uri = Strings::rTrim('/', $uri);
+
+        if(static::$groupPrefix !== ''){
+            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
+        }
+
+        $verbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+
+        foreach ($verbs as $verb){
+            static::$current_verb = $verb;
+            static::$current_uri  = $uri;
+            static::$current      = [$verb, $uri];
+            static::$routes[$verb][$uri] = $callback;
+        }
+
+        return static::getInstance();
+    }
+
+    public static function match(array $verbs, string $uri, $callback){
+        $uri = Strings::rTrim('/', $uri);
+
+        if(static::$groupPrefix !== ''){
+            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
+        }
+
+        $verbs = array_map('strtoupper', $verbs);
+
+        foreach ($verbs as $verb){
+            static::$current_verb = $verb;
+            static::$current_uri  = $uri;
+            static::$current      = [$verb, $uri];
+            static::$routes[$verb][$uri] = $callback;
+        }
+
+        return static::getInstance();
+    }
+
     public static function name(string $name){
         static::$aliases[$name] = [
             'verb' => static::$current_verb,
