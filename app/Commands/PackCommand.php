@@ -41,18 +41,23 @@ class PackCommand implements ICommand
         $source = $this->getOption($options, ['s', 'source'], $this->defaultSource);
         $dest = $this->getOption($options, ['d', 'dest'], $this->defaultDest);
         $skipVerification = isset($options['skip-verification']) || isset($options['V']);
+        $skipComposerInstall = isset($options['skip-composer-install']);
 
         echo "Packaging SimpleRest framework...\n";
         echo "Source: $source\n";
         echo "Destination: $dest\n";
-        
+
         if ($skipVerification) {
             echo "Verification will be skipped.\n";
         }
 
+        if ($skipComposerInstall) {
+            echo "Composer install will be skipped.\n";
+        }
+
         $packager = new SimpleRestPackager($source, $dest);
 
-        if ($packager->run($skipVerification)) {
+        if ($packager->run($skipVerification, $skipComposerInstall)) {
             echo "\nFramework packaged successfully!\n";
             return 0; // Success
         } else {
@@ -67,12 +72,14 @@ class PackCommand implements ICommand
         echo "Usage:\n";
         echo "  php com pack [options]\n\n";
         echo "Options:\n";
-        echo "  -s, --source PATH    Source directory (default: {$this->defaultSource})\n";
-        echo "  -d, --dest PATH      Destination directory (default: {$this->defaultDest})\n";
-        echo "  -V, --skip-verification Skip automated verification in destination\n\n";
+        echo "  -s, --source PATH             Source directory (default: {$this->defaultSource})\n";
+        echo "  -d, --dest PATH               Destination directory (default: {$this->defaultDest})\n";
+        echo "  -V, --skip-verification       Skip automated verification in destination\n";
+        echo "  --skip-composer-install       Skip running 'composer install' in destination\n\n";
         echo "Examples:\n";
         echo "  php com pack\n";
         echo "  php com pack --skip-verification\n";
+        echo "  php com pack --skip-composer-install\n";
         echo "  php com pack -s /custom/source -d /custom/dest\n";
     }
 

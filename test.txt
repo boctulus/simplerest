@@ -1,8 +1,0 @@
-$dir = 'D:\Android\pos\MyPOS';
-        $pattern = '*.java|*.xml|*.gradle|*.properties';
-
-        dd(
-            Files::recursiveGlob($dir . DIRECTORY_SEPARATOR . $pattern, 0, [
-                'D:\Android\pos\MyPOS\app\build\*'
-            ])
-        );

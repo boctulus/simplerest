@@ -1,1 +1,12 @@
 app/Commands
+app/Controllers/HomeController.php
+app/Views
+app/Locale
+packages/boctulus/basic-acl
+packages/boctulus/fine-grained-acl
+public/assets/img
+public/assets/js
+public/assets/css
+public/assets/third_party/bootstrap/5.x
+.agent/skills
+.claude/skills
