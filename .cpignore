@@ -23,6 +23,8 @@ web-automation/
 app/
 public/assets/
 packages/
+database/migrations
+database/seeders
 config/woocommerce.php
 *.zip
 *.rar
