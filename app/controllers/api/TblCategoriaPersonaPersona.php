@@ -2,10 +2,10 @@
 
 namespace Boctulus\Simplerest\Controllers\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 
 // API de tabla puente
-class TblCategoriaPersonaPersona extends MyApiController
+class TblCategoriaPersonaPersona extends ApiController
 { 
     static protected $soft_delete = true;
     static protected $connect_to = [

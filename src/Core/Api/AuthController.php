@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Api\v1;
+namespace Boctulus\Simplerest\Core\Api;
 
 use Exception;
 use Firebase\JWT\JWT;

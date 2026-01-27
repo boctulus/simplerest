@@ -23,7 +23,7 @@ class ApiHandler
         $sub = (int) $config['remove_api_slug'];
 
         if (!isset($params[1 - $sub])){
-            $res->error(Msg::MISSING_API_VERSION['text']);
+            $res->error(Msg::MISSING_API_VERSION['text']); // API version is missing
         }
 
         $api_version = $params[1 - $sub];
@@ -38,7 +38,7 @@ class ApiHandler
         $controller = implode('',array_map('ucfirst',explode('_',$controller)));
 
         if ($controller == 'trash_can' || $controller == 'trashCan' || $controller == 'TrashCan' || $controller == 'collections' || $controller == 'Collections') {
-            $namespace = 'simplerest\\Core\\api\\'. $api_version . '\\';
+            $namespace = 'Simplerest\\Core\\api\\'. $api_version . '\\';
         } else {
             $namespace = namespace_url() . '\\Controllers\\api\\';
         }

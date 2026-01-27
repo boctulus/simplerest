@@ -2,9 +2,9 @@
 
 namespace Boctulus\Simplerest\Controllers\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 
-class TblContacto extends MyApiController
+class TblContacto extends ApiController
 { 
     static protected $soft_delete = true;
 	static protected $connect_to = [

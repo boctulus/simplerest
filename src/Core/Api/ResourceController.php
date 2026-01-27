@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Api\v1;
+namespace Boctulus\Simplerest\Core\Api;
 
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\Simplerest\Core\Interfaces\IAuth;

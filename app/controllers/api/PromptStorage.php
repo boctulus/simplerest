@@ -3,9 +3,9 @@
 namespace Boctulus\Simplerest\Controllers\Api;
 
 use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 
-class PromptStorage extends MyApiController
+class PromptStorage extends ApiController
 { 
     static protected $soft_delete = true;
     static protected $connect_to = [

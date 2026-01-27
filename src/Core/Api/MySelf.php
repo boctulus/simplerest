@@ -1,14 +1,14 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Api\v1;
+namespace Boctulus\Simplerest\Core\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 
-class MySelf extends MyApiController 
+class MySelf extends ApiController 
 {  
     protected $is_active;
     protected $__id;

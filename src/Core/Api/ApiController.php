@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Api\v1;
+namespace Boctulus\Simplerest\Core\Api;
 
 use PDO;
 use Boctulus\Simplerest\Core\Acl;  
@@ -20,7 +20,7 @@ use Boctulus\Simplerest\Core\FoldersAclExtension;
 use Boctulus\Simplerest\Core\Exceptions\SqlException;
 use Boctulus\Simplerest\Core\Interfaces\ISubResources;
 
-use Boctulus\Simplerest\Core\Api\v1\ResourceController;
+use Boctulus\Simplerest\Core\Api\ResourceController;
 use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
 use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 

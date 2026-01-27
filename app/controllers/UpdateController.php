@@ -9,6 +9,7 @@ use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\Update;
 use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
 
 /*
     Update commands
@@ -16,12 +17,12 @@ use Boctulus\Simplerest\Core\Libs\DB;
 
 class UpdateController extends ConsoleController
 {
-    static public $update_path;
+    static public $UPDATES_PATH;
     
     function __construct()
     {
         $last_ver_dir = Update::getLastVersionDirectory();
-        static::$update_path = ROOT_PATH . 'updates/'. $last_ver_dir . '/';
+        static::$UPDATES_PATH = UPDATES_PATH . $last_ver_dir . DIRECTORY_SEPARATOR;
     }
 
     function index(){
@@ -29,13 +30,13 @@ class UpdateController extends ConsoleController
     }
 
     protected function run_batches(...$opt){
-        $update_path = static::$update_path . 'batches/';
+        $UPDATES_PATH = static::$UPDATES_PATH . 'batches/';
 
-        Files::mkDir(static::$update_path . 'completed/');
+        Files::mkDir(static::$UPDATES_PATH . 'completed/');
 
-        $files = glob($update_path . '*.php');
+        $files = glob($UPDATES_PATH . '*.php');
         foreach ($files as $file){
-            $completed_path = static::$update_path . 'completed/' . basename($file);
+            $completed_path = static::$UPDATES_PATH . 'completed/' . basename($file);
 
             if (file_exists($completed_path)){
                 continue;
@@ -78,7 +79,7 @@ class UpdateController extends ConsoleController
             Copy files 
         */
 
-        $ori =  static::$update_path . 'files/';
+        $ori =  static::$UPDATES_PATH . 'files/';
         $dst = ROOT_PATH;
 
         $files  = glob($ori . '*.php');
@@ -87,7 +88,7 @@ class UpdateController extends ConsoleController
         // Si el copiado fue exitoso...... debe anotarse como completed !
         //
 
-        $intial_cp_path = static::$update_path . 'completed/initial_file_copy.batch';
+        $intial_cp_path = static::$UPDATES_PATH . 'completed/initial_file_copy.batch';
 
         if (count($files) > 0 && (!file_exists($intial_cp_path) || isset($force))){
             // enable backup --- si está funcionando ???
@@ -107,7 +108,7 @@ class UpdateController extends ConsoleController
         Files::setBackupDirectory();
 
         StdOut::hideResponse();
-        Files::cp(static::$update_path . 'version.txt', $dst);
+        Files::cp(static::$UPDATES_PATH . 'version.txt', $dst);
     }
 
     function list(){
@@ -138,21 +139,21 @@ class UpdateController extends ConsoleController
         $o = $opt[0] ?? '--current';
 
         if (preg_match('/^(--current|current)$/', $o)){
-            $desc = file_get_contents(static::$update_path . 'description.txt');
+            $desc = file_get_contents(static::$UPDATES_PATH . 'description.txt');
         }
 
         if (preg_match('/^(--version|version)[:|=](.*)$/', $o, $matches)){
             $version = $matches[2];
 
 
-            foreach (new \DirectoryIterator(UPDATE_PATH) as $fileInfo) {
+            foreach (new \DirectoryIterator(UPDATES_PATH) as $fileInfo) {
                 if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
                 
                 $dir = $fileInfo->getBasename();
                 $ver = substr($dir, 11);
 
                 if ($ver == $version){
-                    $desc = file_get_contents(UPDATE_PATH . $dir . '/' . 'description.txt');
+                    $desc = file_get_contents(UPDATES_PATH . $dir . '/' . 'description.txt');
                 }
             }    
         }
@@ -177,8 +178,8 @@ class UpdateController extends ConsoleController
         d($cur_ver, "Current version");
 
         if ($last_ver_in_dir > $cur_ver){
-            $batches_path   = static::$update_path . 'batches/';
-            $completed_path = static::$update_path . 'completed/';
+            $batches_path   = static::$UPDATES_PATH . 'batches/';
+            $completed_path = static::$UPDATES_PATH . 'completed/';
 
             $batches           = glob($batches_path   . '*.php');
             $batches_completed = glob($completed_path . '*.php');

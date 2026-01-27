@@ -119,7 +119,7 @@ use Boctulus\Simplerest\Core\Libs\i18n\Translate;
 use Boctulus\Simplerest\Libs\ArbitrageCalculator;
 use Boctulus\Simplerest\Libs\HaulmerSignatureSDK;
 use Boctulus\Simplerest\Libs\LaravelApiGenerator;
-use Boctulus\Simplerest\Core\Api\v1\ApiController;
+use Boctulus\Simplerest\Core\Api\ApiController;
 use Boctulus\Simplerest\Core\Libs\ApacheWebServer;
 use Boctulus\Simplerest\Core\Libs\CronJobMananger;
 use Boctulus\Simplerest\Core\Libs\FileMemoization;

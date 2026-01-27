@@ -2981,6 +2981,36 @@ class MakeCommand implements ICommand
                 file_put_contents($filePath, $content);
                 StdOut::print("Created file: $filePath");
             }
+
+            // Crear el archivo ModuleProvider.php en src/
+            $moduleProviderPath = $basePath . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ModuleProvider.php';
+            $moduleProviderDir = dirname($moduleProviderPath);
+            if (!is_dir($moduleProviderDir)) {
+                Files::mkDirOrFail($moduleProviderDir);
+            }
+            if (!file_exists($moduleProviderPath) || $force) {
+                $pascalName = Strings::toPascalCase($name);
+                $namespace = $this->namespace . '\\Modules\\' . $pascalName;
+
+                $moduleProviderContent = file_get_contents(self::TEMPLATES . 'Module' . DIRECTORY_SEPARATOR . 'ModuleProvider.php');
+                $moduleProviderContent = str_replace('NAMESPACE__', $namespace, $moduleProviderContent);
+                $moduleProviderContent = str_replace('NAME__', $pascalName . 'ModuleProvider', $moduleProviderContent);
+
+                file_put_contents($moduleProviderPath, $moduleProviderContent);
+                StdOut::print("Created file: $moduleProviderPath");
+            }
+
+            // Crear el archivo routes.php en config/
+            $routesPath = $basePath . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'routes.php';
+            $routesDir = dirname($routesPath);
+            if (!is_dir($routesDir)) {
+                Files::mkDirOrFail($routesDir);
+            }
+            if (!file_exists($routesPath) || $force) {
+                $routesContent = "<?php\n\n// Module routes file\n";
+                file_put_contents($routesPath, $routesContent);
+                StdOut::print("Created file: $routesPath");
+            }
         }
 
         StdOut::print("Module '$name' created successfully at '$basePath'.");
