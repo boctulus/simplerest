@@ -1,0 +1,17 @@
+node_modules/
+vendor/
+*.zip
+*.rar
+*.tar
+*.tar.gz
+uploads/
+backups/
+logs/
+tmp/
+storage/security/
+.env
+.codegpt/
+.claude/
+.vscode/
+composer.json.tmp
+exports/main_db_export.sql

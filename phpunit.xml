@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         cacheDirectory=".phpunit.cache"
+         executionOrder="depends,defects"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutOutputDuringTests="true"
+         failOnWarning="true"
+         failOnRisky="true"
+         failOnEmptyTestSuite="true"
+         colors="true">
+    <testsuites>
+        <testsuite name="OpenFactura Tests">
+            <directory>packages/boctulus/friendlypos-web/tests</directory>
+        </testsuite>
+        <testsuite name="SimpleRest Tests">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <groups>
+        <exclude>
+            <group>refactor</group>
+        </exclude>
+    </groups>
+
+    <source>
+        <include>
+            <directory suffix=".php">packages/boctulus/friendlypos-web/src</directory>
+        </include>
+    </source>
+</phpunit>

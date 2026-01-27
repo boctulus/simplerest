@@ -1,0 +1,45 @@
+<?php
+
+use Boctulus\Simplerest\Core\Interfaces\IMigration;
+use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\DB;
+
+class Options implements IMigration
+{
+    /**
+	* Run migration.
+    *
+    * @return void
+    */
+    public function up()
+    {
+        $sc = new Schema('options');
+        
+        $sc
+        // No esta agregando la PRI KEY !!!!
+        ->varchar('the_key')
+        ->varchar('the_val', 240)
+        ->datetime('created_at')
+        ->datetime('updated_at');
+
+		$sc->create();		
+
+        $sc->addPrimary('the_key');
+        $sc->alter();
+    }
+
+    /**
+	* Run undo migration.
+    *
+    * @return void
+    */
+    public function down()
+    {
+        Schema::dropIfExists(
+            'options'
+        );
+    }
+}
+

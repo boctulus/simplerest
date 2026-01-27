@@ -1,0 +1,55 @@
+{
+    "name": "boctulus/simplerest",
+    "type": "library",
+    "description": "API Rest framework for PHP",
+    "keywords": [
+        "simplerest",
+        "framework",
+        "boctulus"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pablo Gabriel Bozzolo",
+            "email": "boctulus@gmail.com"
+        }
+    ],
+    "version": "0.8.12",
+    "require": {
+        "php": ">=7.4,<8.4",
+        "vlucas/phpdotenv": "^5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "phpstan/phpstan": "^1.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\Simplerest\\Core\\": "src/framework/",
+            "Boctulus\\Simplerest\\Controllers\\": "app/Controllers/",
+            "Boctulus\\Simplerest\\Commands\\": "app/Commands/",
+            "Boctulus\\Simplerest\\": "src/",
+            "Boctulus\\FineGrainedACL\\": "packages/boctulus/fine-grained-acl/src",
+            "Boctulus\\BasicACL\\": "packages/boctulus/basic-acl/src",
+            "Boctulus\\Zippy\\": "packages/boctulus/zippy/src",
+            "Boctulus\\CliTest\\": "packages/boctulus/cli-test/src",
+            "Boctulus\\WebTest\\": "packages/boctulus/web-test/src",
+            "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src",
+            "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src",
+            "Boctulus\\OpenfacturaSdk\\": "packages/boctulus/openfactura-sdk/src",
+            "Boctulus\\FriendlyposWeb\\": "packages/boctulus/friendlypos-web/src"
+        },
+        "exclude-from-classmap": [
+            "src/framework/Templates/"
+        ]
+    },
+    "repositories": [],
+    "config": {
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
