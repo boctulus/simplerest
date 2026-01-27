@@ -77,9 +77,9 @@ SimpleRest soporta estándares PSR para mejorar la interoperabilidad con el ecos
 
 **Compliance**: 95% PSR-7 compatible
 
-### 2. ORM Avanzado
+### 2. Query Builder Avanzado
 
-El ORM de SimpleRest combina la potencia del Query Builder con la simplicidad de patrones Active Record:
+El OQuery Builder de SimpleRest combina la potencia del Query Builder con la simplicidad de patrones Active Record:
 
 #### Modo Tradicional vs Laravel-like
 - **SimpleRest**: Trabaja exclusivamente con **instancias de modelos**
@@ -294,6 +294,7 @@ Arquitectura de handlers que separa responsabilidades:
 - Sin vendor lock-in
 - Personalización ilimitada
 - Control sobre la infraestructura
+- Más expresivo
 
 #### 2. Flexibilidad de Desarrollo
 - Arquitectura personalizable
