@@ -41,6 +41,7 @@
    },
    "autoload":{
       "psr-4":{
+         "Boctulus\\Simplerest\\Core\\":"src/framework/",
          "Boctulus\\Simplerest\\":"src/",
          "Boctulus\\FineGrainedACL\\":"packages/boctulus/fine-grained-acl/src",
          "Boctulus\\BasicACL\\":"packages/boctulus/basic-acl/src",
@@ -53,7 +54,7 @@
          "Boctulus\\FriendlyposWeb\\": "packages/boctulus/friendlypos-web/src"
       },
       "exclude-from-classmap": [
-         "src/Core/Templates/"
+         "src/framework/Templates/"
       ]
    },
    "autoload-dev": {
