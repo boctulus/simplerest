@@ -2,9 +2,9 @@
 
 namespace Boctulus\Simplerest\Controllers\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 
-class ApiKeys extends MyApiController
+class ApiKeys extends ApiController
 { 
     static protected $soft_delete = true;
     static protected $connect_to = [

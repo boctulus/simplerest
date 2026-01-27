@@ -1,14 +1,14 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Api\v1;
+namespace Boctulus\Simplerest\Core\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 use Boctulus\Simplerest\Core\Libs\FileUploader;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Acl;
 
-class Files extends MyApiController
+class Files extends ApiController
 { 
     static protected $soft_delete = false;
 

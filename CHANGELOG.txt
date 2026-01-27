@@ -371,3 +371,4 @@
 [2026-01-25 16:18:34]	0.8.12	Automatic update
 [2026-01-25 17:32:57]	0.8.12	Home Page de SimpleRest
 [2026-01-25 19:17:03]	0.8.12	Automatic update
+[2026-01-27 09:21:40]	0.8.12	Mejora `php com make module`

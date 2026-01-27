@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Controllers;
 
 // Estoy usando siempre la misma versión de las APIs
-use Boctulus\Simplerest\Core\Api\v1\Download;
+use Boctulus\Simplerest\Core\Api\Download;
 
 class DownloadController extends Download
 {

@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Core\Handlers;
 
-use Boctulus\Simplerest\Core\Api\v1\ApiController;
+use Boctulus\Simplerest\Core\Api\ApiController;
 use Boctulus\Simplerest\Core\Controllers\ConsoleController;
 use Boctulus\Simplerest\Core\Libs\Cli;
 use Boctulus\Simplerest\Core\Libs\Strings;

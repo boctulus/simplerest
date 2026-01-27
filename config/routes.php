@@ -1,16 +1,17 @@
 <?php
 
+use Boctulus\FriendlyposWeb\Controllers\OpenFacturaController;
 use Boctulus\Simplerest\Controllers\DumbController;
+use Boctulus\Simplerest\Core\Handlers\ApiHandler;
 use Boctulus\Simplerest\Core\Libs\Logger;
 use Boctulus\Simplerest\Core\Libs\Mail;
 use Boctulus\Simplerest\Core\Libs\SiteMap;
 use Boctulus\Simplerest\Core\Libs\System;
+use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\WebRouter;
 use Boctulus\Simplerest\Libs\Debug;
 use Boctulus\Simplerest\Modules\TaxCalc\TaxCalc;
 use Boctulus\Simplerest\Modules\Typeform\Typeform;
-use Boctulus\FriendlyposWeb\Controllers\OpenFacturaController;
-
 
 $route = WebRouter::getInstance();
 
@@ -224,4 +225,34 @@ WebRouter::get('admin/pagina-dos', function(){
 //	render($content);
 //});
 
+/*
+	Wildcard route examples
+*/
 
+// Example 1: Catch-all route for file paths
+WebRouter::get('files/*', function($path) {
+    return [
+        'endpoint' => 'files',
+        'requested_path' => $path,
+        'message' => 'Wildcard route for files endpoint captured the path'
+    ];
+});
+
+// Example 2: User route with wildcard for nested resources
+WebRouter::get('user/{id}/*', function($id, $resource) {
+    return [
+        'user_id' => $id,
+        'resource' => $resource,
+        'message' => 'User wildcard route accessed'
+    ];
+});
+
+
+WebRouter::any(
+    'api/{version}/{entity}/*',
+    function ($version, $entity, $rest = null) {
+        // ...
+    }
+);
+
+// WebRouter::mount('api', ApiHandler::class);

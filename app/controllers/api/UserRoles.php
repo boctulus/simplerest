@@ -2,11 +2,11 @@
 
 namespace Boctulus\Simplerest\Controllers\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController;
+use Boctulus\Simplerest\Core\Api\ApiController;
 use Boctulus\Simplerest\Core\Libs\Factory;
 
 
-class UserRoles extends MyApiController  /* implements IApiController */
+class UserRoles extends ApiController  /* implements IApiController */
 {    
     public $table_name = 'user_roles';
 

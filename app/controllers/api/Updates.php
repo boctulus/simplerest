@@ -9,7 +9,7 @@ global $api_version;
 */
 
 if ($api_version == 'v1'){
-    class Updates extends \Boctulus\Simplerest\Core\Api\v1\Files { 
+    class Updates extends \Boctulus\Simplerest\Core\Api\Files { 
         public $model_name = 'UpdatesModel';
 
     }
