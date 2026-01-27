@@ -388,55 +388,6 @@ class SimpleRestPackager
     }
 
     /**
-     * Update routes.php with required content and copy HomeController.php
-     */
-    private function updateRoutesAndCopyHomeController(): void
-    {
-        // Update routes.php with required content
-        $routesDestPath = $this->destDir . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'routes.php';
-
-        $requiredRoutesContent = '<?php
-
-use Boctulus\Simplerest\Core\Libs\SiteMap;
-use Boctulus\Simplerest\Core\WebRouter;
-
-$route = WebRouter::getInstance();
-
-// Example
-WebRouter::any(\'health\', function () {
-    return [\'ok\' => true];
-});';
-
-        // Write the required routes content to the destination
-        if (file_put_contents($routesDestPath, $requiredRoutesContent) === false) {
-            throw new Exception("Failed to update routes.php at: $routesDestPath");
-        }
-        echo "Updated routes.php with required content\n";
-
-        // Copy HomeController.php to prevent 404 errors
-        $sourceControllerPath = $this->sourceDir . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . 'HomeController.php';
-        $destControllerPath = $this->destDir . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Controllers' . DIRECTORY_SEPARATOR . 'HomeController.php';
-
-        // Create destination directory if it doesn't exist
-        $destDir = dirname($destControllerPath);
-        if (!is_dir($destDir)) {
-            if (!mkdir($destDir, 0755, true)) {
-                throw new Exception("Failed to create directory: $destDir");
-            }
-            echo "Created directory: $destDir\n";
-        }
-
-        if (file_exists($sourceControllerPath)) {
-            if (!Files::cp($sourceControllerPath, $destControllerPath, false, true)) {
-                throw new Exception("Failed to copy HomeController.php: $sourceControllerPath to $destControllerPath");
-            }
-            echo "Copied HomeController.php\n";
-        } else {
-            echo "Warning: HomeController.php does not exist: $sourceControllerPath\n";
-        }
-    }
-
-    /**
      * Copy test-required files temporarily
      */
     private function copyTestDependencies(): void
@@ -446,27 +397,28 @@ WebRouter::any(\'health\', function () {
         // 1. Create tests/bootstrap.php
         $bootstrapContent = '<?php
 
-/**
- * PHPUnit Bootstrap File
- *
- * This file is loaded before any tests run.
- * It ensures that a database connection is established for tests that rely on DB::driver().
- */
+        /**
+         * PHPUnit Bootstrap File
+         *
+         * This file is loaded before any tests run.
+         * It ensures that a database connection is established for tests that rely on DB::driver().
+         */
 
-require_once __DIR__ . \'/../vendor/autoload.php\';
-require_once __DIR__ . \'/../app.php\';
+        require_once __DIR__ . \'/../vendor/autoload.php\';
+        require_once __DIR__ . \'/../app.php\';
 
-use Boctulus\Simplerest\Core\Libs\DB;
+        use Boctulus\Simplerest\Core\Libs\DB;
 
-// Establish default database connection
-// This prevents "No db driver" errors in tests that call DB::driver() before DB::table()
-try {
-    DB::getConnection();
-} catch (Exception $e) {
-    // Connection may fail if DB doesn\'t exist, but driver info is still available
-    // This is expected for unit tests that don\'t actually connect to a database
-}
-';
+        // Establish default database connection
+        // This prevents "No db driver" errors in tests that call DB::driver() before DB::table()
+        try {
+            DB::getConnection();
+        } catch (Exception $e) {
+            // Connection may fail if DB doesn\'t exist, but driver info is still available
+            // This is expected for unit tests that don\'t actually connect to a database
+        }
+        ';
+        
         $bootstrapPath = $this->destDir . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'bootstrap.php';
         if (file_put_contents($bootstrapPath, $bootstrapContent) === false) {
             throw new Exception("Failed to create tests/bootstrap.php");
