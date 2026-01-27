@@ -13,7 +13,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'app.php';
 /*
    Parse command line arguments into the $_GET variable <sep16@psu.edu>
 */
-parse_str(implode('&', array_slice($argv, 3)), $_GET);
+parse_str(implode('&', array_slice($_SERVER['argv'], 3)), $_GET);
 
 /*
    Procesamiento de env: y cfg:
