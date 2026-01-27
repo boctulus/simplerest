@@ -248,11 +248,11 @@ WebRouter::get('user/{id}/*', function($id, $resource) {
 });
 
 
-WebRouter::any(
-    'api/{version}/{entity}/*',
-    function ($version, $entity, $rest = null) {
-        // ...
-    }
-);
+// WebRouter::any(
+//     'api/{version}/{entity}/*',
+// function ($version, $entity, $rest = null) {
+//         // ...
+//     }
+// );
 
 // WebRouter::mount('api', ApiHandler::class);
