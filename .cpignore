@@ -2,6 +2,7 @@ __releases/
 .git/
 .codegpt/
 .claude/
+.agent/
 .vscode/
 .idea/
 .phpunit.cache/
@@ -9,6 +10,7 @@ uploads/
 yakpro-po/
 logs/
 tmp/
+prompts/
 storage/security/
 docs/to-do/
 docs/issues/
@@ -19,13 +21,28 @@ backups/
 exports/
 web-automation/
 app/
+public/assets/
+packages/
+config/woocommerce.php
 *.zip
 *.rar
 *.tar
 *.tar.gz
+*.bk
+*.txt
+*.log
+*.sh
 .dev-env
 winpush.bat
 test-*.php
 test_*.php
+verify_*.php
+desktop.ini
+composer.json.bk
+CLAUDE.md
+GEMINI.md
+QWEN.md
+AI_RULES.md
 .cpignore
+.cpinclude
 
