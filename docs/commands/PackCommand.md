@@ -8,11 +8,13 @@ Entre otras tareas el comando `php com pack` tiene como responsabilidades:
 
 - Copiar los archivos relevantes asegurandose ignorar al copiar cualquier archivo definido en .cpignore
 
-- Al ejecutarse 'php com pack' se debe asegurar que en destino (`D:\laragon\www\simplerest-pack`) funcione:
+- Debe hacer un "composer install" en destino
 
-	* El comando `php com help` (eso implica copiar tambien "com")
+- Al ejecutarse 'php com pack' se debe asegurar que en destino (`..\simplerest-pack\`) funcione:
 
-	* El script `php .\runalltests.php`  (no deberia mostrar errores y deberia leerse "All tests passed!")
+	* El comando `php ..\simplerest-pack\com help` (eso implica copiar tambien "com")
+
+	* El script `php ..\simplerest-pack\runalltests.php`  (no deberia mostrar errores y deberia leerse "All tests passed!" )
 
 	* Al hacer un curl a "http://simplerest.test/" no deberia leerse "Error" o "Exception"
 

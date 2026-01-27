@@ -1,0 +1,907 @@
+Loaded 26 patterns from .cpignore
+Starting SimpleRest framework packaging...
+
+Warning: unlink(D:\laragon\www\simplerest-pack\vendor\boctulus\shopifyconnector): Is a directory in D:\laragon\www\simplerest\scripts\pack_framework.php on line 186
+
+Warning: rmdir(D:\laragon\www\simplerest-pack\vendor\boctulus): Directory not empty in D:\laragon\www\simplerest\scripts\pack_framework.php on line 184
+
+Warning: rmdir(D:\laragon\www\simplerest-pack\vendor): Directory not empty in D:\laragon\www\simplerest\scripts\pack_framework.php on line 184
+Cleaned destination directory: D:\laragon\www\simplerest-pack
+Source directory validated: D:\laragon\www\simplerest
+Created directory: D:\laragon\www\simplerest-pack\database
+Created directory: D:\laragon\www\simplerest-pack\database\migrations
+Created directory: D:\laragon\www\simplerest-pack\database\seeders
+Created directory: D:\laragon\www\simplerest-pack\config
+Created directory: D:\laragon\www\simplerest-pack\scripts
+Created directory: D:\laragon\www\simplerest-pack\etc
+Created directory: D:\laragon\www\simplerest-pack\app
+Created directory: D:\laragon\www\simplerest-pack\logs
+Entering directory: D:\laragon\www\simplerest\.agent (relative: .agent)
+Entering directory: D:\laragon\www\simplerest\.agent\skills (relative: .agent/skills)
+Entering directory: D:\laragon\www\simplerest\.agent\skills\acl-config (relative: .agent/skills/acl-config)
+Copying D:\laragon\www\simplerest\.agent\skills\acl-config\SKILL.md > D:\laragon\www\simplerest-pack\.agent\skills\acl-config\SKILL.md
+Entering directory: D:\laragon\www\simplerest\.agent\skills\create-endpoint (relative: .agent/skills/create-endpoint)
+Copying D:\laragon\www\simplerest\.agent\skills\create-endpoint\SKILL.md > D:\laragon\www\simplerest-pack\.agent\skills\create-endpoint\SKILL.md
+Copied directory: .agent
+Item '.claude' matched pattern '.claude' by filename
+Skipping ignored root item: .claude
+Item '.codegpt' matched pattern '.codegpt' by filename
+Skipping ignored root item: .codegpt
+Item '.cpignore' matched pattern '.cpignore' by filename
+Skipping ignored root item: .cpignore
+Copying D:\laragon\www\simplerest\.env > D:\laragon\www\simplerest-pack\.env
+Copied file: .env
+Copying D:\laragon\www\simplerest\.env.example > D:\laragon\www\simplerest-pack\.env.example
+Copied file: .env.example
+Item '.git' matched pattern '.git' by filename
+Skipping ignored root item: .git
+Copying D:\laragon\www\simplerest\.gitignore > D:\laragon\www\simplerest-pack\.gitignore
+Copied file: .gitignore
+Copying D:\laragon\www\simplerest\.htaccess > D:\laragon\www\simplerest-pack\.htaccess
+Copied file: .htaccess
+Item '.phpunit.cache' matched pattern '.phpunit.cache' by filename
+Skipping ignored root item: .phpunit.cache
+Item '.vscode' matched pattern '.vscode' by filename
+Skipping ignored root item: .vscode
+Copying D:\laragon\www\simplerest\.zipignore > D:\laragon\www\simplerest-pack\.zipignore
+Copied file: .zipignore
+Copying D:\laragon\www\simplerest\AI_RULES.md > D:\laragon\www\simplerest-pack\AI_RULES.md
+Copied file: AI_RULES.md
+Copying D:\laragon\www\simplerest\CHANGELOG.txt > D:\laragon\www\simplerest-pack\CHANGELOG.txt
+Copied file: CHANGELOG.txt
+Copying D:\laragon\www\simplerest\CLAUDE.md > D:\laragon\www\simplerest-pack\CLAUDE.md
+Copied file: CLAUDE.md
+Copying D:\laragon\www\simplerest\DOCUMENTATION-SUMMARY.md > D:\laragon\www\simplerest-pack\DOCUMENTATION-SUMMARY.md
+Copied file: DOCUMENTATION-SUMMARY.md
+Copying D:\laragon\www\simplerest\GEMINI.md > D:\laragon\www\simplerest-pack\GEMINI.md
+Copied file: GEMINI.md
+Copying D:\laragon\www\simplerest\LICENSE > D:\laragon\www\simplerest-pack\LICENSE
+Copied file: LICENSE
+Copying D:\laragon\www\simplerest\PRDS.txt > D:\laragon\www\simplerest-pack\PRDS.txt
+Copied file: PRDS.txt
+Copying D:\laragon\www\simplerest\QWEN.md > D:\laragon\www\simplerest-pack\QWEN.md
+Copied file: QWEN.md
+Copying D:\laragon\www\simplerest\README.md > D:\laragon\www\simplerest-pack\README.md
+Copied file: README.md
+Item '__releases' matched pattern '__releases' by filename
+Skipping ignored root item: __releases
+Entering directory: D:\laragon\www\simplerest\app (relative: app)
+Copying D:\laragon\www\simplerest\app\.make_ignore > D:\laragon\www\simplerest-pack\app\.make_ignore
+Entering directory: D:\laragon\www\simplerest\app\Background (relative: app/Background)
+Entering directory: D:\laragon\www\simplerest\app\Background\Cronjobs (relative: app/Background/Cronjobs)
+Entering directory: D:\laragon\www\simplerest\app\Background\Tasks (relative: app/Background/Tasks)
+Entering directory: D:\laragon\www\simplerest\app\Commands (relative: app/Commands)
+Item 'app/Commands/PackCommand.php' matched pattern 'app/Commands/PackCommand.php' by relative path
+Skipping ignored item: app/Commands/PackCommand.php
+Entering directory: D:\laragon\www\simplerest\app\Controllers (relative: app/Controllers)
+Entering directory: D:\laragon\www\simplerest\app\Controllers\Api (relative: app/Controllers/Api)
+Entering directory: D:\laragon\www\simplerest\app\Controllers\Demos (relative: app/Controllers/Demos)
+Copying D:\laragon\www\simplerest\app\Controllers\MyAuthController.php.example > D:\laragon\www\simplerest-pack\app\Controllers\MyAuthController.php.example
+Entering directory: D:\laragon\www\simplerest\app\Controllers\api_tests (relative: app/Controllers/api_tests)
+Entering directory: D:\laragon\www\simplerest\app\Controllers\datagrids (relative: app/Controllers/datagrids)
+Entering directory: D:\laragon\www\simplerest\app\Controllers\folder (relative: app/Controllers/folder)
+Entering directory: D:\laragon\www\simplerest\app\Controllers\honeys (relative: app/Controllers/honeys)
+Entering directory: D:\laragon\www\simplerest\app\Controllers\html_builder (relative: app/Controllers/html_builder)
+Entering directory: D:\laragon\www\simplerest\app\Controllers\review_generator (relative: app/Controllers/review_generator)
+Entering directory: D:\laragon\www\simplerest\app\Controllers\test_apis (relative: app/Controllers/test_apis)
+Entering directory: D:\laragon\www\simplerest\app\DTO (relative: app/DTO)
+Entering directory: D:\laragon\www\simplerest\app\Helpers (relative: app/Helpers)
+Entering directory: D:\laragon\www\simplerest\app\Interfaces (relative: app/Interfaces)
+Entering directory: D:\laragon\www\simplerest\app\Libs (relative: app/Libs)
+Copying D:\laragon\www\simplerest\app\Libs\Boctulus > D:\laragon\www\simplerest-pack\app\Libs\Boctulus
+Entering directory: D:\laragon\www\simplerest\app\Libs\RateExchange (relative: app/Libs/RateExchange)
+Entering directory: D:\laragon\www\simplerest\app\Libs\Scrapers (relative: app/Libs/Scrapers)
+Entering directory: D:\laragon\www\simplerest\app\Locale (relative: app/Locale)
+Entering directory: D:\laragon\www\simplerest\app\Locale\en_US (relative: app/Locale/en_US)
+Entering directory: D:\laragon\www\simplerest\app\Locale\en_US\LC_MESSAGES (relative: app/Locale/en_US/LC_MESSAGES)
+Copying D:\laragon\www\simplerest\app\Locale\en_US\LC_MESSAGES\import-quoter.mo > D:\laragon\www\simplerest-pack\app\Locale\en_US\LC_MESSAGES\import-quoter.mo
+Copying D:\laragon\www\simplerest\app\Locale\en_US\LC_MESSAGES\import-quoter.po > D:\laragon\www\simplerest-pack\app\Locale\en_US\LC_MESSAGES\import-quoter.po
+Copying D:\laragon\www\simplerest\app\Locale\en_US\LC_MESSAGES\mutawp.mo > D:\laragon\www\simplerest-pack\app\Locale\en_US\LC_MESSAGES\mutawp.mo
+Copying D:\laragon\www\simplerest\app\Locale\en_US\LC_MESSAGES\mutawp.po > D:\laragon\www\simplerest-pack\app\Locale\en_US\LC_MESSAGES\mutawp.po
+Copying D:\laragon\www\simplerest\app\Locale\en_US\LC_MESSAGES\validator.mo > D:\laragon\www\simplerest-pack\app\Locale\en_US\LC_MESSAGES\validator.mo
+Copying D:\laragon\www\simplerest\app\Locale\en_US\LC_MESSAGES\validator.po > D:\laragon\www\simplerest-pack\app\Locale\en_US\LC_MESSAGES\validator.po
+Entering directory: D:\laragon\www\simplerest\app\Locale\es_AR (relative: app/Locale/es_AR)
+Entering directory: D:\laragon\www\simplerest\app\Locale\es_AR\LC_MESSAGES (relative: app/Locale/es_AR/LC_MESSAGES)
+Copying D:\laragon\www\simplerest\app\Locale\es_AR\LC_MESSAGES\import-quoter.mo > D:\laragon\www\simplerest-pack\app\Locale\es_AR\LC_MESSAGES\import-quoter.mo
+Copying D:\laragon\www\simplerest\app\Locale\es_AR\LC_MESSAGES\import-quoter.po > D:\laragon\www\simplerest-pack\app\Locale\es_AR\LC_MESSAGES\import-quoter.po
+Copying D:\laragon\www\simplerest\app\Locale\es_AR\LC_MESSAGES\mutawp.mo > D:\laragon\www\simplerest-pack\app\Locale\es_AR\LC_MESSAGES\mutawp.mo
+Copying D:\laragon\www\simplerest\app\Locale\es_AR\LC_MESSAGES\mutawp.po > D:\laragon\www\simplerest-pack\app\Locale\es_AR\LC_MESSAGES\mutawp.po
+Copying D:\laragon\www\simplerest\app\Locale\es_AR\LC_MESSAGES\validator.mo > D:\laragon\www\simplerest-pack\app\Locale\es_AR\LC_MESSAGES\validator.mo
+Copying D:\laragon\www\simplerest\app\Locale\es_AR\LC_MESSAGES\validator.po > D:\laragon\www\simplerest-pack\app\Locale\es_AR\LC_MESSAGES\validator.po
+Entering directory: D:\laragon\www\simplerest\app\Locale\test (relative: app/Locale/test)
+Entering directory: D:\laragon\www\simplerest\app\Locale\test\es_AR (relative: app/Locale/test/es_AR)
+Entering directory: D:\laragon\www\simplerest\app\Locale\test\es_AR\LC_MESSAGES (relative: app/Locale/test/es_AR/LC_MESSAGES)
+Copying D:\laragon\www\simplerest\app\Locale\test\es_AR\LC_MESSAGES\validator.po > D:\laragon\www\simplerest-pack\app\Locale\test\es_AR\LC_MESSAGES\validator.po
+Entering directory: D:\laragon\www\simplerest\app\Middlewares (relative: app/Middlewares)
+Entering directory: D:\laragon\www\simplerest\app\Models (relative: app/Models)
+Copying D:\laragon\www\simplerest\app\Models\UsersModel.php.example > D:\laragon\www\simplerest-pack\app\Models\UsersModel.php.example
+Copying D:\laragon\www\simplerest\app\Models\UsersModel.php.example!! > D:\laragon\www\simplerest-pack\app\Models\UsersModel.php.example!!
+Entering directory: D:\laragon\www\simplerest\app\Models\az (relative: app/Models/az)
+Entering directory: D:\laragon\www\simplerest\app\Models\eb (relative: app/Models/eb)
+Entering directory: D:\laragon\www\simplerest\app\Models\edu (relative: app/Models/edu)
+Entering directory: D:\laragon\www\simplerest\app\Models\legion (relative: app/Models/legion)
+Entering directory: D:\laragon\www\simplerest\app\Models\main (relative: app/Models/main)
+Copying D:\laragon\www\simplerest\app\Models\main\UsersModel.php.example > D:\laragon\www\simplerest-pack\app\Models\main\UsersModel.php.example
+Entering directory: D:\laragon\www\simplerest\app\Models\mpo (relative: app/Models/mpo)
+Entering directory: D:\laragon\www\simplerest\app\Models\parts (relative: app/Models/parts)
+Entering directory: D:\laragon\www\simplerest\app\Models\pos_laravel (relative: app/Models/pos_laravel)
+Entering directory: D:\laragon\www\simplerest\app\Models\zippy (relative: app/Models/zippy)
+Entering directory: D:\laragon\www\simplerest\app\Modules (relative: app/Modules)
+Entering directory: D:\laragon\www\simplerest\app\Modules\AndroidEngine (relative: app/Modules/AndroidEngine)
+Entering directory: D:\laragon\www\simplerest\app\Modules\AndroidEngine\Src (relative: app/Modules/AndroidEngine/Src)
+Entering directory: D:\laragon\www\simplerest\app\Modules\AndroidEngine\Src\Libs (relative: app/Modules/AndroidEngine/Src/Libs)
+Entering directory: D:\laragon\www\simplerest\app\Modules\AndroidEngine\Src\Traits (relative: app/Modules/AndroidEngine/Src/Traits)
+Entering directory: D:\laragon\www\simplerest\app\Modules\AndroidEngine\Src\Traits\Resources (relative: app/Modules/AndroidEngine/Src/Traits/Resources)
+Entering directory: D:\laragon\www\simplerest\app\Modules\AndroidEngine\config (relative: app/Modules/AndroidEngine/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\AndroidEngine\etc (relative: app/Modules/AndroidEngine/etc)
+Copying D:\laragon\www\simplerest\app\Modules\AndroidEngine\etc\android-libs.json > D:\laragon\www\simplerest-pack\app\Modules\AndroidEngine\etc\android-libs.json
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf (relative: app/Modules/Asdf)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\assets (relative: app/Modules/Asdf/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\assets\css (relative: app/Modules/Asdf/assets/css)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\assets\img (relative: app/Modules/Asdf/assets/img)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\assets\js (relative: app/Modules/Asdf/assets/js)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\assets\third_party (relative: app/Modules/Asdf/assets/third_party)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\config (relative: app/Modules/Asdf/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\database (relative: app/Modules/Asdf/database)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\database\migrations (relative: app/Modules/Asdf/database/migrations)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\database\seeders (relative: app/Modules/Asdf/database/seeders)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\etc (relative: app/Modules/Asdf/etc)
+Item 'logs' matched pattern 'logs' by filename
+Skipping ignored item: app/Modules/Asdf/logs
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\src (relative: app/Modules/Asdf/src)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\src\Controllers (relative: app/Modules/Asdf/src/Controllers)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\src\Helpers (relative: app/Modules/Asdf/src/Helpers)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\src\Interfaces (relative: app/Modules/Asdf/src/Interfaces)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\src\Libs (relative: app/Modules/Asdf/src/Libs)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\src\Middlewares (relative: app/Modules/Asdf/src/Middlewares)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\src\Models (relative: app/Modules/Asdf/src/Models)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\src\Traits (relative: app/Modules/Asdf/src/Traits)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\tests (relative: app/Modules/Asdf/tests)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Asdf\views (relative: app/Modules/Asdf/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\CSVImporter (relative: app/Modules/CSVImporter)
+Entering directory: D:\laragon\www\simplerest\app\Modules\CSVImporter\Libs (relative: app/Modules/CSVImporter/Libs)
+Entering directory: D:\laragon\www\simplerest\app\Modules\CSVImporter\assets (relative: app/Modules/CSVImporter/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\CSVImporter\assets\css (relative: app/Modules/CSVImporter/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\CSVImporter\assets\css\styles.css > D:\laragon\www\simplerest-pack\app\Modules\CSVImporter\assets\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\CSVImporter\assets\img (relative: app/Modules/CSVImporter/assets/img)
+Copying D:\laragon\www\simplerest\app\Modules\CSVImporter\assets\img\loading-2.gif > D:\laragon\www\simplerest-pack\app\Modules\CSVImporter\assets\img\loading-2.gif
+Copying D:\laragon\www\simplerest\app\Modules\CSVImporter\assets\img\loading.gif > D:\laragon\www\simplerest-pack\app\Modules\CSVImporter\assets\img\loading.gif
+Copying D:\laragon\www\simplerest\app\Modules\CSVImporter\assets\img\time_over.png > D:\laragon\www\simplerest-pack\app\Modules\CSVImporter\assets\img\time_over.png
+Entering directory: D:\laragon\www\simplerest\app\Modules\CSVImporter\assets\js (relative: app/Modules/CSVImporter/assets/js)
+Copying D:\laragon\www\simplerest\app\Modules\CSVImporter\assets\js\jquery.min.js > D:\laragon\www\simplerest-pack\app\Modules\CSVImporter\assets\js\jquery.min.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\CSVImporter\config (relative: app/Modules/CSVImporter/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\CSVImporter\views (relative: app/Modules/CSVImporter/views)
+Copying D:\laragon\www\simplerest\app\Modules\CSVImporter\views\TODO CSV importer GUI.txt > D:\laragon\www\simplerest-pack\app\Modules\CSVImporter\views\TODO CSV importer GUI.txt
+Entering directory: D:\laragon\www\simplerest\app\Modules\CiudadesCL (relative: app/Modules/CiudadesCL)
+Entering directory: D:\laragon\www\simplerest\app\Modules\CiudadesCL\assets (relative: app/Modules/CiudadesCL/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\CiudadesCL\assets\css (relative: app/Modules/CiudadesCL/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\CiudadesCL\assets\css\owl-carousel.css > D:\laragon\www\simplerest-pack\app\Modules\CiudadesCL\assets\css\owl-carousel.css
+Copying D:\laragon\www\simplerest\app\Modules\CiudadesCL\assets\css\styles.css > D:\laragon\www\simplerest-pack\app\Modules\CiudadesCL\assets\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\CiudadesCL\assets\img (relative: app/Modules/CiudadesCL/assets/img)
+Copying D:\laragon\www\simplerest\app\Modules\CiudadesCL\assets\img\loading.gif > D:\laragon\www\simplerest-pack\app\Modules\CiudadesCL\assets\img\loading.gif
+Entering directory: D:\laragon\www\simplerest\app\Modules\CiudadesCL\assets\js (relative: app/Modules/CiudadesCL/assets/js)
+Copying D:\laragon\www\simplerest\app\Modules\CiudadesCL\assets\js\card-slider.js > D:\laragon\www\simplerest-pack\app\Modules\CiudadesCL\assets\js\card-slider.js
+Copying D:\laragon\www\simplerest\app\Modules\CiudadesCL\assets\js\jquery-migrate.min.js > D:\laragon\www\simplerest-pack\app\Modules\CiudadesCL\assets\js\jquery-migrate.min.js
+Copying D:\laragon\www\simplerest\app\Modules\CiudadesCL\assets\js\jquery.min.js > D:\laragon\www\simplerest-pack\app\Modules\CiudadesCL\assets\js\jquery.min.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\CiudadesCL\config (relative: app/Modules/CiudadesCL/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\CiudadesCL\views (relative: app/Modules/CiudadesCL/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest (relative: app/Modules/ComponentTest)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\assets (relative: app/Modules/ComponentTest/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\assets\css (relative: app/Modules/ComponentTest/assets/css)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\assets\img (relative: app/Modules/ComponentTest/assets/img)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\assets\js (relative: app/Modules/ComponentTest/assets/js)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\assets\third_party (relative: app/Modules/ComponentTest/assets/third_party)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\config (relative: app/Modules/ComponentTest/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\database (relative: app/Modules/ComponentTest/database)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\database\migrations (relative: app/Modules/ComponentTest/database/migrations)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\database\seeders (relative: app/Modules/ComponentTest/database/seeders)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\etc (relative: app/Modules/ComponentTest/etc)
+Item 'logs' matched pattern 'logs' by filename
+Skipping ignored item: app/Modules/ComponentTest/logs
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\src (relative: app/Modules/ComponentTest/src)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\src\Controllers (relative: app/Modules/ComponentTest/src/Controllers)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\src\Helpers (relative: app/Modules/ComponentTest/src/Helpers)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\src\Interfaces (relative: app/Modules/ComponentTest/src/Interfaces)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\src\Libs (relative: app/Modules/ComponentTest/src/Libs)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\src\Middlewares (relative: app/Modules/ComponentTest/src/Middlewares)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\src\Models (relative: app/Modules/ComponentTest/src/Models)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\src\Traits (relative: app/Modules/ComponentTest/src/Traits)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\tests (relative: app/Modules/ComponentTest/tests)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ComponentTest\views (relative: app/Modules/ComponentTest/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Countdown (relative: app/Modules/Countdown)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Countdown\assets (relative: app/Modules/Countdown/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Countdown\assets\css (relative: app/Modules/Countdown/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\Countdown\assets\css\styles.css > D:\laragon\www\simplerest-pack\app\Modules\Countdown\assets\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\Countdown\assets\img (relative: app/Modules/Countdown/assets/img)
+Copying D:\laragon\www\simplerest\app\Modules\Countdown\assets\img\loading.gif > D:\laragon\www\simplerest-pack\app\Modules\Countdown\assets\img\loading.gif
+Entering directory: D:\laragon\www\simplerest\app\Modules\Countdown\assets\js (relative: app/Modules/Countdown/assets/js)
+Copying D:\laragon\www\simplerest\app\Modules\Countdown\assets\js\jquery.min.js > D:\laragon\www\simplerest-pack\app\Modules\Countdown\assets\js\jquery.min.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\Countdown\config (relative: app/Modules/Countdown/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Countdown\views (relative: app/Modules/Countdown/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\EatLeaf (relative: app/Modules/EatLeaf)
+Entering directory: D:\laragon\www\simplerest\app\Modules\EatLeaf\assets (relative: app/Modules/EatLeaf/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\css (relative: app/Modules/EatLeaf/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\css\canvas_styles.css > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\css\canvas_styles.css
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\css\styles.css > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img (relative: app/Modules/EatLeaf/assets/img)
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\6gMdXAfs6f9o8Rl1Q2aj1w==.png > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\6gMdXAfs6f9o8Rl1Q2aj1w==.png
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\7enR4cPzecojMcgkxs-Pxg==.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\7enR4cPzecojMcgkxs-Pxg==.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\HIV973NGJj-Px2Mave4Opw==.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\HIV973NGJj-Px2Mave4Opw==.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\Jahbgm8Gx2lTYbGj5N1cMw==.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\Jahbgm8Gx2lTYbGj5N1cMw==.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\KkAhXM4VOTAe5S6cBdD8Mg==.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\KkAhXM4VOTAe5S6cBdD8Mg==.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\bg1.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\bg1.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\bg2.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\bg2.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\bg4.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\bg4.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\bg5.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\bg5.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\big-section-6.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\big-section-6.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\cTlHp1IbzI24mA9EuaQMGQ==.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\cTlHp1IbzI24mA9EuaQMGQ==.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\loading-2.gif > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\loading-2.gif
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\loading.gif > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\loading.gif
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\logo.webp > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\logo.webp
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\o2ZJAnyHF97dArwtFuoslA==.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\o2ZJAnyHF97dArwtFuoslA==.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\qZmM5ezaM-hMbbepT07rEQ==(1).jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\qZmM5ezaM-hMbbepT07rEQ==(1).jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\qZmM5ezaM-hMbbepT07rEQ==.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\qZmM5ezaM-hMbbepT07rEQ==.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\rkBvdsgUxxlBt7hZlPCqgA==(1).svg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\rkBvdsgUxxlBt7hZlPCqgA==(1).svg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\rkBvdsgUxxlBt7hZlPCqgA==(2).svg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\rkBvdsgUxxlBt7hZlPCqgA==(2).svg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\rkBvdsgUxxlBt7hZlPCqgA==.svg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\rkBvdsgUxxlBt7hZlPCqgA==.svg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\s5-2.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\s5-2.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\s5-3.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\s5-3.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\s5-4.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\s5-4.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_1090967810.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_1090967810.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_1139242196.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_1139242196.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_1495877747.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_1495877747.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_1662385042.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_1662385042.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_1710116581.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_1710116581.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_1772762108.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_1772762108.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_1785186455.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_1785186455.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_1929087287.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_1929087287.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_2248645877.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_2248645877.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_2253548727.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_2253548727.jpg
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\img\shutterstock_416591656.jpg > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\img\shutterstock_416591656.jpg
+Entering directory: D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\js (relative: app/Modules/EatLeaf/assets/js)
+Copying D:\laragon\www\simplerest\app\Modules\EatLeaf\assets\js\jquery.min.js > D:\laragon\www\simplerest-pack\app\Modules\EatLeaf\assets\js\jquery.min.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\EatLeaf\config (relative: app/Modules/EatLeaf/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\EatLeaf\views (relative: app/Modules/EatLeaf/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\FriendlyPOS (relative: app/Modules/FriendlyPOS)
+Entering directory: D:\laragon\www\simplerest\app\Modules\FriendlyPOS\Src (relative: app/Modules/FriendlyPOS/Src)
+Entering directory: D:\laragon\www\simplerest\app\Modules\FriendlyPOS\Src\Controllers (relative: app/Modules/FriendlyPOS/Src/Controllers)
+Entering directory: D:\laragon\www\simplerest\app\Modules\FriendlyPOS\Src\Models (relative: app/Modules/FriendlyPOS/Src/Models)
+Entering directory: D:\laragon\www\simplerest\app\Modules\FriendlyPOS\config (relative: app/Modules/FriendlyPOS/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ProgressBar (relative: app/Modules/ProgressBar)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ProgressBar\assets (relative: app/Modules/ProgressBar/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ProgressBar\assets\css (relative: app/Modules/ProgressBar/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\ProgressBar\assets\css\styles.css > D:\laragon\www\simplerest-pack\app\Modules\ProgressBar\assets\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\ProgressBar\assets\img (relative: app/Modules/ProgressBar/assets/img)
+Copying D:\laragon\www\simplerest\app\Modules\ProgressBar\assets\img\loading-2.gif > D:\laragon\www\simplerest-pack\app\Modules\ProgressBar\assets\img\loading-2.gif
+Copying D:\laragon\www\simplerest\app\Modules\ProgressBar\assets\img\loading.gif > D:\laragon\www\simplerest-pack\app\Modules\ProgressBar\assets\img\loading.gif
+Copying D:\laragon\www\simplerest\app\Modules\ProgressBar\assets\img\time_over.png > D:\laragon\www\simplerest-pack\app\Modules\ProgressBar\assets\img\time_over.png
+Entering directory: D:\laragon\www\simplerest\app\Modules\ProgressBar\assets\js (relative: app/Modules/ProgressBar/assets/js)
+Copying D:\laragon\www\simplerest\app\Modules\ProgressBar\assets\js\jquery.min.js > D:\laragon\www\simplerest-pack\app\Modules\ProgressBar\assets\js\jquery.min.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\ProgressBar\config (relative: app/Modules/ProgressBar/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\ProgressBar\views (relative: app/Modules/ProgressBar/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\RackQuoter (relative: app/Modules/RackQuoter)
+Entering directory: D:\laragon\www\simplerest\app\Modules\RackQuoter\assets (relative: app/Modules/RackQuoter/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\css (relative: app/Modules/RackQuoter/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\css\racks.css > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\css\racks.css
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\css\styles.css > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts (relative: app/Modules/RackQuoter/assets/fonts)
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\LatoBlackItalic.woff > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\LatoBlackItalic.woff
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\LatoBlackItalic.woff2 > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\LatoBlackItalic.woff2
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\LatoItalic.woff > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\LatoItalic.woff
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\LatoItalic.woff2 > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\LatoItalic.woff2
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\LatoLight.woff > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\LatoLight.woff
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\LatoLight.woff2 > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\LatoLight.woff2
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MontserratBold.woff > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MontserratBold.woff
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MontserratBold.woff2 > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MontserratBold.woff2
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MontserratRegular.woff > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MontserratRegular.woff
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MontserratRegular.woff2 > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MontserratRegular.woff2
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MyraidProBold.woff > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MyraidProBold.woff
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MyraidProBold.woff2 > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MyraidProBold.woff2
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MyraidProRegular.woff > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MyraidProRegular.woff
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MyraidProRegular.woff2 > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MyraidProRegular.woff2
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MyraidProSemibold.woff > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MyraidProSemibold.woff
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MyraidProSemibold.woff2 > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MyraidProSemibold.woff2
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MyraidProSemiboldItalic.woff > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MyraidProSemiboldItalic.woff
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\fonts\MyraidProSemiboldItalic.woff2 > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\fonts\MyraidProSemiboldItalic.woff2
+Entering directory: D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img (relative: app/Modules/RackQuoter/assets/img)
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\96x36x96-2.jpg > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\96x36x96-2.jpg
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\NewPalletRack.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\NewPalletRack.png
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\WES-Logo.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\WES-Logo.png
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\WES-Logo.webp > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\WES-Logo.webp
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\datasheet_blank.jpeg > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\datasheet_blank.jpeg
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\loading.gif > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\loading.gif
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\multiple.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\multiple.png
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\tab2-img01.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\tab2-img01.png
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\tab2-img02.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\tab2-img02.png
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\tab4-img01.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\tab4-img01.png
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\tab4-img02.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\tab4-img02.png
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\tab4-img03.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\tab4-img03.png
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\tab4-img04.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\tab4-img04.png
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\tab5-img03.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\tab5-img03.png
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\timeout.jpg > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\timeout.jpg
+Copying D:\laragon\www\simplerest\app\Modules\RackQuoter\assets\img\timeout.png > D:\laragon\www\simplerest-pack\app\Modules\RackQuoter\assets\img\timeout.png
+Entering directory: D:\laragon\www\simplerest\app\Modules\RackQuoter\config (relative: app/Modules/RackQuoter/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\RackQuoter\views (relative: app/Modules/RackQuoter/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor (relative: app/Modules/Relmotor)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\Libs (relative: app/Modules/Relmotor/Libs)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets (relative: app/Modules/Relmotor/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\css (relative: app/Modules/Relmotor/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\css\customization.css > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\css\customization.css
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\css\quick_view.css > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\css\quick_view.css
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\css\results.css > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\css\results.css
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\css\search-form.css > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\css\search-form.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\img (relative: app/Modules/Relmotor/assets/img)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\img\demo (relative: app/Modules/Relmotor/assets/img/demo)
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\img\demo\10a73191007-150x150.jpg > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\img\demo\10a73191007-150x150.jpg
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\img\demo\ae18610-1467.jpg > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\img\demo\ae18610-1467.jpg
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\img\demo\logo-relparts-350x350.png > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\img\demo\logo-relparts-350x350.png
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\img\info_icon.svg > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\img\info_icon.svg
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\img\loading-2.gif > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\img\loading-2.gif
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\img\loading.gif > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\img\loading.gif
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\img\time_over.png > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\img\time_over.png
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\js (relative: app/Modules/Relmotor/assets/js)
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\js\populte-dropdowns.js > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\js\populte-dropdowns.js
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\js\search-engine.js > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\js\search-engine.js
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\js\search-form.js > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\js\search-form.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party (relative: app/Modules/Relmotor/assets/third_party)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\axios (relative: app/Modules/Relmotor/assets/third_party/axios)
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\axios\axios.min.js > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\third_party\axios\axios.min.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\fontawesome (relative: app/Modules/Relmotor/assets/third_party/fontawesome)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\fontawesome\5 (relative: app/Modules/Relmotor/assets/third_party/fontawesome/5)
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\fontawesome\5\all.min.css > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\third_party\fontawesome\5\all.min.css
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\fontawesome\5\fontawesome_kit.js > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\third_party\fontawesome\5\fontawesome_kit.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\jquery (relative: app/Modules/Relmotor/assets/third_party/jquery)
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\jquery\jquery.min.js > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\third_party\jquery\jquery.min.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\printThis (relative: app/Modules/Relmotor/assets/third_party/printThis)
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\printThis\printThis.js > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\third_party\printThis\printThis.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\select2 (relative: app/Modules/Relmotor/assets/third_party/select2)
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\select2\select2-bootstrap-5-theme.min.css > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\third_party\select2\select2-bootstrap-5-theme.min.css
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\select2\select2.min.css > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\third_party\select2\select2.min.css
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\select2\select2.min.js > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\third_party\select2\select2.min.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\sweetalert2 (relative: app/Modules/Relmotor/assets/third_party/sweetalert2)
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\sweetalert2\sweetalert.js > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\third_party\sweetalert2\sweetalert.js
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\assets\third_party\sweetalert2\sweetalert2.min.css > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\assets\third_party\sweetalert2\sweetalert2.min.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\config (relative: app/Modules/Relmotor/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Relmotor\views (relative: app/Modules/Relmotor/views)
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\views\dummy_row.html > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\views\dummy_row.html
+Copying D:\laragon\www\simplerest\app\Modules\Relmotor\views\results.bk > D:\laragon\www\simplerest-pack\app\Modules\Relmotor\views\results.bk
+Entering directory: D:\laragon\www\simplerest\app\Modules\Robot (relative: app/Modules/Robot)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Robot\assets (relative: app/Modules/Robot/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Robot\assets\css (relative: app/Modules/Robot/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\Robot\assets\css\canvas_styles.css > D:\laragon\www\simplerest-pack\app\Modules\Robot\assets\css\canvas_styles.css
+Copying D:\laragon\www\simplerest\app\Modules\Robot\assets\css\styles.css > D:\laragon\www\simplerest-pack\app\Modules\Robot\assets\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\Robot\assets\img (relative: app/Modules/Robot/assets/img)
+Copying D:\laragon\www\simplerest\app\Modules\Robot\assets\img\loading-2.gif > D:\laragon\www\simplerest-pack\app\Modules\Robot\assets\img\loading-2.gif
+Copying D:\laragon\www\simplerest\app\Modules\Robot\assets\img\loading.gif > D:\laragon\www\simplerest-pack\app\Modules\Robot\assets\img\loading.gif
+Copying D:\laragon\www\simplerest\app\Modules\Robot\assets\img\no-image.jpg > D:\laragon\www\simplerest-pack\app\Modules\Robot\assets\img\no-image.jpg
+Copying D:\laragon\www\simplerest\app\Modules\Robot\assets\img\rkBvdsgUxxlBt7hZlPCqgA==(2).svg > D:\laragon\www\simplerest-pack\app\Modules\Robot\assets\img\rkBvdsgUxxlBt7hZlPCqgA==(2).svg
+Entering directory: D:\laragon\www\simplerest\app\Modules\Robot\assets\js (relative: app/Modules/Robot/assets/js)
+Copying D:\laragon\www\simplerest\app\Modules\Robot\assets\js\jquery.min.js > D:\laragon\www\simplerest-pack\app\Modules\Robot\assets\js\jquery.min.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\Robot\config (relative: app/Modules/Robot/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Robot\views (relative: app/Modules/Robot/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser (relative: app/Modules/SimpleHtmlDomParser)
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\CHANGELOG.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\CHANGELOG.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\LICENSE > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\LICENSE
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\example (relative: app/Modules/SimpleHtmlDomParser/example)
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\example\scraping (relative: app/Modules/SimpleHtmlDomParser/example/scraping)
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual (relative: app/Modules/SimpleHtmlDomParser/manual)
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\README.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\README.md
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\custom_theme (relative: app/Modules/SimpleHtmlDomParser/manual/custom_theme)
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\custom_theme\main.html > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\custom_theme\main.html
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs (relative: app/Modules/SimpleHtmlDomParser/manual/docs)
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api (relative: app/Modules/SimpleHtmlDomParser/manual/docs/api)
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\api.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\api.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\constants.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\constants.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\definitions.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\definitions.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\file_get_html.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\file_get_html.md
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom (relative: app/Modules/SimpleHtmlDomParser/manual/docs/api/simple_html_dom)
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\__construct.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\__construct.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\__destruct.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\__destruct.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\__get.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\__get.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\__toString.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\__toString.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\as_text_node.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\as_text_node.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\childNodes.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\childNodes.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\clear.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\clear.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\copy_skip.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\copy_skip.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\copy_until.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\copy_until.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\copy_until_char.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\copy_until_char.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\createElement.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\createElement.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\createTextNode.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\createTextNode.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\dump.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\dump.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\find.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\find.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\firstChild.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\firstChild.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\getElementById.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\getElementById.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\getElementByTagName.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\getElementByTagName.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\getElementsById.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\getElementsById.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\getElementsByTagName.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\getElementsByTagName.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\lastChild.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\lastChild.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\link_nodes.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\link_nodes.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\load.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\load.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\loadFile.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\loadFile.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\load_file.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\load_file.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\parse.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\parse.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\parse_attr.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\parse_attr.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\parse_charset.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\parse_charset.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\prepare.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\prepare.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\read_tag.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\read_tag.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\remove_callback.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\remove_callback.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\remove_noise.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\remove_noise.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\restore_noise.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\restore_noise.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\save.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\save.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\search_noise.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\search_noise.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\set_callback.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\set_callback.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\simple_html_dom.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\simple_html_dom.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\skip.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom\skip.md
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node (relative: app/Modules/SimpleHtmlDomParser/manual/docs/api/simple_html_dom_node)
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__construct.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__construct.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__destruct.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__destruct.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__get.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__get.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__isset.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__isset.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__set.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__set.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__toString.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__toString.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__unset.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\__unset.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\addClass.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\addClass.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\appendChild.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\appendChild.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\childNodes.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\childNodes.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\children.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\children.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\clear.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\clear.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\convert_text.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\convert_text.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\dump.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\dump.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\dump_node.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\dump_node.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\find.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\find.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\find_ancestor_tag.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\find_ancestor_tag.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\firstChild.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\firstChild.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\first_child.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\first_child.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getAllAttributes.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getAllAttributes.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getAttribute.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getAttribute.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getElementById.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getElementById.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getElementByTagName.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getElementByTagName.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getElementsById.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getElementsById.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getElementsByTagName.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\getElementsByTagName.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\get_display_size.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\get_display_size.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\hasAttribute.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\hasAttribute.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\hasChildNodes.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\hasChildNodes.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\hasClass.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\hasClass.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\has_child.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\has_child.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\innertext.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\innertext.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\is_utf8.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\is_utf8.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\lastChild.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\lastChild.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\last_child.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\last_child.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\makeup.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\makeup.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\match.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\match.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\nextSibling.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\nextSibling.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\next_sibling.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\next_sibling.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\nodeName.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\nodeName.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\outertext.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\outertext.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\parent.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\parent.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\parentNode.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\parentNode.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\parse_selector.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\parse_selector.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\prevSibling.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\prevSibling.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\prev_sibling.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\prev_sibling.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\remove.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\remove.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\removeAttribute.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\removeAttribute.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\removeChild.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\removeChild.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\removeClass.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\removeClass.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\save.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\save.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\seek.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\seek.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\setAttribute.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\setAttribute.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\simple_html_dom_node.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\simple_html_dom_node.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\text.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\text.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\xmltext.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\simple_html_dom_node\xmltext.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\api\str_get_html.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\api\str_get_html.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\faq.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\faq.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\index.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\index.md
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\manual (relative: app/Modules/SimpleHtmlDomParser/manual/docs/manual)
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\manual\accessing-element-attributes.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\manual\accessing-element-attributes.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\manual\adding-nodes.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\manual\adding-nodes.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\manual\creating-dom-objects.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\manual\creating-dom-objects.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\manual\customizing-parsing-behavior.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\manual\customizing-parsing-behavior.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\manual\finding-html-elements.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\manual\finding-html-elements.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\manual\saving-dom-objects.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\manual\saving-dom-objects.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\manual\traversing-dom-tree.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\manual\traversing-dom-tree.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\quick-start.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\quick-start.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\docs\requirements.md > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\docs\requirements.md
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\extra.css > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\extra.css
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\mkdocs.yml > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\mkdocs.yml
+Entering directory: D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\site (relative: app/Modules/SimpleHtmlDomParser/manual/site)
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\manual\site\.gitkeep > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\manual\site\.gitkeep
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\phpcompatibility.xml > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\phpcompatibility.xml
+Copying D:\laragon\www\simplerest\app\Modules\SimpleHtmlDomParser\phpcs.xml > D:\laragon\www\simplerest-pack\app\Modules\SimpleHtmlDomParser\phpcs.xml
+Entering directory: D:\laragon\www\simplerest\app\Modules\StarRating (relative: app/Modules/StarRating)
+Entering directory: D:\laragon\www\simplerest\app\Modules\StarRating\assets (relative: app/Modules/StarRating/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\StarRating\assets\css (relative: app/Modules/StarRating/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\StarRating\assets\css\owl-carousel.css > D:\laragon\www\simplerest-pack\app\Modules\StarRating\assets\css\owl-carousel.css
+Copying D:\laragon\www\simplerest\app\Modules\StarRating\assets\css\styles.css > D:\laragon\www\simplerest-pack\app\Modules\StarRating\assets\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\StarRating\assets\img (relative: app/Modules/StarRating/assets/img)
+Copying D:\laragon\www\simplerest\app\Modules\StarRating\assets\img\loading.gif > D:\laragon\www\simplerest-pack\app\Modules\StarRating\assets\img\loading.gif
+Entering directory: D:\laragon\www\simplerest\app\Modules\StarRating\assets\js (relative: app/Modules/StarRating/assets/js)
+Copying D:\laragon\www\simplerest\app\Modules\StarRating\assets\js\card-slider.js > D:\laragon\www\simplerest-pack\app\Modules\StarRating\assets\js\card-slider.js
+Copying D:\laragon\www\simplerest\app\Modules\StarRating\assets\js\jquery-migrate.min.js > D:\laragon\www\simplerest-pack\app\Modules\StarRating\assets\js\jquery-migrate.min.js
+Copying D:\laragon\www\simplerest\app\Modules\StarRating\assets\js\jquery.min.js > D:\laragon\www\simplerest-pack\app\Modules\StarRating\assets\js\jquery.min.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\StarRating\config (relative: app/Modules/StarRating/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\StarRating\views (relative: app/Modules/StarRating/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\TaxCalc (relative: app/Modules/TaxCalc)
+Entering directory: D:\laragon\www\simplerest\app\Modules\TaxCalc\assets (relative: app/Modules/TaxCalc/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\css (relative: app/Modules/TaxCalc/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\css\styles.css > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\img (relative: app/Modules/TaxCalc/assets/img)
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\img\loading.gif > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\img\loading.gif
+Entering directory: D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\js (relative: app/Modules/TaxCalc/assets/js)
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\js\jquery-calx-2.2.6.js > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\js\jquery-calx-2.2.6.js
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\js\jquery-migrate.min.js > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\js\jquery-migrate.min.js
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\js\jquery.formatCurrency.js > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\js\jquery.formatCurrency.js
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\js\jquery.min.js > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\js\jquery.min.js
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\js\jquery.ui.touch-punch.min.js > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\js\jquery.ui.touch-punch.min.js
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\js\js_extra.js > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\js\js_extra.js
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\js\numeral.min.js > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\js\numeral.min.js
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\js\tf_tc_charts_config.js > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\js\tf_tc_charts_config.js
+Copying D:\laragon\www\simplerest\app\Modules\TaxCalc\assets\js\tf_tc_script.js > D:\laragon\www\simplerest-pack\app\Modules\TaxCalc\assets\js\tf_tc_script.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\TaxCalc\config (relative: app/Modules/TaxCalc/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\TaxCalc\views (relative: app/Modules/TaxCalc/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Typeform (relative: app/Modules/Typeform)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Typeform\Tests (relative: app/Modules/Typeform/Tests)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Typeform\assets (relative: app/Modules/Typeform/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Typeform\assets\css (relative: app/Modules/Typeform/assets/css)
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\base.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\base.css
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\buttons.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\buttons.css
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\checkbox.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\checkbox.css
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\file-upload.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\file-upload.css
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\forms.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\forms.css
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\option-cards.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\option-cards.css
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\progress.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\progress.css
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\responsive.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\responsive.css
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\step-1-split.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\step-1-split.css
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\steps.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\steps.css
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\css\typeform.css > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\css\typeform.css
+Entering directory: D:\laragon\www\simplerest\app\Modules\Typeform\assets\img (relative: app/Modules/Typeform/assets/img)
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\img\blue-pos.jpeg > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\img\blue-pos.jpeg
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\img\logo-large-empty.png > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\img\logo-large-empty.png
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\img\logo-sq-empty.png > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\img\logo-sq-empty.png
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\img\logo-sq-solid.png > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\img\logo-sq-solid.png
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\img\pos-business.webp > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\img\pos-business.webp
+Entering directory: D:\laragon\www\simplerest\app\Modules\Typeform\assets\js (relative: app/Modules/Typeform/assets/js)
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\js\data-persistence.js > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\js\data-persistence.js
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\js\floating-controls.js > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\js\floating-controls.js
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\js\form-handlers.js > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\js\form-handlers.js
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\js\form-submission.js > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\js\form-submission.js
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\js\rut-formatter.js > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\js\rut-formatter.js
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\js\step-manager.js > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\js\step-manager.js
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\js\typeform.js > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\js\typeform.js
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\assets\js\validation.js > D:\laragon\www\simplerest-pack\app\Modules\Typeform\assets\js\validation.js
+Entering directory: D:\laragon\www\simplerest\app\Modules\Typeform\config (relative: app/Modules/Typeform/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Typeform\docs (relative: app/Modules/Typeform/docs)
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\docs\CONDITIONAL-LOGIC-DOCS.md > D:\laragon\www\simplerest-pack\app\Modules\Typeform\docs\CONDITIONAL-LOGIC-DOCS.md
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\docs\IMPROVED-CONDITIONAL-LOGIC-STRATEGY.md > D:\laragon\www\simplerest-pack\app\Modules\Typeform\docs\IMPROVED-CONDITIONAL-LOGIC-STRATEGY.md
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\docs\module.md > D:\laragon\www\simplerest-pack\app\Modules\Typeform\docs\module.md
+Copying D:\laragon\www\simplerest\app\Modules\Typeform\docs\template-independence.md > D:\laragon\www\simplerest-pack\app\Modules\Typeform\docs\template-independence.md
+Entering directory: D:\laragon\www\simplerest\app\Modules\Typeform\views (relative: app/Modules/Typeform/views)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Typeform\views\steps (relative: app/Modules/Typeform/views/steps)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni (relative: app/Modules/Xeni)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\assets (relative: app/Modules/Xeni/assets)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\assets\css (relative: app/Modules/Xeni/assets/css)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\assets\img (relative: app/Modules/Xeni/assets/img)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\assets\js (relative: app/Modules/Xeni/assets/js)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\assets\third_party (relative: app/Modules/Xeni/assets/third_party)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\config (relative: app/Modules/Xeni/config)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\database (relative: app/Modules/Xeni/database)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\database\migrations (relative: app/Modules/Xeni/database/migrations)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\database\seeders (relative: app/Modules/Xeni/database/seeders)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\docs (relative: app/Modules/Xeni/docs)
+Copying D:\laragon\www\simplerest\app\Modules\Xeni\docs\XeniApiTests.md > D:\laragon\www\simplerest-pack\app\Modules\Xeni\docs\XeniApiTests.md
+Copying D:\laragon\www\simplerest\app\Modules\Xeni\docs\api_authorization.md > D:\laragon\www\simplerest-pack\app\Modules\Xeni\docs\api_authorization.md
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\etc (relative: app/Modules/Xeni/etc)
+Item 'logs' matched pattern 'logs' by filename
+Skipping ignored item: app/Modules/Xeni/logs
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\src (relative: app/Modules/Xeni/src)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\src\Controllers (relative: app/Modules/Xeni/src/Controllers)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\src\Helpers (relative: app/Modules/Xeni/src/Helpers)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\src\Interfaces (relative: app/Modules/Xeni/src/Interfaces)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\src\Libs (relative: app/Modules/Xeni/src/Libs)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\src\Middlewares (relative: app/Modules/Xeni/src/Middlewares)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\src\Models (relative: app/Modules/Xeni/src/Models)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\src\Traits (relative: app/Modules/Xeni/src/Traits)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\tests (relative: app/Modules/Xeni/tests)
+Entering directory: D:\laragon\www\simplerest\app\Modules\Xeni\views (relative: app/Modules/Xeni/views)
+Entering directory: D:\laragon\www\simplerest\app\Pages (relative: app/Pages)
+Entering directory: D:\laragon\www\simplerest\app\Pages\admin (relative: app/Pages/admin)
+Entering directory: D:\laragon\www\simplerest\app\Pages\admin\some_folder (relative: app/Pages/admin/some_folder)
+Entering directory: D:\laragon\www\simplerest\app\Pages\admin\some_folder\yyy (relative: app/Pages/admin/some_folder/yyy)
+Entering directory: D:\laragon\www\simplerest\app\Schemas (relative: app/Schemas)
+Entering directory: D:\laragon\www\simplerest\app\Schemas\az (relative: app/Schemas/az)
+Entering directory: D:\laragon\www\simplerest\app\Schemas\complex01 (relative: app/Schemas/complex01)
+Entering directory: D:\laragon\www\simplerest\app\Schemas\edu (relative: app/Schemas/edu)
+Entering directory: D:\laragon\www\simplerest\app\Schemas\laravelshopify (relative: app/Schemas/laravelshopify)
+Entering directory: D:\laragon\www\simplerest\app\Schemas\main (relative: app/Schemas/main)
+Entering directory: D:\laragon\www\simplerest\app\Schemas\zippy (relative: app/Schemas/zippy)
+Entering directory: D:\laragon\www\simplerest\app\Traits (relative: app/Traits)
+Copying D:\laragon\www\simplerest\app\Traits\DbAccess.php.example > D:\laragon\www\simplerest-pack\app\Traits\DbAccess.php.example
+Entering directory: D:\laragon\www\simplerest\app\Transformers (relative: app/Transformers)
+Copying D:\laragon\www\simplerest\app\Transformers\ProductsTransformer.php.example > D:\laragon\www\simplerest-pack\app\Transformers\ProductsTransformer.php.example
+Copying D:\laragon\www\simplerest\app\Transformers\UsersTransformer.php.example > D:\laragon\www\simplerest-pack\app\Transformers\UsersTransformer.php.example
+Entering directory: D:\laragon\www\simplerest\app\Views (relative: app/Views)
+Entering directory: D:\laragon\www\simplerest\app\Views\andrea (relative: app/Views/andrea)
+Entering directory: D:\laragon\www\simplerest\app\Views\autoscraper (relative: app/Views/autoscraper)
+Entering directory: D:\laragon\www\simplerest\app\Views\bir_half_size (relative: app/Views/bir_half_size)
+Entering directory: D:\laragon\www\simplerest\app\Views\bir_half_size\css (relative: app/Views/bir_half_size/css)
+Copying D:\laragon\www\simplerest\app\Views\bir_half_size\css\styles.css > D:\laragon\www\simplerest-pack\app\Views\bir_half_size\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Views\bir_small (relative: app/Views/bir_small)
+Entering directory: D:\laragon\www\simplerest\app\Views\bir_small\css (relative: app/Views/bir_small/css)
+Copying D:\laragon\www\simplerest\app\Views\bir_small\css\styles.css > D:\laragon\www\simplerest-pack\app\Views\bir_small\css\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Views\bt5panel (relative: app/Views/bt5panel)
+Entering directory: D:\laragon\www\simplerest\app\Views\bt5panel\css (relative: app/Views/bt5panel/css)
+Copying D:\laragon\www\simplerest\app\Views\bt5panel\css\main.css > D:\laragon\www\simplerest-pack\app\Views\bt5panel\css\main.css
+Entering directory: D:\laragon\www\simplerest\app\Views\datagrids (relative: app/Views/datagrids)
+Entering directory: D:\laragon\www\simplerest\app\Views\datagrids\tabulator (relative: app/Views/datagrids/tabulator)
+Entering directory: D:\laragon\www\simplerest\app\Views\datagrids\x-editable (relative: app/Views/datagrids/x-editable)
+Entering directory: D:\laragon\www\simplerest\app\Views\email (relative: app/Views/email)
+Entering directory: D:\laragon\www\simplerest\app\Views\factory_parts (relative: app/Views/factory_parts)
+Entering directory: D:\laragon\www\simplerest\app\Views\factory_parts\js (relative: app/Views/factory_parts/js)
+Copying D:\laragon\www\simplerest\app\Views\factory_parts\js\custom_dt.js > D:\laragon\www\simplerest-pack\app\Views\factory_parts\js\custom_dt.js
+Entering directory: D:\laragon\www\simplerest\app\Views\fb_groups (relative: app/Views/fb_groups)
+Copying D:\laragon\www\simplerest\app\Views\fb_groups\styles.css > D:\laragon\www\simplerest-pack\app\Views\fb_groups\styles.css
+Entering directory: D:\laragon\www\simplerest\app\Views\html_builder_examples (relative: app/Views/html_builder_examples)
+Entering directory: D:\laragon\www\simplerest\app\Views\instructors (relative: app/Views/instructors)
+Copying D:\laragon\www\simplerest\app\Views\instructors\2.jpeg > D:\laragon\www\simplerest-pack\app\Views\instructors\2.jpeg
+Copying D:\laragon\www\simplerest\app\Views\instructors\3.jpeg > D:\laragon\www\simplerest-pack\app\Views\instructors\3.jpeg
+Copying D:\laragon\www\simplerest\app\Views\instructors\programmer.png > D:\laragon\www\simplerest-pack\app\Views\instructors\programmer.png
+Copying D:\laragon\www\simplerest\app\Views\instructors\redes.png > D:\laragon\www\simplerest-pack\app\Views\instructors\redes.png
+Entering directory: D:\laragon\www\simplerest\app\Views\instructors\web_components (relative: app/Views/instructors/web_components)
+Entering directory: D:\laragon\www\simplerest\app\Views\prompt_generator (relative: app/Views/prompt_generator)
+Entering directory: D:\laragon\www\simplerest\app\Views\prompt_generator\components (relative: app/Views/prompt_generator/components)
+Copying D:\laragon\www\simplerest\app\Views\prompt_generator\components\prompt_generator.js > D:\laragon\www\simplerest-pack\app\Views\prompt_generator\components\prompt_generator.js
+Copying D:\laragon\www\simplerest\app\Views\prompt_generator\components\storage_utils.js > D:\laragon\www\simplerest-pack\app\Views\prompt_generator\components\storage_utils.js
+Copying D:\laragon\www\simplerest\app\Views\prompt_generator\components\toast_config.js > D:\laragon\www\simplerest-pack\app\Views\prompt_generator\components\toast_config.js
+Copying D:\laragon\www\simplerest\app\Views\prompt_generator\components\ui_utils.js > D:\laragon\www\simplerest-pack\app\Views\prompt_generator\components\ui_utils.js
+Entering directory: D:\laragon\www\simplerest\app\Views\prompt_generator\css (relative: app/Views/prompt_generator/css)
+Copying D:\laragon\www\simplerest\app\Views\prompt_generator\css\index.css > D:\laragon\www\simplerest-pack\app\Views\prompt_generator\css\index.css
+Entering directory: D:\laragon\www\simplerest\app\Views\prompt_generator\partials (relative: app/Views/prompt_generator/partials)
+Entering directory: D:\laragon\www\simplerest\app\Views\select2 (relative: app/Views/select2)
+Item 'test_color-change-2.php' matched pattern 'test_*.php' by filename
+Skipping ignored item: app/Views/select2/test_color-change-2.php
+Item 'test_color-change.php' matched pattern 'test_*.php' by filename
+Skipping ignored item: app/Views/select2/test_color-change.php
+Item 'test_obf.php' matched pattern 'test_*.php' by filename
+Skipping ignored item: app/Views/select2/test_obf.php
+Entering directory: D:\laragon\www\simplerest\app\Views\selenium (relative: app/Views/selenium)
+Entering directory: D:\laragon\www\simplerest\app\Views\templates (relative: app/Views/templates)
+Item 'test_assets.php' matched pattern 'test_*.php' by filename
+Skipping ignored item: app/Views/test_assets.php
+Entering directory: D:\laragon\www\simplerest\app\Views\test_async_await (relative: app/Views/test_async_await)
+Item 'test_iframe.php' matched pattern 'test_*.php' by filename
+Skipping ignored item: app/Views/test_iframe.php
+Item 'test_numeric_input.php' matched pattern 'test_*.php' by filename
+Skipping ignored item: app/Views/test_numeric_input.php
+Item 'test_numeric_input_2.php' matched pattern 'test_*.php' by filename
+Skipping ignored item: app/Views/test_numeric_input_2.php
+Entering directory: D:\laragon\www\simplerest\app\Views\testmanejo (relative: app/Views/testmanejo)
+Entering directory: D:\laragon\www\simplerest\app\Views\userlogin (relative: app/Views/userlogin)
+Entering directory: D:\laragon\www\simplerest\app\Widgets (relative: app/Widgets)
+Entering directory: D:\laragon\www\simplerest\app\Widgets\Test (relative: app/Widgets/Test)
+Copying D:\laragon\www\simplerest\app\Widgets\Test\styles.css > D:\laragon\www\simplerest-pack\app\Widgets\Test\styles.css
+Copying D:\laragon\www\simplerest\app\Widgets\Test\test.js > D:\laragon\www\simplerest-pack\app\Widgets\Test\test.js
+Copied directory: app
+Item 'app-core.zip' matched pattern '*.zip' by filename
+Skipping ignored root item: app-core.zip
+Copied file: app.php
+Entering directory: D:\laragon\www\simplerest\backups (relative: backups)
+Copying D:\laragon\www\simplerest\backups\zippy.sql > D:\laragon\www\simplerest-pack\backups\zippy.sql
+Copied directory: backups
+Copied file: check_and_fix_bom.php
+Copying D:\laragon\www\simplerest\com > D:\laragon\www\simplerest-pack\com
+Copied file: com
+Copying D:\laragon\www\simplerest\compile_i18n.bat > D:\laragon\www\simplerest-pack\compile_i18n.bat
+Copied file: compile_i18n.bat
+Copying D:\laragon\www\simplerest\composer-refresh.ps1 > D:\laragon\www\simplerest-pack\composer-refresh.ps1
+Copied file: composer-refresh.ps1
+Copying D:\laragon\www\simplerest\composer.json > D:\laragon\www\simplerest-pack\composer.json
+Copied file: composer.json
+Copying D:\laragon\www\simplerest\composer.json.bk > D:\laragon\www\simplerest-pack\composer.json.bk
+Copied file: composer.json.bk
+Copying D:\laragon\www\simplerest\composer.lock > D:\laragon\www\simplerest-pack\composer.lock
+Copied file: composer.lock
+Entering directory: D:\laragon\www\simplerest\config (relative: config)
+Copying D:\laragon\www\simplerest\config\acl.php.example > D:\laragon\www\simplerest-pack\config\acl.php.example
+Copying D:\laragon\www\simplerest\config\acl.php.example2 > D:\laragon\www\simplerest-pack\config\acl.php.example2
+Copying D:\laragon\www\simplerest\config\routes.php.example > D:\laragon\www\simplerest-pack\config\routes.php.example
+Copied directory: config
+Copied file: convert.php
+Copying D:\laragon\www\simplerest\copy-gemini-skills-to-claude.ps1 > D:\laragon\www\simplerest-pack\copy-gemini-skills-to-claude.ps1
+Copied file: copy-gemini-skills-to-claude.ps1
+Copying D:\laragon\www\simplerest\copy_with_cpire_ignore.ps1 > D:\laragon\www\simplerest-pack\copy_with_cpire_ignore.ps1
+Copied file: copy_with_cpire_ignore.ps1
+Item 'core.zip' matched pattern '*.zip' by filename
+Skipping ignored root item: core.zip
+Copying D:\laragon\www\simplerest\cp_doc.bat > D:\laragon\www\simplerest-pack\cp_doc.bat
+Copied file: cp_doc.bat
+Copying D:\laragon\www\simplerest\create_package.ps1 > D:\laragon\www\simplerest-pack\create_package.ps1
+Copied file: create_package.ps1
+Entering directory: D:\laragon\www\simplerest\database (relative: database)
+Entering directory: D:\laragon\www\simplerest\database\migrations (relative: database/migrations)
+Entering directory: D:\laragon\www\simplerest\database\migrations\contacts (relative: database/migrations/contacts)
+Entering directory: D:\laragon\www\simplerest\database\migrations\edu (relative: database/migrations/edu)
+Entering directory: D:\laragon\www\simplerest\database\migrations\mpo (relative: database/migrations/mpo)
+Entering directory: D:\laragon\www\simplerest\database\migrations\parts (relative: database/migrations/parts)
+Entering directory: D:\laragon\www\simplerest\database\migrations\power_consumption (relative: database/migrations/power_consumption)
+Entering directory: D:\laragon\www\simplerest\database\migrations\products (relative: database/migrations/products)
+Entering directory: D:\laragon\www\simplerest\database\migrations\prompt_generator (relative: database/migrations/prompt_generator)
+Entering directory: D:\laragon\www\simplerest\database\migrations\prompts (relative: database/migrations/prompts)
+Entering directory: D:\laragon\www\simplerest\database\migrations\review_generator (relative: database/migrations/review_generator)
+Entering directory: D:\laragon\www\simplerest\database\migrations\test_dir (relative: database/migrations/test_dir)
+Entering directory: D:\laragon\www\simplerest\database\seeders (relative: database/seeders)
+Copied directory: database
+Copying D:\laragon\www\simplerest\debug.log > D:\laragon\www\simplerest-pack\debug.log
+Copied file: debug.log
+Copied file: debug_routes.php
+Copying D:\laragon\www\simplerest\desktop.ini > D:\laragon\www\simplerest-pack\desktop.ini
+Copied file: desktop.ini
+Copying D:\laragon\www\simplerest\doc.bat > D:\laragon\www\simplerest-pack\doc.bat
+Copied file: doc.bat
+Entering directory: D:\laragon\www\simplerest\docker (relative: docker)
+Entering directory: D:\laragon\www\simplerest\docker\nginx (relative: docker/nginx)
+Copying D:\laragon\www\simplerest\docker\nginx\Dockerfile > D:\laragon\www\simplerest-pack\docker\nginx\Dockerfile
+Copying D:\laragon\www\simplerest\docker\nginx\default.conf > D:\laragon\www\simplerest-pack\docker\nginx\default.conf
+Entering directory: D:\laragon\www\simplerest\docker\php (relative: docker/php)
+Copying D:\laragon\www\simplerest\docker\php\Dockerfile > D:\laragon\www\simplerest-pack\docker\php\Dockerfile
+Copying D:\laragon\www\simplerest\docker\php\php.ini > D:\laragon\www\simplerest-pack\docker\php\php.ini
+Copied directory: docker
+Entering directory: D:\laragon\www\simplerest\docs (relative: docs)
+Copying D:\laragon\www\simplerest\docs\ACL.md > D:\laragon\www\simplerest-pack\docs\ACL.md
+Copying D:\laragon\www\simplerest\docs\ApiClient.md > D:\laragon\www\simplerest-pack\docs\ApiClient.md
+Copying D:\laragon\www\simplerest\docs\AutomaticEndpoints-Summary.md > D:\laragon\www\simplerest-pack\docs\AutomaticEndpoints-Summary.md
+Copying D:\laragon\www\simplerest\docs\CHANGELOG-PSR.md > D:\laragon\www\simplerest-pack\docs\CHANGELOG-PSR.md
+Copying D:\laragon\www\simplerest\docs\CHANGELOG.md > D:\laragon\www\simplerest-pack\docs\CHANGELOG.md
+Copying D:\laragon\www\simplerest\docs\CommandLine.md > D:\laragon\www\simplerest-pack\docs\CommandLine.md
+Copying D:\laragon\www\simplerest\docs\DOC-Simplerest.txt > D:\laragon\www\simplerest-pack\docs\DOC-Simplerest.txt
+Copying D:\laragon\www\simplerest\docs\Exceptions.md > D:\laragon\www\simplerest-pack\docs\Exceptions.md
+Copying D:\laragon\www\simplerest\docs\For-Reasoning-Architecture.md > D:\laragon\www\simplerest-pack\docs\For-Reasoning-Architecture.md
+Copying D:\laragon\www\simplerest\docs\HTML-Form-builder.AdminLTE.md > D:\laragon\www\simplerest-pack\docs\HTML-Form-builder.AdminLTE.md
+Copying D:\laragon\www\simplerest\docs\HTML-Form-builder.md > D:\laragon\www\simplerest-pack\docs\HTML-Form-builder.md
+Copying D:\laragon\www\simplerest\docs\INDEX.md > D:\laragon\www\simplerest-pack\docs\INDEX.md
+Copying D:\laragon\www\simplerest\docs\ImmutableMethods.md > D:\laragon\www\simplerest-pack\docs\ImmutableMethods.md
+Copying D:\laragon\www\simplerest\docs\Middlewares.md > D:\laragon\www\simplerest-pack\docs\Middlewares.md
+Copying D:\laragon\www\simplerest\docs\ModuleProvider.md > D:\laragon\www\simplerest-pack\docs\ModuleProvider.md
+Copying D:\laragon\www\simplerest\docs\Ollama-Models.md > D:\laragon\www\simplerest-pack\docs\Ollama-Models.md
+Copying D:\laragon\www\simplerest\docs\Output-Methods.md > D:\laragon\www\simplerest-pack\docs\Output-Methods.md
+Copying D:\laragon\www\simplerest\docs\PSR-7.md > D:\laragon\www\simplerest-pack\docs\PSR-7.md
+Copying D:\laragon\www\simplerest\docs\PSR-SUMMARY.md > D:\laragon\www\simplerest-pack\docs\PSR-SUMMARY.md
+Copying D:\laragon\www\simplerest\docs\Pacakges.md > D:\laragon\www\simplerest-pack\docs\Pacakges.md
+Copying D:\laragon\www\simplerest\docs\Packages and Modules.md > D:\laragon\www\simplerest-pack\docs\Packages and Modules.md
+Copying D:\laragon\www\simplerest\docs\Prompt Generator.txt > D:\laragon\www\simplerest-pack\docs\Prompt Generator.txt
+Copying D:\laragon\www\simplerest\docs\QueryBuilder.md > D:\laragon\www\simplerest-pack\docs\QueryBuilder.md
+Copying D:\laragon\www\simplerest\docs\QuickStart.md > D:\laragon\www\simplerest-pack\docs\QuickStart.md
+Copying D:\laragon\www\simplerest\docs\Request.md > D:\laragon\www\simplerest-pack\docs\Request.md
+Copying D:\laragon\www\simplerest\docs\Response.md > D:\laragon\www\simplerest-pack\docs\Response.md
+Copying D:\laragon\www\simplerest\docs\Routing.md > D:\laragon\www\simplerest-pack\docs\Routing.md
+Copying D:\laragon\www\simplerest\docs\SimpleRest-API-Rest.md > D:\laragon\www\simplerest-pack\docs\SimpleRest-API-Rest.md
+Copying D:\laragon\www\simplerest\docs\SimpleRest-Complete-Docs.md > D:\laragon\www\simplerest-pack\docs\SimpleRest-Complete-Docs.md
+Copying D:\laragon\www\simplerest\docs\SimpleRest-philosophy.md > D:\laragon\www\simplerest-pack\docs\SimpleRest-philosophy.md
+Copying D:\laragon\www\simplerest\docs\WebRouter.md > D:\laragon\www\simplerest-pack\docs\WebRouter.md
+Entering directory: D:\laragon\www\simplerest\docs\commands (relative: docs/commands)
+Copying D:\laragon\www\simplerest\docs\commands\PackCommand.md > D:\laragon\www\simplerest-pack\docs\commands\PackCommand.md
+Copying D:\laragon\www\simplerest\docs\core-directives.md > D:\laragon\www\simplerest-pack\docs\core-directives.md
+Item 'docs/etc' matched pattern 'docs/etc' by relative path
+Skipping ignored item: docs/etc
+Item 'docs/extras' matched pattern 'docs/extras' by relative path
+Skipping ignored item: docs/extras
+Item 'docs/issues' matched pattern 'docs/issues' by relative path
+Skipping ignored item: docs/issues
+Copying D:\laragon\www\simplerest\docs\packager-implementation.md > D:\laragon\www\simplerest-pack\docs\packager-implementation.md
+Item 'docs/to-do' matched pattern 'docs/to-do' by relative path
+Skipping ignored item: docs/to-do
+Copied directory: docs
+Entering directory: D:\laragon\www\simplerest\etc (relative: etc)
+Copying D:\laragon\www\simplerest\etc\_data.txt > D:\laragon\www\simplerest-pack\etc\_data.txt
+Copying D:\laragon\www\simplerest\etc\_rules.txt > D:\laragon\www\simplerest-pack\etc\_rules.txt
+Copying D:\laragon\www\simplerest\etc\ad00148980970002000000067.xml > D:\laragon\www\simplerest-pack\etc\ad00148980970002000000067.xml
+Copying D:\laragon\www\simplerest\etc\basic.min.css > D:\laragon\www\simplerest-pack\etc\basic.min.css
+Copying D:\laragon\www\simplerest\etc\body (another copy).html > D:\laragon\www\simplerest-pack\etc\body (another copy).html
+Copying D:\laragon\www\simplerest\etc\bt_clases.html > D:\laragon\www\simplerest-pack\etc\bt_clases.html
+Copying D:\laragon\www\simplerest\etc\bt_clases.txt > D:\laragon\www\simplerest-pack\etc\bt_clases.txt
+Entering directory: D:\laragon\www\simplerest\etc\chatgpt-vision-test-gallery (relative: etc/chatgpt-vision-test-gallery)
+Copying D:\laragon\www\simplerest\etc\chatgpt-vision-test-gallery\persona.jpg > D:\laragon\www\simplerest-pack\etc\chatgpt-vision-test-gallery\persona.jpg
+Copying D:\laragon\www\simplerest\etc\cookies-torrepadregourmet.es.txt > D:\laragon\www\simplerest-pack\etc\cookies-torrepadregourmet.es.txt
+Copying D:\laragon\www\simplerest\etc\countries_states.json > D:\laragon\www\simplerest-pack\etc\countries_states.json
+Copying D:\laragon\www\simplerest\etc\documentation_ej1.json > D:\laragon\www\simplerest-pack\etc\documentation_ej1.json
+Copying D:\laragon\www\simplerest\etc\example.sql > D:\laragon\www\simplerest-pack\etc\example.sql
+Copying D:\laragon\www\simplerest\etc\output.jsonl > D:\laragon\www\simplerest-pack\etc\output.jsonl
+Copying D:\laragon\www\simplerest\etc\page.html > D:\laragon\www\simplerest-pack\etc\page.html
+Entering directory: D:\laragon\www\simplerest\etc\prompt-generator (relative: etc/prompt-generator)
+Entering directory: D:\laragon\www\simplerest\etc\prompt-generator\generated (relative: etc/prompt-generator/generated)
+Copying D:\laragon\www\simplerest\etc\prompt-generator\generated\001.txt > D:\laragon\www\simplerest-pack\etc\prompt-generator\generated\001.txt
+Entering directory: D:\laragon\www\simplerest\etc\prompts (relative: etc/prompts)
+Copying D:\laragon\www\simplerest\etc\prompts\modificacion_zippy_package.txt > D:\laragon\www\simplerest-pack\etc\prompts\modificacion_zippy_package.txt
+Entering directory: D:\laragon\www\simplerest\etc\py-azulejos (relative: etc/py-azulejos)
+Copying D:\laragon\www\simplerest\etc\py-azulejos\DarkReader.crx > D:\laragon\www\simplerest-pack\etc\py-azulejos\DarkReader.crx
+Copying D:\laragon\www\simplerest\etc\py-azulejos\index.py > D:\laragon\www\simplerest-pack\etc\py-azulejos\index.py
+Entering directory: D:\laragon\www\simplerest\etc\py-azulejos\libs (relative: etc/py-azulejos/libs)
+Entering directory: D:\laragon\www\simplerest\etc\py-azulejos\libs\__pycache__ (relative: etc/py-azulejos/libs/__pycache__)
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\__pycache__\dataobject.cpython-310.pyc > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\__pycache__\dataobject.cpython-310.pyc
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\__pycache__\files.cpython-310.pyc > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\__pycache__\files.cpython-310.pyc
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\__pycache__\instruction_loader.cpython-310.pyc > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\__pycache__\instruction_loader.cpython-310.pyc
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\__pycache__\label.cpython-310.pyc > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\__pycache__\label.cpython-310.pyc
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\__pycache__\robot_execution.cpython-310.pyc > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\__pycache__\robot_execution.cpython-310.pyc
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\__pycache__\select2.cpython-310.pyc > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\__pycache__\select2.cpython-310.pyc
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\__pycache__\web_automation.cpython-310.pyc > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\__pycache__\web_automation.cpython-310.pyc
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\dataobject.py > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\dataobject.py
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\files.py > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\files.py
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\instruction_loader.py > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\instruction_loader.py
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\label.py > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\label.py
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\robot_execution.py > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\robot_execution.py
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\select2.py > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\select2.py
+Copying D:\laragon\www\simplerest\etc\py-azulejos\libs\web_automation.py > D:\laragon\www\simplerest-pack\etc\py-azulejos\libs\web_automation.py
+Entering directory: D:\laragon\www\simplerest\etc\py-chatgpt (relative: etc/py-chatgpt)
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\DOC PY.txt > D:\laragon\www\simplerest-pack\etc\py-chatgpt\DOC PY.txt
+Entering directory: D:\laragon\www\simplerest\etc\py-chatgpt\generated (relative: etc/py-chatgpt/generated)
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\generated\t01.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\generated\t01.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\generated\t02.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\generated\t02.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\generated\t03.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\generated\t03.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\generated\t04.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\generated\t04.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\get_api_key.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\get_api_key.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test_1.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test_1.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test_1a.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test_1a.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test_1b.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test_1b.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test_2.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test_2.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test_2b.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test_2b.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test_2c.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test_2c.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test_2d.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test_2d.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test_2e.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test_2e.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test_2f.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test_2f.py
+Copying D:\laragon\www\simplerest\etc\py-chatgpt\test_zz.py > D:\laragon\www\simplerest-pack\etc\py-chatgpt\test_zz.py
+Entering directory: D:\laragon\www\simplerest\etc\py-review-generator (relative: etc/py-review-generator)
+Entering directory: D:\laragon\www\simplerest\etc\py-review-generator\py-files (relative: etc/py-review-generator/py-files)
+Copying D:\laragon\www\simplerest\etc\py-review-generator\py-files\make_prod_review.py > D:\laragon\www\simplerest-pack\etc\py-review-generator\py-files\make_prod_review.py
+Copying D:\laragon\www\simplerest\etc\py-review-generator\py-files\make_prod_review_completions.py > D:\laragon\www\simplerest-pack\etc\py-review-generator\py-files\make_prod_review_completions.py
+Copying D:\laragon\www\simplerest\etc\py-review-generator\py-files\make_ws_review.py > D:\laragon\www\simplerest-pack\etc\py-review-generator\py-files\make_ws_review.py
+Copying D:\laragon\www\simplerest\etc\py-review-generator\py-files\make_ws_review_completions.py > D:\laragon\www\simplerest-pack\etc\py-review-generator\py-files\make_ws_review_completions.py
+Copying D:\laragon\www\simplerest\etc\py-review-generator\py-files\make_ws_review_completions_names.py > D:\laragon\www\simplerest-pack\etc\py-review-generator\py-files\make_ws_review_completions_names.py
+Copying D:\laragon\www\simplerest\etc\py-review-generator\py-files\make_ws_review_completions_qty.py > D:\laragon\www\simplerest-pack\etc\py-review-generator\py-files\make_ws_review_completions_qty.py
+Copying D:\laragon\www\simplerest\etc\py-review-generator\py-files\make_ws_review_names.py > D:\laragon\www\simplerest-pack\etc\py-review-generator\py-files\make_ws_review_names.py
+Copying D:\laragon\www\simplerest\etc\res_jsonplaceholder.json > D:\laragon\www\simplerest-pack\etc\res_jsonplaceholder.json
+Copying D:\laragon\www\simplerest\etc\resultados_examenes.csv > D:\laragon\www\simplerest-pack\etc\resultados_examenes.csv
+Copying D:\laragon\www\simplerest\etc\sitemap.xml > D:\laragon\www\simplerest-pack\etc\sitemap.xml
+Copying D:\laragon\www\simplerest\etc\some_file.txt > D:\laragon\www\simplerest-pack\etc\some_file.txt
+Copying D:\laragon\www\simplerest\etc\sp_xml_factura_electronica.sql > D:\laragon\www\simplerest-pack\etc\sp_xml_factura_electronica.sql
+Copying D:\laragon\www\simplerest\etc\star_rating (5).sql > D:\laragon\www\simplerest-pack\etc\star_rating (5).sql
+Entering directory: D:\laragon\www\simplerest\etc\stop-words (relative: etc/stop-words)
+Copying D:\laragon\www\simplerest\etc\stop-words\stop-words-es.txt > D:\laragon\www\simplerest-pack\etc\stop-words\stop-words-es.txt
+Copying D:\laragon\www\simplerest\etc\style.themed.css > D:\laragon\www\simplerest-pack\etc\style.themed.css
+Copying D:\laragon\www\simplerest\etc\sys_stats.txt > D:\laragon\www\simplerest-pack\etc\sys_stats.txt
+Entering directory: D:\laragon\www\simplerest\etc\templates (relative: etc/templates)
+Copying D:\laragon\www\simplerest\etc\test.sql > D:\laragon\www\simplerest-pack\etc\test.sql
+Copying D:\laragon\www\simplerest\etc\times_zones.txt > D:\laragon\www\simplerest-pack\etc\times_zones.txt
+Copying D:\laragon\www\simplerest\etc\woo5.lan-cookies.txt > D:\laragon\www\simplerest-pack\etc\woo5.lan-cookies.txt
+Entering directory: D:\laragon\www\simplerest\etc\woocommerce (relative: etc/woocommerce)
+Copying D:\laragon\www\simplerest\etc\zippy-execution.md > D:\laragon\www\simplerest-pack\etc\zippy-execution.md
+Copying D:\laragon\www\simplerest\etc\zippycart_credentials.json > D:\laragon\www\simplerest-pack\etc\zippycart_credentials.json
+Copied directory: etc
+Entering directory: D:\laragon\www\simplerest\examples (relative: examples)
+Copying D:\laragon\www\simplerest\examples\README.md > D:\laragon\www\simplerest-pack\examples\README.md
+Copied directory: examples
+Entering directory: D:\laragon\www\simplerest\exports (relative: exports)
+Copying D:\laragon\www\simplerest\exports\categories_2025-12-05_15-07-30.csv > D:\laragon\www\simplerest-pack\exports\categories_2025-12-05_15-07-30.csv
+Copying D:\laragon\www\simplerest\exports\test_categories.json > D:\laragon\www\simplerest-pack\exports\test_categories.json
+Copying D:\laragon\www\simplerest\exports\test_categories_with_file.json > D:\laragon\www\simplerest-pack\exports\test_categories_with_file.json
+Copying D:\laragon\www\simplerest\exports\test_export.csv > D:\laragon\www\simplerest-pack\exports\test_export.csv
+Copying D:\laragon\www\simplerest\exports\test_export.json > D:\laragon\www\simplerest-pack\exports\test_export.json
+Copying D:\laragon\www\simplerest\exports\verify_export.json > D:\laragon\www\simplerest-pack\exports\verify_export.json
+Copied directory: exports
+Copying D:\laragon\www\simplerest\favicon.ico > D:\laragon\www\simplerest-pack\favicon.ico
+Copied file: favicon.ico
+Copying D:\laragon\www\simplerest\fix-git-case.ps1 > D:\laragon\www\simplerest-pack\fix-git-case.ps1
+Copied file: fix-git-case.ps1
+Copied file: fix_model_references.php
+Copied file: fix_namespace.php
+Copied file: fix_producto_marcas.php
+Copying D:\laragon\www\simplerest\get_untracked.ps1 > D:\laragon\www\simplerest-pack\get_untracked.ps1
+Copied file: get_untracked.ps1
+Copying D:\laragon\www\simplerest\git_diff_with_hash.bat > D:\laragon\www\simplerest-pack\git_diff_with_hash.bat
+Copied file: git_diff_with_hash.bat
+Copying D:\laragon\www\simplerest\git_diff_with_hash.sh > D:\laragon\www\simplerest-pack\git_diff_with_hash.sh
+Copied file: git_diff_with_hash.sh
+Copied file: index.php
+Item 'logs' matched pattern 'logs' by filename
+Skipping ignored root item: logs
+Copied file: move_api_controllers.php
+Copied file: move_schemas.php
+Error during packaging: Failed to copy file: D:\laragon\www\simplerest\nul to D:\laragon\www\simplerest-pack\nul
