@@ -34,6 +34,7 @@ config/woocommerce.php
 *.txt
 *.log
 *.sh
+.env
 .dev-env
 winpush.bat
 test-*.php
@@ -47,4 +48,8 @@ QWEN.md
 AI_RULES.md
 .cpignore
 .cpinclude
+simplerest.code-workspace
+check_and_fix_bom.php
+.zipignore
+push
 
