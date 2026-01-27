@@ -2,10 +2,10 @@
 
 namespace Boctulus\Simplerest\Controllers\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 use Boctulus\Simplerest\Core\Libs\Factory;
 
-class Roles extends MyApiController
+class Roles extends ApiController
 {
     function __construct()
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Api\v1;
+namespace Boctulus\Simplerest\Core\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController;
+use Boctulus\Simplerest\Core\Api\ApiController;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Libs\Strings;
@@ -13,7 +13,7 @@ use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 use Boctulus\Simplerest\Core\Libs\Url;
 
 
-class TrashCan extends MyApiController
+class TrashCan extends ApiController
 {
     protected $model;
     protected $instance;

@@ -31,7 +31,7 @@ class WebRouter
     protected static $current_uri;
     protected static $aliases      = [];
     protected static $v_aliases    = [];
-    
+
     // Nuove proprietà per il supporto di parametri dinamici e gruppi
     protected static $routePatterns  = []; // [verb][uri] => regex pattern
     protected static $routeParamNames = []; // [verb][uri] => array di nomi dei parametri
@@ -172,7 +172,34 @@ class WebRouter
                     $pattern = static::$routePatterns[$req_method][$uri];
                     if (preg_match($pattern, $path, $matches)) {
                         array_shift($matches); // rimuove il match completo
+
+                        // Gestione del parametro wildcard: se presente, deve essere l'ultimo elemento
                         $args = $matches;
+
+                        // Se la route ha un wildcard, assicurarsi che il valore wildcard sia l'ultimo argomento
+                        if (isset(static::$routeParamNames[$req_method][$uri]) &&
+                            in_array('wildcard', static::$routeParamNames[$req_method][$uri])) {
+
+                            // Trova l'indice del parametro wildcard
+                            $wildcardIndex = array_search('wildcard', static::$routeParamNames[$req_method][$uri]);
+
+                            // Se il valore del wildcard è vuoto ma abbiamo altri segmenti, potrebbe essere un problema
+                            if (isset($args[$wildcardIndex]) && $args[$wildcardIndex] === '') {
+                                // Cerchiamo di ottenere il resto del path come wildcard
+                                // Rimuoviamo il suffisso '/*' dall'URI originale per confrontarlo con il path
+                                $cleanUri = rtrim($uri, '/*');
+                                $uriParts = explode('/', trim($cleanUri, '/'));
+                                $pathParts = explode('/', trim($path, '/'));
+
+                                // Calcoliamo quanti segmenti ci sono dopo i segmenti fissi
+                                $fixedSegmentsCount = count($uriParts);
+
+                                if (count($pathParts) >= $fixedSegmentsCount) {
+                                    $wildcardValue = implode('/', array_slice($pathParts, $fixedSegmentsCount));
+                                    $args[$wildcardIndex] = $wildcardValue;
+                                }
+                            }
+                        }
                     } else {
                         continue;
                     }
@@ -182,7 +209,7 @@ class WebRouter
                     if (count(static::$params) < count($slugs)){
                         continue;
                     }
-    
+
                     $found = 0;
                     foreach ($slugs as $k => $sl){
                         if (!isset(static::$params[$k]) || static::$params[$k] != $sl){
@@ -194,12 +221,12 @@ class WebRouter
                         }
                     }
                     $args = array_slice(static::$params, count($slugs));
-    
+
                     if (isset(static::$ck_params[$req_method][$uri])){
                         if (count(static::$ck_params[$req_method][$uri]) > count($args)){
                             throw new \Exception("Expecting " . count(static::$ck_params[$req_method][$uri]) . ' params but ' . count($args) . ' was given');
                         }
-    
+
                         if (isset(static::$wheres[$req_method][$uri])){
                             $vars = static::$ck_params[$req_method][$uri];
                             foreach ($vars as $ix => $var){
@@ -208,8 +235,8 @@ class WebRouter
                                     throw new \InvalidArgumentException("Parameter '$var' is required for $req_method on '$uri'");
                                 }
                                 $reg = static::$wheres[$req_method][$uri][$var];
-                                if (preg_match("/^($reg)$/", $args[$ix]) !== 1){                        
-                                    throw new \InvalidArgumentException("Parameter '$var' should match '" . static::$wheres[$req_method][$uri][$var] . "' expression. Given '{$args[$ix]}'");         
+                                if (preg_match("/^($reg)$/", $args[$ix]) !== 1){
+                                    throw new \InvalidArgumentException("Parameter '$var' should match '" . static::$wheres[$req_method][$uri][$var] . "' expression. Given '{$args[$ix]}'");
                                 }
                             }
                         }
@@ -290,6 +317,16 @@ class WebRouter
         }
     }
 
+    public static function mount(string $prefix, string $handlerClass)
+    {
+        static::any(trim($prefix, '/') . '/*', function(...$args) use ($handlerClass) {
+            $handler = new $handlerClass();
+            return $handler->resolve($args);
+        });
+
+        return static::getInstance();
+    }
+
     public static function compile()
     {
         foreach (static::$routes as $verb => $callbacks){
@@ -322,21 +359,34 @@ class WebRouter
                     static::$ctrls[$verb][$uri] = [$class_name, $method];
                 }
 
-                // Se la rotta contiene parametri dinamici (placeholder {param})
-                if (strpos($uri, '{') !== false) {
+                // Se la rotta contiene parametri dinamici (placeholder {param}) o wildcard
+                if (strpos($uri, '{') !== false || str_ends_with($uri, '/*')) {
+                    $hasWildcard = str_ends_with($uri, '/*');
+                    $baseUri = $hasWildcard ? substr($uri, 0, -2) : $uri;
+
                     $pattern = preg_replace_callback('/\{(\w+)\}/', function($matches) use ($verb, $uri) {
                         $param = $matches[1];
                         if (isset(static::$wheres[$verb][$uri][$param])) {
                             return '(' . static::$wheres[$verb][$uri][$param] . ')';
                         }
                         return '([^/]+)';
-                    }, $uri);
+                    }, $baseUri);
+
+                    if ($hasWildcard) {
+                        $pattern .= '(?:/(.*))?'; // Captura todo lo que sigue después de /
+                    }
 
                     static::$routePatterns[$verb][$uri] = '#^' . $pattern . '$#';
 
                     // Estrai i nomi dei parametri
                     preg_match_all('/\{(\w+)\}/', $uri, $paramMatches);
-                    static::$routeParamNames[$verb][$uri] = $paramMatches[1];
+                    $paramNames = $paramMatches[1];
+
+                    if ($hasWildcard) {
+                        $paramNames[] = 'wildcard'; // Aggiungi il nome del parametro wildcard
+                    }
+
+                    static::$routeParamNames[$verb][$uri] = $paramNames;
                 }
             }
 
@@ -346,24 +396,32 @@ class WebRouter
 
             usort($uris, function($a, $b) use ($verb) {
                 $calc = function($uri) {
-                    $segments = array_values(array_filter(explode('/', $uri), 'strlen'));
+                    $hasWildcard = str_ends_with($uri, '/*');
+                    $baseUri = $hasWildcard ? substr($uri, 0, -2) : $uri;
+
+                    $segments = array_values(array_filter(explode('/', $baseUri), 'strlen'));
                     $numSegments = count($segments);
                     $numParams = preg_match_all('/\{(\w+)\}/', $uri, $pm);
                     $numLiterals = 0;
                     foreach ($segments as $s) {
                         if (strpos($s, '{') === false && $s !== '') $numLiterals++;
                     }
-                    // Devolvemos una tupla para comparar: (numLiterals, numSegments, -numParams)
-                    return [$numLiterals, $numSegments, -$numParams];
+
+                    // Las rutas con wildcard tienen menor prioridad
+                    $wildcardFactor = $hasWildcard ? 0 : 1;
+
+                    // Devolvemos una tupla para comparar: (wildcardFactor, numLiterals, numSegments, -numParams)
+                    return [$wildcardFactor, $numLiterals, $numSegments, -$numParams];
                 };
 
                 $va = $calc($a);
                 $vb = $calc($b);
 
-                // Comparación lexicográfica: preferir mayor numLiterals, luego mayor numSegments, luego menor numParams
-                if ($va[0] !== $vb[0]) return ($va[0] > $vb[0]) ? -1 : 1;
-                if ($va[1] !== $vb[1]) return ($va[1] > $vb[1]) ? -1 : 1;
-                if ($va[2] !== $vb[2]) return ($va[2] > $vb[2]) ? -1 : 1;
+                // Comparación lexicográfica: preferir rutas sin wildcard, luego más literales, luego más segmentos, luego menos params
+                if ($va[0] !== $vb[0]) return ($va[0] > $vb[0]) ? -1 : 1; // Sin wildcard primero
+                if ($va[1] !== $vb[1]) return ($va[1] > $vb[1]) ? -1 : 1; // Más literales primero
+                if ($va[2] !== $vb[2]) return ($va[2] > $vb[2]) ? -1 : 1; // Más segmentos primero
+                if ($va[3] !== $vb[3]) return ($va[3] > $vb[3]) ? -1 : 1; // Menos params primero
                 // Si empatan, mantener orden lexicográfico inverso por longitud (más largo -> antes)
                 if (strlen($a) !== strlen($b)) return (strlen($a) > strlen($b)) ? -1 : 1;
                 return strcmp($a, $b);
@@ -552,14 +610,14 @@ class WebRouter
     public static function fromArray(array $routes) {
         // Definizione dei verbi HTTP supportati
         $supportedVerbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
-        
+
         foreach ($routes as $routeKey => $callback) {
             // Se il formato della chiave contiene ":", significa che è specificato un verbo
             if (strpos($routeKey, ':') !== false) {
                 list($verb, $uri) = explode(':', $routeKey, 2);
                 $verb = strtoupper(trim($verb));
                 $uri  = trim($uri, '/');
-                
+
                 // Se il verbo è supportato, chiama il metodo di registrazione corrispondente
                 if (in_array($verb, $supportedVerbs)) {
                     switch ($verb) {
@@ -597,6 +655,19 @@ class WebRouter
             }
         }
         return static::getInstance();
+    }
+
+    // Public methods to access internal route data for testing purposes
+    public static function getRoutes() {
+        return static::$routes;
+    }
+
+    public static function getRoutePatterns() {
+        return static::$routePatterns;
+    }
+
+    public static function getRouteParamNames() {
+        return static::$routeParamNames;
     }
     
 }
