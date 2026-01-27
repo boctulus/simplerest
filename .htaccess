@@ -1,0 +1,32 @@
+RewriteEngine On
+
+# Evitar acceso a archivos .php desde el navegador
+#RewriteCond %{REQUEST_URI}.php -f
+#RewriteRule ^(.+)\.php$ /index.php [QSA,L]
+
+# Evitar acceso a archivos que comienzan con "."
+RewriteCond %{REQUEST_URI} /\.
+RewriteRule ^ - [F,L]
+
+RewriteCond %{REQUEST_URI} ^(.+)/$
+RewriteRule ^ %1 [L,R=301]
+
+RewriteCond %{THE_REQUEST} ^.*/index\.php
+RewriteRule ^index.php(.*)$ /$1 [R=301,L]
+
+# Handle Authorization Header
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Redirect Trailing Slashes If Not A Folder...
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
+
+# Handle Front Controller...
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]
+
+php_value upload_max_filesize 1024M
+php_value post_max_size 1024M

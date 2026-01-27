@@ -1,0 +1,37 @@
+{
+  "renderTemplate": {
+    "description": "Método utilitario para crear archivos a partir de plantillas con opciones de personalización.",
+    "usage": "```php\n$this->renderTemplate($name, $prefix, $subfix, $dest_path, $template_path, $namespace, ...$opt);\n```",
+    "parameters": [
+      "- `$name`: Nombre base del archivo (ej. `my_controller`).",
+      "- `$prefix`: Prefijo opcional para la clase (ej. `I` para interfaces).",
+      "- `$subfix`: Sufijo para la clase (ej. `Controller`).",
+      "- `$dest_path`: Ruta base donde se guardará el archivo.",
+      "- `$template_path`: Ruta de la plantilla a utilizar.",
+      "- `$namespace`: Namespace opcional para la clase.",
+      "- `...$opt`: Opciones como `--force`, `--unignore`, `--strict`, `--remove`."
+    ],
+    "examples": [
+      "1. **Crear un controlador:**\n   ```php\n   $this->renderTemplate('my_controller', '', 'Controller', CONTROLLERS_PATH, self::TEMPLATES . 'Controller.php', $this->namespace . '\\\\controllers', '--force');\n   ```\n   - Genera `MyControllerController.php` en `CONTROLLERS_PATH`.",
+      "2. **Crear una interfaz:**\n   ```php\n   $this->renderTemplate('my_interface', 'I', '', INTERFACE_PATH, self::INTERFACE_TEMPLATE, $this->namespace . '\\\\interfaces', '--strict');\n   ```\n   - Genera `IMyInterface.php` con `declare(strict_types=1);`.",
+      "3. **Eliminar un archivo:**\n   ```php\n   $this->renderTemplate('my_controller', '', 'Controller', CONTROLLERS_PATH, self::TEMPLATES . 'Controller.php', $this->namespace . '\\\\controllers', '--remove');\n   ```\n   - Elimina `MyControllerController.php` si existe."
+    ]
+  },
+  "copyAndParseTemplates": {
+    "suggested_name": "renderTemplatesToModule",
+    "reason": "Más claro y conciso; sugiere que las plantillas se renderizan (parsean) y se copian al módulo."
+  },
+  "makeScafolding": {
+    "description": "Crea una estructura de directorios para scaffoldings y soporta opciones como `--force` y `--remove`.",
+    "usage": "```php\n$this->makeScafolding($directories, $basePath, $options);\n```",
+    "parameters": [
+      "- `$directories`: Array de subdirectorios a crear (ej. `['assets/css', 'config']`).",
+      "- `$basePath`: Directorio base donde se crearán los subdirectorios.",
+      "- `$options`: Opciones como `--force`, `--remove`."
+    ],
+    "examples": [
+      "1. **Crear estructura de módulo:**\n   ```php\n   $this->makeScafolding(['assets/css', 'config'], MODULES_PATH . 'myModule', ['--force']);\n   ```\n   - Crea `assets/css` y `config` en `myModule`, sobrescribiendo si es necesario.",
+      "2. **Eliminar estructura:**\n   ```php\n   $this->makeScafolding(['assets/css', 'config'], MODULES_PATH . 'myModule', ['--remove']);\n   ```\n   - Elimina los subdirectorios especificados si existen."
+    ]
+  }
+}

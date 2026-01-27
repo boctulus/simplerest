@@ -1,0 +1,1552 @@
+<?php
+
+use Boctulus\Simplerest\Core\Interfaces\ICommand;
+use Boctulus\Simplerest\Core\Interfaces\IMigration;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
+use Boctulus\Simplerest\Core\Libs\Schema;
+use Boctulus\Simplerest\Core\Libs\StdOut;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Traits\CommandTrait;
+
+class MigrationsCommand implements ICommand
+{
+    use CommandTrait;
+
+    /*
+        Custom handle to support colons in method names (e.g., migrate:module)
+    */
+    public function handle($args) {
+        if (empty($args)) {
+            $this->help();
+            return;
+        }
+
+        $method = array_shift($args);
+
+        // Convert colons to underscores to support Laravel-style command naming
+        $method = str_replace(':', '_', $method);
+
+        if (!method_exists($this, $method)) {
+            dd("Method not found for " . __CLASS__ . "::$method");
+            exit;
+        }
+
+        // Call method dynamically with remaining arguments
+        call_user_func_array([$this, $method], $args);
+    }
+
+    function make(...$opt) {
+        require_once COMMANDS_PATH . 'MakeCommand.php';
+        return (new MakeCommand())->migration(...$opt);
+    }
+    
+    /*
+        Migrating: 2014_10_12_000000_create_users_table
+        Migrated:  2014_10_12_000000_create_users_table
+        Migrating: 2014_10_12_100000_create_password_resets_table
+        Migrated:  2014_10_12_100000_create_password_resets_table
+        Migrating: 2020_10_28_145609_as_d_f
+        Migrated:  2020_10_28_145609_as_d_f
+
+        php com migrations migrate --file=2021_09_14_27905675_user_sp_permissions.php
+    */
+    function migrate(...$opt) {
+        $filenames = [];
+
+        $file_opt  = false;
+        $dir_opt   = false;
+        $to_db     = null;
+        $steps     = PHP_INT_MAX;
+        $skip      = 0;
+        $retry     = false;
+        $ignore    = null; 
+        $fresh     = false;
+        $make      = false;
+        $debug     = false;
+        
+        $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
+
+        StdOut::showResponse();
+
+        foreach ($opt as $o)
+        {
+            if (preg_match('/^--to[=|:](.*)$/', $o, $matches)){
+                $match = $matches[1];
+                if (!preg_match('/^([a-z0-9_-]+)$/i', $match, $matches)){
+                    throw new \InvalidArgumentException("Invalid indentifier '{$match}' for tenant id");
+                }
+
+                $to_db = $matches[1];
+
+                // Validar que la conexión existe
+                if (!DB::connectionExists($to_db)) {
+                    throw new \InvalidArgumentException("Connection '$to_db' is not registered in db_connections");
+                }
+            }
+
+            if ('--retry' == $o || 'retry' == $o || '--force' == $o || 'force' == $o){
+                $retry = true;
+            }
+
+            if ('--ignore' == $o){
+                $ignore = true;
+            }
+
+            if ('--fresh' == $o){
+                $fresh = true;
+            }
+
+            if ('--debug' == $o){
+                $debug = true;
+            }
+
+            if (preg_match('/^--make[=|:](.*)$/', $o, $matches)){
+                $make = $matches[1];
+            }
+
+            if (Strings::startsWith('--file=', $o)){
+                $file_opt = true;
+
+                $_f = substr($o, 7);
+
+                if (Files::isAbsolutePath($_f)){
+                    $path = Files::getDir($_f);
+                    $_f = basename($_f);
+                } else {
+                    // Soportar tanto \ como / como separadores
+                    if (Strings::contains(DIRECTORY_SEPARATOR, $_f) || Strings::contains('/', $_f)){
+                        // Normalizar separadores a DIRECTORY_SEPARATOR
+                        $_f = str_replace('/', DIRECTORY_SEPARATOR, $_f);
+
+                        $fr = explode(DIRECTORY_SEPARATOR, $_f);
+
+                        $_f = $fr[count($fr)-1];
+
+                        unset($fr[count($fr)-1]);
+                        $path = implode(DIRECTORY_SEPARATOR, $fr) . DIRECTORY_SEPARATOR;
+
+                        if (!Strings::startsWith(DIRECTORY_SEPARATOR, $path)){
+                            $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path;
+                        }
+                    }
+                }
+
+                $path = str_replace('//', '/', $path);
+                $filenames = [ $_f ];
+            } 
+
+            if (Strings::startsWith('--step=', $o)){
+                $steps = Strings::slice($o, '/^--step=([0-9]+)$/');
+            }
+
+            if (Strings::startsWith('--skip=', $o)){
+                $skip = Strings::slice($o, '/^--skip=([0-9]+)$/');
+            }
+
+            /*
+                Ahora acepto rutas absolutas -útiles para manejarse dentro de Service Providers-
+            */
+
+            if (Strings::startsWith('--folder=', $o)){
+                $o = str_replace('--folder=', '--dir=', $o);
+            }
+
+            if (Strings::startsWith('--dir=', $o)){
+                $dir_opt = true;
+                $_dir    = substr($o, 6);
+
+                if (Files::isAbsolutePath($_dir)){
+                    $path = $_dir;
+                } else {
+                    $path = MIGRATIONS_PATH . $_dir;
+                }                
+
+                if (!is_dir($path)){
+                    throw new \Exception("Directory $path not found");
+                }
+            }
+        } // end foreach
+
+        if (!$file_opt){
+            foreach (new \DirectoryIterator($path) as $fileInfo) {
+                if($fileInfo->isDot()  || $fileInfo->isDir()) continue;
+                
+                $filename = $fileInfo->getFilename();
+
+                // No proceso como archivo de migracion a ".db" (a implementar)
+                if (Strings::startsWith('.', $filename) || $fileInfo->getExtension() != 'php'){
+                    continue;               
+                }
+
+                $filenames[] = $filename;
+            }   
+    
+            sort($filenames);    
+        } else {
+            if ($ignore){
+                $filename = $filenames[0];
+
+                DB::getDefaultConnection();
+
+                /*
+                    Debe existir la tabla 'migrations'
+                */
+                if (Schema::hasTable('migrations')){
+
+                    // Calcular ruta relativa respecto a MIGRATIONS_PATH
+                    // Normalizar ambos paths para comparación correcta
+                    $normalized_migrations_path = rtrim(str_replace('\\', '/', realpath(MIGRATIONS_PATH)), '/');
+                    $normalized_current_path = rtrim(str_replace('\\', '/', realpath($path)), '/');
+
+                    // Remover MIGRATIONS_PATH del path actual para obtener el path relativo
+                    if (strpos($normalized_current_path, $normalized_migrations_path) === 0) {
+                        $relative_path = substr($normalized_current_path, strlen($normalized_migrations_path));
+                        $relative_path = ltrim($relative_path, '/'); // Remover leading slash
+                    } else {
+                        // Si no está dentro de MIGRATIONS_PATH, guardar el path completo
+                        $relative_path = $normalized_current_path;
+                    }
+
+                    $data = [
+                        'filename' => $filename,
+                        'path' => !empty($relative_path) ? $relative_path : null
+                    ];
+
+                    if ($to_db != 'default'){
+                       $data['db'] = $to_db;
+                    }
+
+                    $ok = table('migrations')
+                    ->create($data);
+
+                    if ($ok){
+                        StdOut::print("Migration file '$filename' was marked as ignored");
+                        return;
+                    }
+
+                    StdOut::print("Error trying to ignore file '$filename'd");
+
+                    return;
+                }
+
+            }
+    
+        }
+
+        $cnt = min($steps, count($filenames));
+
+        get_default_connection();
+
+        if ($fresh){
+            $this->fresh(...$opt);
+        }
+
+        if (!Schema::hasTable('migrations')){ 
+            $filename_mg = '0000_00_00_00000000_migrations.php';
+            $path_mg = MIGRATIONS_PATH;
+
+            if (!file_exists(MIGRATIONS_PATH . $filename_mg)){
+                StdOut::print("$filename_mg not found");
+            }
+
+            $full_path_mg = str_replace('//', '/', $path_mg . '/'. $filename_mg);
+            require_once $full_path_mg;
+            
+            $class_name_mg = PHPLexicalAnalyzer::getClassNameByFileName($full_path_mg);
+
+            if (!class_exists($class_name_mg)){
+                throw new \Exception ("Class '$class_name_mg' not found in $filename_mg");
+            }
+
+            StdOut::print("Migrating '$filename_mg'\r\n");
+
+            try {
+                DB::disableForeignKeyConstraints();
+                (new $class_name_mg())->up();
+            } finally {
+                DB::enableForeignKeyConstraints();
+            }
+
+            // Register the migrations migration itself
+            StdOut::print("Migrated  '$filename_mg' --ok\r\n");
+
+            get_default_connection();
+            table('migrations')->create([
+                'filename' => $filename_mg
+            ]);
+        }
+
+        $ix = 0;
+        $skipped = 0;
+        foreach ($filenames as $filename)
+        {
+            if (!$retry){
+                // Create a fresh query builder instance for each check
+                $exists = table('migrations')
+                ->where([
+                    'filename' => $filename
+                ])
+                ->when($to_db != null,
+                    function ($q) use ($to_db) {
+                        $q->where(['db', $to_db]);
+                    },
+                    function ($q) {
+                        $q->whereNull('db');
+                    }
+                )
+                ->exists();
+
+                if ($exists){
+                    if ($to_db !== null) {
+                        StdOut::print("Already migrated for DB=$to_db. Skipping '$filename'\r\n");
+                    }
+                    continue;
+                }
+            }
+
+            if ($ix >= $cnt){
+                break;
+            }
+
+            if (!empty($skip) && $skipped<$skip){
+                $skipped++;
+                continue;
+            }
+
+            $full_path = $path . '/'. trim($filename);
+            $full_path = realpath($full_path);
+            $migration = include $full_path;
+
+            $simulation = false;
+            if (in_array('--simulate', $opt) || in_array('--simulation', $opt) || in_array('simulate', $opt) || in_array('simulation', $opt)){
+                $simulation = true;
+                $debug      = true;
+            }
+
+            if ($debug){
+                dd("Processing: $full_path [...]");
+            }
+
+            if ($migration instanceof IMigration) {
+                // Es una migración anónima
+                $migrationInstance = $migration;
+            } else {
+                // Es una migración con clase nombrada
+                $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
+                if (!class_exists($class_name)) {
+                    throw new \Exception("Class '$class_name' not found in $filename");
+                }
+
+                if (!class_exists($class_name)){
+                    StdOut::print("Class '$class_name' not found in $filename");
+                    exit;
+                }
+
+                require_once $full_path;
+
+                $migrationInstance = new $class_name();                
+            }
+
+            StdOut::print("Migrating '$filename'\r\n");
+
+            if (!method_exists($migrationInstance, 'up')){
+                StdOut::print("Method up() is missing. Impossible to migrate $filename\r\n");
+                exit(1);
+            }
+
+            if (!$simulation){
+                if (!empty($to_db)){
+                    DB::setConnection($to_db);
+                }
+
+                DB::beginTransaction();
+	
+                try {
+                    DB::disableForeignKeyConstraints();
+
+                    $migrationInstance->up();
+                    
+                    DB::commit(); 
+
+                }catch(\Exception $e){
+                    try {
+                        DB::rollback();
+                        throw $e;
+                    } catch (\Exception $e){
+                        throw $e;
+                    }
+                } finally {
+                    DB::enableForeignKeyConstraints();
+                }
+
+            } else {
+                StdOut::print("*** This is a Simulation ***" . PHP_EOL);
+
+                $ix++;
+                continue;
+            }
+            
+            StdOut::print("Migrated  '$filename' --ok\r\n");
+            
+            /*
+                Main connection restore
+            */
+
+            /*
+                Main connection restore and register migration
+            */
+            get_default_connection();
+
+            // Calcular ruta relativa respecto a MIGRATIONS_PATH
+            // Normalizar ambos paths para comparación correcta
+            $normalized_migrations_path = rtrim(str_replace('\\', '/', realpath(MIGRATIONS_PATH)), '/');
+            $normalized_current_path = rtrim(str_replace('\\', '/', realpath($path)), '/');
+
+            // Remover MIGRATIONS_PATH del path actual para obtener el path relativo
+            if (strpos($normalized_current_path, $normalized_migrations_path) === 0) {
+                $relative_path = substr($normalized_current_path, strlen($normalized_migrations_path));
+                $relative_path = ltrim($relative_path, '/'); // Remover leading slash
+            } else {
+                // Si no está dentro de MIGRATIONS_PATH, guardar el path completo
+                $relative_path = $normalized_current_path;
+            }
+
+            $data = [
+                'filename' => $filename,
+                'path' => !empty($relative_path) ? $relative_path : null
+            ];
+
+            $main = get_default_connection_id();
+
+            if ($to_db != null && $to_db != $main){
+                $data['db'] = $to_db;
+            }
+
+            if ($to_db == 'default'){
+                $to_db = $main;
+            }
+
+            $ok = table('migrations')
+            ->create($data);
+
+            $ix++;
+        }     
+        
+        DB::enableForeignKeyConstraints();
+
+        /*
+            Soporte para:
+
+            make:model
+            make:schema
+            make:schema,model
+        */
+
+        if (!empty($make)){
+            require_once COMMANDS_PATH . 'MakeCommand.php';
+
+            $actions = explode(',', $make);
+
+            foreach ($actions as $action){
+                if ($action == 'schema'){
+                    (new MakeCommand())
+                    ->schema('all');
+                }
+
+                if ($action == 'model'){
+                    (new MakeCommand())
+                    ->model('all');
+                }
+            }
+        }
+
+    }
+    
+    /*
+        Regresa migraciones (por defecto solo una)
+
+        Va borrando registros de `migrations` 
+    */
+    function rollback(...$opt)
+    {
+        $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR;
+        $file_path_from_option = false;  // Track if path was set from --file option
+        $file_explicit_path = null;      // Store the explicit path from --file option
+
+        $steps = 1;
+        $simulate = false;
+
+        StdOut::showResponse();
+
+        foreach ($opt as $o){
+            if (isset($opt[0]) && $opt[0] !== NULL){
+                if (Strings::startsWith('--step=', $o)){
+                    $steps = Strings::slice($o, '/^--step=([0-9]+)$/');
+                } else {
+                    if (Strings::startsWith('--steps=', $o)){
+                        $steps = Strings::slice($o, '/^--steps=([0-9]+)$/');
+                    } else {
+                        if (Strings::startsWith('--n=', $o)){
+                            $steps = Strings::slice($o, '/^--n=([0-9]+)$/');
+                        }
+                    }
+                }
+
+                if ($o == '--all'){
+                    $steps = PHP_INT_MAX;
+                }
+
+                if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                    $to_db = $matches[1];
+
+                    $main = Config::get()['db_connection_default'];
+
+                    if ($to_db == $main || $to_db == 'default'){
+                        $to_db = '__NULL__';
+                    }
+                }
+
+                if (Strings::startsWith('--folder=', $o)){
+                    $o = str_replace('--folder=', '--dir=', $o);
+                }
+
+                if (Strings::startsWith('--dir=', $o)){
+                    $dir_opt = true;
+                    $_dir    = substr($o, 6);
+
+                    if (Files::isAbsolutePath($_dir)){
+                        $path = $_dir;
+                    } else {
+                        $path = MIGRATIONS_PATH . $_dir;
+                    }
+
+                    if (!file_exists($path)){
+                        throw new \Exception("Directory $path not found");
+                    }
+                }
+
+                if (Strings::startsWith('--file=', $o)){
+                    $file_opt = true;
+
+                    $_f = substr($o, 7);
+
+                    // Convert slashes to DIRECTORY_SEPARATOR
+                    $_f = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $_f);
+
+                    if (Files::isAbsolutePath($_f)){
+                        // Use pathinfo to separate directory and filename
+                        $file_explicit_path = dirname($_f);
+                        $_f = basename($_f);
+                        $file_path_from_option = true;
+                    } else {
+                        if (Strings::contains(DIRECTORY_SEPARATOR, $_f)){
+                            $fr = explode(DIRECTORY_SEPARATOR, $_f);
+
+                            $_f = $fr[count($fr)-1];
+
+                            unset($fr[count($fr)-1]);
+                            $path_from_file = implode(DIRECTORY_SEPARATOR, $fr);
+
+                            if (!Files::isAbsolutePath($path_from_file)){
+                                $file_explicit_path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $path_from_file;
+                            } else {
+                                $file_explicit_path = $path_from_file;
+                            }
+                            $file_path_from_option = true;
+                        }
+                    }
+
+                    $filenames = [ $_f ];
+                } 
+     
+
+                if (in_array($o, ['--simulate', 'simulate', '--sim', 'simulation', '--simulation'])){
+                    StdOut::print("*** This is a Simulation ***" . PHP_EOL);
+                    $simulate = true;
+                }
+            }
+        }
+
+        // Si no se especificó --to=, usar la conexión por defecto
+        if (!isset($to_db)){
+            $to_db = '__NULL__';
+        } else {
+            // Validar que la conexión existe solo si se especificó y no es la por defecto
+            if ($to_db != '__NULL__'){
+                $this->validateConnection($to_db);
+            }
+        }
+
+        StdOut::print("Rolling back up to $steps migrations\r\n");
+
+        // Initialize stored_paths array
+        $stored_paths = [];
+
+        if (!isset($filenames)){
+            $m = (object) table('migrations');
+
+            $migrations = $m
+            ->when($to_db == '__NULL__',
+                function($q){
+                    $q->whereNull('db');
+                },
+                function($q) use($to_db){
+                    $q->where(['db' => $to_db]);
+                }
+            )
+            ->orderBy(['id' => 'DESC'])
+            ->get();
+
+            // Si no se especificó --dir ni --file, usar los paths guardados
+            $filenames = [];
+            foreach ($migrations as $mig) {
+                // Si se especificó --dir, filtrar por path
+                if (isset($dir_opt) && isset($_dir)) {
+                    $mig_path = $mig['path'] ?? '';
+
+                    // Normalizar ambos paths para comparación
+                    $normalized_dir = rtrim(str_replace('\\', '/', realpath($_dir) ?: $_dir), '/');
+                    $normalized_mig_path = rtrim(str_replace('\\', '/', $mig_path), '/');
+
+                    // Comparar paths - debe coincidir exactamente o ser un subdirectorio
+                    if ($normalized_mig_path !== $normalized_dir &&
+                        strpos($normalized_mig_path, $normalized_dir . '/') !== 0) {
+                        continue; // No coincide con el directorio especificado
+                    }
+                }
+
+                $filenames[] = $mig['filename'];
+                $stored_paths[$mig['filename']] = $mig['path'] ?? null;
+            }
+        } elseif (isset($file_opt) && !$file_path_from_option) {
+            // Si se especificó --file solo con el nombre (sin path), buscar el path en la tabla migrations
+            $m = (object) table('migrations');
+
+            $migration = $m
+            ->where(['filename' => $filenames[0]])
+            ->when($to_db == '__NULL__',
+                function($q){
+                    $q->whereNull('db');
+                },
+                function($q) use($to_db){
+                    $q->where(['db' => $to_db]);
+                }
+            )
+            ->first();
+
+            if ($migration) {
+                $stored_paths[$filenames[0]] = $migration['path'] ?? null;
+            }
+        }
+
+        if (empty($filenames)){
+            return;
+        }
+
+        DB::getDefaultConnection();
+        DB::disableForeignKeyConstraints();
+
+        $cnt = min($steps, count($filenames));
+        for ($i=0; $i<$cnt; $i++){
+            $filename   = $filenames[$i];
+
+            // Si se especificó --dir o --file, usar esos parámetros
+            // Si no, usar el path guardado en la tabla migrations
+            if ($file_explicit_path !== null) {
+                // Use the explicit path from --file option
+                $path = $file_explicit_path;
+            } elseif (isset($_dir)) {
+                // Check if $_dir is an absolute path
+                if (Files::isAbsolutePath($_dir)) {
+                    $path = $_dir;
+                } else {
+                    $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $_dir;
+                }
+            } elseif (isset($file_opt) && !$file_path_from_option) {
+                // Solo usar MIGRATIONS_PATH si el path NO se estableció desde --file con path absoluto o relativo
+                $path = MIGRATIONS_PATH;
+            } elseif (!$file_path_from_option && isset($stored_paths[$filename]) && !empty($stored_paths[$filename])) {
+                // Si no se especificó --file con path, usar el path guardado en la tabla migrations
+                $stored_path = $stored_paths[$filename];
+
+                if (Files::isAbsolutePath($stored_path)) {
+                    // Si es absoluto, usarlo directamente
+                    $path = $stored_path;
+                } else {
+                    // Si es relativo, agregarlo a MIGRATIONS_PATH
+                    $path = MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $stored_path;
+                }
+            } elseif (!$file_path_from_option) {
+                // Fallback: usar MIGRATIONS_PATH directamente solo si no se estableció desde --file
+                $path = MIGRATIONS_PATH;
+            }
+
+            // Ensure path ends with separator before concatenating
+            if (!str_ends_with($path, DIRECTORY_SEPARATOR)) {
+                $path .= DIRECTORY_SEPARATOR;
+            }
+
+            $full_path = $path . $filename;
+
+            if (!file_exists($full_path)){
+                StdOut::print("File '$full_path' not found");
+                exit;
+            }
+
+            $migration = include $full_path;
+
+            if ($migration instanceof IMigration) {
+                // Es una migración anónima
+                $migrationInstance = $migration;
+            } else {
+                // Es una migración con clase nombrada
+                $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
+                if (!class_exists($class_name)) {
+                    throw new \Exception("Class '$class_name' not found in $filename");
+                }
+
+                if (!class_exists($class_name)){
+                    StdOut::print("Class '$class_name' not found in $filename");
+                    exit;
+                }
+
+                require_once $full_path;
+
+                $migrationInstance = new $class_name();                
+            }
+
+            StdOut::print("Rolling back '$filename'\r\n");
+
+            if (!method_exists($migrationInstance, 'down')){
+                StdOut::print("Method down() is missing. Impossible to rollback $filename\r\n");
+                exit(1);
+            }
+
+            if (!$simulate){
+                if (!empty($to_db) && $to_db != '__NULL__'){
+                    DB::setConnection($to_db);
+                }
+
+                try {
+                    DB::disableForeignKeyConstraints();
+                    $migrationInstance->down();
+                } finally {
+                    DB::enableForeignKeyConstraints();
+                }    
+                
+                DB::getDefaultConnection();
+
+                $m = (object) table('migrations');
+
+                $aff = $m
+                ->when($to_db == '__NULL__', 
+                    function($q){
+                        $q->whereNull('db');
+                    },
+                    function($q) use($to_db){
+                        $q->where(['db' => $to_db]);
+                    }
+                )
+                ->where(['filename' => $filename])
+                ->delete();
+
+                // dd($m->getLog()); ///
+
+                if (empty($aff)){
+                    StdOut::print("There was a rolling back $filename.\r\n");
+                }
+            }
+
+            if (!empty($aff)){
+                StdOut::print("Rolled back  '$filename' --ok\r\n");
+            }            
+        }
+
+        DB::enableForeignKeyConstraints();
+    }
+
+    /*
+        Clears migrations table
+    */
+    function clear(...$opt){
+        foreach ($opt as $o)
+        {
+            if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $to_db = $matches[1];
+            }
+        }
+
+        // Validar que la conexión existe solo si se especificó
+        if (isset($to_db)){
+            $this->validateConnection($to_db);
+        }
+
+        DB::getDefaultConnection();
+
+        $m = table('migrations');
+
+        $affected = $m
+        ->when($to_db != DB::getDefaultConnectionId(), function($q) use($to_db){
+            $q->where(['db' => $to_db]);
+        },function($q){
+            $q->whereRaw('1');
+        })
+        ->delete();
+
+        // Por alguna razon falla el conteo justo con esta tabla
+        StdOut::print("$affected entries were cleared from migrations table for database `$to_db`\r\n");
+    }
+
+    /*
+        Rollback de todas las migraciones. Equivale a "rollback --all"
+    */
+    function reset(...$opt) {
+        $opt[] = "--all";
+        $this->rollback(...$opt);
+    }
+
+    /*  
+        rollback + migrate
+
+        Deberia aceptar --file=
+    */
+    function redo(...$opt){
+        $this->rollback(...$opt);
+        $this->migrate(...$opt);
+    }
+
+    /*
+        This command will drop all tables from an specific database, even those one are not affected by migrations.
+
+        At the end it clear all records in `migrations` table for the database.
+
+        Solo ejecuta un migrate si se le pasa --migrate
+
+        TODO: falta implementar --seed
+    */
+    function fresh(...$opt) 
+    {   
+        $force   = false;
+        $migrate = false;
+        $_f      = null;
+        $_dir    = null;
+
+        StdOut::showResponse();
+        
+        foreach ($opt as $o){
+            if ($o == '--force'){
+                $force = true;
+                continue;
+            }
+
+            if ($o == '--migrate'){
+                $migrate = true;
+                continue;
+            }
+            
+            if (preg_match('/^--to[=|:]([a-z][a-z0-9A-Z_]+)$/', $o, $matches)){
+                $to_db = $matches[1];
+            }
+
+            if (Strings::startsWith('--file=', $o)){
+                $_f = substr($o, 7);
+            }
+
+            if (Strings::startsWith('--folder=', $o)){
+                $o = str_replace('--folder=', '--dir=', $o);
+            }
+
+            if (Strings::startsWith('--dir=', $o)){
+                $_dir    = substr($o, 6);
+            }
+        }
+
+        // fresh es destructivo, --to= es obligatorio
+        $this->validateConnection($to_db ?? null, true);
+
+        if (!$force){
+            StdOut::print("fresh: this method is destructive. " .
+            (!isset($_f) ? "Every table for '$to_db' will be dropped." : ''). 
+            "Please use option --force if you want to procede.\r\n");
+            exit;
+        }
+
+        if (!is_null($_f) || !is_null($_dir)){
+            $arr[] = "--to=$to_db";
+
+            if ($_f !== null){
+                $arr[] = "--file=$_f";  
+            }
+
+            if ($_dir !== null){
+                $arr[] = "--dir=$_dir";  
+            }
+
+            return $this->redo(...$arr);
+        }
+        
+        $conn = DB::getConnection($to_db);  
+
+        $tables  = Schema::getTables($to_db);
+        $dropped = [];
+
+        if (empty($tables)){
+            if ($migrate){
+                $this->migrate(...$opt);
+            }
+
+            return;
+        }
+
+        /*
+            Si en la DB existe la tabla 'migrations' (es la DB principal?) => la dejo para el final.
+        */
+
+        $delete_migrations_tb = false;
+        if ($ix = array_search('migrations', $tables)){
+            unset($tables[$ix]);
+            $delete_migrations_tb = true;
+        }
+
+        try{
+            Schema::FKcheck(false);
+
+            $table = '';
+            foreach($tables as $table) {
+                StdOut::print("Dropping table '$table'\r\n");
+                $res = DB::statement("DROP TABLE IF EXISTS `$table`;");
+                
+                if ($res){
+                    StdOut::print("Dropped table  '$table' --ok\r\n");
+                    $dropped[] = $table;
+                } else {
+                    StdOut::print("Dropped table failure for '$table'\r\n");
+                }
+            } 
+
+            $this->clear("--to=$to_db");  
+
+            if ($delete_migrations_tb){
+                $table = 'migrations';
+
+                StdOut::hideResponse();
+
+                StdOut::print("Dropping table '$table'\r\n");
+                $res = DB::statement("DROP TABLE IF EXISTS `$table`;");
+
+                if ($res){
+                    StdOut::print("Dropped table  '$table' --ok\r\n");
+                    $dropped[] = $table;
+                } else {
+                    StdOut::print("Dropped table failure for '$table'\r\n");
+                }
+            }
+
+            if ($migrate){
+                StdOut::showResponse();
+                $this->migrate(...$opt);
+            }
+
+        } catch (\PDOException $e) {    
+            log_error($e->getMessage());
+            throw $e;
+        } finally {
+            Schema::FKcheck(true);     
+            StdOut::showResponse();
+        }             
+    }
+
+    /*
+        Rolling back: 2014_10_12_100000_create_password_resets_table
+        Rolled back:  2014_10_12_100000_create_password_resets_table
+        Rolling back: 2014_10_12_000000_create_users_table
+        Rolled back:  2014_10_12_000000_create_users_table
+        Migrating: 2014_10_12_000000_create_users_table
+        Migrated:  2014_10_12_000000_create_users_table
+        Migrating: 2014_10_12_100000_create_password_resets_table
+        Migrated:  2014_10_12_100000_create_password_resets_table
+
+        Lo que hace exactamente es un reset() seguido un migrate()
+    */
+    function refresh(...$opt) {
+        $this->reset(...$opt);
+        $this->migrate(...$opt);
+    }
+
+    function index(...$opt){
+        if (!isset($opt[0])){
+            $this->help();
+            return;
+        }
+    }
+
+    /*
+        TO-DO
+
+        Cuando se busque con --table= tambien debe buscarse por los substrings Schema('{nombre de la tabla}') 
+        y Schema("{nombre de la tabla}") y devolver cualqueir coincidencia
+
+        Ej:
+
+        php com migrations list --table=timezone 
+
+        deberia hacer match si en los metodos up() or down() hubiera algo como:
+
+            public function up()
+            {
+                $sc = new Schema('timezones');
+                $sc
+                    ->id()->auto()
+                    ->varchar('city', 80)->unique()
+                    ->varchar('gmt', 6);
+
+                $sc->create();		
+            }
+    */
+    function list(...$opt) {
+        // Inicializar variables para los filtros
+        $dir = null;
+        $table = null;
+        $contains = null;
+    
+        // Parsear opciones de la línea de comandos
+        foreach ($opt as $o) {
+            if (Strings::startsWith('--dir=', $o)) {
+                $dir = substr($o, 6);
+            } elseif (Strings::startsWith('--table=', $o)) {
+                $table = substr($o, 8);
+            } elseif (Strings::startsWith('--contains=', $o)) {
+                $contains = substr($o, 11);
+            }
+        }
+    
+        // Determinar la ruta de las migraciones
+        $path = $dir ? MIGRATIONS_PATH . DIRECTORY_SEPARATOR . $dir : MIGRATIONS_PATH;
+    
+        // Verificar si el directorio existe
+        if (!is_dir($path)) {
+            throw new \Exception("Directory $path not found");
+        }
+    
+        // Obtener la lista de archivos de migración
+        $files = [];
+        foreach (new \DirectoryIterator($path) as $fileInfo) {
+            if ($fileInfo->isDot() || $fileInfo->isDir()) continue;
+            $filename = $fileInfo->getFilename();
+            if (Strings::startsWith('.', $filename) || $fileInfo->getExtension() != 'php') continue;
+            $files[] = $filename;
+        }
+    
+        // Procesar cada archivo para obtener información relevante
+        $migrations = [];
+        foreach ($files as $filename) {
+            $full_path = $path . DIRECTORY_SEPARATOR . $filename;
+            $class_name = PHPLexicalAnalyzer::getClassNameByFileName($full_path);
+            $file_content = file_get_contents($full_path);
+    
+            // Buscar la propiedad $table en el archivo
+            $table_value = null;
+            if (preg_match('/\$table\s*=\s*[\'"]([^\'"]+)[\'"]/', $file_content, $matches)) {
+                $table_value = $matches[1];
+            }
+    
+            $migrations[] = [
+                'filename' => $filename,
+                'class_name' => $class_name,
+                'table' => $table_value
+            ];
+        }
+    
+        // Aplicar filtros
+        $filtered_migrations = $migrations;
+    
+        // Filtro por --table
+        if ($table !== null) {
+            $filtered_migrations = array_filter($filtered_migrations, function($mig) use ($table) {
+                return $mig['table'] !== null && (str_contains($mig['table'], $table) || $mig['table'] === $table);
+            });
+        }
+    
+        // Filtro por --contains
+        if ($contains !== null) {
+            $filtered_migrations = array_filter($filtered_migrations, function($mig) use ($contains) {
+                return str_contains($mig['filename'], $contains) ||
+                       str_contains($mig['class_name'], $contains) ||
+                       ($mig['table'] !== null && str_contains($mig['table'], $contains));
+            });
+        }
+    
+        // Mostrar resultados
+        if (empty($filtered_migrations)) {
+            echo "No migrations found matching the criteria.\n";
+        } else {
+            foreach ($filtered_migrations as $mig) {
+                $table_str = $mig['table'] ? " (Table: {$mig['table']})" : '';
+                echo "{$mig['filename']} - {$mig['class_name']}{$table_str}\n";
+            }
+        }
+    }
+
+    /*
+        Run migrations for a specific module
+
+        Usage: php com migrations migrate:module {module_name} [options]
+
+        Example: php com migrations migrate:module FriendlyPOS
+                 php com migrations migrate:module FriendlyPOS --step=2
+                 php com migrations migrate:module FriendlyPOS --to=db_conn
+    */
+    function migrate_module(...$opt)
+    {
+        if (count($opt) < 1) {
+            StdOut::print("\nError: Module name is required.\n");
+            StdOut::print("Usage: php com migrations migrate:module {module_name} [options]\n");
+            StdOut::print("Example: php com migrations migrate:module FriendlyPOS\n\n");
+            return;
+        }
+
+        // Extract module name
+        $module_name = array_shift($opt);
+
+        // Build path
+        $module_path = MODULES_PATH . $module_name . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';
+
+        // Check if module and migrations directory exist
+        $module_base = MODULES_PATH . $module_name;
+        if (!file_exists($module_base)) {
+            StdOut::print("\nError: Module '$module_name' does not exist at: $module_base\n\n");
+            return;
+        }
+
+        if (!file_exists($module_path)) {
+            StdOut::print("\nError: No migrations directory found for module '$module_name' at: $module_path\n\n");
+            return;
+        }
+
+        // Add --dir= with absolute path to options
+        $opt[] = '--dir=' . $module_path;
+
+        StdOut::print("\nRunning migrations for module '$module_name'...\n\n");
+
+        // Call the existing migrate method
+        $this->migrate(...$opt);
+    }
+
+    /*
+        Run migrations for a specific package
+
+        Usage: php com migrations migrate:package {package_name} [options]
+
+        Example: php com migrations migrate:package zippy
+                 php com migrations migrate:package zippy --step=2
+                 php com migrations migrate:package zippy --to=db_conn
+    */
+    function migrate_package(...$opt)
+    {
+        if (count($opt) < 1) {
+            StdOut::print("\nError: Package name is required.\n");
+            StdOut::print("Usage: php com migrations migrate:package {package_name} [options]\n");
+            StdOut::print("Example: php com migrations migrate:package zippy\n\n");
+            return;
+        }
+
+        // Extract package name
+        $package_name = array_shift($opt);
+
+        // Validate package name format
+        if (!preg_match('/^[a-z0-9_-]+$/', $package_name)) {
+            StdOut::print("\nError: Invalid package name '$package_name'. Use only lowercase letters, numbers, dashes, and underscores.\n\n");
+            return;
+        }
+
+        // Build path
+        $package_path = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';
+
+        // Check if package and migrations directory exist
+        $package_base = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name;
+        if (!file_exists($package_base)) {
+            StdOut::print("\nError: Package 'boctulus/$package_name' does not exist at: $package_base\n\n");
+            return;
+        }
+
+        if (!file_exists($package_path)) {
+            StdOut::print("\nError: No migrations directory found for package 'boctulus/$package_name' at: $package_path\n\n");
+            return;
+        }
+
+        // Add --dir= with absolute path to options
+        $opt[] = '--dir=' . $package_path;
+
+        StdOut::print("\nRunning migrations for package 'boctulus/$package_name'...\n\n");
+
+        // Call the existing migrate method
+        $this->migrate(...$opt);
+    }
+
+    /*
+        Rollback migrations for a specific module
+
+        Usage: php com migrations rollback:module {module_name} [options]
+
+        Example: php com migrations rollback:module FriendlyPOS
+                 php com migrations rollback:module FriendlyPOS --step=2
+    */
+    function rollback_module(...$opt)
+    {
+        if (count($opt) < 1) {
+            StdOut::print("\nError: Module name is required.\n");
+            StdOut::print("Usage: php com migrations rollback:module {module_name} [options]\n");
+            StdOut::print("Example: php com migrations rollback:module FriendlyPOS --step=1\n\n");
+            return;
+        }
+
+        // Extract module name
+        $module_name = array_shift($opt);
+
+        // Build path
+        $module_path = MODULES_PATH . $module_name . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';
+
+        // Check if module and migrations directory exist
+        $module_base = MODULES_PATH . $module_name;
+        if (!file_exists($module_base)) {
+            StdOut::print("\nError: Module '$module_name' does not exist at: $module_base\n\n");
+            return;
+        }
+
+        if (!file_exists($module_path)) {
+            StdOut::print("\nError: No migrations directory found for module '$module_name' at: $module_path\n\n");
+            return;
+        }
+
+        // Add --dir= with absolute path to options
+        $opt[] = '--dir=' . $module_path;
+
+        StdOut::print("\nRolling back migrations for module '$module_name'...\n\n");
+
+        // Call the existing rollback method
+        $this->rollback(...$opt);
+    }
+
+    /*
+        Rollback migrations for a specific package
+
+        Usage: php com migrations rollback:package {package_name} [options]
+
+        Example: php com migrations rollback:package zippy
+                 php com migrations rollback:package zippy --step=2
+    */
+    function rollback_package(...$opt)
+    {
+        if (count($opt) < 1) {
+            StdOut::print("\nError: Package name is required.\n");
+            StdOut::print("Usage: php com migrations rollback:package {package_name} [options]\n");
+            StdOut::print("Example: php com migrations rollback:package zippy --step=1\n\n");
+            return;
+        }
+
+        // Extract package name
+        $package_name = array_shift($opt);
+
+        // Validate package name format
+        if (!preg_match('/^[a-z0-9_-]+$/', $package_name)) {
+            StdOut::print("\nError: Invalid package name '$package_name'. Use only lowercase letters, numbers, dashes, and underscores.\n\n");
+            return;
+        }
+
+        // Build path
+        $package_path = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';
+
+        // Check if package and migrations directory exist
+        $package_base = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name;
+        if (!file_exists($package_base)) {
+            StdOut::print("\nError: Package 'boctulus/$package_name' does not exist at: $package_base\n\n");
+            return;
+        }
+
+        if (!file_exists($package_path)) {
+            StdOut::print("\nError: No migrations directory found for package 'boctulus/$package_name' at: $package_path\n\n");
+            return;
+        }
+
+        // Add --dir= with absolute path to options
+        $opt[] = '--dir=' . $package_path;
+
+        StdOut::print("\nRolling back migrations for package 'boctulus/$package_name'...\n\n");
+
+        // Call the existing rollback method
+        $this->rollback(...$opt);
+    }
+
+    /*
+        Refresh migrations for a specific module (rollback all + migrate)
+
+        Usage: php com migrations refresh:module {module_name} [options]
+
+        Example: php com migrations refresh:module FriendlyPOS
+                 php com migrations refresh:module FriendlyPOS --to=db_conn
+    */
+    function refresh_module(...$opt)
+    {
+        if (count($opt) < 1) {
+            StdOut::print("\nError: Module name is required.\n");
+            StdOut::print("Usage: php com migrations refresh:module {module_name} [options]\n");
+            StdOut::print("Example: php com migrations refresh:module FriendlyPOS\n\n");
+            return;
+        }
+
+        // Extract module name
+        $module_name = array_shift($opt);
+
+        // Build path
+        $module_path = MODULES_PATH . $module_name . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';
+
+        // Check if module and migrations directory exist
+        $module_base = MODULES_PATH . $module_name;
+        if (!file_exists($module_base)) {
+            StdOut::print("\nError: Module '$module_name' does not exist at: $module_base\n\n");
+            return;
+        }
+
+        if (!file_exists($module_path)) {
+            StdOut::print("\nError: No migrations directory found for module '$module_name' at: $module_path\n\n");
+            return;
+        }
+
+        // Add --dir= with absolute path to options
+        $opt[] = '--dir=' . $module_path;
+
+        StdOut::print("\nRefreshing migrations for module '$module_name' (rollback all + migrate)...\n\n");
+
+        // Rollback all migrations for this module
+        $rollback_opt = array_merge($opt, ['--all']);
+        $this->rollback(...$rollback_opt);
+
+        StdOut::print("\n");
+
+        // Migrate all migrations for this module
+        $this->migrate(...$opt);
+    }
+
+    /*
+        Refresh migrations for a specific package (rollback all + migrate)
+
+        Usage: php com migrations refresh:package {package_name} [options]
+
+        Example: php com migrations refresh:package zippy
+                 php com migrations refresh:package zippy --to=db_conn
+    */
+    function refresh_package(...$opt)
+    {
+        if (count($opt) < 1) {
+            StdOut::print("\nError: Package name is required.\n");
+            StdOut::print("Usage: php com migrations refresh:package {package_name} [options]\n");
+            StdOut::print("Example: php com migrations refresh:package zippy\n\n");
+            return;
+        }
+
+        // Extract package name
+        $package_name = array_shift($opt);
+
+        // Validate package name format
+        if (!preg_match('/^[a-z0-9_-]+$/', $package_name)) {
+            StdOut::print("\nError: Invalid package name '$package_name'. Use only lowercase letters, numbers, dashes, and underscores.\n\n");
+            return;
+        }
+
+        // Build path
+        $package_path = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'migrations';
+
+        // Check if package and migrations directory exist
+        $package_base = PACKAGES_PATH . "boctulus" . DIRECTORY_SEPARATOR . $package_name;
+        if (!file_exists($package_base)) {
+            StdOut::print("\nError: Package 'boctulus/$package_name' does not exist at: $package_base\n\n");
+            return;
+        }
+
+        if (!file_exists($package_path)) {
+            StdOut::print("\nError: No migrations directory found for package 'boctulus/$package_name' at: $package_path\n\n");
+            return;
+        }
+
+        // Add --dir= with absolute path to options
+        $opt[] = '--dir=' . $package_path;
+
+        StdOut::print("\nRefreshing migrations for package 'boctulus/$package_name' (rollback all + migrate)...\n\n");
+
+        // Rollback all migrations for this package
+        $rollback_opt = array_merge($opt, ['--all']);
+        $this->rollback(...$rollback_opt);
+
+        StdOut::print("\n");
+
+        // Migrate all migrations for this package
+        $this->migrate(...$opt);
+    }
+
+    function help($name = null, ...$args){
+        $str = <<<STR
+        migrations make [name] [ --dir= | --file= ] [ --table= ] [ --class_name= ] [ --to= ] [ --create | --edit ]
+        make migration --class_name=Filesss --table=files --to:main --dir='test\sub3
+        migrations migrate [ --step= ] [ --skip= ] [ --simulate ] [ --fresh ] [ --retry ] [ --ignore ] [ --make= ] [ --debug ]
+        migrations migrate:module {module_name} [ --step= ] [ --skip= ] [ --to= ]
+        migrations migrate:package {package_name} [ --step= ] [ --skip= ] [ --to= ]
+        migrations rollback --to={some_db_conn} [ --dir= ] [ --file= ] [ --step=={N} | --all] [ --simulate ]
+        migrations rollback:module {module_name} [ --step= ] [ --all ]
+        migrations rollback:package {package_name} [ --step= ] [ --all ]
+        migrations fresh [ --dir= ] [ --file= ] --to=some_db_conn [ --force ] [ --migrate ]
+        migrations refresh:module {module_name} [ --to= ]
+        migrations refresh:package {package_name} [ --to= ]
+        migrations redo --to={some_db_conn} [ --dir= ] [ --file= ] [ --simulate ]
+        migrations list [ --dir={directorio} ] [ --table={nombre de la tabla} ] [ --contains={substring} ]
+
+        ⚠️  WARNINGS:
+
+        fresh command:
+        - ⚠️  EXTREMELY DESTRUCTIVE: Drops ALL tables in the specified database
+        - ⚠️  Requires --to= parameter (mandatory) to specify target database
+        - ⚠️  Requires --force flag to confirm destructive operation
+        - ⚠️  Use with extreme caution - cannot be undone!
+        - ⚠️  Consider using refresh or redo for safer alternatives
+
+        Examples:
+
+        migrations make my_table
+        migrations make my_table --dir=my_folder
+
+        migrations make my_table --table=my_table
+        migrations make my_table --to=db_connection
+        migrations make my_table --table=my_table --class_name=MyTableAddDate --to:main
+        migrations make --class_name=Files
+        migrations make --table=files
+        migrations make --class_name=Filesss --table=files
+        migrations make --class_name=Files --to:main
+        migrations make --class_name=Filesss --table=files --to:main --dir='test\sub3
+        migrations make brands --create
+        migrations make brands --dir=giglio --to=giglio --create
+
+
+        migrations migrate
+
+        migrations migrate:module FriendlyPOS
+        migrations migrate:module FriendlyPOS --step=2
+        migrations migrate:module FriendlyPOS --to=db_conn
+
+        migrations migrate:package zippy
+        migrations migrate:package zippy --step=3
+        migrations migrate:package zippy --to=db_conn
+
+        migrations rollback:module FriendlyPOS
+        migrations rollback:module FriendlyPOS --step=2
+        migrations rollback:module FriendlyPOS --all
+
+        migrations rollback:package zippy
+        migrations rollback:package zippy --step=1
+        migrations rollback:package zippy --all
+
+        migrations refresh:module FriendlyPOS
+        migrations refresh:module FriendlyPOS --to=db_conn
+
+        migrations refresh:package zippy
+        migrations refresh:package zippy --to=db_conn
+
+        migrations rollback --to=db_195 --dir=compania
+        migrations rollback --to=db_195 --dir=compania --simulate
+        migrations rollback --to=main --step=2
+        migrations rollback --file=2021_09_14_27910581_files.php --to:main
+        migrations rollback --file=/some/absolute/path/2021_09_14_27910581_files.php --to:main
+
+        migrations migrate --file=2021_09_13_27908784_user_roles.php
+        migrations migrate --file=/some/absolute/path/2021_09_13_27908784_user_roles.php
+        migrations migrate --dir=compania_new --to=db_flor
+        migrations migrate --dir=/some/absolute/path --to=db_flor
+
+        migrations migrate --dir=compania --to=db_153 --step=2
+        migrations migrate --dir=compania --to=db_153 --skip=1
+
+        migrations migrate --file=users/0000_00_00_00000001_users.php --simulate
+        migrations migrate --dir=compania_new --to=db_flor --simulate
+        migrations migrate --dir=compania --file=some_migr_file.php --to=db_189 --retry
+
+        migrations migrate --from:main --file=some_migr_file.ph --ignore
+
+        migrations migrate --fresh --to:main --force
+
+        migrations redo  --file=2021_09_14_27910581_files.php --to:main
+
+        migrations fresh --to=db_195 --force
+        migrations fresh --to=the_tenant --force --migrate
+        migrations fresh --file=2021_09_14_27910581_files.php --to:main
+        migrations fresh --dir=compania --to:db_149 --force
+
+        --make:model
+        --make:schema
+        --make:schema,model
+
+        migrations migrate --make=schema,model
+        migrations migrate --fresh --to:main --force --make=schema
+
+        migrations list
+        migrations list --dir=edu
+        migrations list --dir=edu --table=tags
+        migrations list --dir=edu --contains=tag
+
+
+        Inline migrations
+
+        make migration foo --dropColumn=algun_campo
+        make migration foo --renameColumn=viejo_nombre,nuevo_nombre
+        make migration foo --renameTable=viejo_nombre,nuevo_nombre
+        make migration foo --nullable=campo
+        make migration foo --dropNullable=campo
+        make migration foo --primary=campo
+        make migration foo --dropPrimary=campo
+        make migration foo --unsigned=campo
+        make migration foo --zeroFill=campo
+        make migration foo --binaryAttr=campo
+        make migration foo --dropAttributes=campo
+        make migration foo --addUnique=campo
+        make migration foo --dropUnique=campo
+        make migration foo --addSpatial=campo
+        make migration foo --dropSpatial=campo
+        make migration foo --dropForeign=campo
+        make migration foo --addIndex=campo
+        make migration foo --dropIndex=campo
+        make migration foo --trucateTable=campo
+        make migration foo --comment=campo
+
+        Ex:
+
+        php com make migration --dir=test --table=my_table --dropPrimary --unique=some_field,another_field
+
+        STR;
+
+        dd(strtoupper(Strings::before(__METHOD__, 'Command::')) . ' HELP');
+        dd($str);
+    }
+
+    /**
+     * Valida que el parámetro --to= esté especificado y que la conexión exista
+     *
+     * @param string|null $to_db El identificador de conexión a validar
+     * @param bool $required Si true, --to= es obligatorio
+     * @throws \InvalidArgumentException Si --to= no está especificado y es requerido
+     * @throws \InvalidArgumentException Si la conexión no está registrada
+     */
+    private function validateConnection($to_db, $required = false)
+    {
+        if (!isset($to_db)) {
+            if ($required) {
+                throw new \InvalidArgumentException("--to= is not optional");
+            }
+            return; // --to= es opcional y no fue especificado
+        }
+
+        if (!DB::connectionExists($to_db)) {
+            throw new \InvalidArgumentException("Connection '$to_db' is not registered in db_connections");
+        }
+    }
+}
+
