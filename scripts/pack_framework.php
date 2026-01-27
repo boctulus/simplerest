@@ -418,7 +418,7 @@ class SimpleRestPackager
             // This is expected for unit tests that don\'t actually connect to a database
         }
         ';
-        
+
         $bootstrapPath = $this->destDir . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'bootstrap.php';
         if (file_put_contents($bootstrapPath, $bootstrapContent) === false) {
             throw new Exception("Failed to create tests/bootstrap.php");
@@ -1168,10 +1168,13 @@ if (php_sapi_name() === 'cli') {
         $sourceDir = $argv[1];
         $destDir = $argv[2];
     }
-    
+
+    parse_str(implode('&', $_SERVER['argv']), $_GET);    
+    $skipComposerInstall =  isset($_GET['--skip-composer-install']) && $_GET['--skip-composer-install'] != 'false';
+
     $packager = new SimpleRestPackager($sourceDir, $destDir);
     
-    if ($packager->run()) {
+    if ($packager->run(false, $skipComposerInstall)) {
         exit(0); // Success
     } else {
         exit(1); // Error
