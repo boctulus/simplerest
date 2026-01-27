@@ -40,18 +40,23 @@ class PackCommand implements ICommand
 
         $source = $this->getOption($options, ['s', 'source'], $this->defaultSource);
         $dest = $this->getOption($options, ['d', 'dest'], $this->defaultDest);
+        $skipVerification = isset($options['skip-verification']) || isset($options['V']);
 
         echo "Packaging SimpleRest framework...\n";
         echo "Source: $source\n";
         echo "Destination: $dest\n";
+        
+        if ($skipVerification) {
+            echo "Verification will be skipped.\n";
+        }
 
         $packager = new SimpleRestPackager($source, $dest);
 
-        if ($packager->run()) {
-            echo "Framework packaged successfully!\n";
+        if ($packager->run($skipVerification)) {
+            echo "\nFramework packaged successfully!\n";
             return 0; // Success
         } else {
-            echo "Error occurred during packaging!\n";
+            echo "\nError occurred during packaging or verification!\n";
             return 1; // Error
         }
     }
@@ -63,11 +68,12 @@ class PackCommand implements ICommand
         echo "  php com pack [options]\n\n";
         echo "Options:\n";
         echo "  -s, --source PATH    Source directory (default: {$this->defaultSource})\n";
-        echo "  -d, --dest PATH      Destination directory (default: {$this->defaultDest})\n\n";
+        echo "  -d, --dest PATH      Destination directory (default: {$this->defaultDest})\n";
+        echo "  -V, --skip-verification Skip automated verification in destination\n\n";
         echo "Examples:\n";
         echo "  php com pack\n";
+        echo "  php com pack --skip-verification\n";
         echo "  php com pack -s /custom/source -d /custom/dest\n";
-        echo "  php com pack --source /custom/source --dest /custom/dest\n";
     }
 
     /**

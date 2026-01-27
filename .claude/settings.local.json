@@ -52,7 +52,12 @@
       "Bash(npm init:*)",
       "Bash(npm install:*)",
       "Bash(npx playwright:*)",
-      "Bash(vendorbinphpunit testsApiTest.php --list-tests)"
+      "Bash(vendorbinphpunit testsApiTest.php --list-tests)",
+      "Bash(cmd.exe /c \"cd /d D:\\\\laragon\\\\www\\\\simplerest-pack && dir /b | findstr /v /c:\"\"~\"\" | head -20\")",
+      "Bash(cmd.exe /c \"if exist D:\\\\laragon\\\\www\\\\simplerest-pack\\\\.env \\(echo .env exists\\) else \\(echo .env MISSING\\)\")",
+      "Bash(cmd.exe /c \"if exist D:\\\\laragon\\\\www\\\\simplerest-pack\\\\com \\(echo com exists\\) else \\(echo com MISSING\\)\")",
+      "Bash(cmd.exe /c \"if exist D:\\\\laragon\\\\www\\\\simplerest\\\\com \\(echo com exists in simplerest\\) else \\(echo com MISSING in simplerest\\)\")",
+      "Bash(cmd.exe /c \"if exist D:\\\\laragon\\\\www\\\\simplerest\\\\.env \\(echo .env exists in simplerest\\) else \\(echo .env MISSING in simplerest\\)\")"
     ],
     "deny": [],
     "ask": []
