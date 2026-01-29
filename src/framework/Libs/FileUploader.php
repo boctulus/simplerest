@@ -2,6 +2,10 @@
 
 namespace Boctulus\Simplerest\Core\Libs;
 
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\Arrays;
+use Boctulus\Simplerest\Core\Libs\Numbers;
+
 /*
 	Funciona con form-data
 
@@ -30,10 +34,6 @@ namespace Boctulus\Simplerest\Core\Libs;
             debug($uploader->getErrors(),'Errors:');
         }
 */
-
-use Boctulus\Simplerest\Core\Libs\Files;
-use Boctulus\Simplerest\Core\Libs\Arrays;
-use Boctulus\Simplerest\Core\Libs\Numbers;
 
 class FileUploader
 {

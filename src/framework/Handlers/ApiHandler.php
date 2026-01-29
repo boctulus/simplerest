@@ -38,7 +38,7 @@ class ApiHandler
         $controller = implode('',array_map('ucfirst',explode('_',$controller)));
 
         if ($controller == 'trash_can' || $controller == 'trashCan' || $controller == 'TrashCan' || $controller == 'collections' || $controller == 'Collections') {
-            $namespace = 'Simplerest\\Core\\api\\'. $api_version . '\\';
+            $namespace = namespace_url() . '\\Core\\Api\\';
         } else {
             $namespace = namespace_url() . '\\Controllers\\api\\';
         }
