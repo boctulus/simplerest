@@ -437,7 +437,7 @@ if (!$req->isAuthenticated()) {
 ### Multi-tenant
 
 #### `getTenantId()`
-Obtiene el ID del tenant desde header `X-Tenant-Id` o query string.
+Obtiene el ID del tenant desde header `X-TENANT-ID` o query string.
 
 ```php
 $tenantId = $req->getTenantId();
