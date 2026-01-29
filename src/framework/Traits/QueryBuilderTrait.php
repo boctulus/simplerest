@@ -3368,6 +3368,12 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
+	// alias de deleted(true)
+	function showDeleted()
+	{
+		return $this->deleted(true);
+	}
+
 	// alias de deleted()
 	function withTrashed()
 	{
