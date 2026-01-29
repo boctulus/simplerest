@@ -90,12 +90,21 @@ class ApiTrashCanTest extends TestCase
      */
     function testSoftDeleteAndTrashCan()
     {
-        // Note: This test requires an API controller with soft delete enabled
-        // Products endpoint doesn't have soft delete enabled in this installation
-        $this->markTestSkipped(
-            'This test requires an API endpoint with soft delete enabled. ' .
-            'Products controller does not exist or does not have soft delete enabled.'
-        );
+        // Create a test product directly in soft-deleted state
+        $name = 'Test Product for Trash Can ' . uniqid();
+        $productId = DB::table('products')->create([
+            'name' => $name,
+            'description' => 'Test product description for trash can',
+            'cost' => 10.99,
+            'slug' => strtolower(str_replace(' ', '-', $name)),
+            'images' => '[]',
+            'belongs_to' => $this->uid,
+            'deleted_at' => date('Y-m-d H:i:s') // Create already soft-deleted
+        ]);
+
+        $this->assertIsNumeric($productId);
+
+        $client = new ApiClient();
 
         // Now check if the deleted product appears in the trash can
         $res2 = $client
@@ -145,11 +154,6 @@ class ApiTrashCanTest extends TestCase
      */
     function testGetSpecificItemFromTrashCan()
     {
-        $this->markTestSkipped(
-            'This test requires an API endpoint with soft delete enabled. ' .
-            'Products controller does not exist or does not have soft delete enabled.'
-        );
-
         // First, create a test product
         $name = 'Test Product for Trash Can Specific ' . uniqid();
         $productId = DB::table('products')->create([
@@ -295,11 +299,6 @@ class ApiTrashCanTest extends TestCase
      */
     function testUndeleteFromTrashCan()
     {
-        $this->markTestSkipped(
-            'This test requires an API endpoint with soft delete enabled. ' .
-            'Products controller does not exist or does not have soft delete enabled.'
-        );
-
         // First, create a test product
         $name = 'Test Product for Undelete ' . uniqid();
         $productId = DB::table('products')->create([

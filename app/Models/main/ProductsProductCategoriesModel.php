@@ -1,10 +1,10 @@
 <?php
 
-namespace Boctulus\Simplerest\Models\az;
+namespace Boctulus\Simplerest\Models\main;
 
 
 use Boctulus\Simplerest\Models\MyModel;
-use Boctulus\Simplerest\Schemas\az\ProductsProductCategoriesSchema;
+use Boctulus\Simplerest\Schemas\main\ProductsProductCategoriesSchema;
 
 class ProductsProductCategoriesModel extends MyModel
 {

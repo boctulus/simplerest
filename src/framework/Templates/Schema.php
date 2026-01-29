@@ -10,7 +10,7 @@ class NAME__ implements ISchema
 { 
 	static function get(){
 		return [
-			'table_name'		=> __TABLE_NAME__,
+			'table_name'		=> __TABLE__,
 
 			'id_name'			=> __ID__,
 
