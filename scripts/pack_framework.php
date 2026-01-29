@@ -219,8 +219,45 @@ class SimpleRestPackager
 
     /**
      * Recursively delete directory contents
+     * Preserves .git directory to avoid affecting destination's git repository
      */
     private function deleteDirectoryContents(string $dir): void
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        // Directories to preserve in destination (like .git)
+        $preserveDirs = ['.git'];
+
+        $items = scandir($dir);
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            // Skip preserved directories
+            if (in_array($item, $preserveDirs)) {
+                echo "Preserving directory in destination: $item\n";
+                continue;
+            }
+
+            $itemPath = $dir . DIRECTORY_SEPARATOR . $item;
+
+            if (is_dir($itemPath)) {
+                // Recursively delete directory
+                $this->deleteDirectoryRecursive($itemPath);
+            } else {
+                // Delete file
+                unlink($itemPath);
+            }
+        }
+    }
+
+    /**
+     * Recursively delete a directory and all its contents
+     */
+    private function deleteDirectoryRecursive(string $dir): void
     {
         if (!is_dir($dir)) {
             return;
@@ -238,6 +275,9 @@ class SimpleRestPackager
                 unlink($item->getPathname());
             }
         }
+
+        // Remove the directory itself
+        rmdir($dir);
     }
 
     /**
