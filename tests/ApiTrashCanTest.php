@@ -55,8 +55,9 @@ class ApiTrashCanTest extends TestCase
 
         $access_token = $response['data']['access_token'];
         $refresh_token = $response['data']['refresh_token'];
+        $uid = $response['data']['uid'];
 
-        return [$access_token, $refresh_token];
+        return [$access_token, $refresh_token, $uid];
     }
 
     private function get_me(string $at){
@@ -68,12 +69,12 @@ class ApiTrashCanTest extends TestCase
             ->get(BASE_URL . 'api/v1/me')
             ->getDataOrFail();
 
-        if (!isset($response['data']['id']) || !isset($response['data']['email']))
+        if (!isset($response['data']['uid']) || !isset($response['data']['email']))
             throw new \Exception("Empty uid or email");
 
         $data = $response['data'];
 
-        // [id, username, emai,... ]
+        // [uid, username, email,... ]
         return $data;
     }
 
@@ -81,8 +82,7 @@ class ApiTrashCanTest extends TestCase
         parent::setUp();
         $this->config = \Boctulus\Simplerest\Core\Libs\Config::get();
 
-        list($this->at, $this->rt) = $this->login(['email' => "tester3@g.c", "password" => "gogogo"]);
-        $this->uid = $this->get_me($this->at)['id'];
+        list($this->at, $this->rt, $this->uid) = $this->login(['email' => "tester3@g.c", "password" => "gogogo"]);
     }
 
     /*
@@ -99,6 +99,7 @@ class ApiTrashCanTest extends TestCase
             'slug' => strtolower(str_replace(' ', '-', $name)),
             'images' => '[]',
             'belongs_to' => $this->uid,
+            'created_at' => date('Y-m-d H:i:s'),
             'deleted_at' => date('Y-m-d H:i:s') // Create already soft-deleted
         ]);
 
@@ -110,7 +111,7 @@ class ApiTrashCanTest extends TestCase
         $res2 = $client
             ->addHeader('Authorization', "Bearer {$this->at}")
             ->decode()
-            ->get(BASE_URL . 'api/v1/trash_can?entity=Products')
+            ->get(BASE_URL . 'api/v1/trash_can?entity=Products&limit=100')
             ->getDataOrFail();
 
         if (!isset($res2['data'])) {
@@ -145,8 +146,8 @@ class ApiTrashCanTest extends TestCase
             ->request(BASE_URL . "api/v1/trash_can/$productId", 'DELETE')
             ->getDataOrFail();
 
-        $this->assertArrayHasKey('success', $res3);
-        $this->assertTrue($res3['success']);
+        $this->assertArrayHasKey('data', $res3);
+        $this->assertEquals('OK', $res3['data']);
     }
 
     /*
@@ -154,7 +155,7 @@ class ApiTrashCanTest extends TestCase
      */
     function testGetSpecificItemFromTrashCan()
     {
-        // First, create a test product
+        // First, create a test product (not deleted yet)
         $name = 'Test Product for Trash Can Specific ' . uniqid();
         $productId = DB::table('products')->create([
             'name' => $name,
@@ -162,12 +163,13 @@ class ApiTrashCanTest extends TestCase
             'cost' => 15.99,
             'slug' => strtolower(str_replace(' ', '-', $name)),
             'images' => '[]', // Default empty array as JSON string
-            'belongs_to' => $this->uid
+            'belongs_to' => $this->uid,
+            'created_at' => date('Y-m-d H:i:s')
         ]);
 
         $this->assertIsNumeric($productId);
 
-        // Soft delete the product
+        // Soft delete the product via the API
         $ch = curl_init();
 
         curl_setopt_array($ch, array(
@@ -289,7 +291,8 @@ class ApiTrashCanTest extends TestCase
         $res3 = json_decode($response3, true);
 
         $this->assertEquals(200, $http_code3);
-        $this->assertTrue($res3['success']);
+        $this->assertArrayHasKey('data', $res3);
+        $this->assertEquals('OK', $res3['data']);
 
         curl_close($ch3);
     }
@@ -299,7 +302,7 @@ class ApiTrashCanTest extends TestCase
      */
     function testUndeleteFromTrashCan()
     {
-        // First, create a test product
+        // First, create a test product (not deleted yet)
         $name = 'Test Product for Undelete ' . uniqid();
         $productId = DB::table('products')->create([
             'name' => $name,
@@ -307,12 +310,13 @@ class ApiTrashCanTest extends TestCase
             'cost' => 20.99,
             'slug' => strtolower(str_replace(' ', '-', $name)),
             'images' => '[]', // Default empty array as JSON string
-            'belongs_to' => $this->uid
+            'belongs_to' => $this->uid,
+            'created_at' => date('Y-m-d H:i:s')
         ]);
 
         $this->assertIsNumeric($productId);
 
-        // Soft delete the product
+        // Soft delete the product via the API
         $ch = curl_init();
 
         curl_setopt_array($ch, array(
@@ -435,7 +439,8 @@ class ApiTrashCanTest extends TestCase
         $res3 = json_decode($response3, true);
 
         $this->assertEquals(200, $http_code3);
-        $this->assertTrue($res3['success']);
+        $this->assertArrayHasKey('data', $res3);
+        $this->assertNull($res3['data']['deleted_at']);
 
         curl_close($ch3);
 
@@ -518,7 +523,8 @@ class ApiTrashCanTest extends TestCase
         $res5 = json_decode($response5, true);
 
         $this->assertEquals(200, $http_code5);
-        $this->assertTrue($res5['success']);
+        $this->assertArrayHasKey('data', $res5);
+        $this->assertEquals('OK', $res5['data']);
 
         curl_close($ch5);
     }
