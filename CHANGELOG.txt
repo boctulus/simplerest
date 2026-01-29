@@ -7,3 +7,4 @@
 [2026-01-27 16:55:44]	0.8.12	Automatic update
 [2026-01-27 18:27:26]	0.8.12	Automatic update
 [2026-01-29 09:30:30]	0.8.12	ApiCollectionsTest.php - ✅ 4/4 tests pasando
+[2026-01-29 10:53:38]	0.8.12	MakeCommand fixed a few important bugs

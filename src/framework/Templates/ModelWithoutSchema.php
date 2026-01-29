@@ -12,7 +12,7 @@ class NAME__ extends MyModel
 
 	protected $hidden   = [];
 	protected $not_fillable = [];
-	protected $table_name = '__TABLE_NAME__';
+	protected $table_name = '__TABLE__';
 
     function __construct(bool $connect = false){
         parent::__construct($connect);

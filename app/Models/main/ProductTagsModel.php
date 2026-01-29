@@ -1,10 +1,10 @@
 <?php
 
-namespace Boctulus\Simplerest\Models\az;
+namespace Boctulus\Simplerest\Models\main;
 
 use Boctulus\Simplerest\Models\MyModel;
 use Boctulus\Simplerest\Core\Libs\ValidationRules;
-use Boctulus\Simplerest\Schemas\az\ProductTagsSchema;
+use Boctulus\Simplerest\Schemas\main\ProductTagsSchema;
 
 // Modelo de mi Detalle
 class ProductTagsModel extends MyModel

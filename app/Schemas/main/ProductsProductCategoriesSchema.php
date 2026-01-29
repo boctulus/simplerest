@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Schemas\az;
+namespace Boctulus\Simplerest\Schemas\main;
 
 use Boctulus\Simplerest\Core\Interfaces\ISchema;
 
