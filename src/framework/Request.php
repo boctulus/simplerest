@@ -258,7 +258,7 @@ class Request  implements \ArrayAccess, Arrayable
     function getTenantId(){
         return  
             $this->shiftQuery('tenantid') ??
-            static::$headers['x-tenant-id'] ??             
+            static::$headers['X-TENANT-ID'] ??             
             NULL;
     }
 

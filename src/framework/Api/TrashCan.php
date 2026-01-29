@@ -33,7 +33,8 @@ class TrashCan extends ApiController
         $this->model_name = ucfirst($entity) . 'Model';
         $this->table_name = strtolower($entity);
 
-        $this->model    = namespace_url() . '\\Models\\'. $this->model_name;
+        // Use get_model_name() helper to properly handle tenant/connection
+        $this->model    = get_model_name($this->table_name, $this->tenantid);
         $api_ctrl = namespace_url() . '\\Controllers\\api\\' . ucfirst($entity);
         
         if (!class_exists($api_ctrl)){
@@ -47,12 +48,13 @@ class TrashCan extends ApiController
         if (!class_exists($this->model))
             error("Entity $entity not found", 400);
 
-        $this->instance = (new $this->model())->assoc();  
-        
+        $this->instance = (new $this->model())->assoc();
+        $this->instance2 = (new $this->model())->assoc();
+
         if (!$this->instance->inSchema([$this->instance->deletedAt()])){
             error('Not implemented', 501, "Trashcan not implemented for $entity");
         }
-            
+
         $this->ask_for_deleted = true; 
         
         //var_dump(Factory::request()->getBody());
@@ -60,6 +62,13 @@ class TrashCan extends ApiController
         //exit;
         parent::__construct();
 
+    }
+
+    // Override to always return instances with showDeleted() enabled
+    protected function getModelInstance($fetch_mode = 'ASSOC', bool $reuse = false){
+        $instance = parent::getModelInstance($fetch_mode, $reuse);
+        $instance->showDeleted();
+        return $instance;
     }
 
     function get($id = null) {
@@ -88,7 +97,12 @@ class TrashCan extends ApiController
         }
 
         parent::modify($id, $put_mode);
-    }   
+    }
+
+    protected function onPuttingBeforeCheck($id, &$data){
+        $this->instance->showDeleted();
+        $this->instance2->showDeleted();
+    }
 
     protected function onPuttingBeforeCheck2($id, &$data){
         $this->instance

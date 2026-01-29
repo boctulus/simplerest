@@ -59,7 +59,8 @@
       "Bash(cmd.exe /c \"if exist D:\\\\laragon\\\\www\\\\simplerest\\\\com \\(echo com exists in simplerest\\) else \\(echo com MISSING in simplerest\\)\")",
       "Bash(cmd.exe /c \"if exist D:\\\\laragon\\\\www\\\\simplerest\\\\.env \\(echo .env exists in simplerest\\) else \\(echo .env MISSING in simplerest\\)\")",
       "Bash(1)",
-      "Bash(composer dump-autoload:*)"
+      "Bash(composer dump-autoload:*)",
+      "Bash(tee:*)"
     ],
     "deny": [],
     "ask": []

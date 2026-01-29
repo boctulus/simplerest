@@ -56,8 +56,9 @@ class ApiCollectionsTest extends TestCase
 
         $access_token = $response['data']['access_token'];
         $refresh_token = $response['data']['refresh_token'];
+        $uid = $response['data']['uid'];
 
-        return [$access_token, $refresh_token];
+        return [$access_token, $refresh_token, $uid];
     }
 
     private function get_me(string $at){
@@ -69,12 +70,12 @@ class ApiCollectionsTest extends TestCase
             ->get(BASE_URL . 'api/v1/me')
             ->getDataOrFail();
 
-        if (!isset($response['data']['id']) || !isset($response['data']['email']))
+        if (!isset($response['data']['uid']) || !isset($response['data']['email']))
             throw new \Exception("Empty uid or email");
 
         $data = $response['data'];
 
-        // [id, username, emai,... ]
+        // [uid, username, email,... ]
         return $data;
     }
 
@@ -82,8 +83,7 @@ class ApiCollectionsTest extends TestCase
         parent::setUp();
         $this->config = \Boctulus\Simplerest\Core\Libs\Config::get();
 
-        list($this->at, $this->rt) = $this->login(['email' => "tester3@g.c", "password" => "gogogo"]);
-        $this->uid = $this->get_me($this->at)['id'];
+        list($this->at, $this->rt, $this->uid) = $this->login(['email' => "tester3@g.c", "password" => "gogogo"]);
     }
 
     /*
