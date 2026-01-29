@@ -70,7 +70,7 @@ Ningun archivo temporal a ser generado (Ej: `debug_*.png`, `debug_*.txt`, `debug
 
 Los scripts para debugging y testing deben ir segun corresponda en `tests/` o en `tests/unit-tests/` segun sean tests normales o del tipo prueba unitaria.
 
-Los scripts que hacen uso de Web Drivers como Playwright deben ir dentro de `web-automation/`
+Los scripts que hacen uso de Web Drivers como Playwright deben ir dentro de ` -automation/`
 
 Debe mantenerse organizacion y bajo ninguna circunstancia tener archivos del tipo `test_*.j`s o `test-*.js` en el root del proyecto.
 
@@ -109,7 +109,7 @@ php com help
 
 ### 2. Desarrollo
 
-- Enfocarse en una arquitectura modular.
+- Usar arquitectura modular.
 - Consulta la documentación específica del módulo / componente / paquete dentro del modulo / componente / paquete suele haber un archivo .md y tambien verifica dentro de `docs\`
 - Antes de emprender el desarrollo de una libreria compleja que por su caracter general podria existir ya desarrollada (ya sea como libreria, pacakge, etc) debes hacer una busqueda para asegurarte no exista ya una solucion "open source" que se pueda utilizar. En caso de existir pero tener una API distinta a la solicitada evaluar construir un adapter o wrapper sobre la misma. 
 
@@ -119,7 +119,7 @@ Es recomendable busques la documentacion de "routing" (sera algun archivo con ex
 
 No es necesario que ocupes el routes.php principal para el caso de packages/ Cada package puede tener su propio routes.php si hay un ServiceProvider. Revisa la documentacion y otros packages del framework. Podrias estar duplicando codigo de rutas.
 
-Si las rutas no funcionan en un package es posible el package no este correctamente registrado. Importante ejecutar `composer dumpautoload` luego de cualquier registro / actualizacion en el "composer.json" para regenerar el autoload.
+Si las rutas no funcionan en un package es posible el package no este correctamente registrado. Importante ejecutar `composer dump-autoload` luego de cualquier registro / actualizacion en el "composer.json" para regenerar el autoload.
 
 
 #### Consumo de API
@@ -131,23 +131,24 @@ Documentacion:
 docs/ApiClient.md
 ```
 
-
 ## Prácticas Obligatorias
 
--   Tener en cuenta los patrones existentes y seguirlos con la salvedad de que si fuera necesario cambiar o implementar uno nuevo debe exponerse el problema, justificar el nuevo patron y consultar antes de implementar.  
--   Cambios incrementales. Analizar si fuera necesario un refactoring importante o re-escribir una solucion / libreria / vista de forma significativa, justificar y consultar antes de implementar.
--   DRY → funciones generales en librerías
--   Evitar logica compleja en rutas del router. Usar Middlwares.
--   SOLID / Clean Code / separación de responsabilidades
--   KISS
--   No agregar fallbacks sin consultar antes de implementarlos.
--   Lógica desacoplada de persistencia/API
--   Crear librerías → testear → persistencia/API
--   Tablas / colleciones de prueba con prefijo `test_`
--   Revisar documentación y comandos antes de programar
--   Testear de forma rigurosa.
--   Tests unitarios deben ser significativos y lo mas generales posibles
--   Documentar APIs
+- Crear un archivo .txt con el prompt ingresado por el usuario en `prompts/` bajo el nombre `{yyyy-mm-dd hh-ss} {current git hash}`
+- Leer la documentacion pertinente.
+- Tener en cuenta los patrones existentes y seguirlos con la salvedad de que si fuera necesario cambiar o implementar uno nuevo debe exponerse el problema, justificar el nuevo patron y consultar antes de implementar.  
+- Cambios incrementales. Analizar si fuera necesario un refactoring importante o re-escribir una solucion / libreria / vista de forma significativa, justificar y consultar antes de implementar.
+- DRY → funciones generales en librerías
+- Evitar logica compleja en rutas del router. Usar Middlwares.
+- SOLID / Clean Code / separación de responsabilidades
+- KISS
+- No agregar fallbacks sin consultar antes de implementarlos.
+- Lógica desacoplada de persistencia/API
+- Crear librerías → testear → persistencia/API
+- Tablas / colleciones de prueba con prefijo `test_`
+- Revisar documentación y comandos antes de programar
+- Testear de forma rigurosa.
+- Tests unitarios deben ser significativos y lo mas generales posibles
+- Documentar APIs
 
 Leer importante adjunto `docs/core-directives.md`
 
@@ -220,14 +221,12 @@ D:\Docker o D:\Pabloo\Docker
 
 NO BORRES TABLAS O REGISTROS O DOCUMENTOS EN LA FUENTE DE VERDAD (MySQL o cualquier otra) SIN JUSTIFICACION. Solo puedes borrar datos de prueba pero debes evitar borrar "tablas maestro" (o colecciones maestro). De ser necesario el borrado pide autorizacion.
 
-
-## Obligatorio
-
-SIEMPRE se debe probar antes de considerar que una tarea fue completada. 
+- SIEMPRE se debe probar antes de considerar que una tarea fue completada. 
 
 Si ya se ha fallado mas de dos (2) veces en una tarea que involucra una UI, deberia ensayarse de ser posible con CURL y de no ser posible con Playwright o Selenium.
 
-## Diferencias clave
+
+### Diferencias clave
 
 - Ten mucho cuidado porque este framework utiliza funciones de la clase String para contains() etc con parametros en orden distinto que las funciones nativas de PHP. 
 
@@ -240,13 +239,3 @@ Si ya se ha fallado mas de dos (2) veces en una tarea que involucra una UI, debe
 Pablo Bozzolo (boctulus)
 Software Architect
 ```
-
----
-
-## Enlaces Rápidos
-
-- 📝 Credenciales: `docs/login-credentials.md`
-- 🧩 Componentes: `docs/packages/`
-- ⚠️ Issues conocidos: `docs/issues/`
-- 🧪 Testing UI: Usar Playwright o Selenium (ver sección [Testing y Debugging](#testing-y-debugging))
-
