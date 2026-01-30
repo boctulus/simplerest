@@ -108,10 +108,11 @@ class ApiTrashCanTest extends TestCase
         $client = new ApiClient();
 
         // Now check if the deleted product appears in the trash can
+        // Order by ID DESC to get most recent items first
         $res2 = $client
             ->addHeader('Authorization', "Bearer {$this->at}")
             ->decode()
-            ->get(BASE_URL . 'api/v1/trash_can?entity=Products&limit=100')
+            ->get(BASE_URL . 'api/v1/trash_can?entity=Products&limit=100&order[id]=DESC')
             ->getDataOrFail();
 
         if (!isset($res2['data'])) {
@@ -122,16 +123,26 @@ class ApiTrashCanTest extends TestCase
 
         // Find our deleted product in the trash can results
         $foundInTrash = false;
+        $ids_in_trash = [];
         if (is_array($res2['data'])) {
             foreach ($res2['data'] as $item) {
-                if (isset($item['id']) && $item['id'] == $productId) {
-                    $foundInTrash = true;
-                    break;
+                if (isset($item['id'])) {
+                    $ids_in_trash[] = $item['id'];
+                    if ($item['id'] == $productId) {
+                        $foundInTrash = true;
+                        break;
+                    }
                 }
             }
         }
 
-        $this->assertTrue($foundInTrash, "Product was not found in trash can after soft delete");
+        if (!$foundInTrash) {
+            echo "\nCreated product ID: $productId\n";
+            echo "IDs in trash (first 10): " . implode(', ', array_slice($ids_in_trash, 0, 10)) . "\n";
+            echo "Total items in trash: " . count($ids_in_trash) . "\n";
+        }
+
+        $this->assertTrue($foundInTrash, "Product was not found in trash can after soft delete. Product ID: $productId");
 
         // Clean up: permanently delete the item from trash
         $deleteFromTrashData = [
