@@ -1,11 +1,17 @@
 <?php 
 
 $pivots        = array (
+  'product_categories,products' => 'products_product_categories',
   'roles,users' => 'user_roles',
   'sp_permissions,users' => 'user_sp_permissions',
 );
 
 $pivot_fks     = array (
+  'products_product_categories' => 
+  array (
+    'product_categories' => 'product_category_id',
+    'products' => 'product_id',
+  ),
   'user_roles' => 
   array (
     'users' => 'user_id',
@@ -19,6 +25,25 @@ $pivot_fks     = array (
 );
 
 $relationships = array (
+  'products_product_categories' => 
+  array (
+    'product_categories' => 
+    array (
+      0 => 
+      array (
+        0 => 'product_categories.id',
+        1 => 'products_product_categories.product_category_id',
+      ),
+    ),
+    'products' => 
+    array (
+      0 => 
+      array (
+        0 => 'products.id',
+        1 => 'products_product_categories.product_id',
+      ),
+    ),
+  ),
   'user_roles' => 
   array (
     'users' => 

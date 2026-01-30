@@ -14,15 +14,14 @@ class CacheSchema implements ISchema
 
 			'id_name'			=> 'id',
 
-			'fields'			=> ['id', '_key_', 'value', 'expires_at', 'cached_at', 'created_at', 'updated_at'],
+			'fields'			=> ['id', '_key_', 'value', 'expires_at', 'cached_at', 'updated_at'],
 
 			'attr_types'		=> [
 				'id' => 'INT',
 				'_key_' => 'STR',
 				'value' => 'STR',
 				'expires_at' => 'INT',
-				'cached_at' => 'STR',
-				'created_at' => 'STR',
+				'cached_at' => 'INT',
 				'updated_at' => 'STR'
 			],
 
@@ -36,7 +35,7 @@ class CacheSchema implements ISchema
 
 			'nullable'			=> ['id', 'cached_at', 'updated_at'],
 
-			'required'			=> ['_key_', 'value', 'expires_at', 'created_at'],
+			'required'			=> ['_key_', 'value', 'expires_at'],
 
 			'uniques'			=> [],
 
@@ -45,8 +44,7 @@ class CacheSchema implements ISchema
 				'_key_' => ['type' => 'str', 'max' => 191, 'required' => true],
 				'value' => ['type' => 'str', 'required' => true],
 				'expires_at' => ['type' => 'int', 'required' => true],
-				'cached_at' => ['type' => 'timestamp'],
-				'created_at' => ['type' => 'datetime', 'required' => true],
+				'cached_at' => ['type' => 'int', 'min' => 0],
 				'updated_at' => ['type' => 'datetime']
 			],
 

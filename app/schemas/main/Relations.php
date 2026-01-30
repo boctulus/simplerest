@@ -86,6 +86,8 @@ return [
   'users~user_roles' => '1:n',
   'users~user_sp_permissions' => '1:n',
   'users~user_tb_permissions' => '1:n',
+  'product_categories~products' => 'n:m',
+  'products~product_categories' => 'n:m',
   'roles~users' => 'n:m',
   'users~roles' => 'n:m',
   'sp_permissions~users' => 'n:m',
@@ -115,9 +117,11 @@ return [
   'users~user_roles' => true,
   'users~user_sp_permissions' => true,
   'users~user_tb_permissions' => true,
+  'product_categories~products' => true,
+  'products~product_categories' => true,
   'roles~users' => true,
   'users~roles' => true,
   'sp_permissions~users' => true,
   'users~sp_permissions' => true,
 ),
-];
+        ];

@@ -82,6 +82,34 @@ class UsersSchema implements ISchema
 					['users.created_by','users.id'],
 					['users.updated_by','users.id'],
 					['users.deleted_by','users.id']
+				],
+				'api_keys' => [
+					['api_keys.user_id','users.id']
+				],
+				'collections' => [
+					['collections.belongs_to','users.id']
+				],
+				'files' => [
+					['files.belongs_to','users.id']
+				],
+				'folder_other_permissions' => [
+					['folder_other_permissions.belongs_to','users.id']
+				],
+				'folder_permissions' => [
+					['folder_permissions.belongs_to','users.id'],
+					['folder_permissions.access_to','users.id']
+				],
+				'folders' => [
+					['folders.belongs_to','users.id']
+				],
+				'user_roles' => [
+					['user_roles.user_id','users.id']
+				],
+				'user_sp_permissions' => [
+					['user_sp_permissions.user_id','users.id']
+				],
+				'user_tb_permissions' => [
+					['user_tb_permissions.user_id','users.id']
 				]
 			],
 
@@ -189,6 +217,163 @@ class UsersSchema implements ISchema
       array (
         0 => 'users',
         1 => 'deleted_by',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'api_keys' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'api_keys',
+        1 => 'user_id',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'collections' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'collections',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'files' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'files',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'folder_other_permissions' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'folder_other_permissions',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'folder_permissions' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'folder_permissions',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+    1 => 
+    array (
+      0 => 
+      array (
+        0 => 'folder_permissions',
+        1 => 'access_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'folders' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'folders',
+        1 => 'belongs_to',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'user_roles' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'user_roles',
+        1 => 'user_id',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'user_sp_permissions' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'user_sp_permissions',
+        1 => 'user_id',
+      ),
+      1 => 
+      array (
+        0 => 'users',
+        1 => 'id',
+      ),
+    ),
+  ),
+  'user_tb_permissions' => 
+  array (
+    0 => 
+    array (
+      0 => 
+      array (
+        0 => 'user_tb_permissions',
+        1 => 'user_id',
       ),
       1 => 
       array (

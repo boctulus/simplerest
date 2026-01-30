@@ -36,9 +36,9 @@ class PromptsSchema implements ISchema
 
 			'autoincrement' 	=> 'id',
 
-			'nullable'			=> ['id', 'title', 'project', 'base_path', 'notes', 'updated_at'],
+			'nullable'			=> ['id', 'title', 'project', 'description', 'base_path', 'notes', 'updated_at'],
 
-			'required'			=> ['description', 'files', 'created_at'],
+			'required'			=> ['files', 'created_at'],
 
 			'uniques'			=> [],
 
@@ -46,7 +46,7 @@ class PromptsSchema implements ISchema
 				'id' => ['type' => 'int'],
 				'title' => ['type' => 'str', 'max' => 100],
 				'project' => ['type' => 'int'],
-				'description' => ['type' => 'str', 'required' => true],
+				'description' => ['type' => 'str'],
 				'base_path' => ['type' => 'str', 'max' => 100],
 				'files' => ['type' => 'str', 'required' => true],
 				'notes' => ['type' => 'str'],
