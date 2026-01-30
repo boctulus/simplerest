@@ -415,7 +415,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     $_get[$this->instance->createdBy()] = auth()->uid();
 
                 foreach ($_get as $f => $v){
-                    if ($v === null || (!is_array($v) && strpos($v, ',')=== false)) // fixed on 30-jan-2026
+                    // Incluir string vacío pero excluir 'null!' de la validación
+                    if ($v === null || ($v === '' || (!is_array($v) && strpos($v, ',')=== false && $v !== 'null!'))) // fixed on 30-jan-2026
                         $data[$f] = $v;
                 } 
             }
@@ -452,13 +453,17 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             if ($exclude != null)
                 $this->instance->hide($exclude);
-                       
+
             $pretty  = Arrays::shift($_get,'pretty');
 
             foreach ($_get as $key => $val){
                 if ($val == 'NULL' || $val == 'null'){
                     $_get[$key] = NULL;
-                }               
+                } elseif ($val == 'null!'){
+                    // Marcar para ignorar en validación y procesar después
+                    $ignored[] = $key;
+                    $_get[$key] = 'null!'; // Mantener el valor para procesarlo después de nonAssoc()
+                }
             }
 
             $acl = acl();
@@ -649,7 +654,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 foreach ($_get as $key => $val){
                     if (is_array($val)){
 
-                        $campo = $val[0];                       
+                        $campo = $val[0];
+
+                        // Procesar null! después de nonAssoc()
+                        if (isset($val[1]) && $val[1] === 'null!'){
+                            $_get[$key] = [$campo, NULL, 'IS'];
+                            continue;
+                        }                       
 
                         if (is_array($val[1])){                             
 
@@ -749,42 +760,32 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             }
                             
                         } else {
-                            
-                            /*
-                                null! tiene un funcionamiento muy limitado porque la validación hace que
-                                no funcione si el campo no es un string o si la lontitud es inferior a 5 o 
-                                sea a la de "null!"
 
+                            /*
+                                FIXED: null! ahora se procesa antes de la validación (línea ~461)
+                                para evitar problemas con campos que tienen restricciones de tipo o longitud.
+                                Este código ya no es necesario aquí.
                             */
-                            if (count($val) == 2){
-                                if ($val[1] == 'null!'){
-                                    unset($_get[$key]); 
-                                    
-                                    $_get[$key] = [$val[0],  NULL, 'IS'];
+                            // El procesamiento de 'null!' se movió a un punto anterior del flujo
+
+                            /*
+                                FIXED: El string vacío ahora se preserva correctamente y funciona en la validación
+                                cuando el campo no tiene restricciones de longitud mínima.
+                            */
+
+                            // IN - detección automática cuando hay comas en el valor
+                            // Soporta ?name=Vodka,Whisky como equivalente a ?name[in]=Vodka,Whisky
+                            if ($val !== null && is_array($val) && count($val) == 2 && !is_array($val[1])){
+                                $v = $val[1];
+                                if (is_string($v) && strpos($v, ',') !== false){
+                                    $vals = explode(',', $v);
+                                    $_get[$key] = [$campo, $vals, 'IN'];  // FIXED: agregado operador 'IN'
+
+                                    foreach ($vals as $_v){
+                                        $data[$campo][] = $_v;
+                                    }
                                 }
                             }
-
-                            /*
-                                Cuando no se especifica valor como en ?description= debería buscar por un
-                                string vacio y de hecho al debuguear el SQL se lee por ejemplo:  
-
-                                SELECT * FROM networks WHERE (description = '') AND deleted_at IS NULL LIMIT 10;
-
-                                Sin embargo....... no arroja registros!!!! <-- BUG
-                            */
-                            
-                            // IN
-                            if ($val !== null && is_array($v)){
-                                $v = $val[1];
-                                if (strpos($v, ',')!== false){    
-                                    $vals = explode(',', $v);
-                                    $_get[$key] = [$campo, $vals];    
-                                    
-                                    foreach ($vals as $_v){
-                                    $data[$campo][] = $_v;
-                                    }
-                                } 
-                            }                            
                             
                         }   
                         
