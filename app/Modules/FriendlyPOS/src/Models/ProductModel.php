@@ -12,7 +12,7 @@ class ProductModel extends MyModel
 
 	protected $hidden   = [];
 	protected $not_fillable = [];
-	protected $table_name = '__TABLE_NAME__';
+	protected $table_name = 'TABLE_NAME__';
 
     function __construct(bool $connect = false){
         parent::__construct($connect);

@@ -332,7 +332,3 @@ define('BASE_URL', rtrim(\$config['app_url'], '/') . '/');
   - `tests/ApiTrashCanTest.php` ✅
   - `tests/ApiTest.php` 🔄
 
----
-
-**Autor de implementación:** Claude Sonnet 4.5 (con supervisión de usuario)
-**Autor del framework:** Pablo Bozzolo (boctulus) - Software Architect

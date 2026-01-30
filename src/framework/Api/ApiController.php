@@ -415,7 +415,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     $_get[$this->instance->createdBy()] = auth()->uid();
 
                 foreach ($_get as $f => $v){
-                    if (!is_array($v) && strpos($v, ',')=== false)
+                    if ($v === null || (!is_array($v) && strpos($v, ',')=== false)) // fixed on 30-jan-2026
                         $data[$f] = $v;
                 } 
             }
@@ -773,17 +773,19 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                 Sin embargo....... no arroja registros!!!! <-- BUG
                             */
                             
-
                             // IN
-                            $v = $val[1];
-                            if (strpos($v, ',')!== false){    
-                                $vals = explode(',', $v);
-                                $_get[$key] = [$campo, $vals];    
-                                
-                                foreach ($vals as $_v){
-                                   $data[$campo][] = $_v;
-                                }
-                            } 
+                            if ($val !== null && is_array($v)){
+                                $v = $val[1];
+                                if (strpos($v, ',')!== false){    
+                                    $vals = explode(',', $v);
+                                    $_get[$key] = [$campo, $vals];    
+                                    
+                                    foreach ($vals as $_v){
+                                    $data[$campo][] = $_v;
+                                    }
+                                } 
+                            }                            
+                            
                         }   
                         
                     }                      
