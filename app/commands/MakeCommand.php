@@ -1688,8 +1688,7 @@ class MakeCommand implements ICommand
         $expanded_relations      = Strings::tabulate(var_export(Schema::getAllRelations($name, false), true), 4, 0);
         $expanded_relations_from = Strings::tabulate(var_export(Schema::getAllRelations($name, false, false), true), 4, 0);
 
-
-        Strings::replace('__TABLE_NAME__', "'$_table'", $file);
+        Strings::replace('__TABLE__', "'$_table'", $file);
         Strings::replace('__ID__', !empty($id_name) ? "'$id_name'" : 'null', $file);
         Strings::replace('__AUTOINCREMENT__', !empty($autoinc) ? "'$autoinc'" : 'null', $file);
         Strings::replace('__FIELDS__', '[' . implode(', ', Strings::enclose($field_names, "'")) . ']', $file);
@@ -1842,7 +1841,7 @@ class MakeCommand implements ICommand
             }
 
             if ($schemaless) {
-                Strings::replace('__TABLE_NAME__', $this->table_name, $file);
+                Strings::replace('__TABLE__', $this->table_name, $file);
             }
         } else {
             Strings::replace('parent::__construct($connect, __SCHEMA_CLASS__::class);', 'parent::__construct();', $file);
