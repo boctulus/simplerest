@@ -2030,4 +2030,509 @@ class ApiTest extends TestCase
     curl_close($ch);
     }
 
+    /*
+        Test for null! operator bug fix
+        GET /api/v1/products?comment=null!
+        Should find products where comment IS NULL
+
+        Note: Using 'comment' field because it's nullable in the schema
+    */
+    function testNullOperator()
+    {
+        $ch = curl_init();
+
+        // First, create a product with NULL comment for testing
+        $product_data = json_encode([
+            'name' => 'Test Product Null Comment',
+            'cost' => 100,
+            'description' => 'Test description',
+            'slug' => 'test-null-comment-' . time(),
+            'images' => '[]',
+            'comment' => null
+        ]);
+
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => BASE_URL . "api/v1/products",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $product_data,
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer $this->at",
+                "Content-Type: application/json",
+                "Host: " . HOST,
+            ),
+        ));
+
+        $response = curl_exec($ch);
+        $res = json_decode($response, true);
+        $product_id = $res['data']['id'] ?? null;
+
+        $this->assertNotNull($product_id, 'Product should be created');
+
+        // Now test searching with null! operator
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => BASE_URL . "api/v1/products?comment=null!&limit=100",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer $this->at",
+                "Content-Type: application/json",
+                "Host: " . HOST,
+            ),
+        ));
+
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $res = json_decode($response, true);
+
+        $this->assertEquals(200, $http_code, 'Should return 200 OK');
+        $this->assertIsArray($res['data'], 'Should return array of products');
+
+        // Verify our created product is in the results
+        $found = false;
+        foreach ($res['data'] as $product) {
+            if ($product['id'] == $product_id) {
+                $found = true;
+                $this->assertNull($product['comment'], 'Product comment should be NULL');
+                break;
+            }
+        }
+
+        $this->assertTrue($found, 'Created product with NULL comment should be found');
+
+        // Cleanup: delete test product
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => BASE_URL . "api/v1/products/$product_id",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "DELETE",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer $this->at",
+                "Content-Type: application/json",
+                "Host: " . HOST,
+            ),
+        ));
+
+        curl_exec($ch);
+        curl_close($ch);
+    }
+
+    /*
+        Test for empty string search bug fix
+        GET /api/v1/products?comment=
+        Should find products where comment = ''
+
+        Note: Using 'comment' field because it's nullable in the schema
+    */
+    function testEmptyStringSearch()
+    {
+        $ch = curl_init();
+
+        // First, create a product with empty comment for testing
+        $product_data = json_encode([
+            'name' => 'Test Product Empty Comment',
+            'cost' => 100,
+            'description' => 'Test description',
+            'slug' => 'test-empty-comment-' . time(),
+            'images' => '[]',
+            'comment' => ''
+        ]);
+
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => BASE_URL . "api/v1/products",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $product_data,
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer $this->at",
+                "Content-Type: application/json",
+                "Host: " . HOST,
+            ),
+        ));
+
+        $response = curl_exec($ch);
+        $res = json_decode($response, true);
+        $product_id = $res['data']['id'] ?? null;
+
+        $this->assertNotNull($product_id, 'Product should be created');
+
+        // Now test searching with empty string
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => BASE_URL . "api/v1/products?comment=&limit=100",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer $this->at",
+                "Content-Type: application/json",
+                "Host: " . HOST,
+            ),
+        ));
+
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $res = json_decode($response, true);
+
+        $this->assertEquals(200, $http_code, 'Should return 200 OK');
+        $this->assertIsArray($res['data'], 'Should return array of products');
+
+        // Verify our created product is in the results
+        $found = false;
+        foreach ($res['data'] as $product) {
+            if ($product['id'] == $product_id) {
+                $found = true;
+                $this->assertEquals('', $product['comment'], 'Product comment should be empty string');
+                break;
+            }
+        }
+
+        $this->assertTrue($found, 'Created product with empty comment should be found');
+
+        // Cleanup: delete test product
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => BASE_URL . "api/v1/products/$product_id",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "DELETE",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer $this->at",
+                "Content-Type: application/json",
+                "Host: " . HOST,
+            ),
+        ));
+
+        curl_exec($ch);
+        curl_close($ch);
+    }
+
+    /*
+        Test for IN operator with comma-separated values bug fix
+        GET /api/v1/products?name=ProductA,ProductB,ProductC
+        Should find products where name IN ('ProductA', 'ProductB', 'ProductC')
+    */
+    function testInOperatorWithCommas()
+    {
+        $ch = curl_init();
+
+        // Create test products
+        $test_names = ['TestProdA', 'TestProdB', 'TestProdC'];
+        $created_ids = [];
+
+        foreach ($test_names as $idx => $name) {
+            $product_data = json_encode([
+                'name' => $name,
+                'cost' => 100,
+                'description' => 'Test product for IN operator',
+                'slug' => 'test-in-op-' . $idx . '-' . time(),
+                'images' => '[]'
+            ]);
+
+            curl_setopt_array($ch, array(
+                CURLOPT_URL => BASE_URL . "api/v1/products",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => $product_data,
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Bearer $this->at",
+                    "Content-Type: application/json",
+                    "Host: " . HOST,
+                ),
+            ));
+
+            $response = curl_exec($ch);
+            $res = json_decode($response, true);
+            $created_ids[] = $res['data']['id'] ?? null;
+        }
+
+        // Verify all products were created
+        foreach ($created_ids as $id) {
+            $this->assertNotNull($id, 'Product should be created');
+        }
+
+        // Now test searching with comma-separated values (auto IN operator)
+        $search_names = implode(',', $test_names);
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => BASE_URL . "api/v1/products?name=$search_names&limit=100",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer $this->at",
+                "Content-Type: application/json",
+                "Host: " . HOST,
+            ),
+        ));
+
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $res = json_decode($response, true);
+
+        $this->assertEquals(200, $http_code, 'Should return 200 OK');
+        $this->assertIsArray($res['data'], 'Should return array of products');
+
+        // Verify all created products are in the results
+        $found_count = 0;
+        foreach ($res['data'] as $product) {
+            if (in_array($product['id'], $created_ids)) {
+                $found_count++;
+                $this->assertContains($product['name'], $test_names, 'Product name should be one of the search names');
+            }
+        }
+
+        $this->assertEquals(count($test_names), $found_count, 'Should find all created products');
+
+        // Cleanup: delete test products
+        foreach ($created_ids as $id) {
+            curl_setopt_array($ch, array(
+                CURLOPT_URL => BASE_URL . "api/v1/products/$id",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "DELETE",
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Bearer $this->at",
+                    "Content-Type: application/json",
+                    "Host: " . HOST,
+                ),
+            ));
+
+            curl_exec($ch);
+        }
+
+        curl_close($ch);
+    }
+
+    /*
+        Test for explicit IN operator with [in] syntax
+        GET /api/v1/products?name[in]=ProductA,ProductB,ProductC
+        Should find products where name IN ('ProductA', 'ProductB', 'ProductC')
+    */
+    function testExplicitInOperator()
+    {
+        $ch = curl_init();
+
+        // Create test products
+        $test_names = ['ExplicitProdA', 'ExplicitProdB', 'ExplicitProdC', 'ExplicitProdD', 'ExplicitProdE'];
+        $created_ids = [];
+
+        foreach ($test_names as $idx => $name) {
+            $product_data = json_encode([
+                'name' => $name,
+                'cost' => 100 + $idx * 10,
+                'description' => 'Test product for explicit IN operator',
+                'slug' => strtolower($name) . '-' . time() . '-' . $idx,
+                'images' => '[]'
+            ]);
+
+            curl_setopt_array($ch, array(
+                CURLOPT_URL => BASE_URL . "api/v1/products",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => $product_data,
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Bearer $this->at",
+                    "Content-Type: application/json",
+                    "Host: " . HOST,
+                ),
+            ));
+
+            $response = curl_exec($ch);
+            $res = json_decode($response, true);
+            $created_ids[] = $res['data']['id'] ?? null;
+        }
+
+        // Verify all products were created
+        foreach ($created_ids as $idx => $id) {
+            $this->assertNotNull($id, "Product {$test_names[$idx]} should be created");
+        }
+
+        // Test with explicit [in] syntax - search for first 3 products
+        $search_names = implode(',', array_slice($test_names, 0, 3));
+        $url = BASE_URL . "api/v1/products?name[in]=" . urlencode($search_names) . "&limit=100";
+
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer $this->at",
+                "Content-Type: application/json",
+                "Host: " . HOST,
+            ),
+        ));
+
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $res = json_decode($response, true);
+
+        $this->assertEquals(200, $http_code, 'Should return 200 OK');
+        $this->assertIsArray($res['data'], 'Should return array of products');
+
+        // Verify only the first 3 products are in the results
+        $found_ids = [];
+        foreach ($res['data'] as $product) {
+            if (in_array($product['id'], $created_ids)) {
+                $found_ids[] = $product['id'];
+                $this->assertContains($product['name'], array_slice($test_names, 0, 3),
+                    'Product name should be one of the first 3 search names');
+            }
+        }
+
+        $this->assertEquals(3, count($found_ids), 'Should find exactly 3 products');
+
+        // Cleanup: delete all test products
+        foreach ($created_ids as $id) {
+            curl_setopt_array($ch, array(
+                CURLOPT_URL => BASE_URL . "api/v1/products/$id",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "DELETE",
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Bearer $this->at",
+                    "Content-Type: application/json",
+                    "Host: " . HOST,
+                ),
+            ));
+
+            curl_exec($ch);
+        }
+
+        curl_close($ch);
+    }
+
+    /*
+        Test for auto-detected IN operator (comma-separated without [in])
+        Verifies both implicit and explicit IN syntax work identically
+    */
+    function testAutoAndExplicitInComparison()
+    {
+        $ch = curl_init();
+
+        // Create more test products to ensure robust testing
+        $test_names = ['InTestA', 'InTestB', 'InTestC', 'InTestD', 'InTestE', 'InTestF'];
+        $created_ids = [];
+
+        foreach ($test_names as $idx => $name) {
+            $product_data = json_encode([
+                'name' => $name,
+                'cost' => 200 + $idx * 5,
+                'description' => 'Test product for IN comparison',
+                'slug' => strtolower($name) . '-comp-' . time() . '-' . $idx,
+                'images' => '[]'
+            ]);
+
+            curl_setopt_array($ch, array(
+                CURLOPT_URL => BASE_URL . "api/v1/products",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => $product_data,
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Bearer $this->at",
+                    "Content-Type: application/json",
+                    "Host: " . HOST,
+                ),
+            ));
+
+            $response = curl_exec($ch);
+            $res = json_decode($response, true);
+            $created_ids[$name] = $res['data']['id'] ?? null;
+        }
+
+        // Verify all products were created
+        foreach ($test_names as $name) {
+            $this->assertNotNull($created_ids[$name], "Product $name should be created");
+        }
+
+        // Search names - select 4 out of 6
+        $search_names = ['InTestB', 'InTestD', 'InTestE', 'InTestF'];
+        $search_str = implode(',', $search_names);
+
+        // Test 1: Auto-detected IN (comma-separated)
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => BASE_URL . "api/v1/products?name=$search_str&limit=100",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer $this->at",
+                "Content-Type: application/json",
+                "Host: " . HOST,
+            ),
+        ));
+
+        $response_auto = curl_exec($ch);
+        $res_auto = json_decode($response_auto, true);
+
+        // Test 2: Explicit IN with [in] syntax
+        $url_explicit = BASE_URL . "api/v1/products?name[in]=" . urlencode($search_str) . "&limit=100";
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => $url_explicit,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer $this->at",
+                "Content-Type: application/json",
+                "Host: " . HOST,
+            ),
+        ));
+
+        $response_explicit = curl_exec($ch);
+        $res_explicit = json_decode($response_explicit, true);
+
+        // Both should return 200
+        $this->assertIsArray($res_auto['data'], 'Auto IN should return array');
+        $this->assertIsArray($res_explicit['data'], 'Explicit IN should return array');
+
+        // Extract IDs from both results
+        $ids_auto = [];
+        $ids_explicit = [];
+
+        foreach ($res_auto['data'] as $product) {
+            if (in_array($product['name'], $test_names)) {
+                $ids_auto[] = $product['id'];
+            }
+        }
+
+        foreach ($res_explicit['data'] as $product) {
+            if (in_array($product['name'], $test_names)) {
+                $ids_explicit[] = $product['id'];
+            }
+        }
+
+        // Both methods should find exactly 4 products
+        $this->assertEquals(4, count($ids_auto), 'Auto IN should find 4 products');
+        $this->assertEquals(4, count($ids_explicit), 'Explicit IN should find 4 products');
+
+        // Both methods should return the same products
+        sort($ids_auto);
+        sort($ids_explicit);
+        $this->assertEquals($ids_auto, $ids_explicit,
+            'Auto IN and explicit IN should return identical results');
+
+        // Verify the found products are exactly the ones we searched for
+        foreach ($search_names as $name) {
+            $this->assertContains($created_ids[$name], $ids_auto,
+                "Product $name should be found by auto IN");
+            $this->assertContains($created_ids[$name], $ids_explicit,
+                "Product $name should be found by explicit IN");
+        }
+
+        // Verify products NOT in search are NOT returned
+        $non_search_names = ['InTestA', 'InTestC'];
+        foreach ($non_search_names as $name) {
+            $this->assertNotContains($created_ids[$name], $ids_auto,
+                "Product $name should NOT be found (not in search list)");
+        }
+
+        // Cleanup: delete all test products
+        foreach ($created_ids as $name => $id) {
+            curl_setopt_array($ch, array(
+                CURLOPT_URL => BASE_URL . "api/v1/products/$id",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST => "DELETE",
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Bearer $this->at",
+                    "Content-Type: application/json",
+                    "Host: " . HOST,
+                ),
+            ));
+
+            curl_exec($ch);
+        }
+
+        curl_close($ch);
+    }
+
 }
