@@ -415,9 +415,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     $_get[$this->instance->createdBy()] = auth()->uid();
 
                 foreach ($_get as $f => $v){
-                    // Incluir string vacío pero excluir 'null!' de la validación
-                    if ($v === null || ($v === '' || (!is_array($v) && strpos($v, ',')=== false && $v !== 'null!'))) // fixed on 30-jan-2026
+                    // Incluir valores simples, NULL, string vacío; excluir arrays, valores con comas, y 'null!'
+                    if ($v === null || $v === '' || (!is_array($v) && strpos($v, ',') === false && $v !== 'null!')) {
                         $data[$f] = $v;
+                    }
                 } 
             }
 
