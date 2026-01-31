@@ -1,7 +1,6 @@
 __releases/
 .git/
 .codegpt/
-.claude/
 .vscode/
 .idea/
 .phpunit.cache/
@@ -10,6 +9,7 @@ yakpro-po/
 logs/
 tmp/
 storage/security/
+automation/
 *.zip
 *.rar
 *.tar
