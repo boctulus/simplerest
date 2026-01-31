@@ -74,7 +74,7 @@ Ningun archivo temporal a ser generado (Ej: `debug_*.png`, `debug_*.txt`, `debug
 
 Los scripts para debugging y testing deben ir segun corresponda en `tests/` o en `tests/unit-tests/` segun sean tests normales o del tipo prueba unitaria.
 
-Los scripts que hacen uso de Web Drivers como Playwright deben ir dentro de `web-automation/`
+Los scripts que hacen uso de Web Drivers como Playwright deben ir dentro de `automation/`
 
 Debe mantenerse organizacion y bajo ninguna circunstancia tener archivos del tipo `test_*.j`s o `test-*.js` en el root del proyecto.
 
