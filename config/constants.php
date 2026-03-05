@@ -49,7 +49,7 @@ if (!defined('ETC_PATH'))
     define('ETC_PATH', ROOT_PATH . 'etc'. DIRECTORY_SEPARATOR);    
 
 if (!defined('CORE_PATH'))
-    define('CORE_PATH', SRC_PATH . 'framework'. DIRECTORY_SEPARATOR);
+    define('CORE_PATH', SRC_PATH . 'Core'. DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_INTERFACE_PATH'))
 	define('CORE_INTERFACE_PATH', CORE_PATH  . 'Interfaces' . DIRECTORY_SEPARATOR);    
@@ -138,13 +138,13 @@ if (!defined('HELPERS_PATH'))
     define('HELPERS_PATH', APP_PATH . 'Helpers' . DIRECTORY_SEPARATOR);  
 
 if (!defined('LOCALE_PATH'))
-    define('LOCALE_PATH', APP_PATH . 'locale' . DIRECTORY_SEPARATOR);  
+    define('LOCALE_PATH', APP_PATH . 'Locale' . DIRECTORY_SEPARATOR);  
 
 if (!defined('MIDDLEWARES_PATH'))
     define('MIDDLEWARES_PATH', APP_PATH . 'Middlewares' . DIRECTORY_SEPARATOR); 
 
 if (!defined('WIDGETS_PATH'))
-    define('WIDGETS_PATH', APP_PATH . 'widgets' . DIRECTORY_SEPARATOR);
+    define('WIDGETS_PATH', APP_PATH . 'Widgets' . DIRECTORY_SEPARATOR);
 
 
 if (!defined('ASSETS_PATH'))
