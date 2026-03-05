@@ -4,6 +4,7 @@ use Boctulus\FriendlyposWeb\Models\UnidadMedidaModel;
 use Boctulus\Simplerest\Core\CliRouter;
 use Boctulus\Simplerest\Core\Exceptions\MiddlewareNotFoundException;
 use Boctulus\Simplerest\Core\Libs\Cli;
+use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Modules\FirebaseTest\FirebaseTest;
 
