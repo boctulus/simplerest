@@ -49,7 +49,7 @@ class EmailNotificationsSchema implements ISchema
 			'uniques'			=> [],
 
 			'rules' 			=> [
-				'id' => ['type' => 'int'],
+				'id' => ['type' => 'int', 'min' => 0],
 				'from_addr' => ['type' => 'str', 'max' => 320],
 				'from_name' => ['type' => 'str', 'max' => 80],
 				'to_addr' => ['type' => 'str', 'max' => 320, 'required' => true],

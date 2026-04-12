@@ -145,7 +145,7 @@ $plugin_base_url = $base_url . '/wp-content/plugins/efirma';
         // Standalone AJAX configuration (no WordPress dependencies)
         const typeform_ajax = {
             ajaxurl: '<?= $base_url ?>/typeform/submit',
-            api_base_url: '<?= \Boctulus\Simplerest\core\libs\Config::get('Typeform.api_base_url') ?? $plugin_base_url ?>'
+            api_base_url: '<?= \Boctulus\Simplerest\Core\Libs\Config::get('Typeform.api_base_url') ?? $plugin_base_url ?>'
         };
         </script>
     </footer>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers\api_tests;
+namespace Boctulus\Simplerest\Controllers\Api_tests;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\WooCommerceApiClient;

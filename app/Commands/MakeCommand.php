@@ -513,10 +513,10 @@ class MakeCommand implements ICommand
         }
 
         $data = file_get_contents($template_path);
-        $data = str_replace('__NAME__', $prefix . $this->camel_case .  $subfix, $data);
+        $data = str_replace('NAME__', $prefix . $this->camel_case .  $subfix, $data);
 
         if (!is_null($namespace)) {
-            $data = str_replace('__NAMESPACE__', $namespace, $data);
+            $data = str_replace('NAMESPACE__', $namespace, $data);
         }
 
         if ($strict) {
@@ -829,8 +829,8 @@ class MakeCommand implements ICommand
 
         // Cargar y personalizar la plantilla
         $data = file_get_contents($template_path);
-        $data = str_replace('__NAME__', $prefix . $this->camel_case . $subfix, $data);
-        $data = str_replace('// namespace __NAMESPACE__;', "namespace $namespace;", $data);
+        $data = str_replace('NAME__', $prefix . $this->camel_case . $subfix, $data);
+        $data = str_replace('// namespace NAMESPACE__;', "namespace $namespace;", $data);
         $data = str_replace('// __METHODS__', $methodsCode, $data);
 
         if ($strict) {
@@ -931,7 +931,7 @@ class MakeCommand implements ICommand
         }
 
         $data = file_get_contents(self::API_TEMPLATE);
-        $data = str_replace('__NAME__', $this->camel_case, $data);
+        $data = str_replace('NAME__', $this->camel_case, $data);
         $data = str_replace('__SOFT_DELETE__', 'true', $data); // debe depender del schema
 
         $this->write($dest_path, $data, $protected);
@@ -1395,7 +1395,7 @@ class MakeCommand implements ICommand
         }
 
         $file = file_get_contents(self::SCHEMA_TEMPLATE);
-        $file = str_replace('__NAME__', $this->camel_case . 'Schema', $file);
+        $file = str_replace('NAME__', $this->camel_case . 'Schema', $file);
 
         // destination
 
@@ -1688,8 +1688,7 @@ class MakeCommand implements ICommand
         $expanded_relations      = Strings::tabulate(var_export(Schema::getAllRelations($name, false), true), 4, 0);
         $expanded_relations_from = Strings::tabulate(var_export(Schema::getAllRelations($name, false, false), true), 4, 0);
 
-
-        Strings::replace('__TABLE_NAME__', "'$_table'", $file);
+        Strings::replace('__TABLE__', "'$_table'", $file);
         Strings::replace('__ID__', !empty($id_name) ? "'$id_name'" : 'null', $file);
         Strings::replace('__AUTOINCREMENT__', !empty($autoinc) ? "'$autoinc'" : 'null', $file);
         Strings::replace('__FIELDS__', '[' . implode(', ', Strings::enclose($field_names, "'")) . ']', $file);
@@ -1783,7 +1782,7 @@ class MakeCommand implements ICommand
         $file     = file_get_contents($template);
 
 
-        $file = str_replace('__NAME__', $this->camel_case . 'Model', $file);
+        $file = str_replace('NAME__', $this->camel_case . 'Model', $file);
 
         $imports = [];
         $traits  = [];
@@ -1842,7 +1841,7 @@ class MakeCommand implements ICommand
             }
 
             if ($schemaless) {
-                Strings::replace('__TABLE_NAME__', $this->table_name, $file);
+                Strings::replace('__TABLE__', $this->table_name, $file);
             }
         } else {
             Strings::replace('parent::__construct($connect, __SCHEMA_CLASS__::class);', 'parent::__construct();', $file);
@@ -1951,7 +1950,7 @@ class MakeCommand implements ICommand
             */
             if (preg_match('/^--(class_name|class)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)) {
                 $class_name = Strings::snakeToCamel($matches[2]);
-                $file = str_replace('__NAME__', $class_name, $file);
+                $file = str_replace('NAME__', $class_name, $file);
             }
 
             if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o) || Strings::startsWith('--folder=', $o) || Strings::startsWith('--folder:', $o)) {
@@ -2201,11 +2200,11 @@ class MakeCommand implements ICommand
 
         // Si no se especifica class_name, usar clase anónima
         if (empty($class_name) && empty($name)) {
-            $file = str_replace('class __NAME__ implements IMigration', 'return new class implements IMigration', $file);
+            $file = str_replace('class NAME__ implements IMigration', 'return new class implements IMigration', $file);
             $file = trim($file) . ';';
         }
 
-        $file = str_replace('__NAME__', $this->camel_case, $file);
+        $file = str_replace('NAME__', $this->camel_case, $file);
         $file = str_replace('__TB_NAME__', $tb_name, $file);
 
         if (!empty($dir)) {
@@ -2597,7 +2596,7 @@ class MakeCommand implements ICommand
         }
 
         $file = file_get_contents(self::SERVICE_PROVIDER_TEMPLATE);
-        $file = str_replace('__NAME__', $this->camel_case . 'ServiceProvider', $file);
+        $file = str_replace('NAME__', $this->camel_case . 'ServiceProvider', $file);
 
         $this->write($dest_path, $file, $protected, $remove);
     }
@@ -2862,8 +2861,8 @@ class MakeCommand implements ICommand
             $namespace = $this->namespace . '\\modules\\' . $pascalName;
 
             // Reemplazar placeholders en el contenido
-            $content = str_replace('__NAME__', $pascalName, $content);
-            $content = str_replace('__NAMESPACE__', $namespace, $content);
+            $content = str_replace('NAME__', $pascalName, $content);
+            $content = str_replace('NAMESPACE__', $namespace, $content);
 
             // Escribir el archivo parseado en la ubicación destino
             file_put_contents($destFile, $content);
@@ -2980,6 +2979,36 @@ class MakeCommand implements ICommand
                 }
                 file_put_contents($filePath, $content);
                 StdOut::print("Created file: $filePath");
+            }
+
+            // Crear el archivo ModuleProvider.php en src/
+            $moduleProviderPath = $basePath . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'ModuleProvider.php';
+            $moduleProviderDir = dirname($moduleProviderPath);
+            if (!is_dir($moduleProviderDir)) {
+                Files::mkDirOrFail($moduleProviderDir);
+            }
+            if (!file_exists($moduleProviderPath) || $force) {
+                $pascalName = Strings::toPascalCase($name);
+                $namespace = $this->namespace . '\\Modules\\' . $pascalName;
+
+                $moduleProviderContent = file_get_contents(self::TEMPLATES . 'Module' . DIRECTORY_SEPARATOR . 'ModuleProvider.php');
+                $moduleProviderContent = str_replace('NAMESPACE__', $namespace, $moduleProviderContent);
+                $moduleProviderContent = str_replace('NAME__', $pascalName . 'ModuleProvider', $moduleProviderContent);
+
+                file_put_contents($moduleProviderPath, $moduleProviderContent);
+                StdOut::print("Created file: $moduleProviderPath");
+            }
+
+            // Crear el archivo routes.php en config/
+            $routesPath = $basePath . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'routes.php';
+            $routesDir = dirname($routesPath);
+            if (!is_dir($routesDir)) {
+                Files::mkDirOrFail($routesDir);
+            }
+            if (!file_exists($routesPath) || $force) {
+                $routesContent = "<?php\n\n// Module routes file\n";
+                file_put_contents($routesPath, $routesContent);
+                StdOut::print("Created file: $routesPath");
             }
         }
 
@@ -3143,8 +3172,8 @@ class MakeCommand implements ICommand
             if (file_exists($template)) {
                 $content = file_get_contents($template);
                 if ($content !== false) {
-                    // Reemplazar placeholders __NAME__ y __NAMESPACE__
-                    $updatedContent = str_replace(['__NAME__', '__NAMESPACE__'], [ucfirst($packageName), $namespace], $content);
+                    // Reemplazar placeholders NAME__ y NAMESPACE__
+                    $updatedContent = str_replace(['NAME__', 'NAMESPACE__'], [ucfirst($packageName), $namespace], $content);
                     file_put_contents($destinationFile, $updatedContent);
                     StdOut::print("Copied and updated template to: $destinationFile");
                 } else {

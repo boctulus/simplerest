@@ -1,15 +1,15 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers\api;
+namespace Boctulus\Simplerest\Controllers\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Validator;
-use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 use Boctulus\Simplerest\Core\Acl;
 
-class UserTbPermissions extends MyApiController
+class UserTbPermissions extends ApiController
 {   
     function __construct()
     {

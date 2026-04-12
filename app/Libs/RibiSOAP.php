@@ -7,7 +7,7 @@ use Boctulus\Simplerest\Core\Libs\Logger;
 use Boctulus\Simplerest\Core\Libs\ApiClient;
 use Boctulus\Simplerest\Core\Libs\Validator;
 use Boctulus\Simplerest\Libs\NITColombiaValidator;
-use Boctulus\Simplerest\Core\exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 
 /*
     /c/5034bd75-3b16-4bcd-ad6a-fd1decb1cfed

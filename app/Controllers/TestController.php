@@ -16,6 +16,12 @@ class TestController extends Controller
         return "Hello World!";        
     }
 
+    function hello(){
+        echo "Hello World!";        
+    }
+
+    /*
+
     function test_include()
     {
         $file = Files::getContent("D:\\laragon\\www\\Boctulus\\Simplerest\\etc\\test.php");
@@ -51,5 +57,6 @@ class TestController extends Controller
             (new CodeReducer())->reduceCode($file, [], [], [], ['sayHello', 'sayBye'])
         );                   
     }
+    */
 }
 

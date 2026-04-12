@@ -7,7 +7,7 @@ use Boctulus\Simplerest\Core\Libs\EventBus;
 use Boctulus\Simplerest\Core\Libs\InMemoryCache;
 use Boctulus\Simplerest\Core\Libs\FileCache;
 use Boctulus\Simplerest\Core\Libs\DBCache;
-use Boctulus\Simplerest\Core\libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Libs\SampleObserver;
 
 class EventbusTesterController extends Controller
