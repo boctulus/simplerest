@@ -1,12 +1,12 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers\api;
+namespace Boctulus\Simplerest\Controllers\Api;
 
 use Boctulus\Simplerest\Core\Libs\Mail;
 use Boctulus\Simplerest\Core\Libs\Logger;
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 
-class EmailNotifications extends MyApiController
+class EmailNotifications extends ApiController
 { 
     static protected $soft_delete = true;
     static protected $connect_to = [

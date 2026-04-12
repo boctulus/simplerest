@@ -1,10 +1,10 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers\api;
+namespace Boctulus\Simplerest\Controllers\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 
-class Asignado extends MyApiController
+class Asignado extends ApiController
 { 
     static protected $soft_delete = true;
     static protected $connect_to = [
