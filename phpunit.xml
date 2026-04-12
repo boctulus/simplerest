@@ -27,6 +27,7 @@
 
     <source>
         <include>
+            <directory suffix=".php">src/framework</directory>
             <directory suffix=".php">packages/boctulus/friendlypos-web/src</directory>
         </include>
     </source>
