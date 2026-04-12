@@ -21,6 +21,9 @@ class SqlCommand implements ICommand
 
 		$method = array_shift($args);
 
+		// Convert kebab-case to snake_case (e.g., list-databases -> list_databases)
+		$method = str_replace('-', '_', $method);
+
 		if (!method_exists($this, $method)) {
 			StdOut::print("Method not found: $method\r\n");
 			$this->help();
@@ -29,6 +32,92 @@ class SqlCommand implements ICommand
 
 		// Call method dynamically with remaining arguments
 		call_user_func_array([$this, $method], $args);
+	}
+
+	/**
+	 * List all databases on the SQL Server instance
+	 *
+	 * Usage: php com sql list-databases [--connection={db}]
+	 */
+	function list_databases(...$args) {
+		$connection_id = 'main'; // Default connection
+
+		// Parse options
+		foreach ($args as $arg) {
+			if (Strings::startsWith('--connection=', $arg)) {
+				$connection_id = substr($arg, 13); // Length of '--connection='
+			}
+		}
+
+		// Validate connection exists
+		if (!DB::connectionExists($connection_id)) {
+			StdOut::print("Error: Connection '$connection_id' is not registered in db_connections\r\n");
+			return;
+		}
+
+		// Get driver directly from config (before setting connection)
+		$config = \Boctulus\Simplerest\Core\Libs\Config::get();
+		$driver = $config['db_connections'][$connection_id]['driver'];
+
+		// Normalize driver name
+		if ($driver == 'sqlsrv' || $driver == 'mssql') {
+			$driver = DB::SQLSRV;
+		} elseif ($driver == 'postgres') {
+			$driver = DB::PGSQL;
+		} elseif ($driver == 'mariadb') {
+			$driver = DB::MYSQL;
+		}
+
+		// Set connection
+		DB::setConnection($connection_id);
+
+		try {
+			// Query to list databases based on driver
+			switch ($driver) {
+				case DB::SQLSRV:
+					$sql = "SELECT name FROM sys.databases ORDER BY name";
+					$databases = DB::select($sql);
+					break;
+
+				case DB::MYSQL:
+					$sql = "SHOW DATABASES";
+					$databases = DB::select($sql);
+					break;
+
+				case DB::PGSQL:
+					$sql = "SELECT datname FROM pg_database ORDER BY datname";
+					$databases = DB::select($sql);
+					break;
+
+				case DB::SQLITE:
+					// SQLite doesn't have multiple databases in the same way
+					StdOut::print("SQLite uses file-based databases. Current database: $connection_id\r\n");
+					return;
+
+				default:
+					StdOut::print("Error: list-databases not supported for driver '$driver'\r\n");
+					return;
+			}
+
+			if (empty($databases)) {
+				StdOut::print("No databases found\r\n");
+				return;
+			}
+
+			StdOut::print("Databases on '$connection_id' connection ($driver):\r\n");
+			StdOut::print(str_repeat("-", 40) . "\r\n");
+
+			foreach ($databases as $row) {
+				$db_name = reset($row); // Get first value from row
+				StdOut::print("- $db_name\r\n");
+			}
+
+			StdOut::print(str_repeat("-", 40) . "\r\n");
+			StdOut::print("Total: " . count($databases) . " database(s)\r\n");
+
+		} catch (\Exception $e) {
+			StdOut::print("Error: " . $e->getMessage() . "\r\n");
+		}
 	}
 
 	/**
@@ -369,6 +458,8 @@ class SqlCommand implements ICommand
 		sql find_by '{db}.{table}' {field} {value}                    Find records by field value (WHERE field = value)
 		sql list '{db}'                                               List tables in a database
 		sql list '{db}.{table}' [--offset=N] [--limit=N] [--format=table]    List contents of a table
+		sql list-connexions [--format=json]                           List all database connections
+		sql list-databases [--connection={db}]                        List all databases on the server
 		sql query "SQL QUERY ..." --connection={db}                   Execute a general SQL query
 		sql select "SELECT ..." --connection={db}                     Execute a SELECT query
 		sql statement "SQL STATEMENT ..." --connection={db} [--force] Execute a non-SELECT SQL statement (INSERT, UPDATE, DELETE, etc.); use --force for destructive operations
@@ -391,6 +482,10 @@ class SqlCommand implements ICommand
 		php com sql list 'main.users' --offset=10 --limit=5          List 5 records starting from offset 10
 		php com sql list 'main.users' --format=table                 Display results as ASCII table
 		php com sql list 'db_195.products' --limit=50 --format=table
+		php com sql list-connexions                                  List all database connections (table format)
+		php com sql list-connexions --format=json                    List all database connections (JSON format)
+		php com sql list-databases                                   List all databases on default connection
+		php com sql list-databases --connection=main                 List all databases on 'main' connection
 		php com sql select "SELECT COUNT(*) as total FROM products" --connection=main    Execute SELECT query
 		php com sql query "SELECT COUNT(*) FROM categories" --connection=main    Execute general SQL query
 		php com sql statement "INSERT INTO users (name, email) VALUES ('John', 'john@example.com')" --connection=main    Execute INSERT statement
@@ -402,6 +497,87 @@ class SqlCommand implements ICommand
 
 		dd(strtoupper(Strings::before(__METHOD__, 'Command::')) . ' HELP');
 		dd($str);
+	}
+
+	/**
+	 * List all database connections with their DB_NAME and driver
+	 *
+	 * Usage: php com sql list-connexions [--format=json]
+	 */
+	function list_connexions(...$args) {
+		$format = 'table'; // Default format
+
+		// Parse options
+		foreach ($args as $arg) {
+			if (Strings::startsWith('--format=', $arg)) {
+				$format = strtolower(substr($arg, 9)); // Length of '--format='
+			}
+		}
+
+		$config = \Boctulus\Simplerest\Core\Libs\Config::get();
+		$connections = $config['db_connections'] ?? [];
+
+		$data = [];
+		foreach ($connections as $connId => $connConfig) {
+			$data[] = [
+				'connection_id' => $connId,
+				'db_name' => $connConfig['db_name'] ?? 'N/A',
+				'driver' => $connConfig['driver'] ?? 'N/A',
+			];
+		}
+
+		if ($format === 'json') {
+			StdOut::print(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\r\n");
+			return;
+		}
+
+		// Default: table format
+		if (empty($data)) {
+			StdOut::print("No database connections found.\r\n");
+			return;
+		}
+
+		// Calculate column widths
+		$col_widths = [
+			'connection_id' => strlen('connection_id'),
+			'db_name' => strlen('db_name'),
+			'driver' => strlen('driver'),
+		];
+
+		foreach ($data as $row) {
+			foreach ($col_widths as $col => $width) {
+				$col_widths[$col] = max($width, strlen($row[$col]));
+			}
+		}
+
+		// Build separator
+		$separator = '+';
+		foreach ($col_widths as $width) {
+			$separator .= str_repeat('-', $width + 2) . '+';
+		}
+
+		// Print header
+		StdOut::print("$separator\r\n");
+		$header = '|';
+		$header .= ' ' . str_pad('connection_id', $col_widths['connection_id']) . ' ';
+		$header .= '|' . ' ' . str_pad('db_name', $col_widths['db_name']) . ' ';
+		$header .= '|' . ' ' . str_pad('driver', $col_widths['driver']) . ' ';
+		$header .= '|';
+		StdOut::print("$header\r\n");
+		StdOut::print("$separator\r\n");
+
+		// Print rows
+		foreach ($data as $row) {
+			$line = '|';
+			$line .= ' ' . str_pad($row['connection_id'], $col_widths['connection_id']) . ' ';
+			$line .= '|' . ' ' . str_pad($row['db_name'], $col_widths['db_name']) . ' ';
+			$line .= '|' . ' ' . str_pad($row['driver'], $col_widths['driver']) . ' ';
+			$line .= '|';
+			StdOut::print("$line\r\n");
+		}
+
+		// Print footer
+		StdOut::print("$separator\r\n");
 	}
 
 	/**
