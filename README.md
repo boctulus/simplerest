@@ -1,94 +1,163 @@
 # SimpleRest Framework
 
-Framework PHP modular y extensible con soporte PSR.
+> **The fastest PHP framework that speaks your logic.**
+> 
+> Laravel-like syntax. Zero-magic philosophy. Bootstrap in 3-10ms.
 
-**Versión**: 0.9.0
-**Type**: Library
-**License**: MIT
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PHP Version](https://img.shields.io/badge/php-7.4%20--%208.4-blue.svg)](https://php.net)
+[![Tests](https://github.com/boctulus/simplerest/actions/workflows/tests.yml/badge.svg)](https://github.com/boctulus/simplerest/actions/workflows/tests.yml)
 
 ---
 
-## 🏗️ Arquitectura
+## What is SimpleRest?
 
-SimpleRest sigue una **arquitectura desacoplada** donde el Framework Core está completamente separado del código de aplicación:
+SimpleRest is a **modular PHP framework** designed for building REST APIs and web applications with minimal boilerplate. It gives you the developer experience of Laravel — routing, query builder, models, auth, CLI — without the overhead of heavy dependency injection containers, PSR abstractions, or ORM hydration.
+
+**Philosophy**: *Performance through simplicity. Eliminate every unnecessary abstraction layer.*
+
+---
+
+## Quick Comparison
+
+| Metric | SimpleRest | Laravel |
+|--------|-----------|---------|
+| **Bootstrap time** | 3-10 ms | 300-500 ms |
+| **Data return type** | Arrays (no ORM objects) | Eloquent objects |
+| **DI Container** | Optional, minimal | Heavy, reflection-based |
+| **Auto REST endpoints** | ✅ Zero config | ❌ Manual |
+| **Built-in ACL** | ✅ Hierarchical, granular | Via packages |
+| **Composer required** | No (works standalone) | Yes |
+| **PHP versions** | 7.4 – 8.4 | 8.1+ |
+
+---
+
+## Killer Features
+
+### 🔥 Automatic REST Endpoints
+Create a table, generate a schema file — **your full CRUD API is ready**. No controller code needed.
+
+```bash
+php com make schema products
+# Done. GET /api/products, POST, PUT, DELETE — all working.
+```
+
+### 🎯 Advanced Filtering (built-in)
+```bash
+# Price >= 10 AND name contains "Widget"
+/api/products?price[gteq]=10&name[contains]=Widget
+
+# Only specific fields, paginated
+/api/products?fields=id,name&limit=10&offset=20
+
+# Aggregation
+/api/products?aggregate=count(id),avg(price),max(price)
+
+# Include related data
+/api/products?include=categories,reviews
+```
+
+### 🔐 JWT Authentication
+Out-of-the-box login, registration, password reset, token refresh.
+
+### 🛡️ Fine-Grained ACL
+Hierarchical roles with inheritance, granular permissions, user-level overrides, and folder-based sharing. More sophisticated than most dedicated ACL packages.
+
+### 🤝 AutoJoins
+Relationships are **inferred automatically** from foreign keys or naming conventions. No explicit model declarations needed.
+
+### ⚡ Query Builder
+Laravel-compatible fluent syntax that returns arrays instead of objects — eliminating ORM hydration overhead.
+
+```php
+$users = DB::table('users')
+    ->where('active', 1)
+    ->where('role', 'admin')
+    ->orderBy('name')
+    ->limit(10)
+    ->get();
+```
+
+### 🖥️ Powerful CLI System
+12 built-in commands, easy extensibility:
+
+```bash
+php com make controller|model|schema|middleware|command|package Name
+php com sql list-databases
+php com sql find "SELECT * FROM users"
+php com help
+```
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/boctulus/simplerest.git
+cd simplerest
+composer install
+cp .env.example .env
+# Edit .env with your database credentials
+```
+
+**Full tutorial**: [docs/QuickStart.md](docs/QuickStart.md)
+
+---
+
+## Architecture
 
 ```
 simplerest/
-├─ src/         # Framework Core (biblioteca reutilizable)
-├─ app/         # Application Code (playground/dogfooding)
-├─ modules/     # Módulos opcionales
-├─ examples/    # Demos y ejemplos
-└─ packages/    # Packages locales
+├── src/framework/    # Framework Core (reusable library)
+│   ├── Api/          # API controllers
+│   ├── Libs/         # 101 utility classes
+│   ├── Handlers/     # Request processing pipeline
+│   ├── Helpers/      # Global helpers
+│   ├── Traits/       # Reusable traits
+│   └── ...
+├── app/              # Application code (playground/dogfooding)
+├── packages/         # Local packages
+├── config/           # Configuration
+└── docs/             # Documentation
 ```
 
-**Documentación completa**: [`docs/Framework-Architecture.md`](./docs/Framework-Architecture.md)
+The framework core (`src/framework/`) is **completely separate** from application code, making it usable as a standalone library.
 
 ---
 
-## PSR Compliance
+## Documentation
 
-SimpleRest ahora soporta estándares PSR para mejorar la interoperabilidad con el ecosistema PHP moderno.
-
-### Estado Actual
-
-- ✅ **PSR-7**: HTTP Message Interfaces (via adapters + métodos nativos)
-- ✅ **Immutability**: Métodos inmutables `with*()` en Request y Response
-- 📋 **PSR-17**: HTTP Factories (planeado)
-- 📋 **PSR-15**: HTTP Server Request Handlers (planeado)
-
-**Compliance**: 95% PSR-7 compatible
-
-### Documentación PSR
-
-Para información detallada sobre la implementación PSR:
-
-- **Resumen General**: [`docs/PSR-SUMMARY.md`](./docs/PSR-SUMMARY.md)
-- **Guía PSR-7**: [`docs/PSR-7.md`](./docs/PSR-7.md)
-- **Métodos Inmutables**: [`docs/ImmutableMethods.md`](./docs/ImmutableMethods.md)
-- **Changelog PSR**: [`docs/CHANGELOG-PSR.md`](./docs/CHANGELOG-PSR.md)
-
-### Uso Rápido
-
-```php
-// Métodos inmutables (recomendado para nuevo código)
-$response = Response::getInstance()
-    ->withStatus(201)
-    ->withJson(['id' => $newId]);
-
-// PSR-7 via adapters (para interoperabilidad)
-$psr7Request = psr7_request();
-$psr7Response = psr7_json(['success' => true], 200);
-```
+| Topic | Link |
+|-------|------|
+| **Quick Start** (5 min) | [docs/QuickStart.md](docs/QuickStart.md) |
+| Routing | [docs/Routing.md](docs/Routing.md) |
+| Query Builder | [docs/QueryBuilder.md](docs/QueryBuilder.md) |
+| ORM / Models | [docs/ORM.md](docs/ORM.md) |
+| Middleware | [docs/Middlewares.md](docs/Middlewares.md) |
+| ACL | [docs/ACL.md](docs/ACL.md) |
+| CLI Commands | [docs/CommandLine.md](docs/CommandLine.md) |
+| API Client | [docs/ApiClient.md](docs/ApiClient.md) |
+| Philosophy | [docs/SimpleRest-philosophy.md](docs/SimpleRest-philosophy.md) |
+| PSR Compliance | [docs/PSR-SUMMARY.md](docs/PSR-SUMMARY.md) |
 
 ---
 
-## 📚 Documentación
+## Multi-Database Support
 
-### Arquitectura y Estructura
-- **Arquitectura del Framework**: [`docs/Framework-Architecture.md`](./docs/Framework-Architecture.md)
-- **Guía de Migración v0.9**: [`docs/MIGRATION-v0.9.md`](./docs/MIGRATION-v0.9.md)
-- **Changelog**: [`docs/CHANGELOG.md`](./docs/CHANGELOG.md)
-- **Core Directives**: [`docs/core-directives.md`](./docs/core-directives.md)
-
-### Desarrollo
-- **Comandos CLI**: [`docs/CommandLine.md`](./docs/CommandLine.md)
-- **ApiClient**: [`docs/ApiClient.md`](./docs/ApiClient.md)
-- **Testing**: [`docs/unit-tests-pruebas-unitarias.md`](./docs/unit-tests-pruebas-unitarias.md)
-- **ORM**: [`docs/ORM.md`](./docs/ORM.md)
-- **Query Builder**: [`docs/QueryBuilder.md`](./docs/QueryBuilder.md)
-- **Routing**: [`docs/Routing.md`](./docs/Routing.md)
-
-### PSR Compliance
-- **Resumen General**: [`docs/PSR-SUMMARY.md`](./docs/PSR-SUMMARY.md)
-- **Guía PSR-7**: [`docs/PSR-7.md`](./docs/PSR-7.md)
-- **Métodos Inmutables**: [`docs/ImmutableMethods.md`](./docs/ImmutableMethods.md)
-- **Changelog PSR**: [`docs/CHANGELOG-PSR.md`](./docs/CHANGELOG-PSR.md)
-
-### Packages y Módulos
-- **Packages y Módulos**: [`docs/Packages and Modules.md`](./docs/Packages%20and%20Modules.md)
-- **Module Provider**: [`docs/ModuleProvider.md`](./docs/ModuleProvider.md)
+MySQL, PostgreSQL, SQLite, SQL Server, Oracle, Firebird, DB2, Informix, Sybase — all supported via adapters.
 
 ---
 
-**Autor**: Pablo Bozzolo (boctulus)
-**Software Architect**
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+---
+
+## License
+
+SimpleRest is open-sourced under the MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+**Author**: [Pablo Bozzolo](https://github.com/boctulus) — Software Architect
