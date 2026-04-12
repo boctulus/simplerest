@@ -1,10 +1,10 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers\api;
+namespace Boctulus\Simplerest\Controllers\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 
-class UserSpPermissions extends MyApiController
+class UserSpPermissions extends ApiController
 {    
 	static protected $connect_to = [
 		'sp_permissions'

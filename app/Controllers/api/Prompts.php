@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers\api;
+namespace Boctulus\Simplerest\Controllers\Api;
 
 use Boctulus\Simplerest\Core\Libs\Url;
 use Boctulus\Simplerest\Core\Libs\Files;
@@ -9,10 +9,10 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\ApiClient;
 use Boctulus\Simplerest\Core\Libs\CustomTags;
 use Boctulus\Simplerest\Core\Libs\CodeReducer; 
-use Boctulus\Simplerest\Controllers\MyApiController;
+use Boctulus\Simplerest\Core\Api\ApiController;
 use Boctulus\Simplerest\Core\Exceptions\NotFileButDirectoryException;
 
-class Prompts extends MyApiController
+class Prompts extends ApiController
 {
     static protected $soft_delete = true;
     static protected $connect_to = [];

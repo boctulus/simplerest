@@ -1,11 +1,11 @@
 <?php
 
-namespace Boctulus\Simplerest\Controllers\api;
+namespace Boctulus\Simplerest\Controllers\Api;
 
-use Boctulus\Simplerest\Controllers\MyApiController; 
+use Boctulus\Simplerest\Core\Api\ApiController; 
 use Boctulus\Simplerest\Core\Libs\DB;
 
-class TblEps extends MyApiController
+class TblEps extends ApiController
 { 
     static protected $soft_delete = true;
     static protected $connect_to = [
