@@ -17,7 +17,9 @@ require_once __DIR__ . '/../app.php';
 use PHPUnit\Framework\TestCase;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\ApiClient;
+use Boctulus\Simplerest\Core\Libs\Config;
 
+$config = Config::get();
 define('HOST', parse_url($config['app_url'], PHP_URL_HOST));
 define('BASE_URL', rtrim($config['app_url'], '/') . '/');
 

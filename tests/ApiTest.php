@@ -20,8 +20,9 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Core\Traits\UnitTestCaseSQLTrait;
 use Boctulus\Simplerest\Core\Libs\Validator;
+use Boctulus\Simplerest\Core\Libs\Config;
 
-
+$config = Config::get();
 define('HOST', parse_url($config['app_url'], PHP_URL_HOST));
 define('BASE_URL', rtrim($config['app_url'], '/') . '/');
 
