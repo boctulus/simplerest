@@ -22,9 +22,9 @@ use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Core\Traits\UnitTestCaseSQLTrait;
 use PHPUnit\Framework\TestCase;
 
-
-define('HOST', $config['APP_URL']);
-define('BASE_URL', HOST .'/');
+$config = Config::get();
+define('HOST', $config['app_url']);
+define('BASE_URL', rtrim($config['app_url'], '/') . '/');
 
 class AuthTest extends TestCase
 {
