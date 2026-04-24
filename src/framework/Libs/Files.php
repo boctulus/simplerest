@@ -1707,8 +1707,7 @@ class Files
 		$path = static::convertSlashes($path); // pasa cualquier barra a DIRECTORY_SEPARATOR
 
 		if (is_dir($path)) {
-			$dir = Strings::beforeLast($path, DIRECTORY_SEPARATOR);
-			return static::isDirectoryWritable($dir);
+			return static::isDirectoryWritable($path);
 		} else {
 			if (file_exists($path)) {
 				return static::isFileWritable($path);
