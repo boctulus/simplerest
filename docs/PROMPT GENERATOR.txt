@@ -3,6 +3,8 @@ PROMPT GENERATOR
 
 # Posibilidad de incluir archivos y directorios
 
+Ej:
+
 POST /api/v1/prompts
 
 {
