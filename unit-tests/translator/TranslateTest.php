@@ -6,13 +6,19 @@ use PHPUnit\Framework\TestCase;
 use Boctulus\Simplerest\Core\Libs\i18n\Translate;
 use Boctulus\Simplerest\Core\Libs\Files;
 
+/**
+ * Prueba unitaria para la clase Translate
+ *
+ * Ejecutar con: `./vendor/bin/phpunit .\unit-tests\translator\TranslateTest.php`
+ */
+
 class TranslateTest extends TestCase
 {
     private string $test_locale_path;
 
     protected function setUp(): void
     {
-        define('LOCALE_PATH', '../app/locale' . DIRECTORY_SEPARATOR);
+        define('LOCALE_PATH', '../../app/Locale' . DIRECTORY_SEPARATOR);
         
         // Reset static properties before each test
         $reflection = new \ReflectionClass(Translate::class);

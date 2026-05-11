@@ -21,6 +21,10 @@ if (php_sapi_name() != "cli") {
  * NOTE: These checks compare role position in the inheritance graph,
  * NOT effective permission sets. Use AclEngine::roleDominates() for
  * semantically correct capability comparison.
+ * 
+ * Execution:
+ * 
+ * php vendor\bin\phpunit unit-tests\acl\AclEngineTest.php unit-tests\acl\RoleHierarchyServiceTest.php
  */
 class RoleHierarchyServiceTest extends TestCase
 {
