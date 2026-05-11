@@ -308,7 +308,7 @@ abstract class Acl implements IAcl
                     ->pluck('name');
             }
         } else {
-            $userSpPerms = auth()->getPermissions() ?? [];
+            $userSpPerms = auth()->getPermissions()['sp'] ?? [];
         }
 
         $context = new AclContext(
@@ -367,13 +367,16 @@ abstract class Acl implements IAcl
             $roles = auth()->getRoles();
         }
 
-        $userSpPerms = $is_auth ? (auth()->getPermissions() ?? []) : [];
+        $perms = $is_auth ? (auth()->getPermissions() ?? []) : [];
+        $userSpPerms = $perms['sp'] ?? [];
+        $userTbPerms = $perms['tb'] ?? [];
 
         $context = new AclContext(
             userId:        $uid,
             roles:         $roles,
             authenticated: $is_auth,
             userSpPerms:   $userSpPerms,
+            userTbPerms:   $userTbPerms,
             rowId:         $row_id,
         );
 
@@ -566,10 +569,12 @@ abstract class Acl implements IAcl
 
     public function hasAllPermissions(array $permissions): bool
     {
+        $perms  = auth()->getPermissions() ?? [];
         $context = new AclContext(
             roles:         auth()->getRoles(),
             authenticated: request()->isAuthenticated(),
-            userSpPerms:   auth()->getPermissions() ?? [],
+            userSpPerms:   $perms['sp'] ?? [],
+            userTbPerms:   $perms['tb'] ?? [],
         );
 
         return $this->getEngine()->hasAllPermissions($context, $permissions);
@@ -577,10 +582,12 @@ abstract class Acl implements IAcl
 
     public function hasAnyPermission(array $permissions): bool
     {
+        $perms  = auth()->getPermissions() ?? [];
         $context = new AclContext(
             roles:         auth()->getRoles(),
             authenticated: request()->isAuthenticated(),
-            userSpPerms:   auth()->getPermissions() ?? [],
+            userSpPerms:   $perms['sp'] ?? [],
+            userTbPerms:   $perms['tb'] ?? [],
         );
 
         return $this->getEngine()->hasAnyPermission($context, $permissions);
@@ -593,10 +600,12 @@ abstract class Acl implements IAcl
 
     public function satisfiesPolicy(AuthorizationPolicyInterface $policy): bool
     {
+        $perms  = auth()->getPermissions() ?? [];
         $context = new AclContext(
             roles:         auth()->getRoles(),
             authenticated: request()->isAuthenticated(),
-            userSpPerms:   auth()->getPermissions() ?? [],
+            userSpPerms:   $perms['sp'] ?? [],
+            userTbPerms:   $perms['tb'] ?? [],
         );
 
         return $this->getEngine()->satisfiesPolicy($context, $policy);

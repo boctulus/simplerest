@@ -64,10 +64,40 @@ final class PermissionEvaluator implements PermissionEvaluatorInterface
     }
 
     /**
+     * Bit positions for packed user_tb_permissions
+     * (mirrors AuthController::fetchTbPermissions packing order).
+     */
+    private const TB_BIT_LIST_ALL = 64;
+    private const TB_BIT_SHOW_ALL = 32;
+    private const TB_BIT_LIST     = 16;
+    private const TB_BIT_SHOW     = 8;
+    private const TB_BIT_CREATE   = 4;
+    private const TB_BIT_UPDATE   = 2;
+    private const TB_BIT_DELETE   = 1;
+
+    /**
+     * Maps a permission name to its bit flag in the packed int.
+     */
+    private function tbBit(string $perm): int
+    {
+        return match ($perm) {
+            'list_all' => self::TB_BIT_LIST_ALL,
+            'show_all' => self::TB_BIT_SHOW_ALL,
+            'list'     => self::TB_BIT_LIST,
+            'show'     => self::TB_BIT_SHOW,
+            'create'   => self::TB_BIT_CREATE,
+            'update'   => self::TB_BIT_UPDATE,
+            'delete'   => self::TB_BIT_DELETE,
+            default    => 0,
+        };
+    }
+
+    /**
      * Full permission evaluation:
      *   read-type perms  → short-circuit on read_all  special permission
      *   write-type perms → short-circuit on write_all special permission
-     *   then falls back to resource-level check
+     *   user-level tb override → replaces role-level if present (replacement semantics)
+     *   then falls back to role-level resource check
      */
     public function hasPermission(
         string      $perm,
@@ -88,6 +118,13 @@ final class PermissionEvaluator implements PermissionEvaluatorInterface
             if ($this->hasSpecialPermission('write_all', $context, $snapshot)) {
                 return true;
             }
+        }
+
+        // User-level tb override (replacement semantics from user_tb_permissions)
+        $userPacked = $context->userTbPerms[$resource] ?? null;
+        if ($userPacked !== null) {
+            $bit = $this->tbBit($perm);
+            return $bit !== 0 && ($userPacked & $bit) !== 0;
         }
 
         return $this->hasResourcePermission($perm, $resource, $context->roles, $snapshot);
