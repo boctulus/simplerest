@@ -13,6 +13,4 @@ namespace Boctulus\Simplerest\Core\Interfaces;
  * Existing code that type-hints IAcl continues to work unchanged.
  * New code should prefer the narrower interface that matches its actual need.
  */
-interface IAcl extends IAclBuilder, IAclPolicy, IAclRuntime
-{
-}
+interface IAcl extends IAclBuilder, IAclPolicy, IAclRuntime { }
