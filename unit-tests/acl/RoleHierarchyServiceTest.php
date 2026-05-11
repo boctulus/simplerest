@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Boctulus\Simplerest\Core\Security\Domain\AclContext;
-use Boctulus\Simplerest\Core\Security\Service\RoleHierarchyService;
+use Boctulus\Simplerest\Core\Security\Engine\AclEngine;
 use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
 
 ini_set('display_errors', '1');
@@ -16,19 +16,15 @@ if (php_sapi_name() != "cli") {
 }
 
 /**
- * Tests for the RoleHierarchyService (lineage-based utility).
+ * Tests for lineage-based role hierarchy via AclEngine.
  *
- * NOTE: These checks compare role position in the inheritance graph,
+ * These checks compare role position in the inheritance graph,
  * NOT effective permission sets. Use AclEngine::roleDominates() for
  * semantically correct capability comparison.
- * 
- * Execution:
- * 
- * php vendor\bin\phpunit unit-tests\acl\AclEngineTest.php unit-tests\acl\RoleHierarchyServiceTest.php
  */
 class RoleHierarchyServiceTest extends TestCase
 {
-    private RoleHierarchyService $svc;
+    private AclEngine $engine;
 
     protected function setUp(): void
     {
@@ -43,7 +39,7 @@ class RoleHierarchyServiceTest extends TestCase
             'moderador'   => 'usuario_plus',
         ];
 
-        $this->svc = new RoleHierarchyService(new AclSnapshot(
+        $this->engine = new AclEngine(new AclSnapshot(
             rolePerms:       [],
             parentRoleNames: $parentRoleNames,
             validSpPerms:    [],
@@ -56,20 +52,20 @@ class RoleHierarchyServiceTest extends TestCase
     {
         $this->assertEquals(
             ['supervisor', 'registered', 'guest'],
-            $this->svc->getAncestry('superadmin')
+            $this->engine->getAncestry('superadmin')
         );
     }
 
     public function test_guest_has_no_ancestry(): void
     {
-        $this->assertEquals([], $this->svc->getAncestry('guest'));
+        $this->assertEquals([], $this->engine->getAncestry('guest'));
     }
 
     public function test_moderador_ancestry(): void
     {
         $this->assertEquals(
             ['usuario_plus', 'usuario', 'registered', 'guest'],
-            $this->svc->getAncestry('moderador')
+            $this->engine->getAncestry('moderador')
         );
     }
 
@@ -77,29 +73,28 @@ class RoleHierarchyServiceTest extends TestCase
 
     public function test_superadmin_is_higher_than_supervisor(): void
     {
-        $this->assertTrue($this->svc->isHigherRole('superadmin', 'supervisor'));
+        $this->assertTrue($this->engine->isHigherRole('superadmin', 'supervisor'));
     }
 
     public function test_supervisor_is_higher_than_guest(): void
     {
-        $this->assertTrue($this->svc->isHigherRole('supervisor', 'guest'));
+        $this->assertTrue($this->engine->isHigherRole('supervisor', 'guest'));
     }
 
     public function test_guest_is_not_higher_than_supervisor(): void
     {
-        $this->assertFalse($this->svc->isHigherRole('guest', 'supervisor'));
+        $this->assertFalse($this->engine->isHigherRole('guest', 'supervisor'));
     }
 
     public function test_role_is_not_higher_than_itself(): void
     {
-        $this->assertFalse($this->svc->isHigherRole('supervisor', 'supervisor'));
+        $this->assertFalse($this->engine->isHigherRole('supervisor', 'supervisor'));
     }
 
     public function test_different_branches_return_null(): void
     {
-        // superadmin and moderador are on different branches
-        $this->assertNull($this->svc->isHigherRole('superadmin', 'moderador'));
-        $this->assertNull($this->svc->isHigherRole('moderador', 'superadmin'));
+        $this->assertNull($this->engine->isHigherRole('superadmin', 'moderador'));
+        $this->assertNull($this->engine->isHigherRole('moderador', 'superadmin'));
     }
 
     // ── hasRoleOrHigher ───────────────────────────────────────────────────
@@ -107,25 +102,25 @@ class RoleHierarchyServiceTest extends TestCase
     public function test_superadmin_has_role_or_higher_supervisor(): void
     {
         $ctx = new AclContext(roles: ['superadmin']);
-        $this->assertTrue($this->svc->hasRoleOrHigher('supervisor', $ctx));
+        $this->assertTrue($this->engine->hasRoleOrHigher('supervisor', $ctx));
     }
 
     public function test_superadmin_has_role_or_higher_guest(): void
     {
         $ctx = new AclContext(roles: ['superadmin']);
-        $this->assertTrue($this->svc->hasRoleOrHigher('guest', $ctx));
+        $this->assertTrue($this->engine->hasRoleOrHigher('guest', $ctx));
     }
 
     public function test_guest_not_has_role_or_higher_supervisor(): void
     {
         $ctx = new AclContext(roles: ['guest']);
-        $this->assertFalse($this->svc->hasRoleOrHigher('supervisor', $ctx));
+        $this->assertFalse($this->engine->hasRoleOrHigher('supervisor', $ctx));
     }
 
     public function test_exact_role_counts_as_or_higher(): void
     {
         $ctx = new AclContext(roles: ['supervisor']);
-        $this->assertTrue($this->svc->hasRoleOrHigher('supervisor', $ctx));
+        $this->assertTrue($this->engine->hasRoleOrHigher('supervisor', $ctx));
     }
 
     // ── hasAnyRoleOrHigher ────────────────────────────────────────────────
@@ -133,12 +128,12 @@ class RoleHierarchyServiceTest extends TestCase
     public function test_superadmin_has_any_role_or_higher(): void
     {
         $ctx = new AclContext(roles: ['superadmin']);
-        $this->assertTrue($this->svc->hasAnyRoleOrHigher(['moderador', 'supervisor'], $ctx));
+        $this->assertTrue($this->engine->hasAnyRoleOrHigher(['moderador', 'supervisor'], $ctx));
     }
 
     public function test_guest_has_none_from_higher_roles(): void
     {
         $ctx = new AclContext(roles: ['guest']);
-        $this->assertFalse($this->svc->hasAnyRoleOrHigher(['supervisor', 'superadmin'], $ctx));
+        $this->assertFalse($this->engine->hasAnyRoleOrHigher(['supervisor', 'superadmin'], $ctx));
     }
 }
