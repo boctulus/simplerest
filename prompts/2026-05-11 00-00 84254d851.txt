@@ -1,0 +1,17 @@
+ACL refactoring: separar en capas para 100% testabilidad sin DB.
+
+Objetivo: extraer AclEngine puro (sin DB, sin auth, sin request) manteniendo toda la funcionalidad existente.
+
+Archivos afectados:
+- src/framework/Acl.php (core)
+- packages/boctulus/basic-acl/src/Acl.php
+- packages/boctulus/fine-grained-acl/src/Acl.php
+
+Arquitectura nueva:
+- AclContext: value object con user context en evaluacion
+- AclSnapshot: snapshot puro de la politica ACL (role_perms, parent_role_names, etc)
+- RoleHierarchyResolver: logica pura de jerarquia sin DB
+- PermissionEvaluator: evaluacion pura sin DB/auth
+- AclEngine: orquestador puro (snapshot + context -> decision)
+
+Restriccion: NO perder ninguna funcionalidad. Solo separar responsabilidades moviendo logica a capas correctas.

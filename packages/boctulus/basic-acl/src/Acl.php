@@ -3,7 +3,6 @@
 namespace Boctulus\BasicACL;
 
 use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Core\Libs\Factory;
 
 class Acl extends \Boctulus\Simplerest\Core\Acl
 {
@@ -15,15 +14,14 @@ class Acl extends \Boctulus\Simplerest\Core\Acl
     protected $current_role;
     protected $guest_name = 'guest';
 
-    public function __construct() { 
+    public function __construct() {
+        parent::__construct();
         $this->setup();
     }
- 
-    protected function setup(){      
-        // get all available roles  
+
+    protected function setup(){
         $this->roles = DB::table('roles')->get();
 
-        // podría reemplazarse por dos array_column()
         foreach($this->roles as $rr){
             $this->role_names[] = $rr['name'];
             $this->role_ids[]   = $rr['id'];
