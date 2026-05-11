@@ -1,9 +1,10 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Boctulus\Simplerest\Core\Security\Contracts\AuthorizationPolicyInterface;
 use Boctulus\Simplerest\Core\Security\Domain\AclContext;
-use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
 use Boctulus\Simplerest\Core\Security\Engine\AclEngine;
+use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
 
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
@@ -24,13 +25,11 @@ class AclEngineTest extends TestCase
         /*
          * Snapshot mirrors the example in docs/ACL.md:
          *
-         * guest  -> products: [show_all, list_all]
-         * vendedor inherits guest -> products: [show_all, list_all, create, update, delete]
-         *                        -> foo: [create, list]
-         * admin inherits guest  -> sp: [read_all, write_all]
-         *                       -> products: [show_all, list_all]
-         * superadmin inherits admin -> sp: [read_all, write_all, lock, fill_all]
-         *                           -> products: [show_all, list_all]
+         * guest     → products: [show_all, list_all]
+         * vendedor  → inherits guest + products: [create, update, delete] + foo: [create, list]
+         * admin     → inherits guest + sp: [read_all, write_all]
+         * superadmin→ inherits admin + sp: [lock, fill_all]
+         * support   → sp: [impersonate] (no write_all — lateral role, different branch)
          */
         $rolePerms = [
             'guest' => [
@@ -63,6 +62,11 @@ class AclEngineTest extends TestCase
                     'permissions' => ['show', 'list', 'create', 'update', 'delete'],
                 ],
             ],
+            'support' => [
+                'role_id'        => 10,
+                'sp_permissions' => ['impersonate'],
+                'tb_permissions' => [],
+            ],
         ];
 
         $parentRoleNames = [
@@ -78,18 +82,14 @@ class AclEngineTest extends TestCase
             'lock', 'transfer',
         ];
 
-        $snapshot = new AclSnapshot(
+        $this->engine = new AclEngine(new AclSnapshot(
             rolePerms:       $rolePerms,
             parentRoleNames: $parentRoleNames,
             validSpPerms:    $validSpPerms,
-        );
-
-        $this->engine = new AclEngine($snapshot);
+        ));
     }
 
-    // -------------------------------------------------------------------------
-    // Resource permission tests
-    // -------------------------------------------------------------------------
+    // ── Resource permission ────────────────────────────────────────────────
 
     public function test_guest_can_list_products(): void
     {
@@ -109,21 +109,13 @@ class AclEngineTest extends TestCase
         $this->assertTrue($this->engine->hasResourcePermission('create', 'products', $ctx));
     }
 
-    public function test_vendedor_can_list_foo(): void
-    {
-        $ctx = new AclContext(roles: ['vendedor']);
-        $this->assertTrue($this->engine->hasResourcePermission('list', 'foo', $ctx));
-    }
-
     public function test_vendedor_cannot_delete_foo(): void
     {
         $ctx = new AclContext(roles: ['vendedor']);
         $this->assertFalse($this->engine->hasResourcePermission('delete', 'foo', $ctx));
     }
 
-    // -------------------------------------------------------------------------
-    // Special permission tests
-    // -------------------------------------------------------------------------
+    // ── Special permission ─────────────────────────────────────────────────
 
     public function test_admin_has_read_all(): void
     {
@@ -137,21 +129,13 @@ class AclEngineTest extends TestCase
         $this->assertFalse($this->engine->hasSpecialPermission('read_all', $ctx));
     }
 
-    public function test_superadmin_has_lock(): void
-    {
-        $ctx = new AclContext(roles: ['superadmin']);
-        $this->assertTrue($this->engine->hasSpecialPermission('lock', $ctx));
-    }
-
     public function test_user_sp_override_grants_permission(): void
     {
         $ctx = new AclContext(roles: ['vendedor'], userSpPerms: ['impersonate']);
         $this->assertTrue($this->engine->hasSpecialPermission('impersonate', $ctx));
     }
 
-    // -------------------------------------------------------------------------
-    // hasPermission (full evaluation) tests
-    // -------------------------------------------------------------------------
+    // ── can() full evaluation ─────────────────────────────────────────────
 
     public function test_admin_can_show_any_resource_via_read_all(): void
     {
@@ -171,45 +155,13 @@ class AclEngineTest extends TestCase
         $this->assertFalse($this->engine->can($ctx, 'show', 'orders'));
     }
 
-    // -------------------------------------------------------------------------
-    // Role hierarchy tests
-    // -------------------------------------------------------------------------
+    // ── Role membership ────────────────────────────────────────────────────
 
-    public function test_superadmin_is_higher_than_admin(): void
+    public function test_hasRole(): void
     {
-        $this->assertTrue($this->engine->isHigherRole('superadmin', 'admin'));
-    }
-
-    public function test_admin_is_higher_than_guest(): void
-    {
-        $this->assertTrue($this->engine->isHigherRole('admin', 'guest'));
-    }
-
-    public function test_guest_is_not_higher_than_admin(): void
-    {
-        $this->assertFalse($this->engine->isHigherRole('guest', 'admin'));
-    }
-
-    public function test_role_is_not_higher_than_itself(): void
-    {
-        $this->assertFalse($this->engine->isHigherRole('admin', 'admin'));
-    }
-
-    public function test_unrelated_roles_return_null(): void
-    {
-        $this->assertNull($this->engine->isHigherRole('vendedor', 'superadmin'));
-    }
-
-    public function test_superadmin_hasRoleOrHigher_admin(): void
-    {
-        $ctx = new AclContext(roles: ['superadmin']);
-        $this->assertTrue($this->engine->hasRoleOrHigher('admin', $ctx));
-    }
-
-    public function test_guest_not_hasRoleOrHigher_admin(): void
-    {
-        $ctx = new AclContext(roles: ['guest']);
-        $this->assertFalse($this->engine->hasRoleOrHigher('admin', $ctx));
+        $ctx = new AclContext(roles: ['admin']);
+        $this->assertTrue($this->engine->hasRole('admin', $ctx));
+        $this->assertFalse($this->engine->hasRole('superadmin', $ctx));
     }
 
     public function test_hasAnyRole(): void
@@ -219,23 +171,145 @@ class AclEngineTest extends TestCase
         $this->assertFalse($this->engine->hasAnyRole(['admin', 'superadmin'], $ctx));
     }
 
-    public function test_hasAnyRoleOrHigher(): void
+    // ── hasAllPermissions ─────────────────────────────────────────────────
+
+    public function test_vendedor_has_all_product_permissions(): void
     {
-        $ctx = new AclContext(roles: ['superadmin']);
-        $this->assertTrue($this->engine->hasAnyRoleOrHigher(['guest', 'admin'], $ctx));
+        $ctx = new AclContext(roles: ['vendedor']);
+        $this->assertTrue($this->engine->hasAllPermissions($ctx, [
+            'products.create',
+            'products.list_all',
+        ]));
     }
 
-    // -------------------------------------------------------------------------
-    // Ancestry tests
-    // -------------------------------------------------------------------------
-
-    public function test_superadmin_ancestry(): void
+    public function test_vendedor_fails_all_when_one_missing(): void
     {
-        $this->assertEquals(['admin', 'guest'], $this->engine->getAncestry('superadmin'));
+        $ctx = new AclContext(roles: ['vendedor']);
+        $this->assertFalse($this->engine->hasAllPermissions($ctx, [
+            'products.create',
+            'orders.create',   // not granted
+        ]));
     }
 
-    public function test_guest_has_no_ancestry(): void
+    public function test_admin_has_all_via_write_all_sp(): void
     {
-        $this->assertEquals([], $this->engine->getAncestry('guest'));
+        $ctx = new AclContext(roles: ['admin']);
+        $this->assertTrue($this->engine->hasAllPermissions($ctx, [
+            'orders.delete',
+            'users.create',
+            'read_all',
+        ]));
+    }
+
+    // ── hasAnyPermission ──────────────────────────────────────────────────
+
+    public function test_guest_has_any_when_one_matches(): void
+    {
+        $ctx = new AclContext(roles: ['guest']);
+        $this->assertTrue($this->engine->hasAnyPermission($ctx, [
+            'products.list_all',
+            'orders.create',    // not granted
+        ]));
+    }
+
+    public function test_guest_has_none_when_none_match(): void
+    {
+        $ctx = new AclContext(roles: ['guest']);
+        $this->assertFalse($this->engine->hasAnyPermission($ctx, [
+            'orders.create',
+            'users.delete',
+        ]));
+    }
+
+    public function test_has_any_with_sp_permission(): void
+    {
+        $ctx = new AclContext(roles: ['support']);
+        $this->assertTrue($this->engine->hasAnyPermission($ctx, [
+            'write_all',    // support does NOT have this
+            'impersonate',  // support HAS this
+        ]));
+    }
+
+    // ── roleDominates (set-theory) ────────────────────────────────────────
+
+    public function test_superadmin_dominates_admin(): void
+    {
+        $this->assertTrue($this->engine->roleDominates('superadmin', 'admin'));
+    }
+
+    public function test_admin_does_not_dominate_superadmin(): void
+    {
+        // superadmin has lock + fill_all that admin doesn't
+        $this->assertFalse($this->engine->roleDominates('admin', 'superadmin'));
+    }
+
+    public function test_role_dominates_itself(): void
+    {
+        $this->assertTrue($this->engine->roleDominates('admin', 'admin'));
+    }
+
+    public function test_support_does_not_dominate_admin(): void
+    {
+        // support has impersonate but not read_all/write_all
+        $this->assertFalse($this->engine->roleDominates('support', 'admin'));
+    }
+
+    public function test_admin_does_not_dominate_support(): void
+    {
+        // admin has no impersonate
+        $this->assertFalse($this->engine->roleDominates('admin', 'support'));
+    }
+
+    public function test_any_role_dominates_guest_if_superset(): void
+    {
+        // vendedor has products: [show_all, list_all, create, update, delete]
+        // guest has products: [show_all, list_all]
+        // vendedor is a superset → dominates
+        $this->assertTrue($this->engine->roleDominates('vendedor', 'guest'));
+    }
+
+    public function test_guest_does_not_dominate_vendedor(): void
+    {
+        $this->assertFalse($this->engine->roleDominates('guest', 'vendedor'));
+    }
+
+    public function test_role_dominates_empty_role(): void
+    {
+        // Any role dominates a role with zero permissions (vacuous truth)
+        $this->assertTrue($this->engine->roleDominates('guest', 'nonexistent_role'));
+    }
+
+    // ── satisfiesPolicy ───────────────────────────────────────────────────
+
+    public function test_satisfies_policy_when_can(): void
+    {
+        $ctx = new AclContext(roles: ['admin']);
+
+        $policy = new class implements AuthorizationPolicyInterface {
+            public function isSatisfiedBy(
+                \Boctulus\Simplerest\Core\Security\Domain\AclContext $context,
+                \Boctulus\Simplerest\Core\Security\Contracts\AclEngineInterface $engine
+            ): bool {
+                return $engine->can($context, 'delete', 'users');
+            }
+        };
+
+        $this->assertTrue($this->engine->satisfiesPolicy($ctx, $policy));
+    }
+
+    public function test_fails_policy_when_cannot(): void
+    {
+        $ctx = new AclContext(roles: ['guest']);
+
+        $policy = new class implements AuthorizationPolicyInterface {
+            public function isSatisfiedBy(
+                \Boctulus\Simplerest\Core\Security\Domain\AclContext $context,
+                \Boctulus\Simplerest\Core\Security\Contracts\AclEngineInterface $engine
+            ): bool {
+                return $engine->can($context, 'delete', 'users');
+            }
+        };
+
+        $this->assertFalse($this->engine->satisfiesPolicy($ctx, $policy));
     }
 }

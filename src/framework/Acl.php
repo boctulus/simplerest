@@ -6,9 +6,11 @@ use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Interfaces\IAcl;
+use Boctulus\Simplerest\Core\Security\Contracts\AuthorizationPolicyInterface;
 use Boctulus\Simplerest\Core\Security\Domain\AclContext;
 use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
 use Boctulus\Simplerest\Core\Security\Engine\AclEngine;
+use Boctulus\Simplerest\Core\Security\Service\RoleHierarchyService;
 
 abstract class Acl implements IAcl
 {
@@ -412,7 +414,7 @@ abstract class Acl implements IAcl
             return $this->ancestors[$role];
         }
 
-        $result = $this->getEngine()->getAncestry($role);
+        $result = $this->getRoleHierarchyService()->getAncestry($role);
 
         $this->ancestors[$role] = $result;
 
@@ -513,7 +515,7 @@ abstract class Acl implements IAcl
         Compares lineages, not permissions.
     */
     public function isHigherRole(string $role, string $referenced_role): ?bool {
-        return $this->getEngine()->isHigherRole($role, $referenced_role);
+        return $this->getRoleHierarchyService()->isHigherRole($role, $referenced_role);
     }
 
     public function hasRoleOrHigher(string $role): bool {
@@ -522,7 +524,7 @@ abstract class Acl implements IAcl
             authenticated: request()->isAuthenticated(),
         );
 
-        return $this->getEngine()->hasRoleOrHigher($role, $context);
+        return $this->getRoleHierarchyService()->hasRoleOrHigher($role, $context);
     }
 
     // alias
@@ -543,15 +545,12 @@ abstract class Acl implements IAcl
     }
 
     public function hasAnyRoleOrHigher(array $authorized_roles): bool {
-        $authorized = false;
-        
-        foreach ($authorized_roles as $role){
-            if ($this->hasRoleOrHigher($role)){
-                $authorized = true;
-            }
-        }
-        
-        return $authorized;        
+        $context = new AclContext(
+            roles:         auth()->getRoles(),
+            authenticated: request()->isAuthenticated(),
+        );
+
+        return $this->getRoleHierarchyService()->hasAnyRoleOrHigher($authorized_roles, $context);
     }
 
     // alias
@@ -562,6 +561,48 @@ abstract class Acl implements IAcl
     // -------------------------------------------------------------------------
     // Pure engine access
     // -------------------------------------------------------------------------
+
+    // ── Capability methods (auth-aware wrappers) ──────────────────────────
+
+    public function hasAllPermissions(array $permissions): bool
+    {
+        $context = new AclContext(
+            roles:         auth()->getRoles(),
+            authenticated: request()->isAuthenticated(),
+            userSpPerms:   auth()->getPermissions() ?? [],
+        );
+
+        return $this->getEngine()->hasAllPermissions($context, $permissions);
+    }
+
+    public function hasAnyPermission(array $permissions): bool
+    {
+        $context = new AclContext(
+            roles:         auth()->getRoles(),
+            authenticated: request()->isAuthenticated(),
+            userSpPerms:   auth()->getPermissions() ?? [],
+        );
+
+        return $this->getEngine()->hasAnyPermission($context, $permissions);
+    }
+
+    public function roleDominates(string $candidateRole, string $targetRole): bool
+    {
+        return $this->getEngine()->roleDominates($candidateRole, $targetRole);
+    }
+
+    public function satisfiesPolicy(AuthorizationPolicyInterface $policy): bool
+    {
+        $context = new AclContext(
+            roles:         auth()->getRoles(),
+            authenticated: request()->isAuthenticated(),
+            userSpPerms:   auth()->getPermissions() ?? [],
+        );
+
+        return $this->getEngine()->satisfiesPolicy($context, $policy);
+    }
+
+    // ── Pure engine / service access ──────────────────────────────────────
 
     /**
      * Build a pure AclSnapshot from the current builder state.
@@ -585,6 +626,15 @@ abstract class Acl implements IAcl
     public function getEngine(): AclEngine
     {
         return new AclEngine($this->getSnapshot());
+    }
+
+    /**
+     * Build a RoleHierarchyService for lineage-based checks.
+     * Use only when simple RBAC tree comparison is acceptable.
+     */
+    public function getRoleHierarchyService(): RoleHierarchyService
+    {
+        return new RoleHierarchyService($this->getSnapshot());
     }
 }
 
