@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Boctulus\Simplerest\Core\Security\Contracts\AuthorizationPolicyInterface;
+use Boctulus\Simplerest\Core\Security\Contracts\AuthorizationServiceInterface;
 use Boctulus\Simplerest\Core\Security\Domain\AclContext;
 use Boctulus\Simplerest\Core\Security\Engine\AclEngine;
 use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
@@ -288,7 +289,7 @@ class AclEngineTest extends TestCase
         $policy = new class implements AuthorizationPolicyInterface {
             public function isSatisfiedBy(
                 \Boctulus\Simplerest\Core\Security\Domain\AclContext $context,
-                \Boctulus\Simplerest\Core\Security\Contracts\AclEngineInterface $engine
+                AuthorizationServiceInterface $engine
             ): bool {
                 return $engine->can($context, 'delete', 'users');
             }
@@ -304,7 +305,7 @@ class AclEngineTest extends TestCase
         $policy = new class implements AuthorizationPolicyInterface {
             public function isSatisfiedBy(
                 \Boctulus\Simplerest\Core\Security\Domain\AclContext $context,
-                \Boctulus\Simplerest\Core\Security\Contracts\AclEngineInterface $engine
+                AuthorizationServiceInterface $engine
             ): bool {
                 return $engine->can($context, 'delete', 'users');
             }

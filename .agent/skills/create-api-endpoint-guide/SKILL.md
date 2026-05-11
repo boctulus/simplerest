@@ -1,5 +1,5 @@
 ---
-name: create-endpoint
+name: create-api-endpoint-guide
 description: Guides the creation of a new API endpoint in SimpleRest, including migrations, schemas, models, controllers, and ACL.
 ---
 
