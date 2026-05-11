@@ -60,7 +60,9 @@
       "Bash(cmd.exe /c \"if exist D:\\\\laragon\\\\www\\\\simplerest\\\\.env \\(echo .env exists in simplerest\\) else \\(echo .env MISSING in simplerest\\)\")",
       "Bash(1)",
       "Bash(composer dump-autoload:*)",
-      "Bash(tee:*)"
+      "Bash(tee:*)",
+      "Bash(git *)",
+      "PowerShell(git *)"
     ],
     "deny": [],
     "ask": []

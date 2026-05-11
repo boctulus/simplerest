@@ -6,6 +6,9 @@ use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Interfaces\IAcl;
+use Boctulus\Simplerest\Core\Security\Domain\AclContext;
+use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
+use Boctulus\Simplerest\Core\Security\Engine\AclEngine;
 
 abstract class Acl implements IAcl
 {
@@ -51,8 +54,8 @@ abstract class Acl implements IAcl
         return $this->roles;
     }
 
-    public function addRole(string $role_name, $role_id = null) 
-    {  
+    public function addRole(string $role_name, $role_id = null)
+    {
         if (in_array($role_id, $this->role_ids)){
             throw new \Exception("Role id '$role_id' can not be repetead. It should be UNIQUE.");
         }
@@ -61,22 +64,27 @@ abstract class Acl implements IAcl
             throw new \Exception("Role name '$role_name' can not be repetead. It should be UNIQUE.");
         }
 
-        if ($role_name == 'guest'){
+        $this->registerRoleState($role_name, $role_id);
+
+        return $this;
+    }
+
+    protected function registerRoleState(string $role_name, $role_id): void
+    {
+        if ($role_name === 'guest') {
             $this->guest_name = 'guest';
         }
 
         $this->role_ids[]   = $role_id;
         $this->role_names[] = $role_name;
-        
+
         $this->role_perms[$role_name] = [
             'role_id'        => $role_id,
             'sp_permissions' => [],
-            'tb_permissions' => []
+            'tb_permissions' => [],
         ];
 
-        $this->current_role = $role_name; 
-
-        return $this;
+        $this->current_role = $role_name;
     }
 
     public function addRoles(Array $roles) {
@@ -278,50 +286,37 @@ abstract class Acl implements IAcl
         return isset($this->role_perms[$role_name]);
     }
 
-    public function hasSpecialPermission(string $perm, ?Array $role_names = null, $uid = null){   
+    public function hasSpecialPermission(string $perm, ?Array $role_names = null, $uid = null){
         if (!in_array($perm, $this->sp_permissions)){
-            throw new \InvalidArgumentException("Invalid permission '$perm'");    
+            throw new \InvalidArgumentException("Invalid permission '$perm'");
         }
 
         if (empty($role_names)){
             $role_names = auth()->getRoles();
-        }       
+        }
 
-        $user_perms = [];
+        $is_auth    = request()->isAuthenticated();
+        $userSpPerms = [];
 
-        $is_auth   = request()->isAuthenticated();
-        
-        if (!$is_auth){
-            if ($uid != null)
-            {
-                $user_perms = DB::table('user_sp_permissions')
-                ->join('sp_permissions')
-                ->where([
-                    'user_id' => $uid
-                ])
-                ->pluck('name');
+        if (!$is_auth) {
+            if ($uid != null) {
+                $userSpPerms = DB::table('user_sp_permissions')
+                    ->join('sp_permissions')
+                    ->where(['user_id' => $uid])
+                    ->pluck('name');
             }
         } else {
-            $user_perms = auth()->getPermissions();
+            $userSpPerms = auth()->getPermissions() ?? [];
         }
 
-        if (in_array($perm, $user_perms)){
-            return true;
-        }
+        $context = new AclContext(
+            userId:        $uid,
+            roles:         $role_names,
+            authenticated: $is_auth,
+            userSpPerms:   $userSpPerms,
+        );
 
-        // dd($user_perm, 'USER PERMS');
-
-        foreach ($role_names as $r_name){
-            if (!isset($this->role_perms[$r_name])){
-                throw new \InvalidArgumentException("Invalid role name '$r_name'");
-            }
-
-            if (in_array($perm, $this->role_perms[$r_name]['sp_permissions'])){
-                return true;
-            } 
-        }
-        
-        return false;
+        return $this->getEngine()->hasSpecialPermission($perm, $context);
     }
 
     /*
@@ -329,37 +324,29 @@ abstract class Acl implements IAcl
     */
     public function hasResourcePermission(string $perm, string $resource, ?Array $role_names = null){
         if (empty($role_names)){
-            $role_names = $role_names = auth()->getRoles();
+            $role_names = auth()->getRoles();
         }
 
-        $allowed_sp_perms = ['show', 'show_all', 'list', 'list_all', 'create', 'update', 'delete'];
+        $allowed = ['show', 'show_all', 'list', 'list_all', 'create', 'update', 'delete'];
 
-        if (!in_array($perm, $allowed_sp_perms)){
-            throw new \InvalidArgumentException("hasResourcePermission : invalid permission '$perm'. Allowed: ". implode(', ', $allowed_sp_perms));    
+        if (!in_array($perm, $allowed)){
+            throw new \InvalidArgumentException("hasResourcePermission : invalid permission '$perm'. Allowed: ". implode(', ', $allowed));
         }
 
         foreach ($role_names as $r_name){
             if (!isset($this->role_perms[$r_name])){
                 throw new \InvalidArgumentException("hasResourcePermission : invalid role name '$r_name'");
             }
-
-            if (isset($this->role_perms[$r_name]['tb_permissions'][$resource])){
-                if (in_array($perm, $this->role_perms[$r_name]['tb_permissions'][$resource])){
-                    return true;
-                }
-            }  
         }
-        
-        return false;
+
+        return $this->getEngine()
+            ->getPermissionEvaluator()
+            ->hasResourcePermission($perm, $resource, $role_names, $this->getSnapshot());
     }
 
     /*
-        Determina si se tiene permiso a nivel de *tabla* para un rol o conjunto de roles particular
-
-        Incluye la posibilidad de permisos especiales que otorguen permisos sobre esa tabla
-
-        Tambien podria determinar los permisos a nivel de "row" (registro)  --- implementar !
-        
+        Determina si se tiene permiso a nivel de *tabla* para un rol o conjunto de roles particular.
+        Incluye permisos especiales (read_all / write_all) que otorguen acceso sobre esa tabla.
     */
     public function hasPermission(string $perm, string $resource, $uid = null, $row_id = null)
     {
@@ -369,36 +356,26 @@ abstract class Acl implements IAcl
             return false;
         }
 
-        // Sino esta autenticado recurro a la base de datos para saber que permisos puede tener
         if (!$is_auth){
             $roles = DB::table('user_roles')
-            ->join('roles')
-            ->where([
-                'user_id' => $uid
-            ])
-            ->pluck('name');
-
+                ->join('roles')
+                ->where(['user_id' => $uid])
+                ->pluck('name');
         } else {
             $roles = auth()->getRoles();
         }
 
-        if (in_array($perm, ['show', 'list', 'read', 'show', 'show_all', 'read_all'])){
-            if ($this->hasSpecialPermission('read_all', $roles, $uid)){
-                return true;
-            }
-        }
+        $userSpPerms = $is_auth ? (auth()->getPermissions() ?? []) : [];
 
-        if (in_array($perm, ['create', 'update', 'delete', 'write', 'write_all'])){
-            if ($this->hasSpecialPermission('write_all', $roles, $uid)){
-                return true;
-            }
-        }
-        
-        if ($this->hasResourcePermission($perm, $resource, $roles)){
-            return true;
-        }
+        $context = new AclContext(
+            userId:        $uid,
+            roles:         $roles,
+            authenticated: $is_auth,
+            userSpPerms:   $userSpPerms,
+            rowId:         $row_id,
+        );
 
-       return false;
+        return $this->getEngine()->can($context, $perm, $resource);
     }
 
     public function getResourcePermissions(string $role, string $resource, $op_type = null){
@@ -435,19 +412,11 @@ abstract class Acl implements IAcl
             return $this->ancestors[$role];
         }
 
-        $ref = $role;
+        $result = $this->getEngine()->getAncestry($role);
 
-        while (true){
-            $role = $this->parent_role_names[$role] ?? null;
+        $this->ancestors[$role] = $result;
 
-            if ($role === null){
-                break;
-            }
-
-            $ancestors[$ref][] = $role;
-        }
-
-        return $ancestors[$ref];
+        return $result;
     }
 
     /*
@@ -540,48 +509,20 @@ abstract class Acl implements IAcl
     }
 
     /*
-        Return if $role is higher role than $referenced_role
-
-        Warning: this function compares lineages and not permissions  !!!
+        Return if $role is higher role than $referenced_role.
+        Compares lineages, not permissions.
     */
     public function isHigherRole(string $role, string $referenced_role){
-        if ($role == $referenced_role){
-            return false;
-        }
-
-        // ancesters has inferior role permissions
-        $ancestors_ref = $this->getAncestry($referenced_role);
-
-        /*
-            Si el rol está dentro de los ancestros del de referencia significa que es inferior
-        */
-        if (in_array($role, $ancestors_ref)){
-            return false;
-        }
-
-        $ancestors = $this->getAncestry($role);
-
-        if (in_array($referenced_role, $ancestors)){
-            return true;
-        }
-
-        return null;
+        return $this->getEngine()->isHigherRole($role, $referenced_role);
     }
 
     public function hasRoleOrHigher(string $role){
-        if ($this->hasRole($role)){
-            return true;
-        }
+        $context = new AclContext(
+            roles:         auth()->getRoles(),
+            authenticated: request()->isAuthenticated(),
+        );
 
-        $current_user_roles = auth()->getRoles();
-
-        foreach ($current_user_roles as $user_role){
-            if ($this->isHigherRole($user_role, $role)){
-                return true;
-            }
-        }
-
-        return false;        
+        return $this->getEngine()->hasRoleOrHigher($role, $context);
     }
 
     // alias
@@ -616,6 +557,34 @@ abstract class Acl implements IAcl
     // alias
     function hasAnyRoleOrChild(array $authorized_roles){
         return $this->hasAnyRoleOrHigher($authorized_roles);
+    }
+
+    // -------------------------------------------------------------------------
+    // Pure engine access
+    // -------------------------------------------------------------------------
+
+    /**
+     * Build a pure AclSnapshot from the current builder state.
+     * Zero DB/auth dependency — safe to use in unit tests.
+     */
+    public function getSnapshot(): AclSnapshot
+    {
+        return new AclSnapshot(
+            rolePerms:       $this->role_perms,
+            parentRoleNames: $this->parent_role_names,
+            validSpPerms:    $this->sp_permissions,
+            guestName:       $this->guest_name,
+            registeredName:  $this->registered_name,
+        );
+    }
+
+    /**
+     * Build a pure AclEngine from the current builder state.
+     * Zero DB/auth dependency — safe to use in unit tests.
+     */
+    public function getEngine(): AclEngine
+    {
+        return new AclEngine($this->getSnapshot());
     }
 }
 
