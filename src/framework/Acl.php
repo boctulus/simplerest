@@ -50,7 +50,7 @@ abstract class Acl implements IAcl
         Files::writableOrFail(SECURITY_PATH . Config::get()['acl_file']);
     }
 
-    public function getEveryPossibleRole(){
+    public function getEveryPossibleRole(): array {
         return $this->roles;
     }
 
@@ -226,7 +226,7 @@ abstract class Acl implements IAcl
         return $this;
     }
 
-   public function setAsGuest(string $guest_name){
+    public function setAsGuest(string $guest_name){
         if (!in_array($guest_name, $this->role_names)){
             throw new \Exception("Please add the rol '$guest_name' *before* to set as guest role to avoid mistakes");
         }
@@ -235,7 +235,7 @@ abstract class Acl implements IAcl
         return $this;
     }
 
-    function setAsRegistered(string $name){
+    public function setAsRegistered(string $name){
         if (!in_array($name, $this->role_names)){
             throw new \Exception("Please add the rol '$name' *before* to set as registered role to avoid mistakes");
         }
@@ -244,7 +244,7 @@ abstract class Acl implements IAcl
         return $this;
     }
 
-    public function getGuest(){
+    public function getGuest(): string {
         if ($this->guest_name == null){
             throw new \Exception("Undefined guest rol in ACL");
         }
@@ -252,7 +252,7 @@ abstract class Acl implements IAcl
         return $this->guest_name;
     }
 
-    public function getRegistered(){
+    public function getRegistered(): string {
         if ($this->registered_name == null){
             throw new \Exception("Undefined guest rol in ACL");
         }
@@ -282,11 +282,11 @@ abstract class Acl implements IAcl
         throw new \Exception("Undefined role with name '$role_name'");
     }
 
-    public function roleExists(string $role_name){
+    public function roleExists(string $role_name): bool {
         return isset($this->role_perms[$role_name]);
     }
 
-    public function hasSpecialPermission(string $perm, ?Array $role_names = null, $uid = null){
+    public function hasSpecialPermission(string $perm, ?Array $role_names = null, $uid = null): bool {
         if (!in_array($perm, $this->sp_permissions)){
             throw new \InvalidArgumentException("Invalid permission '$perm'");
         }
@@ -322,7 +322,7 @@ abstract class Acl implements IAcl
     /*
         Si $role_names esta vacio, busca los roles del usuario autenticado
     */
-    public function hasResourcePermission(string $perm, string $resource, ?Array $role_names = null){
+    public function hasResourcePermission(string $perm, string $resource, ?Array $role_names = null): bool {
         if (empty($role_names)){
             $role_names = auth()->getRoles();
         }
@@ -348,7 +348,7 @@ abstract class Acl implements IAcl
         Determina si se tiene permiso a nivel de *tabla* para un rol o conjunto de roles particular.
         Incluye permisos especiales (read_all / write_all) que otorguen acceso sobre esa tabla.
     */
-    public function hasPermission(string $perm, string $resource, $uid = null, $row_id = null)
+    public function hasPermission(string $perm, string $resource, $uid = null, $row_id = null): bool
     {
         $is_auth = request()->isAuthenticated();
 
@@ -378,7 +378,7 @@ abstract class Acl implements IAcl
         return $this->getEngine()->can($context, $perm, $resource);
     }
 
-    public function getResourcePermissions(string $role, string $resource, $op_type = null){
+    public function getResourcePermissions(string $role, string $resource, $op_type = null): array {
         $ops = [
             'read'  => ['show', 'list', 'show_all', 'list_all'],
             'write' => ['create', 'update', 'delete']
@@ -407,7 +407,7 @@ abstract class Acl implements IAcl
         }        
     }
 
-    public function getAncestry(string $role){
+    public function getAncestry(string $role): array {
         if (isset($this->ancestors[$role])){
             return $this->ancestors[$role];
         }
@@ -422,7 +422,7 @@ abstract class Acl implements IAcl
     /*
         Every possible Special Permission for the ACL 
     */
-    public function getEveryPossibleSpPermissions(){
+    public function getEveryPossibleSpPermissions(): array {
         return $this->sp_permissions;
     }
 
@@ -512,11 +512,11 @@ abstract class Acl implements IAcl
         Return if $role is higher role than $referenced_role.
         Compares lineages, not permissions.
     */
-    public function isHigherRole(string $role, string $referenced_role){
+    public function isHigherRole(string $role, string $referenced_role): ?bool {
         return $this->getEngine()->isHigherRole($role, $referenced_role);
     }
 
-    public function hasRoleOrHigher(string $role){
+    public function hasRoleOrHigher(string $role): bool {
         $context = new AclContext(
             roles:         auth()->getRoles(),
             authenticated: request()->isAuthenticated(),
@@ -526,11 +526,11 @@ abstract class Acl implements IAcl
     }
 
     // alias
-    public function hasRoleOrChild(string $role){
+    public function hasRoleOrChild(string $role): bool {
         return $this->hasRoleOrHigher($role);
     }
 
-    public function hasAnyRole(array $authorized_roles){
+    public function hasAnyRole(array $authorized_roles): bool {
         $authorized = false;
         
         foreach ($authorized_roles as $role){
@@ -542,7 +542,7 @@ abstract class Acl implements IAcl
         return $authorized;        
     }
 
-    public function hasAnyRoleOrHigher(array $authorized_roles){
+    public function hasAnyRoleOrHigher(array $authorized_roles): bool {
         $authorized = false;
         
         foreach ($authorized_roles as $role){
@@ -555,7 +555,7 @@ abstract class Acl implements IAcl
     }
 
     // alias
-    function hasAnyRoleOrChild(array $authorized_roles){
+    public function hasAnyRoleOrChild(array $authorized_roles): bool {
         return $this->hasAnyRoleOrHigher($authorized_roles);
     }
 
