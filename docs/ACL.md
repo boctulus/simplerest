@@ -781,6 +781,59 @@ El engine no expande roles a sus ancestros para evaluar `tb_permissions` ni
 (`RoleHierarchyResolver`) se usa únicamente para `isHigherRole` / `hasRoleOrHigher`.
 
 
+## 🔵 2. RoleHierarchyService (OPTIMIZATION / UTILITY LAYER)
+
+Capa de atajos/heurísticas para consultas rápidas de jerarquía.
+No decide autorización final. Es una optimización sobre `AclEngine`.
+
+### Métodos
+
+| Método | Descripción |
+|---|---|
+| `isHigherRole($roleA, $roleB)` | ¿`$roleA` es superior a `$roleB` en la jerarquía? |
+| `hasRoleOrHigher($role)` | ¿El usuario tiene ese rol o uno superior? |
+| `hasAnyRoleOrHigher([$roles])` | ¿El usuario tiene alguno de esos roles o uno superior? |
+
+### Qué cambia conceptualmente
+
+| Antes | Después |
+|---|---|
+| ACL mezclaba todo (construcción + evaluación + heurísticas) | `AclEngine` = verdad absoluta |
+| | `RoleHierarchyService` = shortcuts / heurísticas |
+
+### ⚡ Cuándo SÍ usarlos
+
+- ✅ **UI/UX filtering** — mostrar/ocultar elementos de interfaz
+  ```php
+  if ($acl->hasRoleOrHigher('admin')) { ... }
+  ```
+- ✅ **Routing guards rápidos** — pre-filter antes de llegar al controller
+- ✅ **Pre-checks antes del engine** — evitar evaluación costosa si el rol no califica
+- ✅ **Optimization layer** — saltar evaluaciones pesadas cuando la jerarquía es suficiente
+
+### ❌ Cuándo NO usarlos
+
+Estos métodos **no deben usarse** para:
+
+- Seguridad real / autorización final
+- Decisiones a nivel de registro (row-level)
+- Decisiones de auditoría (audit trail)
+- Aislamiento multi-tenant
+- Corte definitivo de acceso (siempre debe pasar por `AclEngine::can()`)
+
+### Relación con la arquitectura
+
+```
+UI / Router
+    │
+    ▼
+RoleHierarchyService ──rápido──→ pre-check (pass/fail rápido)
+    │
+    ▼
+AclEngine ──lento pero exacto──→ decisión final
+```
+
+
 # Implementación de "paquetes" para el Acl
 
 Es importante resaltar que dado que la clase Acl se serializa por motivos de performance la mayor parte de las propiedades y métodos no pueden ser estáticos ya que propiedades estáticas no pueden ser serializadas y al des-serializar no estarán disponibles llevando a muchos dolores de cabeza. Igualmente por concistencia se desaconseja el uso de métodos estáticos.
