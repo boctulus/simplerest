@@ -843,7 +843,8 @@ class AuthController extends Controller implements IAuth
                 $is_active = true;
                 $perms  = $this->fetchPermissions($uid);
                 
-                static::setRoles($ret['roles']); //
+                static::setRoles($roles);
+                static::setPermissions($perms);
 
                 $ret = [
                     'uid'           => $uid,
@@ -867,6 +868,7 @@ class AuthController extends Controller implements IAuth
                 } 
 
                 static::setRoles($ret['roles']); //
+                static::setPermissions($ret['permissions'] ?? []);
 
                 $tenantid = request()->getTenantId();
 
@@ -892,6 +894,7 @@ class AuthController extends Controller implements IAuth
                 $roles = [Factory::acl()->getGuest()];
 
                 static::setRoles($roles); //
+                static::setPermissions($perms);
 
                 $ret = [
                     'uid' => null,

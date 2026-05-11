@@ -1,18 +1,18 @@
 <?php
 
-namespace Boctulus\Simplerest\tests;
+namespace Boctulus\Simplerest\tests\api;
 
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 if (php_sapi_name() != "cli"){
     return;
 }
 
-require_once __DIR__ . '/../app.php';
+require_once __DIR__ . '/../../app.php';
 
 use PHPUnit\Framework\TestCase;
 use Boctulus\Simplerest\Core\Libs\DB;
