@@ -644,6 +644,143 @@ Entonces se *implementará* hasRolePermissionsOrHigher() y esta función podrá 
 La función Acl::hasRolePermissionsOrHigher() *deberá* tener en consideración todos los tipos de permisos, ya sea sobre recursos (tablas) y los considerados permisos "especiales". También deberá considerar los permisos que "decoran" los de los roles para un usuario en particular (!)
 
 
+# Arquitectura en capas (Pure ACL Engine)
+
+## Motivación
+
+La clase `Acl` original mezcla construcción de políticas, evaluación de permisos,
+acceso a base de datos y dependencias de framework (`auth()`, `request()`).
+Eso impide hacer tests unitarios sin DB y dificulta portar el engine a otro framework.
+
+A partir de esta refactorización el motor de evaluación es **puro**: no conoce DB,
+ni `auth()`, ni `request()`. Toda decisión se toma a partir de datos inmutables
+inyectados en tiempo de ejecución.
+
+## Capas
+
+```
+Builder (Acl.php)          → construye la política con addRole / addInherit / etc.
+        ↓
+AclSnapshot                → captura inmutable de la política (role_perms, herencia, sp válidos)
+        ↓
+AclEngine                  → orquestador puro (snapshot + context → decisión)
+   ├── RoleHierarchyResolver   → getAncestry(), isHigherRole()
+   └── PermissionEvaluator     → hasSpecialPermission(), hasResourcePermission(), hasPermission()
+        ↑
+AclContext                 → estado del usuario en tiempo de evaluación (roles, userSpPerms, etc.)
+```
+
+## Archivos
+
+| Clase | Namespace | Archivo |
+|---|---|---|
+| `AclContext` | `Core\Security\Domain` | `src/framework/Security/Domain/AclContext.php` |
+| `AclSnapshot` | `Core\Security\Snapshot` | `src/framework/Security/Snapshot/AclSnapshot.php` |
+| `AclEngine` | `Core\Security\Engine` | `src/framework/Security/Engine/AclEngine.php` |
+| `RoleHierarchyResolver` | `Core\Security\Engine` | `src/framework/Security/Engine/RoleHierarchyResolver.php` |
+| `PermissionEvaluator` | `Core\Security\Engine` | `src/framework/Security/Engine/PermissionEvaluator.php` |
+| Contracts | `Core\Security\Contracts` | `src/framework/Security/Contracts/` |
+
+## AclContext
+
+Value object que representa el estado del usuario en el momento de la evaluación.
+No tiene lógica. Se construye fuera del engine (en el adapter/framework layer).
+
+```php
+$context = new AclContext(
+    userId:        42,
+    roles:         ['admin'],
+    authenticated: true,
+    userSpPerms:   ['impersonate'],   // overrides individuales del usuario
+    rowId:         null,
+);
+```
+
+## AclSnapshot
+
+Captura inmutable de la política ACL construida por el builder.
+Se obtiene con `$acl->getSnapshot()` o se construye a mano en tests.
+
+```php
+$snapshot = new AclSnapshot(
+    rolePerms:       $rolePerms,       // array interno de Acl::$role_perms
+    parentRoleNames: $parentRoleNames, // array de herencia
+    validSpPerms:    $validSpPerms,    // permisos especiales válidos
+);
+```
+
+## AclEngine
+
+Orquestador puro. Se obtiene con `$acl->getEngine()` en producción,
+o se instancia directamente en tests pasando un snapshot construido a mano.
+
+```php
+// Producción
+$engine = acl()->getEngine();
+
+// Test (sin DB, sin framework)
+$engine = new AclEngine($snapshot);
+```
+
+### Métodos disponibles
+
+```php
+$engine->can($context, 'show', 'products')          // evaluación completa
+$engine->hasSpecialPermission('read_all', $context)
+$engine->hasResourcePermission('create', 'products', $context)
+$engine->hasRole('admin', $context)
+$engine->hasRoleOrHigher('admin', $context)
+$engine->hasAnyRole(['admin', 'vendedor'], $context)
+$engine->hasAnyRoleOrHigher(['admin', 'vendedor'], $context)
+$engine->getAncestry('superadmin')                  // ['admin', 'guest']
+$engine->isHigherRole('superadmin', 'admin')        // true
+```
+
+## Tests unitarios
+
+El engine tiene cobertura completa sin base de datos:
+
+```
+tests/unit-tests/AclEngineTest.php   (23 tests)
+```
+
+Ejemplo mínimo de test:
+
+```php
+$snapshot = new AclSnapshot(
+    rolePerms: [
+        'admin' => [
+            'role_id'        => 100,
+            'sp_permissions' => ['read_all', 'write_all'],
+            'tb_permissions' => [],
+        ],
+    ],
+    parentRoleNames: [],
+    validSpPerms:    ['read_all', 'write_all'],
+);
+
+$engine  = new AclEngine($snapshot);
+$context = new AclContext(roles: ['admin']);
+
+assertTrue($engine->hasSpecialPermission('read_all', $context));
+assertTrue($engine->can($context, 'delete', 'any_resource'));
+```
+
+## Compatibilidad
+
+Todos los métodos públicos de `Acl`, `BasicACL` y `FineGrainedACL` mantienen
+su firma exacta. La refactorización es interna: los métodos de evaluación
+(`hasPermission`, `hasSpecialPermission`, `hasResourcePermission`, `isHigherRole`,
+`hasRoleOrHigher`, `getAncestry`) delegan al engine internamente.
+
+## Nota sobre herencia de permisos
+
+Los permisos heredados se **copian en build-time** vía `addInherit()`.
+El engine no expande roles a sus ancestros para evaluar `tb_permissions` ni
+`sp_permissions` — eso ya está resuelto en el snapshot. La jerarquía
+(`RoleHierarchyResolver`) se usa únicamente para `isHigherRole` / `hasRoleOrHigher`.
+
+
 # Implementación de "paquetes" para el Acl
 
 Es importante resaltar que dado que la clase Acl se serializa por motivos de performance la mayor parte de las propiedades y métodos no pueden ser estáticos ya que propiedades estáticas no pueden ser serializadas y al des-serializar no estarán disponibles llevando a muchos dolores de cabeza. Igualmente por concistencia se desaconseja el uso de métodos estáticos.
