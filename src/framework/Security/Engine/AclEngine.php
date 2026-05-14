@@ -2,17 +2,40 @@
 
 namespace Boctulus\Simplerest\Core\Security\Engine;
 
+use Boctulus\Simplerest\Core\Security\Contracts\AclEngineInterface;
 use Boctulus\Simplerest\Core\Security\Contracts\AuthorizationServiceInterface;
 use Boctulus\Simplerest\Core\Security\Contracts\AuthorizationPolicyInterface;
 use Boctulus\Simplerest\Core\Security\Domain\AclContext;
 use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
 
-final class AclEngine implements AuthorizationServiceInterface
+final class AclEngine implements AuthorizationServiceInterface, AclEngineInterface
 {
+    private const TB_BIT_LIST_ALL = 64;
+    private const TB_BIT_SHOW_ALL = 32;
+    private const TB_BIT_LIST     = 16;
+    private const TB_BIT_SHOW     = 8;
+    private const TB_BIT_CREATE   = 4;
+    private const TB_BIT_UPDATE   = 2;
+    private const TB_BIT_DELETE   = 1;
+
     public function __construct(
         private readonly AclSnapshot $snapshot,
     ) {}
 
+    private function tbBit(string $perm): int
+    {
+        return match ($perm) {
+            'list_all' => self::TB_BIT_LIST_ALL,
+            'show_all' => self::TB_BIT_SHOW_ALL,
+            'list'     => self::TB_BIT_LIST,
+            'show'     => self::TB_BIT_SHOW,
+            'create'   => self::TB_BIT_CREATE,
+            'update'   => self::TB_BIT_UPDATE,
+            'delete'   => self::TB_BIT_DELETE,
+            default    => 0,
+        };
+    }
+    
     // ── Per-action evaluation ──────────────────────────────────────────────
 
     public function can(AclContext $context, string $action, string $resource): bool
@@ -27,6 +50,17 @@ final class AclEngine implements AuthorizationServiceInterface
 
     public function hasResourcePermission(string $perm, string $resource, AclContext $context): bool
     {
+        if ($context->compiledPermissions !== null) {
+            $cp = $context->compiledPermissions;
+            if (isset($cp['deny'][$resource][$perm]))   return false;
+            if (isset($cp['deny']['*'][$perm]))         return false;
+            return isset($cp['allow'][$resource][$perm]);
+        }
+
+        if ($this->hasExplicitDeny($context, $perm, $resource)) {
+            return false;
+        }
+
         return $this->hasResourcePermissionInternal($perm, $resource, $context->roles);
     }
 
@@ -94,6 +128,36 @@ final class AclEngine implements AuthorizationServiceInterface
     public function satisfiesPolicy(AclContext $context, AuthorizationPolicyInterface $policy): bool
     {
         return $policy->isSatisfiedBy($context, $this);
+    }
+
+    public function hasExplicitDeny(AclContext $context, string $action, string $resource): bool
+    {
+        if (isset($context->userDenyPerms[$resource][$action])) {
+            return true;
+        }
+
+        foreach ($context->roles as $role) {
+            if (isset($this->snapshot->denyRolePerms[$role]['tb'][$resource][$action])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function hasExplicitSpecialDeny(string $perm, AclContext $context): bool
+    {
+        if (isset($context->userDenySpPerms[$perm])) {
+            return true;
+        }
+
+        foreach ($context->roles as $role) {
+            if (isset($this->snapshot->denyRolePerms[$role]['sp'][$perm])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // ── Role hierarchy methods (lineage-based) ─────────────────────────────
@@ -185,6 +249,20 @@ final class AclEngine implements AuthorizationServiceInterface
 
     private function hasSpecialPermissionInternal(string $perm, AclContext $context): bool
     {
+        // Compiled fast path — O(1) hash lookups
+        if ($context->compiledPermissions !== null) {
+            $cp = $context->compiledPermissions;
+            if (isset($cp['deny']['__sp__'][$perm])) {
+                return false;
+            }
+            return isset($cp['allow']['__sp__'][$perm]);
+        }
+
+        // Legacy path — explicit deny short-circuits ALLOW
+        if ($this->hasExplicitSpecialDeny($perm, $context)) {
+            return false;
+        }
+
         if (in_array($perm, $context->userSpPerms, true)) {
             return true;
         }
@@ -219,33 +297,25 @@ final class AclEngine implements AuthorizationServiceInterface
         return false;
     }
 
-    private const TB_BIT_LIST_ALL = 64;
-    private const TB_BIT_SHOW_ALL = 32;
-    private const TB_BIT_LIST     = 16;
-    private const TB_BIT_SHOW     = 8;
-    private const TB_BIT_CREATE   = 4;
-    private const TB_BIT_UPDATE   = 2;
-    private const TB_BIT_DELETE   = 1;
-
-    private function tbBit(string $perm): int
-    {
-        return match ($perm) {
-            'list_all' => self::TB_BIT_LIST_ALL,
-            'show_all' => self::TB_BIT_SHOW_ALL,
-            'list'     => self::TB_BIT_LIST,
-            'show'     => self::TB_BIT_SHOW,
-            'create'   => self::TB_BIT_CREATE,
-            'update'   => self::TB_BIT_UPDATE,
-            'delete'   => self::TB_BIT_DELETE,
-            default    => 0,
-        };
-    }
-
     private function hasPermissionInternal(
         string     $perm,
         string     $resource,
         AclContext $context
     ): bool {
+        // Compiled fast path — O(1) hash lookups, deny first
+        if ($context->compiledPermissions !== null) {
+            $cp = $context->compiledPermissions;
+            if (isset($cp['deny'][$resource][$perm]))   return false;
+            if (isset($cp['deny']['*'][$perm]))         return false;
+            if (isset($cp['allow']['*'][$perm]))        return true;  // read_all/write_all sentinel
+            return isset($cp['allow'][$resource][$perm]);
+        }
+
+        // Legacy path — explicit deny short-circuits ALLOW
+        if ($this->hasExplicitDeny($context, $perm, $resource)) {
+            return false;
+        }
+
         static $readPerms  = ['show', 'list', 'read', 'show_all', 'list_all', 'read_all'];
         static $writePerms = ['create', 'update', 'delete', 'write', 'write_all'];
 
