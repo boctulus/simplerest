@@ -1,8 +1,15 @@
 # ACL
 
-## Resumen
+This ACL system is indeed much more sophisticated than typical Laravel ACL packages like spatie/laravel-permission, offering:
+- More granular control
+- Hierarchical role system
+- Multiple permission types (special + resource)
+- More complex permission inheritance
+- Better integration with the framework's authentication system
 
-Advanced ACL Features
+The system supports complex enterprise-level permission requirements that would be difficult to achieve with standard Laravel ACL packages.
+
+## Advanced ACL Features
 
 1. Multi-layered Permission System
 - Special Permissions: Global permissions like read_all, write_all, impersonate, grant, etc.
@@ -45,9 +52,18 @@ Advanced ACL Features
 - Dynamic loading of permissions from database
 - Support for user-specific permissions beyond role-based permissions
 
-### Available Special Permissions
+## Separation of Concerns
+
+Acl → DSL / builder / façade
+AclSnapshot → estado inmutable serializable
+AclEngine → motor puro de evaluación
+EffectivePermissionCompiler → precompilación
+AclContext → request-scoped context
+
+## Special Permissions (capabilities)
 
 The system defines the following special permissions:
+
 - 'read_all' - Access records belonging to other users
 - 'read_all_folders' - Access records in folders not shared with the user
 - 'read_all_trashcan' - Access records in trashcan belonging to other users
@@ -61,20 +77,27 @@ The system defines the following special permissions:
 - 'lock' - Lock/unlock records, modify locked records, delete locked records
 - 'transfer' - Transfer ownership of records
 
-### Comparison with Laravel ACL packages
+## Infraestructura de tablas
 
-This ACL system is indeed much more sophisticated than typical Laravel ACL packages like spatie/laravel-permission, offering:
-- More granular control
-- Hierarchical role system
-- Multiple permission types (special + resource)
-- More complex permission inheritance
-- Better integration with the framework's authentication system
+- Tabla `sp_permissions`
 
-The system supports complex enterprise-level permission requirements that would be difficult to achieve with standard Laravel ACL packages.
+Define las distintas capabilities o 'business permissions' que se modelan para el dominio. Incluyen algunas pre-cargadas via migration seeder.
 
-# Declaración de roles y sus permisos
+- Tabla `user_tb_permissions`
 
-Se implentó un ACL centralizado que se configurará en /config/acl.php y requiere ajustar permisos de lectura y escritura sobre el directorio app/security. 
+Responde:
+
+“¿Puede manipular ESTE recurso?”
+
+- Tabla `user_sp_permissions`
+
+Responde:
+
+“¿Puede ejecutar ESTA operación?”
+
+## Declaración de roles y sus permisos
+
+Se implentó un ACL centralizado que se configura en config/acl.php y requiere ajustar permisos de lectura y escritura sobre el directorio app/security. 
 
 Los siguientes métodos proveen la funcionalidad de declaración:
 
@@ -191,7 +214,7 @@ El Acl genera una representación interna similar a:
 	["admin"]=>
 	array(3) {
 		["role_id"]=>
-		int(100)
+	int(100)
 		["sp_permissions"]=>
 		array(2) {
 		[0]=>
@@ -259,7 +282,7 @@ Estos permisos especiales sobre "resource permissions" pueden tener otros usos i
     ->addResourcePermissions('products', ['read_all'])  // <--
 
 
-# Persistencia del ACL
+## Persistencia del ACL
 
 Las reglas del ACL se declaran en el archivo config/acl.php y son almacenadas en base de datos en la tabla "roles"
 
@@ -481,7 +504,7 @@ Donde para conocer el "sp_permission_id" puede consultar el endpoint:
 	/api/v1/sp_permissions
 
 
-# Posible FrontEnd para los roles y permisos
+## Posible FrontEnd para los roles y permisos
 
 A un Administrador se le podría presentarse la información sobre roles y permisos así:
 
@@ -544,7 +567,7 @@ Para otro usuario:
 	<-- estos permisos sobre-escriben los permisos propios de su rol o roles del usuario y tienen prioridad por sobre los permisos especiales.
 
 
-# Scopes
+## Scopes
 
 En OAuth se habla de "scopes" como simil a permisos en un sentido más abstracto pero se puede hacer corresponder a los permisos individuales de la siguiente forma:
 	
@@ -576,7 +599,7 @@ SimpleRest *no* sigue el estándar de scopes de OAuth donde:
 https://www.freecodecamp.org/news/best-practices-for-building-api-keys-97c26eabfea9/
 
 
-# Métodos para indagar sobre permisos y roles
+## Métodos para indagar sobre permisos y roles
 
 El Acl provee un conjunto de métodos básicos para conocer el rol o los permisos del usuario y puede extender a partir de "paquetes" (service providers).
 
@@ -644,7 +667,7 @@ Entonces se *implementará* hasRolePermissionsOrHigher() y esta función podrá 
 La función Acl::hasRolePermissionsOrHigher() *deberá* tener en consideración todos los tipos de permisos, ya sea sobre recursos (tablas) y los considerados permisos "especiales". También deberá considerar los permisos que "decoran" los de los roles para un usuario en particular (!)
 
 
-# Arquitectura en capas (Pure ACL Engine)
+## Arquitectura en capas (Pure ACL Engine)
 
 ## Motivación
 
@@ -1037,3 +1060,126 @@ Ej: <pseudocódigo>
         // insertar en la tabla folder_permissions el permiso para el usuario con id $uid`
         // y el folder  $folder
     }
+
+
+# Compiled effective permissions (v4)
+
+A partir de v4 el ACL produce un mapa de permisos efectivos compilados al construir el snapshot. La evaluación en runtime es O(1):
+
+```
+AclContext->compiledPermissions = [
+    'allow' => [
+        'products' => ['show' => true, 'list' => true, 'create' => true, ...],
+        '__sp__'   => ['read_all' => true, ...],
+        '*'        => ['show' => true, 'list_all' => true, ...]   // read_all/write_all sentinel
+    ],
+    'deny' => [
+        'products' => ['delete' => true],
+        '__sp__'   => ['impersonate' => true],
+    ],
+]
+```
+
+Resolución runtime de `AclEngine::can()` cuando `compiledPermissions` está presente:
+
+```
+if isset(deny[resource][action]) → false
+if isset(deny['*'][action])      → false
+if isset(allow['*'][action])     → true   (read_all / write_all)
+return isset(allow[resource][action])
+```
+
+## Compilación per-rol (snapshot)
+
+`Acl::getSnapshot()` invoca a `EffectivePermissionCompiler::compileRoles()` y expone:
+
+* `AclSnapshot::$effectiveAllows[role][resource][action] = true`
+* `AclSnapshot::$effectiveDenies[role][resource][action] = true`  *(cache interna)*
+* `AclSnapshot::$denyRolePerms[role]` con la forma `['tb' => ['resource' => ['action' => true]], 'sp' => ['perm' => true]]`
+* `AclSnapshot::$permissionExplanations['role.resource.action']` (estructura para el frontend administrativo)
+
+## Compilación per-usuario
+
+```php
+$context = AclContext::withCompiled(
+    snapshot:        $acl->getSnapshot(),
+    compiler:        new EffectivePermissionCompiler(),
+    userId:          $uid,
+    roles:           ['supervisor'],
+    authenticated:   true,
+    userSpPerms:     ['impersonate'],
+    userTbPerms:     ['products' => 8],          // packed bitmask (replacement)
+    userDenyPerms:   ['users' => ['delete' => true]],
+    userDenySpPerms: ['transfer' => true],
+);
+```
+
+`AclContext::withCompiled()` resuelve, en orden:
+
+1. Allows derivados de los roles (`tb_permissions` + `sp_permissions`).
+2. Permisos especiales adicionales del usuario.
+3. Expansión de `read_all`/`write_all` al sentinel `'*'`.
+4. **Replacement semantics** de `user_tb_permissions` (el set absoluto pasa a ser el del bitmask).
+5. Denies explícitos a nivel de rol (`denyRolePerms`).
+6. Denies explícitos a nivel de usuario (`userDenyPerms`, `userDenySpPerms`).
+
+`AclContext::compiledPermissions === null` desactiva el camino rápido y el engine cae al recorrido legado (que sigue funcionando).
+
+
+# Deny rules (v4)
+
+A diferencia de la guía v3 original, v4 introduce **DENY explícito** con precedencia sobre cualquier ALLOW (incluyendo `read_all`/`write_all`). Esto es complementario, **no reemplaza** la semántica de `user_tb_permissions` para casos donde el admin sólo quiere "reescribir" el set permitido.
+
+## Declaración estática (builder)
+
+```php
+$acl->addRole('vendedor', 1)
+    ->addInherit('guest')
+    ->addResourcePermissions('products', ['read', 'write'])
+    ->addDenyResourcePermissions('products', ['delete'])            // explicit deny
+    ->addDenySpecialPermissions(['impersonate']);                   // beats role grants
+```
+
+Aceptan los mismos shorthand `read` / `write` que `addResourcePermissions`.
+
+## Declaración dinámica (DB / API)
+
+La tabla **`user_deny_permissions`** sigue el mismo patrón que `user_tb_permissions`:
+
+| campo | tipo |
+|---|---|
+| `id` | `INT PK AUTO_INCREMENT` |
+| `user_id` | `INT NOT NULL` (FK → users) |
+| `resource` | `VARCHAR(100) NOT NULL` |
+| `action` | `VARCHAR(50) NOT NULL` |
+| `created_by`, `created_at`, `updated_by`, `updated_at` | auditoría |
+
+Con `UNIQUE(user_id, resource, action)` para garantizar una sola entrada por triple.
+
+Endpoints:
+
+```
+GET    /api/v1/user_deny_permissions
+POST   /api/v1/user_deny_permissions   { user_id, resource, action }
+DELETE /api/v1/user_deny_permissions/{id}
+```
+
+El controlador requiere el permiso especial **`grant`** del usuario que llama.
+
+`FineGrainedACL::getFreshDenyPermissions($uid)` lee la tabla en vivo (paralelo a `getFreshTbPermissions`). La carga en runtime usa `fetchUserDenyPerms($uid, $is_auth)` (hook protected en la clase base `Acl`, override en `FineGrainedACL`).
+
+## Semántica
+
+| Capa | Origen | Efecto |
+|---|---|---|
+| `addDenyResourcePermissions()` | `acl.php` | Rol-level. Beats role allow + read_all/write_all. |
+| `addDenySpecialPermissions()` | `acl.php` | Rol-level. Bloquea ese sp_permission incluso si el rol o el usuario lo conceden. |
+| `user_deny_permissions` (DB) | API admin | User-level. Beats todo, incluyendo el rol del usuario y sus user_tb_permissions. |
+| `user_tb_permissions` | DB | User-level **replacement** (no es deny). El set efectivo para ese recurso se reemplaza por el bitmask. |
+
+## Comparación con v3 original
+
+El diseño v3 promovía **NO** introducir `DENY > ALLOW` y resolver todo vía replacement semantics. v4 acepta deny explícito porque para los casos de "revocar una sola acción" (p.ej. quitar `delete` sin tocar el resto del set) la replacement requería re-declarar todas las acciones permanentes, lo cual no escala bien para uso administrativo desde frontend.
+
+La cache interna `effectiveDenies` del compilador *sí* sigue siendo un detalle privado (negativo derivado de las réplicas); el deny **explícito** declarado vía builder/DB es público y forma parte de la API.
+

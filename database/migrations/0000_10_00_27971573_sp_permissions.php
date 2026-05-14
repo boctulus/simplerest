@@ -1,9 +1,7 @@
 <?php
 
 use Boctulus\Simplerest\Core\Interfaces\IMigration;
-use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Schema;
-use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Core\Libs\DB;
 
 class SpPermissions implements IMigration
@@ -27,7 +25,7 @@ class SpPermissions implements IMigration
 
 		$sc->create();
 
-        // Insertar los permisos especiales predefinidos
+        // Insertar los permisos especiales (capabilities) predefinidos
         DB::table('sp_permissions')->insert([
             ['name' => 'read_all'],
             ['name' => 'read_all_folders'],

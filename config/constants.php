@@ -49,7 +49,7 @@ if (!defined('ETC_PATH'))
     define('ETC_PATH', ROOT_PATH . 'etc'. DIRECTORY_SEPARATOR);    
 
 if (!defined('CORE_PATH'))
-    define('CORE_PATH', SRC_PATH . 'Core'. DIRECTORY_SEPARATOR);
+    define('CORE_PATH', SRC_PATH . 'framework'. DIRECTORY_SEPARATOR);
 
 if (!defined('CORE_INTERFACE_PATH'))
 	define('CORE_INTERFACE_PATH', CORE_PATH  . 'Interfaces' . DIRECTORY_SEPARATOR);    

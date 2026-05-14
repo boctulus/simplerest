@@ -1,0 +1,45 @@
+PROMPT — ACL v4 (Compiled Effective Permissions + Business Deny Rules)
+Branch: master
+Git hash at start: 3cf616a03
+Date: 2026-05-15
+
+User request:
+- Plan + implement the v3-style ACL improvement (compiled effective permissions, O(1) runtime, replacement semantics, frontend admin determinism) without breaking the existing public API.
+- Plan first (planning mode), then execute.
+- Plan file delivered to docs/to-do/acl-improvement-v4.md.
+- During planning, user added: implement deny rules via builder + DB (v2-style DENY > ALLOW, business-level), table user_deny_permissions(user_id, resource, action), builder methods addDenyResourcePermissions() / addDenySpecialPermissions().
+
+Scope agreed:
+- Phases 1–5, 8, 9, 10 of v3 doc + business deny rules.
+- Per-user compilation: lazy default + eager opt-in (AclContext::withCompiled).
+- Snapshot: per-role effectiveAllows hash maps + denyRolePerms + internal effectiveDenies cache.
+- Deny semantics: DENY > ALLOW, beats read_all/write_all sentinels.
+- Hard security constraints (v3 §6) and role-hierarchy doc clarifications (v3 §7) deferred.
+
+Outcome:
+- All 23+ existing ACL tests still green.
+- 16 new tests in AclCompiledPermissionsTest + AclEngineDenyTest pass.
+- Final test suite: 58 tests / 90 assertions, all green.
+- ACL cache regenerated via `php com make acl --force`.
+- Migration `user_deny_permissions` applied.
+- API generators in this repo are broken (templates expected at src/Core/Templates, real path src/framework/Templates); schema/model/controller written manually.
+
+Files created:
+- src/framework/Security/Compiler/EffectivePermissionCompiler.php
+- src/framework/Security/Compiler/TbPermissionBits.php
+- src/framework/Security/Explanation/PermissionExplanation.php
+- unit-tests/acl/AclCompiledPermissionsTest.php
+- unit-tests/acl/AclEngineDenyTest.php
+- database/migrations/2026_05_15_180000000_user_deny_permissions.php
+- app/Controllers/Api/UserDenyPermissions.php
+- app/Models/main/UserDenyPermissionsModel.php
+- app/Schemas/main/UserDenyPermissionsSchema.php
+- docs/to-do/acl-improvement-v4.md
+
+Files modified:
+- src/framework/Acl.php
+- src/framework/Security/Snapshot/AclSnapshot.php
+- src/framework/Security/Domain/AclContext.php
+- src/framework/Security/Engine/AclEngine.php
+- src/framework/Security/Contracts/AuthorizationServiceInterface.php
+- packages/boctulus/fine-grained-acl/src/Acl.php
