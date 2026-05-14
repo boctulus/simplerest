@@ -93,8 +93,44 @@ class Acl extends \Boctulus\Simplerest\Core\Acl
         $rows = DB::table("user_sp_permissions")
         ->get();
 
-        return $rows;        
+        return $rows;
     }
 
+    /**
+     * Fresh DB read of user_deny_permissions (business-level explicit denies).
+     * Shape: ['resource' => ['action' => true]]
+     */
+    public function getFreshDenyPermissions($uid = null): array
+    {
+        return withDefaultConnection(function() use ($uid) {
+            $q = DB::table('user_deny_permissions');
+            if ($uid !== null) {
+                $q->where(['user_id' => $uid]);
+            }
+            $rows = $q->get();
+
+            $out = [];
+            foreach ($rows as $r) {
+                $resource = $r['resource'] ?? null;
+                $action   = $r['action']   ?? null;
+                if ($resource === null || $action === null) {
+                    continue;
+                }
+                $out[$resource][$action] = true;
+            }
+            return $out;
+        });
+    }
+
+    /**
+     * Override of base Acl hook: load explicit deny rows for a specific user.
+     */
+    protected function fetchUserDenyPerms($uid, bool $is_auth): array
+    {
+        if ($uid === null) {
+            return [];
+        }
+        return $this->getFreshDenyPermissions($uid);
+    }
 }
 

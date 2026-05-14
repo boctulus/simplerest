@@ -10,6 +10,7 @@ use Boctulus\Simplerest\Core\Security\Contracts\AuthorizationPolicyInterface;
 use Boctulus\Simplerest\Core\Security\Domain\AclContext;
 use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
 use Boctulus\Simplerest\Core\Security\Engine\AclEngine;
+use Boctulus\Simplerest\Core\Security\Compiler\EffectivePermissionCompiler;
 
 
 abstract class Acl implements IAcl
@@ -19,12 +20,13 @@ abstract class Acl implements IAcl
     protected $role_ids   = [];
     protected $role_names = [];
     protected $role_perms = [];
+    protected $deny_role_perms = [];
     protected $parent_role_names = [];
-    protected $current_role;
+    protected $current_role = null; // string or null
     protected $guest_name = 'guest';
     protected $registered_name = 'registered';
     protected $sp_permissions = [];
-    protected $ancestors = []; 
+    protected $ancestors = [];
     
 
     public function __construct()
@@ -228,6 +230,100 @@ abstract class Acl implements IAcl
         return $this;
     }
 
+    /**
+     * Expand resource-permission shorthand ('read' → ['show','list'], 'write' → ['create','update','delete']).
+     * Reused by both allow and deny builders.
+     *
+     * @return string[]
+     */
+    protected function expandResourceActions(array $actions): array
+    {
+        $expanded = [];
+
+        foreach ($actions as $a) {
+            switch ($a) {
+                case 'read':
+                    $expanded[] = 'show';
+                    $expanded[] = 'list';
+                    break;
+                case 'read_all':
+                    $expanded[] = 'show_all';
+                    $expanded[] = 'list_all';
+                    break;
+                case 'write':
+                    $expanded[] = 'create';
+                    $expanded[] = 'update';
+                    $expanded[] = 'delete';
+                    break;
+                case 'show':
+                case 'show_all':
+                case 'list':
+                case 'list_all':
+                case 'create':
+                case 'update':
+                case 'delete':
+                    $expanded[] = $a;
+                    break;
+                default:
+                    throw new \Exception("'$a' is not a valid resource permission");
+            }
+        }
+
+        return array_values(array_unique($expanded));
+    }
+
+    /**
+     * Declare an explicit business-level DENY on a resource for the current role
+     * (or `$to_role` if provided). Beats role-level ALLOWs and read_all/write_all
+     * wildcards. Mirrors addResourcePermissions() shape.
+     */
+    public function addDenyResourcePermissions(string $table, array $actions, $to_role = null)
+    {
+        if ($to_role != null){
+            $this->current_role = $to_role;
+        }
+
+        if ($this->current_role == null){
+            throw new \Exception("You can't add deny rules to undefined rol");
+        }
+
+        $expanded = $this->expandResourceActions($actions);
+
+        if (!isset($this->deny_role_perms[$this->current_role]['tb'][$table])){
+            $this->deny_role_perms[$this->current_role]['tb'][$table] = [];
+        }
+
+        foreach ($expanded as $a){
+            $this->deny_role_perms[$this->current_role]['tb'][$table][$a] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Declare an explicit business-level DENY on special permissions for the
+     * current role (or `$to_role` if provided). Beats any ALLOW source.
+     */
+    public function addDenySpecialPermissions(array $sp_permissions, $to_role = null)
+    {
+        if ($to_role != null){
+            $this->current_role = $to_role;
+        }
+
+        if ($this->current_role == null){
+            throw new \Exception("You can't add deny rules to undefined rol");
+        }
+
+        foreach ($sp_permissions as $spp){
+            if (!in_array($spp, $this->sp_permissions)){
+                throw new \Exception("'$spp' is not a valid special permission");
+            }
+            $this->deny_role_perms[$this->current_role]['sp'][$spp] = true;
+        }
+
+        return $this;
+    }
+
     public function setAsGuest(string $guest_name){
         if (!in_array($guest_name, $this->role_names)){
             throw new \Exception("Please add the rol '$guest_name' *before* to set as guest role to avoid mistakes");
@@ -311,11 +407,18 @@ abstract class Acl implements IAcl
             $userSpPerms = auth()->getPermissions()['sp'] ?? [];
         }
 
-        $context = new AclContext(
-            userId:        $uid,
-            roles:         $role_names,
-            authenticated: $is_auth,
-            userSpPerms:   $userSpPerms,
+        $userDenyPerms   = $this->fetchUserDenyPerms($uid, $is_auth);
+        $userDenySpPerms = $this->fetchUserDenySpPerms($uid, $is_auth);
+
+        $context = AclContext::withCompiled(
+            snapshot:        $this->getSnapshot(),
+            compiler:        $this->getCompiler(),
+            userId:          $uid,
+            roles:           $role_names,
+            authenticated:   $is_auth,
+            userSpPerms:     $userSpPerms,
+            userDenyPerms:   $userDenyPerms,
+            userDenySpPerms: $userDenySpPerms,
         );
 
         return $this->getEngine()->hasSpecialPermission($perm, $context);
@@ -341,8 +444,15 @@ abstract class Acl implements IAcl
             }
         }
 
-        return $this->getEngine()
-            ->hasResourcePermission($perm, $resource, new AclContext(roles: $role_names));
+        $context = AclContext::withCompiled(
+            snapshot:      $this->getSnapshot(),
+            compiler:      $this->getCompiler(),
+            userId:        null,
+            roles:         $role_names,
+            authenticated: false,
+        );
+
+        return $this->getEngine()->hasResourcePermission($perm, $resource, $context);
     }
 
     /*
@@ -370,16 +480,45 @@ abstract class Acl implements IAcl
         $userSpPerms = $perms['sp'] ?? [];
         $userTbPerms = $perms['tb'] ?? [];
 
-        $context = new AclContext(
-            userId:        $uid,
-            roles:         $roles,
-            authenticated: $is_auth,
-            userSpPerms:   $userSpPerms,
-            userTbPerms:   $userTbPerms,
-            rowId:         $row_id,
+        $userDenyPerms   = $this->fetchUserDenyPerms($uid, $is_auth);
+        $userDenySpPerms = $this->fetchUserDenySpPerms($uid, $is_auth);
+
+        $context = AclContext::withCompiled(
+            snapshot:        $this->getSnapshot(),
+            compiler:        $this->getCompiler(),
+            userId:          $uid,
+            roles:           $roles,
+            authenticated:   $is_auth,
+            userSpPerms:     $userSpPerms,
+            userTbPerms:     $userTbPerms,
+            userDenyPerms:   $userDenyPerms,
+            userDenySpPerms: $userDenySpPerms,
+            rowId:           $row_id,
         );
 
         return $this->getEngine()->can($context, $perm, $resource);
+    }
+
+    /**
+     * Override in DB-backed subclasses (e.g. FineGrainedACL) to load
+     * `user_deny_permissions` rows. Default: no explicit user denies.
+     *
+     * @return array<string, array<string, true>>
+     */
+    protected function fetchUserDenyPerms($uid, bool $is_auth): array
+    {
+        return [];
+    }
+
+    /**
+     * Override in DB-backed subclasses to load explicit user-level
+     * special-permission denies. Default: none.
+     *
+     * @return array<string, true>
+     */
+    protected function fetchUserDenySpPerms($uid, bool $is_auth): array
+    {
+        return [];
     }
 
     public function getResourcePermissions(string $role, string $resource, $op_type = null): array {
@@ -568,28 +707,34 @@ abstract class Acl implements IAcl
 
     public function hasAllPermissions(array $permissions): bool
     {
-        $perms  = auth()->getPermissions() ?? [];
-        $context = new AclContext(
-            roles:         auth()->getRoles(),
-            authenticated: request()->isAuthenticated(),
-            userSpPerms:   $perms['sp'] ?? [],
-            userTbPerms:   $perms['tb'] ?? [],
-        );
-
-        return $this->getEngine()->hasAllPermissions($context, $permissions);
+        return $this->getEngine()->hasAllPermissions($this->buildAuthContext(), $permissions);
     }
 
     public function hasAnyPermission(array $permissions): bool
     {
-        $perms  = auth()->getPermissions() ?? [];
-        $context = new AclContext(
-            roles:         auth()->getRoles(),
-            authenticated: request()->isAuthenticated(),
-            userSpPerms:   $perms['sp'] ?? [],
-            userTbPerms:   $perms['tb'] ?? [],
-        );
+        return $this->getEngine()->hasAnyPermission($this->buildAuthContext(), $permissions);
+    }
 
-        return $this->getEngine()->hasAnyPermission($context, $permissions);
+    /**
+     * Build an AclContext from the current auth() session with compiled
+     * permissions pre-baked. Used by capability-style helpers.
+     */
+    protected function buildAuthContext(): AclContext
+    {
+        $perms   = auth()->getPermissions() ?? [];
+        $is_auth = request()->isAuthenticated();
+
+        return AclContext::withCompiled(
+            snapshot:        $this->getSnapshot(),
+            compiler:        $this->getCompiler(),
+            userId:          null,
+            roles:           auth()->getRoles(),
+            authenticated:   $is_auth,
+            userSpPerms:     $perms['sp'] ?? [],
+            userTbPerms:     $perms['tb'] ?? [],
+            userDenyPerms:   $this->fetchUserDenyPerms(null, $is_auth),
+            userDenySpPerms: $this->fetchUserDenySpPerms(null, $is_auth),
+        );
     }
 
     public function roleDominates(string $candidateRole, string $targetRole): bool
@@ -599,15 +744,7 @@ abstract class Acl implements IAcl
 
     public function satisfiesPolicy(AuthorizationPolicyInterface $policy): bool
     {
-        $perms  = auth()->getPermissions() ?? [];
-        $context = new AclContext(
-            roles:         auth()->getRoles(),
-            authenticated: request()->isAuthenticated(),
-            userSpPerms:   $perms['sp'] ?? [],
-            userTbPerms:   $perms['tb'] ?? [],
-        );
-
-        return $this->getEngine()->satisfiesPolicy($context, $policy);
+        return $this->getEngine()->satisfiesPolicy($this->buildAuthContext(), $policy);
     }
 
     // ── Pure engine / service access ──────────────────────────────────────
@@ -615,15 +752,29 @@ abstract class Acl implements IAcl
     /**
      * Build a pure AclSnapshot from the current builder state.
      * Zero DB/auth dependency — safe to use in unit tests.
+     *
+     * Includes compiled per-role effective allows + role-level deny rules +
+     * deterministic explanations for the admin frontend.
      */
     public function getSnapshot(): AclSnapshot
     {
+        $compiler = new EffectivePermissionCompiler();
+        $compiled = $compiler->compileRoles(
+            $this->role_perms,
+            $this->deny_role_perms,
+            $this->sp_permissions
+        );
+
         return new AclSnapshot(
-            rolePerms:       $this->role_perms,
-            parentRoleNames: $this->parent_role_names,
-            validSpPerms:    $this->sp_permissions,
-            guestName:       $this->guest_name,
-            registeredName:  $this->registered_name,
+            rolePerms:              $this->role_perms,
+            parentRoleNames:        $this->parent_role_names,
+            validSpPerms:           $this->sp_permissions,
+            guestName:              $this->guest_name,
+            registeredName:         $this->registered_name,
+            effectiveAllows:        $compiled['allows'],
+            effectiveDenies:        $compiled['denies'],
+            denyRolePerms:          $this->deny_role_perms,
+            permissionExplanations: $compiled['explanations'],
         );
     }
 
@@ -634,6 +785,18 @@ abstract class Acl implements IAcl
     public function getEngine(): AclEngine
     {
         return new AclEngine($this->getSnapshot());
+    }
+
+    /**
+     * Shared compiler instance for per-user compilation inside this builder.
+     */
+    protected function getCompiler(): EffectivePermissionCompiler
+    {
+        static $compiler = null;
+        if ($compiler === null) {
+            $compiler = new EffectivePermissionCompiler();
+        }
+        return $compiler;
     }
 
 

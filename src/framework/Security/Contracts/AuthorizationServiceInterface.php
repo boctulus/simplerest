@@ -51,4 +51,14 @@ interface AuthorizationServiceInterface
      * Delegates authorization logic to a policy object.
      */
     public function satisfiesPolicy(AclContext $context, AuthorizationPolicyInterface $policy): bool;
+
+    /**
+     * True if an explicit DENY rule applies to ($resource, $action) for the
+     * given context — at user-level (`AclContext::$userDenyPerms`) or
+     * role-level (`AclSnapshot::$denyRolePerms`).
+     *
+     * Business-level deny: a true result here forces a final deny regardless
+     * of any ALLOW rule (including read_all / write_all sentinels).
+     */
+    public function hasExplicitDeny(AclContext $context, string $action, string $resource): bool;
 }

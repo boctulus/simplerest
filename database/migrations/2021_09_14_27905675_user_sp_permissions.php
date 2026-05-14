@@ -4,6 +4,15 @@ use Boctulus\Simplerest\Core\Interfaces\IMigration;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\Schema;
 
+/*
+    User capabilities (sp_permissions) table migration
+
+    Define 'business permissions' para un usuario dado su id.
+
+    Responde a:
+
+    ¿Qué acciones de negocio puede ejecutar el usuario?
+*/
 class UserSpPermissionsCreation implements IMigration
 {
     /**
