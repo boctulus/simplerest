@@ -54,9 +54,10 @@ The system supports complex enterprise-level permission requirements that would 
 
 ## Separation of Concerns
 
-Acl → DSL / builder / façade
+Acl → DSL / builder / façade  (`src/framework/Security/Acl.php`)
 AclSnapshot → estado inmutable serializable
 AclEngine → motor puro de evaluación
+RoleHierarchyService → jerarquía / linaje de roles
 EffectivePermissionCompiler → precompilación
 AclContext → request-scoped context
 
@@ -290,13 +291,13 @@ Luego el ACL es serializado y se almacena como así también un archivo de cach�
 
 Para re-generar se puede usar el comando:
 
-	make acl --force
+	php com make acl --force
 
 Para poder depurar lo que construye el ACL antes de la serialización se puede usar --debug
 
 Ej:
 
-	make acl --force --debug
+	php com make acl --force --debug
 
 En realidad no suele ser necesario regenerar manualmente el ACL porque suele hacerse automáticamente
 pero eso depende de la lógica dentro de acl.php --que puede modificarse--
@@ -687,6 +688,7 @@ AclContext                 → estado del usuario en tiempo de evaluación (role
 
 | Clase | Namespace | Archivo |
 |---|---|---|
+| `Acl` (builder) | `Core\Security` | `src/framework/Security/Acl.php` |
 | `AclContext` | `Core\Security\Domain` | `src/framework/Security/Domain/AclContext.php` |
 | `AclSnapshot` | `Core\Security\Snapshot` | `src/framework/Security/Snapshot/AclSnapshot.php` |
 | `AclEngine` | `Core\Security\Engine` | `src/framework/Security/Engine/AclEngine.php` |
@@ -756,7 +758,16 @@ $engine->isHigherRole('superadmin', 'admin')        // true
 El engine tiene cobertura completa sin base de datos:
 
 ```
-tests/unit-tests/AclEngineTest.php   (23 tests)
+unit-tests/acl/AclEngineTest.php              (28 tests)
+unit-tests/acl/AclCompiledPermissionsTest.php
+unit-tests/acl/AclEngineDenyTest.php
+unit-tests/acl/RoleHierarchyServiceTest.php
+```
+
+Para correr todos los tests de ACL:
+
+```
+php vendor/bin/phpunit unit-tests/acl
 ```
 
 Ejemplo mínimo de test:
