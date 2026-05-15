@@ -62,7 +62,9 @@
       "Bash(composer dump-autoload:*)",
       "Bash(tee:*)",
       "Bash(git *)",
-      "PowerShell(git *)"
+      "PowerShell(git *)",
+      "Bash(powershell -Command \"Get-Date -Format 'yyyy-MM-dd HH-mm'\")",
+      "Bash(powershell *)"
     ],
     "deny": [],
     "ask": []
