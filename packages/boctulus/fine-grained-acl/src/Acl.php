@@ -4,7 +4,7 @@ namespace Boctulus\FineGrainedACL;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 
-class Acl extends \Boctulus\Simplerest\Core\Acl
+class Acl extends \Boctulus\Simplerest\Core\Security\Acl
 {
     // Every possible role
     protected $roles = [];  
@@ -13,7 +13,7 @@ class Acl extends \Boctulus\Simplerest\Core\Acl
     protected $role_ids   = [];
     protected $role_names = [];
     protected $sp_permissions = []; 
-    protected $current_role;
+    protected $current_role = null;
     protected $guest_name = 'guest';
 
 

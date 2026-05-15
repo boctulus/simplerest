@@ -2,6 +2,8 @@
 
 > Evolution from v3 (Compiled Effective Permissions) **plus** business-level DENY rules at builder and DB layers. Backward-compatible with all existing APIs, snapshots, packages and tests.
 
+Estado: implementado
+
 ---
 
 ## Context

@@ -5,7 +5,7 @@ namespace Boctulus\Simplerest\Core\Libs;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Controllers\MyAuthController;
 use Boctulus\Simplerest\Core\Libs\Validator;
-use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\Security\Acl;
 use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Response;
 use Boctulus\Simplerest\Core\Interfaces\IAcl;

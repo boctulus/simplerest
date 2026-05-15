@@ -6,7 +6,7 @@
 
 ## Prerequisites
 
-- **PHP 7.4 – 8.3** (8.4 coming soon)
+- **PHP 8.1 – 8.4**
 - **Composer** (for dependencies)
 - **MySQL** (or MariaDB)
 - **Apache/Nginx** with `mod_rewrite` enabled

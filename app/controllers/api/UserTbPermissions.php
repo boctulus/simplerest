@@ -7,7 +7,7 @@ use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Validator;
 use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
-use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\Security\Acl;
 
 class UserTbPermissions extends ApiController
 {   

@@ -184,7 +184,7 @@ Para contribuir a la documentación:
 ---
 
 **Última actualización**: 2026-01-24
-**Versión del Framework**: 0.9.0
+**Versión del Framework**: 1.0.0
 
 **Autor**: Pablo Bozzolo (boctulus)
 **Software Architect**

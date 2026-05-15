@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core;
+namespace Boctulus\Simplerest\Core\Security;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Config;
@@ -697,6 +697,11 @@ abstract class Acl implements IAcl
     // alias
     public function hasAnyRoleOrChild(array $authorized_roles): bool {
         return $this->hasAnyRoleOrHigher($authorized_roles);
+    }
+
+    public function hasRolePermissionsOrHigher(string $targetRole): bool {
+        $context = $this->buildAuthContext();
+        return $this->getEngine()->hasRolePermissionsOrHigher($context, $targetRole);
     }
 
     // -------------------------------------------------------------------------

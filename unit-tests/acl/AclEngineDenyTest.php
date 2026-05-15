@@ -16,6 +16,11 @@ if (php_sapi_name() != "cli") {
     return;
 }
 
+/*
+ *
+ * Ejecutar con: ./vendor/bin/phpunit unit-tests/acl/AclEngineDenyTest.php
+ */
+
 class AclEngineDenyTest extends TestCase
 {
     private AclSnapshot $snapshot;

@@ -23,7 +23,7 @@ require_once __DIR__ . '/../app.php';
  *
  * Routes tested from: packages/boctulus/web-test/config/routes.php
  *
- * Ejecuta con: ./vendor/bin/phpunit tests/WebRouterFunctionalTest.php
+ * Ejecuta con: ./vendor/bin/phpunit unit-tests/WebRouterFunctionalTest.php
  *
 */
 class WebRouterFunctionalTest extends TestCase

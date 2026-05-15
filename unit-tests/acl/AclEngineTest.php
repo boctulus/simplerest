@@ -17,6 +17,10 @@ if (php_sapi_name() != "cli") {
     return;
 }
 
+/*
+ *
+ * Ejecutar con: ./vendor/bin/phpunit unit-tests/acl/AclEngineTest.php
+ */
 class AclEngineTest extends TestCase
 {
     private AclEngine $engine;
