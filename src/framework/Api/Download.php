@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Core\Api;
 
-use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\Security\Acl;
 use Boctulus\Simplerest\Core\Api\ResourceController;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\DB;

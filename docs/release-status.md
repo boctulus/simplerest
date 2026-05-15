@@ -1,7 +1,7 @@
 # Release Status — SimpleRest Framework
 
 > **Generated**: 2026-04-12
-> **Version**: 0.9.0
+> **Version**: 1.0.0
 > **Branch**: master
 > **Repo**: https://github.com/boctulus/simplerest
 
@@ -159,7 +159,7 @@ Key concerns:
 
 ### Version Mismatch
 - `composer.json`: `"version": "0.8.12"`
-- `README.md`: `**Versión**: 0.9.0`
+- `README.md`: `**Versión**: 1.0.0`
 
 ### phpunit.xml Misconfiguration
 - `<source>` coverage only includes `friendlypos-web/src`

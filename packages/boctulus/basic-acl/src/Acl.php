@@ -4,14 +4,14 @@ namespace Boctulus\BasicACL;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 
-class Acl extends \Boctulus\Simplerest\Core\Acl
+class Acl extends \Boctulus\Simplerest\Core\Security\Acl
 {
     protected $roles = [];
     protected $role_perms = [];
     protected $role_ids   = [];
     protected $role_names = [];
     protected $sp_permissions = []; 
-    protected $current_role;
+    protected $current_role = null;
     protected $guest_name = 'guest';
 
     public function __construct() {

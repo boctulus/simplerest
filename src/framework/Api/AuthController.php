@@ -5,7 +5,7 @@ namespace Boctulus\Simplerest\Core\Api;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\Security\Acl;
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 use Boctulus\Simplerest\Core\Interfaces\IAuth;

@@ -122,7 +122,7 @@ The script cleans the `composer.json` file by:
 
 ## Requirements
 
-- PHP 7.4 or higher (same as SimpleRest framework requirements)
+- PHP 8.1 or higher (same as SimpleRest framework requirements)
 - Sufficient disk space for the destination directory
 - Proper file system permissions to read source and write destination
 

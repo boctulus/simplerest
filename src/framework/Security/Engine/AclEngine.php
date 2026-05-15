@@ -6,6 +6,7 @@ use Boctulus\Simplerest\Core\Security\Contracts\AclEngineInterface;
 use Boctulus\Simplerest\Core\Security\Contracts\AuthorizationServiceInterface;
 use Boctulus\Simplerest\Core\Security\Contracts\AuthorizationPolicyInterface;
 use Boctulus\Simplerest\Core\Security\Domain\AclContext;
+use Boctulus\Simplerest\Core\Security\Service\RoleHierarchyService;
 use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
 
 final class AclEngine implements AuthorizationServiceInterface, AclEngineInterface
@@ -18,9 +19,13 @@ final class AclEngine implements AuthorizationServiceInterface, AclEngineInterfa
     private const TB_BIT_UPDATE   = 2;
     private const TB_BIT_DELETE   = 1;
 
+    private RoleHierarchyService $hierarchyService;
+
     public function __construct(
         private readonly AclSnapshot $snapshot,
-    ) {}
+    ) {
+        $this->hierarchyService = new RoleHierarchyService($snapshot);
+    }
 
     private function tbBit(string $perm): int
     {
@@ -164,48 +169,27 @@ final class AclEngine implements AuthorizationServiceInterface, AclEngineInterfa
 
     public function getAncestry(string $role): array
     {
-        return $this->getAncestryInternal($role, $this->snapshot->parentRoleNames);
+        return $this->hierarchyService->getAncestry($role);
     }
 
     public function isHigherRole(string $role, string $referenced): ?bool
     {
-        if ($role === $referenced) {
-            return false;
-        }
-
-        $parentRoleNames = $this->snapshot->parentRoleNames;
-
-        if (in_array($role, $this->getAncestryInternal($referenced, $parentRoleNames), true)) {
-            return false;
-        }
-
-        if (in_array($referenced, $this->getAncestryInternal($role, $parentRoleNames), true)) {
-            return true;
-        }
-
-        return null;
+        return $this->hierarchyService->isHigherRole($role, $referenced);
     }
 
     public function hasRoleOrHigher(string $role, AclContext $context): bool
     {
-        foreach ($context->roles as $userRole) {
-            if ($userRole === $role || $this->isHigherRole($userRole, $role) === true) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->hierarchyService->hasRoleOrHigher($role, $context);
     }
 
     public function hasAnyRoleOrHigher(array $roles, AclContext $context): bool
     {
-        foreach ($roles as $role) {
-            if ($this->hasRoleOrHigher($role, $context)) {
-                return true;
-            }
-        }
+        return $this->hierarchyService->hasAnyRoleOrHigher($roles, $context);
+    }
 
-        return false;
+    public function hasRolePermissionsOrHigher(AclContext $context, string $targetRole): bool
+    {
+        return $this->hierarchyService->hasRolePermissionsOrHigher($context, $targetRole, $this);
     }
 
     // ── Accessors ─────────────────────────────────────────────────────────
@@ -340,18 +324,5 @@ final class AclEngine implements AuthorizationServiceInterface, AclEngineInterfa
         return $this->hasResourcePermissionInternal($perm, $resource, $context->roles);
     }
 
-    // ── Hierarchy internals (formerly in RoleHierarchyResolver) ───────────
 
-    private function getAncestryInternal(string $role, array $parentRoleNames): array
-    {
-        $ancestors = [];
-        $current   = $role;
-
-        while (isset($parentRoleNames[$current])) {
-            $current     = $parentRoleNames[$current];
-            $ancestors[] = $current;
-        }
-
-        return $ancestors;
-    }
 }
