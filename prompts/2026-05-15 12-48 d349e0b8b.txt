@@ -1,0 +1,30 @@
+TAREA: Revisar el plan de la UI del ACL (docs/to-do/acl-improvement-v5.md).
+Modelar abstracto primero. A nivel implementación usar TOM SELECT (no SELECT2).
+ENTREGABLE: el PLAN DE TRABAJO (acl-improvement-v5.md endurecido).
+
+Veredicto previo: APPROVED arquitectónicamente (separación declared/effective,
+editor/inspector, explain tipado, readonly effective, replacement semantics,
+deny symmetry, frontend deja de calcular ACL).
+
+Ajustes IMPORTANTES de endurecimiento antes de ejecutar (12 críticas):
+1. effective() NO array plano → DTO agrupado por resource.
+2. "Declared summary" debe ser endpoint separado (GET /acl/assignments);
+   explain solo causalidad runtime.
+3. permission_hash semánticamente incorrecto → acl_context_hash /
+   compiled_context_hash (hash del contexto compilado, no del effective).
+4. snapshot_version insuficiente para concurrency → versión per-user
+   (acl_state_version) además de snapshot_version global.
+5. ExplainType mezcla layer y effect → separar origin (ROLE/USER/WILDCARD/
+   DEFAULT) + effect (ALLOW/DENY).
+6. Folder permissions NO contemplados → documentar scope explícito del
+   inspector (no incluye folder/ownership/row-level).
+7. Effective panel debe soportar filtros desde día 1 (conflicts/denies/
+   overrides/search resource/search action).
+8. ACL Store necesita normalized indexing ({resource:{action:dto}}).
+9. "Regenerate" peligroso en UI → quitar o admin-only + confirm + async.
+10. resources() endpoint incompleto → documentar registry dinámico.
+11. Falta batch explain → dejar preparado, no implementar ahora.
+12. UI ya no es CRUD admin → lenguaje IAM-style (Capabilities / Resource
+    Policies / Policy Overrides).
+
+No agregar más features. Scope freeze correcto.
