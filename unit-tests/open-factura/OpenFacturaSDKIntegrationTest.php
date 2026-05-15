@@ -24,7 +24,7 @@ require_once __DIR__ . '/../app.php';
  *
  * Este test verifica que el SDK funcione correctamente contra la API real de OpenFactura
  *
- * Ejecutar con: ./vendor/bin/phpunit tests/OpenFacturaSDKIntegrationTest.php
+ * Ejecutar con: ./vendor/bin/phpunit unit-tests/OpenFacturaSDKIntegrationTest.php
  */
 class OpenFacturaSDKIntegrationTest extends TestCase
 {

@@ -210,6 +210,12 @@ WebRouter::group('admin', function() {
 });
 
 
+WebRouter::get('admin/acl-permissions', function(){
+    $page = new \Boctulus\Simplerest\pages\admin\AclPermissions();
+    $content = $page->index();
+    render($content, 'templates/adminlte_tpl.php', $page->tpl_params);
+});
+
 WebRouter::get('admin/una-pagina', function(){
 	$content = "Pagina (de acceso restringido)";
 	render($content);

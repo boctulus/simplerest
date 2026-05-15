@@ -18,7 +18,7 @@ require_once __DIR__ . '/../app.php';
 /**
  * Pruebas unitarias para métodos inmutables de Response (Fase 2)
  *
- * Ejecutar con: `./vendor/bin/phpunit tests/ResponseImmutableMethodsTest.php`
+ * Ejecutar con: `./vendor/bin/phpunit unit-tests/ResponseImmutableMethodsTest.php`
  */
 class ResponseImmutableMethodsTest extends TestCase
 {

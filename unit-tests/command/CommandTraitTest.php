@@ -22,7 +22,7 @@ use Boctulus\Simplerest\Core\Traits\CommandTrait;
  *
  * Prueba las funcionalidades de parseo de opciones de línea de comandos
  *
- * Ejecutar con: ./vendor/bin/phpunit tests/CommandTraitTest.php
+ * Ejecutar con: ./vendor/bin/phpunit unit-tests/CommandTraitTest.php
  */
 class CommandTraitTest extends TestCase
 {

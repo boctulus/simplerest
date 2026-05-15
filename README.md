@@ -5,7 +5,7 @@
 > Laravel-like syntax. Zero-magic philosophy. Bootstrap in 3-10ms.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![PHP Version](https://img.shields.io/badge/php-7.4%20--%208.4-blue.svg)](https://php.net)
+[![PHP Version](https://img.shields.io/badge/php-8.1%20--%208.4-blue.svg)](https://php.net)
 [![Tests](https://github.com/boctulus/simplerest/actions/workflows/tests.yml/badge.svg)](https://github.com/boctulus/simplerest/actions/workflows/tests.yml)
 
 ---
@@ -28,7 +28,7 @@ SimpleRest is a **modular PHP framework** designed for building REST APIs and we
 | **Auto REST endpoints** | ✅ Zero config | ❌ Manual |
 | **Built-in ACL** | ✅ Hierarchical, granular | Via packages |
 | **Composer required** | No (works standalone) | Yes |
-| **PHP versions** | 7.4 – 8.4 | 8.1+ |
+| **PHP versions** | 8.1 – 8.4 | 8.1+ |
 
 ---
 

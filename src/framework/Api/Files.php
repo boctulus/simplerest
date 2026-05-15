@@ -6,7 +6,7 @@ use Boctulus\Simplerest\Core\Api\ApiController;
 use Boctulus\Simplerest\Core\Libs\FileUploader;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\Security\Acl;
 
 class Files extends ApiController
 { 

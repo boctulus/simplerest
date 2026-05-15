@@ -4,7 +4,7 @@ namespace Boctulus\Simplerest\Core\Api;
 
 use Boctulus\Simplerest\Core\Api\ApiController;
 use Boctulus\Simplerest\Core\Libs\Factory;
-use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\Security\Acl;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Libs\Debug;

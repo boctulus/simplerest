@@ -17,6 +17,11 @@ if (php_sapi_name() != "cli") {
     return;
 }
 
+/*
+ *
+ * Ejecutar con: ./vendor/bin/phpunit unit-tests/acl/AclCompiledPermissionsTest.php
+ */
+
 class AclCompiledPermissionsTest extends TestCase
 {
     private AclSnapshot $snapshot;

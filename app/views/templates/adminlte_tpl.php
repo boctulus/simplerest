@@ -21,7 +21,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="<?= asset('third_party/adminlte/dist/css/adminlte.min.css') ?>">
 
     <!-- bootstrap 5.1.3 solo css -->
-    <link rel="stylesheet" href="<?= asset('third_party/bootstrap/bootstrap.min.css') ?>">
+    <link rel="stylesheet" href="<?= asset('third_party/bootstrap/5.x/bootstrap.min.css') ?>">
 
     <!--
         https://jsfiddle.net/u910ed2L/6/v
@@ -66,6 +66,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <?php
 
         use Boctulus\Simplerest\Core\View;
+        use Boctulus\Simplerest\Core\Libs\Config;
         use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
         use Boctulus\Simplerest\Core\Libs\HtmlBuilder\AdminLte;
 
@@ -326,7 +327,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- REQUIRED SCRIPTS -->
 
     <!-- Bootstrap 5.1.3 -->
-    <script src="<?= asset('js/bootstrap.bundle.min.js') ?>"></script>
+    <script src="<?= asset('third_party/bootstrap/5.x/bootstrap.bundle.min.js') ?>"></script>
     
     <!-- AdminLTE App -->
     <script src="<?= asset('third_party/adminlte/dist/js/adminlte.min.js') ?>"></script>
