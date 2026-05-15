@@ -41,7 +41,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title"><i class="fas fa-sitemap me-2"></i> Role Hierarchy — <code>config/acl.php</code></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <!-- botón a sintaxis Bootstrap 4 para compatibilidad con AdminLTE 3 -->
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body" id="rolesModalBody">
                     <div class="text-center py-4"><i class="fas fa-spinner fa-spin"></i> Loading…</div>
