@@ -265,6 +265,7 @@ return [
 		Boctulus\LLMProviders\ServiceProvider::class,
 		Boctulus\FriendlyposWeb\ServiceProvider::class,
 		Boctulus\Simplerest\Modules\Xeni\ModuleProvider::class,
+		Boctulus\Simplerest\Modules\Security\ModuleProvider::class,
 		// ...
 		//boctulus\hello_world\HelloServiceProvider::class
 	],
