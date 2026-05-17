@@ -2,10 +2,10 @@
 
 namespace Boctulus\Simplerest\Controllers;
 
-use Boctulus\Simplerest\Core\Controllers\Controller;
+use Boctulus\Simplerest\Core\Controllers\WebController;
 use Boctulus\Simplerest\Core\Libs\DB;
 
-class LoginController extends Controller
+class LoginController extends WebController
 {
 	/*
 		Nombres de los campos en la tabla "users"
