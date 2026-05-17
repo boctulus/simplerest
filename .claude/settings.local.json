@@ -84,7 +84,9 @@
       "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages",
       "mcp__plugin_chrome-devtools-mcp_chrome-devtools__get_console_message",
       "Bash(PowerShell *)",
-      "Bash(python -m json.tool)"
+      "Bash(python -m json.tool)",
+      "Skill(acl-config)",
+      "Bash(xargs grep -l \"isGuest\")"
     ],
     "deny": [],
     "ask": []
