@@ -58,19 +58,19 @@
     <div id="inspectorBody" class="d-none">
         <ul class="nav nav-tabs" id="aclTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="tab-assign-btn" data-bs-toggle="tab" data-bs-target="#tab-assign" type="button" role="tab">
+                <a class="nav-link active" id="tab-assign-btn" data-toggle="tab" href="#tab-assign" role="tab">
                     <i class="fas fa-user-pen"></i> Assignments
-                </button>
+                </a>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="tab-eff-btn" data-bs-toggle="tab" data-bs-target="#tab-eff" type="button" role="tab">
+                <a class="nav-link" id="tab-eff-btn" data-toggle="tab" href="#tab-eff" role="tab">
                     <i class="fas fa-table-list"></i> Effective
-                </button>
+                </a>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="tab-exp-btn" data-bs-toggle="tab" data-bs-target="#tab-exp" type="button" role="tab">
+                <a class="nav-link" id="tab-exp-btn" data-toggle="tab" href="#tab-exp" role="tab">
                     <i class="fas fa-magnifying-glass-chart"></i> Explain
-                </button>
+                </a>
             </li>
         </ul>
 
@@ -79,9 +79,10 @@
             <!-- ============ TAB 1: ASSIGNMENTS ============ -->
             <div class="tab-pane fade show active" id="tab-assign" role="tabpanel">
 
-                <div id="dirtyBanner" class="alert alert-warning d-none d-flex justify-content-between align-items-center">
+                <div id="dirtyBanner" class="alert alert-warning d-flex justify-content-between align-items-center" style="display:none!important">
                     <span><i class="fas fa-triangle-exclamation"></i> Unsaved Resource Policy changes.</span>
                     <span class="text-muted small">Use each resource's <strong>Save</strong> button to persist.</span>
+                    <button type="button" class="close ms-2" id="btnDismissDirty" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
 
                 <div class="card mb-3">
@@ -207,6 +208,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var API   = base_url + '/api/v1/';
     var state = { uid: null, hash: null, snap: null, caps: [], spCatalog: {}, dirty: {} };
+    var dirtyTimer = null;
+
+    function showDirtyBanner(){
+        clearTimeout(dirtyTimer);
+        $('#dirtyBanner').css('display', 'flex');
+        dirtyTimer = setTimeout(function(){ $('#dirtyBanner').css('display', 'none'); }, 10000);
+    }
 
     function hdrs(){ return { 'Content-Type': 'application/json' }; }
 
@@ -269,8 +277,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ---------------------------------------------------------- role graph modal
     var rolesLoaded = false;
     $('#btnRoles').on('click', function(){
-        var modal = new bootstrap.Modal(document.getElementById('rolesModal'));
-        modal.show();
+        $('#rolesModal').modal('show');
         if (rolesLoaded) return;
         $.ajax({ url: API + 'acl/role_graph', dataType: 'json' }).then(function(r){
             rolesLoaded = true;
@@ -409,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         $('#denyEmpty').toggle(!any);
         state.dirty = {};
-        $('#dirtyBanner').addClass('d-none');
+        clearTimeout(dirtyTimer); $('#dirtyBanner').css('display', 'none');
     }
 
     function renderCapabilities(uspRows){
@@ -477,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!rows) return;
             i++;
             $acc.append(
-              '<div class="accordion-item"><h2 class="accordion-header">'
+              '<div class="accordion-item"><h2 class="accordion-header mt-3">'
               + '<button class="accordion-button '+(i>1?'collapsed':'')+'" type="button" data-bs-toggle="collapse" data-bs-target="#ea'+i+'">'
               + '<code>'+esc(rname)+'</code></button></h2>'
               + '<div id="ea'+i+'" class="accordion-collapse collapse '+(i===1?'show':'')+'"><div class="accordion-body p-0">'
@@ -547,7 +554,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     $('#tbBox').on('change', '.tbchk', function(){
-        state.dirty[$(this).data('res')] = true; $('#dirtyBanner').removeClass('d-none');
+        state.dirty[$(this).data('res')] = true; showDirtyBanner();
+    });
+
+    $('#btnDismissDirty').on('click', function(){
+        clearTimeout(dirtyTimer); $('#dirtyBanner').css('display', 'none');
     });
 
     // BUG FIX: send ALL checkbox fields so replacement semantics keep the full set
@@ -608,7 +619,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $('#effResources').on('click', '.res-cell', function(){
         var res = $(this).data('res'), act = $(this).data('act');
         $('#expRes').val(res); $('#expAct').val(act);
-        new bootstrap.Tab(document.getElementById('tab-exp-btn')).show();
+        $('#tab-exp-btn').tab('show');
         explain(res, act);
     });
     $('#btnExplain').on('click', function(){ explain($('#expRes').val().trim(), $('#expAct').val()); });
