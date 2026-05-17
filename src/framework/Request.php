@@ -235,7 +235,11 @@ class Request  implements \ArrayAccess, Arrayable
             return "Bearer $token";
         }
 
-        return static::$headers['authorization'] ?? null;
+        // Fallback for PHP-FPM: apache_request_headers() may miss Authorization
+        return static::$headers['authorization']
+            ?? $_SERVER['HTTP_AUTHORIZATION']
+            ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION']
+            ?? null;
     }
     
     /*

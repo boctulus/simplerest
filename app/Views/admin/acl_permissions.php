@@ -122,7 +122,7 @@
                         <div class="row g-2 mb-3">
                             <div class="col-md-4"><input type="text" id="denyRes" class="form-control form-control-sm" placeholder="resource"></div>
                             <div class="col-md-4">
-                                <select id="denyAct" class="form-select form-select-sm">
+                                <select id="denyAct" class="form-select form-select-sm h-100">
                                     <option value="">action…</option>
                                     <option>list_all</option><option>show_all</option><option>list</option>
                                     <option>show</option><option>create</option><option>update</option><option>delete</option>
@@ -216,7 +216,21 @@ document.addEventListener('DOMContentLoaded', function () {
         dirtyTimer = setTimeout(function(){ $('#dirtyBanner').css('display', 'none'); }, 10000);
     }
 
-    function hdrs(){ return { 'Content-Type': 'application/json' }; }
+    function hdrs(){
+        var h = { 'Content-Type': 'application/json' };
+        var tok = localStorage.getItem('access_token');
+        if (tok) h['Authorization'] = 'Bearer ' + tok;
+        return h;
+    }
+
+    function errMsg(xhr){
+        var r = xhr.responseJSON;
+        if (!r) return 'HTTP ' + xhr.status;
+        if (typeof r.error === 'string') return r.error;
+        if (r.error && r.error.message) return r.error.message;
+        if (r.message) return r.message;
+        return 'HTTP ' + xhr.status;
+    }
 
     function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
         return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
@@ -526,8 +540,7 @@ document.addEventListener('DOMContentLoaded', function () {
               + ' · context <code>'+esc(r.acl_context_hash)+'</code></div>'
               + '</div></div>');
         }).fail(function(xhr){
-            var m = (xhr.responseJSON && xhr.responseJSON.error) || ('HTTP ' + xhr.status);
-            $('#explainOut').html('<div class="alert alert-danger">'+esc(m)+'</div>');
+            $('#explainOut').html('<div class="alert alert-danger">'+esc(errMsg(xhr))+'</div>');
         });
     }
 
@@ -575,31 +588,40 @@ document.addEventListener('DOMContentLoaded', function () {
     $('#tbBox').on('click', '.btnDelTb', function(){
         var id = $(this).data('id'); if (!id || !confirm('Remove this resource policy?')) return;
         guardThen(function(){ api('DELETE', 'user_tb_permissions/'+id).then(function(){
-            alertBox('Removed.', 'success'); loadUser(state.uid); }); });
+            alertBox('Removed.', 'success'); loadUser(state.uid);
+        }).fail(function(xhr){ alertBox('Delete failed: ' + (errMsg(xhr))); }); });
     });
     $('#btnAddTb').on('click', function(){
         var tb = $('#newTbName').val().trim(); if (!tb) return;
-        guardThen(function(){ api('POST','user_tb_permissions',{user_id:state.uid,tb:tb,can_list:1}).then(function(){
-            $('#newTbName').val(''); loadUser(state.uid); }); });
+        guardThen(function(){
+            api('POST','user_tb_permissions',{user_id:state.uid,tb:tb,
+                can_list_all:0,can_show_all:0,can_list:1,can_show:0,can_create:0,can_update:0,can_delete:0
+            }).then(function(){
+                $('#newTbName').val(''); loadUser(state.uid);
+            }).fail(function(xhr){ alertBox('Failed to add resource: ' + (errMsg(xhr))); });
+        });
     });
 
     $('#capsBox').on('click', '.btnCapAllow', function(){
         var name = $(this).data('name'), id = state.spCatalog[name];
         if (!id) return;
         guardThen(function(){ api('POST','user_sp_permissions',{user_id:state.uid,sp_permission_id:id}).then(function(){
-            alertBox('Capability "'+esc(name)+'" granted.', 'success'); loadUser(state.uid); }); });
+            alertBox('Capability "'+esc(name)+'" granted.', 'success'); loadUser(state.uid);
+        }).fail(function(xhr){ alertBox('Grant failed: ' + (errMsg(xhr))); }); });
     });
     $('#capsBox').on('click', '.btnCapReset', function(){
         var id = $(this).data('id');
         guardThen(function(){ api('DELETE','user_sp_permissions/'+id).then(function(){
-            alertBox('Capability reset to role-inherited.', 'success'); loadUser(state.uid); }); });
+            alertBox('Capability reset to role-inherited.', 'success'); loadUser(state.uid);
+        }).fail(function(xhr){ alertBox('Reset failed: ' + (errMsg(xhr))); }); });
     });
 
     $('#btnAddDeny').on('click', function(){
         var res = $('#denyRes').val().trim(), act = $('#denyAct').val();
         if (!res || !act){ alertBox('resource and action required.', 'warning'); return; }
         guardThen(function(){ api('POST','user_deny_permissions',{user_id:state.uid,resource:res,action:act}).then(function(){
-            $('#denyRes').val(''); $('#denyAct').val(''); alertBox('Deny added.', 'success'); loadUser(state.uid); }); });
+            $('#denyRes').val(''); $('#denyAct').val(''); alertBox('Deny added.', 'success'); loadUser(state.uid);
+        }).fail(function(xhr){ alertBox('Add deny failed: ' + (errMsg(xhr))); }); });
     });
     $('#denyBox').on('click', '.btnDelDeny', function(e){
         e.preventDefault();
@@ -609,8 +631,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 return x.resource === res && x.action === act; })[0];
             if (!hit){ alertBox('Deny row not found.'); return; }
             guardThen(function(){ api('DELETE','user_deny_permissions/'+hit.id).then(function(){
-                alertBox('Deny removed.', 'success'); loadUser(state.uid); }); });
-        });
+                alertBox('Deny removed.', 'success'); loadUser(state.uid);
+            }).fail(function(xhr){ alertBox('Remove deny failed: ' + (errMsg(xhr))); }); });
+        }).fail(function(xhr){ alertBox('Error loading denies: ' + (errMsg(xhr))); });
     });
 
     $('#fRes,#fAct').on('input', renderEffective);

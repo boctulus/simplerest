@@ -1,0 +1,23 @@
+ACL UI para SimpleRest - fix botones sin funcionar
+
+Vista: app/Views/admin/acl_permissions.php
+URL: http://simplerest.lan/admin/acl-permissions
+
+Botones reportados como sin funcionamiento:
+- "Add deny" (#btnAddDeny)
+- "Add resource" (#btnAddTb con #newTbName)
+- Dropdown #denyAct debe tener el alto de su contenedor
+
+Diagnóstico:
+1. hdrs() no incluye JWT token → mutaciones fallan silenciosamente (403/401)
+2. Faltan .fail() handlers en btnAddTb, btnDelTb, btnAddDeny, btnDelDeny inner, btnCapAllow, btnCapReset
+3. UserDenyPermissions requiere "grant" permission pero admin no la tiene (inconsistente con guardGrant() del inspector)
+4. btnAddTb envía payload incompleto (solo can_list:1, faltan can_show, can_create, etc.)
+5. #denyAct select necesita ajuste CSS de altura
+
+Fixes aplicados:
+- hdrs() con Bearer token desde localStorage
+- .fail() handlers en todos los botones de mutación
+- UserDenyPermissions acepta admin role además de grant
+- btnAddTb envía todos los campos can_* con defaults 0
+- CSS height fix para #denyAct
