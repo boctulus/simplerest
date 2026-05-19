@@ -21,7 +21,7 @@ return [
     'paths'    => [],
 
     'packages' => [
-        'boctulus/zippy',
+        // 'boctulus/zippy',  // interfiere con "php com users list" (BUG)
     ],
 
     /*
