@@ -5,6 +5,7 @@ use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Security\Compiler\EffectivePermissionCompiler;
 use Boctulus\Simplerest\Core\Security\Domain\AclContext;
+use Boctulus\Simplerest\Core\Security\Domain\CapabilityTypeResolver;
 
 abstract class BaseAclCommand extends BaseCommand
 {
@@ -171,6 +172,13 @@ abstract class BaseAclCommand extends BaseCommand
             unlink($aclFile);
         }
         return include CONFIG_PATH . 'acl.php';
+    }
+
+    protected function dbSpPerms(): array
+    {
+        return withDefaultConnection(fn() =>
+            DB::table('sp_permissions')->pluck('name') ?: []
+        );
     }
 
     // --- Connection helper ---
