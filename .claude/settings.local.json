@@ -113,7 +113,8 @@
       "PowerShell(php com test help 2>&1)",
       "Bash(grep -v \"Base\\\\|Abstract\\\\|implements\\\\|extends\\\\|//\")",
       "Bash(xargs grep -hP \"class \\\\w+Command\")",
-      "Bash(xargs grep -ho \"class [A-Za-z]*Command\")"
+      "Bash(xargs grep -ho \"class [A-Za-z]*Command\")",
+      "PowerShell(Get-Content D:\\\\laragon\\\\www\\\\simplerest\\\\composer.json | ConvertFrom-Json | ForEach-Object { $_.autoload } | ConvertTo-Json -Depth 5)"
     ],
     "deny": [],
     "ask": []

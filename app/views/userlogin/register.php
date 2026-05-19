@@ -74,8 +74,8 @@ css_file('css/login/login.css');
 
 			])->class("mb-3"),
 			'<div style="margin-bottom:1em;">
-			<a href="login/rememberme">Recordar contraseña</a>
-			</div>	
+			<a href="rememberme">Recordar contraseña</a>
+			</div>
 
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="register()">Enviar</button>
