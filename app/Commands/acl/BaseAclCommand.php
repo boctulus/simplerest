@@ -188,6 +188,17 @@ abstract class BaseAclCommand extends BaseCommand
         return withDefaultConnection($fn);
     }
 
+    // --- Destructive guard ---
+
+    protected function requireConfirm(array $parsed): bool
+    {
+        if ($this->opt($parsed, 'force', false) || $this->opt($parsed, 'yes', false) || $this->opt($parsed, 'confirm', false)) {
+            return true;
+        }
+        echo "✗ Operación destructiva. Agregue --force para confirmar.\n";
+        return false;
+    }
+
     // --- Output helpers ---
 
     protected function printDryRun(string $action): void

@@ -1,5 +1,7 @@
 <?php
 
+use Boctulus\Simplerest\Core\Libs\DB;
+
 require_once __DIR__ . '/BaseAclCommand.php';
 
 class ListUserRolesCommand extends BaseAclCommand
@@ -10,11 +12,13 @@ class ListUserRolesCommand extends BaseAclCommand
     {
         parent::__construct();
         $this->command     = 'list-user-roles';
-        $this->description = 'Lista los roles asignados a un usuario (tabla user_roles)';
+        $this->description = 'Lista todos los usuarios con sus roles (incluye usuarios sin rol)';
         $this->aliases     = ['ls-user-roles'];
         $this->examples    = [
-            'php com acl list-user-roles user@example.com',
-            'php com acl list-user-roles --email=user@example.com',
+            'php com acl list-user-roles                   # todos los usuarios',
+            'php com acl list-user-roles --role=admin      # solo usuarios con rol "admin"',
+            'php com acl list-user-roles --role=null       # solo usuarios sin rol asignado',
+            'php com acl list-user-roles --format=json',
         ];
     }
 
@@ -22,31 +26,50 @@ class ListUserRolesCommand extends BaseAclCommand
     {
         return [
             'required' => [],
-            'optional' => ['email'],
+            'optional' => ['format', 'role'],
             'flags'    => [],
             'options'  => [
-                'email' => ['describe' => 'Email del usuario (o primer arg posicional)'],
+                'format' => ['describe' => 'Formato de salida: table (default) | json', 'default' => 'table'],
+                'role'   => ['describe' => 'Filtrar por nombre de rol; usar "null" para usuarios sin rol'],
             ],
         ];
     }
 
     public function execute(array $parsed): void
     {
-        $user = $this->requireUser($parsed);
-        if (!$user) return;
+        $format     = $this->opt($parsed, 'format', 'table');
+        $roleFilter = $parsed['role'] ?? null;
 
-        $uid   = $user[$this->idField];
-        $roles = $this->getUserRoles($uid);
+        $rows = $this->withDb(function () use ($roleFilter) {
+            $q = DB::table($this->usersTable)
+                ->leftJoin('user_roles', "{$this->usersTable}.{$this->idField}", '=', 'user_roles.user_id')
+                ->leftJoin('roles', 'user_roles.role_id', '=', 'roles.id')
+                ->select([
+                    "{$this->usersTable}.{$this->idField} as user_id",
+                    "{$this->usersTable}.{$this->emailField} as email",
+                    'user_roles.role_id',
+                    'roles.name as role',
+                ]);
 
-        echo "Roles de {$user[$this->emailField]}:\n";
+            if ($roleFilter === 'null') {
+                $q->whereNull('user_roles.role_id');
+            } elseif ($roleFilter !== null) {
+                $q->where(['roles.name' => $roleFilter]);
+            }
 
-        if (empty($roles)) {
-            echo "  (sin roles asignados)\n";
+            return $q->get() ?: [];
+        });
+
+        if (empty($rows)) {
+            echo "No se encontraron registros.\n";
             return;
         }
 
-        foreach ($roles as $r) {
-            echo "  • [{$r['role_id']}] {$r['name']}\n";
+        if ($format === 'json') {
+            echo json_encode($rows, JSON_PRETTY_PRINT) . "\n";
+            return;
         }
+
+        $this->printTable($rows, ['user_id', 'email', 'role_id', 'role']);
     }
 }
