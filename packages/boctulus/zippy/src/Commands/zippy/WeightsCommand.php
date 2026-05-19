@@ -12,7 +12,9 @@ class ZippyWeightsCommand extends BaseZippyCommand
         $this->aliases     = [];
         $this->examples    = [
             'php com zippy weights list',
-            'php com zippy weights update --id=3 --value=0.8',
+            'php com zippy weights seed',
+            'php com zippy weights train',
+            'php com zippy weights clear',
         ];
     }
 
