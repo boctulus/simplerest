@@ -28,7 +28,7 @@ trait PagesTrait
         $namespace  = implode('\\', array_slice($slugs, 0, count($slugs)-1));
 
         $class_name = Strings::snakeToCamel($slugs[count($slugs)-1]);
-        $class_name = "simplerest\\pages\\{$namespace}\\$class_name";
+        $class_name = "Boctulus\\Simplerest\\pages\\{$namespace}\\$class_name";
 
         if (!class_exists($class_name)){
             throw new \Exception("Class '$class_name' not found");
@@ -54,7 +54,7 @@ trait PagesTrait
         
         $default_page = ucfirst(str_replace('/', '\\', $this->default_page));
 
-        $class_name   = "simplerest\\pages\\{$extra}{$default_page}";;
+        $class_name   = "Boctulus\\Simplerest\\pages\\{$extra}{$default_page}";
 
         $instance     = new $class_name();
 

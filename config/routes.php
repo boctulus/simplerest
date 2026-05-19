@@ -15,6 +15,11 @@ use Boctulus\Simplerest\Modules\Typeform\Typeform;
 
 $route = WebRouter::getInstance();
 
+// Auth pages
+// WebRouter::get('login',      'LoginController@login');
+// WebRouter::get('register',   'LoginController@register');
+// WebRouter::get('rememberme', 'LoginController@rememberme');
+
 WebRouter::get('sitemap.xml', function(){
 	$sitemap = new SiteMap();
 	$sitemap->fromRouter(['sitemap.xml', 'admin/*']);	

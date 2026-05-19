@@ -156,9 +156,9 @@ class WebRouter
                 $res->set($data);
             }
 
-            if (!headers_sent()){
-                $res->flush();
-            }
+            // if (!headers_sent()){
+            //     $res->flush();
+            // }
             exit;
 
         } else {

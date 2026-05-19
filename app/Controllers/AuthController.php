@@ -5,7 +5,7 @@ namespace Boctulus\Simplerest\Controllers;
 use Boctulus\Simplerest\Core\Controllers\WebController;
 use Boctulus\Simplerest\Core\Libs\DB;
 
-class LoginController extends WebController
+class AuthController extends WebController
 {
 	/*
 		Nombres de los campos en la tabla "users"
@@ -39,28 +39,24 @@ class LoginController extends WebController
 		$this->login();
 	}
 	
-	function login(){	
-		/*
-			Cargo vista y paso variables
-		*/
-		
-		$this->__view('userlogin/login.php', [ 
-			'title'      =>'Ingreso', 
+	function login(){
+		$this->__view('userlogin/login.php', [
+			'title'      =>'Ingreso',
 			'hidenav'    => true,
 			'__email'    => $this->__email,
 			'__username' => $this->__username,
 			'__password' => $this->__password
-		]);
+		], 'templates/tpl_bt5.php');
 	}
-	
+
 	function register(){
 		$this->__view('userlogin/register.php', [
-			'title'      =>'Registro', 
+			'title'      =>'Registro',
 			'hidenav'    => true,
 			'__email'    => $this->__email,
 			'__username' => $this->__username,
 			'__password' => $this->__password
-		]);
+		], 'templates/tpl_bt5.php');
 	}
 
 	/*
@@ -118,12 +114,12 @@ class LoginController extends WebController
 
 	function rememberme(){
 		$this->__view('userlogin/rememberme.php', [
-			'title'=>'Recuérdame', 
+			'title'=>'Recuérdame',
 			'hidenav'=> true,
 			'__email'    => $this->__email,
 			'__username' => $this->__username,
 			'__password' => $this->__password
-		]);
+		], 'templates/tpl_bt5.php');
 	}
 
 	
