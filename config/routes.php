@@ -13,12 +13,8 @@ use Boctulus\Simplerest\Libs\Debug;
 use Boctulus\Simplerest\Modules\TaxCalc\TaxCalc;
 use Boctulus\Simplerest\Modules\Typeform\Typeform;
 
-$route = WebRouter::getInstance();
 
-// Auth pages
-// WebRouter::get('login',      'LoginController@login');
-// WebRouter::get('register',   'LoginController@register');
-// WebRouter::get('rememberme', 'LoginController@rememberme');
+$route = WebRouter::getInstance();
 
 WebRouter::get('sitemap.xml', function(){
 	$sitemap = new SiteMap();
