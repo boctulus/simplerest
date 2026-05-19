@@ -73,5 +73,5 @@ function logout() {
     ['access_token', 'refresh_token', 'expires_in', 'exp'].forEach(function(k) {
         localStorage.removeItem(k);
     });
-    window.location.replace(base_url + '/login');
+    window.location.replace(base_url + '/auth/login');
 }
