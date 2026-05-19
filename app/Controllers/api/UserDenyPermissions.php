@@ -21,8 +21,8 @@ class UserDenyPermissions extends ApiController
             response()->error("Not authorized", 403);
         }
 
-        if (!acl()->hasSpecialPermission('grant')) {
-            response()->error("Forbidden — requires 'grant' special permission", 403);
+        if (!acl()->hasSpecialPermission('grant') && !acl()->hasAnyRoleOrHigher(['admin'])) {
+            response()->error("Forbidden — requires 'grant' capability or admin role", 403);
         }
     }
 

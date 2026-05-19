@@ -3,6 +3,7 @@ __releases/
 .codegpt/
 .vscode/
 .idea/
+.opencode/node_modules/
 .phpunit.cache/
 uploads/
 yakpro-po/

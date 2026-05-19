@@ -1,0 +1,37 @@
+<?php
+
+require_once __DIR__ . '/BaseUsersCommand.php';
+
+class VerifyEmailCommand extends BaseUsersCommand
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->command     = 'verify-email';
+        $this->description = 'Marca el email de un usuario como verificado';
+        $this->aliases     = ['verify'];
+        $this->examples    = ['php com users verify-email user@example.com'];
+    }
+
+    public static function config(): array
+    {
+        return [
+            'required' => [],
+            'optional' => ['email'],
+            'flags'    => [],
+            'options'  => ['email' => ['describe' => 'Email (o primer arg posicional)']],
+        ];
+    }
+
+    public function execute(array $parsed): void
+    {
+        $email = $this->opt($parsed, 'email') ?? ($parsed['_positional'][0] ?? null);
+        if (!$email) { echo "✗ Debes proporcionar un email.\n"; return; }
+
+        $user = $this->getUserByEmail($email);
+        if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
+
+        $this->updateUser($user[$this->idField], [$this->confirmedField => 1]);
+        echo "✓ Email '{$email}' marcado como verificado.\n";
+    }
+}

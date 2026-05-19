@@ -457,7 +457,7 @@ class Arrays
             if (isset($data[$key])) {
                 $data = $data[$key];
             } else {
-                return null; // Property not found
+                return $default;
             }
         }
 
