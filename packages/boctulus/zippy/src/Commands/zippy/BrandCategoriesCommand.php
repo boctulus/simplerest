@@ -12,7 +12,7 @@ class ZippyBrandCategoriesCommand extends BaseZippyCommand
         $this->aliases     = ['brand-cats'];
         $this->examples    = [
             'php com zippy brand-categories list',
-            'php com zippy brand-categories sync',
+            'php com zippy brand-categories count',
         ];
     }
 

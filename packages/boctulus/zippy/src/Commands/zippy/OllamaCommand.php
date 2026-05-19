@@ -11,8 +11,8 @@ class ZippyOllamaCommand extends BaseZippyCommand
         $this->description = 'Comandos Zippy integrados con Ollama/LLM';
         $this->aliases     = [];
         $this->examples    = [
-            'php com zippy ollama categorize',
-            'php com zippy ollama map --limit=50',
+            'php com zippy ollama test-strategy',
+            'php com zippy ollama hard-tests',
         ];
     }
 
