@@ -16,7 +16,7 @@ class ClearTbCommand extends BaseAclCommand
         $this->aliases     = ['rm-tb'];
         $this->examples    = [
             'php com acl clear-tb --email=user@example.com --table=products --dry-run',
-            'php com acl clear-tb --email=user@example.com --table=products',
+            'php com acl clear-tb --email=user@example.com --table=products --force',
         ];
     }
 
@@ -25,11 +25,12 @@ class ClearTbCommand extends BaseAclCommand
         return [
             'required' => ['email', 'table'],
             'optional' => [],
-            'flags'    => ['dry-run'],
+            'flags'    => ['dry-run', 'force'],
             'options'  => [
                 'email'   => ['describe' => 'Email del usuario'],
                 'table'   => ['describe' => 'Nombre de la tabla/recurso'],
                 'dry-run' => ['describe' => 'Mostrar la acción sin ejecutarla'],
+                'force'   => ['describe' => 'Requerido para confirmar la operación destructiva'],
             ],
         ];
     }
@@ -65,6 +66,8 @@ class ClearTbCommand extends BaseAclCommand
             $this->printDryRun("DELETE user_tb_permissions WHERE user_id={$uid} AND tb={$table}");
             return;
         }
+
+        if (!$this->requireConfirm($parsed)) return;
 
         $this->withDb(fn() =>
             DB::table('user_tb_permissions')
