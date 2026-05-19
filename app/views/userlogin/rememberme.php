@@ -1,6 +1,6 @@
 <!-- Rememberme -->
-    
-<?php	
+
+<?php
 	css_file('css/login/login.css');
 ?>
 
@@ -14,12 +14,12 @@
         Tag::registerBuilder(\Boctulus\Simplerest\Core\Libs\HtmlBuilder\Bt5Form::class);
 
         Bt5Form::setIdAsName();
-        
+
         echo tag('card')
         ->header(tag('cardTitle')->text('Recordar contraseña'))
         ->body([
             '<div style="text-align:right; margin-bottom:1em;">
-                Tiene cuenta? <a href="login">Ingresar</a>
+                Tiene cuenta? <a href="/auth/login">Ingresar</a>
             </div>',
 
             tag('inputGroup')->content([
@@ -28,23 +28,23 @@
                 ]),
 
                 tag('email')
-				->id("email")	
+				->id("email")
 				->placeholder("E-mail")
 				->required("required")
 				->style("font-size:1rem")
 
-            ])->class("input-group mb-3"),		        
+            ])->class("input-group mb-3"),
 
             '<div class="form-group mb-3">
                 <button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="rememberme()">Recuérdame</button>
             </div>
 
-            No registrado? <a href="login/register">regístrese</a>'            
+            No registrado? <a href="register">regístrese</a>'
 
         ])->class('card-primary card-outline');
-        
+
         ?>
-        
-        
+
+
 	</div>
 </div>

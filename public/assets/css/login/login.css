@@ -1,0 +1,30 @@
+body {
+    background-color: #f4f6f9;
+}
+
+.card-primary.card-outline {
+    border-top: 3px solid #007bff;
+}
+
+.social-btn {
+    margin-bottom: 1rem;
+}
+
+.social-btn .btn {
+    margin-bottom: 0.5rem;
+}
+
+.or-seperator {
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+    line-height: 0.1em;
+    margin: 1.25rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.or-seperator i {
+    background: #fff;
+    padding: 0 0.6rem;
+    font-style: normal;
+}

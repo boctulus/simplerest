@@ -136,6 +136,11 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
+    if (!isLoggedIn()) {
+        window.location.replace(base_url + '/login');
+        return;
+    }
+
     const usernameEl = document.querySelector('#username_text');
     if (usernameEl) {
         usernameEl.textContent = username();
