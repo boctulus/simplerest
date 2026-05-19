@@ -26,7 +26,7 @@ class ReplaceTbCommand extends BaseAclCommand
         $this->aliases     = [];
         $this->examples    = [
             'php com acl replace-tb --email=user@example.com --table=products --perms=show,list,create --dry-run',
-            'php com acl replace-tb --email=user@example.com --table=products --perms=show,list,create',
+            'php com acl replace-tb --email=user@example.com --table=products --perms=show,list,create --force',
         ];
     }
 
@@ -35,12 +35,13 @@ class ReplaceTbCommand extends BaseAclCommand
         return [
             'required' => ['email', 'table', 'perms'],
             'optional' => [],
-            'flags'    => ['dry-run'],
+            'flags'    => ['dry-run', 'force'],
             'options'  => [
                 'email'   => ['describe' => 'Email del usuario'],
                 'table'   => ['describe' => 'Nombre de la tabla/recurso'],
                 'perms'   => ['describe' => 'Lista CSV de permisos: show,list,create,update,delete,show_all,list_all (reemplaza TODO el set actual)'],
                 'dry-run' => ['describe' => 'Mostrar la acción sin ejecutarla (MUY recomendado antes de ejecutar)'],
+                'force'   => ['describe' => 'Requerido para confirmar la operación destructiva'],
             ],
         ];
     }
@@ -79,6 +80,8 @@ class ReplaceTbCommand extends BaseAclCommand
         foreach ($expanded as $action) {
             $data[self::ACTION_FIELDS[$action]] = 1;
         }
+
+        if (!$dryRun && !$this->requireConfirm($parsed)) return;
 
         if ($dryRun) {
             $preview = [];
