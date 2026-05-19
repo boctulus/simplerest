@@ -8,11 +8,12 @@ class ZippyBrandCommand extends BaseZippyCommand
     {
         parent::__construct();
         $this->command     = 'brand';
-        $this->description = 'Gestiona marcas Zippy (subcomandos: list, sync, map, ...)';
+        $this->description = 'Gestiona marcas Zippy (subcomandos: list-raw, sync, categorize)';
         $this->aliases     = ['brands'];
         $this->examples    = [
-            'php com zippy brand list',
+            'php com zippy brand list-raw',
             'php com zippy brand sync',
+            'php com zippy brand categorize',
         ];
     }
 

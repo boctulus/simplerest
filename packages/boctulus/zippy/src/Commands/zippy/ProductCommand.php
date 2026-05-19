@@ -8,12 +8,14 @@ class ZippyProductCommand extends BaseZippyCommand
     {
         parent::__construct();
         $this->command     = 'product';
-        $this->description = 'Gestiona productos Zippy (subcomandos: process-one, sync, list, ...)';
+        $this->description = 'Gestiona productos Zippy (subcomandos: process-one, process, batch, stats-categories, report-issues)';
         $this->aliases     = ['products'];
         $this->examples    = [
             'php com zippy product process-one',
-            'php com zippy product sync --limit=100',
-            'php com zippy product list',
+            'php com zippy product process --limit=100',
+            'php com zippy product batch',
+            'php com zippy product stats-categories',
+            'php com zippy product report-issues',
         ];
     }
 

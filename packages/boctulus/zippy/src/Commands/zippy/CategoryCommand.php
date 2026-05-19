@@ -8,12 +8,17 @@ class ZippyCategoryCommand extends BaseZippyCommand
     {
         parent::__construct();
         $this->command     = 'category';
-        $this->description = 'Gestiona categorías Zippy (subcomandos: list, sync, map, ...)';
+        $this->description = 'Gestiona categorías Zippy (subcomandos: list-raw, test, create, set, merge, tree, resolve, find-dupes, report-issues, ...)';
         $this->aliases     = ['categories', 'cat'];
         $this->examples    = [
-            'php com zippy category list',
-            'php com zippy category sync',
-            'php com zippy category map --id=5',
+            'php com zippy category list-raw',
+            'php com zippy category test --raw="Aceites Y Condimentos" --strategy=llm',
+            'php com zippy category tree',
+            'php com zippy category create --name=Electronics',
+            'php com zippy category resolve',
+            'php com zippy category find-dupes',
+            'php com zippy category report-issues',
+            'php com zippy category clear-cache',
         ];
     }
 
