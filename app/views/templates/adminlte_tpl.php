@@ -137,7 +137,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     if (!isLoggedIn()) {
-        window.location.replace(base_url + '/login');
+        window.location.replace(base_url + '/auth/login');
         return;
     }
 

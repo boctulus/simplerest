@@ -1,5 +1,27 @@
 # ACL Changelog
 
+## v5 — 2026-05-20
+
+### Fixed
+
+**sp_permissions duplicados eliminados**
+- Se detectaron y eliminaron 216 filas duplicadas en `sp_permissions`.
+- Se agregó constraint `UNIQUE` en la columna `name` para prevenir duplicados futuros.
+
+### Changed
+
+**Split de `user-roles` en dos comandos (`php com acl`)**
+- `list-user-roles` — lista **todos** los usuarios con sus roles. Acepta `--role=<nombre>` para filtrar por rol y `--role=null` para usuarios sin rol asignado. Alias: `ls-user-roles`.
+- `show-user-roles` — muestra los roles de **un usuario específico**. Requiere `--email` o argumento posicional. Alias: `show-ur`.
+- El antiguo comando `user-roles` (que sólo hacía una de las dos cosas) fue eliminado.
+
+**Confirmación requerida en operaciones destructivas**
+- `clear-tb` y `replace-tb` ahora exigen el flag `--force` para ejecutarse.
+- Sin `--force`, el comando imprime un resumen de lo que haría y termina sin modificar datos.
+- `--dry-run` sigue disponible para previsualizar la operación sin alteraciones.
+
+---
+
 ## v4 — 2026-05-15
 
 ### Added
