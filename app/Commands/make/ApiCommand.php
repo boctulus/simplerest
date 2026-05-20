@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -35,6 +35,6 @@ class MakeApiCommand extends BaseMakeCommand
     public function execute(array $parsed): void
     {
         $name = $this->pos($parsed) ?? 'all';
-        $this->delegate->api($name, ...$this->toOpt($parsed));
+        $this->api($name, ...$this->toOpt($parsed));
     }
 }

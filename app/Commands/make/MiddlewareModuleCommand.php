@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -23,6 +23,6 @@ class MakeMiddlewareModuleCommand extends BaseMakeCommand
     public function execute(array $parsed): void
     {
         $opt = array_merge($parsed['_positional'] ?? [], $this->toOpt($parsed));
-        $this->delegate->middleware_module(...$opt);
+        $this->middleware_module(...$opt);
     }
 }

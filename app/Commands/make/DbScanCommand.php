@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeDbScanCommand extends BaseMakeCommand
 
     public function execute(array $parsed): void
     {
-        $this->delegate->db_scan(...$this->toOpt($parsed));
+        $this->db_scan(...$this->toOpt($parsed));
     }
 }

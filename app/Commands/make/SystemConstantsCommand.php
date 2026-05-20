@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -27,6 +27,6 @@ class MakeSystemConstantsCommand extends BaseMakeCommand
 
     public function execute(array $parsed): void
     {
-        $this->delegate->system_constants(...$this->toOpt($parsed));
+        $this->system_constants(...$this->toOpt($parsed));
     }
 }

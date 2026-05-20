@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -29,6 +29,6 @@ class MakeControllerPackageCommand extends BaseMakeCommand
     public function execute(array $parsed): void
     {
         $opt = array_merge($parsed['_positional'] ?? [], $this->toOpt($parsed));
-        $this->delegate->controller_package(...$opt);
+        $this->controller_package(...$opt);
     }
 }

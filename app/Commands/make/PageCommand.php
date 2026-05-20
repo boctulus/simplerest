@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakePageCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre de la página.\n"; return; }
-        $this->delegate->page($name, ...$this->toOpt($parsed));
+        $this->page($name, ...$this->toOpt($parsed));
     }
 }

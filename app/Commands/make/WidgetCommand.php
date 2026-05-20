@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeWidgetCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre del widget.\n"; return; }
-        $this->delegate->widget($name, ...$this->toOpt($parsed));
+        $this->widget($name, ...$this->toOpt($parsed));
     }
 }

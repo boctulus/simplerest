@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeViewCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre de la vista.\n"; return; }
-        $this->delegate->view($name, ...$this->toOpt($parsed));
+        $this->view($name, ...$this->toOpt($parsed));
     }
 }

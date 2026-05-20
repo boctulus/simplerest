@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -31,6 +31,6 @@ class MakeCssScanCommand extends BaseMakeCommand
 
     public function execute(array $parsed): void
     {
-        $this->delegate->css_scan(...$this->toOpt($parsed));
+        $this->css_scan(...$this->toOpt($parsed));
     }
 }
