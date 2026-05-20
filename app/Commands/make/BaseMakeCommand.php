@@ -10,7 +10,7 @@ abstract class BaseMakeCommand extends BaseCommand
 
     public function __construct()
     {
-        require_once COMMANDS_PATH . '_disabled/MakeCommand.php';
+        require_once COMMANDS_PATH . 'make/MakeCommand.php';
         $this->delegate = new MakeCommand();
     }
 
