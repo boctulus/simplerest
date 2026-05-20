@@ -1,6 +1,6 @@
 # WebRouter Documentation
 
-## Overview
+> **📌 NOTA**: Este documento es un resumen rápido. Para la documentación completa del sistema de routing (WebRouter + CliRouter + FrontController + Handlers), ver [`Routing.md`](./Routing.md).
 
 WebRouter is the routing system for the SimpleRest framework. It handles incoming HTTP requests and maps them to appropriate controllers or callback functions.
 
