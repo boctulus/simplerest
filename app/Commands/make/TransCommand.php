@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -36,6 +36,6 @@ class MakeTransCommand extends BaseMakeCommand
 
     public function execute(array $parsed): void
     {
-        $this->delegate->trans(...$this->toOpt($parsed));
+        $this->trans(...$this->toOpt($parsed));
     }
 }

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -21,6 +21,6 @@ class MakeLibModuleCommand extends BaseMakeCommand
     public function execute(array $parsed): void
     {
         $opt = array_merge($parsed['_positional'] ?? [], $this->toOpt($parsed));
-        $this->delegate->lib_module(...$opt);
+        $this->lib_module(...$opt);
     }
 }

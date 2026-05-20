@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeTraitCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre del trait.\n"; return; }
-        $this->delegate->trait($name, ...$this->toOpt($parsed));
+        $this->trait($name, ...$this->toOpt($parsed));
     }
 }

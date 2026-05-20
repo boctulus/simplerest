@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -38,6 +38,6 @@ class MakeSchemaCommand extends BaseMakeCommand
     public function execute(array $parsed): void
     {
         $name = $this->pos($parsed) ?? 'all';
-        $this->delegate->schema($name, ...$this->toOpt($parsed));
+        $this->schema($name, ...$this->toOpt($parsed));
     }
 }

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -34,6 +34,6 @@ class MakeAnyCommand extends BaseMakeCommand
     public function execute(array $parsed): void
     {
         $name = $this->pos($parsed) ?? 'all';
-        $this->delegate->any($name, ...$this->toOpt($parsed));
+        $this->any($name, ...$this->toOpt($parsed));
     }
 }
