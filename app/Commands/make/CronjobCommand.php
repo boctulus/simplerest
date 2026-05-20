@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeCronjobCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre del CronJob.\n"; return; }
-        $this->delegate->cronjob($name, ...$this->toOpt($parsed));
+        $this->cronjob($name, ...$this->toOpt($parsed));
     }
 }

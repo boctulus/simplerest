@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -34,6 +34,6 @@ class MakeControllerCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre del controlador.\n"; return; }
-        $this->delegate->controller($name, ...$this->toOpt($parsed));
+        $this->controller($name, ...$this->toOpt($parsed));
     }
 }

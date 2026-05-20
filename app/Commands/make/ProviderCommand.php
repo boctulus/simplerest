@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeProviderCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre del ServiceProvider.\n"; return; }
-        $this->delegate->provider($name, ...$this->toOpt($parsed));
+        $this->provider($name, ...$this->toOpt($parsed));
     }
 }

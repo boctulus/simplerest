@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeMiddlewareCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre del middleware.\n"; return; }
-        $this->delegate->middleware($name, ...$this->toOpt($parsed));
+        $this->middleware($name, ...$this->toOpt($parsed));
     }
 }

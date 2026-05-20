@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeLibCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre de la librería.\n"; return; }
-        $this->delegate->lib($name, ...$this->toOpt($parsed));
+        $this->lib($name, ...$this->toOpt($parsed));
     }
 }

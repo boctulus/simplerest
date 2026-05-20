@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -46,6 +46,6 @@ class MakeMigrationFileCommand extends BaseMakeCommand
         if ($name = $this->pos($parsed)) {
             array_unshift($opt, $name);
         }
-        $this->delegate->migration(...$opt);
+        $this->migration(...$opt);
     }
 }

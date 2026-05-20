@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeTestcaseCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre del test.\n"; return; }
-        $this->delegate->testcase($name, ...$this->toOpt($parsed));
+        $this->testcase($name, ...$this->toOpt($parsed));
     }
 }

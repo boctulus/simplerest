@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -32,6 +32,6 @@ class MakeDtoCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre del DTO.\n"; return; }
-        $this->delegate->dto($name, ...$this->toOpt($parsed));
+        $this->dto($name, ...$this->toOpt($parsed));
     }
 }

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeTaskCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre de la Task.\n"; return; }
-        $this->delegate->task($name, ...$this->toOpt($parsed));
+        $this->task($name, ...$this->toOpt($parsed));
     }
 }

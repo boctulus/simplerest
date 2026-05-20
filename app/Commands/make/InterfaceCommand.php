@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -33,6 +33,6 @@ class MakeInterfaceCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre de la interfaz.\n"; return; }
-        $this->delegate->interface($name, ...$this->toOpt($parsed));
+        $this->interface($name, ...$this->toOpt($parsed));
     }
 }

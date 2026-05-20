@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeRelationScanCommand extends BaseMakeCommand
 
     public function execute(array $parsed): void
     {
-        $this->delegate->relation_scan(...$this->toOpt($parsed));
+        $this->relation_scan(...$this->toOpt($parsed));
     }
 }

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeConsoleCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre del controlador de consola.\n"; return; }
-        $this->delegate->console($name, ...$this->toOpt($parsed));
+        $this->console($name, ...$this->toOpt($parsed));
     }
 }

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -38,6 +38,6 @@ class MakeModelCommand extends BaseMakeCommand
     public function execute(array $parsed): void
     {
         $name = $this->pos($parsed) ?? 'all';
-        $this->delegate->model($name, ...$this->toOpt($parsed));
+        $this->model($name, ...$this->toOpt($parsed));
     }
 }

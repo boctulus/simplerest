@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeExceptionCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre de la excepción.\n"; return; }
-        $this->delegate->exception($name, ...$this->toOpt($parsed));
+        $this->exception($name, ...$this->toOpt($parsed));
     }
 }

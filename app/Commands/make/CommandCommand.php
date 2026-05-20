@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
@@ -30,6 +30,6 @@ class MakeCommandCommand extends BaseMakeCommand
     {
         $name = $this->pos($parsed);
         if (!$name) { echo "✗ Se requiere el nombre del comando.\n"; return; }
-        $this->delegate->command($name, ...$this->toOpt($parsed));
+        $this->command($name, ...$this->toOpt($parsed));
     }
 }
