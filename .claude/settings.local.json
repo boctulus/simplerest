@@ -114,7 +114,8 @@
       "Bash(grep -v \"Base\\\\|Abstract\\\\|implements\\\\|extends\\\\|//\")",
       "Bash(xargs grep -hP \"class \\\\w+Command\")",
       "Bash(xargs grep -ho \"class [A-Za-z]*Command\")",
-      "PowerShell(Get-Content D:\\\\laragon\\\\www\\\\simplerest\\\\composer.json | ConvertFrom-Json | ForEach-Object { $_.autoload } | ConvertTo-Json -Depth 5)"
+      "PowerShell(Get-Content D:\\\\laragon\\\\www\\\\simplerest\\\\composer.json | ConvertFrom-Json | ForEach-Object { $_.autoload } | ConvertTo-Json -Depth 5)",
+      "Bash(Move-Item \"D:\\\\laragon\\\\www\\\\simplerest\\\\app\\\\Commands\\\\_disabled\\\\MakeCommand.php\" \"D:\\\\laragon\\\\www\\\\simplerest\\\\app\\\\Commands\\\\make\\\\MakeCommand.php\")"
     ],
     "deny": [],
     "ask": []
