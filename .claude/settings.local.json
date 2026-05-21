@@ -117,7 +117,9 @@
       "PowerShell(Get-Content D:\\\\laragon\\\\www\\\\simplerest\\\\composer.json | ConvertFrom-Json | ForEach-Object { $_.autoload } | ConvertTo-Json -Depth 5)",
       "Bash(Move-Item \"D:\\\\laragon\\\\www\\\\simplerest\\\\app\\\\Commands\\\\_disabled\\\\MakeCommand.php\" \"D:\\\\laragon\\\\www\\\\simplerest\\\\app\\\\Commands\\\\make\\\\MakeCommand.php\")",
       "Bash(Get-ChildItem \"D:\\\\laragon\\\\www\\\\simplerest\\\\app\\\\Commands\\\\make\\\\\" | Select-Object Name *)",
-      "Bash(xargs grep -l \"user_deny_permissions\\\\|user_tb_permissions\")"
+      "Bash(xargs grep -l \"user_deny_permissions\\\\|user_tb_permissions\")",
+      "PowerShell(Get-ChildItem D:\\\\laragon\\\\www\\\\simplerest\\\\ -Name | Where-Object { $_ -match \"^com\" })",
+      "PowerShell(Get-ChildItem D:\\\\laragon\\\\www\\\\consorcios\\\\app\\\\Commands\\\\make\\\\ -Name | Where-Object { $_ -match \"[Pp]ivot\" })"
     ],
     "deny": [],
     "ask": []

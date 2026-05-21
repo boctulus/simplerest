@@ -1,18 +1,18 @@
-﻿<?php
+<?php
 
 require_once __DIR__ . '/BaseMakeCommand.php';
 
-class MakeRelationScanCommand extends BaseMakeCommand
+class MakePivotScanCommand extends BaseMakeCommand
 {
     public function __construct()
     {
         parent::__construct();
-        $this->command     = 'relation-scan';
-        $this->description = 'Escanea y genera relaciones entre modelos';
-        $this->aliases     = ['rel-scan', 'relation_scan'];
+        $this->command     = 'pivot-scan';
+        $this->description = 'Escanea y genera archivo de pivots entre tablas';
+        $this->aliases     = ['pivot_scan'];
         $this->examples    = [
-            'php com make relation-scan',
-            'php com make relation-scan --from=main',
+            'php com make pivot-scan',
+            'php com make pivot-scan --from=main',
         ];
     }
 
@@ -30,6 +30,6 @@ class MakeRelationScanCommand extends BaseMakeCommand
 
     public function execute(array $parsed): void
     {
-        $this->relation_scan(...$this->toOpt($parsed));
+        $this->pivot_scan(...$this->toOpt($parsed));
     }
 }
