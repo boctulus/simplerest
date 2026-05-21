@@ -51,10 +51,14 @@ function login() {
     .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, status: r.status, data: d }; }); })
     .then(function(res) {
         if (!res.ok) {
-            if (errEl) errEl.textContent = res.data.error || ('Error ' + res.status);
+            var err = res.data.error;
+            var msg = (typeof err === 'object' && err !== null)
+                ? (err.message || JSON.stringify(err))
+                : (err || ('Error ' + res.status));
+            if (errEl) errEl.textContent = msg;
             return;
         }
-        var d = res.data;
+        var d = res.data.data || res.data;
         localStorage.setItem('access_token',  d.access_token  || '');
         localStorage.setItem('refresh_token', d.refresh_token || '');
         localStorage.setItem('expires_in',    d.expires_in    || '');
@@ -64,6 +68,25 @@ function login() {
     .catch(function(e) {
         if (errEl) errEl.textContent = 'Error de red: ' + e.message;
     });
+}
+
+/* ---------------------------------------------------------------
+   password_show_hide() — toggle password visibility
+--------------------------------------------------------------- */
+function password_show_hide() {
+    var pwEl   = document.getElementById('password');
+    var showEye = document.getElementById('show_eye');
+    var hideEye = document.getElementById('hide_eye');
+    if (!pwEl) return;
+    if (pwEl.type === 'password') {
+        pwEl.type = 'text';
+        if (showEye) showEye.classList.add('d-none');
+        if (hideEye) hideEye.classList.remove('d-none');
+    } else {
+        pwEl.type = 'password';
+        if (showEye) showEye.classList.remove('d-none');
+        if (hideEye) hideEye.classList.add('d-none');
+    }
 }
 
 /* ---------------------------------------------------------------

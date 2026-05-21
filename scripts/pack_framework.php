@@ -126,15 +126,74 @@ class SimpleRestPackager
 
             echo "SimpleRest framework packaging completed successfully!\n";
 
+            $success = true;
             if (!$skipVerification) {
-                return $this->verify();
+                $success = $this->verify();
             }
 
-            return true;
+            // Always finalize .env files regardless of verification
+            $this->finalizeEnv();
+
+            return $success;
 
         } catch (Exception $e) {
             echo "Error during packaging: " . $e->getMessage() . "\n";
             return false;
+        }
+    }
+
+    /**
+     * Show what would be done without executing anything
+     */
+    public function dryRun(): void
+    {
+        echo "[DRY RUN] Fuente:  {$this->sourceDir}\n";
+        echo "[DRY RUN] Destino: {$this->destDir}\n\n";
+
+        echo "Pasos que se ejecutarían:\n";
+        echo "  1. Limpiar directorio destino (preservando .git)\n";
+        echo "  2. Validar directorio fuente\n";
+        echo "  3. Crear estructura de directorios en destino\n";
+        echo "  4. Copiar contenido raíz (respetando .cpignore)\n";
+        echo "  5. Copiar templates FreshCopy\n";
+        echo "  6. Procesar composer.json (limpiar deps de desarrollo)\n";
+        echo "  7. Crear config/middlewares.php con contenido por defecto\n";
+        echo "  8. Procesar config/config.php (limpiar ServiceProviders)\n";
+        echo "  9. Ejecutar composer install en destino\n";
+        echo "  10. Copiar boot scripts\n";
+        echo "  11. Sanitizar .env.example\n";
+        echo "  12. Copiar .env.example como .env\n\n";
+
+        echo "Patrones de exclusión (" . count($this->ignorePatterns) . "):\n";
+        foreach ($this->ignorePatterns as $pattern) {
+            echo "  - $pattern\n";
+        }
+
+        if (!empty($this->includePatterns)) {
+            echo "\nPatrones de inclusión forzada (" . count($this->includePatterns) . "):\n";
+            foreach ($this->includePatterns as $pattern) {
+                echo "  + $pattern\n";
+            }
+        }
+
+        if (!is_dir($this->sourceDir)) {
+            echo "\n[ERROR] Directorio fuente no existe: {$this->sourceDir}\n";
+            return;
+        }
+
+        echo "\nContenido raíz — qué se copiaría:\n";
+        $items = scandir($this->sourceDir);
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+            ob_start();
+            $included = $this->shouldInclude($item, $item);
+            ob_end_clean();
+
+            $type   = is_dir($this->sourceDir . DIRECTORY_SEPARATOR . $item) ? 'dir ' : 'file';
+            $status = $included ? '[COPY]' : '[SKIP]';
+            echo "  $status [$type] $item\n";
         }
     }
 
@@ -696,11 +755,6 @@ class SimpleRestPackager
             // Remove test dependencies
             $this->removeTestDependencies();
 
-            // Process .env.example AFTER tests
-            chdir($originalCwd);
-            $this->processEnvExample();
-            chdir($this->destDir);
-
             echo "--- VERIFICATION COMPLETED SUCCESSFULLY ---\n";
             chdir($originalCwd);
             return true;
@@ -921,6 +975,35 @@ class SimpleRestPackager
         }
         
         echo "Processed composer.json to remove development-specific configurations\n";
+    }
+
+    /**
+     * Sanitize .env.example and copy it as .env
+     */
+    private function finalizeEnv(): void
+    {
+        $this->processEnvExample();
+        $this->copyEnvFile();
+    }
+
+    /**
+     * Copy .env.example to .env in destination so the app boots without manual setup
+     */
+    private function copyEnvFile(): void
+    {
+        $envExample = $this->destDir . DIRECTORY_SEPARATOR . '.env.example';
+        $envDest    = $this->destDir . DIRECTORY_SEPARATOR . '.env';
+
+        if (!file_exists($envExample)) {
+            echo "Warning: .env.example not found in destination, skipping .env creation\n";
+            return;
+        }
+
+        if (!copy($envExample, $envDest)) {
+            throw new Exception("Failed to copy .env.example to .env");
+        }
+
+        echo "Copied .env.example as .env\n";
     }
 
     /**
@@ -1202,18 +1285,24 @@ class SimpleRestPackager
 if (php_sapi_name() === 'cli') {
     $sourceDir = ROOT_PATH;
     $destDir   = Files::getAbsolutePath(ROOT_PATH . '../simplerest-pack');
-    
+
     // Allow command-line arguments to override defaults
     if (isset($argv[1]) && isset($argv[2])) {
         $sourceDir = $argv[1];
         $destDir = $argv[2];
     }
 
-    parse_str(implode('&', $_SERVER['argv']), $_GET);    
-    $skipComposerInstall =  isset($_GET['--skip-composer-install']) && $_GET['--skip-composer-install'] != 'false';
+    parse_str(implode('&', $_SERVER['argv']), $_GET);
+    $skipComposerInstall = isset($_GET['--skip-composer-install']) && $_GET['--skip-composer-install'] != 'false';
+    $dryRun              = isset($_GET['--dry-run']) || isset($_GET['dry-run']);
 
     $packager = new SimpleRestPackager($sourceDir, $destDir);
-    
+
+    if ($dryRun) {
+        $packager->dryRun();
+        exit(0);
+    }
+
     if ($packager->run(false, $skipComposerInstall)) {
         exit(0); // Success
     } else {

@@ -31,8 +31,11 @@ config/woocommerce.php
 *.tar
 *.tar.gz
 *.bk
+*.bak
 *.txt
 *.log
+*.tmp
+*.sql
 *.sh
 .env
 .dev-env
@@ -52,4 +55,7 @@ simplerest.code-workspace
 check_and_fix_bom.php
 .zipignore
 push
-
+tests\bootstrap.php
+etc\
+docs\_archive\
+database\migrations\test_dir\
