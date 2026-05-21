@@ -56,6 +56,7 @@ check_and_fix_bom.php
 .zipignore
 push
 tests\bootstrap.php
-etc\
-docs\_archive\
-database\migrations\test_dir\
+etc/
+docs/_archive/
+database/migrations\test_dir/
+app/Views/
