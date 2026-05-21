@@ -14,6 +14,7 @@ class BuildCommand extends BaseCommand
         $this->aliases     = ['run', 'package'];
         $this->examples    = [
             'php com pack build',
+            'php com pack build --dry-run',
             'php com pack build --skip-verification',
             'php com pack build --source=D:\\custom\\src --dest=D:\\custom\\dist',
         ];
@@ -24,12 +25,13 @@ class BuildCommand extends BaseCommand
         return [
             'required' => [],
             'optional' => ['source', 'dest'],
-            'flags'    => ['skip-verification', 'skip-composer-install'],
+            'flags'    => ['skip-verification', 'skip-composer-install', 'dry-run'],
             'options'  => [
                 'source'                => ['describe' => 'Directorio fuente'],
                 'dest'                  => ['describe' => 'Directorio destino'],
                 'skip-verification'     => ['describe' => 'Omitir la verificación en destino'],
                 'skip-composer-install' => ['describe' => 'Omitir composer install en destino'],
+                'dry-run'               => ['describe' => 'Mostrar qué se haría sin ejecutar nada'],
             ],
         ];
     }
@@ -40,8 +42,16 @@ class BuildCommand extends BaseCommand
         $dest                = $this->opt($parsed, 'dest',   $this->defaultDest);
         $skipVerification    = $this->opt($parsed, 'skip_verification', false);
         $skipComposerInstall = $this->opt($parsed, 'skip_composer_install', false);
+        $dryRun              = $this->opt($parsed, 'dry_run', false);
 
         require_once __DIR__ . '/../../../scripts/pack_framework.php';
+
+        $packager = new SimpleRestPackager($source, $dest);
+
+        if ($dryRun) {
+            $packager->dryRun();
+            return;
+        }
 
         echo "Empaquetando SimpleRest framework...\n";
         echo "Fuente:  {$source}\n";
@@ -49,8 +59,6 @@ class BuildCommand extends BaseCommand
 
         if ($skipVerification)    echo "  (sin verificación)\n";
         if ($skipComposerInstall) echo "  (sin composer install)\n";
-
-        $packager = new SimpleRestPackager($source, $dest);
 
         if ($packager->run($skipVerification, $skipComposerInstall)) {
             echo "\n✓ Framework empaquetado exitosamente.\n";
