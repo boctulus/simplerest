@@ -3,7 +3,7 @@ param(
     [string]$ZipIgnore = ".zipignore"
 )
 
-# Si no se proporciona un valor para $OutputFile, usar "app/core-" como prefijo
+# Si no se proporciona un valor para $OutputFile, usar "src/framework-" como prefijo
 if (-not $OutputFile) {
     $OutputFile = "app-core.zip"
 }
@@ -53,9 +53,9 @@ if (-not $exclusions) {
 $exclusionsFile = New-TemporaryFile
 $exclusions | Set-Content -Path $exclusionsFile
 
-# Generar el archivo ZIP del directorio app/core recursivamente
-Write-Host "Creando el archivo ZIP del directorio app/core con las exclusiones..."
-& 7z a -tzip $OutputFile app/core\* -r -x@"$exclusionsFile"
+# Generar el archivo ZIP del directorio src/framework recursivamente
+Write-Host "Creando el archivo ZIP del directorio src/framework con las exclusiones..."
+& 7z a -tzip $OutputFile src/framework\* -r -x@"$exclusionsFile"
 
 # Verificar si se creó correctamente el archivo
 if (Test-Path $OutputFile) {
