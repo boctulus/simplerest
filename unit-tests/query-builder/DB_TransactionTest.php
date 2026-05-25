@@ -27,7 +27,7 @@ class DB_TransactionTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         // Cargar la aplicación (incluye constantes y configuración)
-        require_once __DIR__ . '/../app.php';
+        require_once __DIR__ . '/../../app.php';
 
         // Asegúrate de que exista en config.php una conexión 'test_sqlite' parecida a:
         // 'test_sqlite' => ['driver' => 'sqlite', 'db_name' => ':memory:']
