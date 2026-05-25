@@ -405,30 +405,56 @@ class Response implements \ArrayAccess
         https://tutsforweb.com/how-to-create-custom-404-page-laravel/
     */
     function flush(){
-        // print_r(['Memory usage'=> System::getMemoryUsage()]);
-        // print_r("<br>");
+        $cli = (php_sapi_name() == 'cli');
+        $hasError = isset($this->data['error']) && !empty($this->data['error']);
 
-        // var_dump($this->data);
-
-        if ($this->to_be_encoded){
-            $this->data = $this->do_encode($this->data);
-            $this->header('Content-type:application/json;charset=utf-8');
-        } else{
-            $accept = request()->header('Accept');
-
-            if (Strings::startsWith('application/json', $accept)){
-                $this->to_be_encoded = true;
-
-                $this->data = $this->do_encode($this->data);
-                $this->header('Content-type:application/json;charset=utf-8');
+        // Clean output buffers when there is an error to prevent mixing with partial output
+        if ($hasError && !$cli) {
+            while (ob_get_level() > 0) {
+                ob_end_clean();
             }
         }
 
-        $cli = (php_sapi_name() == 'cli');
+        // Decide output format
+        $sendAsJson = $this->to_be_encoded;
 
-        if (isset($this->data['error']) && !empty($this->data['error'])){
-            // print_r('*'); // *
+        if (!$sendAsJson && !$cli) {
+            $req = request();
+            if ($req->acceptsJson()) {
+                $sendAsJson = true;
+            }
+        }
 
+        // Render error for non-JSON clients
+        if (!$cli && !$sendAsJson && $hasError) {
+            $errorData = $this->data['error'];
+            $httpCode  = $this->data['status'] ?? 500;
+
+            http_response_code($httpCode);
+
+            view('error.php', [
+                'status'   => $httpCode,
+                'type'     => $errorData['type'] ?? 'Exception',
+                'code'     => $errorData['code'] ?? '',
+                'location' => $errorData['location'] ?? '',
+                'message'  => $errorData['message'] ?? 'Unknown error',
+                'detail'   => $errorData['detail'] ?? '',
+            ]);
+
+            exit;
+        }
+
+        // JSON output
+        if ($sendAsJson) {
+            $this->data = $this->do_encode($this->data);
+            $this->header('Content-type:application/json;charset=utf-8');
+
+            echo $this->data;
+            exit;
+        }
+
+        // CLI or non-JSON, non-error output
+        if ($hasError){
             $message  = $this->data['error']['message'] ?? '--';
             $type     = $this->data['error']['type'] ?? '--';
             $code     = $this->data['error']['code'] ?? '--';
@@ -439,12 +465,7 @@ class Response implements \ArrayAccess
                 $detail = json_encode($detail);
             }
 
-            if (is_array($detail) || !$this->to_be_encoded){
-                echo $this->do_encode($this->data);
-            } else {
-                echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -| Location: $location -|Detail: $detail" .  PHP_EOL. PHP_EOL;
-            }
-
+            echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -| Location: $location -|Detail: $detail" .  PHP_EOL. PHP_EOL;
         } else {
             if (is_array($this->data) && !$this->to_be_encoded){
                 echo $this->do_encode($this->data);
