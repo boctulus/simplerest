@@ -112,7 +112,10 @@ function get_model_instance(string $model_name, $fetch_mode = 'ASSOC', bool $reu
         return $instance[$model_name];
     }
 
-    if (!Strings::startsWith(Config::get()['namespace'] . '\\' , $model_name)){
+    // Normalize: remove leading backslash for consistent namespace check
+    $normalized = ltrim($model_name, '\\');
+
+    if (!Strings::startsWith(Config::get()['namespace'] . '\\' , $normalized)){
         $model = get_model_namespace() . $model_name;
     } else {
         $model = $model_name;
