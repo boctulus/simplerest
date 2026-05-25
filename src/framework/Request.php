@@ -470,4 +470,50 @@ class Request  implements \ArrayAccess, Arrayable
         return static::$params;
     }
 
+    /**
+     * Check if the request accepts JSON based on Accept header
+     *
+     * For catch-all (*), JSON is preferred only when HTML is not explicitly requested.
+     */
+    static function acceptsJson(): bool
+    {
+        $accept = static::getInstance()->header('Accept');
+
+        if ($accept === null) {
+            return false;
+        }
+
+        if (strpos($accept, 'application/json') !== false) {
+            return true;
+        }
+
+        // Only respond with JSON for */* if HTML is not explicitly requested
+        if (strpos($accept, 'text/html') !== false || strpos($accept, 'application/xhtml') !== false) {
+            return false;
+        }
+
+        return (
+            strpos($accept, 'application/*') !== false ||
+            strpos($accept, '*/*') !== false
+        );
+    }
+
+    /**
+     * Check if the request accepts HTML based on Accept header
+     */
+    static function acceptsHtml(): bool
+    {
+        $accept = static::getInstance()->header('Accept');
+
+        if ($accept === null) {
+            return false;
+        }
+
+        return (
+            strpos($accept, 'text/html') !== false ||
+            strpos($accept, 'application/xhtml') !== false ||
+            strpos($accept, '*/*') !== false
+        );
+    }
+
 }
