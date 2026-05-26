@@ -139,7 +139,95 @@ With OPcache enabled and in production, absolute RPS would be higher but the **r
 
 ---
 
-## 6. Conclusion
+## 6. Limitations of the Current Benchmark Suite
+
+### 6.1 Concurrencia simulada, no stress test real
+
+`curl_multi` en PHP no reproduce carga real:
+- No satura workers correctamente
+- No mide queueing real
+- No reproduce TCP contention
+- No detecta puntos de saturación del servidor
+
+Es "concurrencia simulada", no stress test. Se necesita `wrk`, `k6` o `ab` externo.
+
+### 6.2 Bootstrap sin breakdown interno
+
+Actualmente se mide como un solo bloque (~87ms), pero falta separar:
+
+| Fase | Tiempo estimado |
+|------|----------------|
+| PHP startup (CGI process spawn) | ? |
+| Composer autoload (class map lookup) | ? |
+| Config load (files + parse) | ? |
+| Framework init (container, router, providers) | ? |
+
+Sin este breakdown no se puede optimizar la fase correcta.
+
+### 6.3 Outliers no analizados
+
+El outlier de **49.87ms en `new ApiController`** (vs promedio 0.39ms) es más importante que el promedio. Posibles causas:
+- Garbage collection spike
+- First class initialization cost
+- Autoload cache miss
+- Windows Defender scanning PHP files
+- Filesystem latency
+
+Un benchmark con warmup controlado eliminaría estos outliers o los haría medibles por separado.
+
+### 6.4 Comparación DB dudosa (PDO vs wrapper)
+
+Actualmente:
+```
+PDO directo: 2.37ms
+DB::select: 0.57ms
+Model::find: 0.03ms
+```
+
+Esto no refleja rendimiento real porque:
+- PDO crea conexión nueva por iteración (penalizado)
+- `DB::select()` y `Model::find()` reusan conexión cachead
+- No hay reset de conexión entre tests
+- El wrapper aparece más rápido que PDO por artifact de medición
+
+**Necesario:** forzar nueva conexión PDO por iteración O reusar la misma en todos.
+
+### 6.5 Sin warmup controlado
+
+Todos los benchmarks arrancan sin warmup, lo que significa:
+- Primeras iteraciones pagan costos de inicialización (autoload, cache en frío)
+- Outliers contaminan promedios
+- Las mediciones no representan el estado estable del sistema
+
+**Solución obligatoria:** `run_warmup(1000 iterations)` antes de cualquier medición.
+
+### 6.6 Sin "first request penalty" test
+
+Crítico para serverless / microservices: el costo de la primera request después de un cold start no está medido por separado. La primera request puede ser 2-10x más lenta que las siguientes.
+
+### 6.7 Sin profiling interno (GC, autoload, memoria por request)
+
+Falta medir por request batch:
+- `gc_status()` (collections, rooted buffers)
+- `memory_get_peak_usage()` por operación
+- Autoload hits vs misses
+- `get_included_files()` delta por request
+
+### 6.8 Lo que realmente mide este benchmark
+
+**No mide rendimiento puro del framework — mide distribución de costos:**
+
+```
+~70% bootstrap / runtime environment
+~20% framework logic
+~10% DB
+```
+
+SimpleRest NO es lento. La infraestructura (CGI, sin OPcache) domina el costo. Cualquier optimización de código da mejoras marginales comparado con migrar a FPM + OPcache o persistent PHP.
+
+---
+
+## 7. Conclusion
 
 The automatic REST endpoint system in SimpleRest is **~1.2x slower** than a hardcoded SQL equivalent. The **absolute overhead is ~20–30ms per request**, dominated by:
 
