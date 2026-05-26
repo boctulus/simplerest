@@ -79,12 +79,12 @@ $rows = DB::table('my_table', null, true, 'pg_test')->get();
 | `random()` | ✅ | `ORDER BY RANDOM()` |
 | Savepoints | ✅ | `supportsSavepoints()` includes PGSQL |
 | Float cast (SELECT) | ✅ | `CAST(? AS DOUBLE PRECISION)` |
-| Float cast (UPDATE) | ❌ | Commented out in QueryBuilderTrait line 3145 |
-| `getTableNames()` | ❌ | PGSQL case commented out (line 345) |
-| `truncate()` | ❌ | Uses backtick syntax |
-| `status()`, `optimize()`, `repair()` | ❌ | MySQL-only |
-| `safeSelect()` | ❌ | Uses `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` |
-| `dbLog*()` | ❌ | MySQL `general_log` only |
+| Float cast (UPDATE) | ✅ | `CAST(? AS DOUBLE PRECISION)` now active |
+| `getTableNames()` | ✅ | PGSQL case added via `pg_catalog.pg_tables` |
+| `truncate()` | ✅ | Uses `DB::quote()` instead of backticks |
+| `status()`, `optimize()`, `repair()` | ⚠️ | Throws exception on non-MySQL |
+| `safeSelect()` | ✅ | Guarded: only sets `MYSQL_ATTR` on MySQL |
+| `dbLog*()` | ⚠️ | Throws exception on non-MySQL |
 
 ### Schema.php — NOT Compatible (DDL) ❌
 
@@ -150,8 +150,8 @@ Schema.php está escrito 100% para MySQL. No hay lógica condicional por driver 
 | `count/max/min/avg/sum` | ✅ | |
 | `groupBy/having` | ✅ | |
 | `transactions` | ✅ | With savepoints |
-| Schema-qualified names | ⚠️ | `DB::quote()` wraps `schema.table` as single identifier |
-| Float cast (UPDATE) | ⚠️ | Commented out, may cause division errors |
+| Schema-qualified names | ✅ | `DB::quote()` splits `schema.table` → `"schema"."table"` |
+| Float cast (UPDATE) | ✅ | `CAST(? AS DOUBLE PRECISION)` uncommented and active |
 
 ### Paginator — Compatible ✅
 
@@ -172,7 +172,21 @@ No driver-specific code. All logic delegated to traits.
 
 ---
 
-## Known Issues & Fixes
+## Known Issues
+
+### ISSUES FIXED (2026-05-26) ✅
+
+The following issues were resolved in this batch:
+
+| # | Issue | File | Fix |
+|---|-------|------|-----|
+| 2 | Schema-qualified name quoting | `DB.php:quote()` | Added dot-splitting → `"schema"."table"` |
+| 3 | Float cast disabled in UPDATE | `QueryBuilderTrait.php:3134-3154` | Uncommented `CAST(? AS DOUBLE PRECISION)` |
+| 4 | `getTableNames()` sin PGSQL | `DB.php:337-362` | Added `pg_catalog.pg_tables` query |
+| 5 | `truncate()` con backticks | `DB.php:944` | Reemplazado por `DB::quote()` |
+| 6 | `safeSelect()` flag MySQL-only | `DB.php:933` | Guardado con driver check |
+| 7 | Admin methods (`status`, `optimize`, `repair`, `dbLog*`) | `DB.php:1215-1507` | Todos guardados con exception para non-MySQL |
+| 8 | `lastInsertId()` sin seq name | `DB.php:1020`, `QueryBuilderTrait.php:3710` | PGSQL ahora pasa `{table}_{pk}_seq` |
 
 ### 1. Schema.php — DDL Full Rewrite Required ❌
 
