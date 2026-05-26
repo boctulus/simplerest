@@ -213,4 +213,11 @@ WebRouter::get('user/{id}/*', function($id, $resource) {
 //     }
 // );
 
+// Manual perf_test routes (take priority over automatic ApiHandler)
+WebRouter::get('api/v1/perf_test_manual',             'Boctulus\Simplerest\Controllers\Api\PerfTestManual@index');
+WebRouter::get('api/v1/perf_test_manual/{id}',        'Boctulus\Simplerest\Controllers\Api\PerfTestManual@show');
+WebRouter::post('api/v1/perf_test_manual',            'Boctulus\Simplerest\Controllers\Api\PerfTestManual@store');
+WebRouter::put('api/v1/perf_test_manual/{id}',        'Boctulus\Simplerest\Controllers\Api\PerfTestManual@update');
+WebRouter::delete('api/v1/perf_test_manual/{id}',     'Boctulus\Simplerest\Controllers\Api\PerfTestManual@destroy');
+
 // WebRouter::mount('api', ApiHandler::class);
