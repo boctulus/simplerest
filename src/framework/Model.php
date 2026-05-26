@@ -16,7 +16,6 @@ class Model
 	use ExceptionHandler;
 	use QueryBuilderTrait;
 	use SubResourceHandler;	
-	// use RelationshipTrait;
 	use InsertWithSubResourcesTrait;
 	
 	public    $exec = true;

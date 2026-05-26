@@ -6,6 +6,8 @@ use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Libs\System;
 use users;
 
+use Boctulus\Simplerest\Core\Libs\DBRels;
+
 class UserRoles implements IMigration
 {
     /**

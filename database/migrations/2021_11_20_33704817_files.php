@@ -6,6 +6,8 @@ use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Core\Libs\DB;
 
+use Boctulus\Simplerest\Core\Libs\DBRels;
+
 class FilesAddPri implements IMigration
 {
     function __construct(){

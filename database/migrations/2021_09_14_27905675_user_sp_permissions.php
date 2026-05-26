@@ -4,6 +4,8 @@ use Boctulus\Simplerest\Core\Interfaces\IMigration;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\Schema;
 
+use Boctulus\Simplerest\Core\Libs\DBRels;
+
 /*
     User capabilities (sp_permissions) table migration
 

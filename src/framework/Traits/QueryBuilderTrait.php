@@ -11,6 +11,7 @@ use Boctulus\Simplerest\Core\Interfaces\IValidator;
 use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Paginator;
 use Boctulus\Simplerest\Core\Libs\Strings;
@@ -675,7 +676,7 @@ trait QueryBuilderTrait
 			}
 
 			$rel   = $this->schema['relationships'];
-			$pivot = get_pivot([$this->table_name, $table], DB::getCurrentConnectionId());
+			$pivot = DBRels::getPivot([$this->table_name, $table], DB::getCurrentConnectionId());
 
 			// Si la relación no existe => podría ser N:M o no existir
 			if (!isset($rel[$table])) {
@@ -838,14 +839,14 @@ trait QueryBuilderTrait
 	}
 
 	function orderByAsc(string $field)
-	{	
-		$this->order = array_merge($this->order, [$field, 'ASC']);
+	{
+		$this->order = array_merge($this->order, [$field => 'ASC']);
 		return $this;
 	}
 
 	function orderByDesc(string $field)
-	{	
-		$this->order = array_merge($this->order, [$field, 'DESC']);
+	{
+		$this->order = array_merge($this->order, [$field => 'DESC']);
 		return $this;
 	}
 
@@ -1448,7 +1449,7 @@ trait QueryBuilderTrait
 				if (empty($where))
 					$where = "$deletedAt IS NULL";
 				else
-					$where =  ($where[0] == '(' && $where[strlen($where) - 1] == ')' ? $where :   "($where)") . " AND $deletedAt IS NULL";
+					$where = "($where) AND $deletedAt IS NULL";
 			}
 		}
 
@@ -3235,7 +3236,7 @@ trait QueryBuilderTrait
 	function touch()
 	{
 		$this->fill([$this->updatedAt()]);
-		return $this->update([$this->updatedAt() => at()]);
+		return $this->update([$this->updatedAt() => at()], false);
 	}
 
 	function setSoftDelete(bool $status)
