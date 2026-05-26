@@ -1,11 +1,26 @@
 # PGSQL Compatibility — Known Issues
 
 > **State:** DQL functional, DDL not supported.
+> **Last updated:** 2026-05-26 (issues 2-8 fixed)
 > See also `docs/PGSQL-Compatibility.md` for the full compatibility matrix and test instructions.
 
 ---
 
-## 1. Schema.php — DDL Full Rewrite Required
+## ✅ Fixed Issues (2026-05-26)
+
+| # | Issue | Fix |
+|---|-------|-----|
+| 2 | Schema-qualified `DB::quote()` | Dot-splitting → `"schema"."table"` |
+| 3 | Float cast in UPDATE | Uncommented `CAST(? AS DOUBLE PRECISION)` in `update()` |
+| 4 | `getTableNames()` PGSQL | Added `pg_catalog.pg_tables` query |
+| 5 | `truncate()` backticks | Replaced with `DB::quote()` |
+| 6 | `safeSelect()` MySQL flag | Guarded with `driver() == MYSQL` |
+| 7 | Admin methods (`status`, `optimize`, `repair`, `dbLog*`) | All guard with exception for non-MySQL |
+| 8 | `lastInsertId()` seq name | PGSQL passes `{table}_{pk}_seq` |
+
+---
+
+## 1. Schema.php — DDL Full Rewrite Required ❌
 
 **File:** `src/framework/Libs/Schema.php`
 
@@ -187,14 +202,14 @@ PGSQL lowercases unquoted table names. The framework already lowercases names, s
 
 ## Summary by Priority
 
-| Priority | Issue | Effort |
+| Priority | Issue | Status |
 |----------|-------|--------|
-| 🔴 High | Schema.php DDL rewrite | Weeks |
-| 🟡 Medium | Schema-qualified quoting | Hours |
-| 🟡 Medium | Float cast in UPDATE | Hours |
-| 🟡 Medium | `getTableNames()` PGSQL case | Minutes |
-| 🟢 Low | `truncate()` backticks | Minutes |
-| 🟢 Low | `safeSelect()` MySQL flag | Minutes |
-| 🟢 Low | Admin methods | Won't fix |
-| 🟢 Low | `lastInsertId()` sequences | Hours |
-| 🟢 Low | Case sensitivity | Informational |
+| 🔴 High | Schema.php DDL rewrite | ❌ Open — effort: weeks |
+| 🟡 Medium | Schema-qualified quoting | ✅ **Fixed** |
+| 🟡 Medium | Float cast in UPDATE | ✅ **Fixed** |
+| 🟡 Medium | `getTableNames()` PGSQL case | ✅ **Fixed** |
+| 🟢 Low | `truncate()` backticks | ✅ **Fixed** |
+| 🟢 Low | `safeSelect()` MySQL flag | ✅ **Fixed** |
+| 🟢 Low | Admin methods | ✅ **Fixed** |
+| 🟢 Low | `lastInsertId()` sequences | ✅ **Fixed** |
+| 🟢 Low | Case sensitivity | ⏸️ Skipped (not confident) |

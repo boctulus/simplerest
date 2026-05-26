@@ -342,8 +342,10 @@ class DB
 				WHERE table_schema = '$db_name';";
 				
 				return array_column(static::select($sql), 'TABLE_NAME');
-			// case static::PGSQL:
-			// 	break;
+			case static::PGSQL:
+				$schema = static::schema() ?? 'public';
+				$sql = "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = '$schema'";
+				return array_column(static::select($sql), 'tablename');
 			// case static::SQLSRV:
 			// 	break;
 			// case static::SQLITE:
@@ -932,7 +934,10 @@ class DB
 	*/
 	public static function safeSelect(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, &$st = null){
 		$conn = static::getConnection($tenant_id);
-		$conn->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+
+		if (static::driver() == static::MYSQL || static::isMariaDB()){
+			$conn->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+		}
 
 		return static::select($raw_sql, $vals, $fetch_mode, $tenant_id, false, true, $st);
 	}
@@ -943,7 +948,7 @@ class DB
 
 	public static function truncate(string $table, ?string $tenant_id = null){
 		static::getConnection($tenant_id);
-		static::statement("TRUNCATE TABLE `$table`");
+		static::statement("TRUNCATE TABLE " . static::quote($table));
 	}
 
 	public static function insert(string $raw_sql, Array $vals = [], $tenant_id = null, $prikey_name = 'id')
@@ -1012,7 +1017,11 @@ class DB
 				if (isset($data[$id_name])){
 					$last_inserted_id =	$vals[$id_name]; // probable fix -19/02/2024
 				} else {
-					$last_inserted_id = $conn->lastInsertId();
+					if (static::driver() == static::PGSQL && !empty($table)){
+						$last_inserted_id = $conn->lastInsertId($table . '_' . $id_name . '_seq');
+					} else {
+						$last_inserted_id = $conn->lastInsertId();
+					}
 				}
 			}else {
 				$last_inserted_id = false;	
@@ -1142,7 +1151,6 @@ class DB
 				$d1 = $d2 = '"';
 				break;
 			case static::SQLSRV:
-				// SELECT [select] FROM [from] WHERE [where] = [group by];
 				$d1 = '[';
 				$d2 = ']';
 				break;
@@ -1177,13 +1185,24 @@ class DB
 		}
 
 		// Para el resto de los casos
+		$wrapPart = function ($s) use ($d1, $d2) {
+			if (Strings::contains('.', $s)) {
+				$parts = explode('.', $s);
+				foreach ($parts as &$p) {
+					$p = Strings::enclose($p, $d1, $d2);
+				}
+				return implode('.', $parts);
+			}
+			return Strings::enclose($s, $d1, $d2);
+		};
+
 		if (Strings::contains(' as ', $str)) {
 			$s1 = Strings::before($str, ' as ');
 			$s2 = Strings::after($str, ' as ');
-			return "{$d1}$s1{$d2} as {$d1}$s2{$d2}";
+			return $wrapPart($s1) . " as {$d1}$s2{$d2}";
 		}
 
-		return Strings::enclose($str, $d1, $d2);
+		return $wrapPart($str);
 	}
 
 	/*
@@ -1213,6 +1232,9 @@ class DB
 		Valida para MYSQL
 	*/
 	static function status(){
+		if (static::driver() != static::MYSQL && !static::isMariaDB()){
+			throw new \Exception("Method " . __METHOD__ . " not supported for " . static::driver());
+		}
 		return static::select("SHOW TABLE STATUS");
 	}
 
@@ -1236,6 +1258,10 @@ class DB
 
 	*/
 	static function optimize($tables, bool $quote = false){
+		if (static::driver() != static::MYSQL && !static::isMariaDB()){
+			throw new \Exception("Method " . __METHOD__ . " not supported for " . static::driver());
+		}
+
 		if (is_array($tables)){
 			if ($quote){
 				$tables = array_map([static::class, 'quote'], $tables);
@@ -1269,6 +1295,10 @@ class DB
 		)
 	*/
 	static function repair($tables, bool $quote = false){
+		if (static::driver() != static::MYSQL && !static::isMariaDB()){
+			throw new \Exception("Method " . __METHOD__ . " not supported for " . static::driver());
+		}
+
 		if (is_array($tables)){
 			if ($quote){
 				$tables = array_map([static::class, 'quote'], $tables);
@@ -1364,6 +1394,9 @@ class DB
 	 * @return void
 	 */
 	static function dbLogTruncate(){
+		if (static::driver() != static::MYSQL && !static::isMariaDB()){
+			throw new \Exception("Method " . __METHOD__ . " not supported for " . static::driver());
+		}
 		DB::statement("TRUNCATE `mysql`.`general_log`");
 	}
 
@@ -1379,6 +1412,9 @@ class DB
 	 * @return array The filtered rows from the general_log table or just the SQL statements, depending on $only_sql.
 	 */
 	static function dbLogDump(bool $to_file = false, bool $clean = true, $only_sql = true){
+		if (static::driver() != static::MYSQL && !static::isMariaDB()){
+			throw new \Exception("Method " . __METHOD__ . " not supported for " . static::driver());
+		}
 		DB::getConnection();
 
 		DB::statement("USE `mysql`;");
@@ -1431,6 +1467,9 @@ class DB
 	 * @return void
 	 */
 	static function dbLogOn(){
+		if (static::driver() != static::MYSQL && !static::isMariaDB()){
+			throw new \Exception("Method " . __METHOD__ . " not supported for " . static::driver());
+		}
 		static::dbLogTruncate();
 		DB::statement("SET global general_log = 'ON';");
 	}
@@ -1443,6 +1482,9 @@ class DB
 	 * @return void
 	 */
 	static function dbLogOff(){
+		if (static::driver() != static::MYSQL && !static::isMariaDB()){
+			throw new \Exception("Method " . __METHOD__ . " not supported for " . static::driver());
+		}
 		DB::statement("SET global general_log = 'OFF';");
 	}
 
