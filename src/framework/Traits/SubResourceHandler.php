@@ -6,6 +6,7 @@ namespace Boctulus\Simplerest\Core\Traits;
 
 use Doctrine\Inflector\InflectorFactory;
 use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Model;
@@ -107,7 +108,7 @@ trait SubResourceHandler
                 }
             }
 
-            $pivot = get_pivot([$table, $tb]);
+            $pivot = DBRels::getPivot([$table, $tb]);
             if (!empty($pivot)) {
                 $bridge = $pivot['bridge'];
                 $fks = $pivot['fks'];
@@ -133,7 +134,7 @@ trait SubResourceHandler
                 }
                 $obj = implode(',' . PHP_EOL, $arr);
 
-                $isMultiple = ($path['type'] === 'pivot') || is_mul_rel_cached($table, $tb, null, $tenant_id);
+                $isMultiple = ($path['type'] === 'pivot') || DBRels::isMulRelCached($table, $tb, null, $tenant_id);
                 if ($isMultiple) {
                     $sel = "IF(COUNT(__$descriptiveAlias.$pri) = 0, JSON_ARRAY(), {$fn_json_arrayagg('JSON_OBJECT(' .$obj . ')')})";
                 } else {

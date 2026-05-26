@@ -13,7 +13,7 @@ if (php_sapi_name() != "cli") {
   return;
 }
 
-require_once __DIR__ . '/../app.php';
+require_once __DIR__ . '/../../app.php';
 
 /*
  * WebRouter Functional Tests

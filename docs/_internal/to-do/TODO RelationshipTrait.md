@@ -21,17 +21,13 @@
 
   Aspectos débiles:
 
-  1. ⚠️ Método getRels() muy largo y complejo (500+ líneas)
-    - Difícil de mantener
-    - Múltiples niveles de anidación
-    - Podría refactorizarse en métodos más pequeños
-  2. ⚠️ Dependencias de funciones globales
+  1. ⚠️ Dependencias de funciones globales
     - Usa get_schema_name(), get_schema(), get_schema_path()
-    - Acoplamiento con helpers externos
-  3. ⚠️ Side effects inesperados
+    - Acoplamiento con helpers externos de db.php
+  2. ⚠️ Side effects inesperados
     - getPivot() genera archivos si no existen
     - Llama a comandos (MakeCommand) automáticamente
-  4. ⚠️ Sin tests unitarios
+  3. ⚠️ Sin tests unitarios
     - No hay validación automatizada del comportamiento
     - Difícil detectar regresiones
 
@@ -43,11 +39,3 @@
   - 🟢 Casos de uso: Cubre escenarios complejos
   - 🟡 Mantenibilidad: Podría mejorar con refactoring
   - 🔴 Testing: Falta cobertura de tests
-
-  Recomendaciones:
-  1. Crear tests específicos para RelationshipTrait
-  2. Refactorizar getRels() en métodos más pequeños
-  3. Reducir dependencias de funciones globales
-  4. Documentar mejor con PHPDoc
-
-  ¿Quieres que cree tests unitarios para el RelationshipTrait?

@@ -17,6 +17,7 @@ require_once __DIR__ . '/../../app.php';
 use PHPUnit\Framework\TestCase;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 use Boctulus\Simplerest\Core\Traits\UnitTestCaseSQLTrait;
 
 /**

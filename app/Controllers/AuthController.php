@@ -4,6 +4,7 @@ namespace Boctulus\Simplerest\Controllers;
 
 use Boctulus\Simplerest\Core\Controllers\WebController;
 use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 
 class AuthController extends WebController
 {

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use Boctulus\Simplerest\Core\Commands\BaseCommand;
 use Boctulus\Simplerest\Core\Libs\DB;
@@ -11,6 +11,7 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\i18n\Translate;
 use Boctulus\Simplerest\Core\Traits\CommandTrait;
 use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 
 abstract class BaseMakeCommand extends BaseCommand
 {
@@ -1269,8 +1270,8 @@ abstract class BaseMakeCommand extends BaseCommand
             $related_tbs = array_keys($rl);
 
             foreach ($related_tbs as $rtb) {
-                $relation_type["$t~$rtb"] = get_rel_type($t, $rtb, null, $from_db);
-                $multiplicity["$t~$rtb"]  = is_mul_rel($t, $rtb, null, $from_db);
+                $relation_type["$t~$rtb"] = DBRels::getRelType($t, $rtb, null, $from_db);
+                $multiplicity["$t~$rtb"]  = DBRels::isMulRel($t, $rtb, null, $from_db);
 
                 // New *
                 if (!in_array($rtb, $related)) {
@@ -1380,7 +1381,7 @@ abstract class BaseMakeCommand extends BaseCommand
         }
 
         if (!isset($from_db)) {
-            $from_db = get_default_connection_id();
+            $from_db = DB::getDefaultConnectionId();
         }
 
         if (empty($table) && $name == 'all') {
