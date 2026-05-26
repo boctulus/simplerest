@@ -119,7 +119,9 @@
       "Bash(Get-ChildItem \"D:\\\\laragon\\\\www\\\\simplerest\\\\app\\\\Commands\\\\make\\\\\" | Select-Object Name *)",
       "Bash(xargs grep -l \"user_deny_permissions\\\\|user_tb_permissions\")",
       "PowerShell(Get-ChildItem D:\\\\laragon\\\\www\\\\simplerest\\\\ -Name | Where-Object { $_ -match \"^com\" })",
-      "PowerShell(Get-ChildItem D:\\\\laragon\\\\www\\\\consorcios\\\\app\\\\Commands\\\\make\\\\ -Name | Where-Object { $_ -match \"[Pp]ivot\" })"
+      "PowerShell(Get-ChildItem D:\\\\laragon\\\\www\\\\consorcios\\\\app\\\\Commands\\\\make\\\\ -Name | Where-Object { $_ -match \"[Pp]ivot\" })",
+      "Bash(awk -v t=2267 '$1+0 > t-30 && $1+0 < t+30')",
+      "Bash(grep *)"
     ],
     "deny": [],
     "ask": []

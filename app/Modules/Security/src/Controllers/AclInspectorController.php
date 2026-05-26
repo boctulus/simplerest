@@ -9,6 +9,7 @@ use Boctulus\Simplerest\Core\Security\Compiler\TbPermissionBits;
 use Boctulus\Simplerest\Core\Security\Domain\AclContext;
 use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
 use Boctulus\Simplerest\Modules\Security\AclResolutionExplainer;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 
 /**
  * Policy Resolution Inspector — read-only ACL introspection endpoints.

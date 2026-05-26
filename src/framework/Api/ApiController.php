@@ -13,6 +13,7 @@ use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Arrays;  
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 use Boctulus\Simplerest\Core\Libs\Validator;
 use Boctulus\Simplerest\Core\Interfaces\IApi;
 use Boctulus\Simplerest\Core\Interfaces\IAuth;
@@ -278,7 +279,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     }
   
     protected function getModelInstance($fetch_mode = 'ASSOC', bool $reuse = false){
-        return get_model_instance($this->model_name, $fetch_mode, $reuse);
+        return DBRels::getModelInstance($this->model_name, $fetch_mode, $reuse);
     }
 
     static function getConnectedSubResources(){
@@ -1316,10 +1317,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         $rel_n_m = false;
                                         
                                         if (!isset($pivot[$this->table_name .'.'. $related_table])){
-                                            $pivot[$this->table_name .'.'. $related_table] = get_pivot([$this->table_name, $related_table]);
+                                            $pivot[$this->table_name .'.'. $related_table] = DBRels::getPivot([$this->table_name, $related_table]);
                                         }
 
-                                        $pivot = get_pivot([$this->table_name, $related_table]);
+                                        $pivot = DBRels::getPivot([$this->table_name, $related_table]);
 
                                         if (!is_null($pivot)){
                                             $rel_n_m = true;
@@ -1733,20 +1734,20 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                     unset($data[$tb]); // me quedo solo con datos de la tabla                   
 
-                    $rel_type = get_rel_type($this->table_name, $tb);
+                    $rel_type = DBRels::getRelType($this->table_name, $tb);
                     // d($rel_type, 'table '. $tb);
                     //d($dati, 'DATI');
 
                     switch ($rel_type){
                         case '1:1':
                         case 'n:1':
-                            $fks = get_fks($this->table_name, $tb);
+                            $fks = DBRels::getFKs($this->table_name, $tb);
 
                             //d($dati, 'dati');   
                             if (is_array($dati)){
                                 $keys = array_keys($dati);
 
-                                $fks = get_fks($this->table_name, $tb);                                
+                                $fks = DBRels::getFKs($this->table_name, $tb);                                
 
                                 /*
                                     Asumo una sola FK de momento entre dos tablas --- es falso !
@@ -1815,7 +1816,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         break;
 
                         case '1:n':
-                            $fks = get_fks($tb, $this->table_name);
+                            $fks = DBRels::getFKs($tb, $this->table_name);
 
                             //d($dati, 'dati (case 1:n)');
                             // d($fks, 'FKs');
@@ -1958,7 +1959,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         break;
                         
                         case 'n:m':
-                            $pivot_ay = get_pivot([$this->table_name, $tb]);
+                            $pivot_ay = DBRels::getPivot([$this->table_name, $tb]);
                             $bridge = $pivot_ay['bridge'] ?? null;
 
                             if ($bridge === null){

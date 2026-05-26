@@ -4,6 +4,8 @@ use Boctulus\Simplerest\Core\Interfaces\IMigration;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Libs\DB;
 
+use Boctulus\Simplerest\Core\Libs\DBRels;
+
 class SpPermissions implements IMigration
 {
     function __construct(){

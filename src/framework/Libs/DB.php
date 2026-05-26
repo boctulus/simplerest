@@ -8,6 +8,8 @@ use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Exceptions\SqlException;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\StdOut;
 
 class DB 
 {
@@ -481,7 +483,7 @@ class DB
             }
         }
 
-		$gns[$tenant_id] = false;
+		$gns[$tenant_id] = null; // cambiado de false a null
 
         return $gns[$tenant_id];
     }
@@ -1005,7 +1007,7 @@ class DB
 			$table = Strings::match($raw_sql, '/insert[ ]+(ignore[ ]+)?into[ ]+[`]?([a-z_]+[a-z0-9]?)[`]? /i', 2);
 
 			if (!empty($table)){
-				$schema = has_schema($table) ? get_schema($table) : null;
+				$schema = DBRels::hasSchema($table) ? DBRels::getSchema($table) : null;
 			} else {
 				$schema = null;
 			}
@@ -1514,9 +1516,124 @@ class DB
 
 			$filename = Files::convertSlashes($filename, Files::LINUX_DIR_SLASH);
 
-			DB::statement("SET global general_log_file = '$filename';"); 
+			DB::statement("SET global general_log_file = '$filename';");
 		}
 	}
 
+	// ---------------------------------------------------------------
+	//  CONNECTION / UTIL  (moved from Helpers/db.php)
+	// ---------------------------------------------------------------
+
+	static function getDefaultDatabaseName(): string
+	{
+		$def_con = self::getDefaultConnectionId();
+		return Config::get()['db_connections'][$def_con]['db_name'];
+	}
+
+	static function getTablePrefixForCurrent(): string
+	{
+		$conn_id = self::getCurrentConnectionId();
+		$cfg     = Config::get();
+
+		if ($conn_id == null) {
+			return $cfg['db_connections']['main']['tb_prefix'] ?? '';
+		}
+		return $cfg['db_connections'][$conn_id]['tb_prefix'] ?? '';
+	}
+
+	static function withConnection($new_connection_id, $callback, ...$params)
+	{
+		$conn_id      = self::getCurrentConnectionId();
+		$restore_conn = false;
+
+		if ($conn_id === null || $conn_id != $new_connection_id) {
+			self::setConnection($new_connection_id);
+
+			if ($conn_id != null) {
+				$restore_conn = true;
+			}
+		}
+
+		try {
+			$ret = $callback(...$params);
+		} finally {
+			if ($restore_conn) {
+				self::setConnection($conn_id);
+			}
+			return $ret ?? null;
+		}
+	}
+
+	static function withDefaultConnection($callback, ...$params)
+	{
+		$conn_id      = self::getCurrentConnectionId();
+		$restore_conn = false;
+
+		if ($conn_id != self::getDefaultConnectionId()) {
+			self::getDefaultConnection();
+
+			if ($conn_id != null) {
+				$restore_conn = true;
+			}
+		}
+
+		try {
+			$ret = $callback(...$params);
+		} finally {
+			if ($restore_conn) {
+				self::setConnection($conn_id);
+			}
+			return $ret ?? null;
+		}
+	}
+
+	static function enableQueryLog(?string $filename = null): void
+	{
+		$filename = $filename ?? (LOGS_PATH . 'mysql.txt');
+		try {
+			$conn = self::getConnection();
+			$conn->exec("SET GLOBAL general_log = 1");
+			$conn->exec("SET GLOBAL general_log_file = '$filename'");
+		} catch (\PDOException $e) {
+			throw new \Exception("Error enabling query log: " . $e->getMessage());
+		}
+	}
+
+	static function processSqlFile(string $path, string $delimeter = ';', bool $stop_if_error = false): void
+	{
+		$file      = file_get_contents($path);
+		$sentences = explode($delimeter, $file);
+
+		foreach ($sentences as $sentence) {
+			$sentence = trim($sentence);
+
+			if ($sentence == '') {
+				continue;
+			}
+
+			StdOut::print('SENTENCE : ' . $sentence);
+
+			try {
+				self::statement($sentence);
+			} catch (SqlException $e) {
+				dd($e->getMessage(), 'Sql Exception');
+
+				if ($stop_if_error) {
+					exit(1);
+				}
+			}
+		}
+	}
+
+	static function migrate(bool $show_response = true, ...$args): void
+	{
+		$mgr = new \MigrationsCommand();
+
+		if (!$show_response) {
+			StdOut::hideResponse();
+		}
+
+		$mgr->migrate(...$args);
+	}
 }
 

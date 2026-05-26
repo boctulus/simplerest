@@ -9,6 +9,7 @@ use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Libs\StdOut;
 use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 
 abstract class BaseMigrationsCommand extends BaseCommand
 {
@@ -183,7 +184,7 @@ abstract class BaseMigrationsCommand extends BaseCommand
 
         $cnt = min($steps, count($filenames));
 
-        get_default_connection();
+        DB::getDefaultConnection();
 
         if ($fresh) {
             $this->doFresh(...$opt);
@@ -214,7 +215,7 @@ abstract class BaseMigrationsCommand extends BaseCommand
             }
 
             StdOut::print("Migrated  '$filename_mg' --ok\r\n");
-            get_default_connection();
+            DB::getDefaultConnection();
             table('migrations')->create(['filename' => $filename_mg]);
         }
 
@@ -303,7 +304,7 @@ abstract class BaseMigrationsCommand extends BaseCommand
 
             StdOut::print("Migrated  '$filename' --ok\r\n");
 
-            get_default_connection();
+            DB::getDefaultConnection();
 
             $normalized_migrations_path = rtrim(str_replace('\\', '/', realpath(MIGRATIONS_PATH)), '/');
             $normalized_current_path    = rtrim(str_replace('\\', '/', realpath($path)), '/');
@@ -316,7 +317,7 @@ abstract class BaseMigrationsCommand extends BaseCommand
             }
 
             $data = ['filename' => $filename, 'path' => !empty($relative_path) ? $relative_path : null];
-            $main = get_default_connection_id();
+            $main = DB::getDefaultConnectionId();
 
             if ($to_db != null && $to_db != $main) {
                 $data['db'] = $to_db;
