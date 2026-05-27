@@ -227,8 +227,14 @@ class CommandRegistry
         }
 
         if (!$commandName) {
-            $this->showGroupHelp($group);
-            return;
+            // No subcommand but flags/options present → route to default command (first in group)
+            if (!empty($this->groups[$group])) {
+                $commandName = $this->groups[$group][0];
+                $commandArgs = $args;
+            } else {
+                $this->showGroupHelp($group);
+                return;
+            }
         }
 
         // --help after command name → show command help
