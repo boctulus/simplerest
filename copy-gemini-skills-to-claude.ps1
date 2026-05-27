@@ -12,3 +12,8 @@ mkdir .\.opencode\skills -Force
 rm .\.opencode\skills\* -Recurse -Force
 cp .\.agent\skills\* .\.opencode\skills -Recurse -Force
 cp .\.agent\skills\index.md .\.opencode\skills\
+
+mkdir .\.agents\skills -Force
+rm .\.agents\skills\* -Recurse -Force
+cp .\.agent\skills\* .\.agents\skills -Recurse -Force
+cp .\.agent\skills\index.md .\.agents\skills\

@@ -1281,8 +1281,8 @@ class SimpleRestPackager
 
 }
 
-// Main execution
-if (php_sapi_name() === 'cli') {
+// Main execution (only when invoked directly, NOT via require_once)
+if (php_sapi_name() === 'cli' && realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === realpath(__FILE__)) {
     $sourceDir = ROOT_PATH;
     $destDir   = Files::getAbsolutePath(ROOT_PATH . '../simplerest-pack');
 

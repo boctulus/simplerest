@@ -1,0 +1,1 @@
+Al comando 'php com pack' agregale los opcionales de --to={ruta absoluta} y --dry-run
