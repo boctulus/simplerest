@@ -2523,6 +2523,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         $old_data = null;
 
         foreach($webhooks as $hook){
+            $conditions = [];
             if (!empty($hook['conditions'])){
                 parse_str($hook['conditions'], $conditions);
             }
