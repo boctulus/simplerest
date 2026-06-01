@@ -41,6 +41,7 @@ use Boctulus\Simplerest\Core\WebRouter;
 use Endroid\QrCode\Label\Font\NotoSans;
 use Boctulus\Simplerest\Core\Libs\Cache;
 use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 use Boctulus\Simplerest\Core\Libs\Utils;
 
 use Boctulus\Simplerest\libs\Documentor;
@@ -2122,9 +2123,9 @@ class DumbController extends Controller
 
     function pivot()
     {
-        dd(get_pivot(['products', 'comments'], 'az'));
-        //dd(get_pivot(['products', 'comments']));
-        dd(get_pivot(['roles', 'tbl_usuario_empresa'], 'main'));
+        dd(DBRels::getPivot(['products', 'comments'], 'az'));
+        //dd(DBRels::getPivot(['products', 'comments']));
+        dd(DBRels::getPivot(['roles', 'tbl_usuario_empresa'], 'main'));
     }
 
     function show_dbs()
@@ -2214,7 +2215,7 @@ class DumbController extends Controller
         // $t1 = 'products';
         // $t2 = 'valoraciones';
 
-        // $pivot = get_pivot([
+        // $pivot = DBRels::getPivot([
         //     $t1, $t2
         // ], $tenant_id);
 
@@ -2225,7 +2226,7 @@ class DumbController extends Controller
         // $t1 = 'valoraciones';
         // $t2 = 'products';
 
-        // $pivot = get_pivot([
+        // $pivot = DBRels::getPivot([
         //     $t1, $t2
         // ], $tenant_id);
 
@@ -2237,7 +2238,7 @@ class DumbController extends Controller
         // $t1 = 'products';
         // $t2 = 'product_comments';
 
-        // $pivot = get_pivot([
+        // $pivot = DBRels::getPivot([
         //     $t1, $t2
         // ], $tenant_id);
 
@@ -2252,7 +2253,7 @@ class DumbController extends Controller
         $t1 = 'tbl_persona';
         $t2 = 'tbl_usuario';
 
-        $pivot = get_pivot([
+        $pivot = DBRels::getPivot([
             $t1, $t2
         ], $tenant_id);
 
@@ -2263,7 +2264,7 @@ class DumbController extends Controller
     }
 
 
-    function get_rels()
+    function test_DBRels_getRels()
     {
         $tenant_id = 'az';
 
@@ -2271,11 +2272,11 @@ class DumbController extends Controller
         $t2 = 'users';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
         exit; ///////
@@ -2283,17 +2284,17 @@ class DumbController extends Controller
 
         $t1 = 'u';
         $t2 = 'u_settings';
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
 
         dd('----------------------x----------------------');
 
         $t1 = 'u_settings';
         $t2 = 'u';
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
 
         dd('----------------------x----------------------');
 
@@ -2301,22 +2302,22 @@ class DumbController extends Controller
         $t1 = 'products';
         $t2 = 'product_categories';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
         $t1 = 'product_categories';
         $t2 = 'products';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2326,11 +2327,11 @@ class DumbController extends Controller
         $t2 = 'products';
         $rel_str = 'product_categories.id_catego=products.category';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2341,11 +2342,11 @@ class DumbController extends Controller
         $t2 = 'products';
         $rel_str = 'products.category=product_categories.id_catego';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2356,11 +2357,11 @@ class DumbController extends Controller
         $t2 = 'product_categories';
         $rel_str = 'product_categories.id_catego=products.category';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2371,11 +2372,11 @@ class DumbController extends Controller
         $t2 = 'product_categories';
         $rel_str = 'products.category=product_categories.id_catego';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2385,11 +2386,11 @@ class DumbController extends Controller
         $t1 = 'tbl_producto';
         $t2 = 'tbl_sub_cuenta_contable';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2398,11 +2399,11 @@ class DumbController extends Controller
         $t2 = 'tbl_sub_cuenta_contable';
         $t1 = 'tbl_producto';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2412,11 +2413,11 @@ class DumbController extends Controller
         $t2 = 'tbl_sub_cuenta_contable';
         $rel_str = 'tbl_producto.sub_intIdCuentaContableCompra=tbl_sub_cuenta_contable.sub_intId';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2427,11 +2428,11 @@ class DumbController extends Controller
         $t2 = 'tbl_sub_cuenta_contable';
         $rel_str = 'tbl_sub_cuenta_contable.sub_intId=tbl_producto.sub_intIdCuentaContableCompra';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2442,11 +2443,11 @@ class DumbController extends Controller
         $t2 = 'tbl_sub_cuenta_contable';
         $rel_str = 'tbl_sub_cuenta_contable.sub_intId=tbl_producto.sub_intIdCuentaContableVenta';
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2458,11 +2459,11 @@ class DumbController extends Controller
         $t2 = 'tbl_producto';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, null, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id, $rel_str), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id, $rel_str), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id, $rel_str), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id, $rel_str), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2472,11 +2473,11 @@ class DumbController extends Controller
         $t2 = 'valoraciones';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2484,11 +2485,11 @@ class DumbController extends Controller
         $t2 = 'user_roles';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2498,11 +2499,11 @@ class DumbController extends Controller
         $t2 = 'tbl_usuario';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2510,11 +2511,11 @@ class DumbController extends Controller
         $t2 = 'tbl_unidadmedida';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2522,11 +2523,11 @@ class DumbController extends Controller
         $t2 = 'tbl_iva_cuentacontable';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2535,11 +2536,11 @@ class DumbController extends Controller
         $t2 = 'tbl_producto';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
 
         dd('----------------------x----------------------');
 
@@ -2547,12 +2548,12 @@ class DumbController extends Controller
         $t2 = 'tbl_usuario';
         $rel_str = null;
 
-        dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
-        dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2");
+        dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
 
-        dd(get_rel_type($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
+        dd(DBRels::getRelType($t1, $t2, $rel_str, $tenant_id), 'REL TYPE');
     }
 
     function is_rel()
@@ -2562,34 +2563,34 @@ class DumbController extends Controller
         // $t1 = 'u';
         // $t2 = 'u_settings';
 
-        // dd(is_1_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?"); 
-        // dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?"); 
-        // dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
-        // dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?"); 
+        // dd(DBRels::isOneToOne($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?"); 
+        // dd(DBRels::isOneToMany($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?"); 
+        // dd(DBRels::isOneToMany($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
+        // dd(DBRels::isManyToMany($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?"); 
 
 
         $t1 = 'products';
         $t2 = 'product_categories';
 
-        // dd(is_1_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?"); 
-        dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?");
-        // dd(is_n_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
-        // dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?");
+        // dd(DBRels::isOneToOne($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?"); 
+        dd(DBRels::isOneToMany($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?");
+        // dd(DBRels::isNToOne($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
+        // dd(DBRels::isManyToMany($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?");
 
         // dd('------------------------------------------------------------');
 
         $t1 = 'products';
         $t2 = 'users';
 
-        // dd(get_rels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
-        // dd(get_rels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
-        // dd(get_rels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
-        // dd(get_rels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
+        // dd(DBRels::getRels($t1, $t2, '1:1',  $tenant_id), "1:1 para $t1~$t2"); 
+        // dd(DBRels::getRels($t1, $t2, '1:n',  $tenant_id), "1:n para $t1~$t2"); 
+        // dd(DBRels::getRels($t1, $t2, 'n:1',  $tenant_id), "n:1 para $t1~$t2"); 
+        // dd(DBRels::getRels($t1, $t2, 'n:m',  $tenant_id), "n:m para $t1~$t2");
 
-        dd(is_1_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?");
-        dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?");
-        dd(is_n_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
-        dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?");
+        dd(DBRels::isOneToOne($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?");
+        dd(DBRels::isOneToMany($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?");
+        dd(DBRels::isNToOne($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
+        dd(DBRels::isManyToMany($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?");
 
         dd('------------------------------------------------------------');
 
@@ -2600,10 +2601,10 @@ class DumbController extends Controller
         $t2 = 'tbl_usuario';
 
 
-        dd(is_1_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?");
-        dd(is_1_n($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?");
-        dd(is_n_1($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
-        dd(is_n_m($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?");
+        dd(DBRels::isOneToOne($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:1 ?");
+        dd(DBRels::isOneToMany($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are 1:n ?");
+        dd(DBRels::isNToOne($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:1 ?");
+        dd(DBRels::isManyToMany($t1, $t2, null, $tenant_id), "All relations for $t1~$t2 are n:m ?");
     }
 
     function which_rel()
@@ -2613,7 +2614,7 @@ class DumbController extends Controller
         $t1 = 'tbl_arl';
         $t2 = 'tbl_empresa_nomina';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         exit; //
 
@@ -2622,128 +2623,128 @@ class DumbController extends Controller
         $t1 = 'products';
         $t2 = 'product_categories';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'products';
         $t2 = 'product_tags';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'products';
         $t2 = 'valoraciones';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'valoraciones';
         $t2 = 'products';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'valoraciones';
         $t2 = 'users';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'products';
         $t2 = 'users';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'users';
         $t2 = 'products';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'users';
         $t2 = 'book_reviews';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'book_reviews';
         $t2 = 'users';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'roles';
         $t2 = 'users';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'user_roles';
         $t2 = 'roles';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'roles';
         $t2 = 'user_roles';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'product_tags';
         $t2 = 'products';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'products';
         $t2 = 'product_tags';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $tenant_id = 'az';
         $t1 = 'u';
         $t2 = 'u_settings';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'u_settings';
         $t2 = 'u';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'tbl_persona';
         $t2 = 'tbl_pais';
 
-        dd(get_rel_type($t1, $t2, null, 'db_flor'), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
         $t1 = 'tbl_estado';
         $t2 = 'tbl_categoria_persona';
 
-        dd(get_rel_type($t1, $t2, null, 'db_flor'), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
         $t1 = 'tbl_sub_cuenta_contable';
         $t2 = 'tbl_iva_cuentacontable';
 
-        dd(get_rel_type($t1, $t2, null, 'db_flor'), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
 
         $t1 = 'tbl_sub_cuenta_contable';
         $t2 = 'tbl_iva';
 
-        dd(get_rel_type($t1, $t2, null, 'db_flor'), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
 
         $t1 = 'job_tbl';
         $t2 = 'usr_tbl';
 
-        dd(get_rel_type($t1, $t2, null, 'az'), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, 'az'), "$t1~$t2");
 
         $t1 = 'usr_tbl';
         $t2 = 'job_tbl';
 
-        dd(get_rel_type($t1, $t2, null, 'az'), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, 'az'), "$t1~$t2");
 
 
         $t1 = 'tbc1';
         $t2 = 'tbc2';
 
         // 1:n  -- diría que está OK
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         // 1:n -- no estoy seguro
@@ -2752,31 +2753,31 @@ class DumbController extends Controller
         $t1 = 'tbc2';
         $t2 = 'tbc1';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'tbl_sub_cuenta_contable';
         $t2 = 'tbl_producto';
 
-        dd(get_rel_type($t1, $t2, null, 'db_flor'), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
 
         $t1 = 'tbl_producto';
         $t2 = 'tbl_sub_cuenta_contable';
 
-        dd(get_rel_type($t1, $t2, null, 'db_flor'), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
         $tenant_id = 'az';
 
         $t1 = 'ur';
         $t2 = 'ur_settings';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'ur_settings';
         $t2 = 'ur';
 
-        dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $tenant_id = 'db_flor';
 
@@ -2785,9 +2786,9 @@ class DumbController extends Controller
 
         $relation_str = null;
 
-        //dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
+        //dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
 
-        $rel_type = get_rel_type($t1, $t2, $relation_str, $tenant_id);
+        $rel_type = DBRels::getRelType($t1, $t2, $relation_str, $tenant_id);
     }
 
 
@@ -3147,7 +3148,7 @@ class DumbController extends Controller
             ->select(['cost', 'size', 'belongs_to']);
 
         dd(
-            sql_formatter($m->dd(), true)
+            Model::sqlFormatter($m->dd(), true)
         );
     }
 
@@ -3492,7 +3493,7 @@ class DumbController extends Controller
         $t2 = 'users';
         $from_db = 'az';
 
-        $mul = is_mul_rel($t1, $t2, null, $from_db);
+        $mul = DBRels::isMulRel($t1, $t2, null, $from_db);
         dd($mul);
     }
 
@@ -3503,104 +3504,104 @@ class DumbController extends Controller
         $t1 = 'products';
         $t2 = 'product_categories';
 
-        //dd(is_mul_rel_cached($t1, $t2, null, $tenant_id), "$t1~$t2");  ///
-        dd(is_mul_rel($t1, $t2, null, $tenant_id), "$t1~$t2");
+        //dd(DBRels::isMulRelCached($t1, $t2, null, $tenant_id), "$t1~$t2");  ///
+        dd(DBRels::isMulRel($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'product_categories';
         $t2 = 'products';
 
-        //dd(is_mul_rel_cached($t1, $t2, null, $tenant_id), "$t1~$t2");  ///
-        dd(is_mul_rel($t1, $t2, null, $tenant_id), "$t1~$t2");
+        //dd(DBRels::isMulRelCached($t1, $t2, null, $tenant_id), "$t1~$t2");  ///
+        dd(DBRels::isMulRel($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'product_categories';
         $t2 = 'products';
 
-        dd(is_mul_rel($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, $tenant_id), "$t1~$t2");
 
         $t1 = 'u';
         $t2 = 'u_settings';
 
-        //dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
-        dd(is_mul_rel($t1, $t2, null, $tenant_id), "$t1~$t2");
+        //dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'u_settings';
         $t2 = 'u';
 
-        //dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
-        dd(is_mul_rel($t1, $t2, null, $tenant_id), "$t1~$t2");
+        //dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'products';
         $t2 = 'users';
 
-        //dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
-        dd(is_mul_rel($t1, $t2, null, $tenant_id), "$t1~$t2");
+        //dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'products';
         $t2 = 'product_tags';
 
-        //dd(get_rel_type($t1, $t2, null, $tenant_id), "$t1~$t2");
-        dd(is_mul_rel($t1, $t2, null, $tenant_id), "$t1~$t2");
+        //dd(DBRels::getRelType($t1, $t2, null, $tenant_id), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, $tenant_id), "$t1~$t2");
 
 
         $t1 = 'tbl_persona';
         $t2 = 'tbl_pais';
 
-        dd(is_mul_rel($t1, $t2, null, 'db_flor'), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
 
         $t1 = 'tbc1';
         $t2 = 'tbc2';
 
         // true -- ok
-        dd(is_mul_rel($t1, $t2, null, 'az'), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, 'az'), "$t1~$t2");
 
         $t1 = 'tbc2';
         $t2 = 'tbc1';
 
         // false -- ok
-        dd(is_mul_rel($t1, $t2, null, 'az'), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, 'az'), "$t1~$t2");
 
         $t1 = 'job_tbl';
         $t2 = 'usr_tbl';
 
-        dd(is_mul_rel($t1, $t2, null, 'az'), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, 'az'), "$t1~$t2");
 
         $t1 = 'usr_tbl';
         $t2 = 'job_tbl';
 
-        dd(is_mul_rel($t1, $t2, null, 'az'), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, 'az'), "$t1~$t2");
 
 
         $t1 = 'tbl_sub_cuenta_contable';
         $t2 = 'tbl_producto';
 
-        dd(is_mul_rel($t1, $t2, null, 'db_flor'), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
         $t1 = 'tbl_producto';
         $t2 = 'tbl_sub_cuenta_contable';
 
-        dd(is_mul_rel($t1, $t2, null, 'db_flor'), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, 'db_flor'), "$t1~$t2");
 
 
         $t1 = 'ur';
         $t2 = 'ur_settings';
 
-        dd(is_mul_rel($t1, $t2, null, 'az'), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, 'az'), "$t1~$t2");
 
         $t1 = 'products';
         $t2 = 'valoraciones';
 
-        dd(is_mul_rel($t1, $t2, null, 'az'), "$t1~$t2");
-        //dd(is_mul_rel_cached($t1, $t2, null, 'az'), "$t1~$t2"); 
+        dd(DBRels::isMulRel($t1, $t2, null, 'az'), "$t1~$t2");
+        //dd(DBRels::isMulRelCached($t1, $t2, null, 'az'), "$t1~$t2"); 
 
         $t1 = 'tbl_producto';
         $t2 = 'tbl_unidadmedida';
 
-        dd(is_mul_rel($t1, $t2, null, 'db_flor'), "$t1~$t2");
+        dd(DBRels::isMulRel($t1, $t2, null, 'db_flor'), "$t1~$t2");
     }
 
     function test_foo()
@@ -4051,13 +4052,13 @@ class DumbController extends Controller
         $t1 = 'products';
         $t2 = 'product_categories';
 
-        dd(get_fks($t1, $t2), "FKs $t1 ->  $t2");
+        dd(DBRels::getFKs($t1, $t2), "FKs $t1 ->  $t2");
 
 
         $t1 = 'tbl_genero';
         $t2 = 'tbl_usuario';
 
-        dd(get_fks($t1, $t2, 'db_flor'), "FKs $t1 ->  $t2");
+        dd(DBRels::getFKs($t1, $t2, 'db_flor'), "FKs $t1 ->  $t2");
     }
 
     function test_zip()

@@ -4,6 +4,7 @@ namespace Boctulus\Simplerest\middlewares;
 
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 use Boctulus\Simplerest\Core\Middleware;
 use Boctulus\Simplerest\Core\Libs\Strings;
 

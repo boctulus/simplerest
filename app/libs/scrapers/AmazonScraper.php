@@ -77,7 +77,10 @@ class AmazonScraper /* extends ProductScraper */
                 
                 // Url del destino
                 $tgs  = $xpath->query('//a/@href');
-                $url  = trim($tgs[0]->nodeValue);
+                if ($tgs === false || $tgs->length === 0 || $tgs->item(0)->nodeValue === null) {
+                    throw new \RuntimeException("Unable to resolve redirect URL from Amazon response");
+                }
+                $url  = trim($tgs->item(0)->nodeValue);
 
                 $client = static::get_api_client($url);
 
@@ -135,7 +138,7 @@ class AmazonScraper /* extends ProductScraper */
         $tgs = $xpath->query('//span[contains(@class, "priceToPay")]//span//span[contains(@class, "a-price-whole")]');
         
         // No se encuentra precio => no disponible
-        if ($tgs[0] === null || $tgs[0]->nodeValue === null){
+        if ($tgs === false || $tgs->length === 0 || $tgs->item(0)->nodeValue === null){
             $buying_choices = Strings::contains('Ver todas las opciones de compra', $html);
 
             if ($buying_choices){
@@ -151,15 +154,15 @@ class AmazonScraper /* extends ProductScraper */
             ];
         }
 
-        $node_val             = rtrim($tgs[0]->nodeValue, $decimal_sep) ?? '';
+        $node_val             = rtrim($tgs->item(0)->nodeValue, $decimal_sep) ?? '';
         $precio_parte_entera  = str_replace($thousand_sep, '', trim($node_val));
 
         $tgs = $xpath->query('//span[contains(@class, "priceToPay")]//span//span[contains(@class, "a-price-fraction")]');
-        $precio_parte_decimal = trim($tgs[0]->nodeValue ?? '');
+        $precio_parte_decimal = ($tgs !== false && $tgs->length > 0) ? trim($tgs->item(0)->nodeValue ?? '') : '';
 
         if (empty($precio_parte_decimal)){
             $tgs = $xpath->query('//span[contains(@class, "priceToPay")]//span//span[contains(@class, "a-price-decimal")]');
-            $precio_parte_decimal = trim($tgs[0]->nodeValue ?? '');
+            $precio_parte_decimal = ($tgs !== false && $tgs->length > 0) ? trim($tgs->item(0)->nodeValue ?? '') : '';
         }
 
         $precio = "{$precio_parte_entera}.{$precio_parte_decimal}";
@@ -212,7 +215,7 @@ class AmazonScraper /* extends ProductScraper */
         */
 
         $tgs  = $xpath->query('//div[@id="availability"]');
-        $availability = trim($tgs[0]->nodeValue ?? '');
+        $availability = ($tgs !== false && $tgs->length > 0) ? trim($tgs->item(0)->nodeValue ?? '') : '';
 
         $available             = Strings::contains('En stock',  $availability, false) || 
                                  Strings::contains('In stock',  $availability, false);

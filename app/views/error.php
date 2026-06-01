@@ -6,18 +6,20 @@
     }
 </style>
 
-<h1 style="font-size:450%; font-weight: bold; color: red;"><?= $status ?></h1>
 
+<center>
+<h1 style="font-size:450%; font-weight: bold; color: red;"><?= $status ?? '' ?></h1>
 <br/>
-<img src="<?= asset('img/warning.svg.png') ?>" class="mt-3" style="width:15%;" />
-
+<img src="<?= asset('img/warning.png') ?>" class="mt-3" style="width:15%;" />
 
 <div class="mt-5">
-    Error type: <?= $type ?><br/>
+    Error type: <?= $type ?? '' ?><br/>
     Location: <?= $location ?? '' ?><br/>
-    Code: <?= $code ?><br/>
+    Code: <?= $code ?? '' ?><br/>
     Message: <?= $message ?? '' ?><br/>
     <?php
+        $detail = $detail ?? null;
+        
         if ($detail != null){
             if (is_array($detail)){
                 dd($detail, 'Detail');
@@ -27,4 +29,4 @@
         }
     ?>
 </div>
-
+</center>
