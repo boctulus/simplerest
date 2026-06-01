@@ -213,6 +213,23 @@ WebRouter::get('user/{id}/*', function($id, $resource) {
 //     }
 // );
 
+/*
+    Test: render() sends JS/CSS assets correctly
+    Ver con: curl http://localhost:8000/test-render-assets
+*/
+WebRouter::get('test-render-assets', function(){
+    css_file('css/test-render.css');
+    js_file('js/test-render.js');
+
+    set_template('templates/tpl_basic.php');
+
+    $html = '<h1>Render Assets Test</h1><p>CSS and JS should appear in head/footer</p>';
+
+    render($html, null, [
+        'title' => 'Render Test - Assets',
+    ]);
+});
+
 // Manual perf_test routes (take priority over automatic ApiHandler)
 WebRouter::get('api/v1/perf_test_manual',             'Boctulus\Simplerest\Controllers\Api\PerfTestManual@index');
 WebRouter::get('api/v1/perf_test_manual/{id}',        'Boctulus\Simplerest\Controllers\Api\PerfTestManual@show');

@@ -305,7 +305,7 @@
 | # | Tarea | Estado | Fuente |
 |---|-------|--------|--------|
 | 20.1 | UPDATE no actualiza con bindings estilo `UPDATE star_rating SET gender='?', author='?'` | PENDING | TODO Simplerest.txt |
-| 20.2 | `render()` no envía JS y CSS a templates (pero `view()` sí) | PENDING | TODO Simplerest.txt |
+| 20.2 | `render()` no envía JS y CSS a templates (pero `view()` sí) | ✅ DONE | Fixed in src/framework/Helpers/view.php |
 | 20.3 | Falta llamar a `auth()->setPermissions()` al loguear usuario — afecta `hasSpecialPermission()` | PENDING | TODO Simplerest.txt |
 | 20.4 | Vista puede renderizar algo antes de mostrar error (después de cambios en Response/FrontController) | PENDING | TODO Simplerest.txt |
 | 20.5 | Migraciones fallan en PHP 8+ (repite archivos, "There is no active transaction") | PENDING | TODO Simplerest.txt |

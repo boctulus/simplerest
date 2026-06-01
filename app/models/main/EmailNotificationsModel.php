@@ -8,6 +8,7 @@ use Boctulus\Simplerest\Schemas\main\EmailNotificationsSchema;
 use Boctulus\Simplerest\Core\Libs\Mails;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 
 class EmailNotificationsModel extends MyModel
 {
