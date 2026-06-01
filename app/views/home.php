@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SimpleRest - For Reasoning Architecture</title>
 
-    <?= base() ?>
-
     <link rel="stylesheet" href="<?= asset('third_party/bootstrap/5.x/bootstrap.min.css') ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 

@@ -9,6 +9,7 @@ use Boctulus\Simplerest\Core\Libs\DB;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 
 class FacebookController extends Controller
 {

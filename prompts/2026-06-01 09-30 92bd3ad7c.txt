@@ -1,0 +1,1 @@
+Fix: render() no envía JS y CSS a templates (pero view() sí)

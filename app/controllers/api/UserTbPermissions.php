@@ -42,7 +42,7 @@ class UserTbPermissions extends ApiController
                 $data['created_by'] = auth()->uid();
             }
 
-            $validado = (new Validator)->validate($instance->getRules(), $data);
+            $validado = (new Validator)->validate($data, $instance->getRules());
             if ($validado !== true){
                 error(trans('Data validation error'), 400, $validado);
             }  

@@ -107,7 +107,10 @@ function render($content = null, ?string $layout = null, ?array $vars  = null){
 
     if (!empty($vars)){
         extract($vars);
-    }   
+    }
+
+    $head   = View::getHead();
+    $footer = View::getFooter();
 
     include $path;
 }
