@@ -1,0 +1,809 @@
+<?php
+
+namespace Boctulus\Simplerest\Core\Security;
+
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Interfaces\IAcl;
+use Boctulus\Simplerest\Core\Security\Contracts\AuthorizationPolicyInterface;
+use Boctulus\Simplerest\Core\Security\Domain\AclContext;
+use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
+use Boctulus\Simplerest\Core\Security\Engine\AclEngine;
+use Boctulus\Simplerest\Core\Security\Compiler\EffectivePermissionCompiler;
+
+
+abstract class Acl implements IAcl
+{
+    protected $roles = [];
+
+    protected $role_ids   = [];
+    protected $role_names = [];
+    protected $role_perms = [];
+    protected $deny_role_perms = [];
+    protected $parent_role_names = [];
+    protected $current_role = null; // string or null
+    protected $guest_name = 'guest';
+    protected $registered_name = 'registered';
+    protected $sp_permissions = [];
+    protected $ancestors = [];
+    
+
+    public function __construct()
+    {
+        $this->sp_permissions = [
+            'read_all',
+            'read_all_folders',
+            'read_all_trashcan',
+            'write_all',            
+            'write_all_folders',            
+            'write_all_trashcan',
+            'write_all_collections',
+            'fill_all',
+            'grant',
+            'impersonate',
+            'lock',
+            'transfer'
+        ]; 
+
+        if (!is_dir(SECURITY_PATH)){
+            Files::mkDirOrFail(SECURITY_PATH);
+        }
+    
+        Files::writableOrFail(SECURITY_PATH);
+        Files::writableOrFail(SECURITY_PATH . Config::get()['acl_file']);
+    }
+
+    public function getEveryPossibleRole(): array {
+        return $this->roles;
+    }
+
+    public function addRole(string $role_name, $role_id = null)
+    {
+        if (in_array($role_id, $this->role_ids)){
+            throw new \Exception("Role id '$role_id' can not be repetead. It should be UNIQUE.");
+        }
+
+        if (in_array($role_name, $this->role_names)){
+            throw new \Exception("Role name '$role_name' can not be repetead. It should be UNIQUE.");
+        }
+
+        $this->registerRoleState($role_name, $role_id);
+
+        return $this;
+    }
+
+    protected function registerRoleState(string $role_name, $role_id): void
+    {
+        if ($role_name === 'guest') {
+            $this->guest_name = 'guest';
+        }
+
+        $this->role_ids[]   = $role_id;
+        $this->role_names[] = $role_name;
+
+        $this->role_perms[$role_name] = [
+            'role_id'        => $role_id,
+            'sp_permissions' => [],
+            'tb_permissions' => [],
+        ];
+
+        $this->current_role = $role_name;
+    }
+
+    public function addRoles(Array $roles) {
+        foreach ($roles as $role_name => $role_id) {
+
+            $this->addRole($role_name, $role_id);
+        }
+
+        $this->current_role = null;
+        return $this;
+    }    	
+	    
+    public function addInherit(string $role_name, $to_role = null) {
+        if ($to_role != null){
+            $this->current_role = $to_role;
+        }
+
+        if ($this->current_role == null){
+            throw new \Exception("You can't inherit from undefined rol");
+        }
+
+        $this->parent_role_names[$this->current_role] = $role_name;
+
+        if (!isset($this->role_perms[$this->current_role]['sp_permissions'])){
+            $this->role_perms[$this->current_role]['sp_permissions'] = [];
+        } else {
+            if (!empty($this->role_perms[$this->current_role]['sp_permissions'])){
+                throw new \Exception("You can't inherit permissions from '$role_name' when you have already permissions for '".$this->current_role."'");
+            }
+        }
+
+        if (!isset($this->role_perms[$this->current_role]['tb_permissions'])){
+            $this->role_perms[$this->current_role]['tb_permissions'] = [];
+        } else {
+            if (!empty($this->role_perms[$this->current_role]['tb_permissions'])){
+                throw new \Exception("You can't inherit permissions from '$role_name' when you have already permissions for '$this->current_role'");
+            }
+        }
+
+        if (!empty($this->role_perms[$this->current_role]['sp_permissions']) || !empty($this->role_perms[$this->current_role]['sp_permissions'])){
+            throw new \Exception("You can't inherit permissions from '$role_name' when you have already permissions for '$this->current_role'");
+        }
+
+        if (!isset($this->role_perms[$role_name]) || !isset($this->role_perms[$role_name]['sp_permissions']) || !isset($this->role_perms[$role_name]['tb_permissions']) ){
+            throw new \Exception("[ Inherit ] Role '$role_name' not found");
+        }
+
+        $this->role_perms[$this->current_role]['sp_permissions'] = $this->role_perms[$role_name]['sp_permissions'];
+        $this->role_perms[$this->current_role]['tb_permissions'] = $this->role_perms[$role_name]['tb_permissions'];
+
+        return $this;
+    }
+
+    public function addSpecialPermissions(Array $sp_permissions, $to_role = null) {
+        if ($to_role != null){
+            $this->current_role = $to_role;
+        }
+
+        if ($this->current_role == null){
+            throw new \Exception("You can't inherit from undefined rol");
+        }
+
+        // chequear que $sp_permissions no se cualquier cosa
+        foreach ($sp_permissions as $spp){
+            if (!in_array($spp, $this->sp_permissions)){
+                throw new \Exception("'$spp' is not a valid special permission");
+            }
+
+            // caso especial de un pseudo-permiso
+            if ($spp == 'grant'){
+                $this->addResourcePermissions('tb_permissions', ['read', 'write']);
+                //return $this;
+            }
+        }
+        
+        $this->role_perms[$this->current_role]['sp_permissions'] = array_unique(array_merge($this->role_perms[$this->current_role]['sp_permissions'], $sp_permissions));
+     
+        return $this;
+    }
+    
+    public function addResourcePermissions(string $table, Array $tb_permissions, $to_role = null) {
+        if ($to_role != null){
+            $this->current_role = $to_role;
+        }
+
+        if ($this->current_role == null){
+            throw new \Exception("You can't inherit from undefined rol");
+        }
+
+        if (!isset($this->role_perms[$this->current_role]['tb_permissions'][$table])){
+            $this->role_perms[$this->current_role]['tb_permissions'][$table] = [];
+        }
+
+        foreach ($tb_permissions as $tbp){
+            switch ($tbp) {
+                case 'show':
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'show';
+                break;
+                case 'show_all':
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'show_all';
+                break;
+                case 'list':
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'list';
+                break;
+                case 'list_all':
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'list_all';
+                break;
+                case 'read':
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'show';
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'list';
+                break;
+                case 'read_all':  
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'show_all';
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'list_all';
+                break;
+
+                case 'create':
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'create';
+                break;
+                case 'update':
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'update';
+                break;
+                case 'delete':
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'delete';    
+                break;
+                case 'write':
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'create';
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'update';
+                    $this->role_perms[$this->current_role]['tb_permissions'][$table][] = 'delete';
+                break;
+
+                default:
+                    throw new \Exception("'$tbp' is not a valid resource permission");
+            }
+        }
+
+        $this->role_perms[$this->current_role]['tb_permissions'][$table] = array_unique($this->role_perms[$this->current_role]['tb_permissions'][$table]);
+
+        return $this;
+    }
+
+    /**
+     * Expand resource-permission shorthand ('read' → ['show','list'], 'write' → ['create','update','delete']).
+     * Reused by both allow and deny builders.
+     *
+     * @return string[]
+     */
+    protected function expandResourceActions(array $actions): array
+    {
+        $expanded = [];
+
+        foreach ($actions as $a) {
+            switch ($a) {
+                case 'read':
+                    $expanded[] = 'show';
+                    $expanded[] = 'list';
+                    break;
+                case 'read_all':
+                    $expanded[] = 'show_all';
+                    $expanded[] = 'list_all';
+                    break;
+                case 'write':
+                    $expanded[] = 'create';
+                    $expanded[] = 'update';
+                    $expanded[] = 'delete';
+                    break;
+                case 'show':
+                case 'show_all':
+                case 'list':
+                case 'list_all':
+                case 'create':
+                case 'update':
+                case 'delete':
+                    $expanded[] = $a;
+                    break;
+                default:
+                    throw new \Exception("'$a' is not a valid resource permission");
+            }
+        }
+
+        return array_values(array_unique($expanded));
+    }
+
+    /**
+     * Declare an explicit business-level DENY on a resource for the current role
+     * (or `$to_role` if provided). Beats role-level ALLOWs and read_all/write_all
+     * wildcards. Mirrors addResourcePermissions() shape.
+     */
+    public function addDenyResourcePermissions(string $table, array $actions, $to_role = null)
+    {
+        if ($to_role != null){
+            $this->current_role = $to_role;
+        }
+
+        if ($this->current_role == null){
+            throw new \Exception("You can't add deny rules to undefined rol");
+        }
+
+        $expanded = $this->expandResourceActions($actions);
+
+        if (!isset($this->deny_role_perms[$this->current_role]['tb'][$table])){
+            $this->deny_role_perms[$this->current_role]['tb'][$table] = [];
+        }
+
+        foreach ($expanded as $a){
+            $this->deny_role_perms[$this->current_role]['tb'][$table][$a] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Declare an explicit business-level DENY on special permissions for the
+     * current role (or `$to_role` if provided). Beats any ALLOW source.
+     */
+    public function addDenySpecialPermissions(array $sp_permissions, $to_role = null)
+    {
+        if ($to_role != null){
+            $this->current_role = $to_role;
+        }
+
+        if ($this->current_role == null){
+            throw new \Exception("You can't add deny rules to undefined rol");
+        }
+
+        foreach ($sp_permissions as $spp){
+            if (!in_array($spp, $this->sp_permissions)){
+                throw new \Exception("'$spp' is not a valid special permission");
+            }
+            $this->deny_role_perms[$this->current_role]['sp'][$spp] = true;
+        }
+
+        return $this;
+    }
+
+    public function setAsGuest(string $guest_name){
+        if (!in_array($guest_name, $this->role_names)){
+            throw new \Exception("Please add the rol '$guest_name' *before* to set as guest role to avoid mistakes");
+        }
+
+        $this->guest_name = $guest_name;
+        return $this;
+    }
+
+    public function setAsRegistered(string $name){
+        if (!in_array($name, $this->role_names)){
+            throw new \Exception("Please add the rol '$name' *before* to set as registered role to avoid mistakes");
+        }
+
+        $this->registered_name = $name;
+        return $this;
+    }
+
+    public function getGuest(): string {
+        if ($this->guest_name == null){
+            throw new \Exception("Undefined guest rol in ACL");
+        }
+
+        return $this->guest_name;
+    }
+
+    public function getRegistered(): string {
+        if ($this->registered_name == null){
+            throw new \Exception("Undefined guest rol in ACL");
+        }
+
+        return $this->registered_name;
+    }
+
+    public function getRoleName($role_id = null){
+        if ($role_id === null){
+            return $this->role_names;
+        }
+
+        foreach ($this->role_perms as $name => $r){
+            if ($r['role_id'] == $role_id){
+                return $name;
+            }
+        }
+
+        throw new \Exception("Undefined role for role_id '$role_id'");
+    }
+
+    public function getRoleId(string $role_name){
+        if (isset($this->role_perms[$role_name])){
+            return $this->role_perms[$role_name]['role_id'];
+        }
+
+        throw new \Exception("Undefined role with name '$role_name'");
+    }
+
+    public function roleExists(string $role_name): bool {
+        return isset($this->role_perms[$role_name]);
+    }
+
+    public function hasSpecialPermission(string $perm, ?Array $role_names = null, $uid = null): bool {
+        if (!in_array($perm, $this->sp_permissions)){
+            throw new \InvalidArgumentException("Invalid permission '$perm'");
+        }
+
+        if (empty($role_names)){
+            $role_names = auth()->getRoles();
+        }
+
+        $is_auth    = request()->isAuthenticated();
+        $userSpPerms = [];
+
+        if (!$is_auth) {
+            if ($uid != null) {
+                $userSpPerms = DB::table('user_sp_permissions')
+                    ->join('sp_permissions')
+                    ->where(['user_id' => $uid])
+                    ->pluck('name');
+            }
+        } else {
+            $userSpPerms = auth()->getPermissions()['sp'] ?? [];
+        }
+
+        $userDenyPerms   = $this->fetchUserDenyPerms($uid, $is_auth);
+        $userDenySpPerms = $this->fetchUserDenySpPerms($uid, $is_auth);
+
+        $context = AclContext::withCompiled(
+            snapshot:        $this->getSnapshot(),
+            compiler:        $this->getCompiler(),
+            userId:          $uid,
+            roles:           $role_names,
+            authenticated:   $is_auth,
+            userSpPerms:     $userSpPerms,
+            userDenyPerms:   $userDenyPerms,
+            userDenySpPerms: $userDenySpPerms,
+        );
+
+        return $this->getEngine()->hasSpecialPermission($perm, $context);
+    }
+
+    /*
+        Si $role_names esta vacio, busca los roles del usuario autenticado
+    */
+    public function hasResourcePermission(string $perm, string $resource, ?Array $role_names = null): bool {
+        if (empty($role_names)){
+            $role_names = auth()->getRoles();
+        }
+
+        $allowed = ['show', 'show_all', 'list', 'list_all', 'create', 'update', 'delete'];
+
+        if (!in_array($perm, $allowed)){
+            throw new \InvalidArgumentException("hasResourcePermission : invalid permission '$perm'. Allowed: ". implode(', ', $allowed));
+        }
+
+        foreach ($role_names as $r_name){
+            if (!isset($this->role_perms[$r_name])){
+                throw new \InvalidArgumentException("hasResourcePermission : invalid role name '$r_name'");
+            }
+        }
+
+        $context = AclContext::withCompiled(
+            snapshot:      $this->getSnapshot(),
+            compiler:      $this->getCompiler(),
+            userId:        null,
+            roles:         $role_names,
+            authenticated: false,
+        );
+
+        return $this->getEngine()->hasResourcePermission($perm, $resource, $context);
+    }
+
+    /*
+        Determina si se tiene permiso a nivel de *tabla* para un rol o conjunto de roles particular.
+        Incluye permisos especiales (read_all / write_all) que otorguen acceso sobre esa tabla.
+    */
+    public function hasPermission(string $perm, string $resource, $uid = null, $row_id = null): bool
+    {
+        $is_auth = request()->isAuthenticated();
+
+        if ($uid == null && !$is_auth){
+            return false;
+        }
+
+        if (!$is_auth){
+            $roles = DB::table('user_roles')
+                ->join('roles')
+                ->where(['user_id' => $uid])
+                ->pluck('name');
+        } else {
+            $roles = auth()->getRoles();
+        }
+
+        $perms = $is_auth ? (auth()->getPermissions() ?? []) : [];
+        $userSpPerms = $perms['sp'] ?? [];
+        $userTbPerms = $perms['tb'] ?? [];
+
+        $userDenyPerms   = $this->fetchUserDenyPerms($uid, $is_auth);
+        $userDenySpPerms = $this->fetchUserDenySpPerms($uid, $is_auth);
+
+        $context = AclContext::withCompiled(
+            snapshot:        $this->getSnapshot(),
+            compiler:        $this->getCompiler(),
+            userId:          $uid,
+            roles:           $roles,
+            authenticated:   $is_auth,
+            userSpPerms:     $userSpPerms,
+            userTbPerms:     $userTbPerms,
+            userDenyPerms:   $userDenyPerms,
+            userDenySpPerms: $userDenySpPerms,
+            rowId:           $row_id,
+        );
+
+        return $this->getEngine()->can($context, $perm, $resource);
+    }
+
+    /**
+     * Override in DB-backed subclasses (e.g. FineGrainedACL) to load
+     * `user_deny_permissions` rows. Default: no explicit user denies.
+     *
+     * @return array<string, array<string, true>>
+     */
+    protected function fetchUserDenyPerms($uid, bool $is_auth): array
+    {
+        return [];
+    }
+
+    /**
+     * Override in DB-backed subclasses to load explicit user-level
+     * special-permission denies. Default: none.
+     *
+     * @return array<string, true>
+     */
+    protected function fetchUserDenySpPerms($uid, bool $is_auth): array
+    {
+        return [];
+    }
+
+    public function getResourcePermissions(string $role, string $resource, $op_type = null): array {
+        $ops = [
+            'read'  => ['show', 'list', 'show_all', 'list_all'],
+            'write' => ['create', 'update', 'delete']
+        ];
+
+        if ($op_type != null && ($op_type != 'read' && $op_type != 'write')){
+            throw new \InvalidArgumentException("getResourcePermissions : '$op_type' is not a valid value for op_type");
+        }
+        
+        if (isset($this->role_perms[$role]['tb_permissions'][$resource])){
+            if ($op_type != null){
+                return array_intersect($this->role_perms[$role]['tb_permissions'][$resource], $ops[$op_type]);
+            }
+
+            return $this->role_perms[$role]['tb_permissions'][$resource];
+        }
+
+        return [];
+    }    
+
+    public function getRolePermissions(string $role_name = null){
+        if (!is_null($role_name)){
+            return $this->role_perms[$role_name];
+        } else {
+            return $this->role_perms;
+        }        
+    }
+
+    public function getAncestry(string $role): array {
+        if (isset($this->ancestors[$role])){
+            return $this->ancestors[$role];
+        }
+
+        $result = $this->getEngine()->getAncestry($role);
+
+        $this->ancestors[$role] = $result;
+
+        return $result;
+    }
+
+    /*
+        Every possible Special Permission for the ACL 
+    */
+    public function getEveryPossibleSpPermissions(): array {
+        return $this->sp_permissions;
+    }
+
+    protected function unpackTbPermissions($permissions){
+        if (empty($permissions)){
+            return [];
+        }
+
+        if (is_int($permissions)){
+            $perms = $permissions;
+            return [
+                'list_all' => ($perms & 64) AND 1,
+                'show_all' => ($perms & 32 ) AND 1,
+                'list'     => ($perms & 16) AND 1, 
+                'show'     => ($perms & 8 ) AND 1, 
+                'create'   => ($perms & 4 ) AND 1, 
+                'update'   => ($perms & 2 ) AND 1, 
+                'delete'   => ($perms & 1 ) AND 1
+            ];
+        }
+
+        $tb_perm_unpacked = [];
+        foreach ($permissions as $tb => $perms){
+            $perms = (int) $perms;
+
+            $tb_perm_unpacked[$tb] = [
+                'list_all' => ($perms & 64) AND 1,
+                'show_all' => ($perms & 32 ) AND 1,
+                'list'     => ($perms & 16) AND 1, 
+                'show'     => ($perms & 8 ) AND 1, 
+                'create'   => ($perms & 4 ) AND 1, 
+                'update'   => ($perms & 2 ) AND 1, 
+                'delete'   => ($perms & 1 ) AND 1
+            ];
+        }
+
+        return $tb_perm_unpacked;
+    }
+
+    /*
+        Permissions can not be "fresh" if it comes from an Web Token
+    */
+    public function getTbPermissions(string $table = null, bool $unpacked = true){
+        $current_user_permissions = auth()->getPermissions();
+
+        if (empty($current_user_permissions)){
+            return null;
+        }
+
+        $tb_perms = $current_user_permissions['tb'];
+
+        if ($table == null)
+            return $unpacked ? $this->unpackTbPermissions($tb_perms) : $tb_perms;
+
+        if (!isset($tb_perms[$table]))
+            return null;
+
+        return $unpacked ? $this->unpackTbPermissions($tb_perms[$table]) : $tb_perms[$table];
+    }
+
+    /*
+        Permissions can not be "fresh" if it comes from an Web Token
+    */
+    public function getSpPermissions(string $table = null){
+        $current_user_permissions = auth()->getPermissions();
+
+        if (empty($current_user_permissions)){
+            return null;
+        }
+
+        $tb_perms = $current_user_permissions['sp'];
+
+        if ($table == null)
+            return $tb_perms;
+
+        if (!isset($tb_perms[$table]))
+            return null;
+
+        return $tb_perms[$table];
+    }
+
+    public function hasRole(string $role) : bool {
+        return in_array($role, auth()->getRoles());
+    }
+
+    /*
+        Return if $role is higher role than $referenced_role.
+        Compares lineages, not permissions.
+    */
+    public function isHigherRole(string $role, string $referenced_role): ?bool {
+        return $this->getEngine()->isHigherRole($role, $referenced_role);
+    }
+
+    public function hasRoleOrHigher(string $role): bool {
+        $context = new AclContext(
+            roles:         auth()->getRoles(),
+            authenticated: request()->isAuthenticated(),
+        );
+
+        return $this->getEngine()->hasRoleOrHigher($role, $context);
+    }
+
+    // alias
+    public function hasRoleOrChild(string $role): bool {
+        return $this->hasRoleOrHigher($role);
+    }
+
+    public function hasAnyRole(array $authorized_roles): bool {
+        $authorized = false;
+        
+        foreach ($authorized_roles as $role){
+            if ($this->hasRole($role)){
+                $authorized = true;
+            }
+        }
+        
+        return $authorized;        
+    }
+
+    public function hasAnyRoleOrHigher(array $authorized_roles): bool {
+        $context = new AclContext(
+            roles:         auth()->getRoles(),
+            authenticated: request()->isAuthenticated(),
+        );
+
+        return $this->getEngine()->hasAnyRoleOrHigher($authorized_roles, $context);
+    }
+
+    // alias
+    public function hasAnyRoleOrChild(array $authorized_roles): bool {
+        return $this->hasAnyRoleOrHigher($authorized_roles);
+    }
+
+    public function hasRolePermissionsOrHigher(string $targetRole): bool {
+        $context = $this->buildAuthContext();
+        return $this->getEngine()->hasRolePermissionsOrHigher($context, $targetRole);
+    }
+
+    // -------------------------------------------------------------------------
+    // Pure engine access
+    // -------------------------------------------------------------------------
+
+    // ── Capability methods (auth-aware wrappers) ──────────────────────────
+
+    public function hasAllPermissions(array $permissions): bool
+    {
+        return $this->getEngine()->hasAllPermissions($this->buildAuthContext(), $permissions);
+    }
+
+    public function hasAnyPermission(array $permissions): bool
+    {
+        return $this->getEngine()->hasAnyPermission($this->buildAuthContext(), $permissions);
+    }
+
+    /**
+     * Build an AclContext from the current auth() session with compiled
+     * permissions pre-baked. Used by capability-style helpers.
+     */
+    protected function buildAuthContext(): AclContext
+    {
+        $perms   = auth()->getPermissions() ?? [];
+        $is_auth = request()->isAuthenticated();
+
+        return AclContext::withCompiled(
+            snapshot:        $this->getSnapshot(),
+            compiler:        $this->getCompiler(),
+            userId:          null,
+            roles:           auth()->getRoles(),
+            authenticated:   $is_auth,
+            userSpPerms:     $perms['sp'] ?? [],
+            userTbPerms:     $perms['tb'] ?? [],
+            userDenyPerms:   $this->fetchUserDenyPerms(null, $is_auth),
+            userDenySpPerms: $this->fetchUserDenySpPerms(null, $is_auth),
+        );
+    }
+
+    public function roleDominates(string $candidateRole, string $targetRole): bool
+    {
+        return $this->getEngine()->roleDominates($candidateRole, $targetRole);
+    }
+
+    public function satisfiesPolicy(AuthorizationPolicyInterface $policy): bool
+    {
+        return $this->getEngine()->satisfiesPolicy($this->buildAuthContext(), $policy);
+    }
+
+    // ── Pure engine / service access ──────────────────────────────────────
+
+    /**
+     * Build a pure AclSnapshot from the current builder state.
+     * Zero DB/auth dependency — safe to use in unit tests.
+     *
+     * Includes compiled per-role effective allows + role-level deny rules +
+     * deterministic explanations for the admin frontend.
+     */
+    public function getSnapshot(): AclSnapshot
+    {
+        $compiler = new EffectivePermissionCompiler();
+        $compiled = $compiler->compileRoles(
+            $this->role_perms,
+            $this->deny_role_perms,
+            $this->sp_permissions
+        );
+
+        return new AclSnapshot(
+            rolePerms:              $this->role_perms,
+            parentRoleNames:        $this->parent_role_names,
+            validSpPerms:           $this->sp_permissions,
+            guestName:              $this->guest_name,
+            registeredName:         $this->registered_name,
+            effectiveAllows:        $compiled['allows'],
+            effectiveDenies:        $compiled['denies'],
+            denyRolePerms:          $this->deny_role_perms,
+            permissionExplanations: $compiled['explanations'],
+        );
+    }
+
+    /**
+     * Build a pure AclEngine from the current builder state.
+     * Zero DB/auth dependency — safe to use in unit tests.
+     */
+    public function getEngine(): AclEngine
+    {
+        return new AclEngine($this->getSnapshot());
+    }
+
+    /**
+     * Shared compiler instance for per-user compilation inside this builder.
+     */
+    protected function getCompiler(): EffectivePermissionCompiler
+    {
+        static $compiler = null;
+        if ($compiler === null) {
+            $compiler = new EffectivePermissionCompiler();
+        }
+        return $compiler;
+    }
+
+
+}
+

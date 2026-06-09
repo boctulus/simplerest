@@ -13,5 +13,6 @@ storage/security/
 .codegpt/
 .claude/
 .vscode/
+automation/
 composer.json.tmp
 exports/main_db_export.sql

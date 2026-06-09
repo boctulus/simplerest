@@ -1,8 +1,15 @@
 # ACL
 
-## Resumen
+This ACL system is indeed much more sophisticated than typical Laravel ACL packages like spatie/laravel-permission, offering:
+- More granular control
+- Hierarchical role system
+- Multiple permission types (special + resource)
+- More complex permission inheritance
+- Better integration with the framework's authentication system
 
-Advanced ACL Features
+The system supports complex enterprise-level permission requirements that would be difficult to achieve with standard Laravel ACL packages.
+
+## Advanced ACL Features
 
 1. Multi-layered Permission System
 - Special Permissions: Global permissions like read_all, write_all, impersonate, grant, etc.
@@ -45,9 +52,19 @@ Advanced ACL Features
 - Dynamic loading of permissions from database
 - Support for user-specific permissions beyond role-based permissions
 
-### Available Special Permissions
+## Separation of Concerns
 
-The system defines the following special permissions:
+Acl → DSL / builder / façade  (`src/framework/Security/Acl.php`)
+AclSnapshot → estado inmutable serializable
+AclEngine → motor puro de evaluación
+RoleHierarchyService → jerarquía / linaje de roles
+EffectivePermissionCompiler → precompilación
+AclContext → request-scoped context
+
+## Special Permissions (capabilities)
+
+The system defines the following (default) special permissions:
+
 - 'read_all' - Access records belonging to other users
 - 'read_all_folders' - Access records in folders not shared with the user
 - 'read_all_trashcan' - Access records in trashcan belonging to other users
@@ -61,26 +78,33 @@ The system defines the following special permissions:
 - 'lock' - Lock/unlock records, modify locked records, delete locked records
 - 'transfer' - Transfer ownership of records
 
-### Comparison with Laravel ACL packages
+## Infraestructura de tablas
 
-This ACL system is indeed much more sophisticated than typical Laravel ACL packages like spatie/laravel-permission, offering:
-- More granular control
-- Hierarchical role system
-- Multiple permission types (special + resource)
-- More complex permission inheritance
-- Better integration with the framework's authentication system
+- Tabla `sp_permissions`
 
-The system supports complex enterprise-level permission requirements that would be difficult to achieve with standard Laravel ACL packages.
+Define las distintas capabilities o permisos de negocio que se modelan para el dominio. Incluyen algunas precargadas vía migration seeder.
 
-# Declaración de roles y sus permisos
+- Tabla `user_tb_permissions`
 
-Se implentó un ACL centralizado que se configurará en /config/acl.php y requiere ajustar permisos de lectura y escritura sobre el directorio app/security. 
+Responde:
+
+“¿Puede manipular ESTE recurso?”
+
+- Tabla `user_sp_permissions`
+
+Responde:
+
+“¿Puede ejecutar ESTA operación?”
+
+## Declaración de roles y sus permisos
+
+Se implementó un ACL centralizado que se configura en config/acl.php y requiere ajustar permisos de lectura y escritura sobre el directorio app/security. 
 
 Los siguientes métodos proveen la funcionalidad de declaración:
 
 addRole(string $role_name, $role_id = null)
 addRoles(Array $roles)
-addInherit(string $role_name, $to_role = null
+addInherit(string $role_name, $to_role = null)
 addResourcePermissions()
 addSpecialPermissions(Array $sp_permissions, $to_role = null)
 setAsGuest()
@@ -92,7 +116,7 @@ Los métodos setAsGuest() y setAsRegistered() se utilizan para definir qué rol 
 
 La estructuración en la declaración de roles y permisos es muy flexible.
 
-Ej:
+Ejemplo:
 
 	$acl = new Acl();
 
@@ -138,11 +162,11 @@ Y equivale a:
 
 Cabe notar que los addInherit() deben ir *siempre* antes de los permisos que se quieran agregar al rol heredado. 
 
-El rol de 'guest' debe estar definido con ese nombre o con otro. En caso de que se decida cambiar el nombre del rol guest de 'guest' a otro se debe llamar al método estático setGuest() con el nombre alternativo:
+El rol de 'guest' debe estar definido con ese nombre o con otro. En caso de que se decida cambiar el nombre del rol guest de 'guest' a otro, se debe llamar al método estático setGuest() con el nombre alternativo:
 
 	Acl::setGuest('unregistered');
 
-Además de setear el nombre alternativo es su responsabilidad crear el rol correspondiente con el método addRole()
+Además de establecer el nombre alternativo, es su responsabilidad crear el rol correspondiente con el método addRole()
 
 El Acl genera una representación interna similar a:
 
@@ -191,7 +215,7 @@ El Acl genera una representación interna similar a:
 	["admin"]=>
 	array(3) {
 		["role_id"]=>
-		int(100)
+	int(100)
 		["sp_permissions"]=>
 		array(2) {
 		[0]=>
@@ -239,7 +263,7 @@ El Acl genera una representación interna similar a:
 
 Existen dos tipos de permisos que se pueden asignar a los roles:  "resource permissions" y "special permissions".
 
-Los "resource permissions" se aplican sobre las tablas especificadas mientras que los "special permissions" son de caracter más general y definen la posibilidad de realizar ciertas acciones administrativas típicas de un "admin".
+Los "resource permissions" se aplican sobre las tablas especificadas mientras que los "special permissions" son de carácter más general y definen la posibilidad de realizar ciertas acciones administrativas típicas de un "admin".
 
 Además sobre "resource permissions" existen ciertos permisos "especiales" -no confundir con "special permissions"- que habilitan a leer registros que no le pertenecen al tenedor del rol:  
 
@@ -249,7 +273,7 @@ Además sobre "resource permissions" existen ciertos permisos "especiales" -no c
 
 Estos permisos típicamente se deberían dar a un "guest" para que pueda por ejemplo leer todas las entradas de un blog o las publicaciones de un sitio de ventas. Si por el contrario a un "guest" se le diera un permiso "read" -en vez de "read_all"- entonces podría darse el caso contradictorio de que un "guest" pueda ver las publicaciones de un vendedor y ese mismo vendedor solo pueda ver las suyas propias y no las de otros vendedores.
 
-Por lo anterior se aconseja no dar un permiso "read" a un "guest" sino en todo caso un "read_all" y hacer que directa o interectamente todos los roles deriven de "guest". 
+Por lo anterior se aconseja no dar un permiso "read" a un "guest" sino en todo caso un "read_all" y hacer que directa o indirectamente todos los roles deriven de "guest". 
 
 Estos permisos especiales sobre "resource permissions" pueden tener otros usos interesantes como permitirle a un supervisor ver todos los registros de los usuarios y publicaciones de una tienda:
 
@@ -259,29 +283,29 @@ Estos permisos especiales sobre "resource permissions" pueden tener otros usos i
     ->addResourcePermissions('products', ['read_all'])  // <--
 
 
-# Persistencia del ACL
+## Persistencia del ACL
 
 Las reglas del ACL se declaran en el archivo config/acl.php y son almacenadas en base de datos en la tabla "roles"
 
-Luego el ACL es serializado y se almacena como asi como un archivo de cache en /storage/security
+Luego el ACL es serializado y se almacena como así también un archivo de caché en /storage/security
 
 Para re-generar se puede usar el comando:
 
-	make acl --force
+	php com make acl --force
 
-Para poder deguear lo que construye el ACL antes de serializacion se puede usar --debug
+Para poder depurar lo que construye el ACL antes de la serialización se puede usar --debug
 
 Ej:
 
-	make acl --force --debug
+	php com make acl --force --debug
 
-En realidad no suele ser necesario regenerar manualmente el ACL porque suele hacerse en automatico
-pero eso depende de la logica dentro de acl.php --que puede modificarse--
+En realidad no suele ser necesario regenerar manualmente el ACL porque suele hacerse automáticamente
+pero eso depende de la lógica dentro de acl.php --que puede modificarse--
 
-Sin embargo si se quisiera cambiar el ID asociado a cada rol entonces podria ocurrir una colision de IDs o de nombres
-y en ese caso deberian regenerarse.
+Sin embargo, si se quisiera cambiar el ID asociado a cada rol entonces podría ocurrir una colisión de IDs o de nombres
+y en ese caso deberían regenerarse.
 
-Por otro lado en cualquier momemento es posible agregar un nuevo rol con sus reglas. Ej:
+Por otro lado, en cualquier momento es posible agregar un nuevo rol con sus reglas. Ej:
 
 ->addRole('admin', 50) 
 ->addInherit('registered')
@@ -295,7 +319,7 @@ Por otro lado en cualquier momemento es posible agregar un nuevo rol con sus reg
     'fill_all', 
 ])
 
-y no hay problema en agregar un rol intermedio:
+y no hay problema en agregar un rol intermedio entre ellos:
 
 ->addRole('admin', 50) 
 ->addInherit('registered')
@@ -341,16 +365,16 @@ Ejemplos:
 - "lock" - bloquear/desbloquear un registro / modificar un registro bloqueado / borrar un registro bloqueado / borrar definitivamente un registro bloqueado / restaurar (undelete) un registro bloqueado
 - "transfer" - transferir un registro o sea cambiar la propiedad (ownership) de un registro (campo belongs_to)
 
-Como colorario es posible tener muchos roles con caracteristicas de un admin o superadmin.
+Como corolario, es posible tener muchos roles con características de admin o superadmin.
 
 
 ### Permisos a nivel de usuario
 
-Los roles son permisos que se asignan masivamente (por igual) a todos los usuarios que poseen ese rol. Los roles se puden "sumar" obteniendo la suma de los permisos de cada rol.
+Los roles son permisos que se asignan masivamente (por igual) a todos los usuarios que poseen ese rol. Los roles se pueden "sumar" obteniendo la suma de los permisos de cada rol.
 
-Si se desea que un usuario particular tenga permisos distintos para una entidad particular que sean distintos de los del rol al que pertenece se pueden especificar "permisos indivuduales" creando un registro para ese usuario y esa tabla referida en la tabla "permissions". Solo puede haber una entrada en "permissions" para cada par (usuario, tabla).
+Si se desea que un usuario particular tenga permisos distintos para una entidad —diferentes de los de su rol— se pueden especificar "permisos individuales" creando un registro para ese usuario y esa tabla en la tabla "permissions". Solo puede haber una entrada en "permissions" para cada par (usuario, tabla).
 
-Los cambios en los permisos a nivel de usuario al igual que los roles solo se aplican cuando el usuario "inicia sessión" o sea.. cuando obtiene los tokens y también cuando los tokens son renovados.
+Los cambios en los permisos a nivel de usuario, al igual que los roles, solo se aplican cuando el usuario "inicia sesión", es decir, cuando obtiene los tokens y también cuando los tokens son renovados.
 
 Hay distintas tablas y por tanto distintos endpoints para manejar distintos aspectos de los permisos:
 
@@ -361,11 +385,11 @@ Hay distintas tablas y por tanto distintos endpoints para manejar distintos aspe
 	tabla sp_permissions:
 		- Tabla con cada uno de los permisos especiales que existen para aplicar a nivel granular.
 
-    tabla user_tb_permisions: 
+    tabla user_tb_permissions: 
         - show, list, create, update, delete 
         - Son permisos dados por un Admin sobre las tablas para usuarios específicos.
 
-	tabla user_sp_permisions: 
+	tabla user_sp_permissions: 
         - show, list, create, update, delete 
         - Son permisos dados por un Admin para que usuarios específicos tengan determinados permisos "especiales".
 
@@ -393,7 +417,7 @@ Lo anterior funciona porque "me" vale el user_id del usuario logueado.
 
 # Como agregar / cambiar permisos a nivel de usuario 
 
-Los permisos que "decoran" al o los roles que pueda poseer un usuario se pueden ser para un recurso (tabla) en particular ("resource permissions") o "especiales" (típicamente de roles tipo-admin)
+Los permisos que "decoran" al o los roles que pueda poseer un usuario pueden ser para un recurso (tabla) en particular ("resource permissions") o "especiales" (típicamente de roles tipo-admin)
 
 Los permisos sobre recursos se pueden agregar o cambiar desde el endpoint
 
@@ -437,7 +461,7 @@ Ej:
 		"can_list": true
 	}
 
-Cabe destacar que siempre habrá un solo registro por tabla y que los permisos no se agregan individualmente sino todos los que se deseen setear a la vez y si se repitiera el proceso se sobre-escribiría lo que antes había.
+Cabe destacar que siempre habrá un solo registro por tabla y que los permisos no se agregan individualmente sino todos los que se deseen setear a la vez y si se repitiera el proceso se sobrescribiría lo que antes había.
 
 Ej:
 
@@ -450,7 +474,7 @@ Si ahora se hiciera un POST nuevamente sobre /api/{version}/user_tb_permissions
 		"can_show": true
 	}
 
-El resultado sería que para el "user_id" = 119 y la tabla "table_xyz" se tendrán solamente los permisos reciéntemente definidos para esa tabla y usuario.
+El resultado sería que para el "user_id" = 119 y la tabla "table_xyz" se tendrán solamente los permisos recientemente definidos para esa tabla y usuario.
 
 
 Para conocer todos los campos (con distintos tipos de permisos) que se pueden enviar:
@@ -481,9 +505,9 @@ Donde para conocer el "sp_permission_id" puede consultar el endpoint:
 	/api/v1/sp_permissions
 
 
-# Posible FrontEnd para los roles y permisos
+## Posible FrontEnd para los roles y permisos
 
-A un Administrador se le podría presentarse la información sobre roles y permisos así:
+A un Administrador se le podría presentar la información sobre roles y permisos así:
 
 Para un usuario:
 
@@ -491,7 +515,7 @@ Para un usuario:
 
 		superadmin
 
-	Special permissions
+	Special permissions (capabilities)
 
 		read_all				[del]
 		write_all				[del]	
@@ -505,7 +529,9 @@ Para un usuario:
 		
 	[add]
 		
-	<-- los permisos especiales tienen como base los de su rol o roles y pueden ser decorados via tabla `user_sp_permissions`. Esto significa que lo que "se ve" no es la tabla `user_sp_permissions` sino el resultado de aplicar los permisos combinados de distintos roles y a eso los permisos presentes en la tabla `user_sp_permissions` si los hubiere.	
+<-- los permisos especiales tienen como base los de su rol o roles y pueden ser decorados vía la tabla `user_sp_permissions`. Esto significa que lo que "se ve" no es la tabla `user_sp_permissions` sino el resultado de aplicar los permisos combinados de distintos roles y a eso los permisos presentes en la tabla `user_sp_permissions` si los hubiere.	
+
+Se podrian agregar libremente otras capabilities distintas a las listadas.
 
 Para otro usuario:
 
@@ -541,10 +567,10 @@ Para otro usuario:
 	[ ]	update
 	[ ]	delete
 
-	<-- estos permisos sobre-escriben los permisos propios de su rol o roles del usuario y tienen prioridad por sobre los permisos especiales.
+<-- estos permisos sobrescriben los permisos propios de su rol o roles del usuario y tienen prioridad por sobre los permisos especiales.
 
 
-# Scopes
+## Scopes
 
 En OAuth se habla de "scopes" como simil a permisos en un sentido más abstracto pero se puede hacer corresponder a los permisos individuales de la siguiente forma:
 	
@@ -576,11 +602,11 @@ SimpleRest *no* sigue el estándar de scopes de OAuth donde:
 https://www.freecodecamp.org/news/best-practices-for-building-api-keys-97c26eabfea9/
 
 
-# Métodos para indagar sobre permisos y roles
+## Métodos para indagar sobre permisos y roles
 
 El Acl provee un conjunto de métodos básicos para conocer el rol o los permisos del usuario y puede extender a partir de "paquetes" (service providers).
 
-getEveryPosibleRole()                   						Devuelve todos los roles registrados en el ACL.
+getEveryPossibleRole()                   						Devuelve todos los roles registrados en el ACL.
 roleExists($rol)                        						Existe el rol?
 getRolePermissions($rol)                						Devuelve todos los permisos para un determinado rol.
 getAncestry($rol)                       						Roles de los ancestros de un usuario.
@@ -594,6 +620,7 @@ hasRole($rol)                          							El usuario posee ese rol? (no cons
 hasAnyRole([$rol1, ...])               							El usuario posee alguno de esos roles? (no considera herencia)
 hasRoleOrHigher($rol)                   						Se tiene el rol o uno "superior" (2)
 hasAnyRoleOrHigher([$rol1, ...])        						Se tiene un rol o uno "superior" (2)
+hasRolePermissionsOrHigher($targetRole)							El usuario tiene al menos los permisos del rol objetivo? (3)
 
 getTbPermissions($table = null, $unpacked = true)				Retorna permisos sobre recursos (tablas) (1)
 getSpPermissions($table = null)									Retorna permisos "especiales" (1)
@@ -605,70 +632,257 @@ hasPermission($perm, $resource, $uid = null, $row_id = null)	Permisos sobre una 
 
 Notas:
 
-getTbPermissions() y getSpPermissions() no ofrecen resultados necesariamente actualizados (a diferencia de acceder a los endpoints correspondientes). Si el usuario entregó credenciales via Web Tokens, estos permisos muy probablemente serán derivados del payload del web token.
+getTbPermissions() y getSpPermissions() no ofrecen resultados necesariamente actualizados (a diferencia de acceder a los endpoints correspondientes). Si el usuario entregó credenciales vía Web Tokens, estos permisos muy probablemente serán derivados del payload del web token.
 
 hasPermission() es el método con la misión de poder contestar de forma simple y definitiva si un usuario tiene o no permisos sobre un registro.
 
 Para el caso del paquete Boctulus\Simplerest\FineGrainedACL se implementan adicionalmente getFreshTbPermissions() y getFreshSpPermissions() que garantizan resultados "frescos" porque acceden directamente a la base de datos.
 
-Actualmente isHigherRole() y hasRoleOrHigher() están implementados en base a el árbol genealógico de roles y no compara permisos lo cual ofrece uh resultado que puede no ser exacto y solo lo será si existe una sola rama sin derivaciones en el árbol genealógico entre los roles a comparar.
+Los métodos del grupo "hierarchy" (`isHigherRole`, `hasRoleOrHigher`, `hasAnyRoleOrHigher`) están implementados en `RoleHierarchyService` y se delegan desde `AclEngine`. Están basados en el árbol genealógico de roles y no comparan permisos, lo que ofrece un resultado que puede no ser exacto y solo lo será si existe una sola rama sin derivaciones en el árbol genealógico entre los roles a comparar.
 
-Sin embargo, hasAnyRoleOrHigher() ofrece obtener el resultado más preciso a pesar de que no compara permisos sino roles ya que permite comparar no con un rol sino con varios y por ende considerar derivaciones en el árbol genealógico.
+Sin embargo, `hasAnyRoleOrHigher()` ofrece obtener el resultado más preciso a pesar de que no compara permisos sino roles ya que permite comparar no con un rol sino con varios y por ende considerar derivaciones en el árbol genealógico.
 
-Ej:
+### hasRolePermissionsOrHigher()
 
-+
-|
------ guest
-		|
-		|
-	registered
-		|  |
-		|  |
-		|  usuario
-		|        |
-	supervisor   |
-	    |        usuario_plus
-		|              |
-	 superadmin     moderador
+`hasRolePermissionsOrHigher()` combina lineage + comparación de permisos:
+
+1. Primero verifica lineage (igual que `hasRoleOrHigher`).
+2. Si el lineage no es suficiente, compara el set de permisos efectivos del usuario contra los permisos del rol objetivo usando `AclEngine`.
+
+Esto permite manejar ramas divergentes en el árbol genealógico donde el lineage no puede decidir:
+
+```php
+$pass = acl()->hasRolePermissionsOrHigher('supervisor');
+```
+
+La función considera todos los tipos de permisos (resource + special) y también los permisos que "decoran" los roles para un usuario en particular (user_sp_permissions, user_tb_permissions, user_deny_permissions).
 
 
-Supongamos que en un escenario en particular (ResourceController o API) necesito un rol >= {supervisor o usuario} entonces podría usar hasAnyRoleOrHigher() para chequear esta condición:
+## Arquitectura en capas (Pure ACL Engine)
 
-	$pass = acl()->hasAnyRoleOrHigher(['supervisor', 'usuario_plus']);
+## Motivación
 
-Sin embargo podría querer saber si el usuario tiene los mínimos permisos que otorga un rol, entonces hasAnyRoleOrHigher() no ofrecerá exactamente lo que se necesita.
+La clase `Acl` original mezcla construcción de políticas, evaluación de permisos,
+acceso a base de datos y dependencias de framework (`auth()`, `request()`).
+Eso impide hacer tests unitarios sin DB y dificulta portar el engine a otro framework.
 
-Entonces se *implementará* hasRolePermissionsOrHigher() y esta función podrá considerar derivaciones en el árbol genealógico.
+A partir de esta refactorización el motor de evaluación es **puro**: no conoce DB,
+ni `auth()`, ni `request()`. Toda decisión se toma a partir de datos inmutables
+inyectados en tiempo de ejecución.
 
-La función Acl::hasRolePermissionsOrHigher() *deberá* tener en consideración todos los tipos de permisos, ya sea sobre recursos (tablas) y los considerados permisos "especiales". También deberá considerar los permisos que "decoran" los de los roles para un usuario en particular (!)
+## Capas
+
+```
+Builder (Acl.php)          → construye la política con addRole / addInherit / etc.
+        ↓
+AclSnapshot                → captura inmutable de la política (role_perms, herencia, sp válidos)
+        ↓
+AclEngine                  → orquestador puro (snapshot + context → decisión)
+   ├── RoleHierarchyService   → getAncestry(), isHigherRole(), hasRolePermissionsOrHigher()
+   └── PermissionEvaluator     → hasSpecialPermission(), hasResourcePermission(), hasPermission()
+         ↑
+AclContext                 → estado del usuario en tiempo de evaluación (roles, userSpPerms, etc.)
+```
+
+## Archivos
+
+| Clase | Namespace | Archivo |
+|---|---|---|
+| `Acl` (builder) | `Core\Security` | `src/framework/Security/Acl.php` |
+| `AclContext` | `Core\Security\Domain` | `src/framework/Security/Domain/AclContext.php` |
+| `AclSnapshot` | `Core\Security\Snapshot` | `src/framework/Security/Snapshot/AclSnapshot.php` |
+| `AclEngine` | `Core\Security\Engine` | `src/framework/Security/Engine/AclEngine.php` |
+| `RoleHierarchyService` | `Core\Security\Service` | `src/framework/Security/Service/RoleHierarchyService.php` |
+| `EffectivePermissionCompiler` | `Core\Security\Compiler` | `src/framework/Security/Compiler/EffectivePermissionCompiler.php` |
+| `TbPermissionBits` | `Core\Security\Compiler` | `src/framework/Security/Compiler/TbPermissionBits.php` |
+| `PermissionExplanation` | `Core\Security\Explanation` | `src/framework/Security/Explanation/PermissionExplanation.php` |
+| Contracts | `Core\Security\Contracts` | `src/framework/Security/Contracts/` |
+
+## AclContext
+
+Value object que representa el estado del usuario en el momento de la evaluación.
+No tiene lógica. Se construye fuera del engine (en el adapter/framework layer).
+
+```php
+$context = new AclContext(
+    userId:        42,
+    roles:         ['admin'],
+    authenticated: true,
+    userSpPerms:   ['impersonate'],   // overrides individuales del usuario
+    rowId:         null,
+);
+```
+
+## AclSnapshot
+
+Captura inmutable de la política ACL construida por el builder.
+Se obtiene con `$acl->getSnapshot()` o se construye a mano en tests.
+
+```php
+$snapshot = new AclSnapshot(
+    rolePerms:       $rolePerms,       // array interno de Acl::$role_perms
+    parentRoleNames: $parentRoleNames, // array de herencia
+    validSpPerms:    $validSpPerms,    // permisos especiales válidos
+);
+```
+
+## AclEngine
+
+Orquestador puro. Se obtiene con `$acl->getEngine()` en producción,
+o se instancia directamente en tests pasando un snapshot construido a mano.
+
+```php
+// Producción
+$engine = acl()->getEngine();
+
+// Test (sin DB, sin framework)
+$engine = new AclEngine($snapshot);
+```
+
+### Métodos disponibles
+
+```php
+$engine->can($context, 'show', 'products')          // evaluación completa
+$engine->hasSpecialPermission('read_all', $context)
+$engine->hasResourcePermission('create', 'products', $context)
+$engine->hasRole('admin', $context)
+$engine->hasRoleOrHigher('admin', $context)
+$engine->hasAnyRole(['admin', 'vendedor'], $context)
+$engine->hasAnyRoleOrHigher(['admin', 'vendedor'], $context)
+$engine->getAncestry('superadmin')                  // ['admin', 'guest']
+$engine->isHigherRole('superadmin', 'admin')        // true
+```
+
+## Tests unitarios
+
+El engine tiene cobertura completa sin base de datos:
+
+```
+unit-tests/acl/AclEngineTest.php              (28 tests)
+unit-tests/acl/AclCompiledPermissionsTest.php
+unit-tests/acl/AclEngineDenyTest.php
+unit-tests/acl/RoleHierarchyServiceTest.php
+```
+
+Para correr todos los tests de ACL:
+
+```
+php vendor/bin/phpunit unit-tests/acl
+```
+
+Ejemplo mínimo de test:
+
+```php
+$snapshot = new AclSnapshot(
+    rolePerms: [
+        'admin' => [
+            'role_id'        => 100,
+            'sp_permissions' => ['read_all', 'write_all'],
+            'tb_permissions' => [],
+        ],
+    ],
+    parentRoleNames: [],
+    validSpPerms:    ['read_all', 'write_all'],
+);
+
+$engine  = new AclEngine($snapshot);
+$context = new AclContext(roles: ['admin']);
+
+assertTrue($engine->hasSpecialPermission('read_all', $context));
+assertTrue($engine->can($context, 'delete', 'any_resource'));
+```
+
+## Compatibilidad
+
+Todos los métodos públicos de `Acl`, `BasicACL` y `FineGrainedACL` mantienen
+su firma exacta. La refactorización es interna: los métodos de evaluación
+(`hasPermission`, `hasSpecialPermission`, `hasResourcePermission`, `isHigherRole`,
+`hasRoleOrHigher`, `getAncestry`) delegan al engine internamente.
+
+## Nota sobre herencia de permisos
+
+Los permisos heredados se **copian en build-time** vía `addInherit()`.
+El engine no expande roles a sus ancestros para evaluar `tb_permissions` ni
+`sp_permissions` — eso ya está resuelto en el snapshot. La jerarquía
+(`RoleHierarchyResolver`) se usa únicamente para `isHigherRole` / `hasRoleOrHigher`.
+
+
+## RoleHierarchyService (HIERARCHY / UTILITY LAYER)
+
+Capa de jerarquía y heurísticas para consultas rápidas de linaje.
+Se instancia automáticamente dentro de `AclEngine` y se accede via `AclEngine::getAncestry()`, `isHigherRole()`, `hasRoleOrHigher()`, etc.
+
+También se puede instanciar directamente para tests o para uso sin engine:
+
+```php
+$service = new RoleHierarchyService($snapshot);
+$service->isHigherRole('superadmin', 'admin');
+```
+
+### Métodos
+
+| Método | Descripción |
+|---|---|
+| `getAncestry($role)` | Roles ancestro de un rol |
+| `isHigherRole($roleA, $roleB)` | ¿`$roleA` es superior a `$roleB` en la jerarquía? |
+| `hasRoleOrHigher($role)` | ¿El usuario tiene ese rol o uno superior? |
+| `hasAnyRoleOrHigher([$roles])` | ¿El usuario tiene alguno de esos roles o uno superior? |
+| `hasRolePermissionsOrHigher($targetRole)` | ¿El usuario tiene al menos los permisos del rol objetivo? (lineage + permission check) |
+
+### Relación con la arquitectura
+
+```
+AclEngine
+    └── RoleHierarchyService → getAncestry, isHigherRole, hasRoleOrHigher, hasAnyRoleOrHigher
+                               hasRolePermissionsOrHigher (usa AclEngine internamente)
+```
+
+### ⚡ Cuándo SÍ usarlos
+
+- ✅ **UI/UX filtering** — mostrar/ocultar elementos de interfaz
+  ```php
+  if ($acl->hasRoleOrHigher('admin')) { ... }
+  ```
+- ✅ **Routing guards rápidos** — pre-filter antes de llegar al controller
+- ✅ **Pre-checks antes del engine** — evitar evaluación costosa si el rol no califica
+- ✅ **Optimization layer** — saltar evaluaciones pesadas cuando la jerarquía es suficiente
+
+### ❌ Cuándo NO usarlos
+
+Estos métodos **no deben usarse** para:
+
+- Seguridad real / autorización final
+- Decisiones a nivel de registro (row-level)
+- Decisiones de auditoría (audit trail)
+- Aislamiento multi-tenant
+- Corte definitivo de acceso (siempre debe pasar por `AclEngine::can()`)
 
 
 # Implementación de "paquetes" para el Acl
 
-Es importante resaltar que dado que la clase Acl se serializa por motivos de performance la mayor parte de las propiedades y métodos no pueden ser estáticos ya que propiedades estáticas no pueden ser serializadas y al des-serializar no estarán disponibles llevando a muchos dolores de cabeza. Igualmente por concistencia se desaconseja el uso de métodos estáticos.
+Es importante resaltar que, dado que la clase Acl se serializa por motivos de rendimiento, la mayor parte de las propiedades y métodos no pueden ser estáticos, ya que las propiedades estáticas no pueden serializarse y al deserializar no estarán disponibles, lo que traería problemas. Igualmente, por consistencia, se desaconseja el uso de métodos estáticos.
 
-Al implementar un service provider para el ACL se debe cumplir de mínima con la interfaz IAcl.
+Al implementar un service provider para el ACL se debe cumplir, como mínimo, con la interfaz IAcl.
 
 ## Diferencias entre BasicACL y FineGrainedACL
 
 ### BasicACL
-- Loads roles from the database during initialization
-- Does not provide fresh permission methods
-- Simpler implementation focused on basic role-based access control
+- Carga los roles desde la base de datos durante la inicialización
+- No provee métodos de permisos "frescos" (desde DB)
+- Implementación más simple, enfocada en control de acceso basado en roles
 
 ### FineGrainedACL
-- Loads both roles and special permissions from the database during initialization
-- Provides `getFreshTbPermissions()` and `getFreshSpPermissions()` methods for real-time permission retrieval from the database
-- Includes `withDefaultConnection()` wrapper for database operations
-- Offers more granular control with real-time permission checking capabilities
+- Carga roles y permisos especiales desde la base de datos durante la inicialización
+- Provee los métodos `getFreshTbPermissions()` y `getFreshSpPermissions()` para obtener permisos en tiempo real desde la base de datos
+- Incluye el wrapper `withDefaultConnection()` para operaciones de base de datos
+- Ofrece control más granular con capacidad de verificación de permisos en tiempo real
 
 
 # Controladores tipo "resource"
 
-Una API se crea típicamente extendiendo la clase ApiController y esta clase a su vez extiende de otra llamada ResourceController que es la que tiene acceso a los autenticación via web tokens y por ende tiene disponible también los métodos para indagar permisos y roles.
+Una API se crea típicamente extendiendo la clase ApiController y esta clase a su vez extiende de otra llamada ResourceController que es la que tiene acceso a la autenticación vía web tokens y por ende tiene también disponibles los métodos para indagar permisos y roles.
 
-Es imporante notar que dado que el *AuthController* o sea el componente responsable de verificar que el usuario haya entregado credenciales (autenticación) y sean correctas (autorización) está versionado entonces es necesario explicitar la versión de api a fin de que encuentre la clase.
+Es importante notar que dado que el *AuthController* —el componente responsable de verificar que el usuario haya entregado credenciales (autenticación) y que sean correctas (autorización)— está versionado, entonces es necesario explicitar la versión de api a fin de que encuentre la clase.
 
 Ej:
 
@@ -795,7 +1009,7 @@ Mismo para borrar un registro perteneciente a un folder es necesario estar "dent
 	}
 
 
-Nota: el acceso a los folders se chequea en base de datos cada vez que se hace un request especificando que el recurso se halla en un folder. No es necesario esperar a que se renueven los tokens para tener acceso a un folder al cual se nos ha concedido permisos. <-- podría cambiarse para incrementar la performance !!!
+Nota: el acceso a los folders se verifica en base de datos cada vez que se hace un request especificando que el recurso se halla en un folder. No es necesario esperar a que se renueven los tokens para tener acceso a un folder al cual se nos ha concedido permisos. <-- podría optimizarse para mejorar el rendimiento.
 
 Similarmente a lo que sucede con Model, la clase ApiController también aporta event hooks en particular para los folders los siguientes:
 
@@ -847,3 +1061,126 @@ Ej: <pseudocódigo>
         // insertar en la tabla folder_permissions el permiso para el usuario con id $uid`
         // y el folder  $folder
     }
+
+
+# Compiled effective permissions (v4)
+
+A partir de v4 el ACL produce un mapa de permisos efectivos compilados al construir el snapshot. La evaluación en runtime es O(1):
+
+```
+AclContext->compiledPermissions = [
+    'allow' => [
+        'products' => ['show' => true, 'list' => true, 'create' => true, ...],
+        '__sp__'   => ['read_all' => true, ...],
+        '*'        => ['show' => true, 'list_all' => true, ...]   // read_all/write_all sentinel
+    ],
+    'deny' => [
+        'products' => ['delete' => true],
+        '__sp__'   => ['impersonate' => true],
+    ],
+]
+```
+
+Resolución runtime de `AclEngine::can()` cuando `compiledPermissions` está presente:
+
+```
+if isset(deny[resource][action]) → false
+if isset(deny['*'][action])      → false
+if isset(allow['*'][action])     → true   (read_all / write_all)
+return isset(allow[resource][action])
+```
+
+## Compilación per-rol (snapshot)
+
+`Acl::getSnapshot()` invoca a `EffectivePermissionCompiler::compileRoles()` y expone:
+
+* `AclSnapshot::$effectiveAllows[role][resource][action] = true`
+* `AclSnapshot::$effectiveDenies[role][resource][action] = true`  *(cache interna)*
+* `AclSnapshot::$denyRolePerms[role]` con la forma `['tb' => ['resource' => ['action' => true]], 'sp' => ['perm' => true]]`
+* `AclSnapshot::$permissionExplanations['role.resource.action']` (estructura para el frontend administrativo)
+
+## Compilación per-usuario
+
+```php
+$context = AclContext::withCompiled(
+    snapshot:        $acl->getSnapshot(),
+    compiler:        new EffectivePermissionCompiler(),
+    userId:          $uid,
+    roles:           ['supervisor'],
+    authenticated:   true,
+    userSpPerms:     ['impersonate'],
+    userTbPerms:     ['products' => 8],          // packed bitmask (replacement)
+    userDenyPerms:   ['users' => ['delete' => true]],
+    userDenySpPerms: ['transfer' => true],
+);
+```
+
+`AclContext::withCompiled()` resuelve, en orden:
+
+1. Allows derivados de los roles (`tb_permissions` + `sp_permissions`).
+2. Permisos especiales adicionales del usuario.
+3. Expansión de `read_all`/`write_all` al sentinel `'*'`.
+4. **Replacement semantics** de `user_tb_permissions` (el set absoluto pasa a ser el del bitmask).
+5. Denies explícitos a nivel de rol (`denyRolePerms`).
+6. Denies explícitos a nivel de usuario (`userDenyPerms`, `userDenySpPerms`).
+
+`AclContext::compiledPermissions === null` desactiva el camino rápido y el engine cae al recorrido legado (que sigue funcionando).
+
+
+# Deny rules (v4)
+
+A diferencia de la guía v3 original, v4 introduce **DENY explícito** con precedencia sobre cualquier ALLOW (incluyendo `read_all`/`write_all`). Esto es complementario, **no reemplaza** la semántica de `user_tb_permissions` para casos donde el admin sólo quiere "reescribir" el set permitido.
+
+## Declaración estática (builder)
+
+```php
+$acl->addRole('vendedor', 1)
+    ->addInherit('guest')
+    ->addResourcePermissions('products', ['read', 'write'])
+    ->addDenyResourcePermissions('products', ['delete'])            // explicit deny
+    ->addDenySpecialPermissions(['impersonate']);                   // beats role grants
+```
+
+Aceptan los mismos shorthand `read` / `write` que `addResourcePermissions`.
+
+## Declaración dinámica (DB / API)
+
+La tabla **`user_deny_permissions`** sigue el mismo patrón que `user_tb_permissions`:
+
+| campo | tipo |
+|---|---|
+| `id` | `INT PK AUTO_INCREMENT` |
+| `user_id` | `INT NOT NULL` (FK → users) |
+| `resource` | `VARCHAR(100) NOT NULL` |
+| `action` | `VARCHAR(50) NOT NULL` |
+| `created_by`, `created_at`, `updated_by`, `updated_at` | auditoría |
+
+Con `UNIQUE(user_id, resource, action)` para garantizar una sola entrada por triple.
+
+Endpoints:
+
+```
+GET    /api/v1/user_deny_permissions
+POST   /api/v1/user_deny_permissions   { user_id, resource, action }
+DELETE /api/v1/user_deny_permissions/{id}
+```
+
+El controlador requiere el permiso especial **`grant`** del usuario que llama.
+
+`FineGrainedACL::getFreshDenyPermissions($uid)` lee la tabla en vivo (paralelo a `getFreshTbPermissions`). La carga en runtime usa `fetchUserDenyPerms($uid, $is_auth)` (hook protected en la clase base `Acl`, override en `FineGrainedACL`).
+
+## Semántica
+
+| Capa | Origen | Efecto |
+|---|---|---|
+| `addDenyResourcePermissions()` | `acl.php` | A nivel de rol. Prevalece sobre role allow + read_all/write_all. |
+| `addDenySpecialPermissions()` | `acl.php` | A nivel de rol. Bloquea ese sp_permission incluso si el rol o el usuario lo conceden. |
+| `user_deny_permissions` (DB) | API admin | A nivel de usuario. Prevalece sobre todo, incluyendo el rol del usuario y sus user_tb_permissions. |
+| `user_tb_permissions` | DB | A nivel de usuario: **replacement** (no es deny). El set efectivo para ese recurso se reemplaza por el bitmask. |
+
+## Comparación con v3 original
+
+El diseño v3 promovía **NO** introducir `DENY > ALLOW` y resolver todo vía replacement semantics. v4 acepta deny explícito porque para los casos de "revocar una sola acción" (p.ej. quitar `delete` sin tocar el resto del set) la replacement requería re-declarar todas las acciones permanentes, lo cual no escala bien para uso administrativo desde frontend.
+
+La cache interna `effectiveDenies` del compilador *sí* sigue siendo un detalle privado (negativo derivado de las réplicas); el deny **explícito** declarado vía builder/DB es público y forma parte de la API.
+

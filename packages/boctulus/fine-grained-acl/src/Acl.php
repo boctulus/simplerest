@@ -3,9 +3,8 @@
 namespace Boctulus\FineGrainedACL;
 
 use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Core\Libs\Factory;
 
-class Acl extends \Boctulus\Simplerest\Core\Acl
+class Acl extends \Boctulus\Simplerest\Core\Security\Acl
 {
     // Every possible role
     protected $roles = [];  
@@ -14,11 +13,12 @@ class Acl extends \Boctulus\Simplerest\Core\Acl
     protected $role_ids   = [];
     protected $role_names = [];
     protected $sp_permissions = []; 
-    protected $current_role;
+    protected $current_role = null;
     protected $guest_name = 'guest';
 
 
-    public function __construct() { 
+    public function __construct() {
+        parent::__construct();
         $this->setup();
     }
 
@@ -43,53 +43,38 @@ class Acl extends \Boctulus\Simplerest\Core\Acl
         });        
     }
 
-    public function addRole(string $role_name, $role_id = NULL) {
+    public function addRole(string $role_name, $role_id = null)
+    {
         $create = true;
 
-        if (in_array($role_id, $this->role_ids)){
+        if (in_array($role_id, $this->role_ids)) {
             $create = false;
 
-            foreach ($this->roles as $rr){
-                if ($rr['id'] == $role_id && $rr['name'] != $role_name){
-                    throw new \Exception("Role id '$role_id' can not be repetead. Trying to assign to '$role_name' but it was used for '{$rr['name']}' and it should be UNIQUE.");      
+            foreach ($this->roles as $rr) {
+                if ($rr['id'] == $role_id && $rr['name'] != $role_name) {
+                    throw new \Exception("Role id '$role_id' can not be repeated. Trying to assign to '$role_name' but it was used for '{$rr['name']}' and it should be UNIQUE.");
                 }
             }
         }
 
-        if (in_array($role_name, $this->role_names)){
+        if (in_array($role_name, $this->role_names)) {
             $create = false;
-            
-            foreach ($this->roles as $rr){
-                if ($rr['id'] != $role_id && $rr['name'] == $role_name){
-                    if ($role_id != NULL) {
-                        throw new \Exception("Role name '$role_name' can not be repetead. Trying to assign to id '$role_id' but it was used for '{$rr['id']}' and it should be UNIQUE.");  
-                    }
-                       
+
+            foreach ($this->roles as $rr) {
+                if ($rr['id'] != $role_id && $rr['name'] == $role_name && $role_id !== null) {
+                    throw new \Exception("Role name '$role_name' can not be repeated. Trying to assign to id '$role_id' but it was used for '{$rr['id']}' and it should be UNIQUE.");
                 }
             }
         }
 
-        if ($role_name == 'guest'){
-            $this->guest_name = 'guest';
-        }
-
-        if ($create){
+        if ($create) {
             $role_id = DB::table('roles')->create([
                 'id'   => $role_id,
-                'name' => $role_name
+                'name' => $role_name,
             ]);
         }
-        
-        $this->role_ids[]   = $role_id;
-        $this->role_names[] = $role_name;
-        
-        $this->role_perms[$role_name] = [
-            'role_id' => $role_id,
-            'sp_permissions' => [],
-            'tb_permissions' => []
-        ];
 
-        $this->current_role = $role_name; 
+        $this->registerRoleState($role_name, $role_id);
 
         return $this;
     }
@@ -108,8 +93,44 @@ class Acl extends \Boctulus\Simplerest\Core\Acl
         $rows = DB::table("user_sp_permissions")
         ->get();
 
-        return $rows;        
+        return $rows;
     }
 
+    /**
+     * Fresh DB read of user_deny_permissions (business-level explicit denies).
+     * Shape: ['resource' => ['action' => true]]
+     */
+    public function getFreshDenyPermissions($uid = null): array
+    {
+        return withDefaultConnection(function() use ($uid) {
+            $q = DB::table('user_deny_permissions');
+            if ($uid !== null) {
+                $q->where(['user_id' => $uid]);
+            }
+            $rows = $q->get();
+
+            $out = [];
+            foreach ($rows as $r) {
+                $resource = $r['resource'] ?? null;
+                $action   = $r['action']   ?? null;
+                if ($resource === null || $action === null) {
+                    continue;
+                }
+                $out[$resource][$action] = true;
+            }
+            return $out;
+        });
+    }
+
+    /**
+     * Override of base Acl hook: load explicit deny rows for a specific user.
+     */
+    protected function fetchUserDenyPerms($uid, bool $is_auth): array
+    {
+        if ($uid === null) {
+            return [];
+        }
+        return $this->getFreshDenyPermissions($uid);
+    }
 }
 

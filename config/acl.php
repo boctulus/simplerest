@@ -10,7 +10,7 @@ $acl_file  = Config::get()['acl_file'];
 if (!$acl_cache || is_file($acl_file) !== true) {
 
     /*
-        Roles are backed in database but role permissions not.
+        Roles are backed in database but role permissions are not.
         Role permissions can be decorated and these decorators are backed.
     */
 

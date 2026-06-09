@@ -5,7 +5,7 @@ namespace Boctulus\Simplerest\Core\Api;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Boctulus\Simplerest\Core\Acl;
+use Boctulus\Simplerest\Core\Security\Acl;
 use Boctulus\Simplerest\Core\Controllers\Controller;
 use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 use Boctulus\Simplerest\Core\Interfaces\IAuth;
@@ -843,7 +843,8 @@ class AuthController extends Controller implements IAuth
                 $is_active = true;
                 $perms  = $this->fetchPermissions($uid);
                 
-                static::setRoles($ret['roles']); //
+                static::setRoles($roles);
+                static::setPermissions($perms);
 
                 $ret = [
                     'uid'           => $uid,
@@ -867,6 +868,7 @@ class AuthController extends Controller implements IAuth
                 } 
 
                 static::setRoles($ret['roles']); //
+                static::setPermissions($ret['permissions'] ?? []);
 
                 $tenantid = request()->getTenantId();
 
@@ -892,6 +894,7 @@ class AuthController extends Controller implements IAuth
                 $roles = [Factory::acl()->getGuest()];
 
                 static::setRoles($roles); //
+                static::setPermissions($perms);
 
                 $ret = [
                     'uid' => null,

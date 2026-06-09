@@ -2,9 +2,17 @@
 
 use Boctulus\Simplerest\Core\Interfaces\IMigration;
 use Boctulus\Simplerest\Core\Libs\Config;
-use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Schema;
 
+/*
+    User permissions over tables (tb_permissions) table migration
+
+    Define 'resource permissions' para un usuario dado su id.
+
+    Responde a:
+
+    ¿Qué operaciones puede hacer el usuario sobre este recurso?
+*/
 class UserTbPermissionsCreation implements IMigration
 {
     /**
