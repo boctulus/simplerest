@@ -22,6 +22,23 @@ Registro de cambios importantes del framework.
 
 ---
 
+## [1.0.1] - 2026-06-01
+
+### 🐛 Bug Fixes — Schema Builder
+
+**Bug #3 — `nullable()->primary()` generaba `NULL PRIMARY KEY`**:
+- En `Schema::getDefinition()`, cuando un campo tenía PRIMARY KEY, se respetaba el flag `nullable` generando SQL contradictorio (`NULL PRIMARY KEY`).
+- Fix: si el índice es PRIMARY, se fuerza `NOT NULL` independientemente de `nullable()`.
+
+**Bug #4 — `addUnique()` multi-columna (falso positivo en docs)**:
+- El método ya funcionaba correctamente con arrays; `docs/pending.md` estaba desactualizado.
+
+#### Tests
+- 7 nuevos tests en `unit-tests/schema/SchemaBugsTest.php` (17 assertions).
+- Regresión completa: 63 tests ACL, Schema, DB, Validator, Translate, PSR7, HTTP — 0 regresiones.
+
+---
+
 ## [0.9.0] - 2026-01-24
 
 ### 🏗️ Reorganización de Arquitectura - Framework Core Desacoplado
