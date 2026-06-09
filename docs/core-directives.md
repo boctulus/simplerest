@@ -56,7 +56,7 @@ When encountering complex requirements in the low-code framework:
 
 ### File Organization Strategy
 - Follow the modular architecture (components and modules)
-- Place scripts in appropriate directories (`scripts/`, `tests/`, `web-automation/`)
+- Place scripts in appropriate directories (`scripts/`, `tests/`, `automation/`)
 - Avoid creating temporary files in the root directory
 - Use `docs/` for documentation of new modules/components
 
@@ -159,7 +159,7 @@ When writing code, adhere to these principles:
 ### File Organization
 
 - Scripts go in `scripts/` (general), `scripts/tmp/` (temporary)
-- Testing scripts in `tests/` or `web-automation/` (Playwright)
+- Testing scripts in `tests/` or `automation/` (Playwright)
 - Documentation in appropriate `docs/` subdirectories
 - Temporary files never in project root
 

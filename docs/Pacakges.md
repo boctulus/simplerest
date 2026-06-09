@@ -1,5 +1,9 @@
 # Packages
 
+> **⚠️ NOTA**: El nombre correcto de este archivo debería ser `Packages.md`.  
+> El documento completo y actualizado es [`Packages and Modules.md`](./Packages%20and%20Modules.md).  
+> Este archivo se mantiene como referencia específica sobre creación de packages, pero su contenido está siendo absorbido por el documento principal.
+
 ## Creación de un Package
 
 Los packages se crean automáticamente con el comando `make package`:

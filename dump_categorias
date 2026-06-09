@@ -1,0 +1,903 @@
+Found 30 record(s):
+
+
+Record #1:
+
+  id: 0SYTGDIKzIljOHSBQgAQ
+
+  name: Aperitivos
+
+  slug: aperitivos
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: CtYqb4eWfeZjXszLsdI3
+
+  parent_slug: bebidas
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:11:05
+
+  updated_at: 2025-11-08 10:49:12
+
+  deleted_at: NULL
+
+
+
+Record #2:
+
+  id: aIeulU5MIIEdghGjPE1h
+
+  name: Carnes
+
+  slug: carnes
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: wgOfrUAAUQ42GEKZrV8H
+
+  parent_slug: frescos
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:11:09
+
+  updated_at: 2025-10-01 18:11:09
+
+  deleted_at: NULL
+
+
+
+Record #3:
+
+  id: cat_690b3349af61a
+
+  name: Panaderia
+
+  slug: panaderia
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: llm
+
+  is_approved: 0
+
+  is_active: 1
+
+  created_at: 2025-11-05 18:21:45
+
+  updated_at: 2025-11-05 18:21:45
+
+  deleted_at: NULL
+
+
+
+Record #4:
+
+  id: cat_6916de6f39e87
+
+  name: Frutas y Verduras
+
+  slug: frutas-y-verduras
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: frescos
+
+  proposed_by: llm
+
+  is_approved: 0
+
+  is_active: 1
+
+  created_at: 2025-11-14 14:46:55
+
+  updated_at: 2025-11-14 14:46:55
+
+  deleted_at: NULL
+
+
+
+Record #5:
+
+  id: cat_6916e1fc4ef8f
+
+  name: Comida Gourmet
+
+  slug: comida-gourmet
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: llm
+
+  is_approved: 0
+
+  is_active: 1
+
+  created_at: 2025-11-14 15:02:04
+
+  updated_at: 2025-12-05 23:29:21
+
+  deleted_at: NULL
+
+
+
+Record #6:
+
+  id: cat_6916e27706235
+
+  name: Snacks y Golosinas Premium
+
+  slug: snacks-y-golosinas-premium
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: golosinas
+
+  proposed_by: llm
+
+  is_approved: 0
+
+  is_active: 1
+
+  created_at: 2025-11-14 15:04:07
+
+  updated_at: 2025-12-05 23:29:36
+
+  deleted_at: NULL
+
+
+
+Record #7:
+
+  id: cat_6916e82b78fa6
+
+  name: Productos Frescos y Lácteos
+
+  slug: productos-frescos-y-lacteos
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: frescos
+
+  proposed_by: llm
+
+  is_approved: 0
+
+  is_active: 1
+
+  created_at: 2025-11-14 15:28:27
+
+  updated_at: 2025-12-05 23:29:36
+
+  deleted_at: NULL
+
+
+
+Record #8:
+
+  id: CtYqb4eWfeZjXszLsdI3
+
+  name: Bebidas
+
+  slug: bebidas
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:37
+
+  updated_at: 2025-10-01 18:10:37
+
+  deleted_at: NULL
+
+
+
+Record #9:
+
+  id: daJvPmGBeEKeA0MyrN6T
+
+  name: Golosinas
+
+  slug: golosinas
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:33
+
+  updated_at: 2025-10-01 18:10:33
+
+  deleted_at: NULL
+
+
+
+Record #10:
+
+  id: Js4ff8ZC2BGd7nOvWhQV
+
+  name: Verdulería
+
+  slug: verduleria
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:51
+
+  updated_at: 2025-10-01 18:10:51
+
+  deleted_at: NULL
+
+
+
+Record #11:
+
+  id: L9ACKOG6bVE7OjKLJWN4
+
+  name: Galletitas
+
+  slug: galletitas
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:31
+
+  updated_at: 2025-10-01 18:10:31
+
+  deleted_at: NULL
+
+
+
+Record #12:
+
+  id: lkbcTdKfcMqdH4xwwsem
+
+  name: Higiene
+
+  slug: higiene
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:27
+
+  updated_at: 2025-10-01 18:10:27
+
+  deleted_at: NULL
+
+
+
+Record #13:
+
+  id: lvAcsIo5dWOT8PGTTf3w
+
+  name: Alfajores
+
+  slug: alfajores
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: daJvPmGBeEKeA0MyrN6T
+
+  parent_slug: golosinas
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:11:01
+
+  updated_at: 2025-10-01 18:11:01
+
+  deleted_at: NULL
+
+
+
+Record #14:
+
+  id: MxPymMktwtD3erICZfF1
+
+  name: Electro
+
+  slug: electro
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: Pnszc7sXaeXIpn4vK3nC
+
+  parent_slug: hogar-y-bazar
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:11:07
+
+  updated_at: 2025-10-01 18:11:07
+
+  deleted_at: NULL
+
+
+
+Record #15:
+
+  id: Pnszc7sXaeXIpn4vK3nC
+
+  name: Hogar y bazar
+
+  slug: hogar-y-bazar
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:43
+
+  updated_at: 2025-10-01 18:10:43
+
+  deleted_at: NULL
+
+
+
+Record #16:
+
+  id: q6VVl4KevoGlM7CIA4x8
+
+  name: Ferretería
+
+  slug: ferreteria
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: Pnszc7sXaeXIpn4vK3nC
+
+  parent_slug: hogar-y-bazar
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:41
+
+  updated_at: 2025-12-07 16:44:17
+
+  deleted_at: NULL
+
+
+
+Record #17:
+
+  id: qATvTHpN9XbVOZj7MzG3
+
+  name: Juguetería
+
+  slug: jugueteria
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:39
+
+  updated_at: 2025-10-01 18:10:39
+
+  deleted_at: NULL
+
+
+
+Record #18:
+
+  id: qauEVGIiOMlMNPsuEtVC
+
+  name: Almacén
+
+  slug: almacen
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:24
+
+  updated_at: 2025-10-01 18:10:24
+
+  deleted_at: NULL
+
+
+
+Record #19:
+
+  id: QJ4IL7yrSzPSdNpidQTh
+
+  name: Infusiones
+
+  slug: infusiones
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: CtYqb4eWfeZjXszLsdI3
+
+  parent_slug: bebidas
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:11:03
+
+  updated_at: 2025-10-01 18:11:03
+
+  deleted_at: NULL
+
+
+
+Record #20:
+
+  id: TJXzDWsJMRfpPiXRvHOJ
+
+  name: Dietéticas
+
+  slug: dieteticas
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:47
+
+  updated_at: 2025-10-01 18:10:47
+
+  deleted_at: NULL
+
+
+
+Record #21:
+
+  id: tk5fXILfVy4RrD30dv1Z
+
+  name: Gastronómicos
+
+  slug: gastronomicos
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:53
+
+  updated_at: 2025-10-01 18:10:53
+
+  deleted_at: NULL
+
+
+
+Record #22:
+
+  id: UjMgQMJo1zW3H4Ui68ll
+
+  name: Limpieza
+
+  slug: limpieza
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: Pnszc7sXaeXIpn4vK3nC
+
+  parent_slug: hogar-y-bazar
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:28
+
+  updated_at: 2025-11-05 19:47:23
+
+  deleted_at: NULL
+
+
+
+Record #23:
+
+  id: uOFGOZzUIhUjpW5P23bW
+
+  name: Bombones
+
+  slug: bombones
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: daJvPmGBeEKeA0MyrN6T
+
+  parent_slug: golosinas
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:59
+
+  updated_at: 2025-10-01 18:10:59
+
+  deleted_at: NULL
+
+
+
+Record #24:
+
+  id: vCniBIdQPmHZXoDCOXlx
+
+  name: Embutidos
+
+  slug: embutidos
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: wgOfrUAAUQ42GEKZrV8H
+
+  parent_slug: frescos
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:11:07
+
+  updated_at: 2025-10-01 18:11:07
+
+  deleted_at: NULL
+
+
+
+Record #25:
+
+  id: vHdGAZvePcrzQdKw1cKn
+
+  name: Librería
+
+  slug: libreria
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:35
+
+  updated_at: 2025-10-01 18:10:35
+
+  deleted_at: NULL
+
+
+
+Record #26:
+
+  id: Wgi46GthyUh6EDFkSmGa
+
+  name: Otros
+
+  slug: otros
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:55
+
+  updated_at: 2025-10-01 18:10:55
+
+  deleted_at: NULL
+
+
+
+Record #27:
+
+  id: wgOfrUAAUQ42GEKZrV8H
+
+  name: Frescos
+
+  slug: frescos
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:49
+
+  updated_at: 2025-10-01 18:10:49
+
+  deleted_at: NULL
+
+
+
+Record #28:
+
+  id: x9G5mkCdPSMGVz1s4hRm
+
+  name: Mascotas
+
+  slug: mascotas
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:57
+
+  updated_at: 2025-10-01 18:10:57
+
+  deleted_at: NULL
+
+
+
+Record #29:
+
+  id: zaaKm9cHrNsiRokS5kls
+
+  name: Lácteos
+
+  slug: lacteos
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: wgOfrUAAUQ42GEKZrV8H
+
+  parent_slug: frescos
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:11:08
+
+  updated_at: 2025-10-01 18:11:08
+
+  deleted_at: NULL
+
+
+
+Record #30:
+
+  id: ZpwymDL7eTonQnBHmwtb
+
+  name: Congelados
+
+  slug: congelados
+
+  image_url: NULL
+
+  store_id: NULL
+
+  parent_id: NULL
+
+  parent_slug: NULL
+
+  proposed_by: human
+
+  is_approved: 1
+
+  is_active: 1
+
+  created_at: 2025-10-01 18:10:45
+
+  updated_at: 2025-10-01 18:10:45
+
+  deleted_at: NULL
+
+
+
