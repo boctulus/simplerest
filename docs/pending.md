@@ -67,12 +67,12 @@
 | 5.2 | Crear migración desde DTO (`php com make migration --from_dto`) | PENDING | TODO estructurado.txt |
 | 5.3 | Permitir combinar `--dir=` + `--to` + `--file=` | PENDING | TODO estructurado.txt |
 | 5.4 | Mejorar información de errores en Exceptions (tipo, código, location) | PENDING | TODO estructurado.txt |
-| 5.5 | Revisar generación de Schemas: `id` como primary key aparece como nullable | PENDING | TODO estructurado.txt |
+| 5.5 | Revisar generación de Schemas: `id` como primary key aparece como nullable | ✅ DONE | Fixed in Schema::getDefinition() |
 | 5.6 | Integrar auto-generación de migraciones desde modelos | PENDING | TODO important.md |
 | 5.7 | Soporte a migraciones diferidas y rollback selectivo | PENDING | TODO important.md |
 | 5.8 | Mejorar `php com make` para generar seeds, modules y tests | PENDING | TODO important.md |
-| 5.9 | NO está agregando PRIMARY KEY en Schema cuando se usa `->primary()` encadenado — usar `addPrimary()` como workaround | IN PROGRESS | TODO Simplerest.txt |
-| 5.10 | `addUnique()` sobre varios campos no funciona | PENDING | TODO Simplerest.txt |
+| 5.9 | NO está agregando PRIMARY KEY en Schema cuando se usa `->primary()` encadenado — usar `addPrimary()` como workaround | ✅ DONE | Fixed in Schema::getDefinition() |
+| 5.10 | `addUnique()` sobre varios campos no funciona | ✅ DONE - ya funciona | Docs desactualizado — el método acepta string|array correctamente |
 | 5.11 | Guardar nombre de tabla como propiedad para evitar repetir en up()/down() | PENDING | TODO Simplerest.txt |
 | 5.12 | Generar schema automáticamente después de cada migración | PENDING | TODO Simplerest.txt |
 | 5.13 | Bug: migraciones fallan en PHP 8+ (repiten archivos, "There is no active transaction") | PENDING | TODO Simplerest.txt |
@@ -309,10 +309,10 @@
 | 20.3 | Falta llamar a `auth()->setPermissions()` al loguear usuario — afecta `hasSpecialPermission()` | PENDING | TODO Simplerest.txt |
 | 20.4 | Vista puede renderizar algo antes de mostrar error (después de cambios en Response/FrontController) | PENDING | TODO Simplerest.txt |
 | 20.5 | Migraciones fallan en PHP 8+ (repite archivos, "There is no active transaction") | PENDING | TODO Simplerest.txt |
-| 20.6 | `id` es Primary Key pero aparece como nullable en schemas generados | PENDING | TODO Simplerest.txt |
-| 20.7 | `addUnique()` sobre varios campos no funciona en migraciones | PENDING | TODO Simplerest.txt |
+| 20.6 | `id` es Primary Key pero aparece como nullable en schemas generados | ✅ DONE | Schema::getDefinition() |
+| 20.7 | `addUnique()` sobre varios campos no funciona en migraciones | ✅ DONE | Ya funcionaba — docs desactualizado |
 | 20.8 | Bug: permite actualizar `belongs_to`, `updated_by` y `updated_at` sin permisos especiales | PENDING | TODO Simplerest.txt |
-| 20.9 | PRIMARY KEY no se agrega cuando se usa `->primary()` encadenado en Schema | IN PROGRESS | TODO Simplerest.txt |
+| 20.9 | PRIMARY KEY no se agrega cuando se usa `->primary()` encadenado en Schema | ✅ DONE - ver Bug #3 | Schema::getDefinition() |
 | 20.10 | testSoftDeleteAndTrashCan — producto no aparece en trash_can después de soft delete | IN PROGRESS | in-progress/api-tests-progress.md |
 
 ---

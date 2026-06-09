@@ -1245,7 +1245,9 @@ class Schema
 			$cmd .= "COLLATE {$field['collation']} ";
 		}
 
-		if (isset($field['nullable'])){
+		$is_primary = $field_name !== null && isset($this->indices[$field_name]) && $this->indices[$field_name] === 'PRIMARY';
+
+		if (isset($field['nullable']) && !$is_primary){
 			$cmd .= "{$field['nullable']} ";
 		}else
 			$cmd .= "NOT NULL ";
@@ -1256,7 +1258,7 @@ class Schema
 
 		if (isset($field['auto'])){
 			$cmd .= "AUTO_INCREMENT PRIMARY KEY";
-		} elseif ($field_name !== null && isset($this->indices[$field_name]) && $this->indices[$field_name] === 'PRIMARY') {
+		} elseif ($is_primary) {
 			// Si el campo está marcado como PRIMARY KEY (sin AUTO_INCREMENT)
 			$cmd .= "PRIMARY KEY";
 		}
