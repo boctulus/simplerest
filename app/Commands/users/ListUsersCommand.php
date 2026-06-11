@@ -32,6 +32,41 @@ class ListUsersCommand extends BaseUsersCommand
         ];
     }
 
+    private function tb(array $headers, array $rows): void
+    {
+        $colW = array_map(fn($h) => mb_strlen($h, 'UTF-8') + 2, $headers);
+
+        foreach ($rows as $row) {
+            foreach ($row as $i => $val) {
+                $len = mb_strlen(preg_replace('/\033\[[0-9;]*m/', '', $val), 'UTF-8');
+                if ($len + 2 > $colW[$i]) {
+                    $colW[$i] = $len + 2;
+                }
+            }
+        }
+
+        $hor = '─';
+        echo "\033[90m┌" . implode('┬', array_map(fn($w) => str_repeat($hor, $w), $colW)) . "┐\033[0m\n";
+        echo '│';
+        foreach ($headers as $i => $h) {
+            echo "\033[1;37m" . str_pad($h, $colW[$i], ' ', STR_PAD_BOTH) . "\033[0m│";
+        }
+        echo "\n";
+        echo "\033[90m├" . implode('┼', array_map(fn($w) => str_repeat($hor, $w), $colW)) . "┤\033[0m\n";
+
+        foreach ($rows as $row) {
+            echo '│';
+            foreach ($row as $i => $val) {
+                $plain = preg_replace('/\033\[[0-9;]*m/', '', $val);
+                $pad = $colW[$i] - mb_strlen($plain, 'UTF-8');
+                echo $val . str_repeat(' ', $pad) . '│';
+            }
+            echo "\n";
+        }
+
+        echo "\033[90m└" . implode('┴', array_map(fn($w) => str_repeat($hor, $w), $colW)) . "┘\033[0m\n";
+    }
+
     public function execute(array $parsed): void
     {
         $roleFilter   = $this->opt($parsed, 'role');
@@ -41,7 +76,7 @@ class ListUsersCommand extends BaseUsersCommand
             ->select([
                 $this->usersTable . '.' . $this->idField,
                 $this->usersTable . '.' . $this->emailField,
-                'firstname', 'lastname',
+                $this->usersTable . '.name',
                 $this->isActiveField,
                 $this->confirmedField,
             ]);
@@ -60,21 +95,30 @@ class ListUsersCommand extends BaseUsersCommand
         $users = $query->get();
 
         if (empty($users)) {
-            echo "No se encontraron usuarios.\n";
+            echo "\033[33m⚠ No se encontraron usuarios.\033[0m\n";
             return;
         }
 
-        echo str_pad('', 65, '=') . "\n";
-        foreach ($users as $user) {
-            $active   = ($user[$this->isActiveField]  ?? 1) ? '✓' : '✗';
-            $verified = ($user[$this->confirmedField]  ?? 0) ? '✓' : '✗';
-            $name     = trim(($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? ''));
-            $id       = $user[$this->idField];
+        $rows = [];
+        foreach ($users as $u) {
+            $active   = ($u[$this->isActiveField] ?? 1);
+            $verified = ($u[$this->confirmedField] ?? 0);
+            $email    = $u[$this->emailField] ?? '';
 
-            echo "  {$active} [{$id}] {$user[$this->emailField]}\n";
-            if ($name) echo "     Nombre:     {$name}\n";
-            echo "     Verificado: {$verified}\n\n";
+            $rows[] = [
+                ($active ? "\033[32m✓\033[0m" : "\033[31m✗\033[0m"),
+                "\033[36m" . $u[$this->idField] . "\033[0m",
+                $email ? "\033[33m{$email}\033[0m" : "\033[90m-\033[0m",
+                ($u['name'] ?? '') ? "\033[1m{$u['name']}\033[0m" : "\033[90m-\033[0m",
+                ($verified ? "\033[32m✓\033[0m" : "\033[31m✗\033[0m"),
+            ];
         }
-        echo count($users) . " usuario(s) encontrado(s).\n";
+
+        $this->tb(
+            ['', 'ID', 'Email', 'Nombre', 'Verif.'],
+            $rows
+        );
+
+        echo "\033[36m→ " . count($users) . " usuario(s) encontrado(s).\033[0m\n";
     }
 }
