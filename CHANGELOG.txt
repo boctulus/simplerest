@@ -63,3 +63,4 @@
 [2026-05-27 23:54:30]	1.0.0	Automatic update
 [2026-06-01 09:31:01]	1.0.0	Bug: render() no hacía disponibles $head y $footer como variables locales en el scope del layout, a diferencia de View::__construct() --FIXED
 [2026-06-09 20:45:56]	1.0.0	Automatic update
+[2026-06-11 11:20:54]	1.0.0	Automatic update

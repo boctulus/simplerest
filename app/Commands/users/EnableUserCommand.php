@@ -10,28 +10,43 @@ class EnableUserCommand extends BaseUsersCommand
         $this->command     = 'enable-user';
         $this->description = 'Habilita una cuenta de usuario';
         $this->aliases     = ['enable'];
-        $this->examples    = ['php com users enable-user user@example.com'];
+        $this->examples    = [
+            'php com users enable-user user@example.com',
+            'php com users enable-user --uid=331',
+        ];
     }
 
     public static function config(): array
     {
         return [
             'required' => [],
-            'optional' => ['email'],
+            'optional' => ['email', 'uid'],
             'flags'    => [],
-            'options'  => ['email' => ['describe' => 'Email (o primer arg posicional)']],
+            'options'  => [
+                'email' => ['describe' => 'Email (o primer arg posicional)'],
+                'uid'   => ['describe' => 'ID del usuario (alternativa a --email)'],
+            ],
         ];
     }
 
     public function execute(array $parsed): void
     {
+        $uid   = $this->opt($parsed, 'uid');
         $email = $this->opt($parsed, 'email') ?? ($parsed['_positional'][0] ?? null);
-        if (!$email) { echo "✗ Debes proporcionar un email.\n"; return; }
 
-        $user = $this->getUserByEmail($email);
-        if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
+        if (!$uid && !$email) { echo "✗ Debes proporcionar --email o --uid.\n"; return; }
+
+        if ($uid) {
+            $user  = $this->getUserById((int) $uid);
+            $label = "ID {$uid}";
+            if (!$user) { echo "✗ Usuario con ID '{$uid}' no encontrado.\n"; return; }
+        } else {
+            $user  = $this->getUserByEmail($email);
+            $label = "'{$email}'";
+            if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
+        }
 
         $this->updateUser($user[$this->idField], [$this->isActiveField => 1]);
-        echo "✓ Usuario '{$email}' habilitado.\n";
+        echo "✓ Usuario {$label} habilitado.\n";
     }
 }

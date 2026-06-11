@@ -13,17 +13,19 @@ class SetRoleCommand extends BaseUsersCommand
         $this->description = 'Asigna un rol a un usuario';
         $this->examples    = [
             'php com users set-role --email=user@example.com --role=admin',
+            'php com users set-role --uid=331 --role=admin',
         ];
     }
 
     public static function config(): array
     {
         return [
-            'required' => ['email', 'role'],
-            'optional' => [],
+            'required' => ['role'],
+            'optional' => ['email', 'uid'],
             'flags'    => [],
             'options'  => [
-                'email' => ['describe' => 'Email del usuario'],
+                'email' => ['describe' => 'Email del usuario (alternativa a --uid)'],
+                'uid'   => ['describe' => 'ID del usuario (alternativa a --email)'],
                 'role'  => ['describe' => 'Nombre del rol'],
             ],
         ];
@@ -31,11 +33,24 @@ class SetRoleCommand extends BaseUsersCommand
 
     public function execute(array $parsed): void
     {
-        $email  = $this->opt($parsed, 'email');
-        $role   = $this->opt($parsed, 'role');
+        $uid   = $this->opt($parsed, 'uid');
+        $email = $this->opt($parsed, 'email');
+        $role  = $this->opt($parsed, 'role');
 
-        $user = $this->getUserByEmail($email);
-        if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
+        if (!$uid && !$email) {
+            echo "✗ Debes proporcionar --email o --uid.\n";
+            return;
+        }
+
+        if ($uid) {
+            $user  = $this->getUserById((int) $uid);
+            $label = "ID {$uid}";
+            if (!$user) { echo "✗ Usuario con ID '{$uid}' no encontrado.\n"; return; }
+        } else {
+            $user  = $this->getUserByEmail($email);
+            $label = "'{$email}'";
+            if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
+        }
 
         $userId  = $user[$this->idField];
         $roleRow = DB::table('roles')->where(['name' => $role])->first();
@@ -48,6 +63,6 @@ class SetRoleCommand extends BaseUsersCommand
             DB::table('user_roles')->insert(['user_id' => $userId, 'role_id' => $roleRow['id']]);
         }
 
-        echo "✓ Rol '{$role}' asignado a '{$email}'.\n";
+        echo "✓ Rol '{$role}' asignado a {$label}.\n";
     }
 }
