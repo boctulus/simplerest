@@ -13,6 +13,7 @@ class ShowUserCommand extends BaseUsersCommand
         $this->examples    = [
             'php com users show-user user@example.com',
             'php com users show-user --email=user@example.com',
+            'php com users show-user --uid=331',
         ];
     }
 
@@ -20,19 +21,32 @@ class ShowUserCommand extends BaseUsersCommand
     {
         return [
             'required' => [],
-            'optional' => ['email'],
+            'optional' => ['email', 'uid'],
             'flags'    => [],
-            'options'  => ['email' => ['describe' => 'Email (o primer arg posicional)']],
+            'options'  => [
+                'email' => ['describe' => 'Email (o primer arg posicional)'],
+                'uid'   => ['describe' => 'ID del usuario'],
+            ],
         ];
     }
 
     public function execute(array $parsed): void
     {
+        $uid   = $this->opt($parsed, 'uid');
         $email = $this->opt($parsed, 'email') ?? ($parsed['_positional'][0] ?? null);
-        if (!$email) { echo "✗ Debes proporcionar un email.\n"; return; }
 
-        $user = $this->getUserByEmail($email);
-        if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
+        if (!$uid && !$email) {
+            echo "✗ Debes proporcionar --email o --uid.\n";
+            return;
+        }
+
+        if ($uid) {
+            $user = $this->getUserById((int) $uid);
+            if (!$user) { echo "✗ Usuario con ID '{$uid}' no encontrado.\n"; return; }
+        } else {
+            $user = $this->getUserByEmail($email);
+            if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
+        }
 
         $id       = $user[$this->idField];
         $active   = ($user[$this->isActiveField]  ?? 1) ? '✓' : '✗';
@@ -43,7 +57,7 @@ class ShowUserCommand extends BaseUsersCommand
         echo "  ID:               {$id}\n";
         echo "  Email:            {$user[$this->emailField]}\n";
         echo "  Username:         " . ($user[$this->usernameField] ?? 'N/A') . "\n";
-        echo "  Nombre:           " . trim(($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? '')) . "\n";
+        echo "  Nombre:           " . ($user['name'] ?? 'N/A') . "\n";
         echo "  Activo:           {$active}\n";
         echo "  Email verificado: {$verified}\n";
         echo "  Rol:              " . ($role ?? 'N/A') . "\n";
