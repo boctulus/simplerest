@@ -139,9 +139,10 @@ class AuthController extends Controller implements IAuth
         $email    = $data[$this->__email]    ?? null;
         $username = $data[$this->__username] ?? null;  
         $password = $data[$this->__password] ?? null;         
+        $login    = $email ?? $username;
 
         
-        if (empty($email) && empty($username) ){
+        if (empty($login) ){
             error("{$this->__username} or {$this->__email} are required",400);
         }else if (empty($password)){
             error($this->__password . ' is required',400);
@@ -155,12 +156,7 @@ class AuthController extends Controller implements IAuth
             $row = $u
             ->assoc()
             ->unhide([$this->__password])
-            ->when(!empty($email), function($q) use($email){
-                $q->where([$this->__email => $email]);
-            })
-            ->when(!empty($username), function($q) use($username){
-                $q->where([$this->__username => $username ]);
-            })
+            ->whereOr([$this->__email => $login, $this->__username => $login])
             ->setValidator((new Validator())->setRequired(false))  
             ->first();
 

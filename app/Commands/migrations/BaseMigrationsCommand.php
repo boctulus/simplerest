@@ -9,7 +9,6 @@ use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Libs\StdOut;
 use Boctulus\Simplerest\Core\Libs\Strings;
-use Boctulus\Simplerest\Core\Libs\DBRels;
 
 abstract class BaseMigrationsCommand extends BaseCommand
 {
@@ -35,8 +34,8 @@ abstract class BaseMigrationsCommand extends BaseCommand
 
     protected function doMake(...$opt)
     {
-        require_once COMMANDS_PATH . '_disabled/MakeCommand.php';
-        return (new MakeCommand())->migration(...$opt);
+        require_once __DIR__ . '/../make/MigrationCommand.php';
+        return (new MakeMigrationFileCommand())->migration(...$opt);
     }
 
     protected function doMigrate(...$opt)
@@ -184,7 +183,7 @@ abstract class BaseMigrationsCommand extends BaseCommand
 
         $cnt = min($steps, count($filenames));
 
-        DB::getDefaultConnection();
+        get_default_connection();
 
         if ($fresh) {
             $this->doFresh(...$opt);
@@ -215,7 +214,7 @@ abstract class BaseMigrationsCommand extends BaseCommand
             }
 
             StdOut::print("Migrated  '$filename_mg' --ok\r\n");
-            DB::getDefaultConnection();
+            get_default_connection();
             table('migrations')->create(['filename' => $filename_mg]);
         }
 
@@ -304,7 +303,7 @@ abstract class BaseMigrationsCommand extends BaseCommand
 
             StdOut::print("Migrated  '$filename' --ok\r\n");
 
-            DB::getDefaultConnection();
+            get_default_connection();
 
             $normalized_migrations_path = rtrim(str_replace('\\', '/', realpath(MIGRATIONS_PATH)), '/');
             $normalized_current_path    = rtrim(str_replace('\\', '/', realpath($path)), '/');
@@ -317,7 +316,7 @@ abstract class BaseMigrationsCommand extends BaseCommand
             }
 
             $data = ['filename' => $filename, 'path' => !empty($relative_path) ? $relative_path : null];
-            $main = DB::getDefaultConnectionId();
+            $main = get_default_connection_id();
 
             if ($to_db != null && $to_db != $main) {
                 $data['db'] = $to_db;
@@ -330,11 +329,12 @@ abstract class BaseMigrationsCommand extends BaseCommand
         DB::enableForeignKeyConstraints();
 
         if (!empty($make)) {
-            require_once COMMANDS_PATH . '_disabled/MakeCommand.php';
+            require_once __DIR__ . '/../make/MigrationCommand.php';
             $actions = explode(',', $make);
+            $cmd = new MakeMigrationFileCommand();
             foreach ($actions as $action) {
-                if ($action == 'schema') (new MakeCommand())->schema('all');
-                if ($action == 'model')  (new MakeCommand())->model('all');
+                if ($action == 'schema') $cmd->schema('all');
+                if ($action == 'model')  $cmd->model('all');
             }
         }
     }
