@@ -121,7 +121,13 @@
       "PowerShell(Get-ChildItem D:\\\\laragon\\\\www\\\\simplerest\\\\ -Name | Where-Object { $_ -match \"^com\" })",
       "PowerShell(Get-ChildItem D:\\\\laragon\\\\www\\\\consorcios\\\\app\\\\Commands\\\\make\\\\ -Name | Where-Object { $_ -match \"[Pp]ivot\" })",
       "Bash(awk -v t=2267 '$1+0 > t-30 && $1+0 < t+30')",
-      "Bash(grep *)"
+      "Bash(grep *)",
+      "PowerShell(curl.exe -s -o $null -w \"%{http_code} %{url_effective}`n\" \"http://simplerest.lan/assets/css/main.css\"; curl.exe -s -o $null -w \"%{http_code}`n\" \"http://simplerest.lan/assets/third_party/adminlte/dist/css/adminlte.min.css\")",
+      "PowerShell(Get-Content .htaccess -ErrorAction SilentlyContinue; \"---PUBLIC---\"; Get-Content public/.htaccess -ErrorAction SilentlyContinue; \"---ROOT FILES---\"; ls -Name | Select-Object -First 40)",
+      "PowerShell(curl.exe -s -o $null -w \"public-prefix: %{http_code}`n\" \"http://simplerest.lan/public/assets/css/main.css\")",
+      "PowerShell(curl.exe -s -o NUL -w \"%{http_code}\" \"http://simplerest.lan/public/assets/css/main.css\")",
+      "PowerShell(findstr *)",
+      "PowerShell(Set-Content *)"
     ],
     "deny": [],
     "ask": []

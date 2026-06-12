@@ -5,7 +5,6 @@ use Boctulus\Simplerest\Core\Libs\Url;
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\Strings;
-use Boctulus\Simplerest\Core\Libs\DBRels;
 
 /*
     Una diferencia importante entre js_file() / css_file() con las de SW
@@ -107,10 +106,7 @@ function render($content = null, ?string $layout = null, ?array $vars  = null){
 
     if (!empty($vars)){
         extract($vars);
-    }
-
-    $head   = View::getHead();
-    $footer = View::getFooter();
+    }   
 
     include $path;
 }
@@ -147,7 +143,7 @@ function asset($resource)
     $resource = 'public/assets/' . trim($resource, '/');
 
     $url      = Url::getBaseUrl() . '/';   
-    $url      = $url . (!$resource === null ? '' : $resource);
+    $url      = $url . $resource;
 
     return $url;
 }
