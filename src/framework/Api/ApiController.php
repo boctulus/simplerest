@@ -57,10 +57,16 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 		return static::$hidden;
 	}
 
-    function __construct($auth = null) 
-    {  
+    function __construct($auth = null)
+    {
         //show_debug_trace();
-    
+
+        // SOLO API REST: nunca volcar warnings/notices/deprecations al body (HTML de
+        // error antes del JSON → res.json() falla en el cliente). Se loggean igual.
+        // Las vistas HTML conservan display_errors (config del entry point) para dev.
+        ini_set('display_errors', 0);
+        ini_set('log_errors', 1);
+
         parent::__construct($auth);
 
         $res = response();
