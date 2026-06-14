@@ -35,6 +35,14 @@ abstract class BaseUsersCommand extends BaseCommand
             ->first() ?: null;
     }
 
+    protected function getUserByUsername(string $username): ?array
+    {
+        return DB::table($this->usersTable)
+            ->unhide(['password'])
+            ->where([$this->usernameField => $username])
+            ->first() ?: null;
+    }
+
     protected function updateUser(int $id, array $data): void
     {
         $parts = [];

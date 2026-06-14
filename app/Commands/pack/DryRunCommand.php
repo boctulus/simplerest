@@ -13,7 +13,7 @@ class DryRunCommand extends BaseCommand
         $this->description = 'Muestra qué haría pack build sin ejecutar nada';
         $this->examples    = [
             'php com pack dry-run',
-            'php com pack dry-run --to=D:\\custom\\dist',
+            'php com pack dry-run --source=D:\\custom\\src --dest=D:\\custom\\dist',
         ];
     }
 
@@ -21,12 +21,11 @@ class DryRunCommand extends BaseCommand
     {
         return [
             'required' => [],
-            'optional' => ['source', 'dest', 'to'],
+            'optional' => ['source', 'dest'],
             'flags'    => [],
             'options'  => [
                 'source' => ['describe' => 'Directorio fuente'],
                 'dest'   => ['describe' => 'Directorio destino'],
-                'to'     => ['describe' => 'Directorio destino (alias de --dest)'],
             ],
         ];
     }
@@ -34,7 +33,7 @@ class DryRunCommand extends BaseCommand
     public function execute(array $parsed): void
     {
         $source = $this->opt($parsed, 'source', $this->defaultSource);
-        $dest   = $this->opt($parsed, 'to', $this->opt($parsed, 'dest', $this->defaultDest));
+        $dest   = $this->opt($parsed, 'dest',   $this->defaultDest);
 
         require_once __DIR__ . '/../../../scripts/pack_framework.php';
 

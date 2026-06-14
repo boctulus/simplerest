@@ -14,6 +14,7 @@ class SetRoleCommand extends BaseUsersCommand
         $this->examples    = [
             'php com users set-role --email=user@example.com --role=admin',
             'php com users set-role --uid=331 --role=admin',
+            'php com users set-role --username=boctulus --role=superadmin',
         ];
     }
 
@@ -21,24 +22,26 @@ class SetRoleCommand extends BaseUsersCommand
     {
         return [
             'required' => ['role'],
-            'optional' => ['email', 'uid'],
+            'optional' => ['email', 'uid', 'username'],
             'flags'    => [],
             'options'  => [
-                'email' => ['describe' => 'Email del usuario (alternativa a --uid)'],
-                'uid'   => ['describe' => 'ID del usuario (alternativa a --email)'],
-                'role'  => ['describe' => 'Nombre del rol'],
+                'email'    => ['describe' => 'Email del usuario (alternativa a --uid o --username)'],
+                'uid'      => ['describe' => 'ID del usuario (alternativa a --email o --username)'],
+                'username' => ['describe' => 'Username del usuario (alternativa a --email o --uid)'],
+                'role'     => ['describe' => 'Nombre del rol'],
             ],
         ];
     }
 
     public function execute(array $parsed): void
     {
-        $uid   = $this->opt($parsed, 'uid');
-        $email = $this->opt($parsed, 'email');
-        $role  = $this->opt($parsed, 'role');
+        $uid      = $this->opt($parsed, 'uid');
+        $email    = $this->opt($parsed, 'email');
+        $username = $this->opt($parsed, 'username');
+        $role     = $this->opt($parsed, 'role');
 
-        if (!$uid && !$email) {
-            echo "✗ Debes proporcionar --email o --uid.\n";
+        if (!$uid && !$email && !$username) {
+            echo "✗ Debes proporcionar --email, --uid o --username.\n";
             return;
         }
 
@@ -46,6 +49,10 @@ class SetRoleCommand extends BaseUsersCommand
             $user  = $this->getUserById((int) $uid);
             $label = "ID {$uid}";
             if (!$user) { echo "✗ Usuario con ID '{$uid}' no encontrado.\n"; return; }
+        } elseif ($username) {
+            $user  = $this->getUserByUsername($username);
+            $label = "'{$username}'";
+            if (!$user) { echo "✗ Usuario '{$username}' no encontrado.\n"; return; }
         } else {
             $user  = $this->getUserByEmail($email);
             $label = "'{$email}'";

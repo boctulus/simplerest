@@ -16,8 +16,7 @@ class BuildCommand extends BaseCommand
             'php com pack build',
             'php com pack build --dry-run',
             'php com pack build --skip-verification',
-            'php com pack build --to=D:\\custom\\dist',
-            'php com pack --to=D:\\custom\\dist --dry-run',
+            'php com pack build --source=D:\\custom\\src --dest=D:\\custom\\dist',
         ];
     }
 
@@ -25,12 +24,11 @@ class BuildCommand extends BaseCommand
     {
         return [
             'required' => [],
-            'optional' => ['source', 'dest', 'to'],
+            'optional' => ['source', 'dest'],
             'flags'    => ['skip-verification', 'skip-composer-install', 'dry-run'],
             'options'  => [
                 'source'                => ['describe' => 'Directorio fuente'],
                 'dest'                  => ['describe' => 'Directorio destino'],
-                'to'                    => ['describe' => 'Directorio destino (alias de --dest)'],
                 'skip-verification'     => ['describe' => 'Omitir la verificación en destino'],
                 'skip-composer-install' => ['describe' => 'Omitir composer install en destino'],
                 'dry-run'               => ['describe' => 'Mostrar qué se haría sin ejecutar nada'],
@@ -41,7 +39,7 @@ class BuildCommand extends BaseCommand
     public function execute(array $parsed): void
     {
         $source              = $this->opt($parsed, 'source', $this->defaultSource);
-        $dest                = $this->opt($parsed, 'to', $this->opt($parsed, 'dest', $this->defaultDest));
+        $dest                = $this->opt($parsed, 'dest',   $this->defaultDest);
         $skipVerification    = $this->opt($parsed, 'skip_verification', false);
         $skipComposerInstall = $this->opt($parsed, 'skip_composer_install', false);
         $dryRun              = $this->opt($parsed, 'dry_run', false);

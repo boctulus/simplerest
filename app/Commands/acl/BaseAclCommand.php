@@ -6,7 +6,6 @@ use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Security\Compiler\EffectivePermissionCompiler;
 use Boctulus\Simplerest\Core\Security\Domain\AclContext;
 use Boctulus\Simplerest\Core\Security\Domain\CapabilityTypeResolver;
-use Boctulus\Simplerest\Core\Libs\DBRels;
 
 abstract class BaseAclCommand extends BaseCommand
 {
