@@ -66,3 +66,4 @@
 [2026-06-11 11:20:54]	1.0.0	Automatic update
 [2026-06-12 13:33:25]	1.0.0	El fix src/framework/Api/ApiController.php : el check de ownership del DELETE leía [0]['belongs_to'] hardcodeado
 [2026-06-14 12:13:53]	1.0.0	Automatic update
+[2026-06-14 15:45:48]	1.0.0	Automatic update
