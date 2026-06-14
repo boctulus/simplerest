@@ -37,8 +37,8 @@ description: Reference for all 21 global helper files in SimpleRest — availabl
 
 ### Debug
 ```php
-dd($var);       // dump + die
-dump($var);     // dump only
+dd($var);       	// dump
+dd($var, $title);   // dump
 ```
 
 ### Auth & ACL
@@ -103,7 +103,7 @@ render('partials.header');
 |--------|-----------|---------|
 | `url()` | Generates full URL | Same |
 | `response()` | Singleton instance | Factory |
-| `dd()` | Same | Same (but SimpleRest adds formatting) |
+| `dd()` | Same | Similar (but SimpleRest adds formatting and do not die) |
 | `config()` | Same syntax | Same |
 | `env()` | Same | Same |
 | `view()` | Layout-based | Blade-based |
