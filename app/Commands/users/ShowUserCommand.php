@@ -14,6 +14,7 @@ class ShowUserCommand extends BaseUsersCommand
             'php com users show-user user@example.com',
             'php com users show-user --email=user@example.com',
             'php com users show-user --uid=331',
+            'php com users show-user --username=boctulus',
         ];
     }
 
@@ -21,28 +22,33 @@ class ShowUserCommand extends BaseUsersCommand
     {
         return [
             'required' => [],
-            'optional' => ['email', 'uid'],
+            'optional' => ['email', 'uid', 'username'],
             'flags'    => [],
             'options'  => [
-                'email' => ['describe' => 'Email (o primer arg posicional)'],
-                'uid'   => ['describe' => 'ID del usuario'],
+                'email'    => ['describe' => 'Email (o primer arg posicional)'],
+                'uid'      => ['describe' => 'ID del usuario'],
+                'username' => ['describe' => 'Username del usuario (alternativa a --email o --uid)'],
             ],
         ];
     }
 
     public function execute(array $parsed): void
     {
-        $uid   = $this->opt($parsed, 'uid');
-        $email = $this->opt($parsed, 'email') ?? ($parsed['_positional'][0] ?? null);
+        $uid      = $this->opt($parsed, 'uid');
+        $email    = $this->opt($parsed, 'email') ?? ($parsed['_positional'][0] ?? null);
+        $username = $this->opt($parsed, 'username');
 
-        if (!$uid && !$email) {
-            echo "✗ Debes proporcionar --email o --uid.\n";
+        if (!$uid && !$email && !$username) {
+            echo "✗ Debes proporcionar --email, --uid o --username.\n";
             return;
         }
 
         if ($uid) {
             $user = $this->getUserById((int) $uid);
             if (!$user) { echo "✗ Usuario con ID '{$uid}' no encontrado.\n"; return; }
+        } elseif ($username) {
+            $user = $this->getUserByUsername($username);
+            if (!$user) { echo "✗ Usuario '{$username}' no encontrado.\n"; return; }
         } else {
             $user = $this->getUserByEmail($email);
             if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }

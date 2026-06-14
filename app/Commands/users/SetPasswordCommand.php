@@ -12,6 +12,7 @@ class SetPasswordCommand extends BaseUsersCommand
         $this->examples    = [
             'php com users set-password --email=user@example.com --password=newPass123',
             'php com users set-password --uid=331 --password=NuevaClave123',
+            'php com users set-password --username=boctulus --password=zzz123',
         ];
     }
 
@@ -19,11 +20,12 @@ class SetPasswordCommand extends BaseUsersCommand
     {
         return [
             'required' => ['password'],
-            'optional' => ['email', 'uid'],
+            'optional' => ['email', 'uid', 'username'],
             'flags'    => [],
             'options'  => [
-                'email'    => ['describe' => 'Email del usuario (alternativa a --uid)'],
-                'uid'      => ['describe' => 'ID del usuario (alternativa a --email)'],
+                'email'    => ['describe' => 'Email del usuario (alternativa a --uid o --username)'],
+                'uid'      => ['describe' => 'ID del usuario (alternativa a --email o --username)'],
+                'username' => ['describe' => 'Username del usuario (alternativa a --email o --uid)'],
                 'password' => ['describe' => 'Nueva contraseña'],
             ],
         ];
@@ -31,12 +33,13 @@ class SetPasswordCommand extends BaseUsersCommand
 
     public function execute(array $parsed): void
     {
-        $uid     = $this->opt($parsed, 'uid');
-        $email   = $this->opt($parsed, 'email');
-        $newPass = $this->opt($parsed, 'password');
+        $uid      = $this->opt($parsed, 'uid');
+        $email    = $this->opt($parsed, 'email');
+        $username = $this->opt($parsed, 'username');
+        $newPass  = $this->opt($parsed, 'password');
 
-        if (!$uid && !$email) {
-            echo "✗ Debes proporcionar --email o --uid.\n";
+        if (!$uid && !$email && !$username) {
+            echo "✗ Debes proporcionar --email, --uid o --username.\n";
             return;
         }
 
@@ -44,6 +47,10 @@ class SetPasswordCommand extends BaseUsersCommand
             $user = $this->getUserById((int) $uid);
             if (!$user) { echo "✗ Usuario con ID '{$uid}' no encontrado.\n"; return; }
             $label = "ID {$uid}";
+        } elseif ($username) {
+            $user = $this->getUserByUsername($username);
+            if (!$user) { echo "✗ Usuario '{$username}' no encontrado.\n"; return; }
+            $label = "'{$username}'";
         } else {
             $user = $this->getUserByEmail($email);
             if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
