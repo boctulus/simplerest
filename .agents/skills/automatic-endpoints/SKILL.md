@@ -78,6 +78,8 @@ GET /api/v1/products?pageSize=20&page=2
 GET /api/v1/products?limit=10&offset=40
 ```
 
+> **Configurable:** Los nombres de los parámetros de paginación se definen en `config/config.php` → `paginator.params`. Por ejemplo, si el proyecto mapea `pageSize` → `size` y `page` → `page_num`, los endpoints esperarán `?size=20&page_num=2` en vez de los valores por defecto. También se configura `max_limit`, `default_limit` y el `formatter` de la respuesta.
+
 ## Sorting
 
 ```
