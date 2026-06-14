@@ -1,7 +1,6 @@
 <?php
 
 use Boctulus\Simplerest\Core\Exceptions\SqlException;
-use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\DBRels;
@@ -80,7 +79,151 @@ function get_id_name($table_name, $tenant_id = null){
     return DBRels::getPrimaryKey($table_name, $tenant_id);
 }
 
+function get_rel_type(string $table_name, string $related_table_name, ?string $tenant_id = null){
+    return DBRels::getRelType($table_name, $related_table_name, $tenant_id);
+}
+
+function is_mul_rel(string $table_name, string $related_table_name, ?string $tenant_id = null){
+    return DBRels::isMulRel($table_name, $related_table_name, $tenant_id);
+}
+
+function get_pivot(array $tables, ?string $tenant_id = null){
+    return DBRels::getPivot($tables, $tenant_id);
+}
+
+function get_default_connection(){
+    return DB::getDefaultConnection();
+}
+
+function get_default_connection_id(){
+    return DB::getDefaultConnectionId();
+}
+
 function tb_prefix() {
     return DB::getTablePrefixForCurrent();
 }
 
+function get_model_namespace($tenant_id = null){
+    if ($tenant_id == null){
+        $tenant_id = DB::getCurrentConnectionId(true);
+    }   
+
+    if ($tenant_id == Config::get()['db_connection_default']){
+        $extra = Config::get()['db_connection_default'] . '\\';
+    } else {
+        $group = DB::getTenantGroupName($tenant_id);
+
+        if ($group){
+            $extra = $group . '\\'; 
+        } else {
+            $extra = '';
+        }
+    }
+
+    return '\\'.Config::get()['namespace'].'\\Models\\' . $extra;
+}
+
+function get_model_instance(string $model_name, $fetch_mode = 'ASSOC', bool $reuse = false){
+    static $instance;
+
+    if ($reuse && isset($instance[$model_name]) && !empty($instance[$model_name])){
+        return $instance[$model_name];
+    }
+
+    if (!Strings::startsWith(Config::get()['namespace'] . '\\' , $model_name)){
+        $model = get_model_namespace() . $model_name;
+    } else {
+        $model = $model_name;
+    }
+    
+    $instance[$model_name] = (new $model(true))->setFetchMode($fetch_mode);
+    DB::setModelInstance($instance[$model_name]);
+
+    return $instance[$model_name];
+}
+
+function get_model_instance_by_table(string $table_name, $fetch_mode = 'ASSOC', bool $reuse = false){
+    return get_model_instance(
+        get_model_name($table_name)
+    );
+}
+
+function get_api_name($resource_name, $api_ver = null){
+    global $api_version;
+
+    if ($api_ver !== null){
+        $api_version = 'v'.$api_ver;
+    }
+
+    if (!Strings::startsWith('\\'. Config::get('namespace') . '\\',$resource_name)){
+        $api = get_api_namespace($resource_name);
+    } else {
+        $api = $resource_name;
+    }
+
+    return $api;
+}
+
+/*
+    Miscelaneous helpers
+*/
+
+function sql_formatter(string $sql, ...$options){
+    return Model::sqlFormatter($sql, ...$options);
+}
+
+/*
+    Lee linea por línea y ejecuta sentencias SQL
+*/
+function process_sql_file(string $path, string $delimeter = ';', bool $stop_if_error = false){
+    $file = file_get_contents($path);
+    
+    $sentences = explode($delimeter, $file);
+        
+    foreach ($sentences as $sentence){
+        $sentence = trim($sentence);
+
+        if ($sentence == ''){
+            continue;
+        }
+
+        StdOut::print('SENTENCE : ' . $sentence);
+
+        try {
+            $ok = DB::statement($sentence);
+        } catch (SqlException $e){
+            dd($e->getMessage(), 'Sql Exception');
+
+            if ($stop_if_error){
+                exit(1);
+            }
+        }
+    }    
+
+    function enqueue_data($data, $category = null) {
+        return DB::enqueue($data, $category);
+    }
+    
+    function deque_data($category = null, bool $full_row = false) {
+        return DB::deque($category, $full_row);
+    }     
+}
+
+function log_queries()
+{
+    $logFilePath = LOGS_PATH . 'mysql.txt';
+
+    try {
+        $conn = DB::getConnection();
+        
+        // Habilitar el registro general de consultas
+        $conn->exec("SET GLOBAL general_log = 1");
+        
+        // Establecer la ubicación del archivo de registro general de consultas
+        $conn->exec("SET GLOBAL general_log_file = '$logFilePath'");
+        
+        dd("General query log enabled successfully.");
+    } catch (\PDOException $e) {
+        dd("Error: " . $e->getMessage());
+    }
+}

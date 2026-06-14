@@ -73,6 +73,14 @@ if (!defined('SCHEMA_PATH')){
 if (!defined('DAO_PATH'))
     define('DAO_PATH', APP_PATH . 'DAO' . DIRECTORY_SEPARATOR);
 
+if (!defined('MODULES_PATH')){
+    define('MODULES_PATH', APP_PATH . 'Modules' . DIRECTORY_SEPARATOR);
+}
+
+if (!defined('PACKAGES_PATH')){
+    define('PACKAGES_PATH', APP_PATH . 'Packages' . DIRECTORY_SEPARATOR);
+}
+
 if (!defined('CRONOS_PATH')){
     define('CRONOS_PATH', APP_PATH . 'Background/Cronjobs' . DIRECTORY_SEPARATOR);
 }
