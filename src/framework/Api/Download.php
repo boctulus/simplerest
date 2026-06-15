@@ -53,7 +53,7 @@ class Download extends ResourceController
             }
         }
 
-        $_get[] = ['uuid', $id];   
+        $_get[] = [DB::table($this->table_name)->getIdName(), $id];
 
         $row = DB::table($this->table_name)->select(['filename_as_stored'])->where($_get)->first();
 

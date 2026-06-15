@@ -45,7 +45,7 @@ class Files extends ApiController
         $belongs_to = null;
 
         $uploaded = [];
-        foreach ($files as list($filename_ori, $filename_as_stored)){           
+        foreach ($files as ['ori_name' => $filename_ori, 'as_stored' => $filename_as_stored]){
             if (Factory::acl()->hasSpecialPermission('transfer')){ 
                 if (isset($data['belongs_to']))
                     $belongs_to = $data['belongs_to'];    
@@ -66,7 +66,7 @@ class Files extends ApiController
             $uploaded[] = [ 
                             'filename' => $filename_ori,
                             'uuid' => $id,
-                            'link' => base_url() . 'get' . DIRECTORY_SEPARATOR . $id
+                            'link' => base_url() . '/get/' . $id
             ];
 
             $this->webhook('create', $data, $id);
@@ -102,7 +102,7 @@ class Files extends ApiController
             ->fill(['deleted_at']); 
 
             $owned = $instance->inSchema(['belongs_to']);
-            $row   = $instance->where(['uuid', $id])->first();
+            $row   = $instance->where([$instance->getIdName(), $id])->first();
             
             if (empty($row)){
                 Factory::response()->code(404)->error("File with id=$id does not exist");
