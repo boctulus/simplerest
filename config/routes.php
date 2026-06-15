@@ -1,21 +1,20 @@
 <?php
 
-use Boctulus\FriendlyposWeb\Controllers\OpenFacturaController;
-use Boctulus\Simplerest\Controllers\DumbController;
-use Boctulus\Simplerest\Core\Handlers\ApiHandler;
+
 use Boctulus\Simplerest\Core\Libs\Logger;
 use Boctulus\Simplerest\Core\Libs\Mail;
 use Boctulus\Simplerest\Core\Libs\SiteMap;
 use Boctulus\Simplerest\Core\Libs\System;
-use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\WebRouter;
-use Boctulus\Simplerest\Libs\Debug;
+
 use Boctulus\Simplerest\Modules\TaxCalc\TaxCalc;
 use Boctulus\Simplerest\Modules\Typeform\Typeform;
 
 
 $route = WebRouter::getInstance();
 
+require_once __DIR__ . '/routes/files.php';
+require_once __DIR__ . '/routes/auth.php';
 
 WebRouter::get('sitemap.xml', function(){
 	$sitemap = new SiteMap();
