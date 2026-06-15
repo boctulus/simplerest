@@ -16,9 +16,10 @@ use Boctulus\Simplerest\Modules\Typeform\Typeform;
 
 $route = WebRouter::getInstance();
 
+
 WebRouter::get('sitemap.xml', function(){
 	$sitemap = new SiteMap();
-	$sitemap->fromRouter(['sitemap.xml', 'admin/*']);	
+	$sitemap->fromRouter(['sitemap.xml', 'api/v1/*', 'auth/*', 'admin/*', 'system/*']);	
 	$sitemap->excludePlaceholdedRoutes(); //
 	$xml     = $sitemap->generateXML();
 
@@ -26,8 +27,16 @@ WebRouter::get('sitemap.xml', function(){
 	return $xml;
 });
 
-WebRouter::any('health', function () {
+WebRouter::any('system/health', function () {
     return ['ok' => true];
+});
+
+WebRouter::get('system/mem', function(){
+	dd(System::getMemoryLimit(), 'Memory limit');
+	dd(System::getMemoryUsage(), 'Memory usage');
+	dd(System::getMemoryUsage(true), 'Memory usage (real)');
+	dd(System::getMemoryPeakUsage(), 'Memory peak usage');
+	dd(System::getMemoryPeakUsage(true), 'Memory peak usage (real)');
 });
 
 // ...
