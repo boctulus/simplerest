@@ -543,7 +543,7 @@ STEP 1: Create module
 
 TYPE: COMMAND
 
-COMMAND: node com dev make-module --name={module}
+COMMAND: php com dev make-module --name={module}
 
 ON_FAILURE:
 → STOP

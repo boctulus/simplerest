@@ -1,6 +1,6 @@
 # Skill Index — Master Routing Guide
 
-Optimized for LLM invocation decisions. Maps 61 skills across categories with dependency trees and anti-false-positive rules.
+Optimized for LLM invocation decisions. Maps 64 skills across categories with dependency trees and anti-false-positive rules.
 
 **Note:** `antiTriggers` frontmatter is missing from all skills. Warnings are flagged per skill below but no automated inference was applied.
 
@@ -26,6 +26,7 @@ User request → What kind of task is this?
 ├─ "Work with API/endpoints"
 │   ├─ New API endpoint?             → create-api-endpoint-guide
 │   ├─ Zero-config CRUD?             → automatic-endpoints
+│   ├─ Trash/bulk/files/folders?     → special-rest-endpoints
 │   ├─ Nested CRUD?                  → subresources
 │   ├─ Filter by related table?      → related-table-filter
 │   ├─ Define routes?                → routing
@@ -41,7 +42,8 @@ User request → What kind of task is this?
 │   ├─ Validate data?                → validation-rules
 │   ├─ Multi-tenant?                 → multi-tenant-config
 │   ├─ EventBus / hooks?             → eventbus-hooks
-│   └─ Cache queries/files?          → caching
+│   ├─ Cache queries/files?          → caching
+│   └─ Regenerate schemas from DB?   → schema-handedit-guard
 │
 ├─ "Infrastructure / Security / Deploy"
 │   ├─ Configure ACL?                → acl-config
@@ -121,6 +123,7 @@ User request → What kind of task is this?
 | `related-table-filter` | Enabling filtering by related table fields through `$connect_to` and dot-notation | No related table filtering needed |
 | `request-response` | Using PSR-7-style Request (Singleton) and Response (Singleton + immutable) classes in controllers | Already using middleware for response transformation |
 | `routing` | Defining HTTP or CLI routes via WebRouter, CliRouter, FrontController, or package/module routing | Routes are auto-handled by `automatic-endpoints` |
+| `special-rest-endpoints` | Working with TrashCan (`/api/v1/trash_can`), Collections (`/api/v1/collections`), Files (`/api/v1/files`, needs explicit routes) or Folders (`/api/v1/folders`) — recycle bin, bulk ops, uploads, folder ACL | Plain per-entity CRUD (use `automatic-endpoints`) |
 | `subresources` | Implementing nested CRUD endpoints for related resources automatically inferred from schema relationships | Flat CRUD without nesting (use `automatic-endpoints` or `create-api-endpoint-guide`) |
 
 ## 🟠 DB — Database & Storage
@@ -132,6 +135,7 @@ User request → What kind of task is this?
 | `migration-lifecycle` | Creating, running, rolling back, or managing migrations in modules/packages | Schema-only changes without structural migration (use `schemas`) |
 | `multi-tenant-config` | Configuring multiple database connections, table prefixes, schema directories, or multi-tenant setups | Single-tenant applications with one connection |
 | `query-builder` | Building queries using SimpleRest Query Builder (all methods, Laravel differences, pitfalls) | Need raw SQL / PDO directly (but prefer QB when possible) |
+| `schema-handedit-guard` | Preventing hand-editing of auto-generated schema files; enforcing regeneration from database | Already covered by `anti-hallucination-project-guard` (its parent dependency) |
 | `schemas` | Creating, editing schemas as foundation for auto-endpoints, AutoJoins, validation, and relationships | Need to write raw SQL migrations (use `migration-lifecycle`) |
 | `validation-rules` | Using the Validator class, schema-based validation, or i18n error messages | Already covered by `schemas` which auto-generates validation rules |
 
@@ -220,7 +224,7 @@ release-deploy-protocol
 skill-index-maintainer
 └── skill-reviewer-protocol
     ├── anti-hallucination-project-guard
-    └── code-naming-conventions-contract   ← not in .agent/skills/ (unresolved)
+    └── code-naming-conventions-contract
 ```
 
 ### skill-conflict-resolution-protocol (COMPOSABLE)
@@ -233,7 +237,7 @@ skill-conflict-resolution-protocol
 ```
 skill-reviewer-protocol
 ├── anti-hallucination-project-guard
-└── code-naming-conventions-contract   ← not in .agent/skills/ (unresolved)
+└── code-naming-conventions-contract
 ```
 
 ### adaptive-datagrid-contract (COMPOSABLE)
@@ -311,6 +315,7 @@ request-response
 routing
 schemas
 security-hardening
+special-rest-endpoints
 skill-maker
 standalone-script
 subresources
@@ -336,6 +341,7 @@ fresh-research-protocol
 incident-docs-protocol
 production-deployment-protocol
 related-table-filter
+schema-handedit-guard
 skill-conflict-resolution-protocol
 skill-index-maintainer
 skill-reviewer-protocol
@@ -365,7 +371,6 @@ The following skills are referenced in `REQUIRES` sections but have no SKILL.md 
 - `context-sanitizer-contract` — required by `skill-orchestrator`, `incident-docs-protocol`
 - `docker-network-reliability-guard` — required by `release-deploy-protocol`
 - `view-standards-contract` — required by `adaptive-datagrid-contract`
-- `code-naming-conventions-contract` (SKILL.md exists but listed as unresolved by dependency-tree — verify manually)
 
 These act as **dead references** until their SKILL.md files are created.
 

@@ -90,8 +90,6 @@ class Collections extends ApiController
     
     protected function modify($id = NULL, bool $put_mode = false)
     {
-        exit; 
-
         if ($id == null)
             Factory::response()->code(400)->error("Missing id");
 
@@ -147,7 +145,7 @@ class Collections extends ApiController
                     $instance->where([$instance->belongsTo() => auth()->uid()]);
                 }
 
-                $validado = (new Validator())->setRequired($put_mode)->validate($instance->getRules(), $data);
+                $validado = (new Validator())->setRequired($put_mode)->validate($data, $instance->getRules());
                 if ($validado !== true){
                     error(trans('Data validation error'), 400, $validado);
                 }   
