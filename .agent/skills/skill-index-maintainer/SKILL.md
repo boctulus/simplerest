@@ -41,7 +41,7 @@ STEP 2: Collect skill information
 
 TYPE: COMMAND
 
-COMMAND: node com skill dependency-tree --agent=agent
+COMMAND: php com skill dependency-tree --agent=agent
 
 ON_FAILURE:
 → FALLBACK: Infer dependencies from SKILL.md references in `.agent/skills/*/SKILL.md`
@@ -85,7 +85,7 @@ STEP 5: Build or update index.md
 
 TYPE: ACTION
 
-ACTION: Write `.agent/skills/index.md` using the canonical structure: (1) Header + Purpose, (2) Quick Decision Tree, (3) Tables by category (UI, API, DB, Infrastructure, Print, Docs, CLI), (4) Workflow Dependency Trees in ASCII, (5) Standalone Skills list alphabetically, (6) Anti-False-Positive Rules (5 rules). For partial updates, only modify affected sections. For dependency tree regeneration, run `node com skill dependency-tree --agent=agent` and compare against current ASCII trees, rewriting changed trees with proper `├──`, `│`, `└──` indentation (4 spaces per level). For full audit, verify all checklist items
+ACTION: Write `.agent/skills/index.md` using the canonical structure: (1) Header + Purpose, (2) Quick Decision Tree, (3) Tables by category (UI, API, DB, Infrastructure, Print, Docs, CLI), (4) Workflow Dependency Trees in ASCII, (5) Standalone Skills list alphabetically, (6) Anti-False-Positive Rules (5 rules). For partial updates, only modify affected sections. For dependency tree regeneration, run `php com skill dependency-tree --agent=agent` and compare against current ASCII trees, rewriting changed trees with proper `├──`, `│`, `└──` indentation (4 spaces per level). For full audit, verify all checklist items
 
 ON_FAILURE:
 → STOP

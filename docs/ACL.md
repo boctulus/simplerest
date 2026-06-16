@@ -1063,6 +1063,34 @@ Ej: <pseudocódigo>
     }
 
 
+### Estado de Folders en este proyecto (consorcios) — 2026-06-16
+
+La sección anterior describe el mecanismo genérico de SimpleRest. En ESTE proyecto el estado real es:
+
+- **`/api/v1/folders` está habilitado.** El controller es `app/Controllers/Api/Folders.php`
+  (CRUD estándar). Lo **auto-rutea** `ApiHandler` (`src/framework/Handlers/ApiHandler.php`);
+  NO requiere entradas en `config/routes.php`. Tablas: `folders`, `folder_permissions`,
+  `folder_other_permissions` (existen en DB; la tabla `folders` no tiene `deleted_at` → sin soft-delete).
+- **Endpoints de permisos por carpeta habilitados:** además de `Folders.php` ya existen los
+  controllers `app/Controllers/Api/FolderPermissions.php` y `FolderOtherPermissions.php`, por lo que
+  `/api/v1/folder_permissions` y `/api/v1/folder_other_permissions` responden CRUD (auto-ruteados,
+  sin entradas en `config/routes.php`). Recordar: en este framework el schema por sí solo NO genera
+  endpoint — `ApiHandler` exige la clase controller física.
+  - `folder_permissions` (permisos por usuario): `folder_id`, `belongs_to`, `access_to`, `r`, `w`, `created_at`.
+  - `folder_other_permissions` (permisos públicos/guest): `folder_id`, `belongs_to`, `guest`, `r`, `w`, `created_at`.
+  - Ninguna de las dos (ni `folders`) tiene `deleted_at` → los 3 controllers usan `$soft_delete = false`
+    (DELETE = borrado real). Alternativa: seguir gestionando las filas por SQL o desde un hook
+    (ver pseudocódigo de `onGettingFolderBeforeCheck` arriba).
+- En el código actual `$folder_field` se declara como `static protected $folder_field` y el
+  controller base es `ApiController` (no `MyApiController`). El ejemplo `class Products extends
+  MyApiController` de arriba es ilustrativo del framework upstream.
+- **Permisos:** `superadmin` ya tiene los special permissions `read_all_folders` /
+  `write_all_folders` (`config/acl.php`). Para que `property_admin` gestione sus carpetas, agregar
+  `->addResourcePermissions('folders', ['read_all','write'])` en `config/acl.php`.
+
+Ver el skill `special-rest-endpoints` para Folders, Collections, TrashCan y Files en conjunto.
+
+
 # Compiled effective permissions (v4)
 
 A partir de v4 el ACL produce un mapa de permisos efectivos compilados al construir el snapshot. La evaluación en runtime es O(1):
