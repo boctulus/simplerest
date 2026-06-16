@@ -12,7 +12,7 @@ class Options
      * @return mixed The value of the option, deserialized if necessary.
      */
     static function getOption(string $key) {
-        $value = table('options')
+        $value = DB::table('options')
             ->where(['the_key' => $key])
             ->value('the_val');
 
@@ -35,19 +35,25 @@ class Options
         // Serialize the value
         $serializedVal = serialize($val);
 
+        // DB::table() (no el helper table()) resuelve el schema del modelo, que autollena
+        // created_at. Con table() el schema no se cargaba y el INSERT fallaba con SQLSTATE
+        // 1364 (created_at NOT NULL sin default) → la fila nunca se creaba. updated_at se
+        // setea explícito (el schema solo autollena created_at en el alta).
+        $now = date('Y-m-d H:i:s');
+
         if (get_option($key) === false) {
-            return table('options')
-                ->noValidation()
+            return DB::table('options')                
                 ->insert([
-                    'the_key' => $key,
-                    'the_val' => $serializedVal
+                    'the_key'    => $key,
+                    'the_val'    => $serializedVal,
+                    'updated_at' => $now
                 ]);
         } else {
-            return table('options')
-                ->noValidation()
+            return DB::table('options')                
                 ->where(['the_key' => $key])
                 ->update([
-                    'the_val' => $serializedVal
+                    'the_val'    => $serializedVal,
+                    'updated_at' => $now
                 ]);
         }
     }

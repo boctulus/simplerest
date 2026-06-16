@@ -21,7 +21,7 @@ If conditions are NOT met:
 
 ### STEP 1: Pre-Execution Audit
 TYPE: COMMAND
-COMMAND: node com skill audit --agent=agent
+COMMAND: php com skill audit --agent=agent
 ON_FAILURE:
 → HALT
 → LOG: "Skill audit command failed. Check CLI environment or permissions."
@@ -70,7 +70,7 @@ ON_FAILURE:
 
 ### STEP 4: Post-Fix Validation
 TYPE: COMMAND
-COMMAND: node com skill audit --agent=agent
+COMMAND: php com skill audit --agent=agent
 CHECK:
 - Output matches: `✅ All skills passed structural validation`
 - Zero encoding warnings
@@ -82,11 +82,11 @@ ON_FAILURE:
 ---
 
 ## Tooling
-Use `node com` commands as primary automation layer. Fallback to manual parsing if CLI unavailable:
+Use `php com` commands as primary automation layer. Fallback to manual parsing if CLI unavailable:
 ```bash
-node com skill list --detailed
-node com skill audit --agent=agent
-node com skill dependency-tree --agent=agent
+php com skill list --detailed
+php com skill audit --agent=agent
+php com skill dependency-tree --agent=agent
 ```
 ⚠️ Tooling complements but does not replace structural validation logic.
 

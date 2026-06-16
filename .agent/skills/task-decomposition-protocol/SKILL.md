@@ -1,6 +1,6 @@
 ---
 name: task-decomposition-protocol
-description: Before executing any complex task, evaluate if each step fits in a standard context window. If not, subdivide into intermediate steps. Every approved plan MUST be persisted in docs/to-do/ using `node com todo create`.
+description: Before executing any complex task, evaluate if each step fits in a standard context window. If not, subdivide into intermediate steps. Every approved plan MUST be persisted in docs/to-do/ using `php com todo create`.
 ---
 
 # SKILL: Task Decomposition Protocol
@@ -99,7 +99,7 @@ Wait for user approval. Do NOT start executing until approved.
 After user approves, persist IMMEDIATELY using:
 
 ```bash
-node com todo create <kebab-case-task-name> \
+php com todo create <kebab-case-task-name> \
   --title="<Task Title>" \
   --complexity=high \
   --current-step=1 \
@@ -109,7 +109,7 @@ node com todo create <kebab-case-task-name> \
 
 Then add each step as content in the created file.
 
-**NEVER create the file manually.** Always use `node com todo create`.
+**NEVER create the file manually.** Always use `php com todo create`.
 
 If `docs/to-do/` does not exist yet → it will be created by the command.
 
@@ -121,7 +121,7 @@ If `docs/to-do/` does not exist yet → it will be created by the command.
 * Mark each step done as it completes using:
 
 ```bash
-node com todo set-metadata --file=<file> --current-step=<N+1>
+php com todo set-metadata --file=<file> --current-step=<N+1>
 ```
 
 * If a step fails → stop, report, do NOT continue to next step
@@ -150,7 +150,7 @@ node com todo set-metadata --file=<file> --current-step=<N+1>
 
 * Works alongside `post-task-verification-strict` — verify each step after completion
 * Works alongside `anti-hallucination-project-guard` — validate files exist before referencing them in steps
-* Uses `node com todo create` (CLAUDE.md standard)
+* Uses `php com todo create` (CLAUDE.md standard)
 
 ---
 
@@ -162,5 +162,5 @@ node com todo set-metadata --file=<file> --current-step=<N+1>
 | Decompose   | Break into atomic steps, each completable in one turn   |
 | Validate    | Each step passes size check before presenting           |
 | Present     | Show plan to user, wait for approval                    |
-| Persist     | `node com todo create` — MANDATORY for COMPLEX tasks    |
+| Persist     | `php com todo create` — MANDATORY for COMPLEX tasks    |
 | Execute     | One step at a time, mark progress after each            |

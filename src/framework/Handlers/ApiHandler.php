@@ -32,13 +32,27 @@ class ApiHandler
             $res->error(Msg::INVALID_FORMAT_API_VERSION['text']);
         }
 
-        $controller = $params[2 - $sub] ?? NULL;
+        $controller_raw = $params[2 - $sub] ?? NULL;
 
-        // CamelCase to came_case
-        $controller = implode('',array_map('ucfirst',explode('_',$controller)));
+        // snake_case -> PascalCase
+        $controller = implode('', array_map('ucfirst', explode('_', (string) $controller_raw)));
 
-        if ($controller == 'trash_can' || $controller == 'trashCan' || $controller == 'TrashCan' || $controller == 'collections' || $controller == 'Collections') {
-            $namespace = namespace_url() . '\\Core\\Api\\';
+        /*
+            Controllers de framework (viven en \Core\Api\ en vez de \Controllers\api\).
+            Detección robusta: normaliza el slug original a minúsculas y sin guiones bajos,
+            así 'trashcan', 'trash_can', 'TrashCan' y 'trashCan' resuelven todos a TrashCan
+            (antes solo matcheaba el slug ya transformado, p. ej. 'trashcan' daba 404).
+        */
+        $framework_controllers = [
+            'trashcan'    => 'TrashCan',
+            'collections' => 'Collections',
+        ];
+
+        $norm = strtolower(str_replace('_', '', (string) $controller_raw));
+
+        if (isset($framework_controllers[$norm])) {
+            $namespace  = namespace_url() . '\\Core\\Api\\';
+            $controller = $framework_controllers[$norm];
         } else {
             $namespace = namespace_url() . '\\Controllers\\api\\';
         }

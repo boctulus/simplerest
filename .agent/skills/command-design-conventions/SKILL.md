@@ -3,7 +3,7 @@ name: command-design-conventions
 description: Defines semantic rules and safety constraints for designing CLI-style commands, ensuring consistency between read, query, and destructive operations.
 ---
 
-These principles applies for Command Line Interface (CLI) of whatever system ("node com", "php com", etc).
+These principles applies for Command Line Interface (CLI) of whatever system ("php com", "php com", etc).
 
 
 ## Command Design Principles
