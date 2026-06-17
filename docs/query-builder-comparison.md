@@ -3,6 +3,8 @@
 > **Date:** 2026-05-26
 > **Scope:** SimpleRest's custom Query Builder (QueryBuilderTrait + DB + Schema) vs Laravel's `illuminate/database` Query Builder
 
+Note: this file was AI-generated
+
 ---
 
 ## 1. Feature Coverage

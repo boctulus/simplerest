@@ -1,6 +1,6 @@
 # Índice de Documentación — SimpleRest Framework
 
-**Framework PHP modular,高性能, zero-magic** | v1.0.0  
+**Framework PHP modular** | v1.0.0  
 **Autor**: Pablo Bozzolo (boctulus) — Software Architect
 
 ---

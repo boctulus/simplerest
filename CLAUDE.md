@@ -102,7 +102,7 @@ APP_URL=<value from .env>
 
 Read:
 ```
-docs/core-directives.md
+docs/Core-Directives.md
 ```
 
 ---
