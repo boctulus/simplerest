@@ -79,7 +79,6 @@ When writing code, adhere to these principles:
 
 ### CODE QUALITY STANDARDS
 
-- ✅ Prioritize simplicity and readability over clever solutions
 - ✅ Start with minimal functionality and verify it works before adding complexity
 - ✅ Test your code frequently with realistic inputs and validate outputs
 - ✅ Create testing environments for components that are difficult to validate directly
@@ -129,7 +128,6 @@ When writing code, adhere to these principles:
 - Performance metric tracking (response times, Firebase sync speed)
 - User feedback collection and analysis
 - System health verification (Redis, Typesense connectivity)
-- Firebase ↔ Typesense synchronization verification
 
 ## LOW-CODE FRAMEWORK OPTIMIZATION
 
@@ -159,22 +157,7 @@ When writing code, adhere to these principles:
 ### File Organization
 
 - Scripts go in `scripts/` (general), `scripts/tmp/` (temporary)
-- Testing scripts in `tests/` or `automation/` (Playwright)
+- Testing scripts in `tests/`
 - Documentation in appropriate `docs/` subdirectories
 - Temporary files never in project root
 
-### Technology Stack Compliance
-
-For specific coding conventions and technology stack requirements, refer to **CLAUDE.md**:
-
-- **Code Format Standards**:
-  - ES Modules (import/export), not require()
-  - Async/await patterns over callbacks
-  - Naming conventions: camelCase for variables, PascalCase for classes
-
-- **Database Architecture**:
-  - Firebase as source of truth
-  - Typesense read-only for search (unidirectional sync)
-  - Models manage synchronization automatically
-
-This approach ensures single source of truth for technical standards while core-directives.md focuses on development philosophy and methodologies.

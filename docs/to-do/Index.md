@@ -2,6 +2,8 @@
 
 > Consolidado desde `docs/_internal/to-do/`. Generado: 2026-05-26.
 
+This list may not be updated.
+
 ---
 
 ## 1. Core & Arquitectura
