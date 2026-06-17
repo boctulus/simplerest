@@ -5,7 +5,7 @@ SimpleRest permite la exposición automática de recursos (tablas de base de dat
 ## Arquitectura y Flujo de Trabajo
 
 1.  **Enrutamiento Dinámico**: El `FrontController` actúa como un "catch-all" para peticiones que no coinciden con rutas manuales. Utiliza el `ApiHandler` para interpretar URLs con el formato `/api/{version}/{recurso}`.
-2.  **Resolución de Controladores**: El sistema busca un controlador en `app/Controllers/api/` que coincida con el nombre del recurso (ej. `products` -> `ProductsController`). 
+2.  **Resolución de Controladores**: El sistema busca un controlador en `app/Controllers/Api/` que coincida con el nombre del recurso (ej. `products` -> `ProductsController`). 
 3.  **Controlador Base Inteligente**: Los controladores extienden `MyApiController` (y este a su vez a `ApiController` del core). El `ApiController` centraliza toda la lógica de CRUD.
 4.  **Descubrimiento de Modelos**: El controlador identifica automáticamente su modelo asociado basado en su propio nombre (ej. `ProductsController` -> `ProductsModel`), lo que le permite interactuar con la tabla `products` de forma inmediata.
 
@@ -30,4 +30,4 @@ Cada petición pasa por un sistema de **ACL (Access Control List)** granular:
 
 ## Notas Técnicas
 *   **Versioning**: El sistema está preparado para versionado de API (v1, v2, etc.) desde la estructura de directorios y herencia de clases.
-*   **Extensibilidad**: Se pueden sobreescribir métodos específicos en los controladores de `app/Controllers/api/` para personalizar el comportamiento por defecto sin romper la automatización.
+*   **Extensibilidad**: Se pueden sobreescribir métodos específicos en los controladores de `app/Controllers/Api/` para personalizar el comportamiento por defecto sin romper la automatización.
