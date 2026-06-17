@@ -26,7 +26,7 @@ Before **any** task:
 3. Read module / package / component `.md` docs
 
 Key locations:
-- `docs/login-credentials.md`
+- `docs/secrets/login-credentials.md`
 - `docs/issues/`
 
 ## Rule Priority (MANDATORY)
