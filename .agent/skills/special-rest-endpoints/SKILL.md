@@ -136,7 +136,7 @@ Two layers:
    to participate.
 
 ACL special permissions: `read_all_folders` / `write_all_folders` (superadmin has both in
-`config/acl.php`). To let `property_admin` manage folders, add
+`config/acl.php`). To let `condo_manager` manage folders, add
 `->addResourcePermissions('folders', ['read_all','write'])` in `config/acl.php`.
 
 > Permission rows can be managed via REST: `/api/v1/folder_permissions` (per-user grants) and

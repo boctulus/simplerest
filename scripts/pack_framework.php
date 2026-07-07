@@ -17,13 +17,13 @@ class SimpleRestPackager
     private string $sourceDir;
     private string $destDir;
     
-    // Base directories/files to exclude (merged with .cpignore if exists)
+    // Base directories/files to exclude (merged with .packignore if exists)
     private array $ignorePatterns = [];
 
-    // Include patterns that create exceptions to .cpignore (from .cpinclude)
+    // Include patterns that create exceptions to .packignore (from .packinclude)
     private array $includePatterns = [];
 
-    // Hardcoded exclusions that are ALWAYS applied regardless of .cpignore
+    // Hardcoded exclusions that are ALWAYS applied regardless of .packignore
     private array $defaultExclusions = [
         '.git',
         'vendor',
@@ -45,15 +45,15 @@ class SimpleRestPackager
     }
 
     /**
-     * Load ignore patterns from .cpignore and default exclusions
+     * Load ignore patterns from .packignore and default exclusions
      */
     private function loadIgnorePatterns(): void
     {
         $this->ignorePatterns = $this->defaultExclusions;
 
-        $cpIgnoreFile = $this->sourceDir . DIRECTORY_SEPARATOR . '.cpignore';
-        if (file_exists($cpIgnoreFile)) {
-            $lines = file($cpIgnoreFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $packignoreFile = $this->sourceDir . DIRECTORY_SEPARATOR . '.packignore';
+        if (file_exists($packignoreFile)) {
+            $lines = file($packignoreFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($lines as $line) {
                 $line = trim($line);
                 if (empty($line) || strpos($line, '#') === 0) {
@@ -61,14 +61,14 @@ class SimpleRestPackager
                 }
                 $this->ignorePatterns[] = $line;
             }
-            echo "Loaded " . count($lines) . " patterns from .cpignore\n";
+            echo "Loaded " . count($lines) . " patterns from .packignore\n";
         }
 
-        // Load include patterns from .cpinclude that create exceptions to .cpignore
-        $cpIncludeFile = $this->sourceDir . DIRECTORY_SEPARATOR . '.cpinclude';
+        // Load include patterns from .packinclude that create exceptions to .packignore
+        $packincludeFile = $this->sourceDir . DIRECTORY_SEPARATOR . '.packinclude';
         $this->includePatterns = []; // Initialize the include patterns array
-        if (file_exists($cpIncludeFile)) {
-            $lines = file($cpIncludeFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if (file_exists($packincludeFile)) {
+            $lines = file($packincludeFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($lines as $line) {
                 $line = trim($line);
                 if (empty($line) || strpos($line, '#') === 0) {
@@ -76,7 +76,7 @@ class SimpleRestPackager
                 }
                 $this->includePatterns[] = $line;
             }
-            echo "Loaded " . count($lines) . " patterns from .cpinclude\n";
+            echo "Loaded " . count($lines) . " patterns from .packinclude\n";
         }
     }
 
@@ -154,7 +154,7 @@ class SimpleRestPackager
         echo "  1. Limpiar directorio destino (preservando .git)\n";
         echo "  2. Validar directorio fuente\n";
         echo "  3. Crear estructura de directorios en destino\n";
-        echo "  4. Copiar contenido raíz (respetando .cpignore)\n";
+        echo "  4. Copiar contenido raíz (respetando .packignore)\n";
         echo "  5. Copiar templates FreshCopy\n";
         echo "  6. Procesar composer.json (limpiar deps de desarrollo)\n";
         echo "  7. Crear config/middlewares.php con contenido por defecto\n";
@@ -1165,7 +1165,7 @@ class SimpleRestPackager
             }
         }
 
-        // Then, check if the item is explicitly included in .cpinclude (exceptions to .cpignore)
+        // Then, check if the item is explicitly included in .packinclude (exceptions to .packignore)
         foreach ($this->includePatterns as $pattern) {
             $pattern = rtrim($pattern, '/');
 

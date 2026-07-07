@@ -60,15 +60,15 @@
 			])->class("mb-3"),
 
 			'<div style="margin-bottom:1em;">
-				<a href="/auth/rememberme">Recordar contraseña</a>
-			</div>
+				<a href="login/rememberme">Recordar contraseña</a>
+			</div>	
 
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary btn-lg btn-block login-btn w-100" onClick="login()">Login</button>
 			</div>
-
+			
 			<div class="mt-3" style="text-align:right;">
-				No registrado? <a href="/auth/register">regístrese</a>
+				No registrado? <a href="login/register">regístrese</a>
 			</div>',
 
 			'<span id="loginError" class="mt-5"></span>'

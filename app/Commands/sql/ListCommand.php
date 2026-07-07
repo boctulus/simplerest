@@ -53,11 +53,10 @@ class SqlListCommand extends BaseSqlCommand
                 echo "✗ Conexión '{$db}' no registrada.\n";
                 return;
             }
-            DB::setConnection($db);
-            $tables = DB::select("SHOW TABLES");
+            $tables = DB::getTableNames($db);
             if (empty($tables)) { echo "No hay tablas en '{$db}'.\n"; return; }
             echo "Tablas en '{$db}':\n";
-            foreach ($tables as $row) echo '  - ' . reset($row) . "\n";
+            foreach ($tables as $table) echo "  - {$table}\n";
             return;
         }
 

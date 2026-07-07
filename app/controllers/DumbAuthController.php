@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Controllers;
 
 use Boctulus\Simplerest\Core\Api\ResourceController;
-use Boctulus\Simplerest\Core\Security\Acl;
+use Boctulus\Simplerest\Core\Acl;
 
 class DumbAuthController extends ResourceController
 {
