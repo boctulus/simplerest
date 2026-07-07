@@ -9,12 +9,11 @@
     <?= base() ?>
 
     <link rel="stylesheet" href="<?= asset('third_party/bootstrap/5.x/bootstrap.min.css') ?>">
-    <link rel="stylesheet" href="<?= asset('third_party/adminlte/plugins/fontawesome-free/css/all.min.css') ?>">
 
     <!-- jQuery -->
     <script src="<?= asset('third_party/jquery/3.3.1/jquery.min.js') ?>"></script>
 
-    <?= umodel() . head() ?>
+    <?= head() ?>
 
 </head>
 <body>
@@ -29,9 +28,7 @@
             
         <!-- Bootstrap 5.1.3 -->
         <script src="<?= asset('third_party/bootstrap/5.x/bootstrap.bundle.min.js') ?>"></script>
-
-        <script src="<?= asset('js/login.js') ?>"></script>
-
+    
         <?= footer() ?>
     </footer>
 </body>

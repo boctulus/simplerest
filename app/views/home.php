@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SimpleRest - For Reasoning Architecture</title>
 
+    <?= base() ?>
+
     <link rel="stylesheet" href="<?= asset('third_party/bootstrap/5.x/bootstrap.min.css') ?>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -340,7 +342,7 @@
                         powerful access control and CLI tools for reproducible experimentation.
                     </p>
                     <p class="lead">
-                        Powered by <strong>4reasoning.com</strong> - designed from the ground up to be safe in AI-driven environments.
+                        Powered by <strong>4thinking.com</strong> - designed from the ground up to be safe in AI-driven environments.
                     </p>
                     <div class="mt-4">
                         <a href="#download" class="btn btn-primary-hero btn-hero">
@@ -612,8 +614,8 @@
                 <a href="https://github.com/boctulus/simplerest" class="btn btn-light btn-lg" target="_blank">
                     <i class="bi bi-github"></i> View on GitHub
                 </a>
-                <a href="https://4reasoning.com" class="btn btn-outline-light btn-lg" target="_blank">
-                    <i class="bi bi-globe"></i> Visit 4reasoning.com
+                <a href="https://4thinking.com" class="btn btn-outline-light btn-lg" target="_blank">
+                    <i class="bi bi-globe"></i> Visit 4thinking.com
                 </a>
             </div>
         </div>
@@ -629,7 +631,7 @@
                         A production-grade backend framework implementing the For Reasoning Architecture paradigm.
                     </p>
                     <p class="mt-3">
-                        <strong>Powered by 4reasoning.com</strong>
+                        <strong>Powered by 4thinking.com</strong>
                     </p>
                 </div>
                 <div class="col-lg-4 mb-4">
@@ -646,7 +648,7 @@
                     <h5>Resources</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="https://github.com/boctulus/simplerest">GitHub Repository</a></li>
-                        <li class="mb-2"><a href="https://4reasoning.com">4reasoning.com</a></li>
+                        <li class="mb-2"><a href="https://4thinking.com">4thinking.com</a></li>
                         <li class="mb-2"><a href="#">Community Forum</a></li>
                         <li class="mb-2"><a href="#">API Reference</a></li>
                         <li class="mb-2"><a href="#">Contributing Guide</a></li>

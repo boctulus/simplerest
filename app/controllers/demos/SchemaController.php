@@ -182,7 +182,7 @@ class SchemaController extends Controller
         , 'TABLES');
     }
 
-    function test_DBRels::getRels()
+    function test_get_rels()
     {
         $table = 'books';
 

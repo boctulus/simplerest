@@ -9,7 +9,6 @@ use Boctulus\Simplerest\Models\UsersModel;
 use Boctulus\Simplerest\Models\UserRolesModel;
 use Boctulus\Simplerest\Models\RolesModel;
 use Boctulus\Simplerest\Libs\Debug;
-use Boctulus\Simplerest\Core\Libs\DBRels;
 
 class GoogleController extends Controller
 {

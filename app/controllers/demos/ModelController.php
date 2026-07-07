@@ -16,7 +16,6 @@ use Boctulus\Simplerest\Core\Response;
 use Boctulus\Simplerest\Models\az\AutomovilesModel;
 use Boctulus\Simplerest\Models\az\BarModel;
 use Boctulus\Simplerest\Models\az\ProductsModel;
-use Boctulus\Simplerest\Core\Libs\DBRels;
 
 class ModelController extends Controller
 {

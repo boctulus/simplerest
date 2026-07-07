@@ -1,19 +1,21 @@
-mkdir .\.claude\skills -Force
-rm .\.claude\skills\* -Recurse -Force
-cp .\.agent\skills\* .\.claude\skills -Recurse -Force
-cp .\.agent\skills\index.md .\.claude\skills\
+$source = ".\.agents\skills"
 
-mkdir .\.qwen\skills -Force
-rm .\.qwen\skills\* -Recurse -Force
-cp .\.agent\skills\* .\.qwen\skills -Recurse -Force
-cp .\.agent\skills\index.md .\.qwen\skills\
+$targets = @(
+    ".\.claude\skills",
+    ".\.qwen\skills",
+    ".\.opencode\skills",
+    ".\.gemini\skills",
+    ".\.codex\skills"
+)
 
-mkdir .\.opencode\skills -Force
-rm .\.opencode\skills\* -Recurse -Force
-cp .\.agent\skills\* .\.opencode\skills -Recurse -Force
-cp .\.agent\skills\index.md .\.opencode\skills\
+if (-not (Test-Path $source)) {
+    throw "Source folder not found: $source"
+}
 
-mkdir .\.agents\skills -Force
-rm .\.agents\skills\* -Recurse -Force
-cp .\.agent\skills\* .\.agents\skills -Recurse -Force
-cp .\.agent\skills\index.md .\.agents\skills\
+foreach ($target in $targets) {
+    New-Item -ItemType Directory -Path $target -Force | Out-Null
+
+    Get-ChildItem -Path $target -Force | Remove-Item -Recurse -Force
+
+    Copy-Item -Path "$source\*" -Destination $target -Recurse -Force
+}
