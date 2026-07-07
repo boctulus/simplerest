@@ -40,7 +40,7 @@ The framework is **feature-complete for core use cases** (routing, ORM, auth, AC
 | **i18n / Gettext** | ✅ Complete | Multi-language support |
 | **Mailer** | ✅ Complete | SendinBlue, templating |
 | **Modular Architecture** | ✅ Complete | Modules + Packages with custom autoloader |
-| **Packaging System** | ✅ Complete | `.cpignore` / `.cpinclude` for clean releases |
+| **Packaging System** | ✅ Complete | `.packignore` / `.packinclude` for clean releases |
 
 ---
 
@@ -169,16 +169,16 @@ Key concerns:
 
 ## Packaging System
 
-The framework has a mature packaging system using `.cpignore` and `.cpinclude`:
+The framework has a mature packaging system using `.packignore` and `.packinclude`:
 
-### Excluded from release (`.cpignore`):
+### Excluded from release (`.packignore`):
 - `.git/`, `.codegpt/`, `.claude/`, `.agent/`, `.vscode/`
 - `docs/to-do/`, `docs/issues/`, `docs/extras/`, `docs/etc/`
 - `app/`, `packages/`, `docker/`, `backups/`, `exports/`
 - `logs/`, `tmp/`, `uploads/`, `web-automation/`
 - Test files, backup files, IDE files
 
-### Included in release (`.cpinclude`):
+### Included in release (`.packinclude`):
 - Core commands, essential controllers, views, locale
 - ACL packages (basic + fine-grained)
 - Public assets (CSS, JS, images)

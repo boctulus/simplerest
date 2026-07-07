@@ -284,7 +284,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     }
   
     protected function getModelInstance($fetch_mode = 'ASSOC', bool $reuse = false){
-        return get_model_instance($this->model_name, $fetch_mode, $reuse);
+        $instance = get_model_instance($this->model_name, $fetch_mode, $reuse);
+
+        if (!empty(static::$connect_to)) {
+            $instance->qualify();
+        }
+
+        return $instance;
     }
 
     static function getConnectedSubResources(){

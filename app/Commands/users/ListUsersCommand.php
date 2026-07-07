@@ -1,10 +1,8 @@
-<?php
+ q<?php
 
 use Boctulus\Simplerest\Core\Libs\DB;
 
 require_once __DIR__ . '/BaseUsersCommand.php';
-
-
 
 class ListUsersCommand extends BaseUsersCommand
 {
@@ -26,11 +24,10 @@ class ListUsersCommand extends BaseUsersCommand
         return [
             'required' => [],
             'optional' => ['role'],
-            'flags'    => ['disabled-only', 'verify'],
+            'flags'    => ['disabled-only'],
             'options'  => [
                 'role'          => ['describe' => 'Filtrar por rol'],
                 'disabled-only' => ['describe' => 'Mostrar solo usuarios deshabilitados'],
-                'verify'        => ['describe' => 'Verificar email de todos los usuarios listados'],
             ],
         ];
     }
@@ -49,15 +46,12 @@ class ListUsersCommand extends BaseUsersCommand
         }
 
         $hor = '─';
-        $line = fn(array $pipes) => '┌' . implode('┬', array_map(fn($w) => str_repeat($hor, $w), $colW)) . '┐';
-
-        echo "\033[90m{$line($colW)}\033[0m\n";
+        echo "\033[90m┌" . implode('┬', array_map(fn($w) => str_repeat($hor, $w), $colW)) . "┐\033[0m\n";
         echo '│';
         foreach ($headers as $i => $h) {
             echo "\033[1;37m" . str_pad($h, $colW[$i], ' ', STR_PAD_BOTH) . "\033[0m│";
         }
         echo "\n";
-
         echo "\033[90m├" . implode('┼', array_map(fn($w) => str_repeat($hor, $w), $colW)) . "┤\033[0m\n";
 
         foreach ($rows as $row) {
@@ -77,14 +71,12 @@ class ListUsersCommand extends BaseUsersCommand
     {
         $roleFilter   = $this->opt($parsed, 'role');
         $disabledOnly = $this->opt($parsed, 'disabled_only', false);
-        $verifyAll    = $this->opt($parsed, 'verify', false);
 
         $query = DB::table($this->usersTable)
             ->select([
                 $this->usersTable . '.' . $this->idField,
                 $this->usersTable . '.' . $this->emailField,
                 $this->usersTable . '.name',
-                $this->usersTable . '.' . $this->usernameField,
                 $this->isActiveField,
                 $this->confirmedField,
             ]);
@@ -112,12 +104,10 @@ class ListUsersCommand extends BaseUsersCommand
             $active   = ($u[$this->isActiveField] ?? 1);
             $verified = ($u[$this->confirmedField] ?? 0);
             $email    = $u[$this->emailField] ?? '';
-            $username = $u[$this->usernameField] ?? '';
 
             $rows[] = [
                 ($active ? "\033[32m✓\033[0m" : "\033[31m✗\033[0m"),
                 "\033[36m" . $u[$this->idField] . "\033[0m",
-                $username ? "\033[1m{$username}\033[0m" : "\033[90m-\033[0m",
                 $email ? "\033[33m{$email}\033[0m" : "\033[90m-\033[0m",
                 ($u['name'] ?? '') ? "\033[1m{$u['name']}\033[0m" : "\033[90m-\033[0m",
                 ($verified ? "\033[32m✓\033[0m" : "\033[31m✗\033[0m"),
@@ -125,21 +115,10 @@ class ListUsersCommand extends BaseUsersCommand
         }
 
         $this->tb(
-            ['', 'ID', 'Username', 'Email', 'Nombre', 'Verif.'],
+            ['', 'ID', 'Email', 'Nombre', 'Verif.'],
             $rows
         );
 
         echo "\033[36m→ " . count($users) . " usuario(s) encontrado(s).\033[0m\n";
-
-        if ($verifyAll) {
-            $count = 0;
-            foreach ($users as $u) {
-                if (!($u[$this->confirmedField] ?? 0)) {
-                    $this->updateUser($u[$this->idField], [$this->confirmedField => 1]);
-                    $count++;
-                }
-            }
-            echo "\033[32m✓ {$count} usuario(s) verificados.\033[0m\n";
-        }
     }
 }

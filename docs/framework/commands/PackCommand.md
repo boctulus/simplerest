@@ -6,7 +6,7 @@ Se ha creado un comando `php com pack` cuyo objetivo es hacer una copia limpia d
 
 Entre otras tareas el comando `php com pack` tiene como responsabilidades:
 
-- Copiar los archivos relevantes asegurandose ignorar al copiar cualquier archivo definido en .cpignore
+- Copiar los archivos relevantes asegurandose ignorar al copiar cualquier archivo definido en .packignore
 
 - Crear el scaffolding completo de directorios en destino
 

@@ -23,22 +23,24 @@ $handler = new TemporaryExceptionHandler();
 
 try {
 
-    DB::getConnection('zippy');
+    dd('OK');
+
+    // DB::getConnection('zippy');
     
-    // Obtén una categoría aleatoria usando la conexión 'zippy'
-    $cat = table('categories')
-        ->whereNull('deleted_at')
-        ->orderByRaw('RAND()')
-        ->select('id')
-        ->first();
+    // // Obtén una categoría aleatoria usando la conexión 'zippy'
+    // $cat = table('categories')
+    //     ->whereNull('deleted_at')
+    //     ->orderByRaw('RAND()')
+    //     ->select('id')
+    //     ->first();
 
-    if (!$cat) {
-        throw new \Exception('No categories found');
-    }
+    // if (!$cat) {
+    //     throw new \Exception('No categories found');
+    // }
 
-    dd(
-        $cat, CategoryUtils::breadcrumb($cat['id'])
-    );
+    // dd(
+    //     $cat, CategoryUtils::breadcrumb($cat['id'])
+    // );
     
 } catch (\Exception $e) {
     // Llama al método del trait
