@@ -6,10 +6,10 @@ namespace Boctulus\Simplerest\Core\Traits;
 
 use Doctrine\Inflector\InflectorFactory;
 use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Core\Libs\DBRels;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 
 /*
     SimpleRest
@@ -21,7 +21,7 @@ trait SubResourceHandler
 {
     public $exec = true;
 
-    function getSubResources(string $table, array $connect_to, ?Object &$instance = null, ?string $tenant_id = null)
+    function getSubResources(string $table, array $connect_to, ?Object &$instance = null, ?string $tenant_id = null, bool $pristine = false)
     {
         static $ret;
 
@@ -30,7 +30,7 @@ trait SubResourceHandler
         }
 
         $connect_to_key = implode(':', $connect_to);
-        $cache_key      = "{$table}|{$connect_to_key}|{$tenant_id}";
+        $cache_key      = "{$table}|{$connect_to_key}|{$tenant_id}|" . ($pristine ? '1' : '0');
 
         if ($ret !== null && isset($ret[$cache_key])) {
             return $ret[$cache_key];
@@ -92,23 +92,43 @@ trait SubResourceHandler
             if (isset($rels[$tb])) {
                 $rs = $rels[$tb];
                 foreach ($rs as $relation) {
-                    $sourceField = $relation[1][1];
-                    $targetTable = $relation[0][0];
+                    $relatedEndpoint = null;
+                    $baseEndpoint = null;
+
+                    foreach ($relation as $endpoint) {
+                        if (!is_array($endpoint) || count($endpoint) !== 2) {
+                            continue;
+                        }
+
+                        [$relationTable, $relationField] = $endpoint;
+                        if ($relationTable === $tb) {
+                            $relatedEndpoint = [$relationTable, $relationField];
+                        } elseif ($relationTable === $table) {
+                            $baseEndpoint = [$relationTable, $relationField];
+                        }
+                    }
+
+                    if ($relatedEndpoint === null || $baseEndpoint === null) {
+                        throw new \LogicException(
+                            "Invalid direct relationship between '{$table}' and '{$tb}'"
+                        );
+                    }
+
+                    $baseField = $baseEndpoint[1];
                     $descriptiveAlias = $tb;
-                    if (preg_match('/^(.+)_id$/', $sourceField, $matches)) {
+                    if (preg_match('/^(.+)_id$/', $baseField, $matches)) {
                         $descriptiveAlias = $matches[1];
                     }
                     $allRelationPaths[] = [
                         'type' => 'direct',
-                        'sourceField' => $sourceField,
-                        'targetTable' => $targetTable,
-                        'alias' => $descriptiveAlias,
-                        'relation' => $relation
+                        'relatedField' => $relatedEndpoint[1],
+                        'baseField' => $baseField,
+                        'alias' => $descriptiveAlias
                     ];
                 }
             }
 
-            $pivot = DBRels::getPivot([$table, $tb]);
+            $pivot = get_pivot([$table, $tb]);
             if (!empty($pivot)) {
                 $bridge = $pivot['bridge'];
                 $fks = $pivot['fks'];
@@ -144,8 +164,12 @@ trait SubResourceHandler
                 $m->selectRaw($sel);
 
                 if ($path['type'] === 'direct') {
-                    $sourceField = $path['sourceField'];
-                    $m->join($table, "__$descriptiveAlias.id", '=', "$table.$sourceField");
+                    $m->join(
+                        $table,
+                        "__$descriptiveAlias.{$path['relatedField']}",
+                        '=',
+                        "$table.{$path['baseField']}"
+                    );
                 } else if ($path['type'] === 'pivot') {
                     $bridge = $path['bridge'];
                     $fks = $path['fks'];
@@ -185,6 +209,17 @@ trait SubResourceHandler
                     $rows[$ix][$field] = json_decode($dato, true);
                 }
             }
+        }
+
+        /*
+            Mismo pipeline de salida que get()/first() (output mutators -> transformer).
+            Sin esto, cualquier ITransformer u output mutator registrado se pierde en cuanto
+            se usan include/subrecursos (p.ej. properties.display_name quedaba vacio).
+            Se aplica sobre $instance (la tabla base) y se respeta $pristine.
+        */
+        if (!$pristine && !empty($rows)) {
+            $rows = $instance->applyOutputMutators($rows);
+            $rows = $instance->applyTransformer($rows);
         }
 
         $ret[$cache_key] = $rows;

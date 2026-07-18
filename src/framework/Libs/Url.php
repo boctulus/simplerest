@@ -178,22 +178,36 @@ class Url
     }
 
     // Body decode
-    static function bodyDecode(string $data)
+    static function bodyDecode(string $data, ?string $content_type = null)
     {
-        $headers  = apache_request_headers();
-        $content_type = $headers['Content-Type'] ?? null;
+        if ($content_type === null) {
+            $headers = [];
+
+            if (function_exists('apache_request_headers')) {
+                foreach (apache_request_headers() as $key => $value) {
+                    $headers[strtolower($key)] = $value;
+                }
+            }
+
+            if (!isset($headers['content-type']) && isset($_SERVER['CONTENT_TYPE'])) {
+                $headers['content-type'] = $_SERVER['CONTENT_TYPE'];
+            }
+
+            $content_type = $headers['content-type'] ?? null;
+        }
 
         if (!empty($content_type)){
             // Podría ser un switch-case aceptando otros MIMEs
+            $content_mime_type = strtolower(trim(explode(';', $content_type)[0]));
 
-            if (Strings::contains('application/x-www-form-urlencoded', $headers['Content-Type'])){
+            if ($content_mime_type === 'application/x-www-form-urlencoded'){
                 $data = urldecode($data);
                 $data = Url::parseStrQuery($data);
 
             } else {
                 $data = json_decode($data, true);
 
-                if ($data === null) {
+                if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
                     throw new \Exception("JSON inválido");
                 }
             }

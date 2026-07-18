@@ -197,6 +197,21 @@ return
 		// 	]
 		// ],
 
+		'az' => [
+			'host'		=> env('DB_HOST', '127.0.0.1'),
+			'port'		=> env('DB_PORT'),
+			'driver' 	=> env('DB_CONNECTION'),
+			'db_name' 	=> 'az',
+			'user'		=> env('DB_USERNAME'), 
+			'pass'		=> env('DB_PASSWORD'),
+			'charset'	=> 'utf8',
+			'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
+			'pdo_options' => [
+				\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+				\PDO::ATTR_EMULATE_PREPARES => false
+			]
+		],
+
 		'test_sqlite' => [
 			'driver' => 'sqlite',
 			'db_name' => ':memory:', // o STORAGE_PATH . 'test.sqlite'

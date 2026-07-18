@@ -5,6 +5,7 @@ namespace Boctulus\Simplerest\Controllers\Api;
 use Boctulus\Simplerest\Core\Libs\Mail;
 use Boctulus\Simplerest\Core\Libs\Logger;
 use Boctulus\Simplerest\Core\Api\ApiController; 
+use Boctulus\Simplerest\Core\Libs\DBRels;
 
 class EmailNotifications extends ApiController
 { 

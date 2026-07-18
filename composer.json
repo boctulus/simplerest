@@ -51,7 +51,8 @@
          "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src",
          "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src",
          "Boctulus\\OpenfacturaSdk\\": "packages/boctulus/openfactura-sdk/src",
-         "Boctulus\\FriendlyposWeb\\": "packages/boctulus/friendlypos-web/src"
+         "Boctulus\\FriendlyposWeb\\": "packages/boctulus/friendlypos-web/src",
+         "Boctulus\\AzSeeder\\": "packages/boctulus/az-seeder/src"
       },
       "exclude-from-classmap": [
          "src/framework/Templates/"
