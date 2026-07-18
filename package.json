@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "test:http-query:smoke": "node unit-tests/http-query/http-query-smoke.mjs"
+  },
   "dependencies": {
     "moment-timezone": "^0.5.43"
   },

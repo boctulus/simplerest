@@ -26,7 +26,13 @@ Ej: (base)
         return;
     }
 
-Para utilizar POST es con post() en vez de get() y soporta tambien delete(), patch() y put()
+Para utilizar POST es con post() en vez de get() y soporta tambien delete(), patch(), put() y query().
+
+```php
+$client
+    ->setHeaders(['Content-Type' => 'application/json'])
+    ->query($url, ['status' => 'active']);
+```
 
 también se pueden incluir headers.
 

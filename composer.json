@@ -50,6 +50,9 @@
             "php-http/discovery": true
         }
     },
+    "scripts": {
+        "test:http-query": "@php vendor/bin/phpunit -c phpunit-http-query.xml"
+    },
     "minimum-stability": "stable",
     "prefer-stable": true
 }

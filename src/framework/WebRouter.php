@@ -20,6 +20,16 @@ use Boctulus\Simplerest\Core\Libs\Url;
 
 class WebRouter
 {
+    public const SUPPORTED_METHODS = [
+        'GET',
+        'POST',
+        'PUT',
+        'PATCH',
+        'DELETE',
+        'OPTIONS',
+        'QUERY',
+    ];
+
     protected static $routes       = [];
     protected static $params;
     protected static $current      = [];
@@ -106,14 +116,28 @@ class WebRouter
         $path = preg_replace('/(.*)\/index.php/', '/', $path);
         $path = trim($path, '/');
                 
-        $req_method = $_SERVER['REQUEST_METHOD'] ?? NULL;
+        $request = Request::getInstance();
+        $req_method = $request->method();
         
         if ($req_method == NULL){
             // CLI o metodo non definito
         }
 
+        cors();
+
         if (!isset(static::$routes[$req_method])){
             return;
+        }
+
+        if ($req_method === 'QUERY') {
+            try {
+                $request->validateQueryRequest();
+            } catch (\InvalidArgumentException $exception) {
+                Response::getInstance()->error(
+                    $exception->getMessage(),
+                    $exception->getCode() ?: 400
+                );
+            }
         }
 
         $res = Response::getInstance(); 
@@ -481,111 +505,62 @@ class WebRouter
         return static::getInstance();
     }
 
-    // Modifica nei metodi di registrazione per gestire il prefisso di gruppo
-    public static function get(string $uri, $callback){
+    protected static function register(string $method, string $uri, $callback){
+        $method = Request::normalizeMethod($method);
         $uri = Strings::rTrim('/', $uri);
+
         if(static::$groupPrefix !== ''){
             $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
         }
-        static::$current_verb = 'GET';
+
+        static::$current_verb = $method;
         static::$current_uri = $uri;
-        static::$current = ['GET', $uri];
-        static::$routes['GET'][$uri] = $callback;
+        static::$current = [$method, $uri];
+        static::$routes[$method][$uri] = $callback;
+
         return static::getInstance();
+    }
+
+    // Modifica nei metodi di registrazione per gestire il prefisso di gruppo
+    public static function get(string $uri, $callback){
+        return static::register('GET', $uri, $callback);
     }
 
     public static function post(string $uri, $callback){
-        $uri = Strings::rTrim('/', $uri);
-        if(static::$groupPrefix !== ''){
-            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
-        }
-        static::$current_verb = 'POST';
-        static::$current_uri = $uri;
-        static::$current = ['POST', $uri];
-        static::$routes['POST'][$uri] = $callback;
-        return static::getInstance();
+        return static::register('POST', $uri, $callback);
     }
 
     public static function put(string $uri, $callback){
-        $uri = Strings::rTrim('/', $uri);
-        if(static::$groupPrefix !== ''){
-            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
-        }
-        static::$current_verb = 'PUT';
-        static::$current = ['PUT', $uri];
-        static::$routes['PUT'][$uri] = $callback;
-        return static::getInstance();
+        return static::register('PUT', $uri, $callback);
     }
 
     public static function patch(string $uri, $callback){
-        $uri = Strings::rTrim('/', $uri);
-        if(static::$groupPrefix !== ''){
-            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
-        }
-        static::$current_verb = 'PATCH';
-        static::$current_uri = $uri;
-        static::$current = ['PATCH', $uri];
-        static::$routes['PATCH'][$uri] = $callback;
-        return static::getInstance();
+        return static::register('PATCH', $uri, $callback);
     }
 
     public static function delete(string $uri, $callback){
-        $uri = Strings::rTrim('/', $uri);
-        if(static::$groupPrefix !== ''){
-            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
-        }
-        static::$current_verb = 'DELETE';
-        static::$current_uri = $uri;
-        static::$current = ['DELETE', $uri];
-        static::$routes['DELETE'][$uri] = $callback;
-        return static::getInstance();
+        return static::register('DELETE', $uri, $callback);
     }
     
     public static function options(string $uri, $callback){
-        $uri = Strings::rTrim('/', $uri);
-        if(static::$groupPrefix !== ''){
-            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
-        }
-        static::$current_verb = 'OPTIONS';
-        static::$current_uri = $uri;
-        static::$current = ['OPTIONS', $uri];
-        static::$routes['OPTIONS'][$uri] = $callback;
-        return static::getInstance();
+        return static::register('OPTIONS', $uri, $callback);
+    }
+
+    public static function query(string $uri, $callback){
+        return static::register('QUERY', $uri, $callback);
     }
 
     public static function any(string $uri, $callback){
-        $uri = Strings::rTrim('/', $uri);
-
-        if(static::$groupPrefix !== ''){
-            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
-        }
-
-        $verbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
-
-        foreach ($verbs as $verb){
-            static::$current_verb = $verb;
-            static::$current_uri  = $uri;
-            static::$current      = [$verb, $uri];
-            static::$routes[$verb][$uri] = $callback;
+        foreach (static::SUPPORTED_METHODS as $method){
+            static::register($method, $uri, $callback);
         }
 
         return static::getInstance();
     }
 
     public static function match(array $verbs, string $uri, $callback){
-        $uri = Strings::rTrim('/', $uri);
-
-        if(static::$groupPrefix !== ''){
-            $uri = trim(static::$groupPrefix, '/') . '/' . ltrim($uri, '/');
-        }
-
-        $verbs = array_map('strtoupper', $verbs);
-
-        foreach ($verbs as $verb){
-            static::$current_verb = $verb;
-            static::$current_uri  = $uri;
-            static::$current      = [$verb, $uri];
-            static::$routes[$verb][$uri] = $callback;
+        foreach ($verbs as $method){
+            static::register($method, $uri, $callback);
         }
 
         return static::getInstance();
@@ -609,7 +584,7 @@ class WebRouter
 
     public static function fromArray(array $routes) {
         // Definizione dei verbi HTTP supportati
-        $supportedVerbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+        $supportedVerbs = static::SUPPORTED_METHODS;
 
         foreach ($routes as $routeKey => $callback) {
             // Se il formato della chiave contiene ":", significa che è specificato un verbo
@@ -620,37 +595,18 @@ class WebRouter
 
                 // Se il verbo è supportato, chiama il metodo di registrazione corrispondente
                 if (in_array($verb, $supportedVerbs)) {
-                    switch ($verb) {
-                        case 'GET':
-                            self::get($uri, $callback);
-                            break;
-                        case 'POST':
-                            self::post($uri, $callback);
-                            break;
-                        case 'PUT':
-                            self::put($uri, $callback);
-                            break;
-                        case 'PATCH':
-                            self::patch($uri, $callback);
-                            break;
-                        case 'DELETE':
-                            self::delete($uri, $callback);
-                            break;
-                        case 'OPTIONS':
-                            self::options($uri, $callback);
-                            break;
-                    }
+                    static::register($verb, $uri, $callback);
                 } else {
                     // Se il verbo specificato non è riconosciuto, registra per tutti i verbi supportati
                     foreach ($supportedVerbs as $v) {
-                        call_user_func([__CLASS__, strtolower($v)], $uri, $callback);
+                        static::register($v, $uri, $callback);
                     }
                 }
             } else {
                 // Se non viene specificato alcun verbo, registra la rotta per tutti i verbi supportati
                 $uri = trim($routeKey, '/');
                 foreach ($supportedVerbs as $v) {
-                    call_user_func([__CLASS__, strtolower($v)], $uri, $callback);
+                    static::register($v, $uri, $callback);
                 }
             }
         }
