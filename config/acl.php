@@ -26,6 +26,7 @@ if (!$acl_cache || is_file($acl_file) !== true) {
 
     ->addRole('registered', 2)
     // ->addInherit('guest')
+    ->addResourcePermissions('products', ['read', 'write', 'list_all', 'show_all'])
    
     ->addRole('supervisor', 500)  
     ->addInherit('registered')
@@ -46,7 +47,6 @@ if (!$acl_cache || is_file($acl_file) !== true) {
         'transfer',
         'grant'
     ]);
-
 
     // Store serialized list into plain file
     file_put_contents(

@@ -28,7 +28,7 @@
 <?php
 
     $resource = "products";
-    $tenantid = "az";  
+    $tenantid = "main";  
 
     /*
         Dado que no estoy usando un framework reactivo,

@@ -11,7 +11,6 @@ use Boctulus\Simplerest\Core\Interfaces\IValidator;
 use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Core\Libs\DBRels;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Paginator;
 use Boctulus\Simplerest\Core\Libs\Strings;
@@ -676,7 +675,7 @@ trait QueryBuilderTrait
 			}
 
 			$rel   = $this->schema['relationships'];
-			$pivot = DBRels::getPivot([$this->table_name, $table], DB::getCurrentConnectionId());
+			$pivot = get_pivot([$this->table_name, $table], DB::getCurrentConnectionId());
 
 			// Si la relación no existe => podría ser N:M o no existir
 			if (!isset($rel[$table])) {
@@ -839,14 +838,14 @@ trait QueryBuilderTrait
 	}
 
 	function orderByAsc(string $field)
-	{
-		$this->order = array_merge($this->order, [$field => 'ASC']);
+	{	
+		$this->order[$field] = 'ASC';
 		return $this;
 	}
 
 	function orderByDesc(string $field)
-	{
-		$this->order = array_merge($this->order, [$field => 'DESC']);
+	{	
+		$this->order[$field] = 'DESC';
 		return $this;
 	}
 
@@ -1449,7 +1448,7 @@ trait QueryBuilderTrait
 				if (empty($where))
 					$where = "$deletedAt IS NULL";
 				else
-					$where = "($where) AND $deletedAt IS NULL";
+					$where =  ($where[0] == '(' && $where[strlen($where) - 1] == ')' ? $where :   "($where)") . " AND $deletedAt IS NULL";
 			}
 		}
 
@@ -1860,7 +1859,8 @@ trait QueryBuilderTrait
 				$this->table_name,
 				$this->connect_to,
 				$this,
-				DB::getCurrentConnectionId()
+				DB::getCurrentConnectionId(),
+				$pristine
 			);
 
 			return $output;
@@ -1912,7 +1912,8 @@ trait QueryBuilderTrait
 					$this->table_name,
 					$this->connect_to,
 					$this,
-					DB::getCurrentConnectionId()
+					DB::getCurrentConnectionId(),
+					$pristine
 				);
 
 			return $output;
@@ -3132,27 +3133,27 @@ trait QueryBuilderTrait
 
 		///////////////[ BUG FIXES ]/////////////////
 
-		$_vals = [];
-		$reps  = 0;
-		foreach($vals as $ix => $val)
-		{				
-			if($val === NULL){
-				$q = Strings::replaceNth('?', 'NULL', $q, $ix+1-$reps);
-				$reps++;
+		// $_vals = [];
+		// $reps  = 0;
+		// foreach($vals as $ix => $val)
+		// {				
+		// 	if($val === NULL){
+		// 		$q = Strings::replaceNth('?', 'NULL', $q, $ix+1-$reps);
+		// 		$reps++;
 
-			/*
-				Corrección para operaciones entre enteros y floats en PGSQL
-			*/
-			} elseif(DB::driver() == DB::PGSQL && is_float($val)){ 
-				$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
-				$reps++;
-				$_vals[] = $val;
-			} else {
-				$_vals[] = $val;
-			}
-		}
+		// 	/*
+		// 		Corrección para operaciones entre enteros y floats en PGSQL
+		// 	*/
+		// 	} elseif(DB::driver() == DB::PGSQL && is_float($val)){ 
+		// 		$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
+		// 		$reps++;
+		// 		$_vals[] = $val;
+		// 	} else {
+		// 		$_vals[] = $val;
+		// 	}
+		// }
 
-		$vals = $_vals;
+		// $vals = $_vals;
 
 		///////////////////////////////////////////
 
@@ -3236,7 +3237,7 @@ trait QueryBuilderTrait
 	function touch()
 	{
 		$this->fill([$this->updatedAt()]);
-		return $this->update([$this->updatedAt() => at()], false);
+		return $this->update([$this->updatedAt() => at()]);
 	}
 
 	function setSoftDelete(bool $status)
@@ -3708,11 +3709,7 @@ trait QueryBuilderTrait
 			if (isset($data[$id_name])) {
 				$this->last_inserted_id =	$data[$id_name];
 			} else {
-				if (DB::driver() == DB::PGSQL && $this->table_name !== null){
-					$this->last_inserted_id = $this->conn->lastInsertId($this->table_name . '_' . $id_name . '_seq');
-				} else {
-					$this->last_inserted_id = $this->conn->lastInsertId();
-				}
+				$this->last_inserted_id = $this->conn->lastInsertId();
 			}
 
 			$this->onCreated($data, $this->last_inserted_id);

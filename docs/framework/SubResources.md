@@ -40,6 +40,29 @@ El endpoint `/api/v1/users/123/posts` expone automáticamente:
 | 1:1 | user → profile | Objeto único hijo |
 | N:M | post → tags (pivot) | Lista vía tabla pivot |
 
+## Relaciones directas en consultas incluidas
+
+Cuando un recurso usa `connectTo()` o `?include=`, los `JOIN` directos se construyen
+con los dos endpoints declarados en `expanded_relationships`:
+
+```php
+[
+    ['property_co_owners', 'property_id'],
+    ['properties', 'id'],
+]
+```
+
+El campo del endpoint relacionado se une literalmente con el campo del endpoint base:
+
+```sql
+property_co_owners.property_id = properties.id
+```
+
+La direccion de la relacion no debe inferirse por nombres como `*_id` ni debe
+asumirse que el endpoint relacionado siempre usa `id`. El mismo mecanismo cubre
+N:1 (`subdivisions.id = properties.subdivision_id`) y 1:N. Si el modelo
+relacionado usa soft delete, su subconsulta conserva `deleted_at IS NULL`.
+
 ## Insert con Sub-Resources
 
 ```php
