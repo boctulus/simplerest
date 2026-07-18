@@ -24,6 +24,7 @@ trait ExceptionHandler
         $config    = Config::get();
        
         $backtrace = null;
+        $traces    = null;
         if ($config['debug']) {
             $current_e = new \Exception();
             $traces    = $current_e->getTrace();
@@ -81,6 +82,9 @@ trait ExceptionHandler
         } 
 
         if (is_cli()){
+            $current_e = new \Exception();
+            $traces    = $current_e->getTrace();
+
             dd($traces, $error_msg);   
             exit(1);
         }

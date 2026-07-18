@@ -17,6 +17,7 @@ require_once __DIR__ . '/../../app.php';
 use PHPUnit\Framework\TestCase;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\AzSeeder\AZSeederService;
 
 // Load config and define constants
 $_config = Config::get();
@@ -39,6 +40,7 @@ abstract class ApiTestCase extends TestCase
     protected $at;
     protected $rt;
     protected $config;
+    protected $seeder;
 
     protected function login($credentials){
 		$ch = curl_init();
@@ -222,5 +224,16 @@ abstract class ApiTestCase extends TestCase
 
         list($this->at, $this->rt) = $this->login(['email' => "tester3@g.c", "password" => "gogogo"]);
         $this->uid = $this->get_me($this->at)['id'];
+
+        $this->seeder = new AZSeederService('main');
+        $this->seeder->cleanupAll();
+        $this->seeder->seedProducts(10);
+    }
+
+    protected function tearDown(): void {
+        if ($this->seeder) {
+            $this->seeder->cleanup();
+        }
+        parent::tearDown();
     }
 }
