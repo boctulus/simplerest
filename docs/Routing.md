@@ -62,7 +62,7 @@ SimpleRest Framework ofrece un sistema de routing flexible que soporta tanto rut
 
 ### Componentes principales:
 
-- **WebRouter**: Maneja rutas HTTP con soporte para verbos GET, POST, PUT, PATCH, DELETE, OPTIONS
+- **WebRouter**: Maneja rutas HTTP con soporte para verbos GET, POST, PUT, PATCH, DELETE, OPTIONS y QUERY
 - **CliRouter**: Maneja comandos de consola con soporte para comandos simples y multi-palabra
 - **FrontController**: Sistema simplificado principalmente para uso en terminal
 
@@ -119,6 +119,7 @@ WebRouter::get('/usuario/{id}', 'UserController@show');
 WebRouter::post('/producto', 'ProductController@store');
 WebRouter::put('/producto/{id}', 'ProductController@update');
 WebRouter::delete('/producto/{id}', 'ProductController@destroy');
+WebRouter::query('/producto/search', 'ProductController@search');
 ```
 
 #### Usando `fromArray()`
@@ -129,6 +130,7 @@ Permite definir múltiples rutas en un solo llamado:
 WebRouter::fromArray([
     'GET:/speed_check' => 'SpeedCheckController@index',
     'POST:/producto' => 'ProductController@store',
+    'QUERY:/producto/search' => 'ProductController@search',
     '/ping' => 'SystemController@ping' // Todos los verbos
 ]);
 ```

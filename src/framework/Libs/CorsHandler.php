@@ -14,6 +14,17 @@ namespace Boctulus\Simplerest\Core\Libs;
 */
 class CorsHandler 
 {
+    public const DEFAULT_METHODS = [
+        'GET',
+        'HEAD',
+        'POST',
+        'PUT',
+        'PATCH',
+        'DELETE',
+        'OPTIONS',
+        'QUERY',
+    ];
+
     private array $paths;
     private array $allowedOrigins;
     private bool  $supportsCredentials;
@@ -37,9 +48,7 @@ class CorsHandler
         
         $this->paths = $paths;
         $this->allowedOrigins = $allowedOrigins;
-        $this->allowedMethods = $this->parseWildcard($allowedMethods, [
-            'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'
-        ]);
+        $this->allowedMethods = $this->parseWildcard($allowedMethods, static::DEFAULT_METHODS);
         $this->allowedHeaders = $this->parseWildcard($allowedHeaders);
         $this->exposedHeaders = $exposedHeaders;
         $this->allowedOriginsPatterns = $allowedOriginsPatterns;
@@ -52,7 +61,11 @@ class CorsHandler
             return;
         }
 
-        $origin = $_SERVER['HTTP_ORIGIN'] ?? ($_SERVER['HTTP_REFERER'] ?? '');
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+        if ($origin === '') {
+            return;
+        }
 
         if ($this->isOriginAllowed($origin)) {
             $this->setCorsHeaders($origin);
@@ -101,9 +114,7 @@ class CorsHandler
     }
 
     public function setAllowedMethods(array $methods): void {
-        $this->allowedMethods = $this->parseWildcard($methods, [
-            'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'
-        ]);
+        $this->allowedMethods = $this->parseWildcard($methods, static::DEFAULT_METHODS);
     }
 
     public function setAllowedOriginsPatterns(array $patterns): void {
@@ -119,10 +130,13 @@ class CorsHandler
     }
 
     private function isPathAllowed(): bool {
-        $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '/';        
+        $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '/';
+        $requestPath = ltrim($requestPath, '/');
         
         foreach ($this->paths as $pattern) {
-            if ($pattern === '*' || fnmatch($pattern, $requestPath)) {
+            $normalizedPattern = ltrim($pattern, '/');
+
+            if ($pattern === '*' || fnmatch($normalizedPattern, $requestPath)) {
                 return true;
             }
         }

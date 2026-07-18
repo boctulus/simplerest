@@ -19,7 +19,7 @@ return [
 
     'allowedHeaders' => ['*'],
 
-    'exposedHeaders' => [],
+    'exposedHeaders' => ['Accept-Query'],
 
     'maxAge' => 0,
 
