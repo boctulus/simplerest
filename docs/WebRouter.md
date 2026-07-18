@@ -13,8 +13,29 @@ WebRouter::put('uri', 'Controller@method');
 WebRouter::patch('uri', 'Controller@method');
 WebRouter::delete('uri', 'Controller@method');
 WebRouter::options('uri', 'Controller@method');
+WebRouter::query('uri', 'Controller@method');
 WebRouter::any('uri', 'Controller@method');
 ```
+
+### HTTP QUERY
+
+`QUERY` is a safe and idempotent method with request content, as defined by RFC 10008. The initial SimpleRest implementation accepts JSON content:
+
+```php
+WebRouter::query('products/search', function () {
+    return Product::search(request()->getBody(false));
+});
+```
+
+```http
+QUERY /products/search HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{"status":"active"}
+```
+
+Use the uppercase method name in browser `fetch()` calls. Cross-origin requests use a CORS preflight; SimpleRest handles that preflight before WebRouter dispatch.
 
 ## Advanced Features
 
@@ -24,8 +45,10 @@ The `any` method registers a route that responds to all HTTP verbs:
 
 ```php
 WebRouter::any('uri', 'Controller@method');
-// This route will respond to GET, POST, PUT, PATCH, DELETE, and OPTIONS requests
+// Responds to GET, POST, PUT, PATCH, DELETE, OPTIONS, and QUERY requests
 ```
+
+Callbacks registered with `any()` must remain safe and idempotent when invoked through QUERY.
 
 ### Soporte de wildcards
 
@@ -140,6 +163,7 @@ Define multiple routes from an array:
 WebRouter::fromArray([
     'GET:/users' => 'UserController@index',
     'POST:/users' => 'UserController@store',
+    'QUERY:/users/search' => 'UserController@search',
     'GET:/posts' => 'PostController@index',
 ]);
 ```

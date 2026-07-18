@@ -22,7 +22,7 @@ require_once __DIR__ . '/../app.php';
  * WebRouter Unit Tests
  *
  * Tests all major features of WebRouter including:
- * - Route registration (GET, POST, PUT, PATCH, DELETE, OPTIONS)
+ * - Route registration (GET, POST, PUT, PATCH, DELETE, OPTIONS, QUERY)
  * - Route groups (simple and nested)
  * - Dynamic parameters
  * - Parameter validation with where()
@@ -320,7 +320,7 @@ class WebRouterTest extends TestCase
         $routes = $routesProperty->getValue();
 
         // Should be registered for all HTTP verbs
-        $verbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+        $verbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'QUERY'];
         foreach ($verbs as $verb) {
             $this->assertArrayHasKey($verb, $routes);
             $this->assertArrayHasKey('unittest-all-verbs', $routes[$verb]);
@@ -508,7 +508,7 @@ class WebRouterTest extends TestCase
         $this->assertArrayHasKey('unittest-mixed-post', $routes['POST']);
 
         // unittest-mixed-all should be in all verbs
-        $verbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+        $verbs = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'QUERY'];
         foreach ($verbs as $verb) {
             $this->assertArrayHasKey('unittest-mixed-all', $routes[$verb]);
         }

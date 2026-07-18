@@ -205,7 +205,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 
                 case 'POST': 
                     if (($perms & 4 ) AND 1){
-                        $this->addCallable('get');
+                        $this->addCallable('post');
                     }
                 break;    
 
@@ -217,7 +217,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                       
                 case 'PATCH':
                     if (($perms & 2 ) AND 1){
-                        $this->addCallable('putch');
+                        $this->addCallable('patch');
                     }                      
                 break;    
 
@@ -2599,4 +2599,4 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected function onPutFolder($id, Array $data, ?int $affected, $folder){ }
 
     
-}  
+}

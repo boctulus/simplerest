@@ -19,6 +19,7 @@ class Request  implements \ArrayAccess, Arrayable
     protected static $query_arr;
     protected static $raw;
     protected static $body;
+    protected static $body_error;
     protected static $params;
     protected static $headers;
     protected static $accept_encoding;
@@ -34,19 +35,57 @@ class Request  implements \ArrayAccess, Arrayable
         return $this;
     }
 
-    static function getHeaders() {
-        if (function_exists('apache_request_headers')) {
-            return apache_request_headers();
+    public static function normalizeHeaders(array $headers): array {
+        $normalized = [];
+
+        foreach ($headers as $key => $value) {
+            $normalized[strtolower($key)] = $value;
         }
-        // alternativa para obtener los encabezados en otros servidores
-        $headers = [];
-        foreach ($_SERVER as $key => $value) {
-            if (strpos($key, 'HTTP_') === 0) {
-                $header = str_replace('_', '-', strtolower(substr($key, 5)));
-                $headers[$header] = $value;
+
+        return $normalized;
+    }
+
+    public static function getHeaders(): array {
+        if (function_exists('apache_request_headers')) {
+            $headers = (array) apache_request_headers();
+        } else {
+            $headers = [];
+
+            foreach ($_SERVER as $key => $value) {
+                if (strpos($key, 'HTTP_') === 0) {
+                    $header = str_replace('_', '-', substr($key, 5));
+                    $headers[$header] = $value;
+                }
             }
         }
-        return $headers;
+
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            $headers['Content-Type'] = $_SERVER['CONTENT_TYPE'];
+        }
+
+        if (isset($_SERVER['CONTENT_LENGTH'])) {
+            $headers['Content-Length'] = $_SERVER['CONTENT_LENGTH'];
+        }
+
+        return static::normalizeHeaders($headers);
+    }
+
+    public static function extractMediaType(?string $contentType): ?string {
+        if ($contentType === null) {
+            return null;
+        }
+
+        $mediaType = strtolower(trim(explode(';', $contentType, 2)[0]));
+        return $mediaType === '' ? null : $mediaType;
+    }
+
+    public static function normalizeMethod(?string $method): ?string {
+        if ($method === null) {
+            return null;
+        }
+
+        $method = trim($method);
+        return $method === '' ? null : strtoupper($method);
     }
 
     static function isBrowser(): bool 
@@ -68,6 +107,8 @@ class Request  implements \ArrayAccess, Arrayable
     static function getInstance() : Request {
         if(static::$instance == NULL){
             if (php_sapi_name() != 'cli'){
+                static::$query_arr = [];
+
                 if (isset($_SERVER['QUERY_STRING'])){
                     static::$query_arr = url::queryString();
                 }
@@ -87,13 +128,15 @@ class Request  implements \ArrayAccess, Arrayable
 
                 $headers = static::getHeaders();
 
-                $accept_encoding_header = $headers['Accept-Encoding'] ?? null;
+                static::$headers = $headers;
+
+                $accept_encoding_header = $headers['accept-encoding'] ?? null;
                 
                 if (!empty($accept_encoding_header)){
                     static::$accept_encoding = $accept_encoding_header;
                 } else {
                     if (!empty(static::$query_arr["accept_encoding"])){
-                        static::$accept_encoding = Arrays::shift(static::$accept_encoding, 'accept_encoding');
+                        static::$accept_encoding = Arrays::shift(static::$query_arr, 'accept_encoding');
                     }
                 }                
                 
@@ -104,34 +147,37 @@ class Request  implements \ArrayAccess, Arrayable
                     'multipart/form-data; boundary=--------------------------240766805501822956475464'
                 */
 
-                $content_type_header = $headers['Content-Type'] ?? null;
+                $content_type_header = $headers['content-type'] ?? null;
 
                 if (!empty($content_type_header)){
                     static::$content_type = $content_type_header;
                     
                 } else {
                     if (!empty(static::$query_arr["content_type"])){
-                        static::$content_type = Arrays::shift(static::$accept_encoding, 'content_type');
+                        static::$content_type = Arrays::shift(static::$query_arr, 'content_type');
                     }
                 }   
 
                 // Content-Type
-                $is_form_data = (bool) Strings::startsWith('multipart/form-data', static::$content_type);
-                $is_json      = (static::$content_type == 'application/json');
+                $media_type   = static::extractMediaType(static::$content_type);
+                $is_form_data = ($media_type === 'multipart/form-data');
+                $is_json      = ($media_type === 'application/json');
 
                 static::$raw  = file_get_contents("php://input");
 
                 // Si el Content-Type es para json,.... decode
 
-                static::$body = ($is_json && !empty(static::$raw)) ? Url::bodyDecode(static::$raw) : static::$raw;
-                
-                static::$headers = apache_request_headers();
+                static::$body = static::$raw;
+                static::$body_error = null;
 
-                $tmp = [];
-                foreach (static::$headers as $key => $val){
-                    $tmp[strtolower($key)] = $val;
+                if ($is_json && static::$raw !== '') {
+                    static::$body = json_decode(static::$raw, true);
+
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        static::$body = null;
+                        static::$body_error = 'Invalid JSON body: ' . json_last_error_msg();
+                    }
                 }
-                static::$headers = $tmp;
                 
             }
             static::$instance = new static();
@@ -212,6 +258,62 @@ class Request  implements \ArrayAccess, Arrayable
     // alias
     function getHeader(string $key){
         return $this->header($key);
+    }
+
+    public function getContentType(): ?string {
+        return static::$content_type;
+    }
+
+    public function getMediaType(): ?string {
+        return static::extractMediaType(static::$content_type);
+    }
+
+    public function hasBody(): bool {
+        return static::$raw !== null && static::$raw !== '';
+    }
+
+    public function getBodyError(): ?string {
+        return static::$body_error;
+    }
+
+    public function validateQueryRequest(array $supportedMediaTypes = ['application/json']): void {
+        if ($this->method() !== 'QUERY') {
+            return;
+        }
+
+        $mediaType = $this->getMediaType();
+
+        if ($mediaType === null) {
+            throw new \InvalidArgumentException(
+                'Content-Type is required for QUERY requests',
+                400
+            );
+        }
+
+        if (!in_array($mediaType, $supportedMediaTypes, true)) {
+            throw new \InvalidArgumentException(
+                "Unsupported Content-Type for QUERY requests: {$mediaType}",
+                415
+            );
+        }
+
+        if (!$this->hasBody()) {
+            throw new \InvalidArgumentException(
+                'QUERY requests require a request body',
+                400
+            );
+        }
+
+        if (static::$body_error !== null) {
+            throw new \InvalidArgumentException(static::$body_error, 400);
+        }
+
+        if ($mediaType === 'application/json' && !is_array(static::$body)) {
+            throw new \InvalidArgumentException(
+                'QUERY JSON content must be an object or array',
+                422
+            );
+        }
     }
 
     function shiftHeader(string $key){
@@ -453,7 +555,7 @@ class Request  implements \ArrayAccess, Arrayable
             $asked_method = $_SERVER['REQUEST_METHOD'] ?? NULL;
         }
         
-        return $asked_method;
+        return static::normalizeMethod($asked_method);
     }
 
     static function ip(){

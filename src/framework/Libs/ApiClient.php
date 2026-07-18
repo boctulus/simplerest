@@ -45,6 +45,7 @@ class ApiClient
     const HTTP_METH_PUT    = "PUT";
     const HTTP_METH_DELETE = "DELETE";
     const HTTP_METH_HEAD   = "HEAD";
+    const HTTP_METH_QUERY  = "QUERY";
 
     /*
         User Agents
@@ -981,10 +982,24 @@ class ApiClient
         return $this->request($url, 'PATCH', $body, $headers, $options);
     }
 
+    function query($url = null, $body = null, $headers = null, $options = null){
+        if (!empty($this->base_url) && $url !== null && $url[0] === '/') {
+            $url = $this->base_url . $url;
+        } else {
+            $url = $this->url ?? $url;
+        }
+
+        if ($url === null){
+            throw new \InvalidArgumentException("Param url is needed. Set in " . __METHOD__ . " or constructor or setUrl()");
+        }
+
+        return $this->request($url, 'QUERY', $body, $headers, $options);
+    }
+
     function setMethod(string $verb){
         $verb = strtoupper($verb);
         
-        if (!in_array($verb, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])){
+        if (!in_array($verb, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'QUERY'])){
             throw new \InvalidArgumentException("Unsupported verb \"$verb\"");
         }
 
@@ -1254,5 +1269,4 @@ class ApiClient
 		return function_exists('curl_init');
 	}
 }
-
 
