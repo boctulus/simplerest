@@ -1,8 +1,6 @@
- q<?php
+<?php
 
 use Boctulus\Simplerest\Core\Libs\DB;
-
-require_once __DIR__ . '/BaseUsersCommand.php';
 
 class ListUsersCommand extends BaseUsersCommand
 {
