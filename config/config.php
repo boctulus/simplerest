@@ -183,7 +183,7 @@ return [
 
 	'email_token' => [
 		'secret_key' => Env::get('TOKENS_EMAIL_SECRET_KEY'),
-		'expires_in' => 7 * 24 * 3600,
+		'expires_in' => 3600,
 		'encryption' => 'HS256'
 	],
 

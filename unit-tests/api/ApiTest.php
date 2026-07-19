@@ -511,48 +511,57 @@ class ApiTest extends TestCase
         return $m->random()->limit($count)->pluck($field);
     }
 
-    private function get_rand($table, $num_values = 1, $nullables = false){
-        $m = DB::table($table);
-
-        $ff = $m->getNotHidden();
-        $ff = array_diff($ff, ['belongs_to', 'deleted_at', 'id']);
-        
-        if ($nullables)
-            $ff = array_intersect($ff, $m->getNullables());
-
-        $values = [];
-
-        $field  = $ff[array_rand($ff, 1)];
-
-        while (count($values) < $num_values){
-            $stuck  = false;
-            $val    = null; 
-
-            while ($val == null || $stuck){
-                $i = 0;
-                $stuck = false;
-
-                if ($stuck){
-                    $field = $ff[array_rand($ff, 1)];
-                }
-                
-                $val = DB::table($table)->whereNotNull($field)->random()->value($field);
-                while(trim($val) == ''){
-                    $i++;
-                    $val = DB::table($table)->whereNotNull($field)->random()->value($field);
-                    if ($i>5){
-                        $stuck = true;
-                        break;
-                    }                
-                }
-                //
-                $ff = array_diff($ff, [$field]);
-                $values[] = $val;
-            }
-
+    private function get_rand($table, $num_values = 1, $nullables = false)
+    {
+        if ($num_values < 1) {
+            throw new \InvalidArgumentException('$num_values must be greater than zero');
         }
-            
-        return [$field, $values];
+
+        $model = DB::table($table);
+
+        $fields = array_values(array_diff(
+            $model->getNotHidden(),
+            ['belongs_to', 'deleted_at', 'id']
+        ));
+
+        if ($nullables) {
+            $fields = array_values(array_intersect(
+                $fields,
+                $model->getNullables()
+            ));
+        }
+
+        if (empty($fields)) {
+            throw new \RuntimeException(
+                "No candidate fields are available for table '$table'"
+            );
+        }
+
+        shuffle($fields);
+
+        foreach ($fields as $field) {
+            $values = DB::table($table)
+                ->whereNotNull($field)
+                ->random()
+                ->limit($num_values)
+                ->pluck($field);
+
+            $values = array_values(array_filter(
+                $values,
+                static function ($value) {
+                    return $value !== null
+                        && (!is_string($value) || trim($value) !== '');
+                }
+            ));
+
+            if (count($values) >= $num_values) {
+                return [$field, array_slice($values, 0, $num_values)];
+            }
+        }
+
+        throw new \RuntimeException(
+            "Unable to find $num_values non-empty value(s) in table '$table'"
+        );
     }
 
     function testfilter001()
