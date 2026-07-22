@@ -1,9 +1,10 @@
 <?php
 
-use Boctulus\Simplerest\Core\Commands\BaseCommand;
 use Boctulus\Simplerest\Core\Libs\Files;
 
-class FileListCommand extends BaseCommand
+require_once __DIR__ . '/BaseFileCommand.php';
+
+class FileListCommand extends BaseFileCommand
 {
     public function __construct()
     {
@@ -37,46 +38,13 @@ class FileListCommand extends BaseCommand
 
     public function execute(array $parsed): void
     {
-        // El directorio puede venir como primer arg posicional o como --dir
         $dir = $parsed['_positional'][0] ?? $this->opt($parsed, 'dir', '.');
 
-        $pattern     = $this->opt($parsed, 'pattern', '*.*');
-        $exclude     = $this->opt($parsed, 'exclude');
-        $recursive   = $this->opt($parsed, 'recursive', false);
-        $includeDirs = $this->opt($parsed, 'include_dirs', false);
-        $onlyDirs    = $this->opt($parsed, 'only_dirs', false);
+        $filtered = $this->getFileEntries($parsed);
 
-        $dir = Files::addTrailingSlash($dir);
-
-        if (!is_dir($dir)) {
+        if (empty($filtered) && !is_dir(Files::addTrailingSlash($dir))) {
             echo "✗ El directorio '{$dir}' no existe.\n";
             return;
-        }
-
-        if ($recursive) {
-            if ($includeDirs || $onlyDirs) {
-                $entries = Files::deepScan($dir, false);
-            } else {
-                $entries = Files::recursiveGlob($dir . $pattern, 0, $exclude);
-            }
-        } else {
-            if ($includeDirs || $onlyDirs) {
-                $raw     = scandir($dir);
-                $entries = array_map(
-                    fn($e) => $dir . $e,
-                    array_filter($raw, fn($e) => $e !== '.' && $e !== '..')
-                );
-            } else {
-                $entries = Files::glob($dir, $pattern, 0, $exclude);
-            }
-        }
-
-        $filtered = [];
-        foreach ($entries as $entry) {
-            $isDir = is_dir($entry);
-            if ($onlyDirs && !$isDir) continue;
-            if (!$includeDirs && !$onlyDirs && $isDir) continue;
-            $filtered[] = Files::convertSlashes($entry);
         }
 
         foreach ($filtered as $file) {
