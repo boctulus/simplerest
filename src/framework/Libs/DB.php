@@ -791,11 +791,11 @@ class DB
 		{
 			$result = $callback();
 			static::commit();
-		}catch (\Exception $e){
+		}catch (\Throwable $e){
 			// Envolver en try/catch para evitar excepciones anidadas
 			try {
 				static::rollback();
-			} catch (\Exception $inner) {
+			} catch (\Throwable $inner) {
 				// ignorar errores en rollback, pero loguear si es posible
 			}
 			throw $e;

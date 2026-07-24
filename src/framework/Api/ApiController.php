@@ -41,6 +41,15 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected $id;
     protected $folder;
 
+    /*
+        Filtrar por belongs_to = auth()->uid() al usuario sin 'read_all' / 'show_all' / 'list_all'.
+
+        Los controladores que ya acotan el registro por su cuenta -- MySelf resuelve
+        el id como auth()->uid() sobre la tabla de usuarios, donde la pertenencia se
+        expresa por el id y no por belongs_to -- deben ponerlo en false.
+    */
+    protected $apply_owner_scope = true;
+
     protected $show_deleted;
     protected $ask_for_deleted;
 
@@ -507,16 +516,25 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 if (empty($this->folder)){               
                     // root, by id          
                          
-                    if (auth()->isRegistered()){                        
-                        if ($this->instance->inSchema(['guest_access'])){
-                            $_get[] = ['guest_access', 1];
-                        } elseif (!empty(static::$folder_field)) {
-                            $_get[] = [static::$folder_field, NULL, 'IS'];
-                        } 
-                                                
+                    if (auth()->isGuest()){
+                        /*
+                            'show_all' / 'read_all' es un permiso explícito para ver todo:
+                            sólo se restringe al invitado que carece de él.
+                        */
+                        if (!$acl->hasSpecialPermission('read_all') &&
+                            !$acl->hasResourcePermission('show_all', $this->table_name))
+                        {
+                            if ($this->instance->inSchema(['guest_access'])){
+                                $_get[] = ['guest_access', 1];
+                            } elseif (!empty(static::$folder_field)) {
+                                $_get[] = [static::$folder_field, NULL, 'IS'];
+                            }
+                        }
+
                     } else {
-                        // avoid guests can see everything with just 'read' permission
-                        if ($owned && !$acl->hasSpecialPermission('read_all') && 
+                        // a registered user without 'read_all' / 'show_all' only sees his own records
+                        if ($owned && $this->apply_owner_scope &&
+                            !$acl->hasSpecialPermission('read_all') &&
                             !$acl->hasResourcePermission('show_all', $this->table_name))
                         {                              
                             $_get[] = [$this->instance->belongsTo(), auth()->uid()];
@@ -534,16 +552,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }
 
 
-                // avoid guests can see everything with just 'read' permission
-                if (auth()->isRegistered()){
-                    if ($owned){             
-                        if (!$acl->hasSpecialPermission('read_all') && 
-                            (!$acl->hasResourcePermission('show_all', $this->table_name))
-                        ){
-                            $_get[] = [$this->instance->belongsTo(), NULL, 'IS'];
-                        }
-                    }
-                }   
+                /*
+                    El scoping por dueño ya fue aplicado arriba en la rama "root, by id".
+                    En la rama "folder, by id" el scoping lo da el dueño de la carpeta
+                    (y FoldersAclExtension), por eso no se vuelve a filtrar por auth()->uid().
+                */
 
                 //var_export($_get);
 
@@ -805,16 +818,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     }                      
                 }
 
-                // avoid guests can see everything with just 'read' permission
-                if (auth()->isRegistered()){
-                    if ($owned){             
-                        if (!$acl->hasSpecialPermission('read_all') && 
-                            (!$acl->hasResourcePermission('list_all', $this->table_name))
-                        ){
-                            $_get[] = [$this->instance->belongsTo(), NULL, 'IS'];
-                        }
-                    }
-                }   
+                /*
+                    El scoping por dueño / guest se aplica más abajo,
+                    diferenciando la rama "root" de la rama "folder".
+                */
 
                 /*
                     Query a sub-recursos (parte I)
@@ -862,12 +869,24 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }
 
                 if (empty($this->folder)){
-                    // root, sin especificar folder ni id (lista)   // *             
-                    if (!auth()->isRegistered() && $owned && 
+                    // root, sin especificar folder ni id (lista)   // *
+                    if (auth()->isGuest()){
+                        // avoid guests can see everything with just 'read' permission
+                        if (!$acl->hasSpecialPermission('read_all') &&
+                            !$acl->hasResourcePermission('list_all', $this->table_name))
+                        {
+                            if ($this->instance->inSchema(['guest_access'])){
+                                $_get[] = ['guest_access', 1];
+                            } elseif (!empty(static::$folder_field)) {
+                                $_get[] = [static::$folder_field, NULL, 'IS'];
+                            }
+                        }
+                    } elseif ($owned && $this->apply_owner_scope &&
                         !$acl->hasSpecialPermission('read_all') &&
                         !$acl->hasResourcePermission('list_all', $this->table_name) ){
-                        $_get[] = [$this->instance->belongsTo(), auth()->uid()];     
-                    }       
+                        // a registered user without 'read_all' / 'list_all' only sees his own records
+                        $_get[] = [$this->instance->belongsTo(), auth()->uid()];
+                    }
                 }else{
                     // folder, sin id
 
