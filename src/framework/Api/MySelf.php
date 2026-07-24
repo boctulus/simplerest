@@ -13,6 +13,12 @@ class MySelf extends ApiController
     protected $is_active;
     protected $__id;
 
+    /*
+        El registro ya queda acotado a auth()->uid() en cada verbo y sobre la tabla
+        de usuarios la pertenencia se expresa por el id, no por belongs_to.
+    */
+    protected $apply_owner_scope = false;
+
     function __construct() 
     { 
         $config = Config::get();

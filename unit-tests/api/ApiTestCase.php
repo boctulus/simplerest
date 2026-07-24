@@ -95,7 +95,33 @@ abstract class ApiTestCase extends TestCase
         return [$access_token, $refresh_token];
     }
 
+    /**
+     * Datos del usuario autenticado.
+     *
+     * Se leen del propio access token para no depender del endpoint /api/v1/me,
+     * que no está presente en todas las aplicaciones construidas sobre el framework.
+     * Si el token no se puede decodificar se cae al endpoint como respaldo.
+     */
     protected function get_me(string $at){
+        $parts = explode('.', $at);
+
+        if (count($parts) === 3){
+            $payload = json_decode(base64_decode(strtr($parts[1], '-_', '+/')), true);
+
+            if (isset($payload['uid'])){
+                return [
+                    'id'    => $payload['uid'],
+                    'email' => $payload['email'] ?? null,
+                    'name'  => $payload['name']  ?? null,
+                    'roles' => $payload['roles'] ?? [],
+                ];
+            }
+        }
+
+        return $this->get_me_from_endpoint($at);
+    }
+
+    protected function get_me_from_endpoint(string $at){
         $ch = curl_init();
 
         curl_setopt_array($ch, array(
