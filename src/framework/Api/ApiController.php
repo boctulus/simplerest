@@ -12,6 +12,8 @@ use Boctulus\Simplerest\Core\Libs\Time;
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Arrays;  
 use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\Impersonation\ImpersonationManager;
+use Boctulus\Simplerest\Core\Libs\Impersonation\ImpersonationRequestContext;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\Validator;
 use Boctulus\Simplerest\Core\Interfaces\IApi;
@@ -245,9 +247,23 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
  
         }
         
-        $this->impersonated_by = $this->auth->impersonated_by ?? null;
+        $this->impersonated_by = $this->auth['impersonated_by'] ?? null;
 
-    
+        /*
+            Read-only impersonation is enforced HERE, not in the Svelte UI.
+            Hiding buttons is usability; this is the security boundary that a
+            direct `curl -X PUT /api/v1/properties/1` hits.
+        */
+        $imp_ctx = ImpersonationRequestContext::hydrateFromToken($this->auth ?? []);
+
+        ImpersonationManager::getInstance()->enforceReadOnly(
+            $imp_ctx,
+            $_SERVER['REQUEST_METHOD'],
+            parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '',
+            $this->table_name
+        );
+
+
         // dd(auth()->uid(), 'uid');
         // dd($perms, 'permissions');
         // dd($this->is_listable, 'is_listable?');
@@ -1048,19 +1064,27 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 //  pagino solo sino hay funciones agregativas
                 if (!isset($ag_fn))
                 {
-                    $total = (int) (
-                        DB::table($this->table_name)
+                    $count_builder = DB::table($this->table_name)
                         ->column()
 
-                        // Query a sub-recursos (parte II)                
+                        // Query a sub-recursos (parte II)
                         ->when(!empty($joins), function($q) use ($joins) {
                             $q->qualify();
                             foreach ($joins as $join){
                                 $q->join($join);
                             }
                         })
-                        ->where($_get)
-                        ->count());
+                        ->where($_get);
+
+                    /*
+                        Hook: permite a los controllers agregar al COUNT del paginador las mismas
+                        condiciones que aplican sobre $this->instance en onGettingAfterCheck()
+                        (p.ej. scope multi-tenant); sin esto el total pagina filas que el listado
+                        nunca devuelve.
+                    */
+                    $this->onCounting($count_builder);
+
+                    $total = (int) $count_builder->count();
     
                     $page_count = ceil($total / $limit);
 
@@ -2511,6 +2535,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected function onGettingBeforeCheck($id) { }
     protected function onGettingAfterCheck($id) { }
     protected function onGettingAfterCheck2($id) { }  ///
+    protected function onCounting($count_builder) { }  // scope del COUNT del paginador
     protected function onGot($id, ?int $count){ }
 
     protected function onDeletingBeforeCheck($id){ }
