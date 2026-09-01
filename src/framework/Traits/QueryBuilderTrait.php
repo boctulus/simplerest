@@ -3133,27 +3133,34 @@ trait QueryBuilderTrait
 
 		///////////////[ BUG FIXES ]/////////////////
 
-		// $_vals = [];
-		// $reps  = 0;
-		// foreach($vals as $ix => $val)
-		// {				
-		// 	if($val === NULL){
-		// 		$q = Strings::replaceNth('?', 'NULL', $q, $ix+1-$reps);
-		// 		$reps++;
+		/*
+			Los valores NULL se inlinean como literal, igual que en bind().
 
-		// 	/*
-		// 		Corrección para operaciones entre enteros y floats en PGSQL
-		// 	*/
-		// 	} elseif(DB::driver() == DB::PGSQL && is_float($val)){ 
-		// 		$q = Strings::replaceNth('?', 'CAST(? AS DOUBLE PRECISION)', $q, $ix+1-$reps);
-		// 		$reps++;
-		// 		$_vals[] = $val;
-		// 	} else {
-		// 		$_vals[] = $val;
-		// 	}
-		// }
+			whereNull() / whereNotNull() compilan el predicado como `IS ?` /
+			`IS NOT ?`, que es SQL invalido tanto en MySQL como en PGSQL. En SELECT
+			y en el DELETE duro esto lo resuelve bind(); UPDATE arma y prepara su
+			propio SQL, asi que necesita el mismo tratamiento.
 
-		// $vals = $_vals;
+			$vars se reconstruye en paralelo a $vals para que el loop de deteccion
+			de tipos siga alineado tras compactar el arreglo.
+		*/
+		$_vals = [];
+		$_vars = [];
+		$reps  = 0;
+
+		foreach ($vals as $ix => $val) {
+			if ($val === NULL) {
+				$q = Strings::replaceNth('?', 'NULL', $q, $ix + 1 - $reps);
+				$reps++;
+				continue;
+			}
+
+			$_vals[] = $val;
+			$_vars[] = $vars[$ix] ?? null;
+		}
+
+		$vals = $_vals;
+		$vars = $_vars;
 
 		///////////////////////////////////////////
 

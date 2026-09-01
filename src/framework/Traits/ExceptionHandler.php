@@ -22,7 +22,14 @@ trait ExceptionHandler
         $error_msg = $e->getMessage();
 
         $config    = Config::get();
-       
+
+        // Detalle interno solo para logs; nunca se expone al cliente cuando debug está OFF.
+        $error_location = 'Error on line number ' . $e->getLine() . ' in file - ' . $e->getFile();
+
+        if (!empty($config['log_errors'])) {
+            log_error("Error: $error_msg. $error_location");
+        }
+
         $backtrace = null;
         $traces    = null;
         if ($config['debug']) {
@@ -71,42 +78,94 @@ trait ExceptionHandler
             } catch (\Throwable $json_err) {
                 $backtrace      = "Could not encode trace: " . $json_err->getMessage();
             }
-            
-            $error_location = 'Error on line number '.$e->getLine().' in file - '.$e->getFile();
 
-            if ($config['log_stack_trace']){
-                log_error("Error: $error_msg. Trace: $backtrace");   
-            } else{
-                log_error("Error: $error_msg");
+            if ($config['log_stack_trace']) {
+                log_error("Trace: $backtrace");
             }
-        } 
+        }
 
         if (is_cli()){
             $current_e = new \Exception();
             $traces    = $current_e->getTrace();
 
-            dd($traces, $error_msg);   
+            dd($traces, $error_msg);
             exit(1);
         }
 
-        // O.... si se solicita salida como JSON en header "Accept"
-        if (Url::isPostmanOrInsomnia()){
-            response()->error($error_msg, 500, $backtrace);
+        // En producción (debug OFF) nunca se expone el mensaje/traza real al cliente.
+        $public_msg   = $config['debug'] ? $error_msg : trans('An unexpected error occurred');
+        $public_trace = $config['debug'] ? $backtrace : null;
+
+        /*
+            Una ruta de API responde SIEMPRE JSON con un código de error real, sin importar
+            el User-Agent ni el header Accept. Antes el criterio era isPostmanOrInsomnia(),
+            de modo que un navegador, el fetch del SPA o curl recibían HTML con HTTP 200.
+            Ver docs/issues/production-debug-flag-hardcoded.md
+        */
+        if (static::wantsJsonErrorResponse()){
+            response()->error($public_msg, 500, $public_trace);
             exit(1);
         }
-        
+
+        // Ruta web: HTML, pero con código HTTP de error real (nunca 200).
+        if (!headers_sent()){
+            http_response_code(500);
+        }
+
         view('error.php', [
             'status'    => 500,
             'type'      => 'Exception',
-            'code'      => $traces[0]['args'][0]['code'] ?? '',
-            'location'  => $traces[0]['args'][0]['file'] . ':'. $traces[0]['args'][0]['line'], 
-            'message'   => $traces[0]['args'][0]['message'] ?? '',
-            'detail'    => $traces[0]['args'][0]['trace'] ?? '',
-        ], 'templates\tpl_bt5.php');
+            'code'      => $config['debug'] ? ($traces[0]['args'][0]['code'] ?? '') : '',
+            'location'  => $config['debug'] ? (($traces[0]['args'][0]['file'] ?? '') . ':' . ($traces[0]['args'][0]['line'] ?? '')) : '',
+            'message'   => $public_msg,
+            'detail'    => $config['debug'] ? ($traces[0]['args'][0]['trace'] ?? '') : '',
+        ], 'templates/tpl_bt5.php');
 
         exit(1);
     }
-    
+
+    /**
+     * ¿La respuesta de error debe ser JSON?
+     *
+     * true para toda ruta de API (mismo criterio que RequestHandler::parse(): primer
+     * segmento 'api', o 'remove_api_slug' activo) y para un cliente que pide JSON
+     * explícitamente vía Accept. El User-Agent no participa en la decisión.
+     */
+    protected static function wantsJsonErrorResponse(): bool
+    {
+        if (is_cli()){
+            return false;
+        }
+
+        $config = Config::get();
+
+        if (!empty($config['remove_api_slug'])){
+            return true;
+        }
+
+        $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+        $path = preg_replace('/(.*)\/index.php/', '/', $path);
+
+        $base_url = $config['base_url'] ?? '/';
+        if ($base_url === ''){
+            $base_url = '/';
+        }
+
+        if ($base_url !== '/' && strpos($path, $base_url) === 0){
+            $path = substr($path, strlen($base_url));
+        }
+
+        $first_segment = strtolower(explode('/', ltrim((string) $path, '/'))[0] ?? '');
+
+        if ($first_segment === 'api'){
+            return true;
+        }
+
+        $accept = strtolower($_SERVER['HTTP_ACCEPT'] ?? '');
+
+        return strpos($accept, 'application/json') !== false;
+    }
+
     /**
 	 * Shutdown handler
 	 *

@@ -215,6 +215,11 @@ class DB
 				$conn->exec($cmd);	
 			}	
 
+			if (static::driver() === static::PGSQL && !empty($config['db_connections'][static::$current_id_conn]['schema'])) {
+				$schema = str_replace('"', '""', $config['db_connections'][static::$current_id_conn]['schema']);
+				$conn->exec("SET search_path TO \"$schema\", public");
+			}
+
 			//dd("CONNECTION MADE TO $db_name"); //
 
 		} catch (\PDOException $e) {
@@ -919,6 +924,11 @@ class DB
 		}
 
 		return $result;
+	}
+
+	// alias
+	public static function query(string $raw_sql, $vals = null, $fetch_mode = 'ASSOC', $tenant_id = null, bool $only_one = false, bool $close_cursor = false, bool $tb_prefix = true, &$st = null){
+		return static::select($raw_sql, $vals, $fetch_mode, $tenant_id, $only_one, $close_cursor, $tb_prefix, $st);
 	}
 
 	/*
@@ -1636,4 +1646,3 @@ class DB
 		$mgr->migrate(...$args);
 	}
 }
-

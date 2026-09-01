@@ -987,6 +987,24 @@ Ej:
 	->whereNotNull('workspace')
 	->get();
 
+Ambos funcionan tambien en sentencias de escritura (UPDATE, DELETE duro y soft delete):
+
+	DB::table('files')
+	->where(['id' => $id])
+	->whereNull('organization_id')
+	->update(['organization_id' => $org_id]);
+
+Detalle de implementacion (relevante si se toca el core): `whereNull()` delega en
+`where([$campo, NULL])`, que compila el predicado como `{campo} IS ?`. El literal
+NULL se inlinea justo antes de `prepare()`, porque `IS ?` es SQL invalido tanto en
+MySQL como en PostgreSQL. Ese inlineado ocurre en dos lugares distintos:
+
+- `bind()` — cubre SELECT y DELETE duro.
+- `update()` — cubre UPDATE y, por lo tanto, el soft delete (que se enruta a `update()`).
+
+Si se agrega un nuevo camino de escritura que arme y prepare su propio SQL, debe
+replicar ese tratamiento. Ver `unit-tests/query-builder/NullPredicateWriteTest.php`.
+
 # whereIn / whereNotIn
 
 Es posible hacer un WHERE IN( array ) y un WHERE NOT IN ( array ) con whereIn() y whereNotIn() respectivamente.

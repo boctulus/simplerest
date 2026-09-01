@@ -11,7 +11,7 @@ description: Complete guide for creating, running, rolling back, and managing mi
 
 ```bash
 php com migrations help                    # list all commands
-php com migrate                            # shorthand
+php com migrations migrate                            # shorthand
 php com make migration create_products_table
 php com make migrations:module ModuleName create_products_table --create
 php com make migrations:package vendor/package create_products_table --create
@@ -46,9 +46,9 @@ function down() {
 ## Commands
 
 ```bash
-php com migrate                                        # run all pending
+php com migrations migrate                                        # run all pending
 php com migrations migrate --to=zippy                  # specific connection
-php com migrate --dir=packages/.../migrations           # specific directory
+php com migrations migrate --dir=packages/.../migrations           # specific directory
 php com migrations rollback                            # last batch
 php com migrations reset                               # all
 php com migrations refresh                             # rollback + migrate
@@ -88,7 +88,7 @@ function down() { DB::statement("DROP INDEX idx_products_slug ON products"); }
 
 | Problem | Solution |
 |---------|----------|
-| "No table_name defined" | Run `php com migrate` once (creates migrations table) |
+| "No table_name defined" | Run `php com migrations migrate` once (creates migrations table) |
 | Prefix not applied | Set `tb_prefix` in `config/databases.php` |
 | Migration not found | Check `--dir` path contains `.php` files with `up()` |
 | Class not found | Run `composer dump-autoload` |

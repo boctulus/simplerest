@@ -286,7 +286,7 @@ Ej:
 Para ejecutar migraciones dentro de un package, usa el parámetro `--dir`:
 
 ```bash
-php com migrate --dir=packages/boctulus/api-client/database/migrations
+php com migrations migrate --dir=packages/boctulus/api-client/database/migrations
 ```
 
 ## Notas Importantes
