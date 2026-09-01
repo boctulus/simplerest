@@ -38,7 +38,7 @@ Open the generated .php file and edit it.
 
 Run all pending migrations:
 ```bash
-php com migrate
+php com migrations migrate
 ```
 
 ## Step 3: Generate Schema

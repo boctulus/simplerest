@@ -98,7 +98,7 @@ volumes:
 - [ ] Disable debug mode
 - [ ] Enable OPCache
 - [ ] Run `php com make acl --force` to compile ACL
-- [ ] Run pending migrations: `php com migrate`
+- [ ] Run pending migrations: `php com migrations migrate`
 - [ ] Set proper file permissions (755 for dirs, 644 for files)
 - [ ] Configure HTTPS (SSL certificate)
 - [ ] Set up log rotation

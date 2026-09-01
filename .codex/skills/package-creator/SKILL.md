@@ -103,8 +103,8 @@ set_model_namespace('laravel_pos', 'Boctulus\FriendlyposWeb');
 
 ```bash
 php com make migrations:package boctulus/api-client create_logs_table --create
-php com migrate --dir=packages/boctulus/api-client/database/migrations
-php com migrate --dir=.../migrations --to=logs_db
+php com migrations migrate --dir=packages/boctulus/api-client/database/migrations
+php com migrations migrate --dir=.../migrations --to=logs_db
 ```
 
 ## composer.json Structure

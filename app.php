@@ -2,6 +2,7 @@
 
 use Boctulus\Simplerest\Core\Libs\i18n\Translate;
 use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Files;
 
 // App bootstraping
 
@@ -89,6 +90,7 @@ $_POST  = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
 /* Helpers */
 
+Files::mkDir(HELPERS_PATH);
 $autoload = include __DIR__ . '/config/autoload.php';
 
 $includes  = $autoload['include']; 
