@@ -12,6 +12,7 @@ use Boctulus\Simplerest\Core\Libs\i18n\Translate;
 use Boctulus\Simplerest\Core\Traits\CommandTrait;
 use Boctulus\Simplerest\Core\Libs\PHPLexicalAnalyzer;
 use Boctulus\Simplerest\Core\Libs\DBRels;
+use Boctulus\Simplerest\Core\Security\Acl as CoreAcl;
 
 abstract class BaseMakeCommand extends BaseCommand
 {
@@ -566,28 +567,41 @@ abstract class BaseMakeCommand extends BaseCommand
             throw new \Exception("ACL filename not defined");
         }
 
-        if (file_exists(Config::get()['acl_file'])) {
-            unlink(Config::get()['acl_file']);
+        $acl_file = Config::get()['acl_file'];
+        $previous_acl_cache = file_exists($acl_file) ? file_get_contents($acl_file) : null;
+
+        if (file_exists($acl_file)) {
+            unlink($acl_file);
         }
 
-        if ($force) {
-            dd("Deleting previous roles");
-
-            DB::table('roles')
-                ->whereRaw("1=1")
-                ->delete();
-        }
+        CoreAcl::deferRoleCatalogPersistence($force);
 
         try {
             $acl = include CONFIG_PATH . 'acl.php';
+
+            if ($force) {
+                $acl->reconcileRoleCatalog();
+                $bytes = file_put_contents($acl_file, serialize($acl));
+                if ($bytes === false || $bytes === 0) {
+                    throw new \RuntimeException('ACL cache could not be rewritten after role reconciliation');
+                }
+                dd("ACL role catalog reconciled; user assignments were preserved");
+            }
 
             if ($debug) {
                 dd((array) $acl, 'ACL generated');
             }
 
             dd("ACL file was generated. Path: " . SECURITY_PATH);
-        } catch (\Exception $e) {
-            throw new \Exception("Acl generation fails. Detail: " . $e->getMessage());
+        } catch (\Throwable $e) {
+            if ($previous_acl_cache !== null) {
+                file_put_contents($acl_file, $previous_acl_cache);
+            } elseif (file_exists($acl_file)) {
+                unlink($acl_file);
+            }
+            throw new \Exception("Acl generation fails. Detail: " . $e->getMessage(), 0, $e);
+        } finally {
+            CoreAcl::deferRoleCatalogPersistence(false);
         }
     }
 
@@ -1039,6 +1053,26 @@ abstract class BaseMakeCommand extends BaseCommand
         return $remove;
     }
 
+    /**
+     * Resolución explícita de pivotes ambiguos (`config/pivots.php`).
+     *
+     * Devuelve `[ 'tabla_a,tabla_b' => 'tabla_puente' | null ]`. Ausente el archivo, el mapa
+     * queda vacío y cualquier colisión hace fallar la generación — que es el comportamiento
+     * deseado: es preferible un error explícito a un pivote elegido por el orden de lectura.
+     */
+    protected function getPivotOverrides(): array
+    {
+        $path = rtrim(CONFIG_PATH, '/\\') . DIRECTORY_SEPARATOR . 'pivots.php';
+
+        if (!file_exists($path)) {
+            return [];
+        }
+
+        $overrides = include $path;
+
+        return is_array($overrides) ? $overrides : [];
+    }
+
     protected function write(string $dest_path, string $file, bool $protected, bool $remove = false)
     {
         if ($protected) {
@@ -1191,7 +1225,18 @@ abstract class BaseMakeCommand extends BaseCommand
             }
         }
 
-        $_pivots = [];
+        /*
+            Un par de tablas admite UN SOLO pivote en el mapa generado. Antes esto se resolvía
+            con `$_pivots[$str_tbs] = $pv`, es decir pisando: ante varias tablas puente para el
+            mismo par, ganaba la última que devolviera `DirectoryIterator`. El orden del sistema
+            de archivos terminaba decidiendo una relación de dominio, y podía diferir entre
+            máquinas.
+
+            Ahora se juntan TODOS los candidatos por par y las colisiones se resuelven en
+            `config/pivots.php`. Sin entrada explícita, la generación falla en vez de elegir.
+        */
+        $candidates = [];
+
         foreach ($pivots as $pv => $tbs) {
             /*
                 Si bien una tabla podria pivotearse a si misma si se auto-referencia,
@@ -1203,8 +1248,60 @@ abstract class BaseMakeCommand extends BaseCommand
 
             sort($tbs);
 
-            $str_tbs = implode(',', $tbs);
-            $_pivots[$str_tbs] = $pv;
+            $candidates[implode(',', $tbs)][] = $pv;
+        }
+
+        ksort($candidates);
+
+        $overrides  = $this->getPivotOverrides();
+        $_pivots    = [];
+        $unresolved = [];
+
+        foreach ($candidates as $pair => $bridges) {
+            sort($bridges);   // salida estable, independiente del orden de lectura
+
+            $has_override = array_key_exists($pair, $overrides);
+
+            if (!$has_override) {
+                if (count($bridges) > 1) {
+                    $unresolved[$pair] = $bridges;
+                    continue;
+                }
+
+                $_pivots[$pair] = $bridges[0];
+                continue;
+            }
+
+            $choice = $overrides[$pair];
+
+            // null = el par NO se expone como pivote n:m genérico.
+            if ($choice === null) {
+                continue;
+            }
+
+            if (!in_array($choice, $bridges, true)) {
+                throw new \Exception(
+                    "config/pivots.php resuelve el par '$pair' con la tabla '$choice', que no es "
+                    . "una tabla puente de ese par. Candidatas: " . implode(', ', $bridges) . '.'
+                );
+            }
+
+            $_pivots[$pair] = $choice;
+        }
+
+        if (!empty($unresolved)) {
+            $detail = [];
+            foreach ($unresolved as $pair => $bridges) {
+                $detail[] = "  '$pair' => " . implode(' | ', $bridges);
+            }
+
+            throw new \Exception(
+                "Colisión de pivotes sin resolver. Varias tablas puente conectan el mismo par de "
+                . "tablas y las FKs no alcanzan para decidir cuál es la relación n:m del par.\n"
+                . implode("\n", $detail) . "\n"
+                . "Agregá una entrada por par en config/pivots.php: el nombre de la tabla puente "
+                . "elegida, o null para no exponer ese par como pivote."
+            );
         }
 
         $path = str_replace('//', '/', $dir . '/' . $pivot_file);
@@ -1455,7 +1552,7 @@ abstract class BaseMakeCommand extends BaseCommand
         $_table = !empty($table) ? $table : $this->table_name;
 
         try {
-            $fields = DB::select("SHOW COLUMNS FROM $db.{$_table}", [], 'ASSOC', $from_db);
+            $fields = DB::select("SHOW COLUMNS FROM " . DB::quote("$db.{$_table}"), [], 'ASSOC', $from_db);
         } catch (\Exception $e) {
             $trace = __METHOD__ . '() - line: ' . __LINE__;
             StdOut::print("[ SQL Error ] " . DB::getLog() . "\r\n");
@@ -1734,7 +1831,7 @@ abstract class BaseMakeCommand extends BaseCommand
         $db = DB::database();
 
         try {
-            $fields = DB::select("SHOW COLUMNS FROM $db.{$this->snake_case}");
+            $fields = DB::select("SHOW COLUMNS FROM " . DB::quote("$db.{$this->snake_case}"));
         } catch (\Exception $e) {
             StdOut::print('[ SQL Error ] ' . DB::getLog() . "\r\n");
             StdOut::print($e->getMessage() .  "\r\n");
