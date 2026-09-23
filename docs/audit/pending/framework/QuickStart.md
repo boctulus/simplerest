@@ -168,6 +168,8 @@ php com make schema products
 
 This creates `app/Schemas/main/ProductsSchema.php` with your table definition.
 
+> **Audit note:** The source path introspects an existing table into a PHP `ISchema` descriptor; this command does not create the SQL table or a migration. It uses MySQL-oriented metadata queries and writes without an existing-file protection check. This legacy snippet has not been reproduced as a portable setup workflow. See the [claim-level audit](../../README.md#claim-level-findings-schema-generation-and-automatic-api).
+
 ### That's it — your API is ready!
 
 SimpleRest **automatically creates REST endpoints** for every table with a schema. No controller code needed.
