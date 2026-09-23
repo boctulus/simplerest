@@ -4,15 +4,15 @@ This page records only the request and bootstrap relationships confirmed in the 
 
 ## Application entry points
 
-- `index.php` requires `app.php`, then checks `web_router`, `console_router`, and `front_controller` in the application configuration and invokes each enabled component.
+- `index.php` requires `app.php`, then checks `web_router`, `console_router`, and `front_controller` in that order. An enabled flag does not guarantee that every later component runs: a resolver can end the request first.
 - `app.php` loads the boot and redirection scripts, Composer autoloading, application autoload rules, environment values, configuration, helpers, and configured providers.
 - `com` is the repository's CLI entry point. Its complete command behavior is being documented separately after command discovery and examples are checked.
 
 ## HTTP routing and front controller
 
-`config/config.php` currently enables the web router and front controller and provides the `front_behaviors` map. `index.php` includes `config/routes.php`, compiles the web routes, and resolves the current request. It then invokes `FrontController::resolve()` when enabled.
+`config/config.php` currently enables the web router, CLI router, and front controller and provides the `front_behaviors` map. For an HTTP request, `index.php` includes `config/routes.php`, compiles the web routes, and calls `WebRouter::resolve()` first. When that resolver dispatches a matching route, it exits; `CliRouter` and `FrontController` are not reached. When no web route matches, the web resolver returns. `CliRouter::resolve()` then returns immediately outside CLI, after which `FrontController::resolve()` runs if enabled.
 
-The front controller constructs handlers from `front_behaviors`. The current configuration names request, API, authentication, output, middleware, and error handlers. `FrontController::resolve()` selects HTTP or CLI context, parses request parameters, resolves the controller and action through the configured handlers, validates the target, and invokes it. Exact precedence and response behavior belong in the routing and request reference pages.
+The front controller constructs handlers from `front_behaviors`. The current configuration names request, API, authentication, output, middleware, and error handlers. `FrontController::resolve()` selects HTTP or CLI context, parses request parameters, then resolves authentication routes before API routes and ordinary request controllers. It validates the resolved class and method, checks the callable-method list for non-auth API requests, and invokes the target. These checks apply only when execution reaches the front controller; the full routing and response contract remains under audit.
 
 ## Framework source and application code
 
@@ -28,6 +28,7 @@ This repository is both framework source and a configured application. The prese
 - `config/routes.php`
 - `src/framework/FrontController.php`
 - `src/framework/WebRouter.php`
+- `src/framework/CliRouter.php`
 - `composer.json`
 
 For current claims under review, see the [documentation audit register](audit/README.md).
