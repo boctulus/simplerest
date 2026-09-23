@@ -1,3 +1,5 @@
+> **Status: PROPOSAL / HISTORICAL / UNVERIFIED.** This document describes a proposed architecture. Its execution profiles, modes, and CLI examples are not verified SimpleRest features and are not user documentation. See the [audit register](../../README.md).
+
 # For Reasoning Architecture  
 ## Executive Plan for SimpleRest  
 ### Domain: 4reasoning.com
