@@ -66,6 +66,11 @@ class ValidateCommand extends BaseAclCommand
         $orphanedRoles = $this->withDb(fn() =>
             DB::table('user_roles')
                 ->leftJoin('roles', 'user_roles.role_id', '=', 'roles.id')
+                ->select([
+                    'user_roles.user_id',
+                    'user_roles.role_id',
+                    'roles.id as matched_role_id',
+                ])
                 ->whereNull('roles.id')
                 ->get()
         );
@@ -78,6 +83,12 @@ class ValidateCommand extends BaseAclCommand
         $orphanedSp = $this->withDb(fn() =>
             DB::table('user_sp_permissions')
                 ->leftJoin('sp_permissions', 'user_sp_permissions.sp_permission_id', '=', 'sp_permissions.id')
+                ->select([
+                    'user_sp_permissions.id',
+                    'user_sp_permissions.user_id',
+                    'user_sp_permissions.sp_permission_id',
+                    'sp_permissions.id as matched_permission_id',
+                ])
                 ->whereNull('sp_permissions.id')
                 ->get()
         );
@@ -96,7 +107,12 @@ class ValidateCommand extends BaseAclCommand
 
         // --- 5. user_deny_permissions: valid actions ---
         $validActions = ['show', 'list', 'create', 'update', 'delete', 'show_all', 'list_all'];
-        $denyRows     = $this->withDb(fn() => DB::table('user_deny_permissions')->get());
+        try {
+            $denyRows = $this->withDb(fn() => DB::table('user_deny_permissions')->get());
+        } catch (\Throwable $e) {
+            // This optional ACL extension may not be migrated on older installs.
+            $denyRows = [];
+        }
         foreach ($denyRows as $row) {
             if (!in_array($row['action'], $validActions)) {
                 $issues[] = "✗ user_deny_permissions: id={$row['id']} tiene acción inválida '{$row['action']}'.";
