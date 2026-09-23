@@ -1,8 +1,14 @@
-app/Commands
+app/Commands/file
+app/Commands/make
+app/Commands/migrations
+app/Commands/module
+app/Commands/mysql
+app/Commands/router
+app/Commands/sql
+app/Commands/system
 app/Controllers/HomeController.php
 app/Views
 app/Locale
-app/Models/main
 packages/boctulus/basic-acl
 packages/boctulus/fine-grained-acl
 public/assets/img
@@ -36,8 +42,6 @@ database/migrations/2021_09_14_27912601_folder_permissions.php
 database/migrations/2022_01_27_39547394_jobs.php                 
 database/migrations/2021_09_15_27970786_email_notifications.php       
 database/migrations/2022_01_27_39580642_job_process.php          
-.agent/skills
-.claude/skills
 app/Views/home.php
 app/Views/navbar.php
 app/Views/error.php
