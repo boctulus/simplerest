@@ -6,6 +6,7 @@ __releases/
 .vscode/
 .idea/
 .phpunit.cache/
+composer.lock
 .agents/
 .codex/
 .gemini/

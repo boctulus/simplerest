@@ -870,10 +870,18 @@ class SimpleRestPackager
         if (isset($composerData['autoload']['psr-4'])) {
             $filteredAutoload = [];
             foreach ($composerData['autoload']['psr-4'] as $namespace => $path) {
-                $destinationPath = $this->destDir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $path);
-                if ((strpos($path, 'src/') === 0 || strpos($path, 'app/') === 0 || strpos($path, 'packages/') === 0)
-                    && is_dir($destinationPath)) {
-                    $filteredAutoload[$namespace] = $path;
+                $paths = is_array($path) ? $path : [$path];
+                $includedPaths = [];
+                foreach ($paths as $candidatePath) {
+                    $destinationPath = $this->destDir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $candidatePath);
+                    if ((strpos($candidatePath, 'src/') === 0 || strpos($candidatePath, 'app/') === 0 || strpos($candidatePath, 'packages/') === 0)
+                        && is_dir($destinationPath)) {
+                        $includedPaths[] = $candidatePath;
+                    }
+                }
+
+                if (!empty($includedPaths)) {
+                    $filteredAutoload[$namespace] = is_array($path) ? $includedPaths : $includedPaths[0];
                 }
             }
             $composerData['autoload']['psr-4'] = $filteredAutoload;
@@ -884,20 +892,21 @@ class SimpleRestPackager
             unset($composerData['scripts']);
         }
 
-        $frameworkRequirements = ['php', 'vlucas/phpdotenv', 'doctrine/inflector', 'firebase/php-jwt', 'nikic/php-parser'];
+        $frameworkRequirements = ['php', 'vlucas/phpdotenv', 'doctrine/inflector', 'firebase/php-jwt'];
         $originalRequirements = $composerData['require'] ?? [];
         $composerData['require'] = array_intersect_key($originalRequirements, array_flip($frameworkRequirements));
 
         $optionalRequirements = [
             'psr/http-message' => 'PSR-7 adapters and helpers',
             'phpmailer/phpmailer' => 'SMTP mail delivery',
-            'setasign/fpdf' => 'PDF generation',
         ];
         foreach ($optionalRequirements as $package => $feature) {
             if (isset($originalRequirements[$package])) {
                 $composerData['suggest'][$package] = $feature . ' (install with composer require ' . $package . ')';
             }
         }
+        $composerData['suggest']['boctulus/simplerest-pdf'] = 'PDF generation (install with composer require boctulus/simplerest-pdf)';
+        $composerData['suggest']['boctulus/simplerest-code-tools'] = 'Code generation commands (install with composer require boctulus/simplerest-code-tools)';
 
         unset($composerData['require-dev']);
         echo "Kept only boot and core dependencies; removed development and optional dependencies\n";
@@ -911,12 +920,12 @@ class SimpleRestPackager
                 $newAutoload['Boctulus\\Simplerest\\Core\\'] = $composerData['autoload']['psr-4']['Boctulus\\Simplerest\\Core\\'];
             }
 
-            // The clean scaffold uses the app namespace for project code and src/ as fallback.
-            $newAutoload['Boctulus\\Simplerest\\'] = ['app/', 'src/'];
+            // Keep app namespaces aligned to their real directories, as in GoProp's Composer map.
+            $newAutoload['Boctulus\\Simplerest\\Controllers\\'] = 'app/Controllers/';
 
-            // Add framework and bundled-package mappings, excluding app-specific entries.
+            // Add framework and bundled-package mappings, excluding the broad source root.
             foreach ($composerData['autoload']['psr-4'] as $namespace => $path) {
-                if ($namespace !== 'Boctulus\\Simplerest\\Core\\' && $namespace !== 'Boctulus\\Simplerest\\') {
+                if ($namespace !== 'Boctulus\\Simplerest\\Core\\') {
                     $newAutoload[$namespace] = $path;
                 }
             }
