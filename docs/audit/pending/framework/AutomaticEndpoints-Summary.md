@@ -1,4 +1,4 @@
-> **Documentation status: unverified.** Endpoint discovery, CRUD coverage, query parameters, authorization, and versioning claims on this page still need source tracing and an end-to-end run. See the [documentation audit](../audit/README.md).
+> **Documentation status: unverified.** Endpoint discovery, CRUD coverage, query parameters, authorization, and versioning claims on this page still need source tracing and an end-to-end run. See the [documentation audit](../../README.md).
 
 # Resumen Ejecutivo: Sistema de Endpoints Automáticos de SimpleRest
 

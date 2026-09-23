@@ -22,7 +22,7 @@ These sections will be populated as each topic is traced to implementation and, 
 
 ## Historical material
 
-The original monolithic document is retained at [`framework/_archive/DOC-Simplerest.txt`](framework/_archive/DOC-Simplerest.txt) as historical material. It is not a current specification. Existing pages under `framework/` are being reviewed; until a page is explicitly audited, treat it as an unverified source to compare with code.
+The original monolithic document is retained at [`framework/_archive/DOC-Simplerest.txt`](framework/_archive/DOC-Simplerest.txt) as historical material. Selected high-risk legacy pages are quarantined under [`audit/pending/framework/`](audit/pending/framework/README.md). Other pages still under `framework/` are unverified audit inputs, not canonical documentation.
 
 ## Documentation policy
 

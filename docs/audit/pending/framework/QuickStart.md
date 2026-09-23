@@ -1,4 +1,4 @@
-> **Documentation status: unverified.** This guide has not been executed from a clean checkout. Its installation, configuration, schema-generation, endpoint, and authentication examples are under review. Do not treat them as a runnable setup contract yet. See the [documentation audit](../audit/README.md) and [current documentation map](../README.md).
+> **Documentation status: unverified.** This guide has not been executed from a clean checkout. Its installation, configuration, schema-generation, endpoint, and authentication examples are under review. Do not treat them as a runnable setup contract yet. See the [documentation audit](../../README.md) and [current documentation map](../../../README.md).
 
 # Quickstart — SimpleRest Framework
 
