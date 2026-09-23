@@ -109,5 +109,5 @@ $errors = $validator->getErrors();
 
 ## Ver También
 
-- [`Schemas.md`](./Schemas.md) — reglas de validación en schemas
+- [`Schemas.md`](../audit/pending/framework/Schemas.md) — legacy schema material (pending audit)
 - [`i18n.md`](./i18n.md) — internacionalización de mensajes

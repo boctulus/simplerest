@@ -86,6 +86,6 @@ DB::table('posts')
 
 ## Ver También
 
-- [`Schemas.md`](./Schemas.md) — definición de relaciones y expanded_relationships
+- [`Schemas.md`](../audit/pending/framework/Schemas.md) — legacy schema material (pending audit)
 - [`SubResources.md`](./SubResources.md) — sub-recursos desde relaciones
 - [`QueryBuilder.md`](./QueryBuilder.md) — documentación completa del QB

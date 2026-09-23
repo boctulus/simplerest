@@ -73,5 +73,5 @@ DB::connection('tenant_' . $tenantId)->table('users')->get();
 ## Ver También
 
 - [`QueryBuilder.md`](./QueryBuilder.md) — todas las operaciones de BD
-- [`Schemas.md`](./Schemas.md) — schemas por conexión
+- [`Schemas.md`](../audit/pending/framework/Schemas.md) — legacy schema material (pending audit)
 - [`config/databases.php`](../config/databases.php)
