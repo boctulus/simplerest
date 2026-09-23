@@ -15,6 +15,7 @@ These sections will be populated as each topic is traced to implementation and, 
 - [Core](core/README.md)
 - [Database](database/README.md)
 - [HTTP and REST API](api/README.md)
+- [Security: authentication and ACL](security/README.md)
 - [Command line](cli/README.md)
 - [Integrations](integrations/README.md)
 - [Deployment](deployment/README.md)

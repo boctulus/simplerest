@@ -26,6 +26,9 @@ Do not infer untested behavior from a class name, directory structure, another f
 - **Unverified** — no sufficient source trace has been completed.
 - **Rejected** — the claim conflicts with current implementation or describes a feature that is not present.
 - **Historical** — retained to explain prior design or plans; not a statement about current behavior.
+- **Application-specific** — supported only by this repository's application configuration or an optional integration; it is not a framework-wide default.
+
+When a source trace finds an ambiguity, keep it **Partial** or **Unverified** and mark the unresolved point explicitly in the claim ledger. Do not use “Verified” to imply that a runtime or end-to-end probe was performed.
 
 ## Editorial rules
 
@@ -47,10 +50,11 @@ Do not infer untested behavior from a class name, directory structure, another f
 | Composer dependency installation is sufficient to create an application | `composer.json` identifies a library package and has core PSR-4 mappings; the repository bootstrap also loads application/configuration paths | Unverified | Keep library consumption and repository/application installation separate; validate both independently |
 | Performance claims such as 3–10 ms bootstrap | No benchmark procedure or reproducible environment is cited in the public overview | Rejected as an unqualified fact | Remove until measured with a documented, reproducible benchmark |
 | “Multiple database engines supported” list | README lists engines, but the current driver and feature matrix has not been traced in this pass | Unverified | Audit each driver against connection and query implementation, then state exact limits |
+| Authentication and ACL behavior | Core request/authentication and API callable paths, current ACL wiring, and legacy security claims are recorded individually in the [authentication and ACL ledger](authentication-acl.md) | Partial by layer; see ledger | Use the [canonical authentication](../security/authentication.md) and [ACL](../security/acl.md) references; no runtime or end-to-end probe was performed |
 
 ## Scope and next audit sequence
 
-This is the initial baseline, not a completed audit of every topic. Next, audit in dependency order: clean installation and bootstrap; routing/request lifecycle; database connections and query behavior; schemas and automatic API resolution; authentication and ACL; CLI and migrations; then optional integrations, views, deployment, and performance. For each page, capture implementation, configuration, tests, and runnable evidence before publishing a verified status.
+This is the initial baseline, not a completed audit of every topic. The schemas/automatic-API and authentication/ACL passes now have claim ledgers. Continue in dependency order with clean installation and bootstrap; routing/request lifecycle; database connections and query behavior; CLI and migrations; then optional integrations, views, deployment, and performance. For each page, capture implementation, configuration, tests, and runnable evidence before publishing a verified status.
 
 The archived original is [`../framework/_archive/DOC-Simplerest.txt`](../framework/_archive/DOC-Simplerest.txt). It remains unchanged as historical evidence.
 
