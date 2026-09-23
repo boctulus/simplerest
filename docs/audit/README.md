@@ -72,6 +72,14 @@ These legacy pages were inspected to locate claims. Their prose is not evidence 
 | The QuickStart sample path `/api/products` is valid under the checked-in API configuration | `config/config.php` sets `remove_api_slug` to `false`; `ApiHandler::resolve()` requires the next path parameter to match a `vN` version | Rejected | The sample omits the required version segment. Existing API tests use `/api/v1/products`; they do not establish the old sample path |
 | A clean, end-to-end generator-to-CRUD workflow works | `ProductsBasicTest` asserts GET response/data behavior; `ProductsPaginationTest` asserts pagination; `ApiTest::testNullOperator()` contains POST, GET, and DELETE requests against an already-running app and database. These tests do not invoke the generators. `phpunit.xml` does not include `unit-tests/` | Unverified | No generator-to-request workflow was run in a controlled setup; existing test source is not a test result |
 
+## Separate ACL investigation: `ApiController` callable tokens
+
+| Claim or observation | Source and test evidence | State | Disposition |
+| --- | --- | --- | --- |
+| In the `$perms !== null` permission path, the POST case adds `get` when bit 4 is set | `ApiController::__construct()` calls `addCallable('get')` in its `POST` branch; the earlier special/resource-permission branch adds `post` | Verified (source observation) | Record the path and condition; do not infer intent from the nearby comment |
+| In the same permission path, the PATCH case adds `putch` when bit 2 is set | `ApiController::__construct()` calls `addCallable('putch')`; the earlier special/resource-permission branch adds `patch` | Verified (source observation) | Record the path and condition; do not silently normalize the token |
+| `get` and `putch` are intentional aliases for POST and PATCH, or confirmed defects | `Controller::addCallable()` stores exact strings and `FrontController::resolve()` checks the resolved request method against that list. `Collections` and `MySelf` use `post`/`patch`; no `ApiController`, `getCallable`, `putch`, or bitmask-callable test was found under `unit-tests/` | Unverified | Keep both as implementation anomalies for the authentication/ACL phase. No test or other code found here establishes intent, so neither is classified as a defect yet |
+
 ## Editorial rules
 
 1. Describe SimpleRest's own classes, configuration, and lifecycle. Do not present Laravel, Symfony, or another framework's architecture as SimpleRest architecture.
