@@ -87,6 +87,6 @@ Esto crea el usuario y sus posts/profile en una sola operación.
 
 ## Ver También
 
-- [`Schemas.md`](./Schemas.md) — definición de relaciones
+- [`Schemas.md`](../audit/pending/framework/Schemas.md) — legacy schema material (pending audit)
 - [`AutoJoins.md`](./AutoJoins.md) — joins automáticos
-- [`AutomaticEndpoints-Summary.md`](./AutomaticEndpoints-Summary.md)
+- [`AutomaticEndpoints-Summary.md`](../audit/pending/framework/AutomaticEndpoints-Summary.md) — pending audit input

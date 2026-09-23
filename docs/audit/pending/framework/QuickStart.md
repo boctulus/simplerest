@@ -1,5 +1,7 @@
 > **Documentation status: unverified.** This guide has not been executed from a clean checkout. Its installation, configuration, schema-generation, endpoint, and authentication examples are under review. Do not treat them as a runnable setup contract yet. See the [documentation audit](../../README.md) and [current documentation map](../../../README.md).
 
+> **Audited claim:** The section 5 claim that `php com make schema products` alone makes the CRUD API ready is rejected. Its sample `/api/products` paths also omit the version required by the checked-in API configuration. A complete corrected workflow remains unverified; see the [claim-level audit](../../README.md#claim-level-findings-schema-generation-and-automatic-api).
+
 # Quickstart — SimpleRest Framework
 
 > Get a REST API running in under 5 minutes.
@@ -352,14 +354,14 @@ php com doc generate
 
 | Topic | Documentation |
 |-------|--------------|
-| Routing | [`docs/Routing.md`](./Routing.md) |
-| Query Builder | [`docs/QueryBuilder.md`](./QueryBuilder.md) |
-| ORM / Models | [`docs/ORM.md`](./ORM.md) |
-| Middleware | [`docs/Middlewares.md`](./Middlewares.md) |
-| ACL | [`docs/ACL.md`](./ACL.md) |
-| API Client | [`docs/ApiClient.md`](./ApiClient.md) |
-| CLI Commands | [`docs/CommandLine.md`](./CommandLine.md) |
-| Philosophy | [`docs/SimpleRest-philosophy.md`](./SimpleRest-philosophy.md) |
+| Routing | [`Routing`](../../../framework/Routing.md) |
+| Query Builder | [`QueryBuilder`](../../../framework/QueryBuilder.md) |
+| ORM / Models | [legacy ORM notes (pending audit)](./ORM-STATUS.md) |
+| Middleware | [`Middlewares`](../../../framework/Middlewares.md) |
+| ACL | [`ACL`](../../../framework/ACL.md) |
+| API Client | [`ApiClient`](../../../framework/ApiClient.md) |
+| CLI Commands | [`CommandLine`](../../../framework/CommandLine.md) |
+| Philosophy | [legacy philosophy (pending audit)](./SimpleRest-Philosophy.md) |
 
 ---
 
