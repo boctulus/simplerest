@@ -73,8 +73,23 @@ class ModelRecord
             if (!$changes) {
                 return true;
             }
-            if ($query->where([$key => $id])->update($changes) === false) {
+            $affected = $query->where([$key => $id])->update($changes);
+            if ($affected === false) {
                 return false;
+            }
+            if ($affected === 0) {
+                $stored = $this->query()->assoc()->unhideAll()
+                    ->where([$key => $id])->first(array_keys($changes), true);
+                if (!$stored) {
+                    $this->persisted = false;
+                    return false;
+                }
+                foreach ($changes as $field => $value) {
+                    if (!array_key_exists($field, $stored)
+                        || !$this->matchesStoredValue($value, $stored[$field])) {
+                        return false;
+                    }
+                }
             }
         }
 
@@ -105,18 +120,27 @@ class ModelRecord
         return $this->model->hasSchema() ? $this->model->getKeyName() : 'id';
     }
 
+    private function matchesStoredValue($expected, $stored): bool
+    {
+        if ($expected === null || $stored === null) {
+            return $expected === $stored;
+        }
+        if (is_array($expected)) {
+            $expected = json_encode($expected);
+        } elseif (is_bool($expected)) {
+            $expected = $expected ? '1' : '0';
+        }
+        if (is_bool($stored)) {
+            $stored = $stored ? '1' : '0';
+        }
+        return (string) $expected === (string) $stored;
+    }
+
     private function query(): Model
     {
-        $class = get_class($this->model);
-        $query = new $class(false);
-        $table = $this->model->getTableName();
-        if (!$table) {
+        if (!$this->model->getTableName()) {
             throw new \LogicException('A table is required to persist a record');
         }
-        if ($query->getTableName() !== $table) {
-            $query->table($table);
-        }
-        $query->setConn($this->model->getConn() ?? \Boctulus\Simplerest\Core\Libs\DB::getConnection());
-        return $query;
+        return $this->model->newRecordQuery();
     }
 }

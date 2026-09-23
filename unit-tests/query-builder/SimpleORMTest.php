@@ -17,6 +17,8 @@ require_once __DIR__ . '/../../app.php';
 use PHPUnit\Framework\TestCase;
 use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Interfaces\IValidator;
+use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 
 /*
  * Test simplificado del ORM Layer
@@ -31,7 +33,7 @@ class SimpleORMTest extends TestCase
         self::$previousConnection = DB::getCurrentConnectionId();
         DB::setConnection('test_sqlite');
         DB::statement('CREATE TABLE IF NOT EXISTS orm_items (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, note TEXT)');
-        DB::statement('CREATE TABLE IF NOT EXISTS orm_custom_key (code TEXT PRIMARY KEY, name TEXT)');
+        DB::statement('CREATE TABLE IF NOT EXISTS orm_custom_key (code TEXT PRIMARY KEY, name TEXT, deleted_at TEXT)');
     }
 
     public static function tearDownAfterClass(): void
@@ -122,6 +124,112 @@ class SimpleORMTest extends TestCase
         $this->assertTrue($found->delete());
         $this->assertNull((new ORMCustomKey())->findRecord('alpha'));
     }
+
+    public function test_record_hydration_uses_arrays_without_changing_builder_fetch_mode(): void
+    {
+        ORMItem::newInstance(['name' => 'first'])->save();
+        $query = (new ORMItem())->asObject()->where(['name' => 'first']);
+
+        $this->assertSame('first', $query->firstRecord()->name);
+        $this->assertSame('first', $query->getRecords()[0]->name);
+        $this->assertIsObject($query->first());
+        $this->assertIsObject($query->get()[0]);
+
+        $query->column();
+        $this->assertSame('first', $query->getRecords()[0]->name);
+        $this->assertIsScalar($query->get()[0]);
+    }
+
+    public function test_record_write_keeps_runtime_mutator_and_discards_read_filters(): void
+    {
+        DB::statement("INSERT INTO orm_custom_key (code, name) VALUES ('alpha', 'before')");
+        $query = (new ORMCustomKey())
+            ->registerInputMutator('name', fn ($name) => strtoupper($name), null)
+            ->where(['name' => 'before'])
+            ->orderBy(['name' => 'ASC'])
+            ->limit(1);
+
+        $record = $query->firstRecord();
+        DB::statement("UPDATE orm_custom_key SET name = 'external' WHERE code = 'alpha'");
+        $record->name = 'later';
+
+        $this->assertTrue($record->save());
+        $this->assertSame('LATER', (new ORMCustomKey())->findRecord('alpha')->name);
+    }
+
+    public function test_record_write_keeps_runtime_fillable_configuration(): void
+    {
+        DB::statement("INSERT INTO orm_custom_key (code, name) VALUES ('alpha', 'before')");
+        $query = (new ORMRestrictedKey())->fill(['name']);
+        $record = $query->findRecord('alpha');
+        $record->name = 'after';
+
+        $this->assertTrue($record->save());
+        $this->assertSame('after', (new ORMCustomKey())->findRecord('alpha')->name);
+    }
+
+    public function test_record_write_keeps_runtime_validator(): void
+    {
+        DB::statement("INSERT INTO orm_custom_key (code, name) VALUES ('alpha', 'before')");
+        $query = (new ORMCustomKey())->where(['code' => 'alpha']);
+        $record = $query->firstRecord();
+        $query->setValidator(new ORMRejectValidator());
+        $record->name = 'after';
+
+        $this->expectException(InvalidValidationException::class);
+        $record->save();
+    }
+
+    public function test_record_delete_keeps_runtime_soft_delete_setting(): void
+    {
+        DB::statement("INSERT INTO orm_custom_key (code, name) VALUES ('alpha', 'before')");
+        $record = (new ORMCustomKey())->setSoftDelete(false)->findRecord('alpha');
+        $this->assertTrue($record->delete());
+        $this->assertSame('0', (string) DB::select("SELECT COUNT(*) AS n FROM orm_custom_key WHERE code = 'alpha'")[0]['n']);
+    }
+
+    public function test_zero_updated_rows_distinguishes_missing_record(): void
+    {
+        $record = ORMItem::newInstance(['name' => 'before']);
+        $record->save();
+        $loaded = (new ORMItem())->findRecord($record->id);
+        (new ORMItem())->find($record->id)->delete();
+        $loaded->name = 'after';
+
+        $this->assertFalse($loaded->save());
+        $this->assertFalse($loaded->exists());
+    }
+
+    public function test_zero_updated_rows_can_leave_an_existing_record(): void
+    {
+        DB::statement("INSERT INTO orm_custom_key (code, name) VALUES ('alpha', 'before')");
+        $record = (new ORMZeroAffectedKey())->findRecord('alpha');
+        $record->name = 'after';
+        DB::statement("UPDATE orm_custom_key SET name = 'after' WHERE code = 'alpha'");
+
+        $this->assertTrue($record->save());
+        $this->assertTrue($record->exists());
+    }
+
+    public function test_zero_updated_rows_do_not_confirm_unstored_changes(): void
+    {
+        DB::statement("INSERT INTO orm_custom_key (code, name) VALUES ('alpha', 'before')");
+        $record = (new ORMZeroAffectedKey())->findRecord('alpha');
+        $record->name = 'after';
+
+        $this->assertFalse($record->save());
+        $this->assertTrue($record->exists());
+        $this->assertSame('before', (new ORMCustomKey())->findRecord('alpha')->name);
+    }
+
+    public function test_zero_updated_rows_compare_text_without_numeric_coercion(): void
+    {
+        DB::statement("INSERT INTO orm_custom_key (code, name) VALUES ('alpha', '0e1')");
+        $record = (new ORMZeroAffectedKey())->findRecord('alpha');
+        $record->name = '0e2';
+
+        $this->assertFalse($record->save());
+    }
 }
 
 class ORMItem extends Model
@@ -143,6 +251,32 @@ class ORMCustomKey extends Model
     }
 }
 
+class ORMRestrictedKey extends ORMCustomKey
+{
+    protected $not_fillable = ['name'];
+}
+
+class ORMZeroAffectedKey extends ORMCustomKey
+{
+    public function update(array $data, $set_updated_at = true)
+    {
+        return 0;
+    }
+}
+
+class ORMRejectValidator implements IValidator
+{
+    public function validate(array $data, array $rules, $fillables = null, $not_fillables = null)
+    {
+        return false;
+    }
+
+    public function getErrors(): array
+    {
+        return ['name' => ['rejected']];
+    }
+}
+
 class ORMCustomKeySchema
 {
     public static function get(): array
@@ -150,8 +284,8 @@ class ORMCustomKeySchema
         return [
             'table_name' => 'orm_custom_key',
             'id_name' => 'code',
-            'attr_types' => ['code' => 'STR', 'name' => 'STR'],
-            'nullable' => [],
+            'attr_types' => ['code' => 'STR', 'name' => 'STR', 'deleted_at' => 'STR'],
+            'nullable' => ['deleted_at'],
             'rules' => [],
         ];
     }
