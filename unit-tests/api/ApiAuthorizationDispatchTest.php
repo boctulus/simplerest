@@ -6,12 +6,19 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 class ApiAuthorizationDispatchTest extends TestCase
 {
-    private function probe(string $originalMethod, ?string $overrideMethod, array $rolePermissions, ?int $tablePermissions): array
+    private function probe(
+        string $originalMethod,
+        ?string $overrideMethod,
+        array $rolePermissions,
+        ?int $tablePermissions,
+        string $overrideSource = 'header'
+    ): array
     {
         $fixture = __DIR__ . '/fixtures/api_authorization_dispatch_probe.php';
         $payload = base64_encode(json_encode([
             'original_method' => $originalMethod,
             'override_method' => $overrideMethod,
+            'override_source' => $overrideSource,
             'role_permissions' => $rolePermissions,
             'table_permissions' => $tablePermissions,
         ], JSON_THROW_ON_ERROR));
@@ -65,25 +72,25 @@ class ApiAuthorizationDispatchTest extends TestCase
         $this->assertTrue($out['dispatch_allowed']);
     }
 
-    public function test_header_override_dispatches_new_method_but_acl_uses_original_post(): void
+    public function test_header_override_uses_effective_method_for_acl_and_dispatch(): void
     {
-        $out = $this->probe('POST', 'PATCH', ['create' => true], null);
+        $out = $this->probe('POST', 'PATCH', ['update' => true], null);
 
         $this->assertSame('POST', $out['original_method']);
         $this->assertSame('patch', $out['dispatch_method']);
-        $this->assertContains('post', $out['callables']);
-        $this->assertNotContains('patch', $out['callables']);
-        $this->assertFalse($out['dispatch_allowed']);
+        $this->assertContains('patch', $out['callables']);
+        $this->assertNotContains('post', $out['callables']);
+        $this->assertTrue($out['dispatch_allowed']);
     }
 
-    public function test_header_override_from_patch_to_post_also_mismatches_acl_branch(): void
+    public function test_url_override_from_patch_to_post_uses_same_method_for_acl_and_dispatch(): void
     {
-        $out = $this->probe('PATCH', 'POST', ['update' => true], null);
+        $out = $this->probe('PATCH', 'POST', ['create' => true], null, 'url');
 
         $this->assertSame('PATCH', $out['original_method']);
         $this->assertSame('post', $out['dispatch_method']);
-        $this->assertContains('patch', $out['callables']);
-        $this->assertNotContains('post', $out['callables']);
-        $this->assertFalse($out['dispatch_allowed']);
+        $this->assertContains('post', $out['callables']);
+        $this->assertNotContains('patch', $out['callables']);
+        $this->assertTrue($out['dispatch_allowed']);
     }
 }
