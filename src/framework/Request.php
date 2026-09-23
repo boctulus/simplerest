@@ -26,6 +26,10 @@ class Request  implements \ArrayAccess, Arrayable
     protected static $instance;
 
     protected        $as_object = true;
+    protected ?array $immutable_query = null;
+    protected ?array $immutable_headers = null;
+    protected bool $has_immutable_body = false;
+    protected $immutable_body = null;
 
     protected function __construct() { }
 
@@ -140,6 +144,19 @@ class Request  implements \ArrayAccess, Arrayable
         return self::$instance; // cambio de static a self 11-mar-2025
     }
 
+    /** Reset or replace the singleton instance (also used by isolated tests). */
+    public static function setInstance(?Request $instance): void
+    {
+        static::$instance = $instance;
+        static::$query_arr = null;
+        static::$raw = null;
+        static::$body = null;
+        static::$params = null;
+        static::$headers = null;
+        static::$accept_encoding = null;
+        static::$content_type = null;
+    }
+
     function getRaw(){
         return static::$raw;
     }
@@ -202,11 +219,11 @@ class Request  implements \ArrayAccess, Arrayable
     }
 
     function headers(){
-        return static::$headers;
+        return $this->immutable_headers ?? static::$headers;
     }
 
     function header(string $key){
-        return static::$headers[strtolower($key)] ?? NULL;
+        return $this->headers()[strtolower($key)] ?? NULL;
     }
 
     // alias
@@ -216,6 +233,12 @@ class Request  implements \ArrayAccess, Arrayable
 
     function shiftHeader(string $key){
         $key = strtolower($key);
+
+        if ($this->immutable_headers !== null) {
+            $out = $this->immutable_headers[$key] ?? null;
+            unset($this->immutable_headers[$key]);
+            return $out;
+        }
 
         $out = static::$headers[$key] ?? null;
         unset(static::$headers[$key]);
@@ -311,15 +334,81 @@ class Request  implements \ArrayAccess, Arrayable
 
     function getQuery(string $key = null)
     {
+        $query = $this->immutable_query ?? static::$query_arr ?? [];
         if ($key == null)
-            return static::$query_arr;
+            return $query;
         else 
-             return static::$query_arr[$key] ?? null;   
+             return $query[$key] ?? null;
     }    
+
+    /** Return a copy of this request with one query parameter replaced. */
+    public function withQueryParam(string $key, $value): Request
+    {
+        $copy = clone $this;
+        $copy->immutable_query = $this->getQuery() ?? [];
+        $copy->immutable_query[$key] = $value;
+        return $copy;
+    }
+
+    /** Return a copy of this request without the named query parameter. */
+    public function withoutQueryParam(string $key): Request
+    {
+        $copy = clone $this;
+        $copy->immutable_query = $this->getQuery() ?? [];
+        unset($copy->immutable_query[$key]);
+        return $copy;
+    }
+
+    /** Return a copy of this request with the named header replaced. */
+    public function withHeader(string $name, $value): Request
+    {
+        $copy = clone $this;
+        $copy->immutable_headers = $this->headers() ?? [];
+        $copy->immutable_headers[strtolower($name)] = is_array($value) ? implode(', ', $value) : $value;
+        return $copy;
+    }
+
+    /** Return a copy of this request with an additional value for a header. */
+    public function withAddedHeader(string $name, $value): Request
+    {
+        $copy = clone $this;
+        $copy->immutable_headers = $this->headers() ?? [];
+        $key = strtolower($name);
+        $current = $copy->immutable_headers[$key] ?? null;
+        $currentValues = $current === null ? [] : (is_array($current) ? $current : [$current]);
+        $newValues = is_array($value) ? $value : [$value];
+        $copy->immutable_headers[$key] = implode(', ', array_merge($currentValues, $newValues));
+        return $copy;
+    }
+
+    /** Return a copy of this request without the named header. */
+    public function withoutHeader(string $name): Request
+    {
+        $copy = clone $this;
+        $copy->immutable_headers = $this->headers() ?? [];
+        unset($copy->immutable_headers[strtolower($name)]);
+        return $copy;
+    }
+
+    /** Return a copy of this request with a replacement parsed body. */
+    public function withBody($body): Request
+    {
+        $copy = clone $this;
+        $copy->has_immutable_body = true;
+        $copy->immutable_body = $body;
+        return $copy;
+    }
 
     // getter destructivo sobre $query_arr
     function shiftQuery($key, $default_value = NULL, callable $fn = null)
     {
+        if ($this->immutable_query !== null) {
+            $out = $this->immutable_query[$key] ?? $default_value;
+            unset($this->immutable_query[$key]);
+
+            return $fn !== null ? $fn($out, $key, $default_value) : $out;
+        }
+
         static $arr = [];
 
         if (isset($arr[$key])){
@@ -342,11 +431,11 @@ class Request  implements \ArrayAccess, Arrayable
     }
     
     function has($key){
-        return array_key_exists($key, static::$query_arr);
+        return array_key_exists($key, $this->getQuery() ?? []);
     }
 
     function get($key, $default_value = null){
-        return static::$query_arr[$key] ?? $default_value;
+        return $this->getQuery()[$key] ?? $default_value;
     }
 
     function getParam($index){
@@ -363,7 +452,8 @@ class Request  implements \ArrayAccess, Arrayable
             $as_obj = $this->as_object;
         }
 
-        return $as_obj ? (object) static::$body : static::$body;
+        $body = $this->has_immutable_body ? $this->immutable_body : static::$body;
+        return $as_obj ? (object) $body : $body;
     }
 
     function getBodyDecoded(){
@@ -391,7 +481,8 @@ class Request  implements \ArrayAccess, Arrayable
     }
 
     function getBodyParam($key){
-        return static::$body[$key] ?? NULL;
+        $body = $this->has_immutable_body ? $this->immutable_body : static::$body;
+        return $body[$key] ?? NULL;
     }
 
     /*
@@ -408,6 +499,16 @@ class Request  implements \ArrayAccess, Arrayable
 
     // getter destructivo sobre el body
     function shiftBodyParam($key){
+        if ($this->has_immutable_body) {
+            if (!isset($this->immutable_body[$key])) {
+                return null;
+            }
+
+            $value = $this->immutable_body[$key];
+            unset($this->immutable_body[$key]);
+            return $value;
+        }
+
         if (!isset(static::$body[$key])){
             return NULL;
         }

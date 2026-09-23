@@ -125,6 +125,17 @@ class RequestImmutableMethodsTest extends TestCase
         $this->assertEquals('value', $modified->getHeader('X-CUSTOM-HEADER'));
     }
 
+    public function testWithAddedHeaderAppendsWithoutChangingOriginal()
+    {
+        $request = Request::getInstance();
+        $modified = $request
+            ->withHeader('X-Trace', 'first')
+            ->withAddedHeader('X-Trace', 'second');
+
+        $this->assertSame('first, second', $modified->getHeader('X-Trace'));
+        $this->assertNull($request->getHeader('X-Trace'));
+    }
+
     /**
      * Test withoutHeader() removes header
      */
