@@ -2,8 +2,8 @@
 
 ## Verified documentation
 
-No database usage guide has completed audit yet.
+- [Connection selection and PDO adapter paths](connections.md) — source-level behavior only; live database connectivity and driver compatibility were not reproduced.
 
 ## Pending audit
 
-Connections, query behavior, schemas, migrations, models, automatic joins, and driver support are being traced against implementation and tests. See the [pending audit area](../audit/pending/README.md) and [evidence rules](../audit/README.md).
+Query Builder behavior, schemas, migrations, models, automatic joins, tenant isolation, and per-driver query compatibility remain under audit. See the [pending audit area](../audit/pending/README.md) and [claim-level evidence](../audit/README.md#claim-level-findings-database-connections).

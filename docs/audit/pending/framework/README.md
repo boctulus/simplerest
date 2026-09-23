@@ -12,6 +12,7 @@ These documents are quarantined audit inputs, not current framework specificatio
 - `Routing.md` — resolver and dispatch flow are summarized in `docs/core/request-lifecycle.md`; route DSL, packages, and CLI claims remain pending.
 - `WebRouter.md` — compilation/matching flow is summarized in `docs/core/request-lifecycle.md`; usage examples remain pending.
 - `ORM-STATUS.md` — legacy ORM and feature assertions; all claims remain under review.
+- `Multi-Tenant.md` — connection selection partially audited; old connection API and broad driver list rejected, while tenancy and per-operation behavior remain pending.
 - `Release-Status.md` — historical release snapshot; most feature, metric, and test-count claims remain unverified.
 - `Schemas.md` — legacy schema guide moved here during API audit; its schema-alone automatic CRUD claim is rejected, and its other claims remain unreviewed.
 - `SimpleRest-Complete-Docs.md` — broad feature claims and external-framework comparisons.
