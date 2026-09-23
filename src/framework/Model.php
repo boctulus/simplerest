@@ -30,20 +30,49 @@ class Model
 	/** Hydrate one row from the current Query Builder filters. */
 	public function firstRecord(): ?ModelRecord
 	{
-		$row = $this->first();
+		$row = (clone $this)->assoc()->first();
 		return $row ? new ModelRecord($this, $row, true) : null;
 	}
 
 	/** Hydrate rows from the current Query Builder filters. */
 	public function getRecords(): array
 	{
-		return array_map(fn (array $row) => new ModelRecord($this, $row, true), $this->get());
+		$rows = (clone $this)->assoc()->get();
+		return array_map(fn (array $row) => new ModelRecord($this, $row, true), $rows);
 	}
 
 	/** Find a row by the schema key (or id without a schema). */
 	public function findRecord($id): ?ModelRecord
 	{
 		return (clone $this)->find($id)->firstRecord();
+	}
+
+	/** Fresh write builder with model configuration, without the source query state. */
+	public function newRecordQuery(): Model
+	{
+		$query = new static(false);
+		// Copy only model/write configuration. Query clauses stay on the source instance.
+		$query->table_name = $this->table_name;
+		$query->table_alias = [];
+		$query->prefix = null;
+		$query->conn = $this->conn ?? DB::getConnection();
+		$query->schema = $this->schema;
+		$query->attributes = $this->attributes;
+		$query->fillable = $this->fillable;
+		$query->not_fillable = $this->not_fillable;
+		$query->validator = $this->validator;
+		$query->input_mutators = $this->input_mutators;
+		$query->soft_delete = $this->soft_delete;
+		$query->config = $this->config;
+		$query->createdAt = $this->createdAt;
+		$query->updatedAt = $this->updatedAt;
+		$query->deletedAt = $this->deletedAt;
+		$query->createdBy = $this->createdBy;
+		$query->updatedBy = $this->updatedBy;
+		$query->deletedBy = $this->deletedBy;
+		$query->is_locked = $this->is_locked;
+		$query->belongsTo = $this->belongsTo;
+		return $query;
 	}
 	
 
