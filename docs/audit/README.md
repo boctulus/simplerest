@@ -27,6 +27,14 @@ Do not infer untested behavior from a class name, directory structure, another f
 - **Rejected** — the claim conflicts with current implementation or describes a feature that is not present.
 - **Historical** — retained to explain prior design or plans; not a statement about current behavior.
 
+## Claim-level finding: PHPUnit discovery
+
+| Claim | Evidence in this checkout | State | Documentation action |
+| --- | --- | --- | --- |
+| The Composer `test` script invokes PHPUnit | `composer.json` defines `scripts.test` as `phpunit --colors=always` | Verified (manifest only) | Describe the script exactly; do not infer which tests it discovers |
+| `composer test` runs the `unit-tests/` directory | `phpunit.xml` names `tests/` and `packages/boctulus/friendlypos-web/tests`; the root `tests/` directory is absent, while `unit-tests/` exists but is not named by a configured suite | Rejected | Correct the root README and leave suite execution/discovery unresolved until run |
+| The configured PHPUnit command is runnable and its result represents the repository test suite | The configuration has mismatched paths; no PHPUnit command was run in this audit | Unverified | Do not publish a pass/fail or coverage claim |
+
 ## Editorial rules
 
 1. Describe SimpleRest's own classes, configuration, and lifecycle. Do not present Laravel, Symfony, or another framework's architecture as SimpleRest architecture.
