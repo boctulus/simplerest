@@ -3,6 +3,7 @@
 namespace Boctulus\Simplerest\Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Group;
 use Boctulus\OpenfacturaSdk\Factory\OpenFacturaSDKFactory;
 use Boctulus\OpenfacturaSdk\Libs\OpenFacturaSDK;
 use Boctulus\OpenfacturaSdk\Mocks\OpenFacturaSDKMock;
@@ -26,6 +27,7 @@ require_once __DIR__ . '/../../app.php';
  *
  * Ejecutar con: ./vendor/bin/phpunit unit-tests/OpenFacturaSDKIntegrationTest.php
  */
+#[Group('external-integration')]
 class OpenFacturaSDKIntegrationTest extends TestCase
 {
     protected $apiKey = '928e15a2d14d4a6292345f04960f4bd3'; // API Key de desarrollo

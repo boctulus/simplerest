@@ -11,17 +11,15 @@
          failOnEmptyTestSuite="true"
          colors="true">
     <testsuites>
-        <testsuite name="OpenFactura Tests">
-            <directory>packages/boctulus/friendlypos-web/tests</directory>
-        </testsuite>
         <testsuite name="SimpleRest Tests">
-            <directory>tests</directory>
+            <directory>unit-tests</directory>
         </testsuite>
     </testsuites>
 
     <groups>
         <exclude>
             <group>refactor</group>
+            <group>external-integration</group>
         </exclude>
     </groups>
 

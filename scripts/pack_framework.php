@@ -870,8 +870,9 @@ class SimpleRestPackager
         if (isset($composerData['autoload']['psr-4'])) {
             $filteredAutoload = [];
             foreach ($composerData['autoload']['psr-4'] as $namespace => $path) {
-                // Keep core and packages mappings
-                if (strpos($path, 'src/') === 0 || strpos($path, 'app/') === 0 || strpos($path, 'packages/') === 0) {
+                $destinationPath = $this->destDir . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $path);
+                if ((strpos($path, 'src/') === 0 || strpos($path, 'app/') === 0 || strpos($path, 'packages/') === 0)
+                    && is_dir($destinationPath)) {
                     $filteredAutoload[$namespace] = $path;
                 }
             }
@@ -883,33 +884,23 @@ class SimpleRestPackager
             unset($composerData['scripts']);
         }
 
-        // Define only the minimal required dependencies
-        $minimalRequire = [
-            'php' => '>=7.4,<8.4',
-            'vlucas/phpdotenv' => '^5.2',
+        $frameworkRequirements = ['php', 'vlucas/phpdotenv', 'doctrine/inflector', 'firebase/php-jwt', 'nikic/php-parser'];
+        $originalRequirements = $composerData['require'] ?? [];
+        $composerData['require'] = array_intersect_key($originalRequirements, array_flip($frameworkRequirements));
+
+        $optionalRequirements = [
+            'psr/http-message' => 'PSR-7 adapters and helpers',
+            'phpmailer/phpmailer' => 'SMTP mail delivery',
+            'setasign/fpdf' => 'PDF generation',
         ];
-
-        // Process the require section - only keep minimal dependencies
-        $composerData['require'] = $minimalRequire;
-        echo "Cleaned require section to only minimal dependencies\n";
-
-        // Clean up require-dev - only keep essential dev dependencies
-        if (isset($composerData['require-dev'])) {
-            $essentialDev = [];
-            if (isset($composerData['require-dev']['phpunit/phpunit'])) {
-                $essentialDev['phpunit/phpunit'] = $composerData['require-dev']['phpunit/phpunit'];
-            }
-            if (isset($composerData['require-dev']['phpstan/phpstan'])) {
-                $essentialDev['phpstan/phpstan'] = $composerData['require-dev']['phpstan/phpstan'];
-            }
-
-            if (!empty($essentialDev)) {
-                $composerData['require-dev'] = $essentialDev;
-                echo "Cleaned require-dev section to only essential dev dependencies\n";
-            } else {
-                unset($composerData['require-dev']); // Remove if empty
+        foreach ($optionalRequirements as $package => $feature) {
+            if (isset($originalRequirements[$package])) {
+                $composerData['suggest'][$package] = $feature . ' (install with composer require ' . $package . ')';
             }
         }
+
+        unset($composerData['require-dev']);
+        echo "Kept only boot and core dependencies; removed development and optional dependencies\n";
 
         // Add app/Controllers and app/Commands to autoload
         if (isset($composerData['autoload']['psr-4'])) {
@@ -920,13 +911,12 @@ class SimpleRestPackager
                 $newAutoload['Boctulus\\Simplerest\\Core\\'] = $composerData['autoload']['psr-4']['Boctulus\\Simplerest\\Core\\'];
             }
 
-            // Add Controllers and Commands autoload
-            $newAutoload['Boctulus\\Simplerest\\Controllers\\'] = 'app/Controllers/';
-            $newAutoload['Boctulus\\Simplerest\\Commands\\'] = 'app/Commands/';
+            // The clean scaffold uses the app namespace for project code and src/ as fallback.
+            $newAutoload['Boctulus\\Simplerest\\'] = ['app/', 'src/'];
 
-            // Add the rest
+            // Add framework and bundled-package mappings, excluding app-specific entries.
             foreach ($composerData['autoload']['psr-4'] as $namespace => $path) {
-                if ($namespace !== 'Boctulus\\Simplerest\\Core\\') {
+                if ($namespace !== 'Boctulus\\Simplerest\\Core\\' && $namespace !== 'Boctulus\\Simplerest\\') {
                     $newAutoload[$namespace] = $path;
                 }
             }

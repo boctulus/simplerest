@@ -14,11 +14,9 @@
          "email":"boctulus@gmail.com"
       }
    ],
-   "version":"1.0.0",
    "require":{
       "php":">=8.1,<8.5",
       "vlucas/phpdotenv": "^5.2",
-      "boctulus/shopifyconnector": "@dev",
 		"nikic/php-parser": "^5.4",
 		"doctrine/inflector": "^2.0",
 		"setasign/fpdf": "^1.8",
@@ -32,9 +30,8 @@
       "phpstan/phpstan": "^1.10"
 	},
    "scripts":{
-      "test": "phpunit --colors=always",
-      "cs": "phpstan analyse src --level=7",
-      "pre-autoload-dump":"Google\\Task\\Composer::cleanup"
+      "test": "phpunit --colors=always unit-tests",
+      "cs": "phpstan analyse src --level=7"
    },
    "extra":{
       "google/apiclient-services":[

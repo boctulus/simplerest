@@ -6,6 +6,13 @@ __releases/
 .vscode/
 .idea/
 .phpunit.cache/
+.agents/
+.codex/
+.gemini/
+.opencode/
+.qwen/
+.claude/
+.codegpt/
 uploads/
 yakpro-po/
 logs/
@@ -20,6 +27,12 @@ docker/
 backups/
 exports/
 web-automation/
+unit-tests/
+tests/
+examples/
+reports/
+docs/
+storage/cache/
 app/
 public/assets/
 packages/
