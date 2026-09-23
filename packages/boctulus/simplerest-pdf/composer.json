@@ -5,10 +5,8 @@
     "license": "MIT",
     "require": {
         "php": ">=8.1",
+        "boctulus/simplerest": "^1.0",
         "setasign/fpdf": "^1.8"
-    },
-    "suggest": {
-        "boctulus/simplerest": "Required by PdfBase at runtime"
     },
     "autoload": {
         "psr-4": {
