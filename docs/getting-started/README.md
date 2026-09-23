@@ -1,10 +1,16 @@
 # Getting started
 
-The installation flow and first runnable example are under audit. The existing `framework/QuickStart.md` has not yet been verified from a clean environment and contains unverified setup and endpoint assumptions.
+## Create a new application
 
-Before presenting a copy-and-run guide, the audit will distinguish:
+Use Composer to create a new SimpleRest application:
 
-1. using `boctulus/simplerest` as a Composer dependency; and
-2. running this repository as a complete application.
+```sh
+composer create-project boctulus/simplerest my-app
+cd my-app
+```
 
-These are separate workflows. See the [audit register](../audit/README.md) for the evidence required to publish either one.
+This command was verified against the `v1.0.3` release on Packagist. The package requires PHP `>=8.1,<8.5`.
+
+Composer creates `.env` from `.env.example` after installing the project. Values for keys named like passwords, secrets, tokens, API keys, or private keys are cleared; configure the values you need before connecting external services.
+
+This workflow creates a new application. Installing SimpleRest as a library inside an existing project with `composer require` is a separate workflow and is not documented here.
