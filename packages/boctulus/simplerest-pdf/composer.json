@@ -1,0 +1,18 @@
+{
+    "name": "boctulus/simplerest-pdf",
+    "description": "PDF integration for SimpleRest, powered by FPDF",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1",
+        "setasign/fpdf": "^1.8"
+    },
+    "suggest": {
+        "boctulus/simplerest": "Required by PdfBase at runtime"
+    },
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\Simplerest\\Core\\Libs\\": "src/"
+        }
+    }
+}

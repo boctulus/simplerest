@@ -1,5 +1,4 @@
 app/Commands/file
-app/Commands/make
 app/Commands/migrations
 app/Commands/module
 app/Commands/mysql
