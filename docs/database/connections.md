@@ -43,4 +43,4 @@ When `debug` is enabled, the PDO exception handler in [`DB::getConnection()`](..
 - **Rejected:** the legacy `DB::connection()` fluent example and its Oracle, Firebird, DB2, Informix, and Sybase entries.
 - **Partial or unresolved:** live connectivity, driver extensions and per-driver query compatibility, tenant isolation, prefix-based tenancy, and exception behavior for any alternative setup.
 
-See the [claim-level audit](../audit/README.md#claim-level-findings-database-connections) and the [quarantined legacy page](../audit/pending/framework/Multi-Tenant.md). Query Builder behavior is documented separately after its audit.
+See the [claim-level connection findings](../audit/README.md#claim-level-findings-database-connections), the [quarantined legacy page](../audit/pending/framework/Multi-Tenant.md), and the [source-traced Query Builder read path](query-builder.md).

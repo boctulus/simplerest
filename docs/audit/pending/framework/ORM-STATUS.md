@@ -38,7 +38,7 @@ $users = $userModel->where('role', 'admin')->get();
 
 | Documento | Contenido |
 |-----------|-----------|
-| [`QueryBuilder.md`](../../../framework/QueryBuilder.md) | legacy Query Builder page |
+| [`QueryBuilder.md`](./QueryBuilder.md) | legacy Query Builder page (pending audit) |
 | [`SimpleRest-API-Rest.md`](../../../framework/SimpleRest-API-Rest.md) | legacy REST page |
 | [`AutomaticEndpoints-Summary.md`](./AutomaticEndpoints-Summary.md) | Endpoints REST automáticos |
 

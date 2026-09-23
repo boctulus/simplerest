@@ -13,6 +13,12 @@ These documents are quarantined audit inputs, not current framework specificatio
 - `WebRouter.md` — compilation/matching flow is summarized in `docs/core/request-lifecycle.md`; usage examples remain pending.
 - `ORM-STATUS.md` — legacy ORM and feature assertions; all claims remain under review.
 - `Multi-Tenant.md` — connection selection partially audited; old connection API and broad driver list rejected, while tenancy and per-operation behavior remain pending.
+- `QueryBuilder.md` — selected source paths for `select`, `where`, `toSql`, `get`, and soft-delete SQL are audited; writes, advanced methods, and runtime behavior remain pending.
+- `AutoJoins.md` — relationship-inference branch found in source; schema relationship, pivot, and end-to-end behavior remain pending.
+- `SubResources.md` — `connectTo()` read dispatch and test assertions inspected; nested CRUD, routes, authorization, and schema resolution remain pending.
+- `PGSQL-Compatibility.md` — legacy driver/method matrix and test instructions remain unverified; no PostgreSQL tests were run.
+- `PGSQL-Known-Issues.md` — historical compatibility summary and dated fix statuses have not been revalidated.
+- `Query-Builder-Comparison.md` — feature comparison remains unaudited; unmeasured performance figures are rejected as current measurements.
 - `Release-Status.md` — historical release snapshot; most feature, metric, and test-count claims remain unverified.
 - `Schemas.md` — legacy schema guide moved here during API audit; its schema-alone automatic CRUD claim is rejected, and its other claims remain unreviewed.
 - `SimpleRest-Complete-Docs.md` — broad feature claims and external-framework comparisons.
