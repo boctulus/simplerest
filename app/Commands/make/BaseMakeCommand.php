@@ -570,9 +570,13 @@ abstract class BaseMakeCommand extends BaseCommand
         $acl_file = Config::get()['acl_file'];
         $previous_acl_cache = file_exists($acl_file) ? file_get_contents($acl_file) : null;
 
-        if (file_exists($acl_file)) {
-            unlink($acl_file);
-        }
+        $previous_rebuild      = Config::get('acl_rebuild', false);
+        $previous_defer_writes = Config::get('acl_defer_cache_write', false);
+
+        // Rebuild in memory while keeping the last known-good cache available
+        // until the complete operation has succeeded.
+        Config::set('acl_rebuild', true);
+        Config::set('acl_defer_cache_write', true);
 
         CoreAcl::deferRoleCatalogPersistence($force);
 
@@ -581,27 +585,28 @@ abstract class BaseMakeCommand extends BaseCommand
 
             if ($force) {
                 $acl->reconcileRoleCatalog();
-                $bytes = file_put_contents($acl_file, serialize($acl));
-                if ($bytes === false || $bytes === 0) {
-                    throw new \RuntimeException('ACL cache could not be rewritten after role reconciliation');
-                }
-                dd("ACL role catalog reconciled; user assignments were preserved");
+                echo "ACL role catalog reconciled; user assignments were preserved\n";
+            }
+
+            $bytes = file_put_contents($acl_file, serialize($acl), LOCK_EX);
+            if ($bytes === false || $bytes === 0) {
+                throw new \RuntimeException('ACL cache could not be rewritten after ACL generation');
             }
 
             if ($debug) {
                 dd((array) $acl, 'ACL generated');
             }
 
-            dd("ACL file was generated. Path: " . SECURITY_PATH);
+            echo "ACL file was generated. Path: " . SECURITY_PATH . "\n";
         } catch (\Throwable $e) {
             if ($previous_acl_cache !== null) {
-                file_put_contents($acl_file, $previous_acl_cache);
-            } elseif (file_exists($acl_file)) {
-                unlink($acl_file);
+                file_put_contents($acl_file, $previous_acl_cache, LOCK_EX);
             }
             throw new \Exception("Acl generation fails. Detail: " . $e->getMessage(), 0, $e);
         } finally {
             CoreAcl::deferRoleCatalogPersistence(false);
+            Config::set('acl_rebuild', $previous_rebuild);
+            Config::set('acl_defer_cache_write', $previous_defer_writes);
         }
     }
 

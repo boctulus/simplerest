@@ -167,10 +167,6 @@ abstract class BaseAclCommand extends BaseCommand
 
     protected function loadAcl()
     {
-        $aclFile = Config::get()['acl_file'];
-        if (file_exists($aclFile)) {
-            unlink($aclFile);
-        }
         return include CONFIG_PATH . 'acl.php';
     }
 

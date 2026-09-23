@@ -1564,14 +1564,13 @@ class DB
 			}
 		}
 
-		try {
-			$ret = $callback(...$params);
-		} finally {
-			if ($restore_conn) {
-				self::setConnection($conn_id);
-			}
-			return $ret ?? null;
-		}
+        try {
+            return $callback(...$params);
+        } finally {
+            if ($restore_conn) {
+                self::setConnection($conn_id);
+            }
+        }
 	}
 
 	static function withDefaultConnection($callback, ...$params)
@@ -1587,14 +1586,13 @@ class DB
 			}
 		}
 
-		try {
-			$ret = $callback(...$params);
-		} finally {
-			if ($restore_conn) {
-				self::setConnection($conn_id);
-			}
-			return $ret ?? null;
-		}
+        try {
+            return $callback(...$params);
+        } finally {
+            if ($restore_conn) {
+                self::setConnection($conn_id);
+            }
+        }
 	}
 
 	static function enableQueryLog(?string $filename = null): void

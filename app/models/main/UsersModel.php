@@ -2,9 +2,9 @@
 
 namespace Boctulus\Simplerest\Models\main;
 
-
 use Boctulus\Simplerest\Models\MyModel;
 use Boctulus\Simplerest\Schemas\main\UsersSchema;
+use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 
 class UsersModel extends MyModel
 {
@@ -78,5 +78,31 @@ class UsersModel extends MyModel
 			$this->fill(['confirmed_email'])->update(['confirmed_email' => 0]);
 		}
 	}
+
+	/**
+     * Reemplaza TODOS los roles del usuario por uno solo (operación de superadmin).
+     * La UI de usuarios maneja un único rol por usuario; esto mantiene esa invariante.
+     * Transaccional: borra los user_roles previos e inserta el nuevo de forma atómica.
+     */
+    public function replaceRole(int $userId, int $roleId): void
+    {
+        if (!self::roleExists($roleId)) {
+            throw new InvalidValidationException("Role $roleId does not exist");
+        }
+
+        DB::beginTransaction();
+        try {
+            DB::table('user_roles')->where(['user_id' => $userId])->delete();
+            DB::table('user_roles')->insert([
+                'user_id'    => $userId,
+                'role_id'    => $roleId,
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollback();
+            throw $e;
+        }
+    }
 }
 
