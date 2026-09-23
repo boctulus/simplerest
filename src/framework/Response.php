@@ -14,7 +14,6 @@ class Response implements \ArrayAccess
     protected $headers = [];
     protected $http_code = NULL;
     protected $http_code_msg = '';
-    protected $version = '2';
     protected $config;
     protected $pretty;
     protected $paginator_params;
@@ -91,6 +90,13 @@ class Response implements \ArrayAccess
             header($header, $replace, $response_code);
         }  
     }
+
+    protected function emitStatusCode(int $http_code): void
+    {
+        if (php_sapi_name() != 'cli' && !headers_sent()) {
+            http_response_code($http_code);
+        }
+    }
     
     static function redirect(string $url, int $http_code = 307) {
         // Verificar si las cabeceras ya han sido enviadas
@@ -98,20 +104,15 @@ class Response implements \ArrayAccess
             // Verificar si se ha proporcionado un código HTTP válido
             switch ($http_code){
                 case 301:
-                    header('HTTP/1.1 301 Moved Permanently');
-                    break;
                 case 302:
-                    header('HTTP/1.1 302 Found');
-                    break;
                 case 307:
-                    header('HTTP/1.1 307 Temporary Redirect');
-                    break;
                 case 308:
-                    header('HTTP/1.1 308 Permanent Redirect');
                     break;
                 default:
                     throw new \InvalidArgumentException("Código HTTP no válido para redirección");
             }
+
+            http_response_code($http_code);
             
             // Configurar la cabecera de ubicación para la redirección
             header("Location: $url");
@@ -208,9 +209,7 @@ class Response implements \ArrayAccess
 
         $http_code = $http_code != NULL ? $http_code : ($this->http_code !== null ? $this->http_code : 200);
 
-        if (php_sapi_name() != 'cli' && !headers_sent()) {
-            header(trim('HTTP/'.$this->version.' '.$http_code.' '.$this->http_code_msg));
-        }
+        $this->emitStatusCode($http_code);
 
         if ($this->as_object || is_object($data) || is_array($data)) {
             $arr = [];
@@ -282,9 +281,7 @@ class Response implements \ArrayAccess
 
         $this->to_be_encoded = true;
 
-        if (php_sapi_name() != 'cli' && !headers_sent()) {
-            header(trim('HTTP/'.$this->version.' '.$http_code.' '.$this->http_code_msg));
-        }
+        $this->emitStatusCode($http_code);
 
         /*
             Evita responder con data[data]
@@ -333,7 +330,7 @@ class Response implements \ArrayAccess
                         $http_code = 500;
 
                 if ($http_code != NULL && !$this->fake_status_codes)
-                    header(trim('HTTP/'.$this->version.' '.$http_code.' '.$this->http_code_msg));
+                    $this->emitStatusCode($http_code);
             }
         }
 
@@ -510,10 +507,7 @@ class Response implements \ArrayAccess
 
     function status(int $http_code)
     {
-        if (php_sapi_name() != 'cli' && !headers_sent()) {
-            $httpCodeMsg = $this->http_code_msg;
-            header(trim('HTTP/' . $this->version . ' ' . $http_code . ' ' . $httpCodeMsg));
-        }
+        $this->emitStatusCode($http_code);
 
         $this->http_code = $http_code;
         return $this;

@@ -1,10 +1,10 @@
 # Response emits an HTTP/2 status line over an HTTP/1.x connection
 
-**Status:** open
+**Status:** fixed (2026-09-24)
 
 **Confidence:** confirmed by local raw-socket probes
 
-**Severity:** high; tested curl client rejects the response before reading its body
+**Severity:** high (resolved); tested curl client rejected the response before reading its body
 
 ## Finding
 
@@ -20,13 +20,16 @@ Start a local server with `php -S 127.0.0.1:18765 -t . index.php`, then issue th
 | GET `/api/v1/products`, `Authorization: Bearer invalid.token.value` | `HTTP/2 401` | `{"status":401,"error":{"type":null,"code":null,"message":"Malformed UTF-8 characters","detail":null,"location":null}}` for this token sample |
 | GET a temporary API controller with an empty callable list | `HTTP/2 403` | `{"status":403,"error":{"type":null,"code":null,"message":"Not authorized for Boctulus\\Simplerest\\Controllers\\api\\AuditAclDenyProbe:get","detail":null,"location":null}}` |
 
-For all three, `curl.exe -i` exited with code 1 and reported `Unsupported HTTP version (2.0)`. The 403 route used a temporary test controller, removed after the probe; it did not exercise the app database or a live FineGrainedACL rule. JSON bodies were captured again over raw TCP on 2026-09-23; the dynamic `Date` header is omitted. Status and body observations are specific to these local requests/configuration.
+Before the fix, `curl.exe -i` exited with code 1 for all three and reported `Unsupported HTTP version (2.0)`. The 403 route used a temporary test controller, removed after the probe; it did not exercise the app database or a live FineGrainedACL rule. JSON bodies were captured again over raw TCP on 2026-09-23; the dynamic `Date` header is omitted. These baseline observations are specific to those local requests/configuration.
 
 ## Expected behavior
 
 Emit a valid status through the SAPI (`http_response_code()`) or a protocol-correct status line for the negotiated HTTP version. Do not send a textual `HTTP/2` status line on HTTP/1.x.
 
-## Source locations
+## Resolution and verification
 
-- `src/framework/Response.php:17` — default textual protocol version is `2`.
-- `src/framework/Response.php:212`, `286`, `336`, and `515` — response methods construct `HTTP/` status lines from that value.
+`Response` now sets status codes with `http_response_code()` for normal sends, JSON sends, errors, explicit status changes, and redirects. It no longer constructs a textual status line from a configured protocol version.
+
+On 2026-09-24, the original HTTP/1.1 application requests returned valid `HTTP/1.1 400` and `HTTP/1.1 401` status lines; `curl.exe --http1.1 -i` exited successfully and the recorded JSON messages were unchanged. A temporary SAPI harness invoking `Response::error(..., 403)` also returned `HTTP/1.1 403`, and harness calls through `send`, `sendJson`, `status`, and `redirect` returned valid `HTTP/1.1` status lines for 202, 203, 204, and 307. `curl.exe` exited successfully for all harness responses. The isolated 403 harness validates the response method, not API ACL dispatch.
+
+The source change is in `src/framework/Response.php`, in `emitStatusCode()`, `redirect()`, `send()`, `sendJson()`, `error()`, and `status()`.
