@@ -2,7 +2,7 @@
 
 These documents are quarantined audit inputs, not current framework specifications:
 
-- `AutomaticEndpoints-Summary.md` — endpoint coverage, query parameters, authorization, and versioning claims.
+- `AutomaticEndpoints-Summary.md` — resolver/model/callable paths are source-traced in the canonical notes; CRUD, query parameters, authorization, and versioning claims remain pending.
 - `For-Reasoning-Architecture.md` — proposal containing unverified runtime profiles and CLI examples.
 - `Framework-Architecture.md` — architecture inventory, handler lifecycle, counts, and performance claims.
 - `QuickStart.md` — installation/bootstrap claims audited, but neither complete installation workflow was reproduced; API, database, auth, and CLI instructions remain pending.
@@ -20,7 +20,7 @@ These documents are quarantined audit inputs, not current framework specificatio
 - `PGSQL-Known-Issues.md` — historical compatibility summary and dated fix statuses have not been revalidated.
 - `Query-Builder-Comparison.md` — feature comparison remains unaudited; unmeasured performance figures are rejected as current measurements.
 - `Release-Status.md` — historical release snapshot; most feature, metric, and test-count claims remain unverified.
-- `Schemas.md` — legacy schema guide moved here during API audit; its schema-alone automatic CRUD claim is rejected, and its other claims remain unreviewed.
+- `Schemas.md` — generated descriptor shape and CLI source path are traced; schema-alone CRUD and automatic migration claims are rejected; DDL types, relation semantics, and runtime validation remain pending.
 - `SimpleRest-Complete-Docs.md` — broad feature claims and external-framework comparisons.
 - `SimpleRest-Philosophy.md` — design and performance assertions not established as current contracts.
 

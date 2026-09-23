@@ -1,6 +1,6 @@
 # Schemas — SimpleRest
 
-> **Audit status:** This legacy page is retained as an audit input, not current documentation. Its claim that a schema automatically creates complete REST endpoints is rejected for the current implementation; see the [claim-level audit](../../README.md#claim-level-findings-schema-generation-and-automatic-api). Other claims on this page remain unreviewed.
+> **Audit status:** This legacy page is retained as an audit input, not current documentation. The schema descriptor format and generator path are summarized in [canonical schema notes](../../../database/schemas.md). The schema-alone REST claim is rejected. Manual DDL builder behavior, individual type mappings, relation/pivot semantics, and runtime validation remain pending in the [claim-level audit](../../README.md#claim-level-findings-schema-generation-and-automatic-api).
 
 ## ¿Qué es un Schema?
 

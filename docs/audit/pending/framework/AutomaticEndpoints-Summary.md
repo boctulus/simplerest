@@ -1,4 +1,4 @@
-> **Documentation status: unverified.** Endpoint discovery, CRUD coverage, query parameters, authorization, and versioning claims on this page still need source tracing and an end-to-end run. See the [documentation audit](../../README.md).
+> **Audit status:** This legacy page is an audit input, not a current API guide. Source-level resource resolution, model-name derivation, and controller/method/callable checks are summarized in [canonical endpoint notes](../../../api/automatic-endpoints.md). Schema-only CRUD is rejected. Query parameters, authorization, version-specific dispatch, generated workflow, and end-to-end CRUD remain pending in the [claim-level audit](../../README.md#claim-level-findings-schema-generation-and-automatic-api).
 
 # Resumen Ejecutivo: Sistema de Endpoints Automáticos de SimpleRest
 
