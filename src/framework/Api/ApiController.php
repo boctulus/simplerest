@@ -234,7 +234,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                       
                 case 'PATCH':
                     if (($perms & 2 ) AND 1){
-                        $this->addCallable('putch');
+                        $this->addCallable('patch');
                     }                      
                 break;    
 
