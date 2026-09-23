@@ -38,9 +38,9 @@ class PHPParser extends NodeVisitorAbstract {
     
     /**
      * Converts static properties and methods into non-static ones.
-     * 
+     *
      * ----- WARNING : esta funcion contiene bugs -----
-     * 
+     *
      * It skips properties that are defined in all uppercase with an initial value different from null,
      * as they are treated as constants.
      * Also modifies static method calls to instance method calls.
@@ -124,7 +124,7 @@ class PHPParser extends NodeVisitorAbstract {
         if ($node instanceof Stmt\Class_) {
             $newStmts = [];
             $hasRemovedMethods = false;
-            
+
             foreach ($node->stmts as $stmt) {
                 if ($stmt instanceof Stmt\ClassMethod) {
                     $methodName = $stmt->name->toString();
