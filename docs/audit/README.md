@@ -35,6 +35,15 @@ Do not infer untested behavior from a class name, directory structure, another f
 | `composer test` runs the `unit-tests/` directory | `phpunit.xml` names `tests/` and `packages/boctulus/friendlypos-web/tests`; the root `tests/` directory is absent, while `unit-tests/` exists but is not named by a configured suite | Rejected | Correct the root README and leave suite execution/discovery unresolved until run |
 | The configured PHPUnit command is runnable and its result represents the repository test suite | The configuration has mismatched paths; no PHPUnit command was run in this audit | Unverified | Do not publish a pass/fail or coverage claim |
 
+## Claim-level finding: routing entry-point short-circuit
+
+| Claim | Evidence in this checkout | State | Documentation action |
+| --- | --- | --- | --- |
+| `index.php` checks enabled resolvers in web-router, CLI-router, front-controller order | `index.php` calls `WebRouter::resolve()`, `CliRouter::resolve()`, then `FrontController::resolve()` under the corresponding `config/config.php` switches; all three are true in the checked-in config | Verified (call order) | Do not imply every call runs for every request |
+| A matched `WebRouter` route permits the later entry-point stages to run | `WebRouter::resolve()` dispatches a matching closure/controller and exits; non-CLI, missing-method-bucket, and no-match paths return instead | Rejected | State the route-match short-circuit and the no-match continuation separately |
+| An unmatched HTTP request reaches `FrontController` when it is enabled | After a no-match return, `CliRouter::resolve()` returns immediately outside CLI; `index.php` then calls the enabled front controller | Verified for the checked-in switches and this no-match path | Keep other routing and deployment conditions explicit |
+| Existing router tests establish entry-point order and process exit behavior | `WebRouterTest` covers registration/compilation/specificity; `WebRouterFunctionalTest` covers HTTP route outcomes, including a not-found case; neither asserts `index.php` resolver ordering or the process-level exit boundary | Unverified | Treat the entry-point behavior as source-traced, not test-covered |
+
 ## Editorial rules
 
 1. Describe SimpleRest's own classes, configuration, and lifecycle. Do not present Laravel, Symfony, or another framework's architecture as SimpleRest architecture.
@@ -50,7 +59,7 @@ Do not infer untested behavior from a class name, directory structure, another f
 | --- | --- | --- | --- |
 | “Laravel-like” syntax/architecture as product framing | README and philosophy pages use the comparison as a defining contract; no source trace establishes it as an architectural specification | Rejected as architecture; inspiration/comparison is historical context | Remove it from normative overview and explain SimpleRest using its own APIs |
 | Fixed six-handler front-controller pipeline | `config/config.php` provides six configurable handler entries; `FrontController::resolve()` constructs and invokes them | Partial | Document the configured extension points; verify ordering and all execution paths before publishing a full lifecycle contract |
-| Router/front-controller startup | `index.php` invokes enabled web router, CLI router, and front controller in sequence | Verified for this entry point | Describe conditional startup and point out the configuration switches |
+| Startup call order in `index.php` | `index.php` checks web router, CLI router, and front controller in that order; an earlier resolver can terminate the process before later checks | Verified for call order only | Document ordering separately from per-request execution |
 | “Automatic CRUD for every table with a schema” | Existing guides make a broad claim; specific route, schema, database, and authorization conditions have not yet been tested end to end | Unverified | Trace resolver/controller/schema path and verify a clean example before documenting as a guarantee |
 | Composer dependency installation is sufficient to create an application | `composer.json` identifies a library package and has core PSR-4 mappings; the repository bootstrap also loads application/configuration paths | Unverified | Keep library consumption and repository/application installation separate; validate both independently |
 | Performance claims such as 3–10 ms bootstrap | No benchmark procedure or reproducible environment is cited in the public overview | Rejected as an unqualified fact | Remove until measured with a documented, reproducible benchmark |

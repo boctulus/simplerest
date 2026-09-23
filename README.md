@@ -15,7 +15,7 @@ The framework has its own runtime and conventions. Its behavior is defined by th
 - `packages/` — packages maintained in this repository.
 - `docs/` — topic documentation and the documentation audit record.
 
-`index.php` loads `app.php`, then invokes the enabled web router, CLI router, and front controller according to `config/config.php`. The front controller builds its request-processing handlers from the `front_behaviors` configuration. See [Architecture](docs/architecture.md) for the evidence-backed overview.
+`index.php` loads `app.php`, then checks the web router, CLI router, and front controller in `config/config.php` order. A web route that matches and dispatches exits before later stages. The front controller builds its request-processing handlers from `front_behaviors`. See [Architecture](docs/architecture.md) for the evidence-backed overview.
 
 ## Requirements
 
