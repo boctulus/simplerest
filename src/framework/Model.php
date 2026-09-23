@@ -12,7 +12,7 @@ use Boctulus\Simplerest\Core\Traits\QueryBuilderTrait;
 use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
 
 class Model 
-{	
+{
 	use ExceptionHandler;
 	use QueryBuilderTrait;
 	use SubResourceHandler;	
@@ -20,6 +20,31 @@ class Model
 	
 	public    $exec = true;
 	protected $schema;
+
+	/** Create an entity without changing the array-returning Query Builder API. */
+	public static function newInstance(array $attributes = [], bool $exists = false): ModelRecord
+	{
+		return new ModelRecord(new static(false), $attributes, $exists);
+	}
+
+	/** Hydrate one row from the current Query Builder filters. */
+	public function firstRecord(): ?ModelRecord
+	{
+		$row = $this->first();
+		return $row ? new ModelRecord($this, $row, true) : null;
+	}
+
+	/** Hydrate rows from the current Query Builder filters. */
+	public function getRecords(): array
+	{
+		return array_map(fn (array $row) => new ModelRecord($this, $row, true), $this->get());
+	}
+
+	/** Find a row by the schema key (or id without a schema). */
+	public function findRecord($id): ?ModelRecord
+	{
+		return (clone $this)->find($id)->firstRecord();
+	}
 	
 
 	function __construct(bool $connect = false, $schema = null, bool $load_config = true)

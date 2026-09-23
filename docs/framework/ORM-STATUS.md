@@ -1,61 +1,45 @@
-# ORM — Estado Actual
+# ORM — Estado comprobado
 
-> **⚠️ Este documento existe para aclarar el estado del ORM en SimpleRest.**
+Actualizado: 2026-09-23.
 
-## El ORM No es Funcional
+## Arquitectura real
 
-Se intentó implementar un ORM al estilo Laravel/Eloquent (con Active Record, relaciones lazy loading, etc.) pero **no es funcional**. El código existe en el repositorio pero no está operativo ni debe usarse en producción.
+`Model` incorpora `QueryBuilderTrait` y conserva la API existente de consultas. `get()` y `first()` devuelven arrays; `create()`, `update()`, `delete()`, filtros, joins, orden y límites siguen ejecutándose en el Query Builder. `Model::exists()` comprueba si la consulta encuentra filas.
 
-## Qué Usar en su Lugar
+La capa de entidad es `ModelRecord`. `Model::newInstance($attributes, $exists)` crea una entidad; `firstRecord()`, `getRecords()` y `findRecord($id)` convierten resultados del Query Builder en entidades. `ModelRecord::exists()` representa el estado de persistencia de esa entidad. Esta separación evita alterar los significados de `Model::exists()`, `first()` y `get()` usados por el resto del framework.
 
-SimpleRest tiene un **Query Builder poderoso y probado** que trabaja con **arrays planos** (no objetos ORM):
+La dependencia de consultas es `ModelRecord → Model / QueryBuilderTrait → DB / PDO`. La entidad no construye SQL; reutiliza la conexión del modelo o la conexión actual de `DB`. Sus operaciones de escritura crean un Query Builder limpio del mismo modelo y delegan en `create()`, `update()` y `delete()`; las operaciones existentes de schema, fillable, hooks y soft delete quedan en esa capa.
 
-```php
-// ✅ Query Builder — la vía correcta
-$users = DB::table('users')
-    ->where('active', 1)
-    ->orderBy('name')
-    ->get();
-
-// ✅ Model con Query Builder
-$userModel = new User(true);
-$users = $userModel->where('role', 'admin')->get();
-```
-
-### Ventajas del Query Builder sobre ORM
-
-- **Arrays planos**: menor overhead de memoria, más rápido
-- **Soporte multi-DB**: MySQL, PostgreSQL, SQLite, SQL Server, Oracle, etc.
-- **AutoJoins**: desde schemas, relaciones inferidas por FK
-- **Sub-Resources**: CRUD anidado desde schemas
-- **Paginación integrada**: `Paginator` class
-- **Transacciones**: `DB::beginTransaction()`, `commit()`, `rollback()`
-- **Caché de queries**: `DB::table('x')->cached()->get()`
-
-### Documentación Relacionada
-
-| Documento | Contenido |
-|-----------|-----------|
-| [`QueryBuilder.md`](./QueryBuilder.md) | Documentación completa del QB |
-| [`SimpleRest-API-Rest.md`](./SimpleRest-API-Rest.md) | API REST queries (filter, sort, paginate) |
-| [`AutomaticEndpoints-Summary.md`](./AutomaticEndpoints-Summary.md) | Endpoints REST automáticos |
-
-### Futuro
-
-No hay planes inmediatos para resucitar el ORM. El Query Builder cubre todos los casos de uso con mejor performance y simplicidad. Si en el futuro se implementa un ORM, será como capa opcional sobre el QB existente.
-
----
-
-## Model Base (`src/framework/Model.php`)
-
-El modelo base (`Model`) sí es funcional pero actúa como **wrapper del Query Builder**, no como ORM:
+## Flujos comprobados
 
 ```php
-class UserModel extends Model {
-    protected $table_name = 'users';
-}
+$record = UserModel::newInstance(['name' => 'Ana']);
+$record->save();
 
-$users = (new UserModel(true))->where('active', 1)->get();
+$record = (new UserModel(true))->findRecord($record->id);
+$record->name = 'Ana María';
+$record->save();
+$record->delete();
+
+$records = (new UserModel(true))
+    ->where(['active' => 1])
+    ->orderBy(['name' => 'ASC'])
+    ->limit(10)
+    ->getRecords();
 ```
 
-Devuelve **arrays**, no objetos. Soporta hooks de ciclo de vida: `boot()`, `onReading()`, `onCreating()`, `onCreated()`, etc.
+Los tests de SQLite comprueban creación, lectura, hidratación, filtro, orden, límite, actualización de campos modificados, aislamiento por clave primaria, borrado, estado de persistencia y un schema con clave primaria personalizada. `first()` sigue devolviendo un array. La prueba de escritura utiliza las operaciones reales del Query Builder sobre una tabla SQLite temporal.
+
+## Límites y decisiones pendientes
+
+- No hay lazy loading ni API de relaciones entre entidades implementada. El Query Builder ya ofrece `join()`, `joinTo()` y `connectTo()` para consultas relacionadas. La semántica de relaciones de objetos no puede deducirse de la implementación ni de los tests y requiere una decisión explícita antes de añadirse.
+- Las llamadas estáticas como `UserModel::where(...)` de la documentación interna antigua no están implementadas. Los métodos homónimos existentes son de instancia; no se cambió ese contrato.
+- `ModelRecord::save()` necesita una tabla configurada. Para una entidad persistida también necesita su clave primaria original; modificar esa clave en la entidad no está admitido. Las consultas por lotes y actualizaciones masivas siguen correspondiendo al Query Builder.
+- La documentación en `docs/framework/_internal/to-do/orm/` contiene aspiraciones antiguas y ejemplos Laravel-like. No constituye prueba de funcionalidades presentes.
+
+## Validación
+
+- `php vendor/phpunit/phpunit/phpunit unit-tests/query-builder --filter 'SimpleORMTest|DB_TransactionTest'`: 10 tests, 33 assertions, todos correctos.
+- `php vendor/phpunit/phpunit/phpunit unit-tests/query-builder`: 65 tests, 192 assertions, 9 errores, 11 fallos, 1 omitido en la ejecución del 2026-09-23. Los errores incluyen PostgreSQL inaccesible, fixtures/columnas ausentes y resolución de modelos de test; los fallos restantes son discrepancias de SQL esperado en tests del Query Builder. No son prueba de los flujos de entidad nuevos ni fueron corregidos en esta etapa.
+
+Para consultas de alto volumen que no necesitan entidades, usar directamente `Model`/`DB::table()` y sus arrays. Véase [QueryBuilder.md](./QueryBuilder.md).
