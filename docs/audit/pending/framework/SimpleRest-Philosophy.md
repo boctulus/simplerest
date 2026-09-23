@@ -1,4 +1,4 @@
-> **Documentation status: historical and unverified.** This page contains comparisons, implementation claims, and performance assertions that have not been established as current contracts. See the [documentation audit](../audit/README.md) and [current documentation map](../README.md).
+> **Documentation status: historical and unverified.** This page contains comparisons, implementation claims, and performance assertions that have not been established as current contracts. See the [documentation audit](../../README.md) and [current documentation map](../../../README.md).
 
 # SimpleRest — Philosophy and Performance Principles
 

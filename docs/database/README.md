@@ -1,5 +1,9 @@
 # Database
 
-Database guides are being audited against the connection, query, schema, migration, and model implementations. Driver names and feature support will be documented only after checking their actual code paths and limitations.
+## Verified documentation
 
-See the [audit register](../audit/README.md) for the current evidence standard.
+No database usage guide has completed audit yet.
+
+## Pending audit
+
+Connections, query behavior, schemas, migrations, models, automatic joins, and driver support are being traced against implementation and tests. See the [pending audit area](../audit/pending/README.md) and [evidence rules](../audit/README.md).

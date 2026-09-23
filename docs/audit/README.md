@@ -53,3 +53,7 @@ Do not infer untested behavior from a class name, directory structure, another f
 This is the initial baseline, not a completed audit of every topic. Next, audit in dependency order: clean installation and bootstrap; routing/request lifecycle; database connections and query behavior; schemas and automatic API resolution; authentication and ACL; CLI and migrations; then optional integrations, views, deployment, and performance. For each page, capture implementation, configuration, tests, and runnable evidence before publishing a verified status.
 
 The archived original is [`../framework/_archive/DOC-Simplerest.txt`](../framework/_archive/DOC-Simplerest.txt). It remains unchanged as historical evidence.
+
+## Quarantined legacy pages
+
+Pages under [`pending/`](pending/README.md) are retained as audit inputs and are not part of the user documentation. In particular, `pending/framework/For-Reasoning-Architecture.md` is a proposal; its runtime profiles and command examples have not been verified as implemented SimpleRest features.

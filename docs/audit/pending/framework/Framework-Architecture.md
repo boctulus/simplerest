@@ -1,4 +1,4 @@
-> **Documentation status: unverified.** The inventories, counts, lifecycle, and architectural descriptions on this page have not been reconciled with the current checkout. Use the [evidence-backed architecture overview](../architecture.md) and [documentation audit](../audit/README.md) instead.
+> **Documentation status: unverified.** The inventories, counts, lifecycle, and architectural descriptions on this page have not been reconciled with the current checkout. Use the [evidence-backed architecture overview](../../../architecture.md) and [documentation audit](../../README.md) instead.
 
 # Arquitectura del Framework — SimpleRest
 
