@@ -31,7 +31,8 @@
 	},
    "scripts":{
       "test": "phpunit --colors=always unit-tests",
-      "cs": "phpstan analyse src --level=7"
+      "cs": "phpstan analyse src --level=7",
+      "post-root-package-install": "@php scripts/composer/create-project.php"
    },
    "extra":{
       "google/apiclient-services":[
