@@ -95,26 +95,32 @@ namespace {
     ApiAuthorizationProbeHarness::$request = new ApiAuthorizationProbeRequest();
 
     \Boctulus\Simplerest\Core\Libs\Config::set('error_handling', false);
+    \Boctulus\Simplerest\Core\Libs\Config::set('remove_api_slug', false);
+    \Boctulus\Simplerest\Core\Libs\Config::set('method_override', [
+        'by_url' => ($input['override_source'] ?? 'header') === 'url',
+        'by_header' => ($input['override_source'] ?? 'header') === 'header',
+    ]);
 
     $_SERVER['REQUEST_METHOD'] = strtoupper($input['original_method']);
     $_SERVER['REQUEST_URI'] = '/api/v1/widgets';
-
-    $controller = new ApiAuthorizationProbeController();
-
     \Boctulus\Simplerest\Core\Request::setInstance(null);
-    \Boctulus\Simplerest\Core\Libs\Config::set('remove_api_slug', false);
-    \Boctulus\Simplerest\Core\Libs\Config::set('method_override', [
-        'by_url' => false,
-        'by_header' => true,
-    ]);
+    \Boctulus\Simplerest\Core\Request::getInstance();
 
-    $request = \Boctulus\Simplerest\Core\Request::getInstance();
     $headers = new \ReflectionProperty(\Boctulus\Simplerest\Core\Request::class, 'headers');
     $headers->setAccessible(true);
-    $headers->setValue(null, $input['override_method'] === null
-        ? []
-        : ['x-http-method-override' => strtoupper($input['override_method'])]
+    $headers->setValue(null, ($input['override_source'] ?? 'header') === 'header' && $input['override_method'] !== null
+        ? ['x-http-method-override' => strtoupper($input['override_method'])]
+        : []
     );
+
+    $query = new \ReflectionProperty(\Boctulus\Simplerest\Core\Request::class, 'query_arr');
+    $query->setAccessible(true);
+    $query->setValue(null, ($input['override_source'] ?? 'header') === 'url' && $input['override_method'] !== null
+        ? ['_method' => strtoupper($input['override_method'])]
+        : []
+    );
+
+    $controller = new ApiAuthorizationProbeController();
 
     [, $dispatchMethod] = (new \Boctulus\Simplerest\Core\Handlers\ApiHandler())
         ->resolve(['api', 'v1', 'widgets']);

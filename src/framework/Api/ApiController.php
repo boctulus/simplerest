@@ -8,6 +8,7 @@ use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Libs\Debug;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Url;
+use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Libs\Time;
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Arrays;  
@@ -116,8 +117,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         // ];
     
         $acl = acl();
+        $method = strtoupper((string) Request::getInstance()->method());
 
-        switch ($_SERVER['REQUEST_METHOD']) {
+        switch ($method) {
             case 'GET':
                 if ($acl->hasSpecialPermission('read_all')){
                     $this->addCallable('get');
@@ -258,7 +260,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         ImpersonationManager::getInstance()->enforceReadOnly(
             $imp_ctx,
-            $_SERVER['REQUEST_METHOD'],
+            $method,
             parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '',
             $this->table_name
         );

@@ -28,6 +28,7 @@ class Request  implements \ArrayAccess, Arrayable
     protected        $as_object = true;
     protected ?array $immutable_query = null;
     protected ?array $immutable_headers = null;
+    protected ?string $effective_method = null;
     protected bool $has_immutable_body = false;
     protected $immutable_body = null;
 
@@ -347,6 +348,7 @@ class Request  implements \ArrayAccess, Arrayable
         $copy = clone $this;
         $copy->immutable_query = $this->getQuery() ?? [];
         $copy->immutable_query[$key] = $value;
+        $copy->effective_method = null;
         return $copy;
     }
 
@@ -356,6 +358,7 @@ class Request  implements \ArrayAccess, Arrayable
         $copy = clone $this;
         $copy->immutable_query = $this->getQuery() ?? [];
         unset($copy->immutable_query[$key]);
+        $copy->effective_method = null;
         return $copy;
     }
 
@@ -365,6 +368,7 @@ class Request  implements \ArrayAccess, Arrayable
         $copy = clone $this;
         $copy->immutable_headers = $this->headers() ?? [];
         $copy->immutable_headers[strtolower($name)] = is_array($value) ? implode(', ', $value) : $value;
+        $copy->effective_method = null;
         return $copy;
     }
 
@@ -378,6 +382,7 @@ class Request  implements \ArrayAccess, Arrayable
         $currentValues = $current === null ? [] : (is_array($current) ? $current : [$current]);
         $newValues = is_array($value) ? $value : [$value];
         $copy->immutable_headers[$key] = implode(', ', array_merge($currentValues, $newValues));
+        $copy->effective_method = null;
         return $copy;
     }
 
@@ -387,6 +392,7 @@ class Request  implements \ArrayAccess, Arrayable
         $copy = clone $this;
         $copy->immutable_headers = $this->headers() ?? [];
         unset($copy->immutable_headers[strtolower($name)]);
+        $copy->effective_method = null;
         return $copy;
     }
 
@@ -551,11 +557,22 @@ class Request  implements \ArrayAccess, Arrayable
 
     // Antes method()
     function method(){
+        // Keep routing and authorization on one method even after consuming a URL override.
+        if ($this->effective_method !== null){
+            return $this->effective_method;
+        }
+
         $config = Config::get();
 
         $asked_method = null;
         if ($config['method_override']['by_url'] ?? null){
-            $asked_method  =  $this->shiftQuery('_method');
+            $asked_method = $this->getQuery('_method');
+
+            if ($this->immutable_query !== null){
+                unset($this->immutable_query['_method']);
+            } elseif (is_array(static::$query_arr)) {
+                unset(static::$query_arr['_method']);
+            }
         }
 
         if ($asked_method == null && ($config['method_override']['by_header'] ?? null)){
@@ -566,7 +583,9 @@ class Request  implements \ArrayAccess, Arrayable
             $asked_method = $_SERVER['REQUEST_METHOD'] ?? NULL;
         }
         
-        return $asked_method;
+        $this->effective_method = $asked_method;
+
+        return $this->effective_method;
     }
 
     static function ip(){
