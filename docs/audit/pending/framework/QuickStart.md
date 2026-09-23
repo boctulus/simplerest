@@ -355,7 +355,7 @@ php com doc generate
 | Topic | Documentation |
 |-------|--------------|
 | Routing | [`Routing`](../../../framework/Routing.md) |
-| Query Builder | [`QueryBuilder`](../../../framework/QueryBuilder.md) |
+| Query Builder | [`QueryBuilder`](./QueryBuilder.md) — pending audit input |
 | ORM / Models | [legacy ORM notes (pending audit)](./ORM-STATUS.md) |
 | Middleware | [`Middlewares`](../../../framework/Middlewares.md) |
 | ACL | [`ACL`](../../../framework/ACL.md) |

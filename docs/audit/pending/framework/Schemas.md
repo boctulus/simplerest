@@ -171,8 +171,8 @@ Ver: [`AutomaticEndpoints-Summary.md`](./AutomaticEndpoints-Summary.md)
 
 ## Ver También
 
-- [`QueryBuilder.md`](../../../framework/QueryBuilder.md) — legacy Query Builder page
-- [`AutoJoins.md`](../../../framework/AutoJoins.md) — legacy AutoJoins page
-- [`SubResources.md`](../../../framework/SubResources.md) — legacy sub-resource page
+- [`QueryBuilder.md`](./QueryBuilder.md) — legacy Query Builder page (pending audit)
+- [`AutoJoins.md`](./AutoJoins.md) — legacy AutoJoins page (pending audit)
+- [`SubResources.md`](./SubResources.md) — legacy sub-resource page
 - [`Validation.md`](../../../framework/Validation.md) — legacy validation page
 - [`SimpleRest-API-Rest.md`](../../../framework/SimpleRest-API-Rest.md) — legacy REST page

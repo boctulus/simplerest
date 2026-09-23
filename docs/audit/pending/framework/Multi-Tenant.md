@@ -74,6 +74,6 @@ DB::connection('tenant_' . $tenantId)->table('users')->get();
 
 ## Ver También
 
-- [`QueryBuilder.md`](../../../../docs/framework/QueryBuilder.md) — legacy Query Builder material, pending audit
+- [`QueryBuilder.md`](./QueryBuilder.md) — legacy Query Builder material, pending audit
 - [`Schemas.md`](./Schemas.md) — legacy schema material (pending audit)
 - [`DB` implementation](../../../../src/framework/Libs/DB.php)
