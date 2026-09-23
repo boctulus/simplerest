@@ -1,3 +1,5 @@
+> **Documentation status: historical and unverified.** This comparison document is not a current product specification. Verify every SimpleRest claim against source before reuse; external framework comparisons do not define SimpleRest architecture. See the [documentation audit](../audit/README.md).
+
 # Documentación Completa de SimpleRest Framework: Características y Comparación con Laravel y Supabase
 
 ## Tabla de Contenidos
