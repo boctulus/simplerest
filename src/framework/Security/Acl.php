@@ -170,6 +170,10 @@ abstract class Acl implements IAcl
     }
     
     public function addResourcePermissions(string $table, Array $tb_permissions, $to_role = null) {
+        if ($table === '*'){
+            throw new \InvalidArgumentException("'*' is reserved for global read_all/write_all capabilities and cannot be used as a resource name");
+        }
+
         if ($to_role != null){
             $this->current_role = $to_role;
         }
