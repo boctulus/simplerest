@@ -5,7 +5,7 @@ https://simplerest.mapapulque.ro/dumb/test?from_email=admin@simplerest.mapapulqu
 
 	'Host' => 'smtp.easyname.com',
 	'Username' => '162997mail6',
-	'Password' => 'Hvr0tf9Is#',
+	'Password' => '',
 	'Port' => 587,
     'SMTPAuth' => true,
 	'SMTPSecure' => 'ssl',
@@ -19,7 +19,7 @@ https://simplerest.mapapulque.ro/dumb/test?from_email=admin@simplerest.mapapulqu
 
 	'Host' => 'smtp.gmail.com',
 	'Username' => 'boctulus@gmail.com',
-	'Password' => 'boctulfelipitoTEamoMUCHO2K!',
+	'Password' => '',
 	'Port' => 465,
 	'Secure' => 'ssl',
 	'Kim_domain' => '127.0.0.1',

@@ -147,7 +147,7 @@ class PostmanGenerator
         $defaultBody = [
             "name" => "John Doe 2",
             "email" => "john@example2.com",
-            "password" => "password123",
+            "password" => '',
             "password_confirmation" => "password123"
         ];
         
@@ -164,7 +164,7 @@ class PostmanGenerator
     static function loginUser(array $fields = []) {
         $defaultBody = [           
             "email" => "john@example2.com",
-            "password" => "password123"
+            "password" => ''
         ];
         
         $body = empty($fields) ? $defaultBody : array_fill_keys($fields, "");

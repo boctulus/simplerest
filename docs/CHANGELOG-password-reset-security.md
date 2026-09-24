@@ -102,8 +102,8 @@ updatePasswordFromReset(int $userId, string $password): bool
 ### `.env` (ya existente, sin cambios necesarios)
 
 ```env
-TOKENS_ACCSS_SECRET_KEY='...'   # >=32 chars (access token)
-TOKENS_EMAIL_SECRET_KEY='...'   # >=32 chars, DIFERENTE del access
+TOKENS_ACCSS_SECRET_KEY=
+TOKENS_EMAIL_SECRET_KEY=
 ```
 
 ### `config/config.php`

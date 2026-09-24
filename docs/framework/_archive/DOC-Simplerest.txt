@@ -10981,7 +10981,7 @@ PostmanGenerator::addCustomEndpoint(
     group: 'auth',              // Carpeta (opcional)
     body: [                     // Cuerpo de la petición (opcional)
         'email' => 'user@example.com',
-        'password' => '123456'
+        'password' => ''
     ]
 );
 ```

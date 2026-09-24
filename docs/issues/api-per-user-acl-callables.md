@@ -4,7 +4,7 @@
 
 **Confidence:** source behavior and the isolated regression probe passed; no live DB-backed per-user permission request was run
 
-**Severity:** high; can deny a per-user grant or preserve a role grant despite a per-user mask
+**Severity:** resolved in the focused controller path; live DB-backed authorization remains unverified
 
 ## Finding
 
@@ -22,7 +22,7 @@ php vendor/bin/phpunit --no-coverage unit-tests/api/ApiAuthorizationDispatchTest
 
 The isolated probe uses the real `ApiController` constructor and `ApiHandler::resolve()` with fake auth, ACL, request, and model providers. The earlier characterization observed:
 
-- Original POST, `create` bit only (`4`), no role grant: dispatch is `post`; callables contain `get`, not `post`.
+- Before the fix, original POST with the `create` bit only (`4`) and no role grant dispatched as `post`, while callables contained `get`, not `post`.
 - Original PATCH, `update` bit only (`2`), no role grant: before the correction, dispatch was `patch` while callables contained `putch`; after the correction, the focused test confirms `patch` is callable and dispatch is allowed.
 - Original POST, role `create` grant plus a non-null per-user mask of `0`: `post` remained callable before the fix.
 
@@ -36,7 +36,7 @@ The FrontController checks exact membership in `getCallable()` before calling th
 
 In the pre-merge `app/core/api/v1/ApiController.php`, the operation map associated `create` with `post` and `update` with `put` and `patch`. The 2020 merge commit `08ab30db0c` added the per-user mask branch with the `get` and `putch` tokens. Repository-wide search found no other caller of `putch` or contract relying on `get` for POST. No test covering these exact cases existed before this audit.
 
-That evidence supports treating both spellings as probable mapping errors, not as established compatibility behavior. The PATCH token was corrected after the focused reproduction. The POST token and the mask's failure to replace role-derived callables remain open findings.
+That evidence supported correcting both callable tokens and applying a non-null table mask in place of role-derived resource callables. The focused regression now confirms POST, PATCH, zero-mask replacement, and global-capability behavior. Database-backed permission loading and effects remain unverified.
 
 ## Expected behavior
 

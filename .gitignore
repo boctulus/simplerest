@@ -17,3 +17,6 @@ app/Controllers/DumbController.php
 automation/
 composer.json.tmp
 exports/main_db_export.sql
+/app/Controllers/DumbController.php
+/app/controllers/DumbController.php
+/old/app/controllers/DumbController.php

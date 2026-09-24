@@ -18,7 +18,7 @@ class InstallController extends ConsoleController
         $data = [
             "username" => "adm1",
             "email" => "adm1@mail.com",
-            "password" => "gogogo",
+            "password" => '',
             "is_active" => 1
         ];
 

@@ -67,7 +67,7 @@ class SignatureTestController extends Controller
                 "rut"  => "18280886-5",
                 "serie_ci"  => "B52947255",
                 "email"  => "correo.pruebas.qa7@gmail.com",
-                "password"  => "prueba123456"
+                "password"  => ''
             ]);
 
             $cli = $this->sdk->getClient();
