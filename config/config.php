@@ -294,7 +294,7 @@ return [
 	'claude_api_key'      	 => Env::get('CLAUDE_API_KEY'),
 	
 	'google_console_api_key' => Env::get('GOOGLE_CONSOLE_API_KEY'),
-	'google_maps_api_key'    => 'AIzaSyAJI6R4DUNCfwvQYZJZGltf9qztLnQMzKY',
+	'google_maps_api_key'    => Env::get('GOOGLE_MAPS_API_KEY'),
 	
 	'sendinblue_api_key' => Env::get('SENDINBLUE_API_KEY'),
 
