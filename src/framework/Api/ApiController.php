@@ -190,7 +190,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         if ($perms !== NULL)
         {
             // individual permissions *replaces* role permissions
-            switch ($_SERVER['REQUEST_METHOD']) {
+            switch ($method) {
                 /*
                     list_all        64
                     show_all        32 

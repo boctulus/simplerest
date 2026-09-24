@@ -83,6 +83,17 @@ class ApiAuthorizationDispatchTest extends TestCase
         $this->assertTrue($out['dispatch_allowed']);
     }
 
+    public function test_header_override_uses_effective_method_for_table_update_permission(): void
+    {
+        $out = $this->probe('POST', 'PATCH', [], 2);
+
+        $this->assertSame('POST', $out['original_method']);
+        $this->assertSame('patch', $out['dispatch_method']);
+        $this->assertContains('patch', $out['callables']);
+        $this->assertNotContains('post', $out['callables']);
+        $this->assertTrue($out['dispatch_allowed']);
+    }
+
     public function test_url_override_from_patch_to_post_uses_same_method_for_acl_and_dispatch(): void
     {
         $out = $this->probe('PATCH', 'POST', ['create' => true], null, 'url');
