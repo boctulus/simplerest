@@ -1,5 +1,7 @@
 # Release Status — SimpleRest Framework
 
+> **Audit status:** This is a historical status snapshot, not a current release assessment. The claim of zero-config CRUD from table names is rejected; the separate advanced-filtering claim remains unverified pending the database and API audit. Other status, metric, and test-count claims on this page have not been revalidated. See the [claim-level audit](../../README.md#claim-level-findings-schema-generation-and-automatic-api).
+
 > **Generated**: 2026-04-12
 > **Version**: 1.0.0
 > **Branch**: master

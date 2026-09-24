@@ -10,12 +10,12 @@ The framework has its own runtime and conventions. Its behavior is defined by th
 - `app/` — application controllers, models, commands, schemas, views, and modules used by this checkout.
 - `config/` — application configuration and route registration.
 - `database/` — database migration files used by this application.
-- `unit-tests/` — PHPUnit test suite.
+- `unit-tests/` — repository test files; this directory is not listed in the current `phpunit.xml` test suites.
 - `examples/` — example code.
 - `packages/` — packages maintained in this repository.
 - `docs/` — topic documentation and the documentation audit record.
 
-`index.php` loads `app.php`, then invokes the enabled web router, CLI router, and front controller according to `config/config.php`. The front controller builds its request-processing handlers from the `front_behaviors` configuration. See [Architecture](docs/architecture.md) for the evidence-backed overview.
+`index.php` loads `app.php`, then checks the web router, CLI router, and front controller in `config/config.php` order. A web route that matches and dispatches exits before later stages. The front controller builds its request-processing handlers from `front_behaviors`. See [Architecture](docs/architecture.md) for the evidence-backed overview.
 
 ## Requirements
 
@@ -36,7 +36,7 @@ composer test
 composer cs
 ```
 
-`composer test` invokes PHPUnit against `unit-tests`; `composer cs` invokes PHPStan against `src` at level 7. Run checks in an environment with the repository dependencies installed.
+`composer test` invokes `phpunit --colors=always`. The current `phpunit.xml` points to `tests/` and `packages/boctulus/friendlypos-web/tests`; the root `tests/` directory is absent and `unit-tests/` is not configured as a suite. Whether the command runs successfully or discovers the intended repository tests has not been verified. `composer cs` invokes PHPStan against `src` at level 7.
 
 ## Contributing
 

@@ -88,6 +88,6 @@ php com system clear
 
 ## Ver También
 
-- [`QueryBuilder.md`](./QueryBuilder.md) — query caching
+- [`QueryBuilder.md`](../audit/pending/framework/QueryBuilder.md) — legacy Query Builder/cache claims (pending audit)
 - [`Performance.md`](./Performance.md) — estrategias de optimización
-- [`config/config.php`](../config/config.php) — configuración de caché
+- [`config/config.php`](../../config/config.php) — configuración de caché
