@@ -39,9 +39,13 @@ Local raw-TCP HTTP probes observed 400 for `Authorization: Basic dGVzdA==`, with
 
 ## Current configuration and application integrations
 
-<code>config/config.php</code> names the users table and reads the access, refresh, and email-token secrets from environment variables. User field names are read from the configured user model; the legacy <code>users_password_field</code>, <code>users_email_field</code>, and <code>users_username_field</code> configuration example is not present in the current configuration.
+<code>config/config.php</code> names the users table and reads the access, refresh, and email-token secrets from environment variables. It also reads the server-side Maps key from <code>GOOGLE_MAPS_API_KEY</code>; keep the example value blank and provide the key only outside source control. <code>APP_DEBUG</code> and <code>LOG_SQL</code> use boolean environment parsing and default to false. User field names are read from the configured user model; the legacy <code>users_password_field</code>, <code>users_email_field</code>, and <code>users_username_field</code> configuration example is not present in the current configuration.
 
-This checkout sets the access-token lifetime to <code>60 * 15 * 50000</code> seconds (45,000,000 seconds, about 521 days), the refresh-token lifetime to 315,360,000 seconds, and the email-token lifetime to 3,600 seconds. These are current source values, not recommendations or runtime-verified effective settings.
+The source configuration sets access-token lifetime to 3,600 seconds (one hour), refresh-token lifetime to 1,209,600 seconds (14 days), and email-token lifetime to 3,600 seconds. <code>AuthController::gen_jwt()</code> uses the configured lifetime unless a caller supplies an explicit override. These are source values; valid-credential token issuance was not verified in this audit.
+
+The Google Maps key previously present in source also occurs in the local <code>origin/master</code> history and must be treated as exposed. Rotate it, then restrict its replacement to the Geocoding API and trusted server IPs after reviewing usage. This checkout cannot verify Google Cloud credential state; complete this step before release.
+
+Historical tracked <code>.env</code> revisions also contain non-empty credential-like values. Some may be placeholders; their validity and provider-side rotation were not verified. See the open [credential review and rotation issue](../issues/historical-environment-credentials-require-rotation.md); complete it before release.
 
 The secure <code>pwdv</code> password-reset flow in this checkout is implemented by <code>app/Controllers/MyAuthController.php</code>, an application override. It is not the generic core <code>AuthController</code> contract. The current app also contains Google/Facebook configuration and application controllers; their presence does not establish a core OAuth login integration.
 

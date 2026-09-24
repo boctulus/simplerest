@@ -11,7 +11,8 @@ class ApiAuthorizationDispatchTest extends TestCase
         ?string $overrideMethod,
         array $rolePermissions,
         ?int $tablePermissions,
-        string $overrideSource = 'header'
+        string $overrideSource = 'header',
+        array $specialPermissions = []
     ): array
     {
         $fixture = __DIR__ . '/fixtures/api_authorization_dispatch_probe.php';
@@ -21,6 +22,7 @@ class ApiAuthorizationDispatchTest extends TestCase
             'override_source' => $overrideSource,
             'role_permissions' => $rolePermissions,
             'table_permissions' => $tablePermissions,
+            'special_permissions' => $specialPermissions,
         ], JSON_THROW_ON_ERROR));
 
         $pipes = [];
@@ -43,14 +45,14 @@ class ApiAuthorizationDispatchTest extends TestCase
         return json_decode($stdout, true, 512, JSON_THROW_ON_ERROR);
     }
 
-    public function test_user_post_bitmask_adds_get_instead_of_post(): void
+    public function test_user_post_bitmask_adds_post_callable(): void
     {
         $out = $this->probe('POST', null, [], 4);
 
         $this->assertSame('post', $out['dispatch_method']);
-        $this->assertContains('get', $out['callables']);
-        $this->assertNotContains('post', $out['callables']);
-        $this->assertFalse($out['dispatch_allowed']);
+        $this->assertNotContains('get', $out['callables']);
+        $this->assertContains('post', $out['callables']);
+        $this->assertTrue($out['dispatch_allowed']);
     }
 
     public function test_user_patch_bitmask_adds_dispatched_patch_callable(): void
@@ -63,13 +65,65 @@ class ApiAuthorizationDispatchTest extends TestCase
         $this->assertTrue($out['dispatch_allowed']);
     }
 
-    public function test_user_zero_bitmask_does_not_remove_role_callable(): void
+    public function test_user_zero_bitmask_replaces_role_callable(): void
     {
         $out = $this->probe('POST', null, ['create' => true], 0);
 
-        $this->assertContains('post', $out['callables']);
+        $this->assertNotContains('post', $out['callables']);
         $this->assertFalse(in_array('get', $out['callables'], true));
-        $this->assertTrue($out['dispatch_allowed']);
+        $this->assertFalse($out['dispatch_allowed']);
+    }
+
+    public function test_user_update_and_delete_bits_match_dispatched_callables(): void
+    {
+        foreach ([['PUT', 2, 'put'], ['DELETE', 1, 'delete']] as [$method, $mask, $callable]) {
+            $out = $this->probe($method, null, [], $mask);
+
+            $this->assertSame(strtolower($method), $out['dispatch_method']);
+            $this->assertContains($callable, $out['callables']);
+            $this->assertTrue($out['dispatch_allowed']);
+        }
+    }
+
+    public function test_user_read_mask_replaces_role_grants_and_controls_owner_scope_bypass(): void
+    {
+        $rolePermissions = ['list' => true, 'show' => true, 'list_all' => true, 'show_all' => true];
+        $list = $this->probe('GET', null, $rolePermissions, 16);
+        $show = $this->probe('GET', null, $rolePermissions, 8);
+
+        $this->assertContains('get', $list['callables']);
+        $this->assertSame([
+            'is_listable' => true,
+            'is_retrievable' => false,
+            'may_list_all' => false,
+            'may_show_all' => false,
+        ], $list['read_state']);
+        $this->assertContains('get', $show['callables']);
+        $this->assertSame([
+            'is_listable' => false,
+            'is_retrievable' => true,
+            'may_list_all' => false,
+            'may_show_all' => false,
+        ], $show['read_state']);
+    }
+
+    public function test_global_acl_capabilities_remain_effective_with_user_mask(): void
+    {
+        $read = $this->probe('GET', null, [], 0, 'header', ['read_all']);
+        $this->assertContains('get', $read['callables']);
+        $this->assertSame([
+            'is_listable' => true,
+            'is_retrievable' => true,
+            'may_list_all' => true,
+            'may_show_all' => true,
+        ], $read['read_state']);
+
+        foreach ([['POST', 'post'], ['PUT', 'put'], ['PATCH', 'patch'], ['DELETE', 'delete']] as [$method, $callable]) {
+            $write = $this->probe($method, null, [], 0, 'header', ['write_all']);
+
+            $this->assertContains($callable, $write['callables']);
+            $this->assertTrue($write['dispatch_allowed']);
+        }
     }
 
     public function test_header_override_uses_effective_method_for_acl_and_dispatch(): void

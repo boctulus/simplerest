@@ -34,6 +34,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
     protected $is_listable;
     protected $is_retrievable;
+    protected $user_table_permissions;
     protected $callable = [];
     protected $config;
     protected $impersonated_by;
@@ -118,10 +119,20 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     
         $acl = acl();
         $method = strtoupper((string) Request::getInstance()->method());
+        // A table-specific user mask replaces role resource grants; global capabilities remain effective.
+        $perms = $acl->getTbPermissions($this->table_name, false);
+        $this->user_table_permissions = $perms;
 
         switch ($method) {
             case 'GET':
-                if ($acl->hasSpecialPermission('read_all')){
+                if ($perms !== NULL) {
+                    $this->is_listable = $this->hasUnrestrictedReadPermission('list_all', 64) || (($perms & 16) !== 0);
+                    $this->is_retrievable = $this->hasUnrestrictedReadPermission('show_all', 32) || (($perms & 8) !== 0);
+
+                    if ($this->is_listable || $this->is_retrievable){
+                        $this->addCallable('get');
+                    }
+                } elseif ($acl->hasSpecialPermission('read_all')){
                     $this->addCallable('get');
                     $this->is_listable    = true;
                     $this->is_retrievable = true;
@@ -141,7 +152,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             break;
             
             case 'POST':
-                if ($acl->hasSpecialPermission('write_all')){
+                if ($perms !== NULL) {
+                    if ($acl->hasSpecialPermission('write_all') || (($perms & 4) !== 0)){
+                        $this->addCallable('post');
+                    }
+                } elseif ($acl->hasSpecialPermission('write_all')){
                     $this->addCallable('post');
                 } else {
                     if ($acl->hasResourcePermission('create', $this->table_name)){
@@ -151,7 +166,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             break;    
 
             case 'PUT':
-                if ($acl->hasSpecialPermission('write_all')){
+                if ($perms !== NULL) {
+                    if ($acl->hasSpecialPermission('write_all') || (($perms & 2) !== 0)){
+                        $this->addCallable('put');
+                    }
+                } elseif ($acl->hasSpecialPermission('write_all')){
                     $this->addCallable('put');
                 } else {
                     if ($acl->hasResourcePermission('update', $this->table_name)){
@@ -161,7 +180,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             break;
 
             case 'PATCH':
-                if ($acl->hasSpecialPermission('write_all')){
+                if ($perms !== NULL) {
+                    if ($acl->hasSpecialPermission('write_all') || (($perms & 2) !== 0)){
+                        $this->addCallable('patch');
+                    }
+                } elseif ($acl->hasSpecialPermission('write_all')){
                     $this->addCallable('patch');
                 } else {
                     if ($acl->hasResourcePermission('update', $this->table_name)){
@@ -171,7 +194,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             break;    
 
             case 'DELETE':
-                if ($acl->hasSpecialPermission('write_all')){
+                if ($perms !== NULL) {
+                    if ($acl->hasSpecialPermission('write_all') || (($perms & 1) !== 0)){
+                        $this->addCallable('delete');
+                    }
+                } elseif ($acl->hasSpecialPermission('write_all')){
                     $this->addCallable('delete');
                 } else {
                     if ($acl->hasResourcePermission('delete', $this->table_name)){
@@ -180,74 +207,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }  
             break;
         } 
-
-        $perms = $acl->getTbPermissions($this->table_name, false);
-        
-        //dd($perms, 'perms'); /////
-        //dd($acl->hasSpecialPermission('read_all'));
-                    
-        
-        if ($perms !== NULL)
-        {
-            // individual permissions *replaces* role permissions
-            switch ($method) {
-                /*
-                    list_all        64
-                    show_all        32 
-                    list            16
-                    show            8
-                    post            4
-                    put / patch     2
-                    delete          1
-                */
-
-                case 'GET': 
-                    // sería más eficiente chequear read_all directamente si existe.
-                    // usar isri()
-
-                    if ($acl->hasResourcePermission('list_all', $this->table_name)){
-                        $this->is_listable    = true;
-                    } else {
-                        $this->is_listable     = (($perms & 16) AND 1) || (($perms & 64) AND 1);
-                    }
-
-                    if ($acl->hasResourcePermission('show_all', $this->table_name)){
-                        $this->is_retrievable    = true;
-                    } else {
-                        $this->is_retrievable  = (($perms & 8 ) AND 1) || (($perms & 32) AND 1);
-                    } 
-
-                    if ($this->is_listable || $this->is_retrievable){
-                        $this->addCallable('get');
-                    }
-                break;
-                
-                case 'POST': 
-                    if (($perms & 4 ) AND 1){
-                        $this->addCallable('get');
-                    }
-                break;    
-
-                case 'PUT':
-                    if (($perms & 2 ) AND 1){
-                        $this->addCallable('put');
-                    }
-				break;
-                      
-                case 'PATCH':
-                    if (($perms & 2 ) AND 1){
-                        $this->addCallable('patch');
-                    }                      
-                break;    
-
-                case 'DELETE': 
-                    if (($perms & 1 ) AND 1){
-                        $this->addCallable('delete');
-                    }                    
-                break;
-            } 
- 
-        }
         
         $this->impersonated_by = $this->auth['impersonated_by'] ?? null;
 
@@ -308,6 +267,21 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
      */
     function options() {
         
+    }
+
+    protected function hasUnrestrictedReadPermission(string $resourcePermission, int $userMaskBit): bool
+    {
+        $acl = acl();
+
+        if ($acl->hasSpecialPermission('read_all')){
+            return true;
+        }
+
+        if ($this->user_table_permissions !== NULL){
+            return (((int) $this->user_table_permissions & $userMaskBit) !== 0);
+        }
+
+        return $acl->hasResourcePermission($resourcePermission, $this->table_name);
     }
   
     protected function getModelInstance($fetch_mode = 'ASSOC', bool $reuse = false){
@@ -539,9 +513,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             'show_all' / 'read_all' es un permiso explícito para ver todo:
                             sólo se restringe al invitado que carece de él.
                         */
-                        if (!$acl->hasSpecialPermission('read_all') &&
-                            !$acl->hasResourcePermission('show_all', $this->table_name))
-                        {
+                        if (!$this->hasUnrestrictedReadPermission('show_all', 32)){
                             if ($this->instance->inSchema(['guest_access'])){
                                 $_get[] = ['guest_access', 1];
                             } elseif (!empty(static::$folder_field)) {
@@ -552,8 +524,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     } else {
                         // a registered user without 'read_all' / 'show_all' only sees his own records
                         if ($owned && $this->apply_owner_scope &&
-                            !$acl->hasSpecialPermission('read_all') &&
-                            !$acl->hasResourcePermission('show_all', $this->table_name))
+                            !$this->hasUnrestrictedReadPermission('show_all', 32))
                         {                              
                             $_get[] = [$this->instance->belongsTo(), auth()->uid()];
                         }                            
@@ -890,9 +861,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     // root, sin especificar folder ni id (lista)   // *
                     if (auth()->isGuest()){
                         // avoid guests can see everything with just 'read' permission
-                        if (!$acl->hasSpecialPermission('read_all') &&
-                            !$acl->hasResourcePermission('list_all', $this->table_name))
-                        {
+                        if (!$this->hasUnrestrictedReadPermission('list_all', 64)){
                             if ($this->instance->inSchema(['guest_access'])){
                                 $_get[] = ['guest_access', 1];
                             } elseif (!empty(static::$folder_field)) {
@@ -900,8 +869,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             }
                         }
                     } elseif ($owned && $this->apply_owner_scope &&
-                        !$acl->hasSpecialPermission('read_all') &&
-                        !$acl->hasResourcePermission('list_all', $this->table_name) ){
+                        !$this->hasUnrestrictedReadPermission('list_all', 64) ){
                         // a registered user without 'read_all' / 'list_all' only sees his own records
                         $_get[] = [$this->instance->belongsTo(), auth()->uid()];
                     }
@@ -2658,4 +2626,4 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
     protected function onPutFolder($id, Array $data, ?int $affected, $folder){ }
 
     
-}  
+}

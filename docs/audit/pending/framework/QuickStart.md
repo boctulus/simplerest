@@ -69,7 +69,7 @@ Edit `.env` with your database credentials:
 ```env
 APP_NAME=MyAPI
 APP_ENV=local
-APP_DEBUG=true
+APP_DEBUG=false
 APP_URL=http://myapi.local
 
 DB_CONNECTION=mysql

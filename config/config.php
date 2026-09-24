@@ -87,7 +87,7 @@ return [
 		Ver 'log_sql'
 	*/
 
-	'debug'   		 => true,  //Env::get('APP_DEBUG', true),
+	'debug'   		 => Env::getBool('APP_DEBUG', false),
 
 	/*
 		Si error_log es true entonces se usara error_log()
@@ -106,7 +106,7 @@ return [
 	
 	*/
 
-	'log_sql'         => true,
+	'log_sql'         => Env::getBool('LOG_SQL', false),
 	
 	/*
 		Genera logs por cada error / excepcion
@@ -171,13 +171,13 @@ return [
 
 	'access_token' => [
 		'secret_key' 		=> Env::get('TOKENS_ACCSS_SECRET_KEY'),
-		'expiration_time'	=> 60 * 15 * 50000,   // seconds (normalmente 60 * 15)
+		'expiration_time'	=> 3600,   // seconds (1 hour)
 		'encryption'		=> 'HS256'			
 	],
 
 	'refresh_token' => [
 		'secret_key'		=> Env::get('TOKENS_REFSH_SECRET_KEY'),
-		'expiration_time' 	=> 315360000,   // seconds
+		'expiration_time' 	=> 1209600,   // seconds (14 days)
 		'encryption' 		=> 'HS256'	
 	],
 

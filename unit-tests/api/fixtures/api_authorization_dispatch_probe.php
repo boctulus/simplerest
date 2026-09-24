@@ -54,10 +54,13 @@ namespace {
     class ApiAuthorizationProbeAcl {
         public function __construct(
             private array $rolePermissions,
-            private ?int $tablePermissions
+            private ?int $tablePermissions,
+            private array $specialPermissions = []
         ) { }
 
-        public function hasSpecialPermission(string $permission): bool { return false; }
+        public function hasSpecialPermission(string $permission): bool {
+            return in_array($permission, $this->specialPermissions, true);
+        }
         public function hasResourcePermission(string $permission, string $resource): bool {
             return !empty($this->rolePermissions[$permission]);
         }
@@ -81,6 +84,15 @@ namespace {
             parent::__construct();
         }
 
+        public function readAuthorizationState(): array {
+            return [
+                'is_listable' => $this->is_listable ?? false,
+                'is_retrievable' => $this->is_retrievable ?? false,
+                'may_list_all' => $this->hasUnrestrictedReadPermission('list_all', 64),
+                'may_show_all' => $this->hasUnrestrictedReadPermission('show_all', 32),
+            ];
+        }
+
         protected function getModelInstance($fetch_mode = 'ASSOC', bool $reuse = false) {
             return new \stdClass();
         }
@@ -89,7 +101,8 @@ namespace {
     $input = json_decode(base64_decode($argv[1] ?? ''), true, 512, JSON_THROW_ON_ERROR);
     ApiAuthorizationProbeHarness::$acl = new ApiAuthorizationProbeAcl(
         $input['role_permissions'] ?? [],
-        $input['table_permissions'] ?? null
+        $input['table_permissions'] ?? null,
+        $input['special_permissions'] ?? []
     );
     ApiAuthorizationProbeHarness::$auth = new ApiAuthorizationProbeAuth();
     ApiAuthorizationProbeHarness::$request = new ApiAuthorizationProbeRequest();
@@ -131,5 +144,6 @@ namespace {
         'dispatch_method' => $dispatchMethod,
         'callables' => $controller->getCallable(),
         'dispatch_allowed' => in_array($dispatchMethod, $controller->getCallable(), true),
+        'read_state' => $controller->readAuthorizationState(),
     ], JSON_THROW_ON_ERROR);
 }
