@@ -33,7 +33,10 @@ final class EffectivePermissionCompiler
         $explanations = [];
 
         foreach ($rolePerms as $role => $rp) {
-            foreach (($rp['tb_permissions'] ?? []) as $resource => $actions) {
+            $resourcePermissions = $rp['tb_permissions'] ?? [];
+            $this->rejectWildcardResourceGrant($resourcePermissions);
+
+            foreach ($resourcePermissions as $resource => $actions) {
                 foreach ($actions as $action) {
                     $allows[$role][$resource][$action] = true;
                     $explanations["{$role}.{$resource}.{$action}"] = (new PermissionExplanation(
@@ -113,7 +116,10 @@ final class EffectivePermissionCompiler
                 continue;
             }
 
-            foreach (($rp['tb_permissions'] ?? []) as $resource => $actions) {
+            $resourcePermissions = $rp['tb_permissions'] ?? [];
+            $this->rejectWildcardResourceGrant($resourcePermissions);
+
+            foreach ($resourcePermissions as $resource => $actions) {
                 foreach ($actions as $action) {
                     $allow[$resource][$action] = true;
                 }
@@ -142,6 +148,8 @@ final class EffectivePermissionCompiler
         }
 
         // 4. user_tb_permissions REPLACEMENT semantics
+        $this->rejectWildcardResourceGrant($userTbPerms);
+
         foreach ($userTbPerms as $resource => $packed) {
             $allow[$resource] = TbPermissionBits::unpackGranted((int) $packed);
         }
@@ -171,5 +179,14 @@ final class EffectivePermissionCompiler
         }
 
         return ['allow' => $allow, 'deny' => $deny];
+    }
+
+    private function rejectWildcardResourceGrant(array $resourcePermissions): void
+    {
+        if (array_key_exists('*', $resourcePermissions)) {
+            throw new \InvalidArgumentException(
+                "Literal '*' resource grants are reserved; use read_all/write_all special permissions for cross-resource access."
+            );
+        }
     }
 }

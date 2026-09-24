@@ -1,34 +1,29 @@
-# Literal ACL `*` grant differs by lookup path
+# Literal ACL `*` resource grants are reserved
 
-**Status:** open
+**Status:** RESUELTO
 
-**Confidence:** confirmed engine behavior; intended contract unresolved
+**Confidence:** reserved-syntax contract enforced by the builder and compiler
 
-**Severity:** medium if literal `*` grants are intended to be resource wildcards
+## Resolution
 
-## Finding
+Literal `*` is not a supported resource wildcard. The compiled `allow['*']` bucket is reserved for the compiler's expansion of explicit `read_all` and `write_all` capabilities. `Acl::addResourcePermissions()` rejects a resource named `*`; both compiler entry points reject direct role snapshots with that resource, and per-user table masks cannot target it. Use `read_all` or `write_all` for global cross-resource grants.
 
-With compiled permissions, a literal resource grant under `*` makes generic `AclEngine::can($context, 'show', 'products')` return true. `AclEngine::hasResourcePermission('show', 'products', $context)` returns false for the same compiled context. The legacy uncompiled context returns false through both paths. Wildcard denies are checked by both compiled paths.
+Wildcard denies remain supported and are checked by both compiled lookup paths. A legacy uncompiled literal-star resource entry does not grant another resource.
 
-The automatic API controller uses the resource-specific lookup. `read_all`/`write_all` capabilities are a separate mechanism and are not evidence that arbitrary literal `*` rules are an intended public contract.
-
-## Minimal reproduction and evidence
+## Verification
 
 Run:
 
 ```powershell
-php vendor/bin/phpunit --no-coverage unit-tests/acl/AclWildcardSemanticsTest.php
+php vendor/bin/phpunit --no-coverage --do-not-cache-result unit-tests/acl/AclWildcardSemanticsTest.php unit-tests/acl/AclCompiledPermissionsTest.php unit-tests/acl/AclEngineDenyTest.php
 ```
 
-Three tests assert compiled literal-star divergence, legacy-path behavior, and compiled wildcard-deny behavior. They exercise the actual `AclEngine` and compiler with an in-memory snapshot; no application DB or runtime ACL cache is involved.
-
-## Expected behavior
-
-The framework owner should decide whether `*` is a supported literal resource wildcard. If it is, generic and resource-specific lookup should agree. If it is not, the compiler/builder should reject or document it as reserved syntax.
+The focused tests verify that the builder rejects literal-star grants, role and user compilation reject direct literal-star grants/masks, legacy lookup does not expand a literal-star entry, and compiled wildcard denies block both permission paths. `AclCompiledPermissionsTest` also verifies the `read_all`/`write_all` sentinel behavior. These tests use in-memory fixtures; no application DB or runtime ACL cache is involved.
 
 ## Source locations
 
-- `src/framework/Security/Compiler/EffectivePermissionCompiler.php:132-139` — special read/write capabilities compile to the wildcard bucket.
+- `src/framework/Security/Acl.php` — the public resource-permission builder rejects `*`.
+- `src/framework/Security/Compiler/EffectivePermissionCompiler.php` — role and user compilation reserve `*` for explicit global capabilities.
 - `src/framework/Security/Engine/AclEngine.php:56-64` — resource-specific lookup checks named allow buckets and wildcard denies.
 - `src/framework/Security/Engine/AclEngine.php:287-297` — generic compiled lookup also checks wildcard allows.
 - `unit-tests/acl/AclWildcardSemanticsTest.php` — focused behavior tests.
