@@ -1,8 +1,8 @@
 # HTTP method override and ACL selection diverge
 
-**Status:** resolved in source; focused regression passed
+**Status:** resolved in source; role and individual-permission regressions passed
 
-**Confidence:** header and URL method overrides passed the focused regression in the current worktree
+**Confidence:** focused coverage passes for role grants on header and URL overrides and for a table-specific update bitmask on a header override
 
 **Severity:** medium; supported method overrides can receive an incorrect 403
 
@@ -20,7 +20,7 @@ php vendor/bin/phpunit --no-coverage unit-tests/api/ApiAuthorizationDispatchTest
 
 The earlier test sent raw POST with an override to PATCH and a role `create` grant. The handler resolved `patch`, but the controller added `post`; exact callable comparison rejected the action. The reverse case (raw PATCH overridden to POST) also built `patch` while dispatching `post`, and was rejected.
 
-The regression fixture checks a header override and a URL `_method` override through the real `ApiController` constructor and `ApiHandler::resolve()`. The focused command passed: 5 tests and 31 assertions. Its expectations require ACL selection and dispatch to use the same method.
+The regression fixture checks header and URL overrides through the real `ApiController` constructor and `ApiHandler::resolve()`. Role-grant cases cover both override sources. A separate case uses raw POST, header override PATCH, empty role grants, and table permission mask `2`; it requires the individual update permission to select `patch`. The focused command passed: 6 tests and 38 assertions.
 
 No live method-override request against a DB-backed automatic resource was run. The observed 403 behavior was also confirmed separately against the FrontController's callable gate using a temporary controller with an empty callable list.
 
