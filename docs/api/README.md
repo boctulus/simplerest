@@ -1,7 +1,9 @@
 # HTTP and REST API
 
-## Audit status
+## Verified documentation
 
-The current source path for automatic API authorization has been traced. The built-in resource controller checks credentials and derives callable actions from the ACL before the action method is called. See the [authentication guide](../security/authentication.md), the [ACL guide](../security/acl.md), and the [claim ledger](../audit/authentication-acl.md).
+- [Automatic API resource resolution](automatic-endpoints.md) — resolver mapping, model-name derivation, generator scaffold, and front-controller checks traced to source; no complete CRUD workflow was run.
 
-This source trace does not establish a successful HTTP run. Endpoint discovery, query parameters, serialization, validation, and broad automatic CRUD claims remain under audit; the old automatic-endpoint summary is still an audit input. See the [pending audit area](../audit/pending/README.md).
+## Pending audit
+
+Request-parameter mapping, serialization details, authentication, authorization, validation, and automatic CRUD coverage remain under audit. Source-level resolution does not prove a working endpoint. The broad claims in the old automatic-endpoint guide remain quarantined; no end-to-end example was run. See the [pending audit area](../audit/pending/README.md) and [claim-level evidence](../audit/README.md#claim-level-findings-schema-generation-and-automatic-api).
