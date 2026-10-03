@@ -2,9 +2,9 @@
 
 namespace Boctulus\Simplerest\Models\main;
 
+
 use Boctulus\Simplerest\Models\MyModel;
 use Boctulus\Simplerest\Schemas\main\UsersSchema;
-use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 
 class UsersModel extends MyModel
 {
@@ -17,59 +17,15 @@ class UsersModel extends MyModel
 	static public $confirmed_email = 'confirmed_email';
 	static public $is_active = 'is_active';
 
-    function __construct(bool $connect = false){
-		$this->registerInputMutator(static::$password, function($password){
-			if (!is_string($password) || $password === '') {
-				throw new \InvalidArgumentException('Password cannot be empty');
-			}
-
-			if (password_get_info($password)['algoName'] !== 'unknown') {
-				return $password;
-			}
-
-			return password_hash($password, PASSWORD_DEFAULT);
+    function __construct(bool $connect = false){		
+		$this->registerInputMutator('password', function($pass){ 
+			return password_hash($pass, PASSWORD_DEFAULT); 
 		}, function($op, $dato){
-			return ($dato !== null && $dato !== '');
+			return ($dato !== null);
 		});
 
+		//$this->registerOutputMutator('password', function($pass){ return '******'; } );
         parent::__construct($connect, UsersSchema::class);
-	}
-
-	public function findPasswordResetCandidate(string $email): ?array
-	{
-		$user = $this
-			->assoc()
-			->unhide([static::$password])
-			->where([
-				static::$email => strtolower(trim($email)),
-				static::$is_active => 1,
-			])
-			->first();
-
-		return is_array($user) ? $user : null;
-	}
-
-	public function findActiveForPasswordReset(int $userId): ?array
-	{
-		$user = $this
-			->assoc()
-			->unhide([static::$password])
-			->where([
-				'id' => $userId,
-				static::$is_active => 1,
-			])
-			->first();
-
-		return is_array($user) ? $user : null;
-	}
-
-	public function updatePasswordFromReset(int $userId, string $password): bool
-	{
-		return (bool) $this
-			->find($userId)
-			->update([
-				static::$password => $password,
-			]);
 	}
 	
 	// Hooks
@@ -78,31 +34,5 @@ class UsersModel extends MyModel
 			$this->fill(['confirmed_email'])->update(['confirmed_email' => 0]);
 		}
 	}
-
-	/**
-     * Reemplaza TODOS los roles del usuario por uno solo (operación de superadmin).
-     * La UI de usuarios maneja un único rol por usuario; esto mantiene esa invariante.
-     * Transaccional: borra los user_roles previos e inserta el nuevo de forma atómica.
-     */
-    public function replaceRole(int $userId, int $roleId): void
-    {
-        if (!self::roleExists($roleId)) {
-            throw new InvalidValidationException("Role $roleId does not exist");
-        }
-
-        DB::beginTransaction();
-        try {
-            DB::table('user_roles')->where(['user_id' => $userId])->delete();
-            DB::table('user_roles')->insert([
-                'user_id'    => $userId,
-                'role_id'    => $roleId,
-                'created_at' => date('Y-m-d H:i:s'),
-            ]);
-            DB::commit();
-        } catch (\Throwable $e) {
-            DB::rollback();
-            throw $e;
-        }
-    }
 }
 

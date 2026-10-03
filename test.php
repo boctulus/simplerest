@@ -21,10 +21,7 @@ require_once __DIR__ . '/app.php';
 // Instancia de la clase temporal
 $handler = new TemporaryExceptionHandler();
 
-try {
-
-    dd('OK');
-
+try {    
     // DB::getConnection('zippy');
     
     // // Obtén una categoría aleatoria usando la conexión 'zippy'

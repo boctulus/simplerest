@@ -25,7 +25,7 @@ The current `composer.json` declares PHP `>=8.1,<8.5`. It also declares Composer
 
 This checkout is an application repository as well as framework source. Composer metadata describes the package as `boctulus/simplerest` of type `library`; that fact alone does not establish that a clean consumer project can install and run the framework as a standalone application. The installation and clean-start guide is being reconstructed and must be verified from a clean environment before it is treated as a copy-and-run tutorial.
 
-Start with the [documentation map](docs/README.md) and [documentation status and evidence rules](docs/audit/README.md). The existing topic files are being audited against source and tests; until that audit is complete, use them as material to review, not as authoritative specifications.
+Start with the [canonical documentation map](docs/index.md). The [audit register](docs/audit/README.md) is internal; topic pages not linked from the map are legacy or pending audit input, not current specifications.
 
 ## Development checks
 

@@ -4,6 +4,12 @@
 
 The previous documentation grew from a monolithic text file into multiple topic pages. Some pages contain claims that cannot be accepted without source evidence, and some describe proposed or external-framework architecture as though it were part of SimpleRest. This audit rebuilds the maintained documentation from the current implementation.
 
+## Idioma fuente y autoridad editorial
+
+El español es el idioma fuente y predeterminado de la documentación mantenida. Las traducciones se derivan de esas páginas y no evolucionan de forma independiente; ante una discrepancia, prevalece la fuente española. Las páginas vigentes que aún están redactadas en inglés quedan pendientes de migración lingüística y deben revisarse con este criterio al actualizarlas.
+
+La portada canónica es [`../index.md`](../index.md). Solo el contenido enlazado desde ella se presenta como documentación vigente. Los índices anteriores, las páginas temáticas no enlazadas y el material bajo `audit/` o `_internal/` son evidencia de trabajo, historial o pendientes; no son documentación publicable. Si se configura VitePress, esas áreas internas deben excluirse del sitio.
+
 ## Source of truth
 
 Use current source code as the primary authority. Trace a behavior through its implementation and configuration. Use tests to establish covered behavior, and runnable examples to establish user-facing instructions. Existing Markdown and the archived `DOC-Simplerest.txt` are discovery material only. They do not validate themselves.

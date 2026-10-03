@@ -7,7 +7,7 @@ use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Validator;
 use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
-use Boctulus\Simplerest\Core\Security\Acl;
+use Boctulus\Simplerest\Core\Acl;
 
 class UserTbPermissions extends ApiController
 {   
@@ -42,7 +42,7 @@ class UserTbPermissions extends ApiController
                 $data['created_by'] = auth()->uid();
             }
 
-            $validado = (new Validator)->validate($data, $instance->getRules());
+            $validado = (new Validator)->validate($instance->getRules(), $data);
             if ($validado !== true){
                 error(trans('Data validation error'), 400, $validado);
             }  
