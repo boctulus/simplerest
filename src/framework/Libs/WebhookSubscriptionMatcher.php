@@ -10,7 +10,7 @@ class WebhookSubscriptionMatcher
      * Each match contains the subscription row and its delivery data. The
      * ordering and condition behavior mirror ApiController::webhook().
      */
-    public function findMatches(WebhookEvent $event): array
+    public function findMatches(WebhookEvent $event): \Generator
     {
         DB::getDefaultConnection();
 
@@ -21,16 +21,14 @@ class WebhookSubscriptionMatcher
             ])
             ->get();
 
-        $matches = [];
         $oldData = null;
+        $deliveryData = $event->getData();
 
         foreach ($webhooks as $hook) {
             $conditions = [];
             if (!empty($hook['conditions'])) {
                 parse_str($hook['conditions'], $conditions);
             }
-
-            $deliveryData = $event->getData();
 
             if (
                 $event->getEventType() === 'update'
@@ -48,10 +46,10 @@ class WebhookSubscriptionMatcher
                             ->find($event->getId())
                             ->deleted()
                             ->first();
+                        $deliveryData = array_merge($oldData, $deliveryData);
                     }
 
-                    $deliveryData = array_merge($oldData, $deliveryData);
-                    $matches[] = [
+                    yield [
                         'subscription' => $hook,
                         'data' => $deliveryData
                     ];
@@ -74,13 +72,14 @@ class WebhookSubscriptionMatcher
                         ->find($event->getId())
                         ->deleted()
                         ->first();
+                    $deliveryData = array_merge($oldData, $deliveryData);
                 }
 
                 $deliveryData = array_merge($oldData, $deliveryData);
             }
 
             if (empty($hook['conditions'])) {
-                $matches[] = [
+                yield [
                     'subscription' => $hook,
                     'data' => $deliveryData
                 ];
@@ -88,13 +87,11 @@ class WebhookSubscriptionMatcher
                 $event->getEventType() !== 'list'
                 && Strings::filter($deliveryData, $conditions)
             ) {
-                $matches[] = [
+                yield [
                     'subscription' => $hook,
                     'data' => $deliveryData
                 ];
             }
         }
-
-        return $matches;
     }
 }

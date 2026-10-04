@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: desacoplar publicación de ApiController"
-current_step: 6
-next_step: 7
+current_step: 7
+next_step: 8
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -84,6 +84,14 @@ Referencias: `ApiController.php` (llamadas CRUD 558, 1092, 1592, 2321, 2482; dis
 - `WebhookPublisher::publish(WebhookEvent $event)` conecta `WebhookSubscriptionMatcher` y `WebhookDeliveryDispatcher` sin conocer el controller ni el protocolo HTTP.
 - El constructor permite sustituir matcher y dispatcher; el dispatcher recibe `IWebhookTransport`, por lo que un caller puede inyectar un transporte de prueba o alternativo.
 - Verificación estática: `php -l` pasó en `WebhookPublisher.php`.
+
+## Implementación completada — paso 6 (2026-10-04)
+
+- `ApiController::webhook()` conserva la validación de operaciones CRUD y ahora crea `WebhookEvent` con los datos, actor, id, contexto de tenant disponible y el indicador de `fields` solicitado; luego delega a `WebhookPublisher::publish()`.
+- `getWebhookPublisher()` es el punto protegido de construcción para permitir sustituir el publisher en controllers derivados. `Files` conserva sus hooks por herencia.
+- `WebhookSubscriptionMatcher` genera coincidencias de forma perezosa y el dispatcher entrega cada callback antes de continuar con la siguiente subscription. Esto conserva el orden de evaluación y el estado de datos compartido del flujo anterior, incluidas las condiciones de `update` evaluadas antes de mezclar la fila.
+- No se cambió la verificación SSL. `WebhookHttpTransport` sigue envolviendo el `consume_api()` existente para resolver su endurecimiento en la tarjeta de seguridad.
+- Verificación estática: `php -l` pasó en `ApiController.php` y todas las clases de evento/publicación/matching/transporte/dispatcher. No se ejecutaron tests.
 
 ## Criterios de aceptación
 

@@ -13,7 +13,7 @@ class WebhookDeliveryDispatcher
         $this->transport = $transport;
     }
 
-    public function dispatch(WebhookEvent $event, array $matches): void
+    public function dispatch(WebhookEvent $event, iterable $matches): void
     {
         foreach ($matches as $match) {
             $subscription = $match['subscription'];

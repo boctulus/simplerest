@@ -16,6 +16,8 @@ use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Impersonation\ImpersonationManager;
 use Boctulus\Simplerest\Core\Libs\Impersonation\ImpersonationRequestContext;
 use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\WebhookEvent;
+use Boctulus\Simplerest\Core\Libs\WebhookPublisher;
 use Boctulus\Simplerest\Core\Libs\Validator;
 use Boctulus\Simplerest\Core\Interfaces\IApi;
 use Boctulus\Simplerest\Core\Interfaces\IAuth;
@@ -2530,78 +2532,27 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             throw new \InvalidArgumentException("Invalid webhook operation for $op");
         }
 
-        DB::getDefaultConnection();
+        $scopeContext = [];
+        if ($this->tenantid !== null) {
+            $scopeContext['tenant_id'] = $this->tenantid;
+        }
 
-        $webhooks = DB::table('webhooks')
-        ->where(['op' => $op, 'entity' => $this->table_name])
-        ->get();
+        $event = new WebhookEvent(
+            $op,
+            $this->table_name,
+            $data,
+            $id,
+            auth()->uid(),
+            $scopeContext,
+            $op === 'show' && !empty(request()->getQuery('fields'))
+        );
 
-        $body = [       
-            'webhook_id' => null,     
-            'event_type' => $op,
-            'entity' => $this->table_name,
-            'id' => $id,
-            'data' => $data,
-            'user_id' => auth()->uid(),
-            'at' => date("Y-m-d H:i:s", time())
-        ];
+        $this->getWebhookPublisher()->publish($event);
+    }
 
-        $old_data = null;
-
-        foreach($webhooks as $hook){
-            if (!empty($hook['conditions'])){
-                parse_str($hook['conditions'], $conditions);
-            }
-
-            $body['webhook_id'] = $hook['id'];
-
-            if ($op == 'update' || $op == 'delete' || ($op == 'show' && !empty(request()->getQuery('fields')))){
-                
-                if ($op == 'update' && !empty($hook['conditions'])){                    
-                    $cond_fields = array_keys($conditions);
-                    $cond_fields = array_unique($cond_fields);
-                    $row_fields  = array_keys($body['data']);
-
-                    if (count(array_diff($cond_fields,$row_fields)) == 0)
-                    {
-                        if (Strings::filter($body['data'], $conditions)){
-                            
-                            if ($old_data === null){
-                                //dd('RETRIVE');
-                                $old_data = DB::table($this->table_name)
-                                ->assoc()->find($id)->deleted()->first();
-                                $body['data'] = array_merge($old_data, $body['data']);
-                            }
-                            
-                            //dd('--> callback');
-                            consume_api($hook['callback'], 'POST', $body);
-                        }
-                    }  
-                    continue;
-                }
-
-                if ($old_data === null){
-                    //dd('RETRIVE');
-                    $old_data = DB::table($this->table_name)
-                    ->assoc()->find($id)->deleted()->first();
-                    $body['data'] = array_merge($old_data, $body['data']);
-                }
-
-                $body['data'] = array_merge($old_data, $body['data']);
-            }
-
-            if (empty($hook['conditions'])){
-                //dd('--> callback');
-                consume_api($hook['callback'], 'POST', $body);
-            } else {
-                if ($op != 'list'){                   
-                    if (Strings::filter($body['data'], $conditions)){
-                        //dd('--> callback');
-                        consume_api($hook['callback'], 'POST', $body);
-                    }
-                }
-            }
-        }      
+    protected function getWebhookPublisher(): WebhookPublisher
+    {
+        return new WebhookPublisher();
     }
 
 
