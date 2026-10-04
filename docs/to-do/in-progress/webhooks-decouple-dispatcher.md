@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: desacoplar publicación de ApiController"
-current_step: 3
-next_step: 4
+current_step: 4
+next_step: 5
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -63,6 +63,14 @@ IWebhookTransport → transporte HTTP
 - La búsqueda literal de `webhook` en `unit-tests/` no encontró referencias. No se ejecutaron tests en este paso de auditoría.
 
 Referencias: `ApiController.php` (llamadas CRUD 558, 1092, 1592, 2321, 2482; dispatcher 2528–2605), `Files.php` (122, 217), `Helpers/url.php` (consume_api), `Libs/DB.php` (245–247) y `Libs/ApiClient.php` (526–538).
+
+## Implementación completada — paso 3 (2026-10-04)
+
+- Se agregó `WebhookEvent` con tipo, entidad, datos, id, actor, contexto de scope, indicador explícito de `fields` solicitado y hora de creación. No consulta `auth()` ni `request()`.
+- Se agregó `WebhookSubscriptionMatcher::findMatches()` para seleccionar por `op` + `entity` y reproducir el filtrado y enriquecimiento actuales antes de entregar resultados preparados para el dispatcher.
+- Para `update` con condiciones, el matcher evalúa las condiciones sobre los datos entrantes antes de mezclar la fila actual, igual que el código anterior. No se cambió esa semántica.
+- El contexto de scope ya forma parte del evento, pero aún no altera la consulta; el contrato de aislamiento continúa en la tarea correspondiente.
+- Verificación estática: `php -l` pasó en ambos archivos nuevos. El publisher, el dispatcher, el transporte y el adaptador HTTP aún corresponden a pasos posteriores.
 
 ## Criterios de aceptación
 
