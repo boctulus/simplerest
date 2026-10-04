@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: desacoplar publicación de ApiController"
-current_step: 4
-next_step: 5
+current_step: 5
+next_step: 6
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -71,6 +71,13 @@ Referencias: `ApiController.php` (llamadas CRUD 558, 1092, 1592, 2321, 2482; dis
 - Para `update` con condiciones, el matcher evalúa las condiciones sobre los datos entrantes antes de mezclar la fila actual, igual que el código anterior. No se cambió esa semántica.
 - El contexto de scope ya forma parte del evento, pero aún no altera la consulta; el contrato de aislamiento continúa en la tarea correspondiente.
 - Verificación estática: `php -l` pasó en ambos archivos nuevos. El publisher, el dispatcher, el transporte y el adaptador HTTP aún corresponden a pasos posteriores.
+
+## Implementación completada — paso 4 (2026-10-04)
+
+- `IWebhookTransport` define la frontera sustituible para enviar callback y payload. `WebhookDeliveryDispatcher` crea un envelope por subscription y depende de esa interfaz.
+- `WebhookHttpTransport` implementa la interfaz delegando a `consume_api()`, conservando el comportamiento actual de SSL, headers, timeout y retorno mientras se completa la tarjeta de seguridad.
+- El dispatcher ignora el resultado de transporte, igual que el dispatcher anterior; no introduce persistencia, retries ni política de respuesta.
+- Verificación estática: `php -l` pasó en los tres archivos nuevos.
 
 ## Criterios de aceptación
 
