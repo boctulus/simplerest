@@ -53,8 +53,70 @@ El matcher selecciona subscriptions por `op` y `entity`. Las condiciones actuale
 
 `scopeContext` queda disponible en el evento, pero el matcher actual todavía no lo usa para aislar subscriptions. No debe tratarse como una frontera de seguridad hasta completar el aislamiento de tenant.
 
+## Callbacks y secretos
+
+Antes de crear webhooks, aplica la migración `2026_10_04_233000000_add_webhook_delivery_secret.php`. El servidor genera un secreto independiente de 32 bytes aleatorios, representado por 64 caracteres hexadecimales. La respuesta `201` de `POST /api/v1/webhooks` incluye el secreto una sola vez dentro del registro creado. Guárdalo al recibirlo: las lecturas `show` y `list` lo ocultan.
+
+Para reemplazarlo, usa `PATCH /api/v1/webhooks/{id}/rotate_secret`. La respuesta incluye el secreto nuevo una sola vez; desde ese momento se rechazan firmas hechas con el anterior. El alta no acepta un secreto del cliente y `PUT`/`PATCH` CRUD no permiten cambiarlo directamente.
+
+Los callbacks deben ser URLs absolutas `http://` o `https://`, sin credenciales en la URL ni fragmento. Solo se admiten destinos globalmente alcanzables. Se rechazan las direcciones privadas, loopback, link-local, CGNAT, multicast y los bloques especiales no globales; algunos bloques contenedores se rechazan completos aunque incluyan excepciones globales más específicas. Para un hostname se comprueban todas las respuestas A/AAAA después de seguir CNAME; cualquier respuesta no global, una respuesta vacía o un error de DNS hace fallar la operación. La regla se ejecuta al crear o actualizar y otra vez justo antes de entregar; la IP validada se fija para la conexión.
+
+La clasificación usa los [registros especiales IPv4](https://www.iana.org/assignments/iana-ipv4-special-registry) y [IPv6](https://www.iana.org/assignments/iana-ipv6-special-registry) de IANA.
+
+Cuando `APP_ENV` resuelve a `prod` o `production`, solo se acepta HTTPS. En otros entornos también puede usarse HTTP, pero el transporte sigue exigiendo una dirección pública y no permite redirects. HTTP transmite el payload sin cifrar; reserva esos callbacks para pruebas sin datos sensibles. Las conexiones HTTPS siempre verifican certificado y nombre del host. Las subscriptions con HTTP deben migrar a HTTPS antes de activar un entorno de producción.
+
+## Verificar la firma
+
+Cada entrega incluye estos headers:
+
+```text
+X-Simplerest-Webhook-Event-Id: <uuid-v4>
+X-Simplerest-Webhook-Timestamp: <segundos Unix>
+X-Simplerest-Webhook-Signature: v1=<64 hex lowercase>
+Content-Type: application/json; charset=utf-8
+```
+
+El `event_id` se comparte entre las subscriptions de un mismo evento. El timestamp y la firma se calculan por intento. La firma usa el secreto como texto UTF-8 (no se decodifica el hexadecimal) y cubre exactamente `v1.<timestamp>.<event_id>.<raw_body>`. Verifica el cuerpo crudo antes de parsear o normalizar el JSON. Este ejemplo recibe los headers ya normalizados por el adaptador HTTP:
+
+```php
+function verifyWebhook(string $rawBody, array $headers, string $secret): ?array
+{
+    $eventId = $headers['X-Simplerest-Webhook-Event-Id'] ?? '';
+    $timestamp = $headers['X-Simplerest-Webhook-Timestamp'] ?? '';
+    $signature = $headers['X-Simplerest-Webhook-Signature'] ?? '';
+
+    if (
+        !preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $eventId)
+        || !ctype_digit($timestamp)
+        || !preg_match('/^v1=([0-9a-f]{64})$/', $signature, $matches)
+        || !preg_match('/^[0-9a-f]{64}$/', $secret)
+    ) {
+        return null;
+    }
+
+    $sentAt = filter_var($timestamp, FILTER_VALIDATE_INT);
+    if ($sentAt === false || abs(time() - $sentAt) > 300) {
+        return null;
+    }
+
+    $expected = hash_hmac(
+        'sha256',
+        'v1.' . $timestamp . '.' . $eventId . '.' . $rawBody,
+        $secret
+    );
+
+    if (!hash_equals($expected, $matches[1])) {
+        return null;
+    }
+
+    return json_decode($rawBody, true, 512, JSON_THROW_ON_ERROR);
+}
+```
+
+Rechaza firmas inválidas o timestamps fuera de ±300 segundos. Después de verificar, registra atómicamente el `event_id` junto con el id de tu subscription local antes de aplicar efectos; si esa pareja ya existe, reconoce el duplicado sin volver a procesarlo. Mantén esos IDs al menos 10 minutos y amplía la retención para cubrir el horizonte de reintentos si se habilitan retries en el futuro.
+
 ## Entrega actual y límites
 
-El publisher despacha las entregas de forma síncrona a través de `WebhookHttpTransport`, que conserva el transporte existente basado en `consume_api()`. No hay cola, retries, replay ni idempotencia en esta ruta; el dispatcher también ignora el resultado del transporte. La verificación SSL de callbacks sigue deshabilitada en el transporte actual y corresponde resolverla en el trabajo de seguridad de callbacks.
+El publisher realiza la entrega de forma síncrona mediante `WebhookHttpTransport`. El transporte deshabilita redirects y proxies, verifica TLS, limita connect timeout a 5 s, timeout total a 10 s, request body a 1 MiB, response body a 64 KiB y headers a 16 KiB. El pinning DNS requiere libcurl 7.21.3 o posterior; las versiones anteriores fallan cerradas. Los errores internos omiten URL, query y mensaje crudo de cURL.
 
-Las pruebas focalizadas verifican el matching con fixtures en memoria, el orden de publicación, el envelope y el transporte sustituible. No se ha reproducido aquí una entrega con base de datos y callback HTTP real.
+No hay cola ni reintentos automáticos en esta ruta y el dispatcher no expone el resultado del transporte. Las pruebas focalizadas cubren matching, condiciones legacy de `update`, firma, política IP/DNS y opciones de transporte con fixtures. No se ha ejecutado una entrega con base de datos ni una llamada HTTP a un callback real.

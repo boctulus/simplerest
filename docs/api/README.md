@@ -3,7 +3,7 @@
 ## Verified documentation
 
 - [Automatic API resource resolution](automatic-endpoints.md) — resolver mapping, model-name derivation, generator scaffold, and front-controller checks traced to source; no complete CRUD workflow was run.
-- [Webhook publishing](webhooks.md) — publisher boundaries, CRUD compatibility adapter, envelope, update-condition behavior, and current delivery limits; focused in-memory tests pass, but database-backed callback delivery has not been exercised.
+- [Webhook publishing](webhooks.md) — publisher boundaries, CRUD compatibility, callback endpoint policy, HMAC verification, and synchronous delivery limits; focused fixture tests pass, but database-backed callback delivery has not been exercised.
 
 ## Authorization status
 
