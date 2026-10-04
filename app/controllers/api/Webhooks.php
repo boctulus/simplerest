@@ -47,6 +47,36 @@ class Webhooks extends ApiController
         }
     }
 
+    protected function onPostingAfterCheck($id, array &$data)
+    {
+        $this->validateCallbackEndpoint($data['callback'] ?? null);
+    }
+
+    protected function onPuttingAfterCheck($id, array &$data)
+    {
+        $callback = $data['callback'] ?? null;
+        if ($callback === null) {
+            $callback = $this->instance
+                ->where([$this->instance->getIdName() => $id])
+                ->value('callback');
+        }
+
+        $this->validateCallbackEndpoint($callback);
+    }
+
+    protected function validateCallbackEndpoint($callback): void
+    {
+        try {
+            if (!is_string($callback)) {
+                throw new \InvalidArgumentException('Invalid callback endpoint.');
+            }
+
+            (new \Boctulus\Simplerest\Core\Libs\WebhookEndpointPolicy())->resolve($callback);
+        } catch (\Throwable $e) {
+            error('Invalid webhook callback endpoint', 400);
+        }
+    }
+
     protected function webhook(string $op, $data, $id = null)
     {
         if (is_array($data)) {

@@ -43,12 +43,13 @@ final class WebhookRecordingTransport implements IWebhookTransport
         $this->trace = &$trace;
     }
 
-    public function send(string $callback, array $payload): mixed
+    public function send(string $callback, string $rawBody, array $headers): mixed
     {
         $this->trace[] = 'send:' . $callback;
         $this->deliveries[] = [
             'callback' => $callback,
-            'payload' => $payload
+            'raw_body' => $rawBody,
+            'headers' => $headers
         ];
 
         return null;
@@ -189,13 +190,21 @@ final class WebhookPublisherTest extends TestCase
             {
                 $this->trace[] = 'match:first';
                 yield [
-                    'subscription' => ['id' => 10, 'callback' => 'https://callback.test/first'],
+                    'subscription' => [
+                        'id' => 10,
+                        'callback' => 'https://callback.test/first',
+                        'secret' => str_repeat('a', 64)
+                    ],
                     'data' => ['amount' => 125]
                 ];
 
                 $this->trace[] = 'match:second';
                 yield [
-                    'subscription' => ['id' => 11, 'callback' => 'https://callback.test/second'],
+                    'subscription' => [
+                        'id' => 11,
+                        'callback' => 'https://callback.test/second',
+                        'secret' => str_repeat('b', 64)
+                    ],
                     'data' => ['amount' => 125]
                 ];
             }
@@ -211,7 +220,8 @@ final class WebhookPublisherTest extends TestCase
             8,
             ['tenant_id' => 3],
             false,
-            '2026-10-04 12:00:00'
+            '2026-10-04 12:00:00',
+            '123e4567-e89b-42d3-a456-426614174000'
         );
 
         (new WebhookPublisher(
@@ -226,32 +236,26 @@ final class WebhookPublisherTest extends TestCase
             'send:https://callback.test/second'
         ], $trace);
 
-        $this->assertSame([
-            [
-                'callback' => 'https://callback.test/first',
-                'payload' => [
-                    'webhook_id' => 10,
-                    'event_type' => 'create',
-                    'entity' => 'payments',
-                    'id' => 'payment-42',
-                    'data' => ['amount' => 125],
-                    'user_id' => 8,
-                    'at' => '2026-10-04 12:00:00'
-                ]
-            ],
-            [
-                'callback' => 'https://callback.test/second',
-                'payload' => [
-                    'webhook_id' => 11,
-                    'event_type' => 'create',
-                    'entity' => 'payments',
-                    'id' => 'payment-42',
-                    'data' => ['amount' => 125],
-                    'user_id' => 8,
-                    'at' => '2026-10-04 12:00:00'
-                ]
-            ]
-        ], $transport->deliveries);
+        $first = $transport->deliveries[0];
+        $second = $transport->deliveries[1];
+        $expectedBody = '{"webhook_id":10,"event_type":"create","entity":"payments","id":"payment-42","data":{"amount":125},"user_id":8,"at":"2026-10-04 12:00:00"}';
+
+        $this->assertSame($expectedBody, $first['raw_body']);
+        $this->assertSame(str_replace('"webhook_id":10', '"webhook_id":11', $expectedBody), $second['raw_body']);
+        $this->assertSame('123e4567-e89b-42d3-a456-426614174000', $first['headers']['X-Simplerest-Webhook-Event-Id']);
+        $this->assertSame($first['headers']['X-Simplerest-Webhook-Event-Id'], $second['headers']['X-Simplerest-Webhook-Event-Id']);
+
+        foreach ([[$first, str_repeat('a', 64)], [$second, str_repeat('b', 64)]] as [$delivery, $secret]) {
+            $timestamp = $delivery['headers']['X-Simplerest-Webhook-Timestamp'];
+            $signatureInput = 'v1.' . $timestamp . '.'
+                . $delivery['headers']['X-Simplerest-Webhook-Event-Id'] . '.'
+                . $delivery['raw_body'];
+            $this->assertSame(
+                'v1=' . hash_hmac('sha256', $signatureInput, $secret),
+                $delivery['headers']['X-Simplerest-Webhook-Signature']
+            );
+            $this->assertSame('application/json; charset=utf-8', $delivery['headers']['Content-Type']);
+        }
     }
 
     public function test_publisher_accepts_custom_event_names_without_http_context(): void
@@ -271,6 +275,33 @@ final class WebhookPublisherTest extends TestCase
             8,
             ['tenant_id' => 3]
         ));
+
+        $this->assertSame([], $transport->deliveries);
+        $this->assertSame([], $trace);
+    }
+
+    public function test_dispatcher_skips_subscriptions_without_a_valid_server_generated_secret(): void
+    {
+        $trace = [];
+        $matcher = new class extends WebhookSubscriptionMatcher {
+            public function findMatches(WebhookEvent $event): \Generator
+            {
+                yield [
+                    'subscription' => [
+                        'id' => 20,
+                        'callback' => 'https://callback.example/hook',
+                        'secret' => 'client-controlled-secret',
+                    ],
+                    'data' => ['amount' => 50],
+                ];
+            }
+        };
+        $transport = new WebhookRecordingTransport($trace);
+
+        (new WebhookPublisher(
+            $matcher,
+            new WebhookDeliveryDispatcher($transport)
+        ))->publish(new WebhookEvent('create', 'payments', ['amount' => 50]));
 
         $this->assertSame([], $transport->deliveries);
         $this->assertSame([], $trace);

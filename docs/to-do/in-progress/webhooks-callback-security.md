@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: seguridad de callbacks y firma HMAC"
-current_step: 6
-next_step: 7
+current_step: 8
+next_step: 8
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -80,3 +80,14 @@ La política de “globalmente alcanzable” toma como fuente los registros espe
 - Con el secreto UTF-8 exacto, calcula `hash_hmac('sha256', 'v1.' . $timestamp . '.' . $eventId . '.' . $rawBody, $secret)` y compara el digest calculado con el de `v1=` usando comparación constante (`hash_equals($expected, $received)`). El orden de argumentos es deliberado: el esperado local va primero y el valor del header va segundo.
 - Tras validar la firma, el receptor registra atómicamente la pareja de su subscription local y `event_id` antes de aplicar efectos. Una pareja ya vista no vuelve a procesarse. Retener IDs al menos el doble de la ventana temporal evita replay dentro de esa ventana; la retención de idempotencia para retries debe cubrir el horizonte que defina la tarjeta de delivery asíncrono.
 - El event ID del emisor es compartido entre subscriptions del mismo evento; por eso la clave de deduplicación incluye la subscription local, no solo el event ID global.
+
+## Transporte y pruebas de seguridad — pasos 6 y 7 (2026-10-04)
+
+- `WebhookEndpointPolicy` aplica la regla HTTPS cuando `app_env` es `prod` o `production`; en otros entornos admite HTTP y HTTPS. Valida al crear y actualizar callbacks y vuelve a validar al entregar.
+- Para hostnames, valida todos los A/AAAA luego de seguir CNAME y rechaza resolución vacía, fallida o mixta con direcciones no globales. Los rangos especiales se mantienen como listas conservadoras basadas en IANA; ciertos bloques contenedores se rechazan completos aunque tengan excepciones globales más específicas.
+- El transporte fija la IP validada mediante `CURLOPT_RESOLVE`, no usa proxy ambiental, no sigue redirects, restringe los protocolos al esquema validado y verifica certificado y nombre TLS. Requiere libcurl 7.21.3 o posterior; en una versión inferior falla cerrado.
+- Límites: connect timeout 5 s, timeout total 10 s, request body 1 MiB, response body 64 KiB y headers 16 KiB. Los errores de transporte devuelven códigos genéricos y status HTTP opcional, sin URL, query ni mensaje cURL.
+- El dispatcher serializa el JSON una vez y firma esos bytes con HMAC-SHA256; subscriptions sin secreto válido no se envían.
+- Verificación ejecutada: `php vendor/bin/phpunit --no-coverage unit-tests/webhooks/WebhookPublisherTest.php unit-tests/webhooks/WebhookEndpointPolicyTest.php` — 14 tests, 71 assertions. También pasó `php -l` para los archivos tocados. Las pruebas usan fixtures DNS y opciones cURL inspeccionadas; no hicieron resolución DNS externa ni requests a callbacks.
+
+Referencias para la clasificación de direcciones: [registro especial IPv4 IANA](https://www.iana.org/assignments/iana-ipv4-special-registry), [registro especial IPv6 IANA](https://www.iana.org/assignments/iana-ipv6-special-registry), [CURLOPT_RESOLVE](https://curl.se/libcurl/c/CURLOPT_RESOLVE.html).

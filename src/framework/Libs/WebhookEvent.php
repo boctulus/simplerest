@@ -12,6 +12,7 @@ class WebhookEvent
     protected array $scopeContext;
     protected bool $showFieldsRequested;
     protected string $occurredAt;
+    protected string $eventId;
 
     public function __construct(
         string $eventType,
@@ -21,7 +22,8 @@ class WebhookEvent
         ?int $actorId = null,
         array $scopeContext = [],
         bool $showFieldsRequested = false,
-        ?string $occurredAt = null
+        ?string $occurredAt = null,
+        ?string $eventId = null
     ) {
         $this->eventType = $eventType;
         $this->entity = $entity;
@@ -31,6 +33,9 @@ class WebhookEvent
         $this->scopeContext = $scopeContext;
         $this->showFieldsRequested = $showFieldsRequested;
         $this->occurredAt = $occurredAt ?? date('Y-m-d H:i:s');
+        $this->eventId = $eventId === null
+            ? $this->generateEventId()
+            : $this->validateEventId($eventId);
     }
 
     public function getEventType(): string
@@ -71,5 +76,28 @@ class WebhookEvent
     public function getOccurredAt(): string
     {
         return $this->occurredAt;
+    }
+
+    public function getEventId(): string
+    {
+        return $this->eventId;
+    }
+
+    private function generateEventId(): string
+    {
+        $data = random_bytes(16);
+        $data[6] = chr((ord($data[6]) & 0x0f) | 0x40);
+        $data[8] = chr((ord($data[8]) & 0x3f) | 0x80);
+
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+
+    private function validateEventId(string $eventId): string
+    {
+        if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $eventId)) {
+            throw new \InvalidArgumentException('Webhook event ID must be a UUID v4.');
+        }
+
+        return strtolower($eventId);
     }
 }
