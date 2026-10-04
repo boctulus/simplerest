@@ -1,0 +1,38 @@
+name: Documentation governance
+
+on:
+  pull_request:
+    branches: [master, main, develop]
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-docs-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pull request head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Guard canonical documentation
+        env:
+          DOCS_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          DOCS_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          DOCS_EVENT_FILE: ${{ github.event_path }}
+        run: >-
+          php scripts/documentation-governance-guard.php
+          --base "$DOCS_BASE_SHA"
+          --head "$DOCS_HEAD_SHA"
+          --event-file "$DOCS_EVENT_FILE"
+          --approval-label docs-governance-approved

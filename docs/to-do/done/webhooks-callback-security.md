@@ -1,12 +1,12 @@
 ---
 title: "Webhooks: seguridad de callbacks y firma HMAC"
 current_step: 8
-next_step: 8
+next_step: null
 parallelizable_steps: []
 parent: null
 global_complexity: high
 for_agents: true
-next_step_complexity: high
+next_step_complexity: null
 tags: [webhooks, security, ssrf, hmac, secrets]
 ---
 
@@ -91,3 +91,9 @@ La política de “globalmente alcanzable” toma como fuente los registros espe
 - Verificación ejecutada: `php vendor/bin/phpunit --no-coverage unit-tests/webhooks/WebhookPublisherTest.php unit-tests/webhooks/WebhookEndpointPolicyTest.php` — 14 tests, 71 assertions. También pasó `php -l` para los archivos tocados. Las pruebas usan fixtures DNS y opciones cURL inspeccionadas; no hicieron resolución DNS externa ni requests a callbacks.
 
 Referencias para la clasificación de direcciones: [registro especial IPv4 IANA](https://www.iana.org/assignments/iana-ipv4-special-registry), [registro especial IPv6 IANA](https://www.iana.org/assignments/iana-ipv6-special-registry), [CURLOPT_RESOLVE](https://curl.se/libcurl/c/CURLOPT_RESOLVE.html).
+
+## Documentación pública — paso 8 (2026-10-04)
+
+- `docs/api/webhooks.md` documenta callback permitido por entorno, el filtrado DNS/IP y pinning, creación/rotación del secreto de un solo uso, headers y verificación PHP del cuerpo crudo, ventana temporal y deduplicación.
+- Se corrigió la descripción del transporte heredada de la auditoría anterior: TLS se verifica y la entrega actual continúa siendo síncrona, sin retries automáticos.
+- No se ejecutó la migración ni se hizo una entrega respaldada por base de datos o callback HTTP real.

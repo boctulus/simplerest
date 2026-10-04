@@ -1,7 +1,5 @@
 # ORM — Estado Actual
 
-> **Audit status:** This is a legacy audit input, not a current ORM or query-builder specification. Its ORM, performance, and feature claims remain unreviewed; its automatic-endpoint reference does not prove that endpoints are generated. See the [claim-level audit](../../README.md#claim-level-findings-schema-generation-and-automatic-api).
-
 > **⚠️ Este documento existe para aclarar el estado del ORM en SimpleRest.**
 
 ## El ORM No es Funcional
@@ -38,9 +36,9 @@ $users = $userModel->where('role', 'admin')->get();
 
 | Documento | Contenido |
 |-----------|-----------|
-| [`QueryBuilder.md`](./QueryBuilder.md) | legacy Query Builder page (pending audit) |
-| [`SimpleRest-API-Rest.md`](../../../_internal/legacy/framework/SimpleRest-API-Rest.md) | legacy REST page |
-| [`AutomaticEndpoints-Summary.md`](./AutomaticEndpoints-Summary.md) | Endpoints REST automáticos |
+| [`QueryBuilder.md`](QueryBuilder.md) | Documentación completa del QB |
+| [`SimpleRest-API-Rest.md`](SimpleRest-API-Rest.md) | API REST queries (filter, sort, paginate) |
+| [`AutomaticEndpoints-Summary.md`](AutomaticEndpoints-Summary.md) | Endpoints REST automáticos |
 
 ### Futuro
 

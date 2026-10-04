@@ -26,7 +26,6 @@ Before **any** task:
 3. Read module / package / component `.md` docs
 
 Key locations:
-- `docs/secrets/login-credentials.md`
 - `docs/issues/`
 
 ## Rule Priority (MANDATORY)
@@ -43,7 +42,7 @@ If a SKILL exists, ignore conflicting content here.
 
 Docs:
 ```
-docs/CommandLine.md
+docs/cli/README.md
 ```
 
 ---
@@ -74,11 +73,6 @@ Reports:
 2. Then UI
 3. Never the reverse
 
-Credentials:
-```
-docs/login-credentials.md
-```
-
 Base URL:
 ```
 APP_URL=<value from .env>
@@ -102,7 +96,7 @@ APP_URL=<value from .env>
 
 Read:
 ```
-docs/Core-Directives.md
+docs/core/README.md
 ```
 
 ---
@@ -125,7 +119,7 @@ docs/Core-Directives.md
 
 Docs:
 ```
-docs/ApiClient.md
+docs/api/README.md
 ```
 
 ---
@@ -146,15 +140,23 @@ For **every** task:
 
 ## 10. Documentation Rules
 
-Documentation is **LLM feedback**, not prose.
+Documentation preserves technical facts, design intent, decisions, and project history. Canonical documentation must not be regenerated freely.
+
+Before changing documentation, read `docs/documentation-governance.md`, `docs/canonical-manifest.json`, and `docs/audit/documentation-inventory.json`. The manifest identifies protected canonical sources; the inventory records the current classification of every Markdown document under `docs/`.
+
+- Make localized, evidence-backed changes to canonical documents and preserve intent, context, and uncertainty.
+- Do not rewrite a canonical document or large section for style consistency.
+- Classify code/documentation contradictions before editing; current code does not automatically overrule documented intent.
+- Run `php scripts/documentation-governance-guard.php` after documentation changes. Deletion, rename, or substantial removal requires explicit maintainer approval.
+- Public Spanish pages and translations are derived artifacts, not independent authorities.
 
 Location rules:
-- Commands → `docs/commands/`
+- Commands → `docs/cli/README.md`
 - Components → `docs/components/`
 - Modules → `docs/modules/`
 - Packages → `docs/packages/`
 - Issues → `docs/issues/`
-- Major changes → `docs/CHANGELOG-*.md`
+- Major changes → update the relevant canonical page; legacy changelogs are historical references only.
 
 Always ask at task end:
 > Can documentation be created or updated?

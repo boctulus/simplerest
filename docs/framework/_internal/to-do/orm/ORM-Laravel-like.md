@@ -690,6 +690,6 @@ Software Architect
 
 ## Relacionado
 
-- [Query Builder](QueryBuilder.md) - Documentación completa del Query Builder
-- [Command Line](CommandLine.md) - Comandos disponibles para generar modelos
-- [Packages & Modules](Packages%20and%20Modules.md) - Estructura de packages
+- [Query Builder](../../../../_internal/legacy/QueryBuilder.md) - Referencia histórica del Query Builder
+- [Command Line](../../../../_internal/legacy/CommandLine.md) - Referencia histórica de comandos
+- [Packages & Modules](../../../../_internal/legacy/Packages%20and%20Modules.md) - Estructura histórica de packages

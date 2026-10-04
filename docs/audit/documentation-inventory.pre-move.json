@@ -1,0 +1,4623 @@
+{
+  "version": 1,
+  "stage": "pre-move snapshot; webhook files deferred",
+  "scope": "All docs Markdown except the webhook-related pages, whose content and links were not scanned pending the final batch.",
+  "link_method": "Inline Markdown links to local Markdown targets only. Fragment anchors, reference-style links, HTML links, and extensionless links without an existing Markdown target are not validated.",
+  "counts": {
+    "markdown_scanned": 192,
+    "webhook_markdown_deferred": 5,
+    "local_markdown_links": 380,
+    "broken_local_markdown_links": 92,
+    "classifications": {
+      "needs-review": 3,
+      "canonical": 18,
+      "internal/audit": 73,
+      "legacy": 98
+    }
+  },
+  "deferred_webhook_paths": [
+    "docs/api/webhooks.md",
+    "docs/to-do/done/webhooks-decouple-dispatcher.md",
+    "docs/to-do/in-progress/webhooks-callback-security.md",
+    "docs/to-do/webhooks-async-delivery-reliability.md",
+    "docs/to-do/webhooks-scope-isolation.md"
+  ],
+  "documents": [
+    {
+      "path": "docs/audit/pending/framework/SimpleRest-Philosophy.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 366
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        },
+        {
+          "target": "docs/README.md",
+          "exists": true,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "docs/CHANGELOG.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/MIGRATION-v0.9.md",
+          "line": 97
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/to-do/SimpleRest_Plan_de_Trabajo.md",
+          "exists": false,
+          "line": 191
+        },
+        {
+          "target": "docs/Framework-Architecture.md",
+          "exists": true,
+          "line": 192
+        }
+      ]
+    },
+    {
+      "path": "docs/Validation.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/i18n.md",
+          "line": 57
+        },
+        {
+          "source": "docs/Schemas.md",
+          "line": 175
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/Schemas.md",
+          "exists": true,
+          "line": 112
+        },
+        {
+          "target": "docs/i18n.md",
+          "exists": true,
+          "line": 113
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/phase-5-stream-interface.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "line": 629
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 694
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/TODO ORM.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/EventBus.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/Framework-Architecture.md",
+          "exists": false,
+          "line": 87
+        }
+      ]
+    },
+    {
+      "path": "docs/Ollama-Models.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/in-progress/api-tests-progress.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "line": 628
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 385
+        }
+      ]
+    },
+    {
+      "path": "docs/QuickStart.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/Deployment.md",
+          "line": 120
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/Routing.md",
+          "exists": true,
+          "line": 353
+        },
+        {
+          "target": "docs/QueryBuilder.md",
+          "exists": true,
+          "line": 354
+        },
+        {
+          "target": "docs/ORM.md",
+          "exists": false,
+          "line": 355
+        },
+        {
+          "target": "docs/Middlewares.md",
+          "exists": true,
+          "line": 356
+        },
+        {
+          "target": "docs/ACL.md",
+          "exists": true,
+          "line": 357
+        },
+        {
+          "target": "docs/ApiClient.md",
+          "exists": true,
+          "line": 358
+        },
+        {
+          "target": "docs/CommandLine.md",
+          "exists": true,
+          "line": 359
+        },
+        {
+          "target": "docs/SimpleRest-philosophy.md",
+          "exists": true,
+          "line": 360
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/to-do/phase-3-psr17-factories.md",
+          "line": 385
+        },
+        {
+          "source": "docs/_internal/to-do/phase-5-stream-interface.md",
+          "line": 694
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 628
+        },
+        {
+          "target": "docs/_internal/to-do/phase-5-stream-interface.md",
+          "exists": true,
+          "line": 629
+        }
+      ]
+    },
+    {
+      "path": "docs/Helpers.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/ViewEngine.md",
+          "line": 89
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/pgsql-compatibility.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/EventBus.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/Framework-Architecture.md",
+          "exists": true,
+          "line": 87
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Response.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Response.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/FrontController.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/Routing.md",
+          "exists": true,
+          "line": 71
+        },
+        {
+          "target": "docs/Framework-Architecture.md",
+          "exists": true,
+          "line": 72
+        }
+      ]
+    },
+    {
+      "path": "docs/HTML-Form-builder.AdminLTE.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/Caching.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/Performance.md",
+          "line": 103
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 91
+        },
+        {
+          "target": "docs/framework/Performance.md",
+          "exists": true,
+          "line": 92
+        }
+      ]
+    },
+    {
+      "path": "docs/deployment/README.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 23
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/framework/SimpleRest-Complete-Docs.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "docs/For-Reasoning-Architecture.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/issues/pgsql-compatibility.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+          "exists": true,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/reference/README.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 24
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/README.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/architecture.md",
+          "line": 34
+        },
+        {
+          "source": "docs/README.md",
+          "line": 19
+        },
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 19
+        },
+        {
+          "source": "docs/api/README.md",
+          "line": 14
+        },
+        {
+          "source": "docs/audit/pending/README.md",
+          "line": 7
+        },
+        {
+          "source": "docs/audit/pending/framework/AutoJoins.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/For-Reasoning-Architecture.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/Framework-Architecture.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/FrontController.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Multi-Tenant.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/ORM-STATUS.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Query-Builder-Comparison.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/QueryBuilder.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 171
+        },
+        {
+          "source": "docs/audit/pending/framework/README.md",
+          "line": 27
+        },
+        {
+          "source": "docs/audit/pending/framework/Release-Status.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Request.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Response.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Routing.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/SimpleRest-Complete-Docs.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/SimpleRest-Philosophy.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/WebRouter.md",
+          "line": 3
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 27
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 35
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 46
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 36
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 11
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 11
+        },
+        {
+          "source": "docs/database/schemas.md",
+          "line": 23
+        },
+        {
+          "source": "docs/framework/AutoJoins.md",
+          "line": 6
+        },
+        {
+          "source": "docs/framework/FrontController.md",
+          "line": 3
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 7
+        },
+        {
+          "source": "docs/framework/PGSQL-Compatibility.md",
+          "line": 6
+        },
+        {
+          "source": "docs/framework/Query-Builder-Comparison.md",
+          "line": 6
+        },
+        {
+          "source": "docs/framework/QueryBuilder.md",
+          "line": 7
+        },
+        {
+          "source": "docs/framework/Routing.md",
+          "line": 3
+        },
+        {
+          "source": "docs/framework/SubResources.md",
+          "line": 6
+        },
+        {
+          "source": "docs/getting-started/README.md",
+          "line": 20
+        },
+        {
+          "source": "docs/issues/pgsql-compatibility.md",
+          "line": 7
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/index.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/audit/pending/framework/QuickStart.md",
+          "exists": true,
+          "line": 233
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 274
+        },
+        {
+          "target": "docs/audit/pending/README.md",
+          "exists": true,
+          "line": 284
+        }
+      ]
+    },
+    {
+      "path": "docs/CommandLine.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/QuickStart.md",
+          "line": 359
+        },
+        {
+          "source": "docs/unit-tests-pruebas-unitarias.md",
+          "line": 116
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/TODO !must-do.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/framework/FrontController.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 37
+        },
+        {
+          "source": "docs/framework/FrontController.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/Routing.md",
+          "exists": true,
+          "line": 73
+        },
+        {
+          "target": "docs/audit/pending/framework/Framework-Architecture.md",
+          "exists": true,
+          "line": 74
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Validation.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 177
+        },
+        {
+          "source": "docs/framework/i18n.md",
+          "line": 57
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Schemas.md",
+          "exists": true,
+          "line": 112
+        },
+        {
+          "target": "docs/framework/i18n.md",
+          "exists": true,
+          "line": 113
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/TODO RelationshipTrait.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 19
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        },
+        {
+          "source": "docs/audit/pending/framework/ORM-STATUS.md",
+          "line": 43
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 170
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 94
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/api/automatic-endpoints.md",
+          "exists": true,
+          "line": 1
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/FrontController.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/FrontController.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "line": 629
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 694
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/SubResources.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/AutoJoins.md",
+          "line": 92
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 176
+        },
+        {
+          "source": "docs/framework/SubResources.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/Schemas.md",
+          "exists": true,
+          "line": 92
+        },
+        {
+          "target": "docs/audit/pending/framework/AutoJoins.md",
+          "exists": true,
+          "line": 93
+        },
+        {
+          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 94
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/ApiClient.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 364
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/framework/Response.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 37
+        },
+        {
+          "source": "docs/framework/Response.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/SimpleRest_Plan_de_Trabajo.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/issues/migration_table_name_error.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/documentation-governance.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 9
+        },
+        {
+          "source": "docs/index.md",
+          "line": 30
+        },
+        {
+          "source": "docs/README.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/TODO !must-do.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/api-controller-missing-impersonation-types.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 28
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/MIGRATION-v0.9.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/CHANGELOG.md",
+          "exists": false,
+          "line": 297
+        },
+        {
+          "target": "docs/framework/Framework-Architecture.md",
+          "exists": false,
+          "line": 298
+        }
+      ]
+    },
+    {
+      "path": "docs/cli/README.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 21
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/Index.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/orm/ORM.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 585
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "exists": true,
+          "line": 201
+        },
+        {
+          "target": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "exists": true,
+          "line": 1400
+        },
+        {
+          "target": "docs/_internal/to-do/orm/QueryBuilder.md",
+          "exists": false,
+          "line": 1401
+        },
+        {
+          "target": "docs/_internal/to-do/orm/Exceptions.md",
+          "exists": false,
+          "line": 1402
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/ModuleProvider.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/sections/Modules.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/SubResources.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/AutoJoins.md",
+          "line": 90
+        },
+        {
+          "source": "docs/Schemas.md",
+          "line": 174
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/Schemas.md",
+          "exists": true,
+          "line": 67
+        },
+        {
+          "target": "docs/AutoJoins.md",
+          "exists": true,
+          "line": 68
+        },
+        {
+          "target": "docs/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 69
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/fix-perfomance.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
+          "line": 385
+        },
+        {
+          "source": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
+          "line": 694
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 628
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
+          "exists": true,
+          "line": 629
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/SimpleRest-API-Rest.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 28
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        },
+        {
+          "source": "docs/audit/pending/framework/ORM-STATUS.md",
+          "line": 42
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 178
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/database/connections.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 18
+        },
+        {
+          "source": "docs/audit/pending/framework/Multi-Tenant.md",
+          "line": 3
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 36
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 5
+        },
+        {
+          "source": "docs/framework/Multi-Tenant.md",
+          "line": 5
+        },
+        {
+          "source": "docs/framework/PGSQL-Compatibility.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/audit/pending/framework/Multi-Tenant.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 46
+        }
+      ]
+    },
+    {
+      "path": "docs/Output-Methods.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/Multi-Tenant.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/pending/framework/Multi-Tenant.md",
+          "exists": true,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "path": "docs/issues/api-per-user-acl-callables.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/Authentication.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 28
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/ACL.md",
+          "exists": true,
+          "line": 189
+        },
+        {
+          "target": "docs/CHANGELOG-password-reset-security.md",
+          "exists": true,
+          "line": 191
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/ORM-STATUS.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 51
+        }
+      ]
+    },
+    {
+      "path": "docs/database/schemas.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 18
+        },
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 19
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 3
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 7
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/database/README.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/audit/pending/framework/Schemas.md",
+          "exists": true,
+          "line": 23
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Request.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Request.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/Request.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/authentication-acl.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 10
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 274
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        },
+        {
+          "source": "docs/security/acl.md",
+          "line": 3
+        },
+        {
+          "source": "docs/security/authentication.md",
+          "line": 3
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 7
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/issues/historical-environment-credentials-require-rotation.md",
+          "exists": true,
+          "line": 25
+        },
+        {
+          "target": "docs/framework/Authentication.md",
+          "exists": true,
+          "line": 28
+        },
+        {
+          "target": "docs/framework/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 28
+        },
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 28
+        },
+        {
+          "target": "docs/framework/ACL.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/framework/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/api/README.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/framework/commands/AclCommands.md",
+          "exists": true,
+          "line": 60
+        },
+        {
+          "target": "docs/CHANGELOG-password-reset-security.md",
+          "exists": true,
+          "line": 60
+        },
+        {
+          "target": "app/Modules/Xeni/docs/api_authorization.md",
+          "exists": true,
+          "line": 60
+        }
+      ]
+    },
+    {
+      "path": "docs/Framework-Architecture.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/CHANGELOG.md",
+          "line": 192
+        },
+        {
+          "source": "docs/EventBus.md",
+          "line": 87
+        },
+        {
+          "source": "docs/FrontController.md",
+          "line": 72
+        },
+        {
+          "source": "docs/MIGRATION-v0.9.md",
+          "line": 98
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/AutoJoins.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/AutoJoins.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "path": "docs/Schemas.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/AutoJoins.md",
+          "line": 89
+        },
+        {
+          "source": "docs/Multi-Tenant.md",
+          "line": 76
+        },
+        {
+          "source": "docs/SubResources.md",
+          "line": 67
+        },
+        {
+          "source": "docs/Validation.md",
+          "line": 112
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 168
+        },
+        {
+          "target": "docs/QueryBuilder.md",
+          "exists": true,
+          "line": 172
+        },
+        {
+          "target": "docs/AutoJoins.md",
+          "exists": true,
+          "line": 173
+        },
+        {
+          "target": "docs/SubResources.md",
+          "exists": true,
+          "line": 174
+        },
+        {
+          "target": "docs/Validation.md",
+          "exists": true,
+          "line": 175
+        },
+        {
+          "target": "docs/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 176
+        }
+      ]
+    },
+    {
+      "path": "docs/CHANGELOG-password-reset-security.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 60
+        },
+        {
+          "source": "docs/framework/Authentication.md",
+          "line": 191
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/Authentication.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/ACL.md",
+          "exists": true,
+          "line": 115
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Request.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 37
+        },
+        {
+          "source": "docs/framework/Request.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Packages and Modules.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/Pacakges.md",
+          "line": 4
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/HTML-Form-builder.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/ViewEngine.md",
+          "line": 88
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/acl-literal-wildcard-path-divergence.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 38
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/PSR-SUMMARY.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/PSR-SUMMARY.md",
+          "line": 382
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/PSR-7.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/ImmutableMethods.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/to-do/phase-3-psr17-factories.md",
+          "exists": false,
+          "line": 25
+        },
+        {
+          "target": "docs/to-do/phase-4-psr15-middleware.md",
+          "exists": false,
+          "line": 26
+        },
+        {
+          "target": "docs/to-do/phase-5-stream-interface.md",
+          "exists": false,
+          "line": 27
+        },
+        {
+          "target": "docs/PSR-7.md",
+          "exists": true,
+          "line": 47
+        },
+        {
+          "target": "docs/ImmutableMethods.md",
+          "exists": true,
+          "line": 66
+        },
+        {
+          "target": "docs/to-do/phase-3-psr17-factories.md",
+          "exists": false,
+          "line": 84
+        },
+        {
+          "target": "docs/to-do/phase-4-psr15-middleware.md",
+          "exists": false,
+          "line": 105
+        },
+        {
+          "target": "docs/to-do/phase-5-stream-interface.md",
+          "exists": false,
+          "line": 126
+        },
+        {
+          "target": "docs/PSR-7.md",
+          "exists": true,
+          "line": 379
+        },
+        {
+          "target": "docs/ImmutableMethods.md",
+          "exists": true,
+          "line": 380
+        },
+        {
+          "target": "docs/CHANGELOG-PSR.md",
+          "exists": true,
+          "line": 381
+        },
+        {
+          "target": "docs/PSR-SUMMARY.md",
+          "exists": true,
+          "line": 382
+        },
+        {
+          "target": "docs/to-do/phase-3-psr17-factories.md",
+          "exists": false,
+          "line": 388
+        },
+        {
+          "target": "docs/to-do/phase-4-psr15-middleware.md",
+          "exists": false,
+          "line": 389
+        },
+        {
+          "target": "docs/to-do/phase-5-stream-interface.md",
+          "exists": false,
+          "line": 390
+        },
+        {
+          "target": "docs/to-do/phase-3-psr17-factories.md",
+          "exists": false,
+          "line": 468
+        }
+      ]
+    },
+    {
+      "path": "docs/Performance.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/Caching.md",
+          "line": 92
+        },
+        {
+          "source": "docs/Deployment.md",
+          "line": 121
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/Caching.md",
+          "exists": true,
+          "line": 103
+        },
+        {
+          "target": "docs/Deployment.md",
+          "exists": true,
+          "line": 104
+        }
+      ]
+    },
+    {
+      "path": "docs/Multi-Tenant.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/QueryBuilder.md",
+          "exists": true,
+          "line": 75
+        },
+        {
+          "target": "docs/Schemas.md",
+          "exists": true,
+          "line": 76
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/HTML-Form-builder.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/ViewEngine.md",
+          "line": 88
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/SimpleRest-philosophy.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/QuickStart.md",
+          "line": 360
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/index.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/README.md",
+          "line": 5
+        },
+        {
+          "source": "docs/README.md",
+          "line": 21
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 11
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/documentation-governance.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/architecture.md",
+          "exists": true,
+          "line": 10
+        },
+        {
+          "target": "docs/getting-started/README.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/core/README.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/database/README.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/schemas.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/api/README.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/api/automatic-endpoints.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/api/webhooks.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 20
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 20
+        },
+        {
+          "target": "docs/cli/README.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/integrations/README.md",
+          "exists": true,
+          "line": 22
+        },
+        {
+          "target": "docs/deployment/README.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/reference/README.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/documentation-governance.md",
+          "exists": true,
+          "line": 30
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Multi-Tenant.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/database/connections.md",
+          "line": 46
+        },
+        {
+          "source": "docs/framework/Multi-Tenant.md",
+          "line": 6
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 77
+        },
+        {
+          "target": "docs/audit/pending/framework/Schemas.md",
+          "exists": true,
+          "line": 78
+        }
+      ]
+    },
+    {
+      "path": "docs/ModuleProvider.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/security/authentication.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 20
+        },
+        {
+          "source": "docs/api/README.md",
+          "line": 10
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 28
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/issues/http-response-uses-invalid-http2-status-line.md",
+          "exists": true,
+          "line": 38
+        },
+        {
+          "target": "docs/issues/historical-environment-credentials-require-rotation.md",
+          "exists": true,
+          "line": 48
+        }
+      ]
+    },
+    {
+      "path": "docs/commands/AclCommands.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/ACL.md",
+          "exists": true,
+          "line": 413
+        }
+      ]
+    },
+    {
+      "path": "docs/to-do/simplerest-composer-core-packages.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/framework/Schemas.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/AutoJoins.md",
+          "line": 91
+        },
+        {
+          "source": "docs/audit/pending/framework/Multi-Tenant.md",
+          "line": 78
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 92
+        },
+        {
+          "source": "docs/database/schemas.md",
+          "line": 23
+        },
+        {
+          "source": "docs/framework/Validation.md",
+          "line": 112
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/schemas.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 170
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 174
+        },
+        {
+          "target": "docs/audit/pending/framework/AutoJoins.md",
+          "exists": true,
+          "line": 175
+        },
+        {
+          "target": "docs/audit/pending/framework/SubResources.md",
+          "exists": true,
+          "line": 176
+        },
+        {
+          "target": "docs/framework/Validation.md",
+          "exists": true,
+          "line": 177
+        },
+        {
+          "target": "docs/framework/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 178
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/comparativa_simplerest_vs_laravel.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/Routing.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/FrontController.md",
+          "line": 71
+        },
+        {
+          "source": "docs/QuickStart.md",
+          "line": 353
+        },
+        {
+          "source": "docs/WebRouter.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/api-rest-from-frontcontroller-to-webrouter.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/security/acl.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 20
+        },
+        {
+          "source": "docs/api/README.md",
+          "line": 10
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 6
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/issues/api-controller-missing-impersonation-types.md",
+          "exists": true,
+          "line": 28
+        },
+        {
+          "target": "docs/issues/acl-literal-wildcard-path-divergence.md",
+          "exists": true,
+          "line": 38
+        },
+        {
+          "target": "docs/issues/api-per-user-acl-callables.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/issues/api-method-override-acl-mismatch.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/issues/http-response-uses-invalid-http2-status-line.md",
+          "exists": true,
+          "line": 52
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/INDEX-2026-05.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/README.md",
+          "line": 21
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/README.md",
+          "exists": false,
+          "line": 12
+        },
+        {
+          "target": "docs/_internal/legacy/QuickStart.md",
+          "exists": false,
+          "line": 13
+        },
+        {
+          "target": "docs/_internal/legacy/SimpleRest-philosophy.md",
+          "exists": false,
+          "line": 14
+        },
+        {
+          "target": "docs/_internal/legacy/release-status.md",
+          "exists": false,
+          "line": 15
+        },
+        {
+          "target": "docs/_internal/legacy/Framework-Architecture.md",
+          "exists": false,
+          "line": 23
+        },
+        {
+          "target": "docs/_internal/legacy/FrontController.md",
+          "exists": false,
+          "line": 24
+        },
+        {
+          "target": "docs/_internal/legacy/core-directives.md",
+          "exists": false,
+          "line": 25
+        },
+        {
+          "target": "docs/_internal/legacy/MIGRATION-v0.9.md",
+          "exists": false,
+          "line": 26
+        },
+        {
+          "target": "docs/_internal/legacy/SimpleRest-Complete-Docs.md",
+          "exists": false,
+          "line": 27
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG.md",
+          "exists": false,
+          "line": 28
+        },
+        {
+          "target": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "exists": false,
+          "line": 34
+        },
+        {
+          "target": "docs/_internal/legacy/PSR-7.md",
+          "exists": false,
+          "line": 35
+        },
+        {
+          "target": "docs/_internal/legacy/ImmutableMethods.md",
+          "exists": false,
+          "line": 36
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG-PSR.md",
+          "exists": false,
+          "line": 37
+        },
+        {
+          "target": "docs/_internal/legacy/Routing.md",
+          "exists": false,
+          "line": 45
+        },
+        {
+          "target": "docs/_internal/legacy/WebRouter.md",
+          "exists": false,
+          "line": 46
+        },
+        {
+          "target": "docs/_internal/legacy/Request.md",
+          "exists": false,
+          "line": 47
+        },
+        {
+          "target": "docs/_internal/legacy/Response.md",
+          "exists": false,
+          "line": 48
+        },
+        {
+          "target": "docs/_internal/legacy/Middlewares.md",
+          "exists": false,
+          "line": 49
+        },
+        {
+          "target": "docs/_internal/legacy/Output-Methods.md",
+          "exists": false,
+          "line": 50
+        },
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": false,
+          "line": 58
+        },
+        {
+          "target": "docs/_internal/legacy/Schemas.md",
+          "exists": false,
+          "line": 59
+        },
+        {
+          "target": "docs/_internal/legacy/AutoJoins.md",
+          "exists": false,
+          "line": 60
+        },
+        {
+          "target": "docs/_internal/legacy/SubResources.md",
+          "exists": false,
+          "line": 61
+        },
+        {
+          "target": "docs/_internal/legacy/Multi-Tenant.md",
+          "exists": false,
+          "line": 62
+        },
+        {
+          "target": "docs/_internal/legacy/ORM-STATUS.md",
+          "exists": false,
+          "line": 63
+        },
+        {
+          "target": "docs/_internal/legacy/Exceptions.md",
+          "exists": false,
+          "line": 64
+        },
+        {
+          "target": "docs/_internal/legacy/SimpleRest-API-Rest.md",
+          "exists": false,
+          "line": 65
+        },
+        {
+          "target": "docs/_internal/legacy/AutomaticEndpoints-Summary.md",
+          "exists": false,
+          "line": 66
+        },
+        {
+          "target": "docs/_internal/legacy/Authentication.md",
+          "exists": false,
+          "line": 74
+        },
+        {
+          "target": "docs/_internal/legacy/ACL.md",
+          "exists": false,
+          "line": 75
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG-acl.md",
+          "exists": false,
+          "line": 76
+        },
+        {
+          "target": "docs/_internal/legacy/Validation.md",
+          "exists": false,
+          "line": 84
+        },
+        {
+          "target": "docs/_internal/legacy/Caching.md",
+          "exists": false,
+          "line": 85
+        },
+        {
+          "target": "docs/_internal/legacy/CommandLine.md",
+          "exists": false,
+          "line": 93
+        },
+        {
+          "target": "docs/_internal/legacy/commands/PackCommand.md",
+          "exists": false,
+          "line": 94
+        },
+        {
+          "target": "docs/_internal/legacy/commands/AclCommands.md",
+          "exists": false,
+          "line": 95
+        },
+        {
+          "target": "docs/_internal/legacy/ViewEngine.md",
+          "exists": false,
+          "line": 121
+        },
+        {
+          "target": "docs/_internal/legacy/HTML-Form-builder.md",
+          "exists": false,
+          "line": 122
+        },
+        {
+          "target": "docs/_internal/legacy/HTML-Form-builder.AdminLTE.md",
+          "exists": false,
+          "line": 123
+        },
+        {
+          "target": "docs/_internal/legacy/Packages and Modules.md",
+          "exists": false,
+          "line": 131
+        },
+        {
+          "target": "docs/_internal/legacy/Pacakges.md",
+          "exists": false,
+          "line": 132
+        },
+        {
+          "target": "docs/_internal/legacy/ModuleProvider.md",
+          "exists": false,
+          "line": 133
+        },
+        {
+          "target": "docs/_internal/legacy/packages/README.md",
+          "exists": false,
+          "line": 134
+        },
+        {
+          "target": "docs/_internal/legacy/ApiClient.md",
+          "exists": false,
+          "line": 142
+        },
+        {
+          "target": "docs/_internal/legacy/Ollama-Models.md",
+          "exists": false,
+          "line": 143
+        },
+        {
+          "target": "docs/_internal/legacy/EventBus.md",
+          "exists": false,
+          "line": 151
+        },
+        {
+          "target": "docs/_internal/legacy/Helpers.md",
+          "exists": false,
+          "line": 160
+        },
+        {
+          "target": "docs/_internal/legacy/TestingGuide.md",
+          "exists": false,
+          "line": 161
+        },
+        {
+          "target": "docs/_internal/legacy/unit-tests-pruebas-unitarias.md",
+          "exists": false,
+          "line": 162
+        },
+        {
+          "target": "docs/_internal/legacy/i18n.md",
+          "exists": false,
+          "line": 170
+        },
+        {
+          "target": "docs/_internal/legacy/Deployment.md",
+          "exists": false,
+          "line": 178
+        },
+        {
+          "target": "docs/_internal/legacy/Performance.md",
+          "exists": false,
+          "line": 179
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/SubResources.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/SubResources.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/PSR-SUMMARY.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/PSR-SUMMARY.md",
+          "line": 382
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/PSR-7.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/framework/ImmutableMethods.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/framework/to-do/phase-3-psr17-factories.md",
+          "exists": false,
+          "line": 25
+        },
+        {
+          "target": "docs/framework/to-do/phase-4-psr15-middleware.md",
+          "exists": false,
+          "line": 26
+        },
+        {
+          "target": "docs/framework/to-do/phase-5-stream-interface.md",
+          "exists": false,
+          "line": 27
+        },
+        {
+          "target": "docs/framework/PSR-7.md",
+          "exists": true,
+          "line": 47
+        },
+        {
+          "target": "docs/framework/ImmutableMethods.md",
+          "exists": true,
+          "line": 66
+        },
+        {
+          "target": "docs/framework/to-do/phase-3-psr17-factories.md",
+          "exists": false,
+          "line": 84
+        },
+        {
+          "target": "docs/framework/to-do/phase-4-psr15-middleware.md",
+          "exists": false,
+          "line": 105
+        },
+        {
+          "target": "docs/framework/to-do/phase-5-stream-interface.md",
+          "exists": false,
+          "line": 126
+        },
+        {
+          "target": "docs/framework/PSR-7.md",
+          "exists": true,
+          "line": 379
+        },
+        {
+          "target": "docs/framework/ImmutableMethods.md",
+          "exists": true,
+          "line": 380
+        },
+        {
+          "target": "docs/framework/CHANGELOG-PSR.md",
+          "exists": false,
+          "line": 381
+        },
+        {
+          "target": "docs/framework/PSR-SUMMARY.md",
+          "exists": true,
+          "line": 382
+        },
+        {
+          "target": "docs/framework/to-do/phase-3-psr17-factories.md",
+          "exists": false,
+          "line": 388
+        },
+        {
+          "target": "docs/framework/to-do/phase-4-psr15-middleware.md",
+          "exists": false,
+          "line": 389
+        },
+        {
+          "target": "docs/framework/to-do/phase-5-stream-interface.md",
+          "exists": false,
+          "line": 390
+        },
+        {
+          "target": "docs/framework/to-do/phase-3-psr17-factories.md",
+          "exists": false,
+          "line": 468
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/to-do/orm/ORM.md",
+          "line": 201
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM.md",
+          "line": 1400
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/orm/ORM.md",
+          "exists": true,
+          "line": 585
+        },
+        {
+          "target": "docs/_internal/to-do/orm/QueryBuilder.md",
+          "exists": false,
+          "line": 693
+        },
+        {
+          "target": "docs/_internal/to-do/orm/CommandLine.md",
+          "exists": false,
+          "line": 694
+        },
+        {
+          "target": "docs/_internal/to-do/orm/Packages and Modules.md",
+          "exists": false,
+          "line": 695
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Exceptions.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/WebRouter.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/Routing.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Query-Builder-Comparison.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Query-Builder-Comparison.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/in-progress/api-tests-progress.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/unit-tests-pruebas-unitarias.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/TestingGuide.md",
+          "line": 73
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/CommandLine.md",
+          "exists": true,
+          "line": 116
+        },
+        {
+          "target": "docs/release-status.md",
+          "exists": true,
+          "line": 117
+        }
+      ]
+    },
+    {
+      "path": "docs/issues/api-method-override-acl-mismatch.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/http-query-support.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/integrations/README.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 22
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/core/README.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/architecture.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/audit/pending/README.md",
+          "exists": true,
+          "line": 10
+        }
+      ]
+    },
+    {
+      "path": "docs/api/automatic-endpoints.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 19
+        },
+        {
+          "source": "docs/api/README.md",
+          "line": 5
+        },
+        {
+          "source": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "line": 1
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/database/schemas.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 19
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/fix-perfomance.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/issues/migration_table_name_error.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/SimpleRest-Complete-Docs.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/TestingGuide.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/unit-tests-pruebas-unitarias.md",
+          "exists": true,
+          "line": 73
+        },
+        {
+          "target": "docs/release-status.md",
+          "exists": true,
+          "line": 74
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/phase-3-psr17-factories.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "line": 628
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 385
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/i18n.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/Validation.md",
+          "line": 113
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/Validation.md",
+          "exists": true,
+          "line": 57
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/README.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/README.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 27
+        },
+        {
+          "target": "docs/README.md",
+          "exists": true,
+          "line": 27
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Deployment.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/Performance.md",
+          "line": 104
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/QuickStart.md",
+          "exists": false,
+          "line": 120
+        },
+        {
+          "target": "docs/framework/Performance.md",
+          "exists": true,
+          "line": 121
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/orm/ORM.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 585
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "exists": true,
+          "line": 201
+        },
+        {
+          "target": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "exists": true,
+          "line": 1400
+        },
+        {
+          "target": "docs/framework/_internal/to-do/orm/QueryBuilder.md",
+          "exists": false,
+          "line": 1401
+        },
+        {
+          "target": "docs/framework/_internal/to-do/orm/Exceptions.md",
+          "exists": false,
+          "line": 1402
+        }
+      ]
+    },
+    {
+      "path": "docs/Deployment.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/Performance.md",
+          "line": 104
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/QuickStart.md",
+          "exists": true,
+          "line": 120
+        },
+        {
+          "target": "docs/Performance.md",
+          "exists": true,
+          "line": 121
+        }
+      ]
+    },
+    {
+      "path": "docs/release-status.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/TestingGuide.md",
+          "line": 74
+        },
+        {
+          "source": "docs/unit-tests-pruebas-unitarias.md",
+          "line": 117
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/commands/PackCommand.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/Performance.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/Caching.md",
+          "line": 92
+        },
+        {
+          "source": "docs/framework/Deployment.md",
+          "line": 121
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/Caching.md",
+          "exists": true,
+          "line": 103
+        },
+        {
+          "target": "docs/framework/Deployment.md",
+          "exists": true,
+          "line": 104
+        }
+      ]
+    },
+    {
+      "path": "docs/to-do/env-credential-branch-commit-audit.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/core/request-lifecycle.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/architecture.md",
+          "line": 15
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        },
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 19
+        },
+        {
+          "source": "docs/audit/pending/framework/FrontController.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Routing.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/WebRouter.md",
+          "line": 3
+        },
+        {
+          "source": "docs/core/README.md",
+          "line": 6
+        },
+        {
+          "source": "docs/framework/FrontController.md",
+          "line": 3
+        },
+        {
+          "source": "docs/framework/Routing.md",
+          "line": 3
+        },
+        {
+          "source": "docs/framework/WebRouter.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 27
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 35
+        },
+        {
+          "target": "docs/audit/pending/framework/Routing.md",
+          "exists": true,
+          "line": 37
+        },
+        {
+          "target": "docs/audit/pending/framework/WebRouter.md",
+          "exists": true,
+          "line": 37
+        },
+        {
+          "target": "docs/audit/pending/framework/FrontController.md",
+          "exists": true,
+          "line": 37
+        },
+        {
+          "target": "docs/audit/pending/framework/Request.md",
+          "exists": true,
+          "line": 37
+        },
+        {
+          "target": "docs/audit/pending/framework/Response.md",
+          "exists": true,
+          "line": 37
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Index.md",
+      "classification": "needs-review",
+      "basis": "Unlinked entry or secondary index with a possible navigation role; preserve pending explicit disposition.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 7
+        },
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/framework/Authentication.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/framework/ACL.md",
+          "exists": true,
+          "line": 9
+        }
+      ]
+    },
+    {
+      "path": "docs/SimpleRest-API-Rest.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/ORM-STATUS.md",
+          "line": 40
+        },
+        {
+          "source": "docs/Schemas.md",
+          "line": 176
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/sections/Packages.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/Middlewares.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 362
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/ImmutableMethods.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/PSR-SUMMARY.md",
+          "line": 24
+        },
+        {
+          "source": "docs/PSR-SUMMARY.md",
+          "line": 66
+        },
+        {
+          "source": "docs/PSR-SUMMARY.md",
+          "line": 380
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/PSR-7.md",
+          "exists": true,
+          "line": 355
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+          "line": 7
+        },
+        {
+          "source": "docs/framework/PGSQL-Compatibility.md",
+          "line": 5
+        },
+        {
+          "source": "docs/issues/pgsql-compatibility.md",
+          "line": 6
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/AutoJoins.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/Schemas.md",
+          "line": 173
+        },
+        {
+          "source": "docs/SubResources.md",
+          "line": 68
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/Schemas.md",
+          "exists": true,
+          "line": 89
+        },
+        {
+          "target": "docs/SubResources.md",
+          "exists": true,
+          "line": 90
+        },
+        {
+          "target": "docs/QueryBuilder.md",
+          "exists": true,
+          "line": 91
+        }
+      ]
+    },
+    {
+      "path": "docs/Packages and Modules.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/Pacakges.md",
+          "line": 4
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/ViewEngine.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/HTML-Form-builder.md",
+          "exists": true,
+          "line": 88
+        },
+        {
+          "target": "docs/Helpers.md",
+          "exists": true,
+          "line": 89
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/SimpleRest_Plan_de_Trabajo.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/TODO important.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/HTML-Form-builder.AdminLTE.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/Response.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/framework/Routing.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/FrontController.md",
+          "line": 73
+        },
+        {
+          "source": "docs/audit/pending/framework/WebRouter.md",
+          "line": 5
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 37
+        },
+        {
+          "source": "docs/framework/Routing.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/database/README.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 18
+        },
+        {
+          "source": "docs/database/schemas.md",
+          "line": 23
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/database/schemas.md",
+          "exists": true,
+          "line": 7
+        },
+        {
+          "target": "docs/audit/pending/README.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 11
+        }
+      ]
+    },
+    {
+      "path": "docs/architecture.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 10
+        },
+        {
+          "source": "docs/audit/pending/framework/Framework-Architecture.md",
+          "line": 1
+        },
+        {
+          "source": "docs/core/README.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 15
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 34
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Query-Builder-Comparison.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/Query-Builder-Comparison.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Routing.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 359
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Routing.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/commands/PackCommand.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/framework/QuickStart.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/README.md",
+          "line": 233
+        },
+        {
+          "source": "docs/getting-started/README.md",
+          "line": 20
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 171
+        },
+        {
+          "target": "docs/framework/Routing.md",
+          "exists": true,
+          "line": 359
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 360
+        },
+        {
+          "target": "docs/audit/pending/framework/ORM-STATUS.md",
+          "exists": true,
+          "line": 361
+        },
+        {
+          "target": "docs/framework/Middlewares.md",
+          "exists": true,
+          "line": 362
+        },
+        {
+          "target": "docs/framework/ACL.md",
+          "exists": true,
+          "line": 363
+        },
+        {
+          "target": "docs/framework/ApiClient.md",
+          "exists": true,
+          "line": 364
+        },
+        {
+          "target": "docs/framework/CommandLine.md",
+          "exists": true,
+          "line": 365
+        },
+        {
+          "target": "docs/audit/pending/framework/SimpleRest-Philosophy.md",
+          "exists": true,
+          "line": 366
+        }
+      ]
+    },
+    {
+      "path": "docs/AutomaticEndpoints-Summary.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/ORM-STATUS.md",
+          "line": 41
+        },
+        {
+          "source": "docs/Schemas.md",
+          "line": 168
+        },
+        {
+          "source": "docs/SubResources.md",
+          "line": 69
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/TODO RelationshipTrait.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/documentation-audit-continuation.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/api/README.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 19
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/api/automatic-endpoints.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/api/webhooks.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 10
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 10
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 10
+        },
+        {
+          "target": "docs/audit/pending/README.md",
+          "exists": true,
+          "line": 14
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 14
+        }
+      ]
+    },
+    {
+      "path": "docs/Caching.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/Performance.md",
+          "line": 103
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/QueryBuilder.md",
+          "exists": true,
+          "line": 91
+        },
+        {
+          "target": "docs/Performance.md",
+          "exists": true,
+          "line": 92
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/ORM-STATUS.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 361
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 41
+        },
+        {
+          "target": "docs/framework/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 42
+        },
+        {
+          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 43
+        }
+      ]
+    },
+    {
+      "path": "docs/PSR-7.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/ImmutableMethods.md",
+          "line": 355
+        },
+        {
+          "source": "docs/PSR-SUMMARY.md",
+          "line": 23
+        },
+        {
+          "source": "docs/PSR-SUMMARY.md",
+          "line": 47
+        },
+        {
+          "source": "docs/PSR-SUMMARY.md",
+          "line": 379
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/README.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 14
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 284
+        },
+        {
+          "source": "docs/core/README.md",
+          "line": 10
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 11
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/README.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/issues/historical-environment-credentials-require-rotation.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 25
+        },
+        {
+          "source": "docs/security/authentication.md",
+          "line": 48
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/WebRouter.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/WebRouter.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Pacakges.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/Packages and Modules.md",
+          "exists": true,
+          "line": 4
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Performance-Benchmark.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/Core-Directives.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/TestingGuide.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/unit-tests-pruebas-unitarias.md",
+          "exists": false,
+          "line": 73
+        },
+        {
+          "target": "docs/framework/release-status.md",
+          "exists": false,
+          "line": 74
+        }
+      ]
+    },
+    {
+      "path": "docs/Exceptions.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/ImmutableMethods.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/PSR-SUMMARY.md",
+          "line": 24
+        },
+        {
+          "source": "docs/framework/PSR-SUMMARY.md",
+          "line": 66
+        },
+        {
+          "source": "docs/framework/PSR-SUMMARY.md",
+          "line": 380
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/PSR-7.md",
+          "exists": true,
+          "line": 355
+        }
+      ]
+    },
+    {
+      "path": "docs/ApiClient.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/QuickStart.md",
+          "line": 358
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/Pacakges.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/Packages and Modules.md",
+          "exists": true,
+          "line": 4
+        }
+      ]
+    },
+    {
+      "path": "docs/Middlewares.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/QuickStart.md",
+          "line": 356
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/framework/Release-Status.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/commands/AclCommands.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 60
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/ACL.md",
+          "exists": true,
+          "line": 413
+        }
+      ]
+    },
+    {
+      "path": "docs/security/README.md",
+      "classification": "needs-review",
+      "basis": "Unlinked entry or secondary index with a possible navigation role; preserve pending explicit disposition.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/For-Reasoning-Architecture.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Ollama-Models.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/api-rest-from-frontcontroller-to-webrouter.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/ACL.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/Authentication.md",
+          "line": 115
+        },
+        {
+          "source": "docs/QuickStart.md",
+          "line": 357
+        },
+        {
+          "source": "docs/commands/AclCommands.md",
+          "line": 413
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/database/query-builder.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 18
+        },
+        {
+          "source": "docs/audit/pending/framework/QueryBuilder.md",
+          "line": 3
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 46
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 6
+        },
+        {
+          "source": "docs/framework/QueryBuilder.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 36
+        },
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 36
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 36
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/TODO important.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/getting-started/README.md",
+      "classification": "canonical",
+      "basis": "Listed explicitly by docs/canonical-manifest.json; linked from the curated public map or governing it.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 11
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 20
+        },
+        {
+          "target": "docs/audit/pending/framework/QuickStart.md",
+          "exists": true,
+          "line": 20
+        }
+      ]
+    },
+    {
+      "path": "docs/QueryBuilder.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/AutoJoins.md",
+          "line": 91
+        },
+        {
+          "source": "docs/Caching.md",
+          "line": 91
+        },
+        {
+          "source": "docs/Multi-Tenant.md",
+          "line": 75
+        },
+        {
+          "source": "docs/ORM-STATUS.md",
+          "line": 39
+        },
+        {
+          "source": "docs/QuickStart.md",
+          "line": 354
+        },
+        {
+          "source": "docs/Schemas.md",
+          "line": 172
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/QueryBuilder.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/ORM-STATUS.md",
+          "line": 51
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/QueryBuilder.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/AutoJoins.md",
+          "line": 93
+        },
+        {
+          "source": "docs/audit/pending/framework/Multi-Tenant.md",
+          "line": 77
+        },
+        {
+          "source": "docs/audit/pending/framework/ORM-STATUS.md",
+          "line": 41
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 360
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 174
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 36
+        },
+        {
+          "source": "docs/framework/Caching.md",
+          "line": 91
+        },
+        {
+          "source": "docs/framework/QueryBuilder.md",
+          "line": 6
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/CHANGELOG-PSR.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/PSR-SUMMARY.md",
+          "line": 381
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/http-response-uses-invalid-http2-status-line.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 52
+        },
+        {
+          "source": "docs/security/authentication.md",
+          "line": 38
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/Helpers.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/ViewEngine.md",
+          "line": 89
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/docs-canonical-governance-enforcement.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/sections/Packages.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/ACL.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 363
+        },
+        {
+          "source": "docs/framework/Authentication.md",
+          "line": 189
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        },
+        {
+          "source": "docs/framework/commands/AclCommands.md",
+          "line": 413
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/i18n.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/Validation.md",
+          "line": 113
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/Validation.md",
+          "exists": true,
+          "line": 57
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/Packager-implementation.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/comparativa_simplerest_vs_laravel.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/ViewEngine.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/HTML-Form-builder.md",
+          "exists": true,
+          "line": 88
+        },
+        {
+          "target": "docs/framework/Helpers.md",
+          "exists": true,
+          "line": 89
+        }
+      ]
+    },
+    {
+      "path": "docs/packager-implementation.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/Output-Methods.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/CommandLine.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 365
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/sections/Modules.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM.md",
+          "line": 201
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM.md",
+          "line": 1400
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/_internal/to-do/orm/ORM.md",
+          "exists": true,
+          "line": 585
+        },
+        {
+          "target": "docs/framework/_internal/to-do/orm/QueryBuilder.md",
+          "exists": false,
+          "line": 693
+        },
+        {
+          "target": "docs/framework/_internal/to-do/orm/CommandLine.md",
+          "exists": false,
+          "line": 694
+        },
+        {
+          "target": "docs/framework/_internal/to-do/orm/Packages and Modules.md",
+          "exists": false,
+          "line": 695
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Framework-Architecture.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/FrontController.md",
+          "line": 74
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/architecture.md",
+          "exists": true,
+          "line": 1
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/PSR-7.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/ImmutableMethods.md",
+          "line": 355
+        },
+        {
+          "source": "docs/framework/PSR-SUMMARY.md",
+          "line": 23
+        },
+        {
+          "source": "docs/framework/PSR-SUMMARY.md",
+          "line": 47
+        },
+        {
+          "source": "docs/framework/PSR-SUMMARY.md",
+          "line": 379
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/MIGRATION-v0.9.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/CHANGELOG-acl.md",
+          "exists": true,
+          "line": 71
+        },
+        {
+          "target": "docs/CHANGELOG.md",
+          "exists": true,
+          "line": 97
+        },
+        {
+          "target": "docs/Framework-Architecture.md",
+          "exists": true,
+          "line": 98
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/AutoJoins.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 175
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 93
+        },
+        {
+          "source": "docs/framework/AutoJoins.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/Schemas.md",
+          "exists": true,
+          "line": 91
+        },
+        {
+          "target": "docs/audit/pending/framework/SubResources.md",
+          "exists": true,
+          "line": 92
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 93
+        }
+      ]
+    },
+    {
+      "path": "docs/README.md",
+      "classification": "needs-review",
+      "basis": "Unlinked entry or secondary index with a possible navigation role; preserve pending explicit disposition.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/README.md",
+          "line": 27
+        },
+        {
+          "source": "docs/audit/pending/framework/SimpleRest-Philosophy.md",
+          "line": 1
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/documentation-governance.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/index.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/index.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/_internal/legacy/INDEX-2026-05.md",
+          "exists": true,
+          "line": 21
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/TODO ORM.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/audit/pending/framework/WebRouter.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history location; not part of the public map.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 37
+        },
+        {
+          "source": "docs/framework/WebRouter.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/Routing.md",
+          "exists": true,
+          "line": 5
+        }
+      ]
+    },
+    {
+      "path": "docs/ORM-STATUS.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/QueryBuilder.md",
+          "exists": true,
+          "line": 39
+        },
+        {
+          "target": "docs/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 40
+        },
+        {
+          "target": "docs/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 41
+        }
+      ]
+    },
+    {
+      "path": "docs/CHANGELOG-acl.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/MIGRATION-v0.9.md",
+          "line": 71
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/core-directives.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/PGSQL-Compatibility.md",
+      "classification": "legacy",
+      "basis": "Not linked from docs/index.md; the docs README defines unlinked root and framework pages as audit material, not current public specifications.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 6
+        }
+      ]
+    }
+  ]
+}

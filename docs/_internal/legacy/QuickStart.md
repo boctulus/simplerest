@@ -1,7 +1,3 @@
-> **Legacy disposition:** retained under `docs/audit/pending/` as an audit input, not a current setup guide. Installation/bootstrap claims were reviewed in this phase: the repository dependency install completed in a filtered snapshot, the local-path consumer example failed on a transitive package, and neither repository-as-application startup nor public Composer installation was reproduced. See the [claim-level audit](../../README.md#claim-level-findings-installation-and-bootstrap). API, database, authentication, routing, and CLI instructions remain pending their ordered audit phases.
-
-> **Audited claim:** The section 5 claim that `php com make schema products` alone makes the CRUD API ready is rejected. Its sample `/api/products` paths also omit the version required by the checked-in API configuration. A complete corrected workflow remains unverified; see the [claim-level audit](../../README.md#claim-level-findings-schema-generation-and-automatic-api).
-
 # Quickstart — SimpleRest Framework
 
 > Get a REST API running in under 5 minutes.
@@ -167,8 +163,6 @@ php com make schema products
 ```
 
 This creates `app/Schemas/main/ProductsSchema.php` with your table definition.
-
-> **Audit note:** The source path introspects an existing table into a PHP `ISchema` descriptor; this command does not create the SQL table or a migration. It uses MySQL-oriented metadata queries and writes without an existing-file protection check. This legacy snippet has not been reproduced as a portable setup workflow. See the [claim-level audit](../../README.md#claim-level-findings-schema-generation-and-automatic-api).
 
 ### That's it — your API is ready!
 
@@ -356,14 +350,14 @@ php com doc generate
 
 | Topic | Documentation |
 |-------|--------------|
-| Routing | [`Routing`](../../../_internal/legacy/framework/Routing.md) |
-| Query Builder | [`QueryBuilder`](./QueryBuilder.md) — pending audit input |
-| ORM / Models | [legacy ORM notes (pending audit)](./ORM-STATUS.md) |
-| Middleware | [`Middlewares`](../../../_internal/legacy/framework/Middlewares.md) |
-| ACL | [`ACL`](../../../_internal/legacy/framework/ACL.md) |
-| API Client | [`ApiClient`](../../../_internal/legacy/framework/ApiClient.md) |
-| CLI Commands | [`CommandLine`](../../../_internal/legacy/framework/CommandLine.md) |
-| Philosophy | [legacy philosophy (pending audit)](./SimpleRest-Philosophy.md) |
+| Routing | [`docs/Routing.md`](Routing.md) |
+| Query Builder | [`docs/QueryBuilder.md`](QueryBuilder.md) |
+| ORM / Models | [`docs/ORM.md`](../to-do/orm/ORM.md) |
+| Middleware | [`docs/Middlewares.md`](Middlewares.md) |
+| ACL | [`docs/ACL.md`](ACL.md) |
+| API Client | [`docs/ApiClient.md`](ApiClient.md) |
+| CLI Commands | [`docs/CommandLine.md`](CommandLine.md) |
+| Philosophy | [`docs/SimpleRest-philosophy.md`](SimpleRest-philosophy.md) |
 
 ---
 

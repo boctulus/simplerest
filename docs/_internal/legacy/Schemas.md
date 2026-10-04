@@ -1,7 +1,5 @@
 # Schemas — SimpleRest
 
-> **Audit status:** This legacy page is retained as an audit input, not current documentation. The schema descriptor format and generator path are summarized in [canonical schema notes](../../../database/schemas.md). The schema-alone REST claim is rejected. Manual DDL builder behavior, individual type mappings, relation/pivot semantics, and runtime validation remain pending in the [claim-level audit](../../README.md#claim-level-findings-schema-generation-and-automatic-api).
-
 ## ¿Qué es un Schema?
 
 Un **Schema** es una definición estructurada de una tabla de base de datos. SimpleRest usa archivos schema para:
@@ -167,12 +165,12 @@ Los schemas pueden incluir reglas de validación por campo:
 
 Si existe un schema para `products`, el endpoint `/api/v1/products` se auto-genera con CRUD completo, filtrado, paginación y ordenamiento.
 
-Ver: [`AutomaticEndpoints-Summary.md`](./AutomaticEndpoints-Summary.md)
+Ver: [`AutomaticEndpoints-Summary.md`](AutomaticEndpoints-Summary.md)
 
 ## Ver También
 
-- [`QueryBuilder.md`](./QueryBuilder.md) — legacy Query Builder page (pending audit)
-- [`AutoJoins.md`](./AutoJoins.md) — legacy AutoJoins page (pending audit)
-- [`SubResources.md`](./SubResources.md) — legacy sub-resource page
-- [`Validation.md`](../../../_internal/legacy/framework/Validation.md) — legacy validation page
-- [`SimpleRest-API-Rest.md`](../../../_internal/legacy/framework/SimpleRest-API-Rest.md) — legacy REST page
+- [`QueryBuilder.md`](QueryBuilder.md) — Query Builder
+- [`AutoJoins.md`](AutoJoins.md) — joins automáticos desde schemas
+- [`SubResources.md`](SubResources.md) — sub-recursos desde relaciones
+- [`Validation.md`](Validation.md) — reglas de validación
+- [`SimpleRest-API-Rest.md`](SimpleRest-API-Rest.md) — REST queries

@@ -31,4 +31,4 @@ Una discrepancia entre código y fuente editorial canónica debe investigarse; n
 
 ## Material histórico e interno
 
-`audit/` conserva evidencia y páginas pendientes; `_internal/legacy/` conserva índices y material histórico. Estas carpetas no son documentación publicable. La futura compilación del sitio también debe excluir `framework/` y las páginas legacy de la raíz que no estén enlazadas desde este mapa.
+`audit/` conserva evidencia y páginas pendientes; `_internal/legacy/` conserva índices y material histórico. Estas carpetas no son documentación publicable. La futura compilación del sitio también debe excluir `framework/` (que conserva sólo un puntero, archivos de archivo y material interno) y cualquier página legacy.

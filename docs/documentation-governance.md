@@ -102,6 +102,16 @@ source_revision: <commit>
 
 El mecanismo concreto puede cambiar; la propiedad requerida es la trazabilidad.
 
+## Contrato del pipeline de derivados
+
+El pipeline tomará como entrada únicamente los archivos enumerados en `canonical-manifest.json`. La publicación española se generará o mantendrá como locale predeterminado desde ese corpus, con libertad para adaptar estructura y estilo sin añadir afirmaciones que contradigan la fuente.
+
+Las traducciones (`en`, `it`, `pt` u otros locales) se derivarán de la publicación española y conservarán la referencia al documento canónico y a su revisión de origen. Una traducción puede mejorar su presentación o terminología, pero no puede establecer una autoridad editorial independiente ni alimentar cambios de vuelta a la fuente canónica.
+
+Cada página derivada debe registrar al menos la ruta de su fuente canónica y la revisión utilizada, por ejemplo `source` y `source_revision`. El locale español será la entrada lingüística de las traducciones; su metadato también debe permitir rastrear la revisión canónica correspondiente.
+
+El generador excluirá `docs/audit/`, `docs/_internal/`, `docs/framework/` y cualquier archivo no incluido en el mapa público `docs/index.md`. Si una fuente canónica enlaza a una ruta excluida, la derivación conservará el texto útil sin emitir un enlace roto a contenido interno, salvo que exista un destino público equivalente. Elegir o instalar un generador de sitio es una decisión posterior; este contrato no fija una herramienta concreta.
+
 ## Cambios realizados por IA
 
 Los agentes deben preferir diffs pequeños y revisables sobre documentos canónicos.
@@ -126,6 +136,10 @@ El proyecto debe incorporar progresivamente controles para detectar cambios dest
 - cambios derivados que no indiquen su fuente.
 
 El umbral técnico es una alarma, no una definición semántica de reescritura. La aprobación humana sigue siendo la autoridad final.
+
+La lista exacta protegida está en [`canonical-manifest.json`](canonical-manifest.json). Incluye el mapa `docs/index.md`, sus páginas públicas y esta política; [`audit/documentation-inventory.json`](audit/documentation-inventory.json) registra la clasificación, las referencias locales y los enlaces rotos observados para todo Markdown bajo `docs/`. El guard se ejecuta localmente con `php scripts/documentation-governance-guard.php` y también en cada pull request. Bloquea borrados y renombrados, además de cambios que eliminen al menos el 35 % del contenido anterior y un mínimo de 8 líneas, ajustado proporcionalmente en documentos breves. El manifest, el propio guard y su workflow también requieren aprobación para modificarse después de este alta inicial.
+
+El override local `--approved-breaking-change="referencia de aprobación"` sólo debe usarse después de la aprobación explícita del maintainer. En pull requests, el maintainer registra esa aprobación aplicando la etiqueta `docs-governance-approved`; la automatización vuelve a ejecutarse cuando se añade o quita la etiqueta.
 
 ## Relación con la auditoría documental
 

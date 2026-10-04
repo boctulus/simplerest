@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "purpose": "Exact set of current canonical editorial documents protected by the documentation governance guard.",
+  "selection_basis": "docs/index.md is the current curated public map. Its public pages, the map itself, and the governance policy are protected; links to internal historical records do not make those records canonical.",
+  "canonical_files": [
+    "docs/index.md",
+    "docs/documentation-governance.md",
+    "docs/architecture.md",
+    "docs/getting-started/README.md",
+    "docs/core/README.md",
+    "docs/core/request-lifecycle.md",
+    "docs/database/README.md",
+    "docs/database/connections.md",
+    "docs/database/query-builder.md",
+    "docs/database/schemas.md",
+    "docs/api/README.md",
+    "docs/api/automatic-endpoints.md",
+    "docs/api/webhooks.md",
+    "docs/security/authentication.md",
+    "docs/security/acl.md",
+    "docs/cli/README.md",
+    "docs/integrations/README.md",
+    "docs/deployment/README.md",
+    "docs/reference/README.md"
+  ],
+  "rewrite_guard": {
+    "minimum_deleted_lines": 8,
+    "minimum_deleted_ratio": 0.35
+  }
+}

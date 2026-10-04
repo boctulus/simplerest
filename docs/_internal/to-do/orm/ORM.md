@@ -1398,8 +1398,8 @@ El ORM de SimpleRest ofrece:
 ## Ver También
 
 - [ORM-Laravel-like.md](ORM-Laravel-like.md) - Métodos estáticos en detalle
-- [QueryBuilder.md](QueryBuilder.md) - Documentación completa del Query Builder
-- [Exceptions.md](Exceptions.md) - Manejo de excepciones
+- [QueryBuilder.md](../../legacy/QueryBuilder.md) - Referencia histórica del Query Builder
+- [Exceptions.md](../../legacy/Exceptions.md) - Referencia histórica de excepciones
 
 ---
 

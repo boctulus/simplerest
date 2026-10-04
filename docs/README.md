@@ -18,6 +18,6 @@ El código, la configuración y las pruebas actuales definen el comportamiento i
 
 Los ejemplos de uso se consideran ejecutables solo cuando se han reproducido en el entorno indicado. La [auditoría documental](audit/README.md) guarda evidencia y pendientes; es material interno y no forma parte de la documentación publicable.
 
-Solo las páginas enlazadas desde [`index.md`](index.md) forman actualmente el mapa de documentación publicable. Las páginas temáticas antiguas en la raíz de `docs/` y las páginas de `docs/framework/` son material de auditoría hasta que se revisen y se incorporen al mapa. El índice histórico de mayo de 2026 se conserva en [`_internal/legacy/INDEX-2026-05.md`](_internal/legacy/INDEX-2026-05.md).
+Solo las páginas enlazadas desde [`index.md`](index.md) forman actualmente el mapa de documentación publicable. Las páginas históricas no enlazadas que estaban en la raíz de `docs/` y en el antiguo árbol público `docs/framework/` se movieron a `_internal/legacy/`; el índice histórico de mayo de 2026 también se conserva allí en [`INDEX-2026-05.md`](_internal/legacy/INDEX-2026-05.md).
 
 Cuando se configure VitePress, la raíz corresponderá al locale español y las traducciones irán bajo sus prefijos de idioma. El build excluirá `audit/`, `_internal/`, `framework/` y cualquier página legacy no enlazada desde `index.md`.

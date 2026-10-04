@@ -1,0 +1,5083 @@
+{
+  "version": 1,
+  "generated_on": "2026-10-04",
+  "stage": "post-move complete classification",
+  "scope": "Every Markdown file under docs, including the webhook-related pages handled in the final batch; no technical webhook claims were changed.",
+  "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
+  "inline_markdown_links_seen": 759,
+  "counts": {
+    "markdown_scanned": 197,
+    "deferred_webhook_markdown": 0,
+    "webhook_markdown_in_final_batch": 5,
+    "local_markdown_links": 384,
+    "broken_local_markdown_links": 0,
+    "classifications": {
+      "needs-review": 2,
+      "canonical": 19,
+      "internal/audit": 77,
+      "legacy": 99
+    }
+  },
+  "deferred_webhook_paths": [],
+  "webhook_markdown_paths": [
+    "docs/api/webhooks.md",
+    "docs/to-do/done/webhooks-callback-security.md",
+    "docs/to-do/done/webhooks-decouple-dispatcher.md",
+    "docs/to-do/webhooks-async-delivery-reliability.md",
+    "docs/to-do/webhooks-scope-isolation.md"
+  ],
+  "documents": [
+    {
+      "path": "docs/_internal/issues/migration_table_name_error.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/ACL.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/Authentication.md",
+          "line": 115
+        },
+        {
+          "source": "docs/_internal/legacy/commands/AclCommands.md",
+          "line": 413
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 75
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 357
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/ApiClient.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 142
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 358
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Authentication.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 74
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/ACL.md",
+          "exists": true,
+          "line": 115
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/AutoJoins.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 60
+        },
+        {
+          "source": "docs/_internal/legacy/Schemas.md",
+          "line": 173
+        },
+        {
+          "source": "docs/_internal/legacy/SubResources.md",
+          "line": 68
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Schemas.md",
+          "exists": true,
+          "line": 89
+        },
+        {
+          "target": "docs/_internal/legacy/SubResources.md",
+          "exists": true,
+          "line": 90
+        },
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 91
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/AutomaticEndpoints-Summary.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 66
+        },
+        {
+          "source": "docs/_internal/legacy/ORM-STATUS.md",
+          "line": 41
+        },
+        {
+          "source": "docs/_internal/legacy/Schemas.md",
+          "line": 168
+        },
+        {
+          "source": "docs/_internal/legacy/SubResources.md",
+          "line": 69
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Caching.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 85
+        },
+        {
+          "source": "docs/_internal/legacy/Performance.md",
+          "line": 103
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 91
+        },
+        {
+          "target": "docs/_internal/legacy/Performance.md",
+          "exists": true,
+          "line": 92
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/CHANGELOG-acl.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 76
+        },
+        {
+          "source": "docs/_internal/legacy/MIGRATION-v0.9.md",
+          "line": 71
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/CHANGELOG-password-reset-security.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Authentication.md",
+          "line": 191
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 60
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/CHANGELOG-PSR.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 381
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 37
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 381
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/CHANGELOG.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/MIGRATION-v0.9.md",
+          "line": 297
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 28
+        },
+        {
+          "source": "docs/_internal/legacy/MIGRATION-v0.9.md",
+          "line": 97
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/SimpleRest_Plan_de_Trabajo.md",
+          "exists": true,
+          "line": 191
+        },
+        {
+          "target": "docs/_internal/legacy/Framework-Architecture.md",
+          "exists": true,
+          "line": 192
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/CommandLine.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 93
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 359
+        },
+        {
+          "source": "docs/_internal/legacy/unit-tests-pruebas-unitarias.md",
+          "line": 116
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 694
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 694
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/commands/AclCommands.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 95
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/ACL.md",
+          "exists": true,
+          "line": 413
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/commands/PackCommand.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 94
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/core-directives.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 25
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Deployment.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 178
+        },
+        {
+          "source": "docs/_internal/legacy/Performance.md",
+          "line": 104
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/QuickStart.md",
+          "exists": true,
+          "line": 120
+        },
+        {
+          "target": "docs/_internal/legacy/Performance.md",
+          "exists": true,
+          "line": 121
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/EventBus.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 151
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Framework-Architecture.md",
+          "exists": true,
+          "line": 87
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/Exceptions.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 64
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM.md",
+          "line": 1402
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM.md",
+          "line": 1402
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/For-Reasoning-Architecture.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Framework-Architecture.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/CHANGELOG.md",
+          "line": 192
+        },
+        {
+          "source": "docs/_internal/legacy/EventBus.md",
+          "line": 87
+        },
+        {
+          "source": "docs/_internal/legacy/framework/EventBus.md",
+          "line": 87
+        },
+        {
+          "source": "docs/_internal/legacy/framework/MIGRATION-v0.9.md",
+          "line": 298
+        },
+        {
+          "source": "docs/_internal/legacy/FrontController.md",
+          "line": 72
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 23
+        },
+        {
+          "source": "docs/_internal/legacy/MIGRATION-v0.9.md",
+          "line": 98
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/ACL.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Authentication.md",
+          "line": 189
+        },
+        {
+          "source": "docs/_internal/legacy/framework/commands/AclCommands.md",
+          "line": 413
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 363
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/ApiClient.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 364
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Authentication.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 28
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/framework/ACL.md",
+          "exists": true,
+          "line": 189
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG-password-reset-security.md",
+          "exists": true,
+          "line": 191
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/AutoJoins.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/AutoJoins.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Caching.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Performance.md",
+          "line": 103
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 91
+        },
+        {
+          "target": "docs/_internal/legacy/framework/Performance.md",
+          "exists": true,
+          "line": 92
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/CommandLine.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 365
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/commands/AclCommands.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 60
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/framework/ACL.md",
+          "exists": true,
+          "line": 413
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/commands/PackCommand.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Core-Directives.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Deployment.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Performance.md",
+          "line": 104
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/QuickStart.md",
+          "exists": true,
+          "line": 120
+        },
+        {
+          "target": "docs/_internal/legacy/framework/Performance.md",
+          "exists": true,
+          "line": 121
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/EventBus.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Framework-Architecture.md",
+          "exists": true,
+          "line": 87
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Exceptions.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/FrontController.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/FrontController.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Helpers.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/ViewEngine.md",
+          "line": 89
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "src/framework/Helpers/",
+          "exists": true,
+          "line": 93
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/HTML-Form-builder.AdminLTE.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/HTML-Form-builder.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/ViewEngine.md",
+          "line": 88
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/i18n.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Validation.md",
+          "line": 113
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/framework/Validation.md",
+          "exists": true,
+          "line": 57
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/ImmutableMethods.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 24
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 66
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 380
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/framework/PSR-7.md",
+          "exists": true,
+          "line": 355
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Middlewares.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 362
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/MIGRATION-v0.9.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/CHANGELOG.md",
+          "exists": true,
+          "line": 297
+        },
+        {
+          "target": "docs/_internal/legacy/Framework-Architecture.md",
+          "exists": true,
+          "line": 298
+        },
+        {
+          "target": "docs/framework/_internal/issues/",
+          "exists": true,
+          "line": 299
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/ModuleProvider.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Multi-Tenant.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/pending/framework/Multi-Tenant.md",
+          "exists": true,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Ollama-Models.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/ORM-STATUS.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 51
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Output-Methods.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Pacakges.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/framework/Packages and Modules.md",
+          "exists": true,
+          "line": 4
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Packager-implementation.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Packages and Modules.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Pacakges.md",
+          "line": 4
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Performance-Benchmark.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Performance.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Caching.md",
+          "line": 92
+        },
+        {
+          "source": "docs/_internal/legacy/framework/Deployment.md",
+          "line": 121
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/framework/Caching.md",
+          "exists": true,
+          "line": 103
+        },
+        {
+          "target": "docs/_internal/legacy/framework/Deployment.md",
+          "exists": true,
+          "line": 104
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/PGSQL-Compatibility.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/PSR-7.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/ImmutableMethods.md",
+          "line": 355
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 23
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 47
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 379
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 382
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/framework/PSR-7.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/_internal/legacy/framework/ImmutableMethods.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 25
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 26
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
+          "exists": true,
+          "line": 27
+        },
+        {
+          "target": "docs/_internal/legacy/framework/PSR-7.md",
+          "exists": true,
+          "line": 47
+        },
+        {
+          "target": "docs/_internal/legacy/framework/ImmutableMethods.md",
+          "exists": true,
+          "line": 66
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 84
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 105
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
+          "exists": true,
+          "line": 126
+        },
+        {
+          "target": "docs/_internal/legacy/framework/PSR-7.md",
+          "exists": true,
+          "line": 379
+        },
+        {
+          "target": "docs/_internal/legacy/framework/ImmutableMethods.md",
+          "exists": true,
+          "line": 380
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG-PSR.md",
+          "exists": true,
+          "line": 381
+        },
+        {
+          "target": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "exists": true,
+          "line": 382
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 388
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 389
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
+          "exists": true,
+          "line": 390
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 468
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Query-Builder-Comparison.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Query-Builder-Comparison.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/QueryBuilder.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/ORM-STATUS.md",
+          "line": 51
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Request.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Request.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Response.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Response.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Routing.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 359
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Routing.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/SimpleRest-API-Rest.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 28
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        },
+        {
+          "source": "docs/audit/pending/framework/ORM-STATUS.md",
+          "line": 42
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 178
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/framework/SubResources.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/SubResources.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/TestingGuide.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/unit-tests-pruebas-unitarias.md",
+          "exists": true,
+          "line": 73
+        },
+        {
+          "target": "docs/_internal/legacy/release-status.md",
+          "exists": true,
+          "line": 74
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/Validation.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/i18n.md",
+          "line": 57
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 177
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Schemas.md",
+          "exists": true,
+          "line": 112
+        },
+        {
+          "target": "docs/_internal/legacy/framework/i18n.md",
+          "exists": true,
+          "line": 113
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/ViewEngine.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/framework/HTML-Form-builder.md",
+          "exists": true,
+          "line": 88
+        },
+        {
+          "target": "docs/_internal/legacy/framework/Helpers.md",
+          "exists": true,
+          "line": 89
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/framework/WebRouter.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/WebRouter.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/FrontController.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 24
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Routing.md",
+          "exists": true,
+          "line": 71
+        },
+        {
+          "target": "docs/_internal/legacy/Framework-Architecture.md",
+          "exists": true,
+          "line": 72
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/Helpers.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 160
+        },
+        {
+          "source": "docs/_internal/legacy/ViewEngine.md",
+          "line": 89
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "src/framework/Helpers/",
+          "exists": true,
+          "line": 93
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/HTML-Form-builder.AdminLTE.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 123
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/HTML-Form-builder.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 122
+        },
+        {
+          "source": "docs/_internal/legacy/ViewEngine.md",
+          "line": 88
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/i18n.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 170
+        },
+        {
+          "source": "docs/_internal/legacy/Validation.md",
+          "line": 113
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Validation.md",
+          "exists": true,
+          "line": 57
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/ImmutableMethods.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 36
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 24
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 66
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 380
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/PSR-7.md",
+          "exists": true,
+          "line": 355
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/INDEX-2026-05.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/README.md",
+          "line": 21
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/README.md",
+          "exists": true,
+          "line": 12
+        },
+        {
+          "target": "docs/_internal/legacy/QuickStart.md",
+          "exists": true,
+          "line": 13
+        },
+        {
+          "target": "docs/_internal/legacy/SimpleRest-philosophy.md",
+          "exists": true,
+          "line": 14
+        },
+        {
+          "target": "docs/_internal/legacy/release-status.md",
+          "exists": true,
+          "line": 15
+        },
+        {
+          "target": "docs/_internal/legacy/Framework-Architecture.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/_internal/legacy/FrontController.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/_internal/legacy/core-directives.md",
+          "exists": true,
+          "line": 25
+        },
+        {
+          "target": "docs/_internal/legacy/MIGRATION-v0.9.md",
+          "exists": true,
+          "line": 26
+        },
+        {
+          "target": "docs/_internal/legacy/SimpleRest-Complete-Docs.md",
+          "exists": true,
+          "line": 27
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG.md",
+          "exists": true,
+          "line": 28
+        },
+        {
+          "target": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "exists": true,
+          "line": 34
+        },
+        {
+          "target": "docs/_internal/legacy/PSR-7.md",
+          "exists": true,
+          "line": 35
+        },
+        {
+          "target": "docs/_internal/legacy/ImmutableMethods.md",
+          "exists": true,
+          "line": 36
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG-PSR.md",
+          "exists": true,
+          "line": 37
+        },
+        {
+          "target": "docs/_internal/legacy/Routing.md",
+          "exists": true,
+          "line": 45
+        },
+        {
+          "target": "docs/_internal/legacy/WebRouter.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/_internal/legacy/Request.md",
+          "exists": true,
+          "line": 47
+        },
+        {
+          "target": "docs/_internal/legacy/Response.md",
+          "exists": true,
+          "line": 48
+        },
+        {
+          "target": "docs/_internal/legacy/Middlewares.md",
+          "exists": true,
+          "line": 49
+        },
+        {
+          "target": "docs/_internal/legacy/Output-Methods.md",
+          "exists": true,
+          "line": 50
+        },
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/_internal/legacy/Schemas.md",
+          "exists": true,
+          "line": 59
+        },
+        {
+          "target": "docs/_internal/legacy/AutoJoins.md",
+          "exists": true,
+          "line": 60
+        },
+        {
+          "target": "docs/_internal/legacy/SubResources.md",
+          "exists": true,
+          "line": 61
+        },
+        {
+          "target": "docs/_internal/legacy/Multi-Tenant.md",
+          "exists": true,
+          "line": 62
+        },
+        {
+          "target": "docs/_internal/legacy/ORM-STATUS.md",
+          "exists": true,
+          "line": 63
+        },
+        {
+          "target": "docs/_internal/legacy/Exceptions.md",
+          "exists": true,
+          "line": 64
+        },
+        {
+          "target": "docs/_internal/legacy/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 65
+        },
+        {
+          "target": "docs/_internal/legacy/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 66
+        },
+        {
+          "target": "docs/_internal/legacy/Authentication.md",
+          "exists": true,
+          "line": 74
+        },
+        {
+          "target": "docs/_internal/legacy/ACL.md",
+          "exists": true,
+          "line": 75
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG-acl.md",
+          "exists": true,
+          "line": 76
+        },
+        {
+          "target": "docs/_internal/legacy/Validation.md",
+          "exists": true,
+          "line": 84
+        },
+        {
+          "target": "docs/_internal/legacy/Caching.md",
+          "exists": true,
+          "line": 85
+        },
+        {
+          "target": "docs/_internal/legacy/CommandLine.md",
+          "exists": true,
+          "line": 93
+        },
+        {
+          "target": "docs/_internal/legacy/commands/PackCommand.md",
+          "exists": true,
+          "line": 94
+        },
+        {
+          "target": "docs/_internal/legacy/commands/AclCommands.md",
+          "exists": true,
+          "line": 95
+        },
+        {
+          "target": "docs/_internal/legacy/ViewEngine.md",
+          "exists": true,
+          "line": 121
+        },
+        {
+          "target": "docs/_internal/legacy/HTML-Form-builder.md",
+          "exists": true,
+          "line": 122
+        },
+        {
+          "target": "docs/_internal/legacy/HTML-Form-builder.AdminLTE.md",
+          "exists": true,
+          "line": 123
+        },
+        {
+          "target": "docs/_internal/legacy/Packages and Modules.md",
+          "exists": true,
+          "line": 131
+        },
+        {
+          "target": "docs/_internal/legacy/Pacakges.md",
+          "exists": true,
+          "line": 132
+        },
+        {
+          "target": "docs/_internal/legacy/ModuleProvider.md",
+          "exists": true,
+          "line": 133
+        },
+        {
+          "target": "docs/_internal/legacy/Packages and Modules.md",
+          "exists": true,
+          "line": 134
+        },
+        {
+          "target": "docs/_internal/legacy/ApiClient.md",
+          "exists": true,
+          "line": 142
+        },
+        {
+          "target": "docs/_internal/legacy/Ollama-Models.md",
+          "exists": true,
+          "line": 143
+        },
+        {
+          "target": "docs/_internal/legacy/EventBus.md",
+          "exists": true,
+          "line": 151
+        },
+        {
+          "target": "docs/_internal/legacy/Helpers.md",
+          "exists": true,
+          "line": 160
+        },
+        {
+          "target": "docs/_internal/legacy/TestingGuide.md",
+          "exists": true,
+          "line": 161
+        },
+        {
+          "target": "docs/_internal/legacy/unit-tests-pruebas-unitarias.md",
+          "exists": true,
+          "line": 162
+        },
+        {
+          "target": "docs/_internal/legacy/i18n.md",
+          "exists": true,
+          "line": 170
+        },
+        {
+          "target": "docs/_internal/legacy/Deployment.md",
+          "exists": true,
+          "line": 178
+        },
+        {
+          "target": "docs/_internal/legacy/Performance.md",
+          "exists": true,
+          "line": 179
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/Middlewares.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 49
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 356
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/MIGRATION-v0.9.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 26
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/CHANGELOG-acl.md",
+          "exists": true,
+          "line": 71
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG.md",
+          "exists": true,
+          "line": 97
+        },
+        {
+          "target": "docs/_internal/legacy/Framework-Architecture.md",
+          "exists": true,
+          "line": 98
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/ModuleProvider.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 133
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Multi-Tenant.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 62
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 75
+        },
+        {
+          "target": "docs/_internal/legacy/Schemas.md",
+          "exists": true,
+          "line": 76
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/Ollama-Models.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 143
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/ORM-STATUS.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 63
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 39
+        },
+        {
+          "target": "docs/_internal/legacy/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 40
+        },
+        {
+          "target": "docs/_internal/legacy/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 41
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/Output-Methods.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 50
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Pacakges.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 132
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Packages and Modules.md",
+          "exists": true,
+          "line": 4
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/packager-implementation.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Packages and Modules.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 131
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 134
+        },
+        {
+          "source": "docs/_internal/legacy/Pacakges.md",
+          "line": 4
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 695
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 695
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Performance.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/Caching.md",
+          "line": 92
+        },
+        {
+          "source": "docs/_internal/legacy/Deployment.md",
+          "line": 121
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 179
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Caching.md",
+          "exists": true,
+          "line": 103
+        },
+        {
+          "target": "docs/_internal/legacy/Deployment.md",
+          "exists": true,
+          "line": 104
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/PSR-7.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/ImmutableMethods.md",
+          "line": 355
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 35
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 23
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 47
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 379
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/PSR-SUMMARY.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 34
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 382
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/PSR-7.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/_internal/legacy/ImmutableMethods.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 25
+        },
+        {
+          "target": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 26
+        },
+        {
+          "target": "docs/_internal/to-do/phase-5-stream-interface.md",
+          "exists": true,
+          "line": 27
+        },
+        {
+          "target": "docs/_internal/legacy/PSR-7.md",
+          "exists": true,
+          "line": 47
+        },
+        {
+          "target": "docs/_internal/legacy/ImmutableMethods.md",
+          "exists": true,
+          "line": 66
+        },
+        {
+          "target": "docs/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 84
+        },
+        {
+          "target": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 105
+        },
+        {
+          "target": "docs/_internal/to-do/phase-5-stream-interface.md",
+          "exists": true,
+          "line": 126
+        },
+        {
+          "target": "docs/_internal/legacy/PSR-7.md",
+          "exists": true,
+          "line": 379
+        },
+        {
+          "target": "docs/_internal/legacy/ImmutableMethods.md",
+          "exists": true,
+          "line": 380
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG-PSR.md",
+          "exists": true,
+          "line": 381
+        },
+        {
+          "target": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "exists": true,
+          "line": 382
+        },
+        {
+          "target": "docs/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 388
+        },
+        {
+          "target": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 389
+        },
+        {
+          "target": "docs/_internal/to-do/phase-5-stream-interface.md",
+          "exists": true,
+          "line": 390
+        },
+        {
+          "target": "docs/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 468
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/QueryBuilder.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/AutoJoins.md",
+          "line": 91
+        },
+        {
+          "source": "docs/_internal/legacy/Caching.md",
+          "line": 91
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 58
+        },
+        {
+          "source": "docs/_internal/legacy/Multi-Tenant.md",
+          "line": 75
+        },
+        {
+          "source": "docs/_internal/legacy/ORM-STATUS.md",
+          "line": 39
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 354
+        },
+        {
+          "source": "docs/_internal/legacy/Schemas.md",
+          "line": 172
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 693
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM.md",
+          "line": 1401
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 693
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM.md",
+          "line": 1401
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/QuickStart.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/Deployment.md",
+          "line": 120
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 13
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Routing.md",
+          "exists": true,
+          "line": 353
+        },
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 354
+        },
+        {
+          "target": "docs/_internal/to-do/orm/ORM.md",
+          "exists": true,
+          "line": 355
+        },
+        {
+          "target": "docs/_internal/legacy/Middlewares.md",
+          "exists": true,
+          "line": 356
+        },
+        {
+          "target": "docs/_internal/legacy/ACL.md",
+          "exists": true,
+          "line": 357
+        },
+        {
+          "target": "docs/_internal/legacy/ApiClient.md",
+          "exists": true,
+          "line": 358
+        },
+        {
+          "target": "docs/_internal/legacy/CommandLine.md",
+          "exists": true,
+          "line": 359
+        },
+        {
+          "target": "docs/_internal/legacy/SimpleRest-philosophy.md",
+          "exists": true,
+          "line": 360
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/release-status.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/TestingGuide.md",
+          "line": 74
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 15
+        },
+        {
+          "source": "docs/_internal/legacy/TestingGuide.md",
+          "line": 74
+        },
+        {
+          "source": "docs/_internal/legacy/unit-tests-pruebas-unitarias.md",
+          "line": 117
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Request.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 47
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Response.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 48
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Routing.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/FrontController.md",
+          "line": 71
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 45
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 353
+        },
+        {
+          "source": "docs/_internal/legacy/WebRouter.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/Schemas.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/AutoJoins.md",
+          "line": 89
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 59
+        },
+        {
+          "source": "docs/_internal/legacy/Multi-Tenant.md",
+          "line": 76
+        },
+        {
+          "source": "docs/_internal/legacy/SubResources.md",
+          "line": 67
+        },
+        {
+          "source": "docs/_internal/legacy/Validation.md",
+          "line": 112
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 168
+        },
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 172
+        },
+        {
+          "target": "docs/_internal/legacy/AutoJoins.md",
+          "exists": true,
+          "line": 173
+        },
+        {
+          "target": "docs/_internal/legacy/SubResources.md",
+          "exists": true,
+          "line": 174
+        },
+        {
+          "target": "docs/_internal/legacy/Validation.md",
+          "exists": true,
+          "line": 175
+        },
+        {
+          "target": "docs/_internal/legacy/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 176
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/SimpleRest-API-Rest.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 65
+        },
+        {
+          "source": "docs/_internal/legacy/ORM-STATUS.md",
+          "line": 40
+        },
+        {
+          "source": "docs/_internal/legacy/Schemas.md",
+          "line": 176
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/SimpleRest-Complete-Docs.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 27
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/SimpleRest-philosophy.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 14
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 360
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/legacy/SubResources.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/AutoJoins.md",
+          "line": 90
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 61
+        },
+        {
+          "source": "docs/_internal/legacy/Schemas.md",
+          "line": 174
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Schemas.md",
+          "exists": true,
+          "line": 67
+        },
+        {
+          "target": "docs/_internal/legacy/AutoJoins.md",
+          "exists": true,
+          "line": 68
+        },
+        {
+          "target": "docs/_internal/legacy/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 69
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/TestingGuide.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 161
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/unit-tests-pruebas-unitarias.md",
+          "exists": true,
+          "line": 73
+        },
+        {
+          "target": "docs/_internal/legacy/release-status.md",
+          "exists": true,
+          "line": 74
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/unit-tests-pruebas-unitarias.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/TestingGuide.md",
+          "line": 73
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 162
+        },
+        {
+          "source": "docs/_internal/legacy/TestingGuide.md",
+          "line": 73
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/CommandLine.md",
+          "exists": true,
+          "line": 116
+        },
+        {
+          "target": "docs/_internal/legacy/release-status.md",
+          "exists": true,
+          "line": 117
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/Validation.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/i18n.md",
+          "line": 57
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 84
+        },
+        {
+          "source": "docs/_internal/legacy/Schemas.md",
+          "line": 175
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Schemas.md",
+          "exists": true,
+          "line": 112
+        },
+        {
+          "target": "docs/_internal/legacy/i18n.md",
+          "exists": true,
+          "line": 113
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/ViewEngine.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 121
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/HTML-Form-builder.md",
+          "exists": true,
+          "line": 88
+        },
+        {
+          "target": "docs/_internal/legacy/Helpers.md",
+          "exists": true,
+          "line": 89
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/legacy/WebRouter.md",
+      "classification": "legacy",
+      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/legacy/Routing.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/api-rest-from-frontcontroller-to-webrouter.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/comparativa_simplerest_vs_laravel.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/fix-perfomance.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/http-query-support.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/in-progress/api-tests-progress.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/to-do/orm/ORM.md",
+          "line": 201
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM.md",
+          "line": 1400
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/orm/ORM.md",
+          "exists": true,
+          "line": 585
+        },
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 693
+        },
+        {
+          "target": "docs/_internal/legacy/CommandLine.md",
+          "exists": true,
+          "line": 694
+        },
+        {
+          "target": "docs/_internal/legacy/Packages and Modules.md",
+          "exists": true,
+          "line": 695
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/orm/ORM.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 355
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 585
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "exists": true,
+          "line": 201
+        },
+        {
+          "target": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "exists": true,
+          "line": 1400
+        },
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 1401
+        },
+        {
+          "target": "docs/_internal/legacy/Exceptions.md",
+          "exists": true,
+          "line": 1402
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/phase-3-psr17-factories.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 25
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 84
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 388
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 468
+        },
+        {
+          "source": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "line": 628
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 385
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 26
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 105
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 389
+        },
+        {
+          "source": "docs/_internal/to-do/phase-3-psr17-factories.md",
+          "line": 385
+        },
+        {
+          "source": "docs/_internal/to-do/phase-5-stream-interface.md",
+          "line": 694
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 628
+        },
+        {
+          "target": "docs/_internal/to-do/phase-5-stream-interface.md",
+          "exists": true,
+          "line": 629
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/phase-5-stream-interface.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 27
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 126
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 390
+        },
+        {
+          "source": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "line": 629
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 694
+        }
+      ]
+    },
+    {
+      "path": "docs/_internal/to-do/sections/Modules.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/sections/Packages.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/SimpleRest_Plan_de_Trabajo.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/CHANGELOG.md",
+          "line": 191
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/TODO !must-do.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/TODO important.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/TODO ORM.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/_internal/to-do/TODO RelationshipTrait.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/api/automatic-endpoints.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 5
+        },
+        {
+          "source": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "line": 1
+        },
+        {
+          "source": "docs/index.md",
+          "line": 19
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/database/schemas.md",
+          "exists": true,
+          "line": 19
+        }
+      ]
+    },
+    {
+      "path": "docs/api/README.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        },
+        {
+          "source": "docs/index.md",
+          "line": 19
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/api/automatic-endpoints.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/api/webhooks.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 10
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 10
+        },
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 10
+        },
+        {
+          "target": "docs/audit/pending/README.md",
+          "exists": true,
+          "line": 14
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 14
+        }
+      ]
+    },
+    {
+      "path": "docs/api/webhooks.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 6
+        },
+        {
+          "source": "docs/index.md",
+          "line": 19
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/architecture.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/Framework-Architecture.md",
+          "line": 1
+        },
+        {
+          "source": "docs/core/README.md",
+          "line": 5
+        },
+        {
+          "source": "docs/index.md",
+          "line": 10
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 15
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 34
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/authentication-acl.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 10
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 274
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        },
+        {
+          "source": "docs/security/acl.md",
+          "line": 3
+        },
+        {
+          "source": "docs/security/authentication.md",
+          "line": 3
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 7
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/issues/historical-environment-credentials-require-rotation.md",
+          "exists": true,
+          "line": 25
+        },
+        {
+          "target": "docs/_internal/legacy/framework/Authentication.md",
+          "exists": true,
+          "line": 28
+        },
+        {
+          "target": "docs/_internal/legacy/framework/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 28
+        },
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 28
+        },
+        {
+          "target": "docs/_internal/legacy/framework/ACL.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/_internal/legacy/framework/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/api/README.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "app/Modules/Xeni/docs/api_authorization.md",
+          "exists": true,
+          "line": 60
+        },
+        {
+          "target": "docs/_internal/legacy/CHANGELOG-password-reset-security.md",
+          "exists": true,
+          "line": 60
+        },
+        {
+          "target": "docs/_internal/legacy/framework/commands/AclCommands.md",
+          "exists": true,
+          "line": 60
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/AutoJoins.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/AutoJoins.md",
+          "line": 5
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 175
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 93
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/Schemas.md",
+          "exists": true,
+          "line": 91
+        },
+        {
+          "target": "docs/audit/pending/framework/SubResources.md",
+          "exists": true,
+          "line": 92
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 93
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 19
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        },
+        {
+          "source": "docs/audit/pending/framework/ORM-STATUS.md",
+          "line": 43
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 170
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 94
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/api/automatic-endpoints.md",
+          "exists": true,
+          "line": 1
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/For-Reasoning-Architecture.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Framework-Architecture.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/FrontController.md",
+          "line": 74
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/architecture.md",
+          "exists": true,
+          "line": 1
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/FrontController.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/FrontController.md",
+          "line": 3
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 37
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/Routing.md",
+          "exists": true,
+          "line": 73
+        },
+        {
+          "target": "docs/audit/pending/framework/Framework-Architecture.md",
+          "exists": true,
+          "line": 74
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Multi-Tenant.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Multi-Tenant.md",
+          "line": 6
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 77
+        },
+        {
+          "target": "docs/audit/pending/framework/Schemas.md",
+          "exists": true,
+          "line": 78
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/ORM-STATUS.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 361
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 41
+        },
+        {
+          "target": "docs/_internal/legacy/framework/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 42
+        },
+        {
+          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 43
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/PGSQL-Compatibility.md",
+          "line": 5
+        },
+        {
+          "source": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+          "line": 7
+        },
+        {
+          "source": "docs/issues/pgsql-compatibility.md",
+          "line": 6
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/issues/pgsql-compatibility.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+          "exists": true,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Query-Builder-Comparison.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Query-Builder-Comparison.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/QueryBuilder.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Caching.md",
+          "line": 91
+        },
+        {
+          "source": "docs/_internal/legacy/framework/QueryBuilder.md",
+          "line": 6
+        },
+        {
+          "source": "docs/audit/pending/framework/AutoJoins.md",
+          "line": 93
+        },
+        {
+          "source": "docs/audit/pending/framework/Multi-Tenant.md",
+          "line": 77
+        },
+        {
+          "source": "docs/audit/pending/framework/ORM-STATUS.md",
+          "line": 41
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 360
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 174
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 36
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/QuickStart.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Deployment.md",
+          "line": 120
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 233
+        },
+        {
+          "source": "docs/getting-started/README.md",
+          "line": 20
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 171
+        },
+        {
+          "target": "docs/_internal/legacy/framework/Routing.md",
+          "exists": true,
+          "line": 359
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 360
+        },
+        {
+          "target": "docs/audit/pending/framework/ORM-STATUS.md",
+          "exists": true,
+          "line": 361
+        },
+        {
+          "target": "docs/_internal/legacy/framework/Middlewares.md",
+          "exists": true,
+          "line": 362
+        },
+        {
+          "target": "docs/_internal/legacy/framework/ACL.md",
+          "exists": true,
+          "line": 363
+        },
+        {
+          "target": "docs/_internal/legacy/framework/ApiClient.md",
+          "exists": true,
+          "line": 364
+        },
+        {
+          "target": "docs/_internal/legacy/framework/CommandLine.md",
+          "exists": true,
+          "line": 365
+        },
+        {
+          "target": "docs/audit/pending/framework/SimpleRest-Philosophy.md",
+          "exists": true,
+          "line": 366
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/README.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/README.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 27
+        },
+        {
+          "target": "docs/README.md",
+          "exists": true,
+          "line": 27
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Release-Status.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Request.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Request.md",
+          "line": 3
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 37
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Response.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Response.md",
+          "line": 3
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 37
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Routing.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Routing.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/FrontController.md",
+          "line": 73
+        },
+        {
+          "source": "docs/audit/pending/framework/WebRouter.md",
+          "line": 5
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 37
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/Schemas.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Validation.md",
+          "line": 112
+        },
+        {
+          "source": "docs/audit/pending/framework/AutoJoins.md",
+          "line": 91
+        },
+        {
+          "source": "docs/audit/pending/framework/Multi-Tenant.md",
+          "line": 78
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 92
+        },
+        {
+          "source": "docs/database/schemas.md",
+          "line": 23
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/database/schemas.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 170
+        },
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 174
+        },
+        {
+          "target": "docs/audit/pending/framework/AutoJoins.md",
+          "exists": true,
+          "line": 175
+        },
+        {
+          "target": "docs/audit/pending/framework/SubResources.md",
+          "exists": true,
+          "line": 176
+        },
+        {
+          "target": "docs/_internal/legacy/framework/Validation.md",
+          "exists": true,
+          "line": 177
+        },
+        {
+          "target": "docs/_internal/legacy/framework/SimpleRest-API-Rest.md",
+          "exists": true,
+          "line": 178
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/SimpleRest-Complete-Docs.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/SimpleRest-Philosophy.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 366
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 1
+        },
+        {
+          "target": "docs/README.md",
+          "exists": true,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/SubResources.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/SubResources.md",
+          "line": 5
+        },
+        {
+          "source": "docs/audit/pending/framework/AutoJoins.md",
+          "line": 92
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 176
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/Schemas.md",
+          "exists": true,
+          "line": 92
+        },
+        {
+          "target": "docs/audit/pending/framework/AutoJoins.md",
+          "exists": true,
+          "line": 93
+        },
+        {
+          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "exists": true,
+          "line": 94
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/framework/WebRouter.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/WebRouter.md",
+          "line": 3
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 37
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/pending/framework/Routing.md",
+          "exists": true,
+          "line": 5
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/pending/README.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 14
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 284
+        },
+        {
+          "source": "docs/core/README.md",
+          "line": 10
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 11
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/README.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/audit/README.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/AutoJoins.md",
+          "line": 6
+        },
+        {
+          "source": "docs/_internal/legacy/framework/FrontController.md",
+          "line": 3
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PGSQL-Compatibility.md",
+          "line": 6
+        },
+        {
+          "source": "docs/_internal/legacy/framework/Query-Builder-Comparison.md",
+          "line": 6
+        },
+        {
+          "source": "docs/_internal/legacy/framework/QueryBuilder.md",
+          "line": 7
+        },
+        {
+          "source": "docs/_internal/legacy/framework/Routing.md",
+          "line": 3
+        },
+        {
+          "source": "docs/_internal/legacy/framework/SubResources.md",
+          "line": 6
+        },
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 19
+        },
+        {
+          "source": "docs/api/README.md",
+          "line": 14
+        },
+        {
+          "source": "docs/architecture.md",
+          "line": 34
+        },
+        {
+          "source": "docs/audit/pending/framework/AutoJoins.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/For-Reasoning-Architecture.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/Framework-Architecture.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/FrontController.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Multi-Tenant.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/ORM-STATUS.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Query-Builder-Comparison.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/QueryBuilder.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 171
+        },
+        {
+          "source": "docs/audit/pending/framework/README.md",
+          "line": 27
+        },
+        {
+          "source": "docs/audit/pending/framework/Release-Status.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Request.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Response.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Routing.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/SimpleRest-Complete-Docs.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/SimpleRest-Philosophy.md",
+          "line": 1
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/WebRouter.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/README.md",
+          "line": 7
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 27
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 35
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 46
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 36
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 11
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 11
+        },
+        {
+          "source": "docs/database/schemas.md",
+          "line": 23
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 7
+        },
+        {
+          "source": "docs/getting-started/README.md",
+          "line": 20
+        },
+        {
+          "source": "docs/issues/pgsql-compatibility.md",
+          "line": 7
+        },
+        {
+          "source": "docs/README.md",
+          "line": 19
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/index.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/audit/pending/framework/QuickStart.md",
+          "exists": true,
+          "line": 233
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 274
+        },
+        {
+          "target": "docs/audit/pending/README.md",
+          "exists": true,
+          "line": 284
+        }
+      ]
+    },
+    {
+      "path": "docs/cli/README.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 21
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/core/README.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/architecture.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/audit/pending/README.md",
+          "exists": true,
+          "line": 10
+        }
+      ]
+    },
+    {
+      "path": "docs/core/request-lifecycle.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/FrontController.md",
+          "line": 3
+        },
+        {
+          "source": "docs/_internal/legacy/framework/Routing.md",
+          "line": 3
+        },
+        {
+          "source": "docs/_internal/legacy/framework/WebRouter.md",
+          "line": 3
+        },
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 19
+        },
+        {
+          "source": "docs/architecture.md",
+          "line": 15
+        },
+        {
+          "source": "docs/audit/pending/framework/FrontController.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Routing.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/WebRouter.md",
+          "line": 3
+        },
+        {
+          "source": "docs/core/README.md",
+          "line": 6
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 27
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 35
+        },
+        {
+          "target": "docs/audit/pending/framework/FrontController.md",
+          "exists": true,
+          "line": 37
+        },
+        {
+          "target": "docs/audit/pending/framework/Request.md",
+          "exists": true,
+          "line": 37
+        },
+        {
+          "target": "docs/audit/pending/framework/Response.md",
+          "exists": true,
+          "line": 37
+        },
+        {
+          "target": "docs/audit/pending/framework/Routing.md",
+          "exists": true,
+          "line": 37
+        },
+        {
+          "target": "docs/audit/pending/framework/WebRouter.md",
+          "exists": true,
+          "line": 37
+        }
+      ]
+    },
+    {
+      "path": "docs/database/connections.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Multi-Tenant.md",
+          "line": 5
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PGSQL-Compatibility.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/Multi-Tenant.md",
+          "line": 3
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 36
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 5
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Multi-Tenant.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 46
+        }
+      ]
+    },
+    {
+      "path": "docs/database/query-builder.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/QueryBuilder.md",
+          "line": 5
+        },
+        {
+          "source": "docs/audit/pending/framework/QueryBuilder.md",
+          "line": 3
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 46
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 6
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/QueryBuilder.md",
+          "exists": true,
+          "line": 36
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 36
+        },
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 36
+        }
+      ]
+    },
+    {
+      "path": "docs/database/README.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/database/schemas.md",
+          "line": 23
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/database/schemas.md",
+          "exists": true,
+          "line": 7
+        },
+        {
+          "target": "docs/audit/pending/README.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 11
+        }
+      ]
+    },
+    {
+      "path": "docs/database/schemas.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 19
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 3
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 7
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/Schemas.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/database/README.md",
+          "exists": true,
+          "line": 23
+        }
+      ]
+    },
+    {
+      "path": "docs/deployment/README.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 23
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/documentation-governance.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 9
+        },
+        {
+          "source": "docs/index.md",
+          "line": 30
+        },
+        {
+          "source": "docs/README.md",
+          "line": 3
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/issues/migration_table_name_error.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/api-rest-from-frontcontroller-to-webrouter.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/comparativa_simplerest_vs_laravel.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/fix-perfomance.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/in-progress/api-tests-progress.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM.md",
+          "line": 201
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM.md",
+          "line": 1400
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/_internal/to-do/orm/ORM.md",
+          "exists": true,
+          "line": 585
+        },
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 693
+        },
+        {
+          "target": "docs/_internal/legacy/CommandLine.md",
+          "exists": true,
+          "line": 694
+        },
+        {
+          "target": "docs/_internal/legacy/Packages and Modules.md",
+          "exists": true,
+          "line": 695
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/orm/ORM.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 585
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "exists": true,
+          "line": 201
+        },
+        {
+          "target": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "exists": true,
+          "line": 1400
+        },
+        {
+          "target": "docs/_internal/legacy/QueryBuilder.md",
+          "exists": true,
+          "line": 1401
+        },
+        {
+          "target": "docs/_internal/legacy/Exceptions.md",
+          "exists": true,
+          "line": 1402
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 25
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 84
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 388
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 468
+        },
+        {
+          "source": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "line": 628
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 385
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 26
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 105
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 389
+        },
+        {
+          "source": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
+          "line": 385
+        },
+        {
+          "source": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
+          "line": 694
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
+          "exists": true,
+          "line": 628
+        },
+        {
+          "target": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
+          "exists": true,
+          "line": 629
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 27
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 126
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 390
+        },
+        {
+          "source": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "line": 629
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "exists": true,
+          "line": 694
+        }
+      ]
+    },
+    {
+      "path": "docs/framework/_internal/to-do/sections/Modules.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/sections/Packages.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/SimpleRest_Plan_de_Trabajo.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/TODO !must-do.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/TODO important.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/TODO ORM.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/_internal/to-do/TODO RelationshipTrait.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/framework/Index.md",
+      "classification": "internal/audit",
+      "basis": "Compatibility pointer retained for older links; excluded from the public map.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/index.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/_internal/legacy/framework/",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 7
+        },
+        {
+          "target": "docs/_internal/legacy/framework/ACL.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/_internal/legacy/framework/Authentication.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 9
+        }
+      ]
+    },
+    {
+      "path": "docs/getting-started/README.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 11
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/QuickStart.md",
+          "exists": true,
+          "line": 20
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 20
+        }
+      ]
+    },
+    {
+      "path": "docs/index.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/README.md",
+          "line": 11
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 3
+        },
+        {
+          "source": "docs/README.md",
+          "line": 5
+        },
+        {
+          "source": "docs/README.md",
+          "line": 21
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/documentation-governance.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/architecture.md",
+          "exists": true,
+          "line": 10
+        },
+        {
+          "target": "docs/getting-started/README.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/core/README.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/README.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/schemas.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/api/automatic-endpoints.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/api/README.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/api/webhooks.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 20
+        },
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 20
+        },
+        {
+          "target": "docs/cli/README.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/integrations/README.md",
+          "exists": true,
+          "line": 22
+        },
+        {
+          "target": "docs/deployment/README.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/reference/README.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/documentation-governance.md",
+          "exists": true,
+          "line": 30
+        }
+      ]
+    },
+    {
+      "path": "docs/integrations/README.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 22
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/acl-literal-wildcard-path-divergence.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 38
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/api-controller-missing-impersonation-types.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 28
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/api-method-override-acl-mismatch.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/api-per-user-acl-callables.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/historical-environment-credentials-require-rotation.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 25
+        },
+        {
+          "source": "docs/security/authentication.md",
+          "line": 48
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/http-response-uses-invalid-http2-status-line.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 52
+        },
+        {
+          "source": "docs/security/authentication.md",
+          "line": 38
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/issues/pgsql-compatibility.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/pending/framework/PGSQL-Compatibility.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/README.md",
+      "classification": "needs-review",
+      "basis": "Secondary entry or compatibility page retained pending an explicit future disposition.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 12
+        },
+        {
+          "source": "docs/audit/pending/framework/README.md",
+          "line": 27
+        },
+        {
+          "source": "docs/audit/pending/framework/SimpleRest-Philosophy.md",
+          "line": 1
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/documentation-governance.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/index.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/_internal/legacy/INDEX-2026-05.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/index.md",
+          "exists": true,
+          "line": 21
+        }
+      ]
+    },
+    {
+      "path": "docs/reference/README.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 24
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/security/acl.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 10
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        },
+        {
+          "source": "docs/index.md",
+          "line": 20
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 6
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/issues/api-controller-missing-impersonation-types.md",
+          "exists": true,
+          "line": 28
+        },
+        {
+          "target": "docs/issues/acl-literal-wildcard-path-divergence.md",
+          "exists": true,
+          "line": 38
+        },
+        {
+          "target": "docs/issues/api-method-override-acl-mismatch.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/issues/api-per-user-acl-callables.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/issues/http-response-uses-invalid-http2-status-line.md",
+          "exists": true,
+          "line": 52
+        }
+      ]
+    },
+    {
+      "path": "docs/security/authentication.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 10
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 28
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        },
+        {
+          "source": "docs/index.md",
+          "line": 20
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 5
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/issues/http-response-uses-invalid-http2-status-line.md",
+          "exists": true,
+          "line": 38
+        },
+        {
+          "target": "docs/issues/historical-environment-credentials-require-rotation.md",
+          "exists": true,
+          "line": 48
+        }
+      ]
+    },
+    {
+      "path": "docs/security/README.md",
+      "classification": "needs-review",
+      "basis": "Secondary entry or compatibility page retained pending an explicit future disposition.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 6
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/to-do/done/docs-canonical-governance-enforcement.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/documentation-audit-continuation.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/done/webhooks-callback-security.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/done/webhooks-decouple-dispatcher.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/env-credential-branch-commit-audit.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/Index.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/simplerest-composer-core-packages.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/webhooks-async-delivery-reliability.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/webhooks-scope-isolation.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    }
+  ]
+}
