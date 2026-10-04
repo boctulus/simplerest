@@ -12,14 +12,7 @@ class WebhookSubscriptionMatcher
      */
     public function findMatches(WebhookEvent $event): \Generator
     {
-        DB::getDefaultConnection();
-
-        $webhooks = DB::table('webhooks')
-            ->where([
-                'op' => $event->getEventType(),
-                'entity' => $event->getEntity()
-            ])
-            ->get();
+        $webhooks = $this->loadSubscriptions($event);
 
         $oldData = null;
         $deliveryData = $event->getData();
@@ -41,11 +34,7 @@ class WebhookSubscriptionMatcher
                 if (count(array_diff($conditionFields, $rowFields)) === 0
                     && Strings::filter($deliveryData, $conditions)) {
                     if ($oldData === null) {
-                        $oldData = DB::table($event->getEntity())
-                            ->assoc()
-                            ->find($event->getId())
-                            ->deleted()
-                            ->first();
+                        $oldData = $this->loadEntityData($event);
                         $deliveryData = array_merge($oldData, $deliveryData);
                     }
 
@@ -67,11 +56,7 @@ class WebhookSubscriptionMatcher
                 )
             ) {
                 if ($oldData === null) {
-                    $oldData = DB::table($event->getEntity())
-                        ->assoc()
-                        ->find($event->getId())
-                        ->deleted()
-                        ->first();
+                    $oldData = $this->loadEntityData($event);
                     $deliveryData = array_merge($oldData, $deliveryData);
                 }
 
@@ -93,5 +78,26 @@ class WebhookSubscriptionMatcher
                 ];
             }
         }
+    }
+
+    protected function loadSubscriptions(WebhookEvent $event): iterable
+    {
+        DB::getDefaultConnection();
+
+        return DB::table('webhooks')
+            ->where([
+                'op' => $event->getEventType(),
+                'entity' => $event->getEntity()
+            ])
+            ->get();
+    }
+
+    protected function loadEntityData(WebhookEvent $event)
+    {
+        return DB::table($event->getEntity())
+            ->assoc()
+            ->find($event->getId())
+            ->deleted()
+            ->first();
     }
 }

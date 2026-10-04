@@ -1,12 +1,12 @@
 ---
 title: "Webhooks: desacoplar publicación de ApiController"
-current_step: 8
-next_step: 9
+current_step: 9
+next_step: null
 parallelizable_steps: []
 parent: null
 global_complexity: high
 for_agents: true
-next_step_complexity: high
+next_step_complexity: null
 tags: [webhooks, architecture, events, api]
 ---
 
@@ -99,6 +99,13 @@ Referencias: `ApiController.php` (llamadas CRUD 558, 1092, 1592, 2321, 2482; dis
 - `2026_10_04_230000000_expand_webhook_op.php` amplía `webhooks.op` de `VARCHAR(10)` a `VARCHAR(255)` sin modificar los valores CRUD existentes. Su `down()` rechaza reducir la columna si ya existen nombres de operación de más de 10 caracteres.
 - La migración quedó creada y no se ejecutó sobre ninguna base de datos.
 - Verificación estática: `php -l` pasó en `WebhooksSchema.php` y la migración; `git diff --check` y el guard documental pasaron. No se ejecutaron tests ni la migración.
+
+## Implementación completada — paso 8 (2026-10-04)
+
+- `WebhookSubscriptionMatcher` delega las lecturas de subscriptions y fila actual a métodos protegidos; el test usa fixtures en memoria sin abrir una base de datos.
+- Las regresiones fijan la semántica actual de `update`: una condición cuyo campo solo existe en la fila anterior no coincide antes de mezclarla. También preservan el estado compartido entre subscriptions.
+- Las pruebas cubren publicación CRUD y nombres de evento custom mediante un transporte sustituible, el envelope existente y el orden perezoso de matching/delivery.
+- Verificación: `php -l` pasó en matcher y test; `php vendor/bin/phpunit --no-coverage unit-tests/webhooks/WebhookPublisherTest.php` pasó (4 tests, 7 assertions). No se usó una base de datos.
 
 ## Criterios de aceptación
 
