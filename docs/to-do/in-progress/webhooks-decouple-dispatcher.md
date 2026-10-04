@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: desacoplar publicación de ApiController"
-current_step: 2
-next_step: 3
+current_step: 3
+next_step: 4
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -22,11 +22,35 @@ SimpleRest es un framework genérico. Los eventos CRUD existentes (`show`, `list
 
 1. **Auditar el contrato actual** — relevar todos los puntos donde `ApiController` llama a `webhook()`, el envelope generado, el filtrado de `conditions` y las dependencias directas con `consume_api()`.
 2. **Diseñar una API de publicación independiente** — introducir una abstracción de framework (`WebhookPublisher`, `WebhookDispatcher` o equivalente) que reciba evento, entidad, payload, id y contexto de scope sin depender del controller HTTP.
-3. **Adaptar ApiController** — convertir los hooks CRUD actuales en un adaptador que publique mediante la nueva abstracción, preservando comportamiento y compatibilidad.
-4. **Habilitar publicación interna** — permitir que servicios/jobs/comandos publiquen eventos directamente usando la misma ruta de filtros, scope y envelope.
-5. **Separar selección de entrega** — dejar claramente separados: construcción del evento, selección de subscriptions y transporte HTTP. La entrega asíncrona se resolverá en una tarea específica.
-6. **Agregar pruebas de regresión** — demostrar que los webhooks CRUD existentes siguen funcionando y que un evento publicado fuera de `ApiController` también dispara subscriptions compatibles.
-7. **Actualizar documentación** — documentar la API nueva y marcar la llamada directa desde `ApiController` como detalle de compatibilidad, no como arquitectura normativa.
+3. **Definir evento y publisher públicos** — agregar el tipo de evento y una API `WebhookPublisher::publish()` que reciba evento, entidad, payload, id, actor y contexto explícito, sin leer globals HTTP.
+4. **Implementar matching de subscriptions** — mover selección por evento/entidad y evaluación de condiciones a un componente separado, preservando literalmente el orden/semántica actual durante este refactor.
+5. **Implementar dispatcher y transporte** — agregar el dispatcher de deliveries y un transporte HTTP detrás de una interfaz inyectable, sin mezclar persistencia/retries asíncronos de la tarjeta correspondiente.
+6. **Adaptar ApiController** — dejar `webhook()` como adaptador legacy CRUD que construye el evento y delega al publisher; conservar los hooks de `Files` por herencia.
+7. **Habilitar eventos no CRUD** — ampliar `op` y su validación mediante migración compatible antes de publicar nombres de eventos que excedan el límite actual de 10 caracteres.
+8. **Agregar pruebas de regresión** — demostrar compatibilidad CRUD, la semántica actual de condiciones de update y publicación interna con transportes sustituibles.
+9. **Actualizar documentación** — documentar la API nueva y marcar la llamada desde `ApiController` como adaptador de compatibilidad.
+
+## Diseño acordado — paso 2 (2026-10-04)
+
+```text
+ApiController (adaptador CRUD)
+    ↓
+WebhookEvent / WebhookPublisher
+    ↓
+WebhookSubscriptionMatcher
+    ↓
+WebhookDeliveryDispatcher
+    ↓
+IWebhookTransport → transporte HTTP
+```
+
+- `WebhookPublisher` será el punto de entrada usado por código HTTP e interno. Recibirá actor y `scopeContext` explícitos; no leerá `auth()`, `request()` ni `ApiController`.
+- `WebhookSubscriptionMatcher` resolverá subscriptions y condiciones. El contrato de `scopeContext` se transportará sin equiparar `belongs_to` con tenant; su interpretación concreta queda para `webhooks-scope-isolation.md`.
+- `WebhookDeliveryDispatcher` preparará una entrega por subscription y la pasará a `IWebhookTransport`. El matcher no realizará HTTP y el publisher no consultará subscriptions.
+- El adaptador HTTP inicial envolverá el comportamiento existente de `consume_api()` para que el cambio arquitectónico preserve el contrato de entrega. La verificación SSL desactivada queda registrada para la tarea `webhooks-callback-security.md`.
+- Se conservarán el envelope CRUD y el orden actual de filtrado. En particular, `update` con condiciones seguirá filtrando los datos entrantes antes de mezclar la fila; cualquier cambio semántico requerirá definición y regresión separadas.
+- `EventBus` no se reutilizará: el código existente notifica observers en memoria y guarda el último evento en cache; no selecciona subscriptions persistidas ni realiza entregas HTTP.
+- El campo `webhooks.op` es `VARCHAR(10)` y la validación también limita a 10. Antes de habilitar nombres de evento generales, el paso 7 lo ampliará a 255, preservando los valores CRUD existentes. No se añadirá un id estable de evento en este refactor; se definirá con outbox/idempotencia.
 
 ## Auditoría completada — paso 1 (2026-10-04)
 
