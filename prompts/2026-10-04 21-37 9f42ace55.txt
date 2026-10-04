@@ -1,0 +1,12 @@
+Trabaja en mejorar los webhooks. Ve tomando tareas de:
+
+PS D:\laragon\www\simplerest> ls docs/to-do/webhooks-*
+
+    Directorio: D:\laragon\www\simplerest\docs\to-do
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---           4/10/2026    21:31           2622 webhooks-async-delivery-reliability.md
+-a---           4/10/2026    21:31           2395 webhooks-callback-security.md
+-a---           4/10/2026    21:31           2630 webhooks-decouple-dispatcher.md
+-a---           4/10/2026    21:31           2466 webhooks-scope-isolation.md
