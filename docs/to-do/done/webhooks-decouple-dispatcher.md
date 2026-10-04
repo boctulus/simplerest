@@ -107,6 +107,13 @@ Referencias: `ApiController.php` (llamadas CRUD 558, 1092, 1592, 2321, 2482; dis
 - Las pruebas cubren publicación CRUD y nombres de evento custom mediante un transporte sustituible, el envelope existente y el orden perezoso de matching/delivery.
 - Verificación: `php -l` pasó en matcher y test; `php vendor/bin/phpunit --no-coverage unit-tests/webhooks/WebhookPublisherTest.php` pasó (4 tests, 7 assertions). No se usó una base de datos.
 
+## Implementación completada — paso 9 (2026-10-04)
+
+- `docs/api/webhooks.md` documenta la publicación desde código interno, el adaptador CRUD, la inyección del transporte y el envelope existente.
+- La guía deja explícitos los límites verificados: entrega síncrona sin retries/idempotencia, `scopeContext` aún sin efecto de aislamiento, SSL callback pendiente y semántica legacy orden-dependiente de condiciones en `update`.
+- `docs/api/README.md` y el mapa canónico `docs/index.md` enlazan la guía mediante cambios localizados.
+- La guía separa la evidencia de pruebas en memoria de una entrega real con base de datos y callback HTTP, que no se ha ejecutado.
+
 ## Criterios de aceptación
 
 - La lógica central de selección/publicación ya no reside en `ApiController`.
