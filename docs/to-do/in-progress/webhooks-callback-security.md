@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: seguridad de callbacks y firma HMAC"
-current_step: 4
-next_step: 5
+current_step: 5
+next_step: 6
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -64,3 +64,11 @@ La política de “globalmente alcanzable” toma como fuente los registros espe
 - Las lecturas CRUD ocultan `secret`; `POST` no acepta un secreto aportado por el cliente y `PUT`/`PATCH` no permiten editarlo. La única modificación es la rotación explícita.
 - El adaptador de `ApiController` elimina recursivamente el secreto de los eventos de la entidad `webhooks`, y el matcher vuelve a filtrarlo de datos directos y filas previas de eventos `update`/`delete`/`list`. Por ello el secreto no forma parte de los envelopes de callback.
 - La prueba focused `WebhookPublisherTest` verifica que no se filtren secretos de update ni secretos anidados en eventos `list`; no se usó base de datos ni callback real.
+
+## Contrato de firma — paso 4
+
+- Cada `WebhookEvent` tiene un `event_id` UUID v4, generado una vez al construir el evento o suministrado por quien lo publica. Se comparte entre todas sus subscriptions y se conserva en futuros reintentos.
+- Cada intento añade `X-Simplerest-Webhook-Event-Id: <uuid>` y `X-Simplerest-Webhook-Timestamp: <unix-seconds-utc>`.
+- El body es una única serialización JSON UTF-8 con `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR`; esos bytes se envían sin volver a codificarlos. `Content-Type` es `application/json; charset=utf-8`.
+- El mensaje firmado es la concatenación exacta `v1.<timestamp>.<event_id>.<raw_body>`. Se calcula HMAC-SHA256 con el texto hexadecimal de 64 caracteres del secreto como clave UTF-8 (no se decodifica el hex) y digest lowercase hex. Header: `X-Simplerest-Webhook-Signature: v1=<digest>`.
+- El timestamp y digest se generan por intento; el event ID se conserva entre intentos. El receptor firma/compara esos mismos bytes; el siguiente paso define la ventana temporal, comparación constante y deduplicación por event ID.
