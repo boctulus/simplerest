@@ -15,7 +15,7 @@ class WebhookSubscriptionMatcher
         $webhooks = $this->loadSubscriptions($event);
 
         $oldData = null;
-        $deliveryData = $event->getData();
+        $deliveryData = $this->sanitizeEventData($event, $event->getData());
 
         foreach ($webhooks as $hook) {
             $conditions = [];
@@ -34,7 +34,7 @@ class WebhookSubscriptionMatcher
                 if (count(array_diff($conditionFields, $rowFields)) === 0
                     && Strings::filter($deliveryData, $conditions)) {
                     if ($oldData === null) {
-                        $oldData = $this->loadEntityData($event);
+                        $oldData = $this->loadPreviousEntityData($event);
                         $deliveryData = array_merge($oldData, $deliveryData);
                     }
 
@@ -56,7 +56,7 @@ class WebhookSubscriptionMatcher
                 )
             ) {
                 if ($oldData === null) {
-                    $oldData = $this->loadEntityData($event);
+                    $oldData = $this->loadPreviousEntityData($event);
                     $deliveryData = array_merge($oldData, $deliveryData);
                 }
 
@@ -99,5 +99,29 @@ class WebhookSubscriptionMatcher
             ->find($event->getId())
             ->deleted()
             ->first();
+    }
+
+    private function loadPreviousEntityData(WebhookEvent $event): ?array
+    {
+        $data = $this->loadEntityData($event);
+
+        return is_array($data)
+            ? $this->sanitizeEventData($event, $data)
+            : null;
+    }
+
+    private function sanitizeEventData(WebhookEvent $event, array $data): array
+    {
+        if (strtolower($event->getEntity()) === 'webhooks') {
+            unset($data['secret']);
+
+            foreach ($data as $key => $value) {
+                if (is_array($value)) {
+                    $data[$key] = $this->sanitizeEventData($event, $value);
+                }
+            }
+        }
+
+        return $data;
     }
 }

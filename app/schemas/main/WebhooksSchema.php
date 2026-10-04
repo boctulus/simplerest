@@ -14,7 +14,7 @@ class WebhooksSchema implements ISchema
 
 			'id_name'			=> 'id',
 
-			'fields'			=> ['id', 'name', 'entity', 'op', 'conditions', 'callback', 'belongs_to', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'],
+			'fields'			=> ['id', 'name', 'entity', 'op', 'conditions', 'callback', 'secret', 'belongs_to', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'],
 
 			'attr_types'		=> [
 				'id' => 'INT',
@@ -23,6 +23,7 @@ class WebhooksSchema implements ISchema
 				'op' => 'STR',
 				'conditions' => 'STR',
 				'callback' => 'STR',
+				'secret' => 'STR',
 				'belongs_to' => 'INT',
 				'created_at' => 'STR',
 				'created_by' => 'INT',
@@ -40,7 +41,7 @@ class WebhooksSchema implements ISchema
 
 			'autoincrement' 	=> 'id',
 
-			'nullable'			=> ['id', 'name', 'conditions', 'belongs_to', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'],
+			'nullable'			=> ['id', 'name', 'conditions', 'secret', 'belongs_to', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'],
 
 			'required'			=> ['entity', 'op', 'callback', 'created_at'],
 
@@ -53,6 +54,7 @@ class WebhooksSchema implements ISchema
 				'op' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'conditions' => ['type' => 'str', 'max' => 1024],
 				'callback' => ['type' => 'str', 'max' => 255, 'required' => true],
+				'secret' => ['type' => 'str', 'max' => 64],
 				'belongs_to' => ['type' => 'int'],
 				'created_at' => ['type' => 'datetime', 'required' => true],
 				'created_by' => ['type' => 'int'],

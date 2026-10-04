@@ -7,8 +7,8 @@ use Boctulus\Simplerest\Schemas\main\WebhooksSchema;
 
 class WebhooksModel extends MyModel
 {
-	protected $hidden   = [];
-	protected $not_fillable = [];
+	protected $hidden   = ['secret'];
+	protected $not_fillable = ['secret'];
 
 	protected $createdAt = 'created_at';
 	protected $createdBy = 'created_by';

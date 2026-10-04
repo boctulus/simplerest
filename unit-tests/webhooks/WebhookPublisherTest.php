@@ -116,6 +116,64 @@ final class WebhookPublisherTest extends TestCase
         );
     }
 
+    public function test_webhook_subscription_secrets_are_removed_from_event_data(): void
+    {
+        $matcher = new InMemoryWebhookSubscriptionMatcher(
+            [[
+                'id' => 1,
+                'op' => 'update',
+                'entity' => 'webhooks',
+                'conditions' => '',
+                'callback' => 'https://callback.test/subscription'
+            ]],
+            [7 => [
+                'id' => 7,
+                'name' => 'subscription',
+                'secret' => str_repeat('a', 64)
+            ]]
+        );
+
+        $matches = iterator_to_array($matcher->findMatches(new WebhookEvent(
+            'update',
+            'webhooks',
+            ['secret' => str_repeat('b', 64), 'name' => 'updated'],
+            7
+        )));
+
+        $this->assertCount(1, $matches);
+        $this->assertSame(['id' => 7, 'name' => 'updated'], $matches[0]['data']);
+    }
+
+    public function test_list_event_does_not_include_nested_webhook_secrets(): void
+    {
+        $matcher = new InMemoryWebhookSubscriptionMatcher(
+            [[
+                'id' => 1,
+                'op' => 'list',
+                'entity' => 'webhooks',
+                'conditions' => '',
+                'callback' => 'https://callback.test/subscription'
+            ]],
+            []
+        );
+
+        $matches = iterator_to_array($matcher->findMatches(new WebhookEvent(
+            'list',
+            'webhooks',
+            [[
+                'id' => 7,
+                'name' => 'subscription',
+                'secret' => str_repeat('c', 64)
+            ]]
+        )));
+
+        $this->assertCount(1, $matches);
+        $this->assertSame([[
+            'id' => 7,
+            'name' => 'subscription'
+        ]], $matches[0]['data']);
+    }
+
     public function test_publisher_dispatches_each_match_through_an_injected_transport(): void
     {
         $trace = [];

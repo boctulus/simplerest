@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: seguridad de callbacks y firma HMAC"
-current_step: 3
-next_step: 4
+current_step: 4
+next_step: 5
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -56,3 +56,11 @@ Referencias: `app/Schemas/main/WebhooksSchema.php`, `app/Models/main/WebhooksMod
 - Un rechazo por política no abre conexión HTTP y produce un resultado interno genérico, sin incluir secretos, query ni la URL completa en logs o errores al usuario. Los detalles de pinning, timeout, límites de respuesta y clasificación quedan para el paso 6; sus límites y fallos se cubrirán con fixtures, sin enviar requests a destinos reales en pruebas.
 
 La política de “globalmente alcanzable” toma como fuente los registros especiales IANA IPv4 e IPv6: se bloquean las entradas marcadas como no globalmente alcanzables y se admiten las marcadas globales, además de direcciones unicast ordinarias que no estén en un rango especial bloqueado. El paso 6 debe implementar una tabla mantenible compatible con PHP 8.1 y rechazar por defecto direcciones malformadas o que no se puedan clasificar. Referencias: [registro especial IPv4 de IANA](https://www.iana.org/assignments/iana-ipv4-special-registry), [registro especial IPv6 de IANA](https://www.iana.org/assignments/iana-ipv6-special-registry), [flags de validación de PHP](https://www.php.net/manual/en/filter.constants.validation.php), [`CURLOPT_RESOLVE`](https://curl.se/libcurl/c/CURLOPT_RESOLVE.html) y [`CURLOPT_FOLLOWLOCATION`](https://curl.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html).
+
+## Secreto por subscription — paso 3 (2026-10-04)
+
+- Se añadió `webhooks.secret` como columna `char(64) NOT NULL`; la migración genera 32 bytes aleatorios (representados como 64 caracteres hexadecimales) para cada subscription existente y admite reanudar un backfill incompleto. La migración no se ha ejecutado.
+- Al crear una subscription, el servidor genera el secreto; la respuesta `POST /api/v1/webhooks` lo revela una sola vez. Para rotarlo se usa `PATCH /api/v1/webhooks/{id}/rotate_secret`; esa respuesta también lo revela una sola vez. Ambos caminos respetan los permisos de escritura y el propietario de la fila.
+- Las lecturas CRUD ocultan `secret`; `POST` no acepta un secreto aportado por el cliente y `PUT`/`PATCH` no permiten editarlo. La única modificación es la rotación explícita.
+- El adaptador de `ApiController` elimina recursivamente el secreto de los eventos de la entidad `webhooks`, y el matcher vuelve a filtrarlo de datos directos y filas previas de eventos `update`/`delete`/`list`. Por ello el secreto no forma parte de los envelopes de callback.
+- La prueba focused `WebhookPublisherTest` verifica que no se filtren secretos de update ni secretos anidados en eventos `list`; no se usó base de datos ni callback real.
