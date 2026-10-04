@@ -50,7 +50,7 @@ class WebhooksSchema implements ISchema
 				'id' => ['type' => 'int'],
 				'name' => ['type' => 'str', 'max' => 50],
 				'entity' => ['type' => 'str', 'max' => 50, 'required' => true],
-				'op' => ['type' => 'str', 'max' => 10, 'required' => true],
+				'op' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'conditions' => ['type' => 'str', 'max' => 1024],
 				'callback' => ['type' => 'str', 'max' => 255, 'required' => true],
 				'belongs_to' => ['type' => 'int'],

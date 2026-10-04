@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: desacoplar publicación de ApiController"
-current_step: 7
-next_step: 8
+current_step: 8
+next_step: 9
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -92,6 +92,13 @@ Referencias: `ApiController.php` (llamadas CRUD 558, 1092, 1592, 2321, 2482; dis
 - `WebhookSubscriptionMatcher` genera coincidencias de forma perezosa y el dispatcher entrega cada callback antes de continuar con la siguiente subscription. Esto conserva el orden de evaluación y el estado de datos compartido del flujo anterior, incluidas las condiciones de `update` evaluadas antes de mezclar la fila.
 - No se cambió la verificación SSL. `WebhookHttpTransport` sigue envolviendo el `consume_api()` existente para resolver su endurecimiento en la tarjeta de seguridad.
 - Verificación estática: `php -l` pasó en `ApiController.php` y todas las clases de evento/publicación/matching/transporte/dispatcher. No se ejecutaron tests.
+
+## Implementación completada — paso 7 (2026-10-04)
+
+- `WebhooksSchema` acepta ahora nombres de operación de hasta 255 caracteres, alineado con el tamaño persistido.
+- `2026_10_04_230000000_expand_webhook_op.php` amplía `webhooks.op` de `VARCHAR(10)` a `VARCHAR(255)` sin modificar los valores CRUD existentes. Su `down()` rechaza reducir la columna si ya existen nombres de operación de más de 10 caracteres.
+- La migración quedó creada y no se ejecutó sobre ninguna base de datos.
+- Verificación estática: `php -l` pasó en `WebhooksSchema.php` y la migración; `git diff --check` y el guard documental pasaron. No se ejecutaron tests ni la migración.
 
 ## Criterios de aceptación
 
