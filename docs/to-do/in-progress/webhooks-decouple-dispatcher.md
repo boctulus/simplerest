@@ -22,9 +22,9 @@ SimpleRest es un framework genérico. Los eventos CRUD existentes (`show`, `list
 
 1. **Auditar el contrato actual** — relevar todos los puntos donde `ApiController` llama a `webhook()`, el envelope generado, el filtrado de `conditions` y las dependencias directas con `consume_api()`.
 2. **Diseñar una API de publicación independiente** — introducir una abstracción de framework (`WebhookPublisher`, `WebhookDispatcher` o equivalente) que reciba evento, entidad, payload, id y contexto de scope sin depender del controller HTTP.
-3. **Definir evento y publisher públicos** — agregar el tipo de evento y una API `WebhookPublisher::publish()` que reciba evento, entidad, payload, id, actor y contexto explícito, sin leer globals HTTP.
-4. **Implementar matching de subscriptions** — mover selección por evento/entidad y evaluación de condiciones a un componente separado, preservando literalmente el orden/semántica actual durante este refactor.
-5. **Implementar dispatcher y transporte** — agregar el dispatcher de deliveries y un transporte HTTP detrás de una interfaz inyectable, sin mezclar persistencia/retries asíncronos de la tarjeta correspondiente.
+3. **Definir evento y matcher** — agregar el tipo de evento y el componente de matching por evento/entidad/condiciones, preservando literalmente el orden/semántica actual durante este refactor.
+4. **Implementar dispatcher y transporte** — agregar el dispatcher de deliveries y un transporte HTTP detrás de una interfaz inyectable, sin mezclar persistencia/retries asíncronos de la tarjeta correspondiente.
+5. **Publicar la API independiente** — conectar evento, matcher y dispatcher en `WebhookPublisher::publish()`, con actor y contexto explícitos y sin globals HTTP.
 6. **Adaptar ApiController** — dejar `webhook()` como adaptador legacy CRUD que construye el evento y delega al publisher; conservar los hooks de `Files` por herencia.
 7. **Habilitar eventos no CRUD** — ampliar `op` y su validación mediante migración compatible antes de publicar nombres de eventos que excedan el límite actual de 10 caracteres.
 8. **Agregar pruebas de regresión** — demostrar compatibilidad CRUD, la semántica actual de condiciones de update y publicación interna con transportes sustituibles.
