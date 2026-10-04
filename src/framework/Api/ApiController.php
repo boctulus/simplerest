@@ -2532,9 +2532,44 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             throw new \InvalidArgumentException("Invalid webhook operation for $op");
         }
 
-        $scopeContext = [];
-        if ($this->tenantid !== null) {
-            $scopeContext['tenant_id'] = $this->tenantid;
+        $scopeContext = [
+            'connection_id' => DB::getCurrentConnectionId(true),
+        ];
+        $ownerField = $this->instance->belongsTo();
+
+        if (!$this->instance->inSchema([$ownerField])) {
+            $scopeContext['owner_scope'] = 'global';
+        } elseif ($op === 'list') {
+            $scopeContext['owner_scope'] = 'rows';
+            $scopeContext['owner_field'] = $ownerField;
+        } else {
+            $scopeContext['owner_field'] = $ownerField;
+            $ownerResolved = false;
+
+            if (
+                !in_array($op, ['update', 'delete'], true)
+                && is_array($data)
+                && array_key_exists($ownerField, $data)
+            ) {
+                $scopeContext['owner_id'] = $data[$ownerField];
+                $ownerResolved = true;
+            } elseif ($id !== null) {
+                try {
+                    $ownerId = DB::table($this->table_name)
+                        ->where([$this->instance->getIdName() => $id])
+                        ->deleted()
+                        ->value($ownerField);
+
+                    if ($ownerId !== false) {
+                        $scopeContext['owner_id'] = $ownerId;
+                        $ownerResolved = true;
+                    }
+                } catch (\Throwable $e) {
+                    $ownerResolved = false;
+                }
+            }
+
+            $scopeContext['owner_scope'] = $ownerResolved ? 'single' : 'unresolved';
         }
 
         $event = new WebhookEvent(

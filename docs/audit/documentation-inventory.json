@@ -1,20 +1,20 @@
 {
   "version": 1,
-  "generated_on": "2026-10-04",
-  "stage": "post-move complete classification",
-  "scope": "Every Markdown file under docs, including the webhook-related pages handled in the final batch; no technical webhook claims were changed.",
+  "generated_on": "2026-10-05",
+  "stage": "post-semantic public-map exclusion audit",
+  "scope": "Every Markdown file under docs after semantic review of public-map exclusions; no technical claims were changed.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 759,
+  "inline_markdown_links_seen": 760,
   "counts": {
-    "markdown_scanned": 197,
+    "markdown_scanned": 198,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 384,
+    "local_markdown_links": 385,
     "broken_local_markdown_links": 0,
     "classifications": {
-      "needs-review": 2,
+      "needs-review": 8,
       "canonical": 19,
-      "internal/audit": 77,
+      "internal/audit": 72,
       "legacy": 99
     }
   },
@@ -24,7 +24,7 @@
     "docs/to-do/done/webhooks-callback-security.md",
     "docs/to-do/done/webhooks-decouple-dispatcher.md",
     "docs/to-do/webhooks-async-delivery-reliability.md",
-    "docs/to-do/webhooks-scope-isolation.md"
+    "docs/to-do/in-progress/webhooks-scope-isolation.md"
   ],
   "documents": [
     {
@@ -1393,7 +1393,7 @@
     {
       "path": "docs/_internal/legacy/INDEX-2026-05.md",
       "classification": "legacy",
-      "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
+      "basis": "May 2026 historical documentation index retained for provenance; superseded by docs/index.md.",
       "incoming_markdown_refs": [
         {
           "source": "docs/README.md",
@@ -2505,8 +2505,8 @@
     },
     {
       "path": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
-      "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "classification": "needs-review",
+      "basis": "Substantive ORM and CRUD how-to; claims conflict with preserved ORM status material and need current Model, CLI, and test evidence before publication.",
       "incoming_markdown_refs": [
         {
           "source": "docs/_internal/to-do/orm/ORM.md",
@@ -2542,8 +2542,8 @@
     },
     {
       "path": "docs/_internal/to-do/orm/ORM.md",
-      "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "classification": "needs-review",
+      "basis": "Substantive ORM, CRUD, relation, and transaction tutorial; its current contract is unresolved against preserved ORM status material and implementation evidence.",
       "incoming_markdown_refs": [
         {
           "source": "docs/_internal/legacy/QuickStart.md",
@@ -2682,15 +2682,15 @@
     },
     {
       "path": "docs/_internal/to-do/sections/Modules.md",
-      "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "classification": "needs-review",
+      "basis": "Practical module creation and routing guide; verify its CLI command, paths, and options against the current implementation before publication.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/to-do/sections/Packages.md",
-      "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "classification": "needs-review",
+      "basis": "Practical package, Composer, and migration guide; preserved copies disagree on the migration command and require current CLI verification.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
@@ -3697,7 +3697,7 @@
         },
         {
           "source": "docs/audit/README.md",
-          "line": 284
+          "line": 288
         },
         {
           "source": "docs/core/README.md",
@@ -3724,7 +3724,7 @@
     {
       "path": "docs/audit/README.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Audit register with claim-level evidence, finding states, and unresolved verification boundaries; not public usage documentation.",
       "incoming_markdown_refs": [
         {
           "source": "docs/_internal/legacy/framework/AutoJoins.md",
@@ -3930,9 +3930,26 @@
         {
           "target": "docs/audit/pending/README.md",
           "exists": true,
+          "line": 288
+        },
+        {
+          "target": "docs/audit/public-map-exclusion-review-2026-10-05.md",
+          "exists": true,
           "line": 284
         }
       ]
+    },
+    {
+      "path": "docs/audit/public-map-exclusion-review-2026-10-05.md",
+      "classification": "internal/audit",
+      "basis": "Semantic review of out-of-map documents, classification decisions, and candidate public-source material.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/README.md",
+          "line": 284
+        }
+      ],
+      "outgoing_markdown_refs": []
     },
     {
       "path": "docs/cli/README.md",
@@ -4272,42 +4289,42 @@
     {
       "path": "docs/framework/_internal/issues/migration_table_name_error.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Engineering incident record with an observed migration failure, cause, and workaround; retained as audit history rather than current user instructions.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/api-rest-from-frontcontroller-to-webrouter.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Refactoring proposal that compares router alternatives; its architecture statements are plan premises, not the current public contract.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/comparativa_simplerest_vs_laravel.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Laravel and Artisan comparison with hypothetical SimpleRest extensions; not a reference to current SimpleRest commands.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/fix-perfomance.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Backlog of desired router, ACL, and module changes; it does not state current behavior or user instructions.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/in-progress/api-tests-progress.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Historical progress report tracking test files and results; not a stable public API or usage reference.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
-      "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "classification": "needs-review",
+      "basis": "Substantive ORM and CRUD how-to; claims conflict with preserved ORM status material and need current Model, CLI, and test evidence before publication.",
       "incoming_markdown_refs": [
         {
           "source": "docs/framework/_internal/to-do/orm/ORM.md",
@@ -4343,8 +4360,8 @@
     },
     {
       "path": "docs/framework/_internal/to-do/orm/ORM.md",
-      "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "classification": "needs-review",
+      "basis": "Substantive ORM, CRUD, relation, and transaction tutorial; its current contract is unresolved against preserved ORM status material and implementation evidence.",
       "incoming_markdown_refs": [
         {
           "source": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
@@ -4377,7 +4394,7 @@
     {
       "path": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Planned PSR-17 factory phase; describes future work rather than an available SimpleRest API.",
       "incoming_markdown_refs": [
         {
           "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
@@ -4411,7 +4428,7 @@
     {
       "path": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Planned PSR-15 middleware phase; describes future work rather than current usage.",
       "incoming_markdown_refs": [
         {
           "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
@@ -4450,7 +4467,7 @@
     {
       "path": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Unstarted StreamInterface body proposal; its examples describe a future design, not the present Request/Response contract.",
       "incoming_markdown_refs": [
         {
           "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
@@ -4479,57 +4496,57 @@
     },
     {
       "path": "docs/framework/_internal/to-do/sections/Modules.md",
-      "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "classification": "needs-review",
+      "basis": "Practical module creation and routing guide; verify its CLI command, paths, and options against the current implementation before publication.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/sections/Packages.md",
-      "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "classification": "needs-review",
+      "basis": "Practical package, Composer, and migration guide; preserved copies disagree on the migration command and require current CLI verification.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/SimpleRest_Plan_de_Trabajo.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Internal reorganization plan recording a decision not to turn modules into packages; planning context, not a usage guide.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/TODO !must-do.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Future-work roadmap; proposed tasks are not current feature commitments or contracts.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/TODO important.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Broad feature-status assertions mixed with proposals and no feature-level evidence; planning notes, not current user reference.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/TODO ORM.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Exploratory array-based ORM and bulk-write proposal; explicitly discussion material rather than an existing API guide.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/_internal/to-do/TODO RelationshipTrait.md",
       "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "basis": "Implementation assessment recording dependencies, side effects, and missing unit tests; technical review evidence, not user documentation.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/framework/Index.md",
       "classification": "internal/audit",
-      "basis": "Compatibility pointer retained for older links; excluded from the public map.",
+      "basis": "Compatibility pointer to docs/index.md plus links to historical/audit material; contains no framework usage contract.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": [
         {
@@ -4834,8 +4851,8 @@
     },
     {
       "path": "docs/README.md",
-      "classification": "needs-review",
-      "basis": "Secondary entry or compatibility page retained pending an explicit future disposition.",
+      "classification": "internal/audit",
+      "basis": "Repository landing page that routes readers to docs/index.md and summarizes governance; retained as repository navigation, not a second site page.",
       "incoming_markdown_refs": [
         {
           "source": "docs/_internal/legacy/INDEX-2026-05.md",
@@ -4995,8 +5012,8 @@
     },
     {
       "path": "docs/security/README.md",
-      "classification": "needs-review",
-      "basis": "Secondary entry or compatibility page retained pending an explicit future disposition.",
+      "classification": "internal/audit",
+      "basis": "English security audit index linking canonical auth/ACL pages and an internal claim ledger; the public map already links the canonical pages directly.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": [
         {
@@ -5073,7 +5090,7 @@
       "outgoing_markdown_refs": []
     },
     {
-      "path": "docs/to-do/webhooks-scope-isolation.md",
+      "path": "docs/to-do/in-progress/webhooks-scope-isolation.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [],

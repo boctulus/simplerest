@@ -279,6 +279,10 @@ Installation/bootstrap, routing/request lifecycle, API resolution, database conn
 
 The archived original is [`../framework/_archive/DOC-Simplerest.txt`](../framework/_archive/DOC-Simplerest.txt). It remains unchanged as historical evidence.
 
+## Review of the public map exclusions
+
+See the [semantic review of excluded public-map pages](public-map-exclusion-review-2026-10-05.md) for the per-file classification of docs/framework, the two previous needs-review entries, the 99/98 legacy count, and the technical source pages that remain candidates for later claim review.
+
 ## Quarantined legacy pages
 
 Pages under [`pending/`](pending/README.md) are retained as audit inputs and are not part of the user documentation. In particular, `pending/framework/For-Reasoning-Architecture.md` is a proposal; its runtime profiles and command examples have not been verified as implemented SimpleRest features.
