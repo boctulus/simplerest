@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: aislamiento de tenant y ownership"
-current_step: 2
-next_step: 2
+current_step: 3
+next_step: 3
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -46,3 +46,12 @@ Este trabajo es de seguridad: no debe resolverse suponiendo que `belongs_to` equ
 - En una misma conexión, el matcher tampoco filtra las subscriptions por `belongs_to`; un evento con la misma entidad y operación puede incluir subscriptions de otros propietarios. CRUD aplica checks de ownership en `ApiController`, pero ese scope no se transmite al matcher.
 - El publisher interno permite contexto explícito, pero no valida por sí mismo que el actor pueda publicar para un owner o una conexión. La definición del paso 2 debe separar conexión de tenant/owner, identificar cómo se deriva el owner de cada evento y fijar el comportamiento fail-closed si falta ese dato.
 - Auditoría estática de `Request`, `ApiController`, `DB`, `DBRels`, `WebhookEvent`, `WebhookSubscriptionMatcher`, `WebhooksSchema` y `AuthController`. No se abrieron conexiones ni se leyeron datos de base de datos.
+
+## Contrato de scope — paso 2 (2026-10-04)
+
+- El aislamiento de tenant usa el alias de conexión activo, no una columna `tenant_id`. El contexto se llama `connection_id` porque `tenantid` selecciona una entrada configurada que puede representar una base distinta o un prefijo. El adaptador CRUD captura `DB::getCurrentConnectionId()` después de resolver la conexión; matching de subscriptions y lectura de la fila previa deben usar ese mismo alias y restaurar la conexión previa al terminar. No se agrega una columna ni se interpreta `belongs_to` como tenant.
+- El owner es una frontera independiente. Para entidades cuyo modelo tiene el campo devuelto por `belongsTo()`, una entrega singular solo puede coincidir con subscriptions cuyo campo `belongs_to` identifica al mismo owner de la fila persistida. El owner se deriva de esa fila, no de `actorId`; un owner null explícito solo coincide con subscriptions de owner null. Si no se puede resolver el owner, no se envía a subscriptions con owner.
+- Para un evento `list` owner-aware, cada subscription recibe únicamente las filas cuyo campo owner coincide con su `belongs_to`. Si falta el campo necesario para separar filas, el matcher falla cerrado para ese evento owner-aware. Una entidad sin campo owner debe marcar el scope como global de forma explícita y solo puede coincidir con subscriptions de la misma conexión.
+- `WebhookEvent::scopeContext` es metadato interno confiable, no entrada de usuario ni prueba de autorización. `ApiController` deriva `connection_id` y el modo de owner después de aplicar sus ACL. Los publishers internos deben declarar el owner/scope global de forma explícita; no se infiere ownership desde `actorId`. Una conexión no default debe identificarse expresamente.
+- En `update`, resolver owner es una lectura de scope separada: no incorpora columnas previas a los datos usados por las condiciones y conserva la semántica legacy ya cubierta por pruebas. Para update se usa el owner del estado persistido después de la operación; para delete se lee la fila borrada incluida en el scope del matcher.
+- Las lecturas y escrituras CRUD de subscriptions continúan aplicando el scope de owner existente en `ApiController`; el matcher debe añadir el mismo límite de owner a la selección de deliveries. No se cambia el comportamiento ACL general ni el valor actual `restrict_by_tenant`.
