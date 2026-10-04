@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: desacoplar publicación de ApiController"
-current_step: 5
-next_step: 6
+current_step: 6
+next_step: 7
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -78,6 +78,12 @@ Referencias: `ApiController.php` (llamadas CRUD 558, 1092, 1592, 2321, 2482; dis
 - `WebhookHttpTransport` implementa la interfaz delegando a `consume_api()`, conservando el comportamiento actual de SSL, headers, timeout y retorno mientras se completa la tarjeta de seguridad.
 - El dispatcher ignora el resultado de transporte, igual que el dispatcher anterior; no introduce persistencia, retries ni política de respuesta.
 - Verificación estática: `php -l` pasó en los tres archivos nuevos.
+
+## Implementación completada — paso 5 (2026-10-04)
+
+- `WebhookPublisher::publish(WebhookEvent $event)` conecta `WebhookSubscriptionMatcher` y `WebhookDeliveryDispatcher` sin conocer el controller ni el protocolo HTTP.
+- El constructor permite sustituir matcher y dispatcher; el dispatcher recibe `IWebhookTransport`, por lo que un caller puede inyectar un transporte de prueba o alternativo.
+- Verificación estática: `php -l` pasó en `WebhookPublisher.php`.
 
 ## Criterios de aceptación
 
