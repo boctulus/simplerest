@@ -1,7 +1,7 @@
 ---
 title: "Webhooks: seguridad de callbacks y firma HMAC"
-current_step: 5
-next_step: 6
+current_step: 6
+next_step: 7
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -72,3 +72,11 @@ La política de “globalmente alcanzable” toma como fuente los registros espe
 - El body es una única serialización JSON UTF-8 con `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR`; esos bytes se envían sin volver a codificarlos. `Content-Type` es `application/json; charset=utf-8`.
 - El mensaje firmado es la concatenación exacta `v1.<timestamp>.<event_id>.<raw_body>`. Se calcula HMAC-SHA256 con el texto hexadecimal de 64 caracteres del secreto como clave UTF-8 (no se decodifica el hex) y digest lowercase hex. Header: `X-Simplerest-Webhook-Signature: v1=<digest>`.
 - El timestamp y digest se generan por intento; el event ID se conserva entre intentos. El receptor firma/compara esos mismos bytes; el siguiente paso define la ventana temporal, comparación constante y deduplicación por event ID.
+
+## Verificación del receptor — paso 5
+
+- El consumidor verifica antes de parsear/normalizar el JSON: exige los tres headers, una versión conocida y el formato `v1=` seguido de 64 hexadecimales lowercase.
+- `X-Simplerest-Webhook-Timestamp` debe contener segundos Unix enteros y quedar dentro de ±300 segundos respecto al reloj UTC del receptor. Fuera de ventana, la entrega se rechaza.
+- Con el secreto UTF-8 exacto, calcula `hash_hmac('sha256', 'v1.' . $timestamp . '.' . $eventId . '.' . $rawBody, $secret)` y compara el digest calculado con el de `v1=` usando comparación constante (`hash_equals($expected, $received)`). El orden de argumentos es deliberado: el esperado local va primero y el valor del header va segundo.
+- Tras validar la firma, el receptor registra atómicamente la pareja de su subscription local y `event_id` antes de aplicar efectos. Una pareja ya vista no vuelve a procesarse. Retener IDs al menos el doble de la ventana temporal evita replay dentro de esa ventana; la retención de idempotencia para retries debe cubrir el horizonte que defina la tarjeta de delivery asíncrono.
+- El event ID del emisor es compartido entre subscriptions del mismo evento; por eso la clave de deduplicación incluye la subscription local, no solo el event ID global.
