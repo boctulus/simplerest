@@ -22,6 +22,10 @@ require_once __DIR__ . '/app.php';
 $handler = new TemporaryExceptionHandler();
 
 try {    
+    dd([2,3,5], 'Array');
+    ln('Test line 1');
+    ln('Test line 2');
+
     // DB::getConnection('zippy');
     
     // // Obtén una categoría aleatoria usando la conexión 'zippy'

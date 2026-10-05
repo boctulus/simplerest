@@ -19,8 +19,16 @@ function hide_debug_response(){
     VarDump::hideResponse();
 }
 
-function dd($val = null, $msg = null, bool $additional_carriage_return = true, bool $msg_at_top = true){
-    return VarDump::dd($val, $msg, $additional_carriage_return, $msg_at_top);
+if (!function_exists('dd')){
+    function dd($val = null, $msg = null, bool $msg_at_top = true, bool $additional_carriage_return = true){
+        return VarDump::dd($val, $msg, $additional_carriage_return, $msg_at_top);
+    }
+}
+
+if (!function_exists('ln')){
+    function ln($val = null, $msg = null, bool $msg_at_top = true){
+        return VarDump::dd($val, $msg, false, $msg_at_top);
+    }
 }
 
 function here(){
@@ -46,7 +54,7 @@ function here(){
 
     print_array(array_column($rows,'Estado del impuesto'), '', '. ');
 */
-function print_array($array, $msg = null, $prepend = '', bool $additional_carriage_return = true, bool $msg_at_top = true){
+function print_array(array $array, $msg = null, $prepend = '', bool $additional_carriage_return = true, bool $msg_at_top = true){
     $cli     = (php_sapi_name() == 'cli');
     $br      = VarDump::br();
     $p       = VarDump::p();
