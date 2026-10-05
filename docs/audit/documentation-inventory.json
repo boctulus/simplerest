@@ -4,17 +4,17 @@
   "stage": "post-semantic public-map exclusion audit",
   "scope": "Every Markdown file under docs after semantic review of public-map exclusions; no technical claims were changed.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 760,
+  "inline_markdown_links_seen": 761,
   "counts": {
-    "markdown_scanned": 198,
+    "markdown_scanned": 200,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 385,
+    "local_markdown_links": 386,
     "broken_local_markdown_links": 0,
     "classifications": {
       "needs-review": 8,
       "canonical": 19,
-      "internal/audit": 72,
+      "internal/audit": 74,
       "legacy": 99
     }
   },
@@ -5094,6 +5094,31 @@
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/done/documentacion-publica-espanola-vitepress-pilot.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/to-do/gaps-tecnicos-documentacion-canonica.md",
+          "exists": true,
+          "line": 21
+        }
+      ]
+    },
+    {
+      "path": "docs/to-do/gaps-tecnicos-documentacion-canonica.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/to-do/done/documentacion-publica-espanola-vitepress-pilot.md",
+          "line": 21
+        }
+      ],
       "outgoing_markdown_refs": []
     }
   ]
