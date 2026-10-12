@@ -46,10 +46,10 @@ WebRouter::post('api-test/cors',  'CorsTesterController@post');
 // WebRouter::delete('api-test/cors',  'CorsTesterController');
 
 // Si intentara con otro verbo fallaria --ok
-WebRouter::delete('api-test/r1',  'DumbController@test_r1');
+// WebRouter::delete('api-test/r1',  'DumbController@test_r1');
 
 // Rutas con parametros --ok
-WebRouter::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
+// WebRouter::get('user/{id}', 'DumbController@test_r2')->where(['id' => '[0-9]+']);
 
 // Inclusion de namespace
 WebRouter::get('increment/{num}', 'Boctulus\Simplerest\Controllers\folder\SomeController@inc2')->where(['num' => '[0-9]+']);
@@ -58,10 +58,10 @@ WebRouter::get('increment_a/{num}', 'Boctulus\Simplerest\Controllers\folder\Some
 WebRouter::get('increment_b/{num}', 'Boctulus\Simplerest\Controllers\folder\SomeController@inc3')->where(['num' => '[0-9]+']);
 
 // Grupos --ok
-WebRouter::group('admin', function() {	
-    WebRouter::get('dashboard', 'DumbController@dashboard');
-    WebRouter::get('settings', 'DumbController@settings');
-});
+// WebRouter::group('admin', function() {	
+//    WebRouter::get('dashboard', 'DumbController@dashboard');
+//    WebRouter::get('settings', 'DumbController@settings');
+// });
 
 // Funciones anonimas --ok
 WebRouter::get('git/pull', function(){
@@ -72,14 +72,16 @@ WebRouter::get('git/pull', function(){
 
 
 // Rutas desde array --ok
+
+/*
 WebRouter::fromArray([ 
     // rutas 
-
     'GET:/speed_check' => 'DumbController@speedcheck',
     'POST:/products/prices'  => 'DumbController@post_price',
 	# '/some/route' => 'DumbController@some_route',
     // ...
 ]);
+*/
 
 /*
 	Soporte de Middlewares en WebRouter --ok
