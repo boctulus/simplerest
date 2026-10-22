@@ -10,7 +10,11 @@ The existing optional Composer names `boctulus/simplerest-pdf` and `boctulus/sim
 
 The existing `boctulus/basic-acl` and `boctulus/fine-grained-acl` package manifests are proprietary. This pipeline does not create public repositories or Packagist entries for them.
 
-As of 2026-10-22, Packagist returns 404 for the existing Code Tools, PDF, Basic ACL, and Fine-Grained ACL package names. The current GitHub account also cannot resolve the Code Tools and PDF split repository names. These names and local package directories remain the intended identities; do not create duplicates. No split release or Packagist install is complete until its existing target repository is available and a clean consumer resolves it.
+As of 2026-10-22, the existing public GitHub repositories for Code Tools and PDF resolve and each has a `v1.0.0` tag. Their remote tag trees exactly match their corresponding package directories at SimpleRest commit `74ac9ea59a637670ed53552443aad96bc0e1c3af` (46 and 3 blobs). A clean consumer installed both tags directly through Composer VCS and resolved the core from Packagist; optimized autoload, platform checks, runtime class loading, package command discovery, and a host/package collision smoke passed. The Packagist P2 endpoint still returns 404 for Code Tools and PDF, so default Packagist-only installation remains unavailable. The existing Basic ACL and Fine-Grained ACL names are proprietary local packages; do not create duplicate identities or publish them through this pipeline.
+
+The VCS consumer used PHP 8.2.35 and locked `boctulus/simplerest` v2.0.1 at `9ed4141dd84639799a4220ea58e4ebdaae0f4d3f`, `boctulus/simplerest-code-tools` v1.0.0 at `8806fcb4447aece9968bc83e3032168b38184267`, and `boctulus/simplerest-pdf` v1.0.0 at `4a056092ea67c511d7805e1aeba0274064d47881`. Installed package roots measured 273 files/1,600,081 bytes, 46 files/195,312 bytes, and 3 files/5,068 bytes respectively, with zero frontend asset files in those roots. The optional upstream FPDF dependency contributes its own CSS and character-map support files in `vendor/`; it is not bundled into the SimpleRest package roots.
+
+The unreleased core commit `74ac9ea59a637670ed53552443aad96bc0e1c3af` also passed a candidate VCS consumer install under temporary branch alias `2.0.2` on PHP 8.2.35. Core and optional package classes loaded from their Composer paths, `make:console` was discovered, platform checks passed, and the focused schema/upload suite passed 12/12 tests and 34 assertions. This does not close the tagged-release gate: the exact immutable tag and its consumer archive must still be verified before publication.
 
 ## Release gates
 
@@ -32,7 +36,7 @@ The existing `boctulus/simplerest` package identity is released from a reproduci
 
 ## Core versioning
 
-The current core package removes two optional classes from the core provider paths and changes runtime dependency requirements. Release it as a new major version (`2.0.0`) after validation. Preserve `v1.0.3` and its existing source provenance. The final release record must state the monorepo commit, tag, Packagist reference, archive metrics, PHP runtime, Composer version, and consumer lock reference.
+The current published core version is `v2.0.1`; version 2 removed two optional classes from the core provider paths and changed runtime dependency requirements. Preserve `v1.0.3` and its existing source provenance. Any follow-up to `v2.0.1` must use a new immutable version (the current candidate alias is `2.0.2`) only after release gates pass. The final release record must state the monorepo commit, tag, Packagist reference, archive metrics, PHP runtime, Composer version, and consumer lock reference.
 
 ## Optional package split
 
