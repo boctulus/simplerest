@@ -5,6 +5,7 @@ namespace Boctulus\Simplerest\Core\Libs;
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Libs\Numbers;
+use Boctulus\Simplerest\Core\Libs\Config;
 
 /*
 	Funciona con form-data
@@ -42,12 +43,124 @@ class FileUploader
     protected array $erroneous = [];
     protected ?array $renamerFn = null;
     protected const WILDCARD = '*';
+    protected array $allowedExtensions = [
+        'jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf',
+        'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt', 'md',
+    ];
+    protected array $allowedMimeTypes = [
+        'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/csv', 'text/plain', 'text/markdown',
+    ];
 
     function __construct()
     {
+        $this->loadConfiguredTypes();
+
         if (!file_exists($this->location)) {
             Files::mkDirOrFail($this->location);
         }
+    }
+
+    /**
+     * Load the host application's upload allowlist when configured.
+     * The built-in lists remain active when a setting is absent or empty.
+     */
+    protected function loadConfiguredTypes(): void
+    {
+        if (!defined('CONFIG_PATH')
+            || !is_file(CONFIG_PATH . 'config.php')
+            || !is_file(CONFIG_PATH . 'databases.php')) {
+            return;
+        }
+
+        $extensions = Config::get('files.media_accepted.extensions');
+        if (is_array($extensions) && $extensions !== []) {
+            $this->allowedExtensions = $this->normalizeTypeList($extensions, true);
+        }
+
+        $mimeTypes = Config::get('files.media_accepted.mime_types');
+        if (is_array($mimeTypes) && $mimeTypes !== []) {
+            $this->allowedMimeTypes = $this->normalizeTypeList($mimeTypes, false);
+        }
+    }
+
+    /**
+     * Restrict accepted filename extensions and sniffed MIME types.
+     *
+     * @param string[] $extensions
+     * @param string[] $mimeTypes
+     */
+    function setAllowedTypes(array $extensions, array $mimeTypes): self
+    {
+        $this->allowedExtensions = $this->normalizeTypeList($extensions, true);
+        $this->allowedMimeTypes = $this->normalizeTypeList($mimeTypes, false);
+        return $this;
+    }
+
+    protected function normalizeTypeList(array $types, bool $isExtension): array
+    {
+        $normalized = [];
+
+        foreach ($types as $type) {
+            if (!is_string($type)) {
+                continue;
+            }
+
+            $type = strtolower(trim($type));
+            if ($isExtension) {
+                $type = ltrim($type, '.');
+            }
+
+            if ($type !== '') {
+                $normalized[] = $type;
+            }
+        }
+
+        return array_values(array_unique($normalized));
+    }
+
+    protected function isUploadedFile(string $tmpPath): bool
+    {
+        return is_uploaded_file($tmpPath);
+    }
+
+    protected function detectMimeType(string $tmpPath): ?string
+    {
+        if (!is_file($tmpPath) || !is_readable($tmpPath) || !function_exists('finfo_open')) {
+            return null;
+        }
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo === false) {
+            return null;
+        }
+
+        try {
+            $mimeType = finfo_file($finfo, $tmpPath);
+        } finally {
+            finfo_close($finfo);
+        }
+
+        if (!is_string($mimeType) || trim($mimeType) === '') {
+            return null;
+        }
+
+        return strtolower(trim($mimeType));
+    }
+
+    protected function isTypeAllowed(string $tmpPath, string $clientName): bool
+    {
+        $extension = strtolower(pathinfo($clientName, PATHINFO_EXTENSION));
+        if (!in_array($extension, $this->allowedExtensions, true) || !$this->isUploadedFile($tmpPath)) {
+            return false;
+        }
+
+        $mimeType = $this->detectMimeType($tmpPath);
+        return $mimeType !== null && in_array($mimeType, $this->allowedMimeTypes, true);
     }
 
     // path without trailing slash
@@ -119,26 +232,38 @@ class FileUploader
         $file0 = $_FILES[$key_0] ?? null;
         $name  = $input_name !== null ? $input_name : $key_0;
 
-        // Helper to move/store a single file
-        $saveOne = function (string $field, ?int $index, string $tmp_path, string $client_name) use ($renamerFn, $subfijo) {
-            $new_filename = $renamerFn($subfijo) . '.' . pathinfo($client_name, PATHINFO_EXTENSION);
-            $this->filenames[] = [
-                'field'     => $field,
-                'index'     => $index,
-                'ori_name'  => basename($client_name),
-                'as_stored' => $new_filename,
-                'full_path' => $this->location . DIRECTORY_SEPARATOR . $new_filename,
-				'size'	    => filesize($tmp_path)
-            ];
-            move_uploaded_file($tmp_path, $this->location . DIRECTORY_SEPARATOR . $new_filename);
-        };
-
         // Helper to record an error
         $pushError = function (string $field, ?int $index, string $client_name) {
             $this->erroneous[] = [
                 'field'    => $field,
                 'index'    => $index,
                 'ori_name' => basename($client_name)
+            ];
+        };
+
+        // Helper to move/store a single file
+        $saveOne = function (string $field, ?int $index, string $tmp_path, string $client_name) use ($renamerFn, $subfijo, $pushError) {
+            if (!$this->isTypeAllowed($tmp_path, $client_name)) {
+                $pushError($field, $index, $client_name);
+                return;
+            }
+
+            $extension = strtolower(pathinfo($client_name, PATHINFO_EXTENSION));
+            $new_filename = $renamerFn($subfijo) . '.' . $extension;
+            $destination = $this->location . DIRECTORY_SEPARATOR . $new_filename;
+
+            if (!move_uploaded_file($tmp_path, $destination)) {
+                $pushError($field, $index, $client_name);
+                return;
+            }
+
+            $this->filenames[] = [
+                'field'     => $field,
+                'index'     => $index,
+                'ori_name'  => basename($client_name),
+                'as_stored' => $new_filename,
+                'full_path' => $destination,
+                'size'      => filesize($destination)
             ];
         };
 
