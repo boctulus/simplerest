@@ -221,7 +221,7 @@ return [
 				'SMTPAuth' 		=> Env::get('MAIL_AUTH'),
 				'SMTPDebug' 	=> 3,
 				'CharSet' 		=> 'UTF-8',
-				'Debugutput' 	=> 'html',
+				'Debugoutput' 	=> 'html',
 
 				// // Extras
 				// 'SMTPOptions'   => [

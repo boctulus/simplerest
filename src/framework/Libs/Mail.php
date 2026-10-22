@@ -22,6 +22,25 @@ class Mail extends MailBase implements IMail
     protected static $mailer      = null;
     protected static $options     = [];
 
+    private const SUPPORTED_OPTIONS = [
+        'Host',
+        'Port',
+        'Username',
+        'Password',
+        'SMTPSecure',
+        'SMTPAuth',
+        'SMTPDebug',
+        'Debugoutput',
+        'SMTPOptions',
+        'AuthType',
+        'CharSet',
+        'Encoding',
+        'Timeout',
+        'SMTPAutoTLS',
+        'SMTPKeepAlive',
+        'UseSMTPUTF8',
+    ];
+
     // change mailer
     static function setMailer(string $name){
         static::$mailer = $name;
@@ -45,6 +64,17 @@ class Mail extends MailBase implements IMail
             static::$options['SMTPOptions'] = $options;
         } else {
             static::$options = $options;
+        }
+    }
+
+    protected static function applySupportedOptions(PHPMailer $mail, array $options): void
+    {
+        foreach ($options as $key => $value){
+            if (!in_array($key, self::SUPPORTED_OPTIONS, true)) {
+                throw new \InvalidArgumentException("Unsupported PHPMailer option '{$key}'");
+            }
+
+            $mail->{$key} = $value;
         }
     }
 
@@ -191,9 +221,7 @@ class Mail extends MailBase implements IMail
             $options['SMTPDebug'] = static::$debug_level;
         }
 
-        foreach ($options as $k => $prop){
-            $mail->{$k} = $prop;
-        }
+        static::applySupportedOptions($mail, $options);
 
         // Defaults de remitente
         $from['email'] = $from['email'] ?? ($config['email']['from']['address'] ?? ($config['email']['mailers'][$mailer]['Username'] ?? null));
