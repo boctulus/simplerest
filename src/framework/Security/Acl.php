@@ -27,7 +27,22 @@ abstract class Acl implements IAcl
     protected $registered_name = 'registered';
     protected $sp_permissions = [];
     protected $ancestors = [];
-    
+    protected static $defer_role_catalog_persistence = false;
+
+    public static function deferRoleCatalogPersistence(bool $defer): void
+    {
+        static::$defer_role_catalog_persistence = $defer;
+    }
+
+    protected static function isRoleCatalogPersistenceDeferred(): bool
+    {
+        return static::$defer_role_catalog_persistence;
+    }
+
+    /** ACL implementations without a database-backed role catalog have nothing to reconcile. */
+    public function reconcileRoleCatalog(): void
+    {
+    }
 
     public function __construct()
     {

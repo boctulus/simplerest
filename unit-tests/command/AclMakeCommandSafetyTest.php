@@ -6,11 +6,11 @@ use PHPUnit\Framework\TestCase;
 
 final class AclMakeCommandSafetyTest extends TestCase
 {
-    public function testForceRegenerationUsesTransactionalRoleReconciliation(): void
+    public function testForceRegenerationUsesTransactionalNonDestructiveRoleReconciliation(): void
     {
         $root = dirname(__DIR__, 2);
         $command = file_get_contents($root . '/app/Commands/acl/AclMakeCommand.php');
-        $legacy = file_get_contents($root . '/app/Commands/make/BaseMakeCommand.php');
+        $legacy = file_get_contents($root . '/packages/boctulus/simplerest-code-tools/src/Commands/make/BaseMakeCommand.php');
         $acl = file_get_contents($root . '/packages/boctulus/fine-grained-acl/src/Acl.php');
 
         $this->assertStringNotContainsString("DB::table('roles')", $command);
@@ -27,11 +27,10 @@ final class AclMakeCommandSafetyTest extends TestCase
         $this->assertStringContainsString('$acl->reconcileRoleCatalog()', $legacy);
 
         $this->assertStringContainsString('DB::transaction(', $acl);
-        $this->assertStringContainsString('DB::table(\'user_roles\')->insert($assignment)', $acl);
-        $this->assertStringContainsString(
-            "ACL role reconciliation changed user_sp_permissions unexpectedly",
-            $acl
-        );
+        $this->assertStringContainsString('DB::table(\'roles\')->create($role)', $acl);
+        $this->assertStringNotContainsString('->delete()', $acl);
+        $this->assertStringNotContainsString("DB::table('user_roles')->insert", $acl);
+        $this->assertStringContainsString('migrate application references before changing its id', $acl);
     }
 
     private function readBaseAclCommand(string $root): string

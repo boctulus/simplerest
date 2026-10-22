@@ -11,7 +11,7 @@ class AclMakeCommand extends BaseCommand
     public function __construct()
     {
         $this->command     = 'make';
-        $this->description = 'Regenera el ACL y reconcilia roles de forma segura con --force';
+        $this->description = 'Regenera el ACL y reconcilia el catálogo sin cambiar IDs existentes con --force';
         $this->aliases     = ['generate', 'gen', 'build'];
         $this->examples    = [
             'php com acl make',
@@ -27,7 +27,7 @@ class AclMakeCommand extends BaseCommand
             'optional' => [],
             'flags'    => ['force', 'f', 'debug', 'd', 'dd'],
             'options'  => [
-                'force' => ['describe' => 'Reconstruir roles y migrar asignaciones por nombre dentro de una transaccion'],
+                'force' => ['describe' => 'Agregar roles nuevos y validar referencias sin borrar roles ni cambiar IDs existentes'],
                 'debug' => ['describe' => 'Mostrar ACL generado'],
             ],
         ];
@@ -61,7 +61,7 @@ class AclMakeCommand extends BaseCommand
 
             if ($force) {
                 $acl->reconcileRoleCatalog();
-                echo "ACL role catalog reconciled; user assignments were preserved\n";
+                echo "ACL role catalog reconciled; existing role IDs and user assignments were preserved\n";
             }
 
             $bytes = file_put_contents($acl_file, serialize($acl), LOCK_EX);

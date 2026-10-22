@@ -36,6 +36,11 @@ class Acl extends \Boctulus\Simplerest\Core\Security\Acl
             // get all available roles
             $this->roles = DB::table('roles')->get();
 
+            if (static::isRoleCatalogPersistenceDeferred()) {
+                $this->roles = [];
+                return;
+            }
+
             foreach($this->roles as $rr){
                 $this->role_names[] = $rr['name'];
                 $this->role_ids[]   = $rr['id'];
@@ -45,6 +50,10 @@ class Acl extends \Boctulus\Simplerest\Core\Security\Acl
 
     public function addRole(string $role_name, $role_id = null)
     {
+        if (static::isRoleCatalogPersistenceDeferred()) {
+            return parent::addRole($role_name, $role_id);
+        }
+
         $create = true;
 
         if (in_array($role_id, $this->role_ids)) {
@@ -77,6 +86,98 @@ class Acl extends \Boctulus\Simplerest\Core\Security\Acl
         $this->registerRoleState($role_name, $role_id);
 
         return $this;
+    }
+
+    public function reconcileRoleCatalog(): void
+    {
+        if (!static::isRoleCatalogPersistenceDeferred()) {
+            return;
+        }
+
+        $desired = [];
+        foreach ($this->role_perms as $name => $permissions) {
+            $desired[$name] = $permissions['role_id'];
+        }
+
+        $catalog = DB::transaction(function () use ($desired) {
+            $persisted_by_name = [];
+            $persisted_by_id = [];
+
+            foreach (DB::table('roles')->get() as $role) {
+                $name = (string) $role['name'];
+                $id = (int) $role['id'];
+
+                if (array_key_exists($name, $persisted_by_name)) {
+                    throw new \RuntimeException("Cannot force ACL regeneration: persisted role name '{$name}' is not unique");
+                }
+
+                $persisted_by_name[$name] = $role;
+                $persisted_by_id[$id] = $role;
+            }
+
+            foreach (DB::table('user_roles')->get() as $assignment) {
+                $role_id = (int) $assignment['role_id'];
+                $role_name = $persisted_by_id[$role_id]['name'] ?? null;
+
+                if ($role_name === null || !array_key_exists($role_name, $desired)) {
+                    throw new \RuntimeException(
+                        "Cannot force ACL regeneration: assigned role_id '{$role_id}' has no unambiguous role-name mapping in config/acl.php"
+                    );
+                }
+            }
+
+            foreach ($persisted_by_name as $name => $role) {
+                if (!array_key_exists($name, $desired)) {
+                    throw new \RuntimeException(
+                        "Cannot force ACL regeneration: persisted role '{$name}' is missing from config/acl.php; migrate application references before removing it"
+                    );
+                }
+            }
+
+            foreach ($desired as $name => $requested_id) {
+                if (isset($persisted_by_name[$name])) {
+                    $persisted_id = (int) $persisted_by_name[$name]['id'];
+
+                    if ($requested_id !== null && (int) $requested_id !== $persisted_id) {
+                        throw new \RuntimeException(
+                            "Cannot force ACL regeneration: role '{$name}' has persisted id '{$persisted_id}' but config requests '{$requested_id}'; migrate application references before changing its id"
+                        );
+                    }
+
+                    $desired[$name] = $persisted_by_name[$name]['id'];
+                    continue;
+                }
+
+                if ($requested_id !== null && isset($persisted_by_id[(int) $requested_id])) {
+                    $existing_name = $persisted_by_id[(int) $requested_id]['name'];
+                    throw new \RuntimeException(
+                        "Cannot force ACL regeneration: requested role id '{$requested_id}' for '{$name}' is already used by '{$existing_name}'"
+                    );
+                }
+
+                $role = ['name' => $name];
+                if ($requested_id !== null) {
+                    $role['id'] = $requested_id;
+                }
+
+                $desired[$name] = DB::table('roles')->create($role);
+            }
+
+            return [
+                'roles' => DB::table('roles')->get(),
+                'desired' => $desired,
+            ];
+        });
+
+        $desired = $catalog['desired'];
+        $this->roles = $catalog['roles'];
+        $this->role_ids = array_column($this->roles, 'id');
+        $this->role_names = array_column($this->roles, 'name');
+
+        foreach ($desired as $name => $id) {
+            $this->role_perms[$name]['role_id'] = $id;
+        }
+
     }
 
     public function getFreshTbPermissions(string $table = null, bool $unpacked = true){
