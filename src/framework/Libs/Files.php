@@ -1776,7 +1776,7 @@ class Files
 		}
 
 		if (!static::isWritable($path)) {
-			$path = realpath($path);
+			$path = realpath($path) ?: $path;
 			throw new \Exception(sprintf($error, $path));
 		}
 	}
