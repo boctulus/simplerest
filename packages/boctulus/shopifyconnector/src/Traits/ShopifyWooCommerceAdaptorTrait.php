@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\traits;
+namespace Boctulus\ShopifyConnector\Traits;
 
 trait ShopifyWooCommerceAdaptorTrait
 {

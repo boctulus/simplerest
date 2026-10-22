@@ -16,11 +16,11 @@
    ],
    "require":{
       "php":">=8.1,<8.5",
+		"ext-pdo": "*",
+		"ext-mbstring": "*",
 		"doctrine/inflector": "^2.0",
 		"psr/http-message": "^2.0",
-		"firebase/php-jwt": "^7.1",
-		"symfony/dom-crawler": "^6.4",
-		"symfony/css-selector": "^6.4"
+		"firebase/php-jwt": "^7.1"
    },
 	"require-dev": {
       "phpunit/phpunit": "^10.0",
@@ -28,14 +28,22 @@
 	  "vlucas/phpdotenv": "^5.2",
 	  "phpmailer/phpmailer": "^7.1",
 	  "setasign/fpdf": "^1.8",
-	  "nikic/php-parser": "^5.4"
+	  "nikic/php-parser": "^5.4",
+	  "symfony/dom-crawler": "^6.4",
+	  "symfony/css-selector": "^6.4"
 	},
 	"suggest": {
 	  "phpmailer/phpmailer": "Optional SMTP adapter for Core\\Libs\\Mail; supports PHPMailer 6.9 and 7.1.",
 	  "google/apiclient": "Optional Google Drive integration for Core\\Libs\\GoogleDrive.",
 	  "guzzlehttp/guzzle": "Optional HTTP client used by Google Drive and the bundled SendinBlue adapter.",
-	  "boctulus/simplerest-pdf": "Optional PDF base class and FPDF integration.",
-	  "boctulus/simplerest-code-tools": "Optional PHP source tools and make commands."
+	  "ext-curl": "Optional HTTP transport acceleration for API clients and webhook integrations.",
+	  "ext-pdo_mysql": "Optional PDO MySQL driver when connecting to MySQL or MariaDB.",
+	  "ext-pdo_pgsql": "Optional PDO PostgreSQL driver when connecting to PostgreSQL.",
+	  "ext-pdo_sqlite": "Optional PDO SQLite driver when connecting to SQLite.",
+	  "symfony/dom-crawler": "Optional HTML traversal for Core\\Libs\\DomCrawler; install symfony/css-selector too when using CSS selectors.",
+	  "symfony/css-selector": "Optional CSS selector support for Core\\Libs\\DomCrawler.",
+	  "boctulus/simplerest-pdf": "Optional PDF integration; not registered on Packagist yet, so it currently requires an explicit VCS repository.",
+	  "boctulus/simplerest-code-tools": "Optional development tools; not registered on Packagist yet, so it currently requires an explicit VCS repository."
 	},
    "scripts":{
       "test": "phpunit --colors=always unit-tests",
@@ -59,6 +67,7 @@
          "Boctulus\\Simplerest\\Tests\\": "unit-tests/",
          "Boctulus\\Simplerest\\": ["app/", "src/"],
          "Boctulus\\Simplerest\\Core\\Libs\\":["src/framework/Libs/", "packages/boctulus/simplerest-pdf/src/", "packages/boctulus/simplerest-code-tools/src/"],
+         "Boctulus\\Simplerest\\CodeTools\\Cleaners\\": "packages/boctulus/simplerest-code-tools/src/Cleaners/",
          "Boctulus\\FineGrainedACL\\":"packages/boctulus/fine-grained-acl/src",
          "Boctulus\\BasicACL\\":"packages/boctulus/basic-acl/src",
          "Boctulus\\Zippy\\":"packages/boctulus/zippy/src",

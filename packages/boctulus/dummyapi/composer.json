@@ -2,17 +2,21 @@
     "name": "boctulus/dummyapi",
     "description": "Package DummyApi by boctulus",
     "type": "library",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Boctulus\\Dummyapi\\": "src/"
+            "Boctulus\\DummyApi\\": "src/"
         }
     },
     "extra": {
         "simplerest": {
             "providers": [
-                "Boctulus\\Dummyapi\\ServiceProvider"
+                "Boctulus\\DummyApi\\ServiceProvider"
             ]
         }
     },
-    "require": {}
+    "require": {
+        "php": ">=8.1,<8.5",
+        "boctulus/simplerest": "^2.0"
+    }
 }

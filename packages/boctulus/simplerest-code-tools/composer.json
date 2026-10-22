@@ -8,9 +8,16 @@
         "boctulus/simplerest": "^2.0",
         "nikic/php-parser": "^5.4"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "scripts": {
+        "test": "phpunit --do-not-cache-result"
+    },
     "autoload": {
         "psr-4": {
-            "Boctulus\\Simplerest\\Core\\Libs\\": "src/"
+            "Boctulus\\Simplerest\\Core\\Libs\\": "src/",
+            "Boctulus\\Simplerest\\CodeTools\\Cleaners\\": "src/Cleaners/"
         },
         "classmap": [
             "src/Commands/"
