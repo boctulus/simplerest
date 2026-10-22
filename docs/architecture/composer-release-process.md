@@ -120,7 +120,7 @@ All 15 local package manifests now declare their PHP range, license, real core o
 | `boctulus/web-test` | Web testing utility | Development-only; not a public runtime package. |
 | `boctulus/zippy` | Product-specific application integration | Proprietary; keep private. |
 
-The repository now has 15 local subpackage manifests. All 15 were packaged and installed together from temporary VCS repositories in the consumer gate; PDF, Code Tools, and Integrations were also installed and tested as independent candidates. The public package count remains one (`boctulus/simplerest`): no subpackage was pushed, tagged, or registered on Packagist. Three packages are ready for split review; none is release-ready until the split commit and repository root are verified.
+The repository now has 15 local subpackage manifests. All 15 were packaged and installed together from temporary VCS repositories in the consumer gate; PDF, Code Tools, and Integrations were also installed and tested as independent candidates. The last Packagist count verified in the 2026-10-22 audit was one package (`boctulus/simplerest`); this task did not requery Packagist and did not push, tag, or register a subpackage. Three packages are ready for split review; none is release-ready until the split commit and repository root are verified.
 
 ### Verification and remaining release gates
 
