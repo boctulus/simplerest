@@ -173,6 +173,42 @@ class TranslateConvergenceTest extends TestCase
         $this->assertSame('es_AR', Translate::getLocale());
     }
 
+    public function testConvertPotCreatesBaseCatalogsAndSkipsSparseRegionalOverrides(): void
+    {
+        $potPath = $this->localeRoot . DIRECTORY_SEPARATOR . 'messages.pot.php';
+        $potContents = '<?php return ' . var_export(['Welcome :/f/person'], true) . ';';
+        if (file_put_contents($potPath, $potContents) === false){
+            throw new \RuntimeException('Unable to write isolated translation template');
+        }
+
+        foreach (['en_US', 'es', 'es_AR', 'invalid-locale'] as $locale){
+            $directory = $this->localeRoot . DIRECTORY_SEPARATOR . $locale;
+            if (!mkdir($directory, 0700)){
+                throw new \RuntimeException('Unable to create isolated locale directory');
+            }
+        }
+
+        ob_start();
+        try {
+            Translate::convertPot($this->localeRoot . DIRECTORY_SEPARATOR, 'messages');
+        } finally {
+            $output = ob_get_clean();
+        }
+
+        $this->assertStringContainsString('Creando archivo messages.php', $output);
+        $englishPath = $this->localeRoot . DIRECTORY_SEPARATOR . 'en_US' . DIRECTORY_SEPARATOR . 'messages.php';
+        $spanishPath = $this->localeRoot . DIRECTORY_SEPARATOR . 'es' . DIRECTORY_SEPARATOR . 'messages.php';
+        $regionalPath = $this->localeRoot . DIRECTORY_SEPARATOR . 'es_AR' . DIRECTORY_SEPARATOR . 'messages.php';
+        $invalidPath = $this->localeRoot . DIRECTORY_SEPARATOR . 'invalid-locale' . DIRECTORY_SEPARATOR . 'messages.php';
+
+        $this->assertFileExists($englishPath);
+        $this->assertFileExists($spanishPath);
+        $this->assertFileDoesNotExist($regionalPath);
+        $this->assertFileDoesNotExist($invalidPath);
+        $this->assertSame(['Welcome :/f/person' => 'Welcome person'], include $englishPath);
+        $this->assertSame(['Welcome :/f/person' => ''], include $spanishPath);
+    }
+
     private function createCatalog(string $locale, string $domain, array $translations): void
     {
         $directory = $this->localeRoot . DIRECTORY_SEPARATOR . $locale

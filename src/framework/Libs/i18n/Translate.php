@@ -465,46 +465,57 @@ class Translate
         
         foreach ($php_pot as $pp){
             $pot_domain = Strings::beforeIfContains(basename($pp), '.pot.php');
-            
+            $defs = include $pp;
+            $availableLocales = static::getAvailableLocales($locale_path);
+
             foreach (new \DirectoryIterator($locale_path) as $fileInfo) {
                 if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
-                
+
                 $dir = $fileInfo->getBasename();
                 $path = $locale_path . DIRECTORY_SEPARATOR . $dir;
-                
-                foreach (new \DirectoryIterator($path) as $fileInfo) {
-                    if($fileInfo->isDot()) continue;
 
-                    $filename = "$path/$pot_domain.php";
-                    $defs = include $pp;
+                try {
+                    $normalized = static::normalizeLocale($dir);
+                } catch (\InvalidArgumentException $e) {
+                    continue;
+                }
 
-                    if (!file_exists($filename)){
-                        StdOut::print("Creando archivo $pot_domain.php en $dir");
+                $language = static::getLanguage($normalized);
+                $isRegionalOverride = $normalized !== $language
+                    && isset($availableLocales[$language]);
+                $filename = "$path/$pot_domain.php";
 
-                        $p_defs = [];
-                        foreach ($defs as $def){
-                            $clean_def = str_replace([
-                                ':/f/', 
-                                ':/m/'
-                            ], '', trim($def));
+                // Regional catalogs are sparse only when their language base exists.
+                if ($isRegionalOverride){
+                    continue;
+                }
 
-                            $p_defs[$def] = ($dir == 'en_US') ? $clean_def : "";
+                if (!file_exists($filename)){
+                    StdOut::print("Creando archivo $pot_domain.php en $dir");
+
+                    $p_defs = [];
+                    foreach ($defs as $def){
+                        $clean_def = str_replace([
+                            ':/f/',
+                            ':/m/'
+                        ], '', trim($def));
+
+                        $p_defs[$def] = ($normalized === 'en_US') ? $clean_def : "";
+                    }
+
+                    Files::varExport($p_defs, $filename);
+                } else {
+                    $current_defs = include $filename;
+                    $current_def_keys = array_keys($current_defs);
+                    $not_incl_def_keys = array_diff($defs, $current_def_keys);
+
+                    if (!empty($not_incl_def_keys)){
+                        foreach ($not_incl_def_keys as $def){
+                            $current_defs[$def] = "";
                         }
 
-                        Files::varExport($p_defs, $filename);
-                    } else {
-                        $current_defs = include $filename;
-                        $current_def_keys = array_keys($current_defs);
-                        $not_incl_def_keys = array_diff($defs, $current_def_keys);
-
-                        if (!empty($not_incl_def_keys)){
-                            foreach ($not_incl_def_keys as $def){
-                                $current_defs[$def] = "";
-                            }
-                            
-                            StdOut::print("Actualizando $filename");
-                            Files::varExport($current_defs, $filename);
-                        }
+                        StdOut::print("Actualizando $filename");
+                        Files::varExport($current_defs, $filename);
                     }
                 }
             }
