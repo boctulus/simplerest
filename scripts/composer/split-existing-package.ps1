@@ -43,7 +43,19 @@ if ($LASTEXITCODE -ne 0 -or $manifestJson.name -ne $Package) {
     throw "Commit $resolvedCommit does not contain the expected package manifest for '$Package'."
 }
 
-$splitOutput = & git subtree split --quiet "--prefix=$($definition.Path)" $resolvedCommit
+$packageFiles = @(git ls-tree -r --name-only $resolvedCommit -- $definition.Path)
+if ($LASTEXITCODE -ne 0) {
+    throw "Could not inspect the file list for '$Package' at $resolvedCommit."
+}
+
+$frontendAssetPattern = '(?i)\.(js|mjs|cjs|ts|tsx|jsx|css|scss|sass|less|map|woff2?|ttf|otf|eot|svg|png|jpe?g|gif|webp|ico)$'
+$frontendAssets = @($packageFiles | Where-Object { $_ -match $frontendAssetPattern })
+if ($frontendAssets.Count -gt 0) {
+    $assetList = $frontendAssets -join [Environment]::NewLine
+    throw "Composer package '$Package' must not contain frontend or third-party assets. Remove these files from the package source before splitting:`n$assetList"
+}
+
+$splitOutput = & git subtree split -q "--prefix=$($definition.Path)" $resolvedCommit
 if ($LASTEXITCODE -ne 0) {
     throw "git subtree split failed for '$Package' at $resolvedCommit."
 }
