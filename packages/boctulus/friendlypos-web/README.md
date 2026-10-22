@@ -6,23 +6,17 @@ Package friendlypos_web by --author:boctulus.
 
 Este package provee servicios varios a un POS WEB. Es complementario a "openfactura-sdk" para facturacion electronica.
 
-- Utilizar "openfactura-sdk" y sobre el construir una API REST con autenticacion y persistir en base de datos lo necesario.
+El código actual del paquete y sus pruebas no importan ni utilizan las copias de QR Code o XLSX que estaban en `third_party/`; esas copias fueron retiradas. Esas capacidades no forman parte de la funcionalidad actual.
 
-- Utilizar "phpqrcode" para generar codigos QR desde `third_party\phpqrcode`
+| Copia retirada | Origen y alternativa Composer | Compatibilidad y decisión |
+| --- | --- | --- |
+| `chillerlan/` | [chillerlan/php-qrcode](https://packagist.org/packages/chillerlan/php-qrcode), upstream [chillerlan/php-qrcode](https://github.com/chillerlan/php-qrcode) | Si se vuelve a usar, limitar a `^5.0` para mantener soporte PHP 8.1; la rama 6 requiere PHP 8.2. No se declara hoy porque no hay consumidores en el paquete. |
+| `phpqrcode/` | Copia LGPL-3.0 del proyecto [PHP QR Code en SourceForge](https://sourceforge.net/projects/phpqrcode/) | No sustituirla por `phpqrcode/phpqrcode` sin revisión: esa entrada de Packagist apunta a otro repositorio, solo publica `dev-master` y no declara licencia. No se declara porque no hay consumidores. |
+| `shuchkin/SimpleXLSX.php` y `SimpleXLSXEx.php` | [shuchkin/simplexlsx](https://packagist.org/packages/shuchkin/simplexlsx), upstream [shuchkin/simplexlsx](https://github.com/shuchkin/simplexlsx) | La publicación Composer soporta el rango PHP del framework y declara `ext-libxml`, `ext-mbstring`, `ext-simplexml` y `ext-zlib`; Packagist mostraba dos avisos de seguridad al revisar. No se declara porque no hay consumidores. |
 
-https://phpqrcode.sourceforge.net/
+Si se incorpora una de estas funciones, `friendlypos-web/composer.json` debe declarar la dependencia real en `require`; Composer la resolverá en el proyecto consumidor. No se deben volver a copiar distribuciones en `third_party/`.
 
-Otra opcion que aparece incluida en el proyecto original es "php-qrcode" basado en proyecto de "Kazuhiko Arase"
-
-https://github.com/chillerlan/php-qrcode
-
-- Utilizar "fpdf" para generar PDFs dado que el proyecto original utiliza "LaravelFpdf"
-
-- Utilizar "SimpleXLSX" desde  `third_party\phpqrcode\shuchkin` para procesar archivos XLS / XLSX
-
-- Utilizar "html5-qrcode.min.js", una cross-platform HTML5 QR code reader si se necesitara poder escanear codigos QR desde el POS WEB
-
-https://github.com/mebjas/html5-qrcodea cross-platform HTML5 QR code reade
+Este paquete contiene integración de FriendlyPOS y no está preparado para publicación pública independiente. Su dependencia `boctulus/openfactura-sdk` todavía carece de un artefacto Composer estable e instalable desde Packagist.
 
 
 ## Installation

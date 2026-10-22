@@ -28,6 +28,7 @@ class SimpleRestPackager
         '.git',
         'vendor',
         'node_modules',
+        'third_party', // Never re-open copied third-party code through .packinclude.
         'test-results',
         '.phpunit.cache',
         '*.zip',
@@ -894,11 +895,11 @@ class SimpleRestPackager
 
         $frameworkRequirements = [
             'php',
+            'ext-pdo',
+            'ext-mbstring',
             'doctrine/inflector',
             'psr/http-message',
             'firebase/php-jwt',
-            'symfony/dom-crawler',
-            'symfony/css-selector',
         ];
         $originalRequirements = $composerData['require'] ?? [];
         $composerData['require'] = array_intersect_key($originalRequirements, array_flip($frameworkRequirements));
@@ -915,8 +916,8 @@ class SimpleRestPackager
                 $composerData['suggest'][$package] = $feature . ' (install with composer require ' . $package . ')';
             }
         }
-        $composerData['suggest']['boctulus/simplerest-pdf'] = 'PDF generation (install with composer require boctulus/simplerest-pdf)';
-        $composerData['suggest']['boctulus/simplerest-code-tools'] = 'Code generation commands (install with composer require boctulus/simplerest-code-tools)';
+        $composerData['suggest']['boctulus/simplerest-pdf'] = 'Optional PDF integration; not registered on Packagist yet, so it currently requires an explicit VCS repository.';
+        $composerData['suggest']['boctulus/simplerest-code-tools'] = 'Optional development tools; not registered on Packagist yet, so it currently requires an explicit VCS repository.';
 
         unset($composerData['require-dev']);
         echo "Kept only boot and core dependencies; removed development and optional dependencies\n";
