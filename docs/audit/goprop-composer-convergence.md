@@ -46,6 +46,8 @@ No hay cambios sin commit bajo src/framework/ en ninguno de los dos repositorios
 | src/framework/Libs/CorsHandler.php | A — Solo usa HTTP_ORIGIN para CORS. Sin Origin, no bloquea la petición ni agrega cabeceras CORS; un Origin explícitamente no permitido sigue rechazado. | unit-tests/http/CorsHandlerOriginTest.php: 2/2 pruebas, 4 aserciones en PHP 8.1 y 8.4. | 325851c27 |
 | src/framework/FrontController.php | A — Distingue invitado sin permiso (401) de usuario autenticado sin permiso ACL (403). No copia el 401 incondicional de GoProp, que no distingue ambos estados. | FrontControllerAuthorizationStatusTest.php y ApiAuthorizationDispatchTest.php: 11/11 pruebas, 78 aserciones en PHP 8.1 y 8.4; sin base de datos. | e8895db7e |
 
+| src/framework/Helpers/env.php, src/framework/Libs/System.php | A / D — `env()` da prioridad al entorno del proceso y luego al archivo cargado, incluso si el valor del proceso está vacío. `System::getPHP()` sigue leyendo `PHP_BINARY` con `Env::get()` para conservar la configuración desde archivo. `config/databases.php` usa `env()` para resolver conexiones; por tanto, el entorno del proceso ahora puede prevalecer sobre `.env`. | EnvHelperPrecedenceTest.php: 3/3 pruebas en PHP 8.1 y 8.4; una deprecación de firma preexistente en `Env::set()` aparece en PHP 8.4. Smoke aislado: `System::getPHP()` conserva el valor configurado en `Env::$data` frente a un valor de proceso. No se abrió conexión de base de datos. | efd9dee2f |
+
 Los commits funcionales se enviaron a origin/master. No se modificaron manifiestos, tags ni el directorio simplerest-pack.
 
 ## Decisiones comprobadas y diferencias controladas
@@ -62,6 +64,12 @@ Los commits funcionales se enviaron a origin/master. No se modificaron manifiest
 | FrontController.php | A — conflicto reconciliado | Invitado sin método callable recibe 401; usuario autenticado sin permiso recibe 403. El estado autenticado se consulta después de que ApiController valide el token. Se conserva la distinción ACL en lugar de aplicar el 401 incondicional de GoProp. | FrontControllerAuthorizationStatusTest.php valida ambos códigos; ApiAuthorizationDispatchTest.php valida el cálculo de permisos y callables. 11/11 pruebas combinadas en PHP 8.1 y 8.4; no hay prueba HTTP end-to-end de esta rama. |
 | Libs/CommandRegistry.php | A / D | A — Portada la ayuda de grupo cuando no hay subcomando, evitando ejecución implícita del primer comando. D — Falta resolver precedencia aplicación/extensiones/framework, colisiones y aliases; además, buildSearchPaths() no descubre comandos bajo Composer vendor/. | CommandRegistryDispatchTest.php: 2/2 pruebas, 11 aserciones; resolución Composer y colisiones pendientes para Fase 2. |
 | Libs/CorsHandler.php | A | Portado el contrato HTTP de GoProp: Referer no sustituye Origin; si Origin no existe, CORS no interviene. Un Origin presente que no esté permitido conserva el 403. | CorsHandlerOriginTest.php: 2/2 pruebas, 4 aserciones en PHP 8.1 y 8.4. |
+| Helpers/env.php | A | Portada la precedencia de GoProp: entorno del proceso, archivo cargado y valor por defecto; una cadena vacía del proceso es explícita. | EnvHelperPrecedenceTest.php: 3/3 pruebas en PHP 8.1 y 8.4. |
+| Libs/System.php | D — reconciliado | `System::getPHP()` lee `PHP_BINARY` con `Env::get()` como GoProp; el valor del proceso no oculta el valor configurado en archivo. | Smoke aislado con valores distintos en proceso y `Env::$data`; no usa base de datos. |
+| Libs/Env.php | E | La asignación inicial desde `$_ENV` en SimpleRest queda reemplazada por `parseFile()` en la ruta normal de `setup()`; GoProp la elimina como código sin efecto en esa ruta. Se conserva por ahora, sin portar comportamiento. | Comparación del flujo `setup()`; sin cambio de código ni prueba adicional. |
+| Libs/FileUploader.php | B | SimpleRest conserva whitelist de extensión/MIME y protección del directorio. GoProp elimina ambas y permite almacenar tipos no validados; no se porta esa regresión de seguridad. | Revisión comparativa de `__construct()`, `setLocation()` y `save()`; no se cambió la implementación. |
+| Api/Collections.php | B / C | Se conservan en SimpleRest las comprobaciones de entidad al leer y modificar una colección. Las tablas de pagos y liquidaciones añadidas por GoProp son propias de la aplicación y no se incorporan al core. | Revisión comparativa de guards y tabla local; no se cambió la implementación. |
+| Security/Acl.php, Security/Compiler/EffectivePermissionCompiler.php | B / D | SimpleRest ya rechaza `*` como recurso y conserva los permisos especiales explícitos. La persistencia diferida del catálogo de roles de GoProp necesita revisar sus consumidores y migraciones antes de portarse. | Diferencia de seguridad/control de persistencia aún sin prueba de integración; no se cambió la implementación. |
 | Response.php | A / B / C | A — Conserva metadatos hermanos y regenera los campos reservados del envelope. B — Mantiene el emisor de status HTTP de SimpleRest. C — No incorpora la auditoría de mutaciones de impersonación, que depende de GoProp. | unit-tests/http/ResponseEnvelopeMetadataTest.php: 3/3 pruebas, 10 aserciones; no se ejecutaron rutas ni conexiones. |
 | Validator.php | A | Portado skipBoundsChecks() para que los filtros de lectura omitan solo los límites de escritura y mantengan la validación de tipo. | 2 pruebas focalizadas aprobadas. |
 | Libs/Files.php | A | Se conserva la ruta solicitada en el mensaje cuando realpath() devuelve false. | FilesWritablePathTest.php: 1/1 prueba, 3 aserciones en Linux/WSL. |
@@ -72,12 +80,11 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 | Ruta | Estado |
 | --- | --- |
 | Api/ApiController.php | Portada la llamada de filtros de lectura a skipBoundsChecks(); el resto de sus diferencias queda pendiente de revisión de API y ACL. |
-| Api/AuthController.php, Api/Collections.php | Pendiente de revisión de autenticación, ACL y configuración de aplicación. |
+| Api/AuthController.php | Pendiente de revisión de autenticación, ACL y configuración de aplicación. |
 | Handlers/ApiHandler.php, Handlers/ErrorHandler.php | Pendiente de trazar resolución, errores y tests existentes. |
-| Helpers/env.php, Helpers/loggers.php, Helpers/view.php | Pendiente de comparar efectos genéricos y dependencias del host. |
+| Helpers/loggers.php, Helpers/view.php | Pendiente de comparar efectos genéricos y dependencias del host. |
 | Interfaces/ISubResources.php | Pendiente de comparar contrato y consumidores. |
-| Libs/Env.php, Libs/FileUploader.php, Libs/GoogleDrive.php, Libs/i18n/Translate.php, Libs/Mail.php, Libs/MailAuditor.php, Libs/PostmanGenerator.php, Libs/System.php | Pendiente de revisar comportamiento, dependencias opcionales y pruebas. |
-| Security/Acl.php, Security/Compiler/EffectivePermissionCompiler.php | Pendiente de comparación semántica de ACL; no copiar cambios de permisos automáticamente. |
+| Libs/GoogleDrive.php, Libs/i18n/Translate.php, Libs/Mail.php, Libs/MailAuditor.php, Libs/PostmanGenerator.php | Pendiente de revisar comportamiento, dependencias opcionales y pruebas. |
 | View.php | Pendiente de trazar el contrato de renderizado y sus consumidores. |
 
 ## Clases exclusivas
@@ -105,6 +112,7 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 - CommandRegistryDispatchTest.php: 2/2 pruebas, 11 aserciones en PHP 8.1 y 8.4; los flags sin comando no ejecutan comandos.
 - CorsHandlerOriginTest.php: 2/2 pruebas, 4 aserciones en PHP 8.1 y 8.4; sin Origin no toca status/cabeceras y Origin no permitido sigue en 403.
 - FrontControllerAuthorizationStatusTest.php + ApiAuthorizationDispatchTest.php: 11/11 pruebas, 78 aserciones en PHP 8.1 y 8.4; valida ambos estados 401/403 y la regresión ACL, sin conexión a base de datos.
+- EnvHelperPrecedenceTest.php: 3/3 pruebas en PHP 8.1 y 8.4; verifica proceso > archivo y valor vacío explícito. PHP 8.4 informa la deprecación previa de `Env::set()`. Un smoke separado confirma que `System::getPHP()` mantiene el valor cargado desde archivo; no se conecta a una base de datos.
 - php -l en todos los PHP modificados: sin errores.
 - Servidor PHP built-in local: POST de JSON inválido con charset=utf-8 → HTTP 400 y respuesta JSON genérica.
 - No se ejecutó la suite completa ni pruebas que conecten a MySQL/PostgreSQL; no se configuró ni se modificó ninguna base de datos.
