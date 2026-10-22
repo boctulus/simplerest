@@ -14,6 +14,7 @@ use Boctulus\Simplerest\Core\Interfaces\IValidator;
 class Validator implements IValidator
 {
     protected $required = true;
+    protected $skip_bounds_checks = false;
     protected $ignored_fields = [];
     protected $uniques = [];
     protected $errors = [];
@@ -48,6 +49,13 @@ class Validator implements IValidator
     function setRequired(bool $state)
     {
         $this->required = $state;
+        return $this;
+    }
+
+    // For read filters, where write limits should not reject a search value.
+    function skipBoundsChecks(bool $state)
+    {
+        $this->skip_bounds_checks = $state;
         return $this;
     }
 
@@ -531,7 +539,7 @@ class Validator implements IValidator
                     }
                 }
 
-                if (isset($rule['between'])) {
+                if (!$this->skip_bounds_checks && isset($rule['between'])) {
                     if (!is_array($rule['between']) || count($rule['between']) != 2) {
                         throw new \InvalidArgumentException("between requires an array of two values");
                     }
@@ -541,7 +549,7 @@ class Validator implements IValidator
                     }
                 }
 
-                if (isset($rule['not_between'])) {
+                if (!$this->skip_bounds_checks && isset($rule['not_between'])) {
                     if (!is_array($rule['not_between']) || count($rule['not_between']) != 2) {
                         throw new \InvalidArgumentException("not_between requires an array of two values");
                     }
@@ -562,7 +570,7 @@ class Validator implements IValidator
                     }
                 }
 
-                if (isset($rule['type'])) {
+                if (isset($rule['type']) && !$this->skip_bounds_checks) {
                     if (in_array($rule['type'], ['str', 'string', 'not_num', 'email']) || strpos($rule['type'], 'regex:') === 0) {
                         if (isset($rule['min'])) {
                             $rule['min'] = (int) $rule['min'];

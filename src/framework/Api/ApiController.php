@@ -887,7 +887,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }
                 
                 if ($id === null){
-                    $validator = (new Validator())->setRequired(false)->ignoreFields($ignored);
+                    $validator = (new Validator())->setRequired(false)->skipBoundsChecks(true)->ignoreFields($ignored);
                     
                     $ok = $validator->validate($data, $this->instance->getRules());
                     
