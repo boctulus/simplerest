@@ -10,7 +10,7 @@ The framework has its own runtime and conventions. Its behavior is defined by th
 - `app/` — application controllers, models, commands, schemas, views, and modules used by this checkout.
 - `config/` — application configuration and route registration.
 - `database/` — database migration files used by this application.
-- `unit-tests/` — repository test files; this directory is not listed in the current `phpunit.xml` test suites.
+- `unit-tests/` — repository PHPUnit tests, included by the current `phpunit.xml` test suite.
 - `examples/` — example code.
 - `packages/` — packages maintained in this repository.
 - `docs/` — topic documentation and the documentation audit record.
@@ -27,7 +27,7 @@ This checkout is an application repository as well as framework source. Composer
 
 Start with the [canonical documentation map](docs/index.md). The [audit register](docs/audit/README.md) is internal; topic pages not linked from the map are legacy or pending audit input, not current specifications.
 
-The curated Spanish VitePress site lives in [`docs-site/`](docs-site/); it is a derivative, not the canonical source. See [documentation publishing](.github/DOCS-PUBLISHING.md) for the GitHub Pages rollout, build checks, and publication criteria. The public URL must be confirmed after the deployment succeeds.
+The [official Spanish documentation](https://boctulus.github.io/simplerest/) is published with VitePress from [`docs-site/`](docs-site/); it is a derivative, not the canonical source. See [documentation publishing](.github/DOCS-PUBLISHING.md) for build checks and publication criteria.
 
 ## Development checks
 
@@ -38,7 +38,7 @@ composer test
 composer cs
 ```
 
-`composer test` invokes `phpunit --colors=always`. The current `phpunit.xml` points to `tests/` and `packages/boctulus/friendlypos-web/tests`; the root `tests/` directory is absent and `unit-tests/` is not configured as a suite. Whether the command runs successfully or discovers the intended repository tests has not been verified. `composer cs` invokes PHPStan against `src` at level 7.
+`composer test` invokes `phpunit --colors=always unit-tests`, and `phpunit.xml` also configures `unit-tests/`. In [Actions run 39725153614](https://github.com/boctulus/simplerest/actions/runs/39725153614) for commit `0c7ef58`, PHPUnit exited 255 while loading `ApiCollectionsTest.php`: `app.php` could not read the absent `.env`, so the suite did not execute. The step is non-blocking; a green CI result does not establish passing tests. `composer cs` invokes PHPStan against `src` at level 7. The same run reported 4,402–4,481 PHPStan diagnostics across its PHP matrix, and that step is also non-blocking.
 
 ## Contributing
 

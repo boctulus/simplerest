@@ -2,11 +2,11 @@
 
 The official public documentation source is the VitePress site in `docs-site/`. It is a **curated Spanish derivative** of the canonical material listed in `docs/canonical-manifest.json`. Do not publish `docs/` directly: it contains internal audits, legacy material, and unfinished documentation.
 
-## Initial public URL
+## Published public URL
 
 `https://boctulus.github.io/simplerest/`
 
-This is the expected URL **after** GitHub Pages has been enabled and the deployment workflow has succeeded. Do not present it as live before checking the actual deployment. VitePress has `base: '/simplerest/'` for this repository Pages URL. A custom-domain migration requires changing that base, the Pages setting, and testing internal links and assets.
+The site is published from `master`. PR #2 merged as commit `0c7ef58`, and publication run `39725153608` completed both the build and deployment jobs. The repository README now links to this URL. VitePress has `base: '/simplerest/'` for this repository Pages URL. Recheck the deployment and its assets if the Pages source, repository name, or base path changes. A custom-domain migration requires changing that base, the Pages setting, and testing internal links and assets.
 
 ## First-time setup
 
@@ -14,7 +14,7 @@ This is the expected URL **after** GitHub Pages has been enabled and the deploym
 2. Merge the publication changes into the repository's default branch, `master`, after the pull-request build succeeds.
 3. Open **Actions → Public documentation** and verify that both `Build public docs` and `Deploy public docs` succeed. The workflow also supports **Run workflow** on `master`.
 4. Visit the URL above and confirm that CSS, JavaScript, local search, navigation, and direct deep links work from the `/simplerest/` prefix. Verify desktop and mobile layouts.
-5. Only then add a public documentation link to the repository README, Packagist description, framework website, or release materials.
+5. After verifying the deployed URL, link to it from the repository README. Check the same URL again before adding it to Packagist, the framework website, or release materials.
 
 The workflow runs `npm ci` and `npm run build` from `docs-site/`. Pull requests only build and check the site; pushes to `master` build and deploy. The Pages environment needs the repository's GitHub Pages feature enabled. Neither an artifact upload nor a green pull-request build proves that the public URL is live.
 
