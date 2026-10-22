@@ -21,7 +21,7 @@ La comparación usa blobs Git del HEAD de cada repositorio, no hashes de archivo
 
 | Árbol | Ref corta | Archivos src/framework/ |
 | --- | --- | ---: |
-| SimpleRest | 820d4aa01 (master, igual a origin/master) | 272 |
+| SimpleRest | d15a4d009 (master, igual a origin/master) | 272 |
 | GoProp | f83e7949 (main) | 274 |
 | Rutas comunes | — | 262 |
 | Comunes con blob distinto | — | 33 |
@@ -39,6 +39,7 @@ No hay cambios sin commit bajo src/framework/ en ninguno de los dos repositorios
 | src/framework/Libs/Url.php, src/framework/Exceptions/InvalidRequestBodyException.php, index.php | A — El JSON malformado ahora produce una excepción de cliente tipada y el entrypoint responde HTTP 400 con un mensaje genérico. | La misma suite HTTP pasó. Una petición POST local con application/json; charset=utf-8 y JSON inválido devolvió HTTP 400 y el cuerpo INVALID_REQUEST_BODY; no llegó a ejecutar una ruta ni una operación de base de datos. | 1795e8925 |
 | src/framework/Libs/Validator.php, src/framework/Api/ApiController.php | A — Los filtros GET ignoran límites de longitud y rango destinados a escrituras, pero siguen validando el tipo del valor. | unit-tests/validator/ValidatorSkipBoundsContractTest.php: 2/2 pruebas; php -l pasó. No se arrancó la aplicación ni se abrió una conexión. | e5f22ac49 |
 | src/framework/Response.php | A — Al desenvolver data, se conservan los metadatos hermanos y se regeneran status_code/error. Se mantiene el emisor HTTP de SimpleRest y se excluye la auditoría de impersonación de GoProp. | unit-tests/http/ResponseEnvelopeMetadataTest.php: 3/3 pruebas, 10 aserciones; php -l pasó; sin bootstrap ni base de datos. | 820d4aa01 |
+| src/framework/Libs/Files.php | A — Si realpath() no resuelve la ruta al generar un error de permisos, se conserva la ruta original en el mensaje. | unit-tests/files/FilesWritablePathTest.php: 1/1 prueba, 3 aserciones en WSL/PHP 8.1; no se creó ningún archivo. PHP 8.4 lintó ambos archivos y reportó una deprecación previa en getAbsolutePath(). | d15a4d009 |
 
 Los commits funcionales se enviaron a origin/master. No se modificaron manifiestos, tags ni el directorio simplerest-pack.
 
@@ -58,7 +59,7 @@ Los commits funcionales se enviaron a origin/master. No se modificaron manifiest
 | Libs/CorsHandler.php | D | GoProp no usa Referer como sustituto de Origin; revisar con pruebas antes de cambiar comportamiento CORS. | Pendiente. |
 | Response.php | A / B / C | A — Conserva metadatos hermanos y regenera los campos reservados del envelope. B — Mantiene el emisor de status HTTP de SimpleRest. C — No incorpora la auditoría de mutaciones de impersonación, que depende de GoProp. | unit-tests/http/ResponseEnvelopeMetadataTest.php: 3/3 pruebas, 10 aserciones; no se ejecutaron rutas ni conexiones. |
 | Validator.php | A | Portado skipBoundsChecks() para que los filtros de lectura omitan solo los límites de escritura y mantengan la validación de tipo. | 2 pruebas focalizadas aprobadas. |
-| Libs/Files.php | A candidata | GoProp conserva la ruta original cuando realpath() devuelve false, evitando un mensaje de error vacío. | Pendiente de prueba. |
+| Libs/Files.php | A | Se conserva la ruta solicitada en el mensaje cuando realpath() devuelve false. | FilesWritablePathTest.php: 1/1 prueba, 3 aserciones en Linux/WSL. |
 
 Las demás rutas comunes con blob distinto permanecen sin clasificación final. Pendiente significa que no se ha elegido todavía entre A–E; no es una decisión de conservar ni de portar.
 
@@ -92,6 +93,7 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 - RequestInputParsingTest.php: 3/3.
 - ValidatorSkipBoundsContractTest.php: 2/2.
 - ResponseEnvelopeMetadataTest.php: 3/3, 10 aserciones; incluye `data: null`, metadatos y payload escalar.
+- FilesWritablePathTest.php: 1/1, 3 aserciones en WSL/PHP 8.1; el caso confirma la rama Unix sin escribir archivos.
 - php -l en todos los PHP modificados: sin errores.
 - Servidor PHP built-in local: POST de JSON inválido con charset=utf-8 → HTTP 400 y respuesta JSON genérica.
 - No se ejecutó la suite completa ni pruebas que conecten a MySQL/PostgreSQL; no se configuró ni se modificó ninguna base de datos.
@@ -99,4 +101,4 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 
 ## Siguiente trabajo de Fase 1
 
-Continuar con los cambios genéricos priorizados —CORS, Files, auth/ACL, mail y localización— con cambios pequeños y pruebas seguras. Después cerrar la clasificación de las 33 diferencias y las clases exclusivas. No pasar a Fase 2 hasta que ese gate esté completo.
+Continuar con los cambios genéricos priorizados —CORS, auth/ACL, mail y localización— con cambios pequeños y pruebas seguras. Después cerrar la clasificación de las 33 diferencias y las clases exclusivas. No pasar a Fase 2 hasta que ese gate esté completo.
