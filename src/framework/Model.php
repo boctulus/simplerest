@@ -13,6 +13,11 @@ use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
 
 class Model 
 {
+	public const EXECUTION_MODE_NORMAL   = 0;
+	public const EXECUTION_MODE_SIMULATE = 1;
+	public const EXECUTION_MODE_PREVIEW  = 2;
+	public const DECIMAL_AS_STRING = false;
+
 	use ExceptionHandler;
 	use QueryBuilderTrait;
 	use SubResourceHandler;	

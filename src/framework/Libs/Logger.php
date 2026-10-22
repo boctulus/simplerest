@@ -18,6 +18,11 @@ use Boctulus\Simplerest\Core\Traits\ErrorReporting;
 */
 class Logger
 {
+    public const SEVERITY_ERROR   = 1;
+    public const SEVERITY_WARNING = 2;
+    public const SEVERITY_INFO    = 4;
+    public const SEVERITY_DEBUG   = 8;
+
     static protected $logfile     = 'log.txt';
 	static protected $err_logfile = 'errors.txt';
 	static protected $sql_logfile = 'sql_log.txt';

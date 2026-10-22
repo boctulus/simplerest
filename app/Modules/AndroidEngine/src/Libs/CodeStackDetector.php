@@ -12,6 +12,11 @@ use Boctulus\Simplerest\Core\Traits\ErrorReporting;
 */
 class CodeStackDetector
 {   
+    public const SEVERITY_ERROR   = 1;
+    public const SEVERITY_WARNING = 2;
+    public const SEVERITY_INFO    = 4;
+    public const SEVERITY_DEBUG   = 8;
+
     private $rootPath;
     private $errors = [];
 

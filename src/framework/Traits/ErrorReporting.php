@@ -18,11 +18,6 @@ namespace Boctulus\Simplerest\Core\Traits;
  */
 trait ErrorReporting
 {
-    const SEVERITY_ERROR   = 1;   // 0001
-    const SEVERITY_WARNING = 2;   // 0010
-    const SEVERITY_INFO    = 4;   // 0100
-    const SEVERITY_DEBUG   = 8;   // 1000
-
     // Mapeo de constantes a sus nombres legibles
     protected $severityText = [
         1  => 'ERROR',

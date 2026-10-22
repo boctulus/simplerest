@@ -26,10 +26,6 @@ use Boctulus\Simplerest\Core\Model;
 */
 trait InsertWithSubResourcesTrait
 {
-    const EXECUTION_MODE_NORMAL   = 0;   // Ejecución normal
-	const EXECUTION_MODE_SIMULATE = 1;   // Simular operación (no realiza cambios en BD)
-	const EXECUTION_MODE_PREVIEW  = 2;   // Obtener SQL y valores que se ejecutarían
-
     protected $connect_to = [];
     protected $executionMode = self::EXECUTION_MODE_NORMAL;
 

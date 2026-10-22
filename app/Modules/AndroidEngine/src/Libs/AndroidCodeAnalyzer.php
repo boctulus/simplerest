@@ -23,6 +23,11 @@ use Boctulus\Simplerest\Modules\AndroidEngine\Src\Traits\LogCat;
 
 class AndroidCodeAnalyzer
 {
+    public const SEVERITY_ERROR   = 1;
+    public const SEVERITY_WARNING = 2;
+    public const SEVERITY_INFO    = 4;
+    public const SEVERITY_DEBUG   = 8;
+
     public  $orientation; // 'portrait' o 'landscape'
     private $rootPath;
     private $excludePaths = [];
