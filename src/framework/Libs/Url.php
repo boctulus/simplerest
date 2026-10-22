@@ -672,6 +672,16 @@ class Url
         return static::getHostname($url, false);
     }
 
+    /**
+     * Returns the configured application URL independently of the request host.
+     */
+    public static function getAppUrl(): string
+    {
+        $app_url = (string) (Config::get()['app_url'] ?? '');
+
+        return $app_url !== '' ? Files::removeTrailingSlash($app_url) : '';
+    }
+
     /*
         Wrapper sobre ApiClient
     */
