@@ -31,6 +31,7 @@ class RequestHandler
             */
             $allowed_paths = [
                 '/app/views/',
+                '/app/Views/',
                 '/app/shortcodes/'
             ];
 
@@ -38,6 +39,19 @@ class RequestHandler
                 if (Strings::startsWith($ok_path, $path)){
                     $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
                     $path = Files::removeTrailingSlash(ROOT_PATH) . $path;
+
+                    // Resolve legacy lowercase URLs to the canonical Views directory
+                    // on case-sensitive filesystems, while retaining lowercase-only files.
+                    $app_path = Files::removeTrailingSlash(ROOT_PATH) . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR;
+                    $lowercase_views_path = $app_path . 'views' . DIRECTORY_SEPARATOR;
+                    $canonical_views_path = $app_path . 'Views' . DIRECTORY_SEPARATOR;
+
+                    if (stripos($path, $lowercase_views_path) === 0) {
+                        $canonical_path = $canonical_views_path . substr($path, strlen($lowercase_views_path));
+                        if (file_exists($canonical_path)) {
+                            $path = $canonical_path;
+                        }
+                    }
 
                     include $path;
 

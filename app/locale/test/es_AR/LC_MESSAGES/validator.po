@@ -1,2 +1,0 @@
-msgid "Field is required"
-msgstr "El campo es requerido"
