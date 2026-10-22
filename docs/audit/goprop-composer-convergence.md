@@ -21,14 +21,14 @@ La comparación usa blobs Git del HEAD de cada repositorio, no hashes de archivo
 
 | Árbol | Ref corta | Archivos src/framework/ |
 | --- | --- | ---: |
-| SimpleRest | e8895db7e (master, igual a origin/master) | 272 |
-| GoProp | f83e7949 (main) | 274 |
+| SimpleRest | 17b2bc5e0 (master) | 272 |
+| GoProp | 17b28cea (main) | 274 |
 | Rutas comunes | — | 262 |
-| Comunes con blob distinto | — | 33 |
+| Comunes con blob distinto | — | 32 |
 | Exclusivas de GoProp | — | 12 |
 | Exclusivas de SimpleRest | — | 10 |
 
-No hay cambios sin commit bajo src/framework/ en ninguno de los dos repositorios en este corte. SimpleRest conserva el cambio local preexistente en app/Views/templates/adminlte_tpl.php; no forma parte de estos commits. GoProp main permanece intacta.
+La comparación está calculada sobre los blobs de esos HEAD, sin incorporar archivos sin commit. En el corte, src/framework/ no tiene cambios locales en ninguno de los dos repositorios. SimpleRest conserva el cambio local preexistente en app/Views/templates/adminlte_tpl.php; no forma parte de estos commits. No se modificó GoProp; su main ya tenía dos commits locales sobre origin/main y un directorio no relacionado automation/screenshots/ sin seguimiento.
 
 ## Cambios ya integrados en SimpleRest
 
@@ -47,6 +47,9 @@ No hay cambios sin commit bajo src/framework/ en ninguno de los dos repositorios
 | src/framework/FrontController.php | A — Distingue invitado sin permiso (401) de usuario autenticado sin permiso ACL (403). No copia el 401 incondicional de GoProp, que no distingue ambos estados. | FrontControllerAuthorizationStatusTest.php y ApiAuthorizationDispatchTest.php: 11/11 pruebas, 78 aserciones en PHP 8.1 y 8.4; sin base de datos. | e8895db7e |
 
 | src/framework/Helpers/env.php, src/framework/Libs/System.php | A / D — `env()` da prioridad al entorno del proceso y luego al archivo cargado, incluso si el valor del proceso está vacío. `System::getPHP()` sigue leyendo `PHP_BINARY` con `Env::get()` para conservar la configuración desde archivo. `config/databases.php` usa `env()` para resolver conexiones; por tanto, el entorno del proceso ahora puede prevalecer sobre `.env`. | EnvHelperPrecedenceTest.php: 3/3 pruebas en PHP 8.1 y 8.4; una deprecación de firma preexistente en `Env::set()` aparece en PHP 8.4. Smoke aislado: `System::getPHP()` conserva el valor configurado en `Env::$data` frente a un valor de proceso. No se abrió conexión de base de datos. | efd9dee2f |
+| src/framework/Libs/Mail.php, config/config.php | A — Se incorpora la lista de opciones PHPMailer admitidas para evitar asignaciones dinámicas o propiedades desconocidas y se corrige Debugutput a Debugoutput. | MailOptionsTest.php: 3/3 pruebas y 5 aserciones en PHP 8.1 y 8.4; no se envió correo. El vendor local usa PHPMailer 7.1.1. La restricción GoProp ^6.9 frente a SimpleRest ^7.1 sigue pendiente de resolver en Fase 2. | 51f462bd9 |
+| src/framework/Api/Collections.php | A / C — Se portan la validación de entidad almacenada y la comparación entre entidad solicitada y almacenada al eliminar. No se incorporan nombres de tablas de pagos propios de GoProp. | CollectionEntityValidationTest.php: 4/4 pruebas en PHP 8.1 y 8.4; valida las decisiones antes de persistir y no abre conexión. | f2ccc392a |
+| src/framework/Libs/i18n/Translate.php | A / D — Se portan normalización de locale, selección robusta con setLang(), cadena de fallback y combinación de catálogos PO base/regionales. Se mantiene el parser para catálogos compuestos aunque gettext esté activo. Las diferencias de los generadores exportLangDef() y convertPot() quedan pendientes. | TranslateConvergenceTest.php: 6/6 pruebas y 12 aserciones en PHP 8.1 y 8.4; fixtures y caché viven en un directorio temporal único. PHP 8.4 muestra ocho deprecaciones de firmas preexistentes del archivo; no se hizo bootstrap ni acceso a base de datos. | 17b2bc5e0 |
 
 Los commits funcionales se enviaron a origin/master. No se modificaron manifiestos, tags ni el directorio simplerest-pack.
 
@@ -68,7 +71,9 @@ Los commits funcionales se enviaron a origin/master. No se modificaron manifiest
 | Libs/System.php | D — reconciliado | `System::getPHP()` lee `PHP_BINARY` con `Env::get()` como GoProp; el valor del proceso no oculta el valor configurado en archivo. | Smoke aislado con valores distintos en proceso y `Env::$data`; no usa base de datos. |
 | Libs/Env.php | E | La asignación inicial desde `$_ENV` en SimpleRest queda reemplazada por `parseFile()` en la ruta normal de `setup()`; GoProp la elimina como código sin efecto en esa ruta. Se conserva por ahora, sin portar comportamiento. | Comparación del flujo `setup()`; sin cambio de código ni prueba adicional. |
 | Libs/FileUploader.php | B | SimpleRest conserva whitelist de extensión/MIME y protección del directorio. GoProp elimina ambas y permite almacenar tipos no validados; no se porta esa regresión de seguridad. | Revisión comparativa de `__construct()`, `setLocation()` y `save()`; no se cambió la implementación. |
-| Api/Collections.php | B / C | Se conservan en SimpleRest las comprobaciones de entidad al leer y modificar una colección. Las tablas de pagos y liquidaciones añadidas por GoProp son propias de la aplicación y no se incorporan al core. | Revisión comparativa de guards y tabla local; no se cambió la implementación. |
+| Api/Collections.php | A / C | Portadas las comprobaciones de entidad almacenada y la verificación de entidad al eliminar, antes de persistencia. Las tablas de pagos y liquidaciones añadidas por GoProp siguen siendo propias de la aplicación. | CollectionEntityValidationTest.php: 4/4 pruebas en PHP 8.1 y 8.4; sin conexión de base de datos. |
+| Libs/Mail.php | A / D | Portada una lista explícita de opciones PHPMailer compatibles con la versión instalada; se corrige el nombre de Debugoutput. El conflicto entre PHPMailer ^6.9 en GoProp y ^7.1 en SimpleRest pertenece a los contratos Composer de Fase 2. | MailOptionsTest.php: 3/3 pruebas, 5 aserciones en PHP 8.1 y 8.4; no se envió correo. |
+| Libs/i18n/Translate.php | A / D | Portadas las mejoras de ejecución de locale/fallback y la carga compuesta. Queda por comparar la semántica de generación en exportLangDef() y convertPot(); no se migran generadores durante este cambio de runtime. | TranslateConvergenceTest.php: 6/6 pruebas, 12 aserciones en PHP 8.1 y 8.4. |
 | Security/Acl.php, Security/Compiler/EffectivePermissionCompiler.php | B / D | SimpleRest ya rechaza `*` como recurso y conserva los permisos especiales explícitos. La persistencia diferida del catálogo de roles de GoProp necesita revisar sus consumidores y migraciones antes de portarse. | Diferencia de seguridad/control de persistencia aún sin prueba de integración; no se cambió la implementación. |
 | Response.php | A / B / C | A — Conserva metadatos hermanos y regenera los campos reservados del envelope. B — Mantiene el emisor de status HTTP de SimpleRest. C — No incorpora la auditoría de mutaciones de impersonación, que depende de GoProp. | unit-tests/http/ResponseEnvelopeMetadataTest.php: 3/3 pruebas, 10 aserciones; no se ejecutaron rutas ni conexiones. |
 | Validator.php | A | Portado skipBoundsChecks() para que los filtros de lectura omitan solo los límites de escritura y mantengan la validación de tipo. | 2 pruebas focalizadas aprobadas. |
@@ -84,7 +89,8 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 | Handlers/ApiHandler.php, Handlers/ErrorHandler.php | Pendiente de trazar resolución, errores y tests existentes. |
 | Helpers/loggers.php, Helpers/view.php | Pendiente de comparar efectos genéricos y dependencias del host. |
 | Interfaces/ISubResources.php | Pendiente de comparar contrato y consumidores. |
-| Libs/GoogleDrive.php, Libs/i18n/Translate.php, Libs/Mail.php, Libs/MailAuditor.php, Libs/PostmanGenerator.php | Pendiente de revisar comportamiento, dependencias opcionales y pruebas. |
+| Libs/GoogleDrive.php, Libs/MailAuditor.php, Libs/PostmanGenerator.php | Pendiente de revisar comportamiento, dependencias opcionales y pruebas. |
+| Libs/i18n/Translate.php | Pendiente parcial: comparar exportLangDef() y convertPot(); el runtime de locales ya está portado. |
 | View.php | Pendiente de trazar el contrato de renderizado y sus consumidores. |
 
 ## Clases exclusivas
@@ -113,6 +119,9 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 - CorsHandlerOriginTest.php: 2/2 pruebas, 4 aserciones en PHP 8.1 y 8.4; sin Origin no toca status/cabeceras y Origin no permitido sigue en 403.
 - FrontControllerAuthorizationStatusTest.php + ApiAuthorizationDispatchTest.php: 11/11 pruebas, 78 aserciones en PHP 8.1 y 8.4; valida ambos estados 401/403 y la regresión ACL, sin conexión a base de datos.
 - EnvHelperPrecedenceTest.php: 3/3 pruebas en PHP 8.1 y 8.4; verifica proceso > archivo y valor vacío explícito. PHP 8.4 informa la deprecación previa de `Env::set()`. Un smoke separado confirma que `System::getPHP()` mantiene el valor cargado desde archivo; no se conecta a una base de datos.
+- MailOptionsTest.php: 3/3 pruebas, 5 aserciones en PHP 8.1 y 8.4; validación de opciones, sin envío SMTP.
+- CollectionEntityValidationTest.php: 4/4 pruebas en PHP 8.1 y 8.4; comprobaciones de entidad sin acceso a base de datos.
+- TranslateConvergenceTest.php: 6/6 pruebas, 12 aserciones en PHP 8.1 y 8.4; normalización, fallback heredado/compuesto, mezcla de PO y modo gettext con catálogos compuestos. PHP 8.4 informa ocho deprecaciones de firmas preexistentes en Translate.php.
 - php -l en todos los PHP modificados: sin errores.
 - Servidor PHP built-in local: POST de JSON inválido con charset=utf-8 → HTTP 400 y respuesta JSON genérica.
 - No se ejecutó la suite completa ni pruebas que conecten a MySQL/PostgreSQL; no se configuró ni se modificó ninguna base de datos.
@@ -120,4 +129,4 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 
 ## Siguiente trabajo de Fase 1
 
-Continuar con los cambios genéricos priorizados —auth/ACL, mail y localización— con cambios pequeños y pruebas seguras. Después cerrar la clasificación de las 33 diferencias y las clases exclusivas. No pasar a Fase 2 hasta que ese gate esté completo.
+Continuar con los cambios genéricos priorizados —auth/ACL y utilitarios pendientes— y comparar los generadores exportLangDef()/convertPot(). Después cerrar la clasificación de las 32 diferencias y las clases exclusivas. No pasar a Fase 2 hasta que ese gate esté completo.
