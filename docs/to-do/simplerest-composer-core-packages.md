@@ -9,6 +9,12 @@ for_agents: false
 next_step_complexity: null
 tags: [composer, architecture, testing]
 ---
+## Restricción de alcance vigente
+
+El paquete raíz ya se publica como boctulus/simplerest, y el repositorio ya contiene paquetes como boctulus/simplerest-pdf, boctulus/simplerest-code-tools, boctulus/basic-acl y boctulus/fine-grained-acl. La implementación debe ajustar sus límites y manifiestos si hace falta; no crear un segundo paquete de core ni duplicar identidades en Packagist o en una lista de paquetes.
+
+La convergencia del core con GoProp es la puerta de entrada. La extracción de comandos y herramientas se evaluará sobre los paquetes que ya existen y según sus dependencias y consumidores.
+
 ## Pasos planificados
 
 1. **Inventariar límites actuales** — localizar capas del core, dependencias externas y componentes `packages/` para elegir extracciones independientes.

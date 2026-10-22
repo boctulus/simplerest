@@ -289,4 +289,4 @@ Pages under [`pending/`](pending/README.md) are retained as audit inputs and are
 
 ## Composer integration audit
 
-See the [GoProp Composer integration audit](goprop-composer-integration-2026-10.md) for release-source, dependency, CLI discovery, package-size, and core-parity findings.
+See the [initial GoProp Composer integration audit](goprop-composer-integration-2026-10.md) and the live [SimpleRest–GoProp convergence report](goprop-composer-convergence.md) for release-source, package-boundary, dependency, CLI-discovery, and core-parity findings.

@@ -7,6 +7,8 @@ Scope: framework CLI conventions and extension contracts, not an immediate rewri
 
 ## Goals and principles
 
+**Package-name constraint (2026-10-22):** names such as simplerest-cli-users below are illustrative examples, not approved package identities. The repository already has boctulus/simplerest and several Composer packages. Inspect and, where useful, reduce or rescope those existing packages before considering a new package name or Packagist entry.
+
 1. Preserve SimpleRest's **one command per PHP file, grouped by directory** convention:
    `app/Commands/users/ListCommand.php` maps to `php com users list`.
 2. Allow a consumer to add `users export` even if the standard `users` group is supplied by a future optional Composer package.

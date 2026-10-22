@@ -1,0 +1,11 @@
+Mandato de ejecución del usuario (resumen fiel):
+
+Converger SimpleRest como framework canónico y GoProp como aplicación consumidora de dependencias Composer versionadas. Ejecutar el trabajo en este orden: primero integrar en SimpleRest las mejoras genéricas aprobadas de GoProp y probarlas; después modularizar y validar la distribución Composer; solo entonces migrar GoProp en una rama dev, sin modificar main.
+
+Fase inmediata: recalcular los blobs versionados de src/framework en ambos repositorios, separar cambios locales, clasificar divergencias y clases exclusivas, integrar las mejoras genéricas en grupos pequeños con pruebas y documentar cada decisión. No reemplazar archivos a ciegas. Preservar MySQL/PostgreSQL y el comportamiento de auth, ACL, routing y persistencia salvo contrato probado.
+
+Reglas: preservar cambios locales; no limpiar/resetear; no tocar datos de producción ni ejecutar operaciones destructivas de base de datos; las pruebas de base de datos solo usan bases desechables; las escrituras de dominio pasan por Model; GoProp debe seguir funcionando; no publicar ni cambiar tags existentes; no usar simplerest-pack como destino limpiable; no declarar compatibilidad de GoProp por una prueba de SimpleRest.
+
+Alcance Composer: ya existen el paquete raíz boctulus/simplerest y otros paquetes Composer. Reutilizar, reducir o cambiar el alcance de esos paquetes antes de proponer identidades nuevas; evitar duplicados en Packagist/listas de paquetes. Mantener el contrato, registro y ejecución de comandos en el core; distribuir implementaciones opcionales solo cuando sus límites y consumidores lo justifiquen.
+
+Documentación de mantenimiento: docs/audit/goprop-composer-convergence.md, docs/architecture/composer-packages.md y docs/architecture/composer-release-process.md, con enlaces desde los índices apropiados. Trabajar de forma incremental, con cambios revisables, pruebas, commits y evidencia de compatibilidad.
