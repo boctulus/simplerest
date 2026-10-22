@@ -96,7 +96,8 @@ class System
             return $location;
         }
 
-        $location = env('PHP_BINARY');
+        // Keep this file-configured so the runtime PHP_BINARY process value does not shadow it.
+        $location = Env::get('PHP_BINARY');
 
         if (!empty($location)){
             return $location;
