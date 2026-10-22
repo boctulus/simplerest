@@ -40,7 +40,7 @@ function detectDistributionViolations(string $path, ?string $contents = null): a
     }
 
     if ($contents !== null && preg_match(
-        '~(?:jQuery JavaScript Library|Bootstrap v[0-9]|Tailwind CSS v[0-9]|namespace\s+chillerlan\\\\|class\s+SimpleXLSX\b|class\s+QRcode\b)~i',
+        '~(?:jQuery JavaScript Library|Bootstrap v[0-9]|Tailwind CSS v[0-9]|namespace\s+(?:chillerlan|Psr|Symfony|GuzzleHttp|Google|PhpParser|PHPMailer|Firebase|Doctrine|Monolog|setasign|PhpOffice|League|Carbon|Twig|Illuminate)\\\\|class\s+SimpleXLSX\b|class\s+QRcode\b)~i',
         $contents
     )) {
         $violations[] = "known third-party source signature: {$path}";
@@ -56,6 +56,8 @@ function assertDetectorSelfTest(): void
         ['public/assets/third_party/bootstrap/bootstrap.min.js', ''],
         ['src/SimpleXLSX.php', '<?php class SimpleXLSX {}'],
         ['assets/jquery.min.js', '/*! jQuery JavaScript Library */'],
+        ['src/Framework/Adapters/HtmlDumper.php', '<?php namespace Symfony\Component\VarDumper;'],
+        ['src/Framework/Clients/GoogleDriveClient.php', '<?php namespace Google\Service;'],
     ];
 
     foreach ($badCases as [$path, $contents]) {
@@ -66,6 +68,13 @@ function assertDetectorSelfTest(): void
 
     if (detectDistributionViolations('src/framework/Libs/Request.php', '<?php class Request {}') !== []) {
         throw new RuntimeException('Distribution detector rejected a first-party framework file.');
+    }
+
+    if (detectDistributionViolations(
+        'src/framework/Libs/SymfonyBridge.php',
+        '<?php namespace Boctulus\Simplerest\Core\Libs; use Symfony\Component\DomCrawler\Crawler;'
+    ) !== []) {
+        throw new RuntimeException('Distribution detector rejected a first-party adapter that imports a managed dependency.');
     }
 
     $fixtureDirectory = createTemporaryDirectory();
@@ -93,7 +102,7 @@ function assertDetectorSelfTest(): void
         removeTemporaryDirectory($fixtureDirectory);
     }
 
-    fwrite(STDOUT, "Distribution gate self-test passed (4 rejected artifacts, 1 allowed framework file, .git marker guard).\n");
+    fwrite(STDOUT, "Distribution gate self-test passed (6 rejected fixtures, 2 allowed framework files, .git marker guard).\n");
 }
 
 function withGitFsmonitorDisabled(callable $operation): string
