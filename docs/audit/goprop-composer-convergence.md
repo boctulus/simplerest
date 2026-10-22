@@ -21,7 +21,7 @@ La comparación usa blobs Git del HEAD de cada repositorio, no hashes de archivo
 
 | Árbol | Ref corta | Archivos src/framework/ |
 | --- | --- | ---: |
-| SimpleRest | 1795e8925 (master, igual a origin/master) | 272 |
+| SimpleRest | e5f22ac49 (master, igual a origin/master) | 272 |
 | GoProp | f83e7949 (main) | 274 |
 | Rutas comunes | — | 262 |
 | Comunes con blob distinto | — | 33 |
@@ -37,8 +37,9 @@ No hay cambios sin commit bajo src/framework/ en ninguno de los dos repositorios
 | src/framework/Traits/QueryBuilderTrait.php | A — Se incorporó el contrato de GoProp: orderBy($field, $direction) y el arreglo asociativo existente; se valida ASC/DESC y se rechazan argumentos ambiguos. | unit-tests/query-builder/QueryBuilderOrderByContractTest.php: 6/6 pruebas; php -l pasó. No se abrió conexión de base de datos. | 52df05ea1 |
 | src/framework/Request.php | A — Se normalizan nombres de cabecera para Apache y PHP built-in, se leen CONTENT_TYPE/CONTENT_LENGTH y se acepta application/json con parámetros. Se conservaron las APIs inmutables que ya tenía SimpleRest. | unit-tests/http/RequestInputParsingTest.php: 3/3 pruebas; php -l pasó. | 1795e8925 |
 | src/framework/Libs/Url.php, src/framework/Exceptions/InvalidRequestBodyException.php, index.php | A — El JSON malformado ahora produce una excepción de cliente tipada y el entrypoint responde HTTP 400 con un mensaje genérico. | La misma suite HTTP pasó. Una petición POST local con application/json; charset=utf-8 y JSON inválido devolvió HTTP 400 y el cuerpo INVALID_REQUEST_BODY; no llegó a ejecutar una ruta ni una operación de base de datos. | 1795e8925 |
+| src/framework/Libs/Validator.php, src/framework/Api/ApiController.php | A — Los filtros GET ignoran límites de longitud y rango destinados a escrituras, pero siguen validando el tipo del valor. | unit-tests/validator/ValidatorSkipBoundsContractTest.php: 2/2 pruebas; php -l pasó. No se arrancó la aplicación ni se abrió una conexión. | e5f22ac49 |
 
-Los dos commits se enviaron a origin/master. No se modificaron manifiestos, tags ni el directorio simplerest-pack.
+Los commits funcionales se enviaron a origin/master. No se modificaron manifiestos, tags ni el directorio simplerest-pack.
 
 ## Decisiones comprobadas y diferencias controladas
 
@@ -55,14 +56,15 @@ Los dos commits se enviaron a origin/master. No se modificaron manifiestos, tags
 | Libs/CommandRegistry.php | D | Pendiente implementar precedencia y diagnóstico de colisiones sobre la infraestructura actual. | Pendiente; no se ha migrado GoProp. |
 | Libs/CorsHandler.php | D | GoProp no usa Referer como sustituto de Origin; revisar con pruebas antes de cambiar comportamiento CORS. | Pendiente. |
 | Response.php | D | El metadato hermano de data es una mejora reusable; los cambios de GoProp a status-lines y la auditoría de impersonación no se copiarán sin evaluación. | Pendiente de prueba de envelope y contrato HTTP. |
-| Validator.php | A candidata | GoProp añade skipBoundsChecks() para filtros de lectura. Falta portar el contrato junto con su llamada en ApiController y probar que conserva la validación de tipo. | Pendiente. |
+| Validator.php | A | Portado skipBoundsChecks() para que los filtros de lectura omitan solo los límites de escritura y mantengan la validación de tipo. | 2 pruebas focalizadas aprobadas. |
 | Libs/Files.php | A candidata | GoProp conserva la ruta original cuando realpath() devuelve false, evitando un mensaje de error vacío. | Pendiente de prueba. |
 
 Las demás rutas comunes con blob distinto permanecen sin clasificación final. Pendiente significa que no se ha elegido todavía entre A–E; no es una decisión de conservar ni de portar.
 
 | Ruta | Estado |
 | --- | --- |
-| Api/ApiController.php, Api/AuthController.php, Api/Collections.php | Pendiente de revisión de API, ACL, autenticación y configuración de aplicación. |
+| Api/ApiController.php | Portada la llamada de filtros de lectura a skipBoundsChecks(); el resto de sus diferencias queda pendiente de revisión de API y ACL. |
+| Api/AuthController.php, Api/Collections.php | Pendiente de revisión de autenticación, ACL y configuración de aplicación. |
 | Handlers/ApiHandler.php, Handlers/ErrorHandler.php | Pendiente de trazar resolución, errores y tests existentes. |
 | Helpers/env.php, Helpers/loggers.php, Helpers/view.php | Pendiente de comparar efectos genéricos y dependencias del host. |
 | Interfaces/ISubResources.php | Pendiente de comparar contrato y consumidores. |
@@ -87,6 +89,7 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 
 - QueryBuilderOrderByContractTest.php: 6/6.
 - RequestInputParsingTest.php: 3/3.
+- ValidatorSkipBoundsContractTest.php: 2/2.
 - php -l en todos los PHP modificados: sin errores.
 - Servidor PHP built-in local: POST de JSON inválido con charset=utf-8 → HTTP 400 y respuesta JSON genérica.
 - No se ejecutó la suite completa ni pruebas que conecten a MySQL/PostgreSQL; no se configuró ni se modificó ninguna base de datos.
@@ -94,4 +97,4 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 
 ## Siguiente trabajo de Fase 1
 
-Continuar con los cambios genéricos priorizados —en especial Validator/filtros, metadatos de Response, CORS, Files, auth/ACL, mail y localización— con cambios pequeños y pruebas seguras. Después cerrar la clasificación de las 33 diferencias y las clases exclusivas. No pasar a Fase 2 hasta que ese gate esté completo.
+Continuar con los cambios genéricos priorizados —en especial metadatos de Response, CORS, Files, auth/ACL, mail y localización— con cambios pequeños y pruebas seguras. Después cerrar la clasificación de las 33 diferencias y las clases exclusivas. No pasar a Fase 2 hasta que ese gate esté completo.
