@@ -5,12 +5,9 @@ namespace Boctulus\Simplerest\Core\Libs;
 use Sabberworm\CSS\Parser;
 use Boctulus\Simplerest\Core\Libs\XML;
 use Boctulus\Simplerest\Core\Libs\Strings;
-use Boctulus\Simplerest\traits\BootstrapTrait;
 
 class CSS
 {
-    use BootstrapTrait;
-    
     /*  
         Dado el HTML de una pagina o el path,
 
@@ -272,12 +269,28 @@ class CSS
 
     static function removeCSSClasses(string $html, $classesToRemove = null) : string {
         if (!empty($classesToRemove)) {
-            foreach ($classesToRemove as $class) {
-                $html = str_replace(" $class ", ' ', $html);
-                $html = str_replace(" $class\"", ' "', $html);
-            }
+            $classesToRemove = array_fill_keys(
+                array_map(static fn($class): string => trim((string) $class), $classesToRemove),
+                true
+            );
 
-            return $html;
+            return preg_replace_callback(
+                '/(?<![A-Za-z0-9_:-])(class\s*=\s*)(["\'`])([^"\'`]*)\\2/i',
+                static function (array $match) use ($classesToRemove): string {
+                    $classes = preg_split('/\s+/', trim($match[3]), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+                    $remainingClasses = array_values(array_filter(
+                        $classes,
+                        static fn(string $class): bool => !isset($classesToRemove[$class])
+                    ));
+
+                    if (count($remainingClasses) === count($classes)) {
+                        return $match[0];
+                    }
+
+                    return $match[1] . $match[2] . implode(' ', $remainingClasses) . $match[2];
+                },
+                $html
+            ) ?? $html;
         }
 
         return preg_replace_callback('/<[^<>]*\sclass=[\'"`][^\'"`]*[\'"`][^<>]*>/i', function($match) {
