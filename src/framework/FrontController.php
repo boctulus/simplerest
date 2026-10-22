@@ -10,6 +10,11 @@ class FrontController
 {
     const DEFAULT_ACTION = "index";
 
+    private static function authorizationFailureStatusCode(bool $isAuthenticated): int
+    {
+        return $isAuthenticated ? 403 : 401;
+    }
+
     static function resolve()
     {
         global $api_version;
@@ -93,7 +98,13 @@ class FrontController
             // Validar callable para API Rest
             if ($is_api && !$is_auth){
                 if (!in_array($method, $controller->getCallable())){
-                    $res->error("Not authorized for $class_name:$method", 403);
+                    $is_authenticated = $req->isAuthenticated();
+                    $status_code = static::authorizationFailureStatusCode($is_authenticated);
+                    $message = $is_authenticated
+                        ? "Not authorized for $class_name:$method"
+                        : "Authentication required for $class_name:$method";
+
+                    $res->error($message, $status_code);
                 }
             }
 
