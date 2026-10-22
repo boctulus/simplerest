@@ -21,7 +21,7 @@ La comparación usa blobs Git del HEAD de cada repositorio, no hashes de archivo
 
 | Árbol | Ref corta | Archivos src/framework/ |
 | --- | --- | ---: |
-| SimpleRest | b2440269b (master, igual a origin/master) | 272 |
+| SimpleRest | ce36c0ca0 (master, igual a origin/master) | 272 |
 | GoProp | f83e7949 (main) | 274 |
 | Rutas comunes | — | 262 |
 | Comunes con blob distinto | — | 33 |
@@ -42,6 +42,7 @@ No hay cambios sin commit bajo src/framework/ en ninguno de los dos repositorios
 | src/framework/Libs/Files.php | A — Si realpath() no resuelve la ruta al generar un error de permisos, se conserva la ruta original en el mensaje. | unit-tests/files/FilesWritablePathTest.php: 1/1 prueba, 3 aserciones en WSL/PHP 8.1; no se creó ningún archivo. PHP 8.4 lintó ambos archivos y reportó una deprecación previa en getAbsolutePath(). | d15a4d009 |
 | src/framework/Libs/LangDetector.php | A — Se agrega italiano y detección por escritura para hindi/bengalí, se evita dividir por cero y se incorpora detect(). Se excluyen indicadores de vocabulario de GoProp. | unit-tests/translator/LangDetectorTest.php: 4/4 pruebas y 9 aserciones en PHP 8.1 y 8.4. En PHP 8.4 aparecieron deprecaciones existentes en Strings.php. | 14f793048 |
 | src/framework/Libs/Url.php | A — Se añade getAppUrl() para leer la URL pública configurada sin depender del host de una petición. | unit-tests/http/UrlAppUrlTest.php: 2/2 pruebas en PHP 8.1 y 8.4; sin bootstrap ni base de datos. | b2440269b |
+| src/framework/Libs/CommandRegistry.php | A — Sin subcomando, los flags muestran ayuda del grupo y no despachan el primer archivo en orden alfabético. | unit-tests/command/CommandRegistryDispatchTest.php: 2/2 pruebas, 11 aserciones en PHP 8.1 y 8.4. | ce36c0ca0 |
 
 Los commits funcionales se enviaron a origin/master. No se modificaron manifiestos, tags ni el directorio simplerest-pack.
 
@@ -57,7 +58,7 @@ Los commits funcionales se enviaron a origin/master. No se modificaron manifiest
 | Libs/DBRels.php | E | El diff revisado solo elimina imports y corrige un comentario. No hay mejora funcional que portar. | Sin prueba necesaria para esta diferencia textual. |
 | Schema.php | B / convergida | No aparece entre las rutas divergentes actuales. La rama PostgreSQL de hasTable() ya está en ambos blobs versionados. | La consulta de metadatos no se ejecutó contra una base de datos en esta fase. |
 | FrontController.php | D | Pendiente acordar y probar el contrato 401 frente a 403 por estado de autenticación y permiso. No se cambia semántica de seguridad sin esa prueba. | Pendiente. |
-| Libs/CommandRegistry.php | D | Pendiente implementar precedencia y diagnóstico de colisiones sobre la infraestructura actual. | Pendiente; no se ha migrado GoProp. |
+| Libs/CommandRegistry.php | A / D | A — Portada la ayuda de grupo cuando no hay subcomando, evitando ejecución implícita del primer comando. D — Falta resolver precedencia aplicación/extensiones/framework, colisiones y aliases; además, buildSearchPaths() no descubre comandos bajo Composer vendor/. | CommandRegistryDispatchTest.php: 2/2 pruebas, 11 aserciones; resolución Composer y colisiones pendientes para Fase 2. |
 | Libs/CorsHandler.php | D | GoProp no usa Referer como sustituto de Origin; revisar con pruebas antes de cambiar comportamiento CORS. | Pendiente. |
 | Response.php | A / B / C | A — Conserva metadatos hermanos y regenera los campos reservados del envelope. B — Mantiene el emisor de status HTTP de SimpleRest. C — No incorpora la auditoría de mutaciones de impersonación, que depende de GoProp. | unit-tests/http/ResponseEnvelopeMetadataTest.php: 3/3 pruebas, 10 aserciones; no se ejecutaron rutas ni conexiones. |
 | Validator.php | A | Portado skipBoundsChecks() para que los filtros de lectura omitan solo los límites de escritura y mantengan la validación de tipo. | 2 pruebas focalizadas aprobadas. |
@@ -99,6 +100,7 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 - FilesWritablePathTest.php: 1/1, 3 aserciones en WSL/PHP 8.1; el caso confirma la rama Unix sin escribir archivos.
 - LangDetectorTest.php: 4/4, 9 aserciones en PHP 8.1 y 8.4; valida texto vacío, idiomas latinos e identificación de escrituras hindi y bengalí.
 - UrlAppUrlTest.php: 2/2 pruebas en PHP 8.1 y 8.4; valida URL configurada sin barra final y URL vacía.
+- CommandRegistryDispatchTest.php: 2/2 pruebas, 11 aserciones en PHP 8.1 y 8.4; los flags sin comando no ejecutan comandos.
 - php -l en todos los PHP modificados: sin errores.
 - Servidor PHP built-in local: POST de JSON inválido con charset=utf-8 → HTTP 400 y respuesta JSON genérica.
 - No se ejecutó la suite completa ni pruebas que conecten a MySQL/PostgreSQL; no se configuró ni se modificó ninguna base de datos.
