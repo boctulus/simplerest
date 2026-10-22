@@ -37,6 +37,7 @@ class Translate
     static $ext_loaded;
     static $fallbackLocale    = 'en_US';
     static $pluralForms       = [];
+    static $domainUsesParser  = [];
 
     static function checkGetTextLoaded(bool $log_error = true){
         if (static::$ext_loaded !== null){
@@ -63,12 +64,12 @@ class Translate
 
     static function setLocale(string $lang, string $encoding = 'UTF-8')
     {    
-        static::$currentLang = $lang;
+        static::$currentLang = static::normalizeLocale($lang);
 
         if (static::$useGettext){
-            setlocale(LC_ALL, "$lang.$encoding");  
-            putenv("LANGUAGE=$lang.$encoding");
-            putenv("LC_ALL=$lang"); 
+            setlocale(LC_ALL, static::$currentLang . ".$encoding");
+            putenv('LANGUAGE=' . static::$currentLang . ".$encoding");
+            putenv('LC_ALL=' . static::$currentLang);
         }
     }
 
@@ -78,6 +79,45 @@ class Translate
 
     static function getDomain(){
         return static::$currentTextDomain;
+    }
+
+    static function setFallbackLocale(string $locale){
+        static::$fallbackLocale = static::normalizeLocale($locale);
+    }
+
+    static function getLocaleChain(){
+        if (static::$currentLang === null){
+            return [];
+        }
+
+        return static::resolveLocaleChain(static::$currentLang);
+    }
+
+    static function resolveLocaleChain(string $locale, string $path = LOCALE_PATH): array
+    {
+        $locale   = static::normalizeLocale($locale);
+        $language = static::getLanguage($locale);
+        $availableLocales = static::getAvailableLocales($path);
+
+        // Keep legacy regional catalogs complete until a language-level catalog exists.
+        if (!isset($availableLocales[$language])){
+            return [$locale];
+        }
+
+        $chain = [];
+        $fallback = static::normalizeLocale(static::$fallbackLocale);
+
+        if ($fallback !== $language && $fallback !== $locale){
+            $chain[] = $fallback;
+        }
+
+        $chain[] = $language;
+
+        if ($locale !== $language){
+            $chain[] = $locale;
+        }
+
+        return array_values(array_unique($chain));
     }
 
     // Nuevo: Interpolación de variables
@@ -97,13 +137,12 @@ class Translate
         static::$currentTextDomain    = $domain;
         static::$domainPaths[$domain] = $path;
 
-        if (static::$useGettext){
+        if (static::$useGettext && !static::usesCompositeCatalog($path)){
+            static::$domainUsesParser[$domain] = false;
             bindtextdomain($domain, $path);
         } else {
-            Container::singleton('po_parser', POParser::class);
-
-            static::$translations[$domain] = Container::make('po_parser')
-                ->parse(LOCALE_PATH . static::$currentLang . "/LC_MESSAGES/$domain.po");
+            static::$domainUsesParser[$domain] = true;
+            static::$translations[$domain] = static::loadDomainTranslations($domain, $path);
         }
 
         return static::setTextDomain($domain);
@@ -114,7 +153,7 @@ class Translate
             throw new \InvalidArgumentException("Domain '$domain' was not binded");
         }
 
-        if (static::$useGettext){
+        if (static::$useGettext && !(static::$domainUsesParser[$domain] ?? false)){
             $ret = \textdomain($domain);
 
             if ($ret != $domain){
@@ -132,11 +171,12 @@ class Translate
             static::$currentTextDomain = $text_domain;
         }
 
-        if (static::$useGettext){
+        $text_domain = $text_domain ?? static::$currentTextDomain;
+
+        if (static::$useGettext && !(static::$domainUsesParser[$text_domain] ?? false)){
             return \gettext($text);
         }
 
-        $text_domain = $text_domain ?? static::$currentTextDomain;
         $translation = static::$translations[$text_domain][$text] ?? $text;
 
         return !empty($translation) ? $translation : $text;
@@ -147,54 +187,147 @@ class Translate
     }
 
     static function setLang(?string $lang){
-        static $langs = [];
-        static $pure_langs = [];
-
-        $selected = null;
-
-        if ($lang === NULL || $lang === '*'){
+        if ($lang === null || $lang === '*'){
             return;
         }
-        
-        $encode = "UTF-8";
-        $throw  = false;
 
-        if (empty($langs)){
-            foreach (new \DirectoryIterator(LOCALE_PATH) as $fileInfo) {
-                if($fileInfo->isDot() || !$fileInfo->isDir()) continue;
-                
-                $filename = $fileInfo->getBasename();
-                $langs[]  = $filename;
-                $pure_langs[] = substr($filename, 0, 2);
-            } 
+        try {
+            $requested = static::normalizeLocale($lang);
+        } catch (\InvalidArgumentException $e) {
+            return;
         }
 
-        if (!Strings::contains('_', $lang)){
-            $only_lang = substr($lang, 0, 2);
-            $lang_ix   = array_search($only_lang, $pure_langs);
-            $selected  = $langs[$lang_ix];     
-        } else {
-            $lang_ix   = array_search($lang, $langs);
+        $availableLocales = static::getAvailableLocales(LOCALE_PATH);
+        $selected = $availableLocales[$requested] ?? null;
+        $language = static::getLanguage($requested);
 
-            if ($lang_ix !== false){
-                $selected  = $langs[$lang_ix];    
-            }
+        if ($selected === null && isset($availableLocales[$language])){
+            $selected = $availableLocales[$language];
         }
 
         if ($selected === null){
-            $only_lang = substr($lang, 0, 2);
-            $lang_ix   = array_search($only_lang, $pure_langs);
-            $selected  = $langs[$lang_ix];     
-        }
-
-        if ($selected === null){
-            if ($throw){
-                throw new \InvalidArgumentException("Invalid lang $lang");
+            foreach ($availableLocales as $normalized => $available){
+                if (static::getLanguage($normalized) === $language){
+                    $selected = $available;
+                    break;
+                }
             }
-            return;        
         }
 
-        static::setLocale($selected, $encode);
+        if ($selected !== null){
+            static::setLocale($selected);
+        }
+    }
+
+    protected static function normalizeLocale(string $locale): string
+    {
+        $locale = trim($locale);
+        $locale = explode('.', $locale, 2)[0];
+        $locale = str_replace('-', '_', $locale);
+        $parts = explode('_', $locale, 2);
+        $language = strtolower($parts[0]);
+
+        if ($language === '' || !preg_match('/^[a-z]{2,3}$/', $language)){
+            throw new \InvalidArgumentException("Invalid locale '$locale'");
+        }
+
+        if (!isset($parts[1]) || $parts[1] === ''){
+            return $language;
+        }
+
+        if (!preg_match('/^[a-z0-9]{2,8}$/i', $parts[1])){
+            throw new \InvalidArgumentException("Invalid locale '$locale'");
+        }
+
+        return $language . '_' . strtoupper($parts[1]);
+    }
+
+    protected static function getLanguage(string $locale): string
+    {
+        return explode('_', $locale, 2)[0];
+    }
+
+    protected static function getAvailableLocales(string $path): array
+    {
+        $path = rtrim($path, '/\\');
+
+        if (!is_dir($path)){
+            return [];
+        }
+
+        $locales = [];
+        foreach (new \DirectoryIterator($path) as $fileInfo) {
+            if ($fileInfo->isDot() || !$fileInfo->isDir()){
+                continue;
+            }
+
+            try {
+                $normalized = static::normalizeLocale($fileInfo->getBasename());
+            } catch (\InvalidArgumentException $e) {
+                continue;
+            }
+
+            $locales[$normalized] = $fileInfo->getBasename();
+        }
+
+        ksort($locales);
+        return $locales;
+    }
+
+    protected static function usesCompositeCatalog(string $path): bool
+    {
+        if (static::$currentLang === null){
+            return false;
+        }
+
+        $language = static::getLanguage(static::$currentLang);
+        $availableLocales = static::getAvailableLocales($path);
+
+        return isset($availableLocales[$language]);
+    }
+
+    protected static function loadDomainTranslations(string $domain, string $path): array
+    {
+        if (static::$currentLang === null){
+            return [];
+        }
+
+        Container::singleton('po_parser', POParser::class);
+        $parser = Container::make('po_parser');
+        $translations = [];
+        $availableLocales = static::getAvailableLocales($path);
+        $path = rtrim($path, '/\\');
+
+        foreach (static::resolveLocaleChain(static::$currentLang, $path) as $locale){
+            $directory = $availableLocales[$locale] ?? $locale;
+            $file = $path . DIRECTORY_SEPARATOR . $directory
+                . DIRECTORY_SEPARATOR . 'LC_MESSAGES'
+                . DIRECTORY_SEPARATOR . $domain . '.po';
+
+            if (!is_file($file)){
+                continue;
+            }
+
+            $catalog = $parser->parse($file);
+            if (!is_array($catalog)){
+                Logger::logError("Unable to parse translation catalog '$file'");
+                continue;
+            }
+
+            $catalog = array_filter($catalog, function ($translation){
+                if (is_array($translation)){
+                    return count(array_filter($translation, function ($form){
+                        return $form !== null && $form !== '';
+                    })) > 0;
+                }
+
+                return $translation !== null && $translation !== '';
+            });
+
+            $translations = array_replace($translations, $catalog);
+        }
+
+        return $translations;
     }
 
     // Nuevo: Pluralización
