@@ -324,6 +324,22 @@ class DB_TransactionTest extends TestCase
         DB::rollback();
     }
 
+    public function test_response_destructor_uses_emergency_rollback_contract(): void
+    {
+        DB::setConnection('test_sqlite');
+        $connection = DB::getConnection();
+        DB::beginTransaction();
+
+        $response = \Boctulus\Simplerest\Core\Response::create();
+        unset($response);
+
+        $this->assertFalse($connection->inTransaction());
+        $this->assertSame('test_sqlite', DB::getCurrentConnectionId());
+        DB::beginTransaction();
+        $this->assertTrue(DB::getConnection()->inTransaction());
+        DB::rollback();
+    }
+
     public function test_failed_savepoint_release_preserves_outer_transaction(): void
     {
         $connection = DB::getConnection();

@@ -25,4 +25,5 @@ $configProperty->setValue(null, [
     'db_connection_default' => 'test_sqlite',
     'namespace' => 'Boctulus\\Simplerest',
     'debug' => false,
+    'pretty' => false,
 ]);
