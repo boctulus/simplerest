@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('boctulus/simplerest-pdf', 'boctulus/simplerest-code-tools')]
+    [ValidateSet('boctulus/simplerest-pdf', 'boctulus/simplerest-code-tools', 'boctulus/simplerest-integrations')]
     [string]$Package,
 
     [string]$SourceCommit = 'HEAD',
@@ -24,6 +24,11 @@ $packageDefinitions = @{
         Path = 'packages/boctulus/simplerest-code-tools'
         Repository = 'boctulus/simplerest-code-tools'
         Remote = 'git@github.com:boctulus/simplerest-code-tools.git'
+    }
+    'boctulus/simplerest-integrations' = @{
+        Path = 'packages/boctulus/simplerest-integrations'
+        Repository = 'boctulus/simplerest-integrations'
+        Remote = 'git@github.com:boctulus/simplerest-integrations.git'
     }
 }
 

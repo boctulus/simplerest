@@ -43,13 +43,6 @@ jobs:
       - name: Run focused core distribution tests
         run: vendor/bin/phpunit unit-tests/composer unit-tests/css --no-coverage --do-not-cache-result
 
-      - name: Run independent extension suites
-        run: |
-          composer --working-dir=packages/boctulus/simplerest-pdf install --prefer-dist --no-interaction --no-progress --no-scripts --no-plugins
-          composer --working-dir=packages/boctulus/simplerest-pdf test
-          composer --working-dir=packages/boctulus/simplerest-code-tools install --prefer-dist --no-interaction --no-progress --no-scripts --no-plugins
-          composer --working-dir=packages/boctulus/simplerest-code-tools test
-
       - name: Verify distribution gate fixtures
         run: php scripts/distribution/verify-release-artifacts.php --self-test
 
@@ -60,6 +53,15 @@ jobs:
       - name: Verify external Composer VCS consumers
         if: matrix.php-version == '8.3'
         run: php scripts/distribution/verify-release-artifacts.php --with-consumer-install
+
+      - name: Run independent extension suites
+        run: |
+          composer --working-dir=packages/boctulus/simplerest-pdf install --prefer-dist --no-interaction --no-progress --no-scripts --no-plugins
+          composer --working-dir=packages/boctulus/simplerest-pdf test
+          composer --working-dir=packages/boctulus/simplerest-code-tools install --prefer-dist --no-interaction --no-progress --no-scripts --no-plugins
+          composer --working-dir=packages/boctulus/simplerest-code-tools test
+          composer --working-dir=packages/boctulus/simplerest-integrations install --prefer-dist --no-interaction --no-progress --no-scripts --no-plugins
+          composer --working-dir=packages/boctulus/simplerest-integrations test
 
       - name: Run PHPStan
         run: composer cs || true

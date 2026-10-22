@@ -2,15 +2,12 @@
 
 namespace Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs;
 
-use Boctulus\Simplerest\Core\Libs\Strings;
+$implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\CMSs\Squarespace::class;
 
-class Squarespace
-{
-    static function isIt($content){
-        return Strings::containsAny(['http://static1.squarespace.com', 'sqs-cart-quantity',
-        'sqs-button-element', 'sqs-product-mark-wrapper', 'https://images.squarespace-cdn.com'], $content);
-    }
-
-
+if (!class_exists($implementation)) {
+    throw new \LogicException(
+        'Squarespace is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+    );
 }
 
+class_alias($implementation, __NAMESPACE__ . '\\Squarespace');

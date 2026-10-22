@@ -2,12 +2,12 @@
 
 namespace Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs;
 
-use Boctulus\Simplerest\Core\Libs\Strings;
+$implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\CMSs\Wix::class;
 
-class Wix
-{
-    static function isIt($content){
-        return Strings::containsAny(['<meta name="generator" content="Wix.com', 'https://static.wixstatic.com/', 'WixSite:', '.wix.com', 'wix-essential-viewer-model'], $content);
-    }
+if (!class_exists($implementation)) {
+    throw new \LogicException(
+        'Wix is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+    );
 }
 
+class_alias($implementation, __NAMESPACE__ . '\\Wix');

@@ -918,6 +918,7 @@ class SimpleRestPackager
         }
         $composerData['suggest']['boctulus/simplerest-pdf'] = 'Optional PDF integration; not registered on Packagist yet, so it currently requires an explicit VCS repository.';
         $composerData['suggest']['boctulus/simplerest-code-tools'] = 'Optional development tools; not registered on Packagist yet, so it currently requires an explicit VCS repository.';
+        $composerData['suggest']['boctulus/simplerest-integrations'] = 'Optional service and UI integrations; not registered on Packagist yet, so it currently requires an explicit VCS repository.';
 
         unset($composerData['require-dev']);
         echo "Kept only boot and core dependencies; removed development and optional dependencies\n";

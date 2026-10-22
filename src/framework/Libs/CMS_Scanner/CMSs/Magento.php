@@ -2,14 +2,12 @@
 
 namespace Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs;
 
-use Boctulus\Simplerest\Core\Libs\Strings;
+$implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\CMSs\Magento::class;
 
-class Magento
-{
-    static function isIt($content){
-        return Strings::containsAny(['x-magento-init', 'Magento_PageBuilder'], $content);
-    }
-
-
+if (!class_exists($implementation)) {
+    throw new \LogicException(
+        'Magento is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+    );
 }
 
+class_alias($implementation, __NAMESPACE__ . '\\Magento');
