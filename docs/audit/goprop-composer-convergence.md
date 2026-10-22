@@ -21,7 +21,7 @@ La comparación usa blobs Git del HEAD de cada repositorio, no hashes de archivo
 
 | Árbol | Ref corta | Archivos src/framework/ |
 | --- | --- | ---: |
-| SimpleRest | d15a4d009 (master, igual a origin/master) | 272 |
+| SimpleRest | 14f793048 (master, igual a origin/master) | 272 |
 | GoProp | f83e7949 (main) | 274 |
 | Rutas comunes | — | 262 |
 | Comunes con blob distinto | — | 33 |
@@ -40,6 +40,7 @@ No hay cambios sin commit bajo src/framework/ en ninguno de los dos repositorios
 | src/framework/Libs/Validator.php, src/framework/Api/ApiController.php | A — Los filtros GET ignoran límites de longitud y rango destinados a escrituras, pero siguen validando el tipo del valor. | unit-tests/validator/ValidatorSkipBoundsContractTest.php: 2/2 pruebas; php -l pasó. No se arrancó la aplicación ni se abrió una conexión. | e5f22ac49 |
 | src/framework/Response.php | A — Al desenvolver data, se conservan los metadatos hermanos y se regeneran status_code/error. Se mantiene el emisor HTTP de SimpleRest y se excluye la auditoría de impersonación de GoProp. | unit-tests/http/ResponseEnvelopeMetadataTest.php: 3/3 pruebas, 10 aserciones; php -l pasó; sin bootstrap ni base de datos. | 820d4aa01 |
 | src/framework/Libs/Files.php | A — Si realpath() no resuelve la ruta al generar un error de permisos, se conserva la ruta original en el mensaje. | unit-tests/files/FilesWritablePathTest.php: 1/1 prueba, 3 aserciones en WSL/PHP 8.1; no se creó ningún archivo. PHP 8.4 lintó ambos archivos y reportó una deprecación previa en getAbsolutePath(). | d15a4d009 |
+| src/framework/Libs/LangDetector.php | A — Se agrega italiano y detección por escritura para hindi/bengalí, se evita dividir por cero y se incorpora detect(). Se excluyen indicadores de vocabulario de GoProp. | unit-tests/translator/LangDetectorTest.php: 4/4 pruebas y 9 aserciones en PHP 8.1 y 8.4. En PHP 8.4 aparecieron deprecaciones existentes en Strings.php. | 14f793048 |
 
 Los commits funcionales se enviaron a origin/master. No se modificaron manifiestos, tags ni el directorio simplerest-pack.
 
@@ -60,6 +61,7 @@ Los commits funcionales se enviaron a origin/master. No se modificaron manifiest
 | Response.php | A / B / C | A — Conserva metadatos hermanos y regenera los campos reservados del envelope. B — Mantiene el emisor de status HTTP de SimpleRest. C — No incorpora la auditoría de mutaciones de impersonación, que depende de GoProp. | unit-tests/http/ResponseEnvelopeMetadataTest.php: 3/3 pruebas, 10 aserciones; no se ejecutaron rutas ni conexiones. |
 | Validator.php | A | Portado skipBoundsChecks() para que los filtros de lectura omitan solo los límites de escritura y mantengan la validación de tipo. | 2 pruebas focalizadas aprobadas. |
 | Libs/Files.php | A | Se conserva la ruta solicitada en el mensaje cuando realpath() devuelve false. | FilesWritablePathTest.php: 1/1 prueba, 3 aserciones en Linux/WSL. |
+| Libs/LangDetector.php | A | Se incorporan detección por idioma y soporte genérico italiano, hindi y bengalí; se omiten palabras de dominio de GoProp. | LangDetectorTest.php: 4/4 pruebas, 9 aserciones en PHP 8.1 y 8.4. |
 
 Las demás rutas comunes con blob distinto permanecen sin clasificación final. Pendiente significa que no se ha elegido todavía entre A–E; no es una decisión de conservar ni de portar.
 
@@ -70,7 +72,7 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 | Handlers/ApiHandler.php, Handlers/ErrorHandler.php | Pendiente de trazar resolución, errores y tests existentes. |
 | Helpers/env.php, Helpers/loggers.php, Helpers/view.php | Pendiente de comparar efectos genéricos y dependencias del host. |
 | Interfaces/ISubResources.php | Pendiente de comparar contrato y consumidores. |
-| Libs/Env.php, Libs/FileUploader.php, Libs/GoogleDrive.php, Libs/i18n/Translate.php, Libs/LangDetector.php, Libs/Mail.php, Libs/MailAuditor.php, Libs/PostmanGenerator.php, Libs/System.php | Pendiente de revisar comportamiento, dependencias opcionales y pruebas. |
+| Libs/Env.php, Libs/FileUploader.php, Libs/GoogleDrive.php, Libs/i18n/Translate.php, Libs/Mail.php, Libs/MailAuditor.php, Libs/PostmanGenerator.php, Libs/System.php | Pendiente de revisar comportamiento, dependencias opcionales y pruebas. |
 | Security/Acl.php, Security/Compiler/EffectivePermissionCompiler.php | Pendiente de comparación semántica de ACL; no copiar cambios de permisos automáticamente. |
 | View.php | Pendiente de trazar el contrato de renderizado y sus consumidores. |
 
@@ -94,6 +96,7 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 - ValidatorSkipBoundsContractTest.php: 2/2.
 - ResponseEnvelopeMetadataTest.php: 3/3, 10 aserciones; incluye `data: null`, metadatos y payload escalar.
 - FilesWritablePathTest.php: 1/1, 3 aserciones en WSL/PHP 8.1; el caso confirma la rama Unix sin escribir archivos.
+- LangDetectorTest.php: 4/4, 9 aserciones en PHP 8.1 y 8.4; valida texto vacío, idiomas latinos e identificación de escrituras hindi y bengalí.
 - php -l en todos los PHP modificados: sin errores.
 - Servidor PHP built-in local: POST de JSON inválido con charset=utf-8 → HTTP 400 y respuesta JSON genérica.
 - No se ejecutó la suite completa ni pruebas que conecten a MySQL/PostgreSQL; no se configuró ni se modificó ninguna base de datos.
