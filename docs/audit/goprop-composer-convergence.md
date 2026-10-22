@@ -1,6 +1,6 @@
 # Convergencia del core SimpleRest–GoProp
 
-**Estado:** Fase 1 en curso. La modularización Composer y la migración de GoProp todavía no han comenzado.
+**Estado:** Fase 1 completada; iniciando Fase 2. La migración de GoProp no ha comenzado.
 **Corte de código:** 2026-10-22.
 **Auditoría de partida:** [integración Composer de SimpleRest en GoProp](goprop-composer-integration-2026-10.md).
 
@@ -14,6 +14,17 @@ Este documento es el inventario vivo de decisiones y cambios. No sustituye la au
 - composer.json raíz asigna el prefijo Boctulus\Simplerest\Core\Libs\ tanto a src/framework/Libs/ como a los directorios fuente locales de simplerest-pdf y simplerest-code-tools; sus manifiestos vuelven a declarar ese prefijo. Esta propiedad compartida deberá resolverse ajustando los límites existentes, no creando copias del core.
 - El nombre simplerest-cli no existe entre los paquetes locales inspeccionados. No se crea ni publica como parte de esta fase.
 - app/Commands/ sigue siendo propiedad de cada aplicación. El contrato de comando y su registro pertenecen al core; la distribución de implementaciones se decidirá usando los paquetes existentes y evidencia de consumidores.
+- La modularización ya tiene una tarjeta vigente en [simplerest-composer-core-packages.md](../to-do/simplerest-composer-core-packages.md). Esta auditoría registra decisiones/evidencia del core y no duplica esa tarea.
+
+## Rebaseline de Composer y distribución
+
+- Packagist publica `boctulus/simplerest` `v1.0.3`; su metadata resuelve el commit `e686ceee139f69c444c45a3c4f941842440f8a4f`. El tag local `v1.0.3` apunta al commit `4d44fccf8261d69334f78ba81d2dcdf3cb28781a`; el tag remoto apunta a `6d86ff75e1aa0a312af853b0c776667cffc24d0a`. No se modificó ninguno.
+- Un consumidor temporal limpio instaló `v1.0.3` con `--no-dev --optimize-autoloader`; Composer resolvió PHPMailer `7.1.1`. La carpeta instalada de SimpleRest contiene 9.366 archivos y 667.115.501 bytes (636,21 MiB), incluidos `app/`, `docs/`, `unit-tests/`, `packages/` y assets. `ReflectionClass` confirmó que `Model`, `DB` y `CommandRegistry` cargan desde `vendor/boctulus/simplerest/src/framework/`.
+- En el mismo consumidor, `preferred-install=source` falló al intentar hacer checkout de `e686ceee…`: Git respondió `reference is not a tree`. Por ese fallo no hay una medida válida del árbol source instalado; la referencia no reproducible es el bloqueo.
+- Las identidades locales `boctulus/simplerest-pdf`, `boctulus/simplerest-code-tools`, `boctulus/basic-acl` y `boctulus/fine-grained-acl` devolvieron 404 en Packagist. Sus cuatro manifiestos locales pasan `composer validate --strict`, pero aún no son paquetes instalables desde Packagist.
+- `composer validate --strict` también pasó para el manifiesto raíz. No existe `.gitattributes` en el checkout; el ZIP de Packagist conserva el árbol de desarrollo completo. No se ejecutó `php com pack build`.
+- `D:\laragon\www\simplerest-pack` tiene cambios locales y no tiene remoto Git configurado. No se leyó como fuente del paquete ni se usó como destino; permanece intacto.
+- El manifiesto que Packagist resuelve exige PHPMailer `^7.1`; GoProp declara `^6.9`. El `composer.lock` del consumidor GoProp fija `6.12.0`. El desacuerdo sigue pendiente de corregir en Fase 2.
 
 ## Rebaseline de los árboles versionados
 
@@ -21,14 +32,14 @@ La comparación usa blobs Git del HEAD de cada repositorio, no hashes de archivo
 
 | Árbol | Ref corta | Archivos src/framework/ |
 | --- | --- | ---: |
-| SimpleRest | 62aa3b418 (master) | 272 |
-| GoProp | 17b28cea (main) | 274 |
+| SimpleRest | fa54c6a39 (master) | 272 |
+| GoProp | 0fc4aa5f (main) | 274 |
 | Rutas comunes | — | 262 |
-| Comunes con blob distinto | — | 32 |
+| Comunes con blob distinto | — | 34 |
 | Exclusivas de GoProp | — | 12 |
 | Exclusivas de SimpleRest | — | 10 |
 
-La comparación está calculada sobre los blobs de esos HEAD, sin incorporar archivos sin commit. En el corte, src/framework/ no tiene cambios locales en ninguno de los dos repositorios. SimpleRest conserva el cambio local preexistente en app/Views/templates/adminlte_tpl.php; no forma parte de estos commits. No se modificó GoProp; su main ya tenía dos commits locales sobre origin/main y un directorio no relacionado automation/screenshots/ sin seguimiento.
+La comparación está calculada sobre los blobs de esos HEAD, sin incorporar archivos sin commit. En el corte, src/framework/ no tiene cambios locales en ninguno de los dos repositorios. SimpleRest conserva el cambio local preexistente en app/Views/templates/adminlte_tpl.php; no forma parte de estos commits. GoProp `main` estaba sincronizada con `origin/main` y conserva únicamente `automation/screenshots/` sin seguimiento; no se modificó ese repositorio. El nuevo HEAD de GoProp mantiene las mismas 34 diferencias y 22 rutas exclusivas registradas aquí.
 
 ## Cambios ya integrados en SimpleRest
 
@@ -51,6 +62,10 @@ La comparación está calculada sobre los blobs de esos HEAD, sin incorporar arc
 | src/framework/Libs/Mail.php, config/config.php | A — Se incorpora la lista de opciones PHPMailer admitidas para evitar asignaciones dinámicas o propiedades desconocidas y se corrige Debugutput a Debugoutput. | MailOptionsTest.php: 3/3 pruebas y 5 aserciones en PHP 8.1 y 8.4; no se envió correo. El vendor local usa PHPMailer 7.1.1. La restricción GoProp ^6.9 frente a SimpleRest ^7.1 sigue pendiente de resolver en Fase 2. | 51f462bd9 |
 | src/framework/Api/Collections.php | A / C — Se portan la validación de entidad almacenada y la comparación entre entidad solicitada y almacenada al eliminar. No se incorporan nombres de tablas de pagos propios de GoProp. | CollectionEntityValidationTest.php: 4/4 pruebas en PHP 8.1 y 8.4; valida las decisiones antes de persistir y no abre conexión. | f2ccc392a |
 | src/framework/Libs/i18n/Translate.php | A — Se portan normalización de locale, selección robusta con setLang(), cadena de fallback, combinación de catálogos PO base/regionales y generación con convertPot(). exportLangDef() coincide con GoProp. Se conserva el parser en catálogos compuestos aunque gettext esté activo. | TranslateConvergenceTest.php: 7/7 pruebas y 19 aserciones en PHP 8.1 y 8.4; fixtures, salida generada y caché quedan bajo un directorio temporal único. PHP 8.4 reporta 12 deprecaciones de firmas preexistentes; no se hizo bootstrap ni acceso a base de datos. | 17b2bc5e0, d748248b8 |
+| src/framework/Helpers/loggers.php | A — `log_error()` consulta `log_errors`, independiente de `debug`. Un error de producción debe poder registrarse aunque no se habilite el modo de depuración. | LoggerErrorConfigurationTest.php: 2/2 pruebas, 3 aserciones en PHP 8.1 y 8.4; usa un archivo temporal aislado. | 73d92fe93 |
+| src/framework/Interfaces/ISubResources.php | A — Se añade `bool $pristine = false` al contrato, que ya estaba implementado por `SubResourceHandler` y usado desde `QueryBuilderTrait` para omitir mutadores/transformers. | ISubResourcesContractTest.php: 1/1 prueba, 6 aserciones; confirma interfaz, trait y ApiController. | 73d92fe93 |
+| src/framework/Libs/MailAuditor.php | E — Se corrige la ruta indicada en el comentario a `src/logs/mail/`, que coincide con `logDir()`. No cambió el destino real ni se creó ningún log. | Revisión de la ruta calculada desde el archivo; sin prueba de escritura. | 73d92fe93 |
+| src/framework/Traits/ErrorReporting.php, src/framework/Traits/QueryBuilderTrait.php, src/framework/Traits/InsertWithSubResourcesTrait.php, src/framework/Model.php, src/framework/Libs/Logger.php, app/Modules/AndroidEngine/src/Libs/{AndroidCodeAnalyzer,CodeStackDetector}.php | A — Se retiran constantes de traits (no soportadas antes de PHP 8.2) y se definen en `Logger` y `Model`, conservando esos contratos públicos. AndroidCodeAnalyzer y CodeStackDetector declaran sus constantes de severidad porque consumen el trait. | FrameworkTraitConstantsTest.php y QueryBuilderOrderByContractTest.php: 9/9 pruebas, 20 aserciones en PHP 8.1 y 8.4. No se abrió DB. En PHP 8.4 siguen apareciendo deprecaciones previas por parámetros implícitamente nullable. | fa54c6a39 |
 
 Los commits funcionales se enviaron a origin/master. No se modificaron manifiestos, tags ni el directorio simplerest-pack.
 
@@ -58,7 +73,8 @@ Los commits funcionales se enviaron a origin/master. No se modificaron manifiest
 
 | Ruta | Clase | Decisión actual | Prueba / estado |
 | --- | --- | --- | --- |
-| Traits/QueryBuilderTrait.php | A | Portada. Queda una diferencia textual frente a GoProp, sin diferencia observada en el contrato de ordenamiento. | 6 pruebas focalizadas aprobadas. |
+| Traits/QueryBuilderTrait.php | A | Portada la validación segura de `orderBy($field, $direction)` y conserva el arreglo asociativo. Además, mueve los modos de ejecución/DECIMAL_AS_STRING a `Model` para que el core pueda cargarse en PHP 8.1. | 6 pruebas de contrato de orderBy y 1 prueba de compatibilidad; PHP 8.1 y 8.4. |
+| Traits/ErrorReporting.php, Traits/InsertWithSubResourcesTrait.php, Libs/Logger.php, Model.php | A / D — compatibilidad PHP | Las constantes que eran de trait ahora residen en las clases concretas que forman la API pública. `Logger::*` y `Model::*` se preservan; los consumidores del trait ErrorReporting en el módulo Android también declaran sus constantes. Un consumidor externo que aplicaba `ErrorReporting` directamente deberá declarar `SEVERITY_*`; era necesario para corregir la declaración PHP `>=8.1` sin elevarla a 8.2. | FrameworkTraitConstantsTest.php: 1 prueba, 11 aserciones; QueryBuilderOrderByContractTest.php: 6/6; todo pasa en PHP 8.1 y 8.4. Riesgo de compatibilidad para consumidores externos del trait documentado. |
 | Request.php | A | Portadas las mejoras de lectura de cabeceras y MIME; se retienen los métodos inmutables que SimpleRest ya contiene. | 3 pruebas y smoke HTTP aprobados. |
 | Libs/Url.php | A | Portados el error tipado de JSON y getAppUrl(), que usa app_url para enlaces públicos en peticiones y CLI. | JSON inválido probado en smoke HTTP; UrlAppUrlTest.php: 2/2 pruebas. |
 | Exceptions/InvalidRequestBodyException.php | A | La excepción genérica ya existe en SimpleRest; se omitió la referencia documental específica de GoProp. | Estado HTTP 400 probado. |
@@ -84,23 +100,26 @@ Los commits funcionales se enviaron a origin/master. No se modificaron manifiest
 | Validator.php | A | Portado skipBoundsChecks() para que los filtros de lectura omitan solo los límites de escritura y mantengan la validación de tipo. | 2 pruebas focalizadas aprobadas. |
 | Libs/Files.php | A | Se conserva la ruta solicitada en el mensaje cuando realpath() devuelve false. | FilesWritablePathTest.php: 1/1 prueba, 3 aserciones en Linux/WSL. |
 | Libs/LangDetector.php | A | Se incorporan detección por idioma y soporte genérico italiano, hindi y bengalí; se omiten palabras de dominio de GoProp. | LangDetectorTest.php: 4/4 pruebas, 9 aserciones en PHP 8.1 y 8.4. |
+| Helpers/loggers.php | A — convergida | `log_error()` usa la opción `log_errors`; `debug` sigue gobernando logger(), dump() y log_sql(). La diferencia restante de blob es solo el salto final de línea. | LoggerErrorConfigurationTest.php: 2/2 pruebas, 3 aserciones en PHP 8.1 y 8.4; usa un archivo temporal aislado. |
+| Helpers/view.php, View.php | D — resuelta para el host SimpleRest | Se conserva `/public/assets/`, coherente con el `DocumentRoot` del proyecto raíz descrito por QuickStart y con el árbol `public/assets/`. GoProp cambió a `/assets/`, pero su `.htaccess` documenta la raíz del proyecto como docroot local y no existe `assets/` en la raíz; ese supuesto no se traslada al core. | AssetPathTest.php: 1/1 aserción con `app_url` aislada. La salida de `View::js/css` usa el mismo prefijo. La app GoProp se verificará al consumir el core canónico. |
+| Interfaces/ISubResources.php | A — convergida | El contrato declara el parámetro opcional `pristine` que ya implementa el trait y entrega QueryBuilder al obtener relaciones. El blob aún difiere por el salto final de línea; el contrato ya coincide. | ISubResourcesContractTest.php: 1/1 prueba, 6 aserciones; sin acceso a base de datos. |
+| Libs/GoogleDrive.php | D — se conserva SimpleRest | GoProp sustituye `env()` por `Env::get()`. El helper actual prioriza valores del proceso (`getenv`) sobre el archivo; se conserva para que `APP_ENV` externo gobierne la rama de seguridad SSL. No se adopta la lectura solo desde archivo. | EnvHelperPrecedenceTest.php cubre la precedencia. No se inicializó Google SDK ni hubo petición externa. |
+| Libs/MailAuditor.php | E | GoProp corrigió solo la descripción de `logDir()`; el comentario de SimpleRest se alineó con la ruta real `src/logs/mail/`. | Revisión estática; no se escribió ningún log. |
+| Libs/PostmanGenerator.php | C / D — se conserva SimpleRest | GoProp usa `password123` como contraseña por defecto para sus ejemplos de registro/login. No se incorpora una credencial conocida en colecciones que podrían apuntar a un API real; las aplicaciones deben pasar sus valores de fixture explícitamente. | No hubo cambio de autenticación ni se generó/ejecutó una colección. |
 
-Las demás rutas comunes con blob distinto permanecen sin clasificación final. Pendiente significa que no se ha elegido todavía entre A–E; no es una decisión de conservar ni de portar.
+Las 34 rutas comunes con blob distinto tienen una decisión A–E. Dos blobs difieren únicamente por el salto de línea final después de alinear sus contratos (`Helpers/loggers.php` e `Interfaces/ISubResources.php`). Las decisiones D conservan límites explícitos que requieren gate o evidencia de consumidor: resolución Composer de comandos, uso externo del trait ErrorReporting, valores de entorno para Google Drive, rutas de assets del host y credenciales de ejemplo.
 
 | Ruta | Estado |
 | --- | --- |
-| Api/ApiController.php | Portada skipBoundsChecks(); se conserva el control genérico de ACL de SimpleRest. La integración de impersonación de GoProp permanece en su aplicación. |
-| Helpers/loggers.php, Helpers/view.php | Pendiente de comparar efectos genéricos y dependencias del host. |
-| Interfaces/ISubResources.php | Pendiente de comparar contrato y consumidores. |
-| Libs/GoogleDrive.php, Libs/MailAuditor.php, Libs/PostmanGenerator.php | Pendiente de revisar comportamiento, dependencias opcionales y pruebas. |
-| View.php | Pendiente de trazar el contrato de renderizado y sus consumidores. |
+| Api/ApiController.php | Portada `skipBoundsChecks()` para filtros de lectura; se conserva el control genérico de ACL de SimpleRest. La integración de impersonación de GoProp permanece en su aplicación. |
+| Libs/RedisLock.php | GoProp-only. Sigue en GoProp: no se halló uso productivo en la aplicación; el prefijo predeterminado `goprop:` y el fallback no atómico de liberación requieren revisión de seguridad/concurrencia antes de promoverlo al core o a un paquete opcional existente. |
 
 ## Clases exclusivas
 
 **Solo en GoProp (12):**
 
 - Las 11 clases de Libs/Impersonation/ parecen ligadas al producto y a sus límites de seguridad. Su propietario provisional es GoProp; no se trasladan al core genérico sin evidencia de reutilización y una revisión de sus controles de mutación.
-- Libs/RedisLock.php queda pendiente de verificar por consumidor, cliente Redis requerido y estrategia de distribución. No se asume que deba entrar al core.
+- Libs/RedisLock.php es un helper de bloqueo con phpredis opcional. Solo se encontró en una ruta de prueba/diagnóstico y en sus tests, no en servicios de GoProp; su prefijo predeterminado `goprop:` lo acopla a la aplicación y `unsafeReleaseFallback()` hace `GET` y `DEL` separados. Se conserva en GoProp hasta que se diseñe y pruebe un mecanismo de liberación atómico y exista un consumidor genérico.
 
 **Solo en SimpleRest (10):**
 
@@ -125,11 +144,16 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 - MailOptionsTest.php: 3/3 pruebas, 5 aserciones en PHP 8.1 y 8.4; validación de opciones, sin envío SMTP.
 - CollectionEntityValidationTest.php: 4/4 pruebas en PHP 8.1 y 8.4; comprobaciones de entidad sin acceso a base de datos.
 - TranslateConvergenceTest.php: 7/7 pruebas, 19 aserciones en PHP 8.1 y 8.4; normalización, fallback heredado/compuesto, mezcla de PO, modo gettext en catálogos compuestos y generación aislada de catálogos. PHP 8.4 informa 12 deprecaciones de firmas preexistentes en Translate.php.
+- LoggerErrorConfigurationTest.php, AssetPathTest.php e ISubResourcesContractTest.php: 4/4 pruebas, 10 aserciones en PHP 8.4; AssetPathTest e ISubResourcesContractTest: 2/2 pruebas, 7 aserciones en PHP 8.1.
+- FrameworkTraitConstantsTest.php + LoggerErrorConfigurationTest.php + QueryBuilderOrderByContractTest.php: 9/9 pruebas, 20 aserciones en PHP 8.1 y 8.4. Prueba que Model, Logger y el módulo Android exponen sus constantes y que se pueden cargar sin constantes declaradas en traits. PHP 8.4 aún informa deprecaciones por firmas implícitamente nullable preexistentes en QueryBuilderTrait y clases que carga el test.
 - php -l en todos los PHP modificados: sin errores.
 - Servidor PHP built-in local: POST de JSON inválido con charset=utf-8 → HTTP 400 y respuesta JSON genérica.
 - No se ejecutó la suite completa ni pruebas que conecten a MySQL/PostgreSQL; no se configuró ni se modificó ninguna base de datos.
 - La compatibilidad de GoProp como consumidor Composer aún no está demostrada. No se modificó su composer.json ni se cambió de rama.
+- El bloqueo de PHP 8.1 encontrado al cargar Logger se corrigió en fa54c6a39 moviendo constantes desde ErrorReporting, QueryBuilder e InsertWithSubResources a las clases concretas. `rg` confirma que ya no quedan declaraciones de constantes dentro de `src/framework/Traits/`; las pruebas enfocadas cargan Logger y Model en PHP 8.1. El riesgo restante es de API para terceros que usan directamente ErrorReporting como trait sin declarar las constantes que antes heredaban.
 
-## Siguiente trabajo de Fase 1
+## Puerta de salida de Fase 1
 
-Continuar con los cambios genéricos priorizados —auth/ACL y utilitarios pendientes—. Después cerrar la clasificación de las 32 diferencias y las clases exclusivas. No pasar a Fase 2 hasta que ese gate esté completo.
+Las 34 diferencias comunes y las 22 rutas exclusivas tienen disposición y propietario. Las mejoras genéricas aprobadas están en SimpleRest; las capacidades de impersonación siguen en GoProp y `RedisLock` permanece allí por su acoplamiento y liberación no atómica. Las pruebas focalizadas de core pasan en PHP 8.1 y 8.4; no se usó una base de datos. Esto cierra la puerta de convergencia del core.
+
+Fase 2 comienza con las identidades Composer ya existentes: `boctulus/simplerest`, `boctulus/simplerest-pdf`, `boctulus/simplerest-code-tools`, `boctulus/basic-acl` y `boctulus/fine-grained-acl`. Hay que validar cuáles están realmente publicados y ajustar sus límites/manifiestos sin duplicar nombres. No modificar GoProp hasta que el conjunto existente pase instalación limpia de consumidor y las pruebas de CLI/autoload.
