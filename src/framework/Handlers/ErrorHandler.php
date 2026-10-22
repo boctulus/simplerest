@@ -21,6 +21,7 @@ class ErrorHandler
         // Log error
         Logger::logError($e->getMessage());
         Logger::log("Exception in {$e->getFile()}:{$e->getLine()}");
+        $httpCode = static::httpStatusCodeFrom($e);
 
         // Clean all output buffers (in case error happened after output started)
         while (ob_get_level() > 0) {
@@ -35,14 +36,14 @@ class ErrorHandler
             // Send error response as JSON
             $res->error(
                 $e->getMessage(),
-                $e->getCode() ?: 500,
+                $httpCode,
                 "Internal error"
             );
         } else {
-            http_response_code($e->getCode() ?: 500);
+            http_response_code($httpCode);
 
             view('error.php', [
-                'status'   => $e->getCode() ?: 500,
+                'status'   => $httpCode,
                 'type'     => (new \ReflectionClass($e))->getShortName(),
                 'code'     => $e->getCode(),
                 'location' => $e->getFile() . ':' . $e->getLine(),
@@ -52,5 +53,12 @@ class ErrorHandler
 
             exit;
         }
+    }
+
+    protected static function httpStatusCodeFrom(\Throwable $e): int
+    {
+        $code = $e->getCode();
+
+        return is_int($code) && $code >= 100 && $code <= 599 ? $code : 500;
     }
 }
