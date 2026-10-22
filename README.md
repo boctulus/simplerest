@@ -27,6 +27,8 @@ This checkout is an application repository as well as framework source. Composer
 
 Start with the [canonical documentation map](docs/index.md). The [audit register](docs/audit/README.md) is internal; topic pages not linked from the map are legacy or pending audit input, not current specifications.
 
+The curated Spanish VitePress site lives in [`docs-site/`](docs-site/); it is a derivative, not the canonical source. See [documentation publishing](.github/DOCS-PUBLISHING.md) for the GitHub Pages rollout, build checks, and publication criteria. The public URL must be confirmed after the deployment succeeds.
+
 ## Development checks
 
 The Composer manifest currently defines these scripts:
