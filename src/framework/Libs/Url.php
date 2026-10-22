@@ -208,7 +208,9 @@ class Url
                 $data = json_decode($data, true);
 
                 if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
-                    throw new \Exception("JSON inválido");
+                    throw new \Boctulus\Simplerest\Core\Exceptions\InvalidRequestBodyException(
+                        'The request body is not valid JSON'
+                    );
                 }
             }
 

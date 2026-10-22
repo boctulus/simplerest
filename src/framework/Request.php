@@ -40,17 +40,31 @@ class Request  implements \ArrayAccess, Arrayable
     }
 
     static function getHeaders() {
-        if (function_exists('apache_request_headers')) {
-            return apache_request_headers();
-        }
-        // alternativa para obtener los encabezados en otros servidores
         $headers = [];
-        foreach ($_SERVER as $key => $value) {
-            if (strpos($key, 'HTTP_') === 0) {
-                $header = str_replace('_', '-', strtolower(substr($key, 5)));
-                $headers[$header] = $value;
+
+        if (function_exists('apache_request_headers')) {
+            foreach (apache_request_headers() as $key => $value) {
+                $headers[strtolower($key)] = $value;
+            }
+        } else {
+            // alternativa para obtener los encabezados en otros servidores
+            // (p.ej. servidor built-in de PHP, sin apache_request_headers())
+            foreach ($_SERVER as $key => $value) {
+                if (strpos($key, 'HTTP_') === 0) {
+                    $header = str_replace('_', '-', strtolower(substr($key, 5)));
+                    $headers[$header] = $value;
+                }
             }
         }
+
+        // Content-Type and Content-Length do not use the HTTP_ prefix in $_SERVER.
+        if (!isset($headers['content-type']) && isset($_SERVER['CONTENT_TYPE'])) {
+            $headers['content-type'] = $_SERVER['CONTENT_TYPE'];
+        }
+        if (!isset($headers['content-length']) && isset($_SERVER['CONTENT_LENGTH'])) {
+            $headers['content-length'] = $_SERVER['CONTENT_LENGTH'];
+        }
+
         return $headers;
     }
 
@@ -92,7 +106,7 @@ class Request  implements \ArrayAccess, Arrayable
 
                 $headers = static::getHeaders();
 
-                $accept_encoding_header = $headers['Accept-Encoding'] ?? null;
+                $accept_encoding_header = $headers['accept-encoding'] ?? null;
                 
                 if (!empty($accept_encoding_header)){
                     static::$accept_encoding = $accept_encoding_header;
@@ -109,7 +123,7 @@ class Request  implements \ArrayAccess, Arrayable
                     'multipart/form-data; boundary=--------------------------240766805501822956475464'
                 */
 
-                $content_type_header = $headers['Content-Type'] ?? null;
+                $content_type_header = $headers['content-type'] ?? null;
 
                 if (!empty($content_type_header)){
                     static::$content_type = $content_type_header;
@@ -120,23 +134,21 @@ class Request  implements \ArrayAccess, Arrayable
                     }
                 }   
 
-                // Content-Type
-                $is_form_data = (bool) Strings::startsWith('multipart/form-data', static::$content_type);
-                $is_json      = (static::$content_type == 'application/json');
+                // Content-Type may include parameters such as charset=utf-8.
+                $content_mime_type = strtolower(trim(explode(';', static::$content_type ?? '')[0]));
+
+                $is_form_data = (bool) Strings::startsWith('multipart/form-data', $content_mime_type);
+                $is_json      = ($content_mime_type == 'application/json');
 
                 static::$raw  = file_get_contents("php://input");
 
                 // Si el Content-Type es para json,.... decode
 
-                static::$body = ($is_json && !empty(static::$raw)) ? Url::bodyDecode(static::$raw) : static::$raw;
-                
-                static::$headers = apache_request_headers();
+                static::$body = ($is_json && !empty(static::$raw))
+                    ? Url::bodyDecode(static::$raw, static::$content_type)
+                    : static::$raw;
 
-                $tmp = [];
-                foreach (static::$headers as $key => $val){
-                    $tmp[strtolower($key)] = $val;
-                }
-                static::$headers = $tmp;
+                static::$headers = $headers;
                 
             }
             static::$instance = new static();
