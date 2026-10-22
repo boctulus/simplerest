@@ -16,6 +16,8 @@ The VCS consumer used PHP 8.2.35 and locked `boctulus/simplerest` v2.0.1 at `9ed
 
 The unreleased core commit `74ac9ea59a637670ed53552443aad96bc0e1c3af` also passed a candidate VCS consumer install under temporary branch alias `2.0.2` on PHP 8.2.35. Core and optional package classes loaded from their Composer paths, `make:console` was discovered, platform checks passed, and the focused schema/upload suite passed 12/12 tests and 34 assertions. This does not close the tagged-release gate: the exact immutable tag and its consumer archive must still be verified before publication.
 
+`build-core-source-snapshot.ps1` built a source-only repository from candidate `30b9188d5a117f722d4be366668fc82e10aae441` and created local validation tag `v2.0.2` at package commit `4f52f81e47ce5d8feea5e96fcbb87517000bf57d`. Its Composer archive has 273 files, 449,166 compressed bytes and 1,658,243 expanded bytes, with no frontend assets or third-party UI bundle paths. Composer 2.8.5 installed the local tag with `--prefer-source` in clean Windows/PHP 8.2.35 and WSL/Linux/PHP 8.1.14 consumers. Both platform checks passed; seven representative classes loaded from the package on Linux. The source worktree has 273 files/1,658,243 bytes; the snapshot `.git` directory is 2,479,543 bytes. The local validation tag was imported into the SimpleRest clone for inspection but was not pushed; no public `v2.0.2` tag exists.
+
 ## Release gates
 
 1. Inspect `git status` and select a committed source SHA. Do not include uncommitted files or modify user changes.
@@ -36,7 +38,7 @@ The existing `boctulus/simplerest` package identity is released from a reproduci
 
 ## Core versioning
 
-The current published core version is `v2.0.1`; version 2 removed two optional classes from the core provider paths and changed runtime dependency requirements. Preserve `v1.0.3` and its existing source provenance. Any follow-up to `v2.0.1` must use a new immutable version (the current candidate alias is `2.0.2`) only after release gates pass. The final release record must state the monorepo commit, tag, Packagist reference, archive metrics, PHP runtime, Composer version, and consumer lock reference.
+The current published core version is `v2.0.1`; version 2 removed two optional classes from the core provider paths and changed runtime dependency requirements. Preserve `v1.0.3` and its existing source provenance. The current `v2.0.2` candidate has only a temporary local validation tag; publish a new immutable tag only after release gates pass. The final release record must state the monorepo commit, tag, Packagist reference, archive metrics, PHP runtime, Composer version, and consumer lock reference.
 
 ## Optional package split
 

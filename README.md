@@ -21,6 +21,10 @@ The framework has its own runtime and conventions. Its behavior is defined by th
 
 The current `composer.json` declares PHP `>=8.1,<8.5`. It also declares Composer dependencies. Database drivers, database setup, web-server configuration, and optional integrations depend on which features an application uses; consult the relevant guide before deployment.
 
+## Upload validation
+
+`FileUploader` accepts only HTTP-uploaded files whose filename extension and detected MIME type are allowlisted. Applications that accept additional types must configure `files.media_accepted.extensions` and `files.media_accepted.mime_types`, or call `setAllowedTypes()` before upload. CLI code that supplies a local file path is rejected.
+
 ## Getting started
 
 This checkout is an application repository as well as framework source. Composer metadata describes the package as `boctulus/simplerest` of type `library`; that fact alone does not establish that a clean consumer project can install and run the framework as a standalone application. The installation and clean-start guide is being reconstructed and must be verified from a clean environment before it is treated as a copy-and-run tutorial.
