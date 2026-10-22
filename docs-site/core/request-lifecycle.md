@@ -3,7 +3,7 @@ title: Ciclo de request
 source:
   - docs/core/README.md
   - docs/core/request-lifecycle.md
-source_revision: b91cce22f
+source_revision: b91cce22f1e3b8a2a201325ef7337e05277f7349
 status: partial
 ---
 
