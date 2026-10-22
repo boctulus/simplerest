@@ -202,6 +202,21 @@ class Response implements \ArrayAccess
         return $this;
     }
 
+    /**
+     * Unwrap a response payload while retaining caller-provided metadata.
+     */
+    private function extractCallerMetadata(&$data): array
+    {
+        if (!is_array($data) || !array_key_exists('data', $data)) {
+            return [];
+        }
+
+        $metadata = array_diff_key($data, array_flip(['data', 'status_code', 'error']));
+        $data = $data['data'];
+
+        return $metadata;
+    }
+
     function send($data, $http_code = NULL){
         if ($http_code >= 400) {
             return $this->error($data, $http_code);
@@ -220,18 +235,13 @@ class Response implements \ArrayAccess
                 }
             }
 
-            /*
-                Evita responder con data[data]
-            */
-            if (isset($data['data'])){
-                $data = $data['data'];
-            }
+            $caller_metadata = $this->extractCallerMetadata($data);
 
             $data = array_merge([
                     'data' => $data,
                     'status_code' => $http_code,
                     'error' => []
-            ], $arr);
+            ], $caller_metadata, $arr);
 
             $this->http_code = $http_code; //
 
@@ -283,18 +293,15 @@ class Response implements \ArrayAccess
 
         $this->emitStatusCode($http_code);
 
-        /*
-            Evita responder con data[data]
-        */
-        if (isset($data['data'])){
-            $data = $data['data'];
-        }
+        $caller_metadata = $this->extractCallerMetadata($data);
 
         $res = [
             'data' => $data,
             'status_code' => $http_code,
             'error' => $error_msg ?? ''
         ];
+
+        $res = array_merge($res, $caller_metadata);
 
         $this->http_code = $http_code; //
 
