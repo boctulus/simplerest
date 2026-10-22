@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\interfaces;
+namespace Boctulus\Simplerest\Core\Interfaces;
 
 interface ISubject {
     
