@@ -4,8 +4,8 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": ">=8.1",
-        "boctulus/simplerest": "^1.0",
+        "php": ">=8.1,<8.5",
+        "boctulus/simplerest": "^2.0",
         "setasign/fpdf": "^1.8"
     },
     "autoload": {

@@ -7,9 +7,13 @@
  *              (same structure as app/Commands/)
  *              Relative paths are resolved from ROOT_PATH.
  *
- * 'packages' → 'vendor/package' entries; the registry will look in
- *              packages/{vendor}/{package}/src/Commands/
- *              for group sub-folders automatically.
+ * 'packages' → explicitly enabled Composer package IDs. The registry looks in
+ *              vendor/{vendor}/{package}/src/Commands/ or the monorepo package
+ *              path during development.
+ *
+ * 'overrides' → command/alias key => provider ID. Default precedence is host
+ *               application > enabled extensions > framework paths. The host
+ *               provider is 'application'. Same-priority collisions fail.
  *
  * Example:
  *
@@ -21,8 +25,12 @@ return [
     'paths'    => [],
 
     'packages' => [
-        // 'boctulus/zippy',  // interfiere con "php com users list" (BUG)
+        'boctulus/simplerest-code-tools',
     ],
+
+    'framework_paths' => [],
+
+    'overrides' => [],
 
     /*
      * Cross-group aliases

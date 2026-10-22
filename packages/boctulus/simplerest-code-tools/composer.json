@@ -4,12 +4,16 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.1,<8.5",
+        "boctulus/simplerest": "^2.0",
         "nikic/php-parser": "^5.4"
     },
     "autoload": {
         "psr-4": {
             "Boctulus\\Simplerest\\Core\\Libs\\": "src/"
-        }
+        },
+        "classmap": [
+            "src/Commands/"
+        ]
     }
 }

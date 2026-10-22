@@ -19,16 +19,22 @@ class CommandRegistry
     private array $groups       = [];  // 'group'         => ['cmd1', 'cmd2', ...]
     private array $aliases      = [];  // 'group:alias'   => ['group' => ..., 'command' => ...]
     private array $crossAliases = [];  // 'group:cmd'     => ['group' => ..., 'command' => ...]
+    private array $commandCandidates = [];
+    private array $aliasCandidates   = [];
+    private array $diagnostics       = [];
+    private ?array $composerCommandClassMap = null;
+    private ?array $providedConfig    = null;
     private bool  $debug;
 
-    public function __construct(bool $debug = false)
+    public function __construct(bool $debug = false, ?array $config = null)
     {
         $this->debug = $debug;
+        $this->providedConfig = $config;
     }
 
-    public static function init(bool $debug = false): self
+    public static function init(bool $debug = false, ?array $config = null): self
     {
-        $registry = new self($debug);
+        $registry = new self($debug, $config);
         $registry->loadGroups();
         return $registry;
     }
@@ -36,8 +42,16 @@ class CommandRegistry
     public function loadGroups(): void
     {
         $config = $this->loadCommandsConfig();
+        $this->commands = [];
+        $this->groups = [];
+        $this->aliases = [];
+        $this->crossAliases = [];
+        $this->commandCandidates = [];
+        $this->aliasCandidates = [];
+        $this->diagnostics = [];
 
-        foreach ($this->buildSearchPaths($config) as $basePath) {
+        foreach ($this->buildSearchSources($config) as $source) {
+            $basePath = $source['path'];
             if (!is_dir($basePath)) continue;
 
             foreach (scandir($basePath) as $entry) {
@@ -47,10 +61,12 @@ class CommandRegistry
                 $groupPath = $basePath . DIRECTORY_SEPARATOR . $entry;
                 if (!is_dir($groupPath)) continue;
 
-                $this->loadCommandsFromDirectory($groupPath, $entry);
+                $this->loadCommandsFromDirectory($groupPath, $entry, $source['id'], $source['tier']);
             }
         }
 
+        $this->resolveCommandCandidates($config);
+        $this->reportDiagnostics();
         $this->loadCrossAliases($config);
 
         if ($this->debug) {
@@ -62,9 +78,17 @@ class CommandRegistry
 
     private function loadCommandsConfig(): array
     {
+        if ($this->providedConfig !== null) {
+            return $this->providedConfig;
+        }
+
         $configFile = defined('ROOT_PATH') ? ROOT_PATH . 'config/commands.php' : null;
         if ($configFile && file_exists($configFile)) {
-            return require $configFile;
+            $config = require $configFile;
+            if (!is_array($config)) {
+                throw new \UnexpectedValueException("Command configuration must return an array: {$configFile}");
+            }
+            return $config;
         }
         return [];
     }
@@ -74,51 +98,131 @@ class CommandRegistry
         foreach ($config['cross_aliases'] ?? [] as $source => $target) {
             [$sg, $sc] = array_pad(explode(' ', trim($source), 2), 2, '');
             [$tg, $tc] = array_pad(explode(' ', trim($target), 2), 2, '');
-            if (!$sg || !$sc || !$tg || !$tc) continue;
-            $this->crossAliases["{$sg}:{$sc}"] = ['group' => $tg, 'command' => $tc];
+            if (!$sg || !$sc || !$tg || !$tc) {
+                throw new \InvalidArgumentException("Invalid cross-group command alias '{$source}' => '{$target}'");
+            }
+
+            $key = "{$sg}:{$sc}";
+            if (isset($this->commands[$key]) || isset($this->aliases[$key])) {
+                throw new \LogicException(
+                    "Cross-group alias collision for '{$key}'. Remove the conflicting command or alias before registering the cross-group alias."
+                );
+            }
+
+            if (!isset($this->commands["{$tg}:{$tc}"]) && !isset($this->aliases["{$tg}:{$tc}"])) {
+                throw new \LogicException("Cross-group alias '{$key}' points to missing command '{$tg}:{$tc}'");
+            }
+
+            $this->crossAliases[$key] = ['group' => $tg, 'command' => $tc];
         }
     }
 
-    private function buildSearchPaths(array $config): array
+    private function buildSearchSources(array $config): array
     {
-        $paths = [];
+        $sources = [];
 
-        if (defined('COMMANDS_PATH')) {
-            $paths[] = COMMANDS_PATH;
+        $hostPath = $config['application_path'] ?? (defined('COMMANDS_PATH') ? COMMANDS_PATH : null);
+        if (is_string($hostPath) && $hostPath !== '') {
+            $resolved = $this->resolvePath($hostPath);
+            if ($resolved) {
+                $sources[] = ['path' => $resolved, 'id' => 'application', 'tier' => 'host'];
+            }
         }
 
         foreach ($config['paths'] ?? [] as $path) {
             $resolved = $this->resolvePath($path);
-            if ($resolved && is_dir($resolved)) {
-                $paths[] = $resolved;
+            if ($resolved) {
+                $sources[] = ['path' => $resolved, 'id' => 'path:' . $resolved, 'tier' => 'extension'];
             }
         }
 
         foreach ($config['packages'] ?? [] as $packageId) {
-            [$vendor, $package] = array_pad(explode('/', $packageId, 2), 2, '');
-            if (!$vendor || !$package) continue;
+            if (!is_string($packageId) || !preg_match('/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/', $packageId)) {
+                throw new \InvalidArgumentException('Enabled command package must use a valid vendor/package name.');
+            }
 
-            $packageCommandsPath = defined('PACKAGES_PATH')
-                ? PACKAGES_PATH . $vendor . DIRECTORY_SEPARATOR . $package . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Commands'
-                : null;
-
-            if ($packageCommandsPath && is_dir($packageCommandsPath)) {
-                $paths[] = $packageCommandsPath;
+            $packageCommandsPath = $this->resolvePackageCommandsPath($packageId, $config);
+            if ($packageCommandsPath !== null) {
+                $sources[] = ['path' => $packageCommandsPath, 'id' => $packageId, 'tier' => 'extension'];
             }
         }
 
-        return $paths;
+        foreach ($config['framework_paths'] ?? [] as $path) {
+            $resolved = $this->resolvePath($path);
+            if ($resolved) {
+                $sources[] = ['path' => $resolved, 'id' => 'framework', 'tier' => 'framework'];
+            }
+        }
+
+        return $sources;
+    }
+
+    private function resolvePackageCommandsPath(string $packageId, array $config): ?string
+    {
+        $installPath = null;
+        $hasInstalledVersions = class_exists('Composer\\InstalledVersions')
+            && method_exists('Composer\\InstalledVersions', 'getInstallPath');
+        if ($hasInstalledVersions) {
+            try {
+                $installPath = \Composer\InstalledVersions::getInstallPath($packageId);
+            } catch (\OutOfBoundsException) {
+                $installPath = null;
+            }
+        }
+
+        [$vendor, $package] = explode('/', $packageId, 2);
+        $vendorRoot = $config['vendor_path']
+            ?? (defined('VENDOR_PATH') ? VENDOR_PATH : (defined('ROOT_PATH') ? ROOT_PATH . 'vendor' . DIRECTORY_SEPARATOR : null));
+
+        // Composer is authoritative when its installed-package registry is available.
+        // In particular, do not expose a stale path-repository symlink after --no-dev.
+        if ($installPath === null && !$hasInstalledVersions && is_string($vendorRoot)) {
+            $installPath = rtrim($vendorRoot, '/\\') . DIRECTORY_SEPARATOR . $vendor . DIRECTORY_SEPARATOR . $package;
+        }
+
+        $candidateRoots = [];
+        if (is_string($installPath)) {
+            $candidateRoots[] = $installPath;
+        }
+
+        $localRoot = $config['packages_path']
+            ?? (defined('ROOT_PATH') ? ROOT_PATH . 'packages' . DIRECTORY_SEPARATOR : null);
+        if (is_string($localRoot)) {
+            $candidateRoots[] = rtrim($localRoot, '/\\') . DIRECTORY_SEPARATOR . $vendor . DIRECTORY_SEPARATOR . $package;
+        }
+
+        if (defined('PACKAGES_PATH')) {
+            $candidateRoots[] = rtrim(PACKAGES_PATH, '/\\') . DIRECTORY_SEPARATOR . $vendor . DIRECTORY_SEPARATOR . $package;
+        }
+
+        foreach ($candidateRoots as $packageRoot) {
+            $commandsPath = $packageRoot . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Commands';
+            if (is_dir($commandsPath)) {
+                return $commandsPath;
+            }
+        }
+
+        // An explicitly enabled but absent optional package must not break host startup.
+        return null;
     }
 
     private function resolvePath(string $path): ?string
     {
+        $hasDriveRoot = strlen($path) >= 3
+            && ctype_alpha($path[0])
+            && $path[1] === ':'
+            && ($path[2] === '\\' || $path[2] === '/');
+        if ($hasDriveRoot || str_starts_with($path, '/') || str_starts_with($path, '\\')) {
+            return $path;
+        }
+
         if (defined('ROOT_PATH') && !preg_match('/^([A-Za-z]:[\\/]|[\\/])/', $path)) {
             return rtrim(ROOT_PATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
         }
         return $path;
     }
 
-    private function loadCommandsFromDirectory(string $dirPath, string $groupName): void
+    private function loadCommandsFromDirectory(string $dirPath, string $groupName, string $sourceId, string $tier): void
     {
         $files = glob($dirPath . DIRECTORY_SEPARATOR . '*Command.php') ?: [];
 
@@ -127,46 +231,52 @@ class CommandRegistry
             if (str_starts_with($basename, 'Base') || str_starts_with($basename, 'Abstract')) continue;
             if (str_ends_with($basename, 'BaseCommand')) continue;
 
-            $this->loadCommandFromFile($file, $groupName);
+            $this->loadCommandFromFile($file, $groupName, $sourceId, $tier);
         }
     }
 
-    private function loadCommandFromFile(string $filePath, string $groupName): void
+    private function loadCommandFromFile(string $filePath, string $groupName, string $sourceId, string $tier): void
     {
-        $before = get_declared_classes();
-
-        try {
-            require_once $filePath;
-        } catch (\Throwable $e) {
-            fwrite(STDERR, "Error loading {$filePath}: " . $e->getMessage() . "\n");
-            return;
-        }
-
-        $after      = get_declared_classes();
-        $newClasses = array_diff($after, $before);
-
+        $canonicalFilePath = realpath($filePath) ?: $filePath;
         $commandClass = null;
-        foreach ($newClasses as $class) {
-            if (str_ends_with($class, 'Command')) {
-                $commandClass = $class;
-                break;
-            }
+
+        $mappedClass = $this->composerCommandClassForFile($canonicalFilePath);
+        if ($mappedClass !== null && class_exists($mappedClass)) {
+            $commandClass = $this->declaredCommandClassForFile($canonicalFilePath, [$mappedClass]);
         }
 
-        // Fallback: match by filename
-        if (!$commandClass) {
-            $basename = basename($filePath, '.php');
-            if (class_exists($basename)) {
-                $commandClass = $basename;
-            }
+        if ($commandClass === null) {
+            $commandClass = $this->declaredCommandClassForFile($canonicalFilePath);
         }
 
-        if (!$commandClass || !class_exists($commandClass)) return;
+        if ($commandClass === null) {
+            $before = get_declared_classes();
+
+            try {
+                require_once $canonicalFilePath;
+            } catch (\Throwable $e) {
+                if (str_contains($e->getMessage(), 'Cannot declare class')) {
+                    throw new \LogicException(
+                        "Command class collision while loading provider '{$sourceId}' from '{$filePath}': " . $e->getMessage(),
+                        0,
+                        $e
+                    );
+                }
+
+                fwrite(STDERR, "Error loading command from provider '{$sourceId}' at '{$filePath}': " . $e->getMessage() . "\n");
+                return;
+            }
+
+            $newClasses = array_diff(get_declared_classes(), $before);
+            $commandClass = $this->declaredCommandClassForFile($canonicalFilePath, $newClasses);
+        }
+
+        if (!$commandClass) return;
 
         try {
             $instance = new $commandClass();
         } catch (\Throwable $e) {
-            fwrite(STDERR, "Error instantiating {$commandClass}: " . $e->getMessage() . "\n");
+            fwrite(STDERR, "Error instantiating command '{$commandClass}' from provider '{$sourceId}': " . $e->getMessage() . "\n");
             return;
         }
 
@@ -176,21 +286,207 @@ class CommandRegistry
         $instance->group = $groupName;
 
         $key = "{$groupName}:{$instance->command}";
-        $this->commands[$key] = $instance;
-
-        $this->groups[$groupName]   ??= [];
-        $this->groups[$groupName][]   = $instance->command;
+        $this->commandCandidates[$key][] = [
+            'instance' => $instance,
+            'source' => $sourceId,
+            'tier' => $tier,
+        ];
 
         foreach ($instance->aliases as $alias) {
-            $this->aliases["{$groupName}:{$alias}"] = [
-                'group'   => $groupName,
+            if (!is_string($alias) || trim($alias) === '') {
+                throw new \InvalidArgumentException("Command '{$key}' declares an empty or invalid alias.");
+            }
+
+            $aliasKey = "{$groupName}:{$alias}";
+            $this->aliasCandidates[$aliasKey][] = [
+                'group' => $groupName,
                 'command' => $instance->command,
+                'owner_key' => $key,
+                'source' => $sourceId,
+                'tier' => $tier,
             ];
         }
 
         if ($this->debug) {
             echo "  ✓ {$groupName} {$instance->command}\n";
         }
+    }
+
+    private function declaredCommandClassForFile(string $filePath, ?array $classes = null): ?string
+    {
+        $classes ??= get_declared_classes();
+        $canonicalFilePath = realpath($filePath) ?: $filePath;
+
+        foreach ($classes as $class) {
+            if (!str_ends_with($class, 'Command') || !is_subclass_of($class, BaseCommand::class)) {
+                continue;
+            }
+
+            $declaredFile = (new \ReflectionClass($class))->getFileName();
+            if ($declaredFile && (realpath($declaredFile) ?: $declaredFile) === $canonicalFilePath) {
+                return $class;
+            }
+        }
+
+        return null;
+    }
+
+    private function composerCommandClassForFile(string $filePath): ?string
+    {
+        if ($this->composerCommandClassMap === null) {
+            $this->composerCommandClassMap = [];
+
+            if (class_exists('Composer\\Autoload\\ClassLoader')) {
+                foreach (\Composer\Autoload\ClassLoader::getRegisteredLoaders() as $loader) {
+                    foreach ($loader->getClassMap() as $class => $mappedPath) {
+                        if (!str_ends_with($class, 'Command')) {
+                            continue;
+                        }
+
+                        $canonicalMappedPath = realpath($mappedPath);
+                        if ($canonicalMappedPath !== false) {
+                            $this->composerCommandClassMap[$canonicalMappedPath] = $class;
+                        }
+                    }
+                }
+            }
+        }
+
+        $canonicalFilePath = realpath($filePath) ?: $filePath;
+        return $this->composerCommandClassMap[$canonicalFilePath] ?? null;
+    }
+
+    private function resolveCommandCandidates(array $config): void
+    {
+        $overrides = $config['overrides'] ?? [];
+        if (!is_array($overrides)) {
+            throw new \InvalidArgumentException("Command 'overrides' configuration must be an array.");
+        }
+
+        $selected = [];
+        $keys = array_unique(array_merge(array_keys($this->commandCandidates), array_keys($this->aliasCandidates)));
+        sort($keys);
+
+        foreach ($keys as $key) {
+            $candidates = [];
+            foreach ($this->commandCandidates[$key] ?? [] as $candidate) {
+                $candidate['type'] = 'command';
+                $candidates[] = $candidate;
+            }
+            foreach ($this->aliasCandidates[$key] ?? [] as $candidate) {
+                $candidate['type'] = 'alias';
+                $candidates[] = $candidate;
+            }
+
+            $selected[$key] = $this->selectCandidate($key, $candidates, $overrides[$key] ?? null);
+        }
+
+        foreach ($selected as $key => $candidate) {
+            if ($candidate['type'] === 'alias') {
+                $owner = $selected[$candidate['owner_key']] ?? null;
+                if (!$owner || $owner['type'] !== 'command' || $owner['source'] !== $candidate['source']) {
+                    // Aliases from a command that lost command precedence are not exposed.
+                    unset($selected[$key]);
+                    continue;
+                }
+                $this->aliases[$key] = [
+                    'group' => $candidate['group'],
+                    'command' => $candidate['command'],
+                ];
+                continue;
+            }
+
+            $this->commands[$key] = $candidate['instance'];
+            $this->groups[$candidate['instance']->group] ??= [];
+            if (!in_array($candidate['instance']->command, $this->groups[$candidate['instance']->group], true)) {
+                $this->groups[$candidate['instance']->group][] = $candidate['instance']->command;
+            }
+        }
+
+        foreach ($this->aliases as $key => $target) {
+            $targetKey = "{$target['group']}:{$target['command']}";
+            if (!isset($this->commands[$targetKey])) {
+                throw new \LogicException("Command alias '{$key}' points to missing or overridden command '{$targetKey}'");
+            }
+        }
+    }
+
+    private function selectCandidate(string $key, array $candidates, ?string $override): array
+    {
+        if (count($candidates) === 1) {
+            if ($override !== null && $override !== $candidates[0]['source']) {
+                throw new \LogicException("Command override for '{$key}' names '{$override}', but that provider does not define this name.");
+            }
+            return $candidates[0];
+        }
+
+        if ($override !== null) {
+            $matches = array_values(array_filter($candidates, static fn(array $candidate): bool => $candidate['source'] === $override));
+            if (count($matches) !== 1) {
+                throw new \LogicException("Command override for '{$key}' must identify exactly one provider; '{$override}' matched " . count($matches) . '.');
+            }
+
+            return $matches[0];
+        }
+
+        $priority = ['host' => 0, 'extension' => 1, 'framework' => 2];
+        foreach ($candidates as $candidate) {
+            if (!array_key_exists($candidate['tier'], $priority)) {
+                throw new \LogicException("Unknown command provider tier '{$candidate['tier']}' for '{$key}'.");
+            }
+        }
+
+        $bestPriority = min(array_map(static fn(array $candidate): int => $priority[$candidate['tier']], $candidates));
+        $winners = array_values(array_filter(
+            $candidates,
+            static fn(array $candidate): bool => $priority[$candidate['tier']] === $bestPriority
+        ));
+
+        if (count($winners) !== 1) {
+            $providers = array_map(
+                static fn(array $candidate): string => "{$candidate['source']} ({$candidate['tier']})",
+                $winners
+            );
+            throw new \LogicException(
+                "Command or alias collision for '{$key}' between providers with the same priority ["
+                . implode(', ', $providers) . "]. Set config/commands.php 'overrides' for this name to select one."
+            );
+        }
+
+        $winner = $winners[0];
+        $shadowed = array_values(array_filter($candidates, static fn(array $candidate): bool => $candidate !== $winner));
+        $providers = array_map(
+            static fn(array $candidate): string => "{$candidate['source']} ({$candidate['tier']})",
+            $shadowed
+        );
+        $this->diagnostics[] = "Resolved '{$key}' to {$winner['source']} ({$winner['tier']}); shadowed "
+            . implode(', ', $providers) . ". Configure an override to select another provider.";
+
+        return $winner;
+    }
+
+    private function reportDiagnostics(): void
+    {
+        if ($this->diagnostics === []) {
+            return;
+        }
+
+        $message = "CommandRegistry resolved command collisions by configured precedence:\n";
+        foreach ($this->diagnostics as $diagnostic) {
+            $message .= "  - {$diagnostic}\n";
+        }
+
+        if (defined('STDERR')) {
+            fwrite(STDERR, $message);
+            return;
+        }
+
+        error_log(rtrim($message));
+    }
+
+    public function getDiagnostics(): array
+    {
+        return $this->diagnostics;
     }
 
     public function hasGroup(string $group): bool

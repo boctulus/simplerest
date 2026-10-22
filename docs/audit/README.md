@@ -289,4 +289,4 @@ Pages under [`pending/`](pending/README.md) are retained as audit inputs and are
 
 ## Composer integration audit
 
-See the [initial GoProp Composer integration audit](goprop-composer-integration-2026-10.md) and the live [SimpleRest–GoProp convergence report](goprop-composer-convergence.md) for release-source, package-boundary, dependency, CLI-discovery, and core-parity findings.
+See the [initial GoProp Composer integration audit](goprop-composer-integration-2026-10.md) and the live [SimpleRest–GoProp convergence report](goprop-composer-convergence.md) for release-source, package-boundary, dependency, CLI-discovery, and core-parity findings. The package contracts and release workflow are maintained in [Composer package boundaries](../architecture/composer-packages.md) and [Composer release process](../architecture/composer-release-process.md).

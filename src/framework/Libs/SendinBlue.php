@@ -13,6 +13,17 @@ use Boctulus\Simplerest\Libs\SendinBlue\Client\Model\SendSmtpEmail;
 class SendinBlue extends MailBase implements IMail
 {
     static function send(Array $to, $subject = '', $body = '', $attachments = null, Array $from = [], Array $cc = [], Array $bcc = [], Array $reply_to = [], $alt_body = null) : bool {
+        if (
+            !class_exists(TransactionalEmailsApi::class)
+            || !class_exists(Configuration::class)
+            || !class_exists(SendSmtpEmail::class)
+            || !class_exists(GuzzleHttp\Client::class)
+        ) {
+            throw new \LogicException(
+                'SendinBlue::send() requires the bundled SendinBlue SDK and guzzlehttp/guzzle.'
+            );
+        }
+
         $config = Config::get();
 
         $body = trim($body);

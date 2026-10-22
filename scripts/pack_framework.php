@@ -892,13 +892,23 @@ class SimpleRestPackager
             unset($composerData['scripts']);
         }
 
-        $frameworkRequirements = ['php', 'vlucas/phpdotenv', 'doctrine/inflector', 'firebase/php-jwt'];
+        $frameworkRequirements = [
+            'php',
+            'doctrine/inflector',
+            'psr/http-message',
+            'firebase/php-jwt',
+            'symfony/dom-crawler',
+            'symfony/css-selector',
+        ];
         $originalRequirements = $composerData['require'] ?? [];
         $composerData['require'] = array_intersect_key($originalRequirements, array_flip($frameworkRequirements));
 
+        // The curated output is a runnable starter application, which loads its .env file.
+        // Dotenv is development-only for the framework library but remains required by this app skeleton.
+        $composerData['require']['vlucas/phpdotenv'] = '^5.2';
+
         $optionalRequirements = [
-            'psr/http-message' => 'PSR-7 adapters and helpers',
-            'phpmailer/phpmailer' => 'SMTP mail delivery',
+            'phpmailer/phpmailer' => 'Optional SMTP mail delivery; use a version compatible with the host application.',
         ];
         foreach ($optionalRequirements as $package => $feature) {
             if (isset($originalRequirements[$package])) {
@@ -931,7 +941,7 @@ class SimpleRestPackager
             }
 
             $composerData['autoload']['psr-4'] = $newAutoload;
-            echo "Added app/Controllers and app/Commands to autoload\n";
+            echo "Added app/Controllers mapping; CLI commands remain discovered by CommandRegistry\n";
         }
 
         // Also remove problematic entries from preferred-install config
