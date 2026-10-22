@@ -21,7 +21,7 @@ La comparación usa blobs Git del HEAD de cada repositorio, no hashes de archivo
 
 | Árbol | Ref corta | Archivos src/framework/ |
 | --- | --- | ---: |
-| SimpleRest | d748248b8 (master) | 272 |
+| SimpleRest | 62aa3b418 (master) | 272 |
 | GoProp | 17b28cea (main) | 274 |
 | Rutas comunes | — | 262 |
 | Comunes con blob distinto | — | 32 |
@@ -45,6 +45,7 @@ La comparación está calculada sobre los blobs de esos HEAD, sin incorporar arc
 | src/framework/Libs/CommandRegistry.php | A — Sin subcomando, los flags muestran ayuda del grupo y no despachan el primer archivo en orden alfabético. | unit-tests/command/CommandRegistryDispatchTest.php: 2/2 pruebas, 11 aserciones en PHP 8.1 y 8.4. | ce36c0ca0 |
 | src/framework/Libs/CorsHandler.php | A — Solo usa HTTP_ORIGIN para CORS. Sin Origin, no bloquea la petición ni agrega cabeceras CORS; un Origin explícitamente no permitido sigue rechazado. | unit-tests/http/CorsHandlerOriginTest.php: 2/2 pruebas, 4 aserciones en PHP 8.1 y 8.4. | 325851c27 |
 | src/framework/FrontController.php | A — Distingue invitado sin permiso (401) de usuario autenticado sin permiso ACL (403). No copia el 401 incondicional de GoProp, que no distingue ambos estados. | FrontControllerAuthorizationStatusTest.php y ApiAuthorizationDispatchTest.php: 11/11 pruebas, 78 aserciones en PHP 8.1 y 8.4; sin base de datos. | e8895db7e |
+| src/framework/Handlers/ErrorHandler.php | A / B — Se porta la validación del código de excepción como status HTTP (solo 100–599, otros valores producen 500). Se conserva la negociación JSON/HTML y limpieza de buffers que SimpleRest ya tiene. | ErrorHandlerStatusCodeTest.php: 1/1 prueba, 6 aserciones en PHP 8.1 y 8.4. Prueba el mapeo puro; no invoca el handler que termina el proceso. | 62aa3b418 |
 
 | src/framework/Helpers/env.php, src/framework/Libs/System.php | A / D — `env()` da prioridad al entorno del proceso y luego al archivo cargado, incluso si el valor del proceso está vacío. `System::getPHP()` sigue leyendo `PHP_BINARY` con `Env::get()` para conservar la configuración desde archivo. `config/databases.php` usa `env()` para resolver conexiones; por tanto, el entorno del proceso ahora puede prevalecer sobre `.env`. | EnvHelperPrecedenceTest.php: 3/3 pruebas en PHP 8.1 y 8.4; una deprecación de firma preexistente en `Env::set()` aparece en PHP 8.4. Smoke aislado: `System::getPHP()` conserva el valor configurado en `Env::$data` frente a un valor de proceso. No se abrió conexión de base de datos. | efd9dee2f |
 | src/framework/Libs/Mail.php, config/config.php | A — Se incorpora la lista de opciones PHPMailer admitidas para evitar asignaciones dinámicas o propiedades desconocidas y se corrige Debugutput a Debugoutput. | MailOptionsTest.php: 3/3 pruebas y 5 aserciones en PHP 8.1 y 8.4; no se envió correo. El vendor local usa PHPMailer 7.1.1. La restricción GoProp ^6.9 frente a SimpleRest ^7.1 sigue pendiente de resolver en Fase 2. | 51f462bd9 |
@@ -76,6 +77,8 @@ Los commits funcionales se enviaron a origin/master. No se modificaron manifiest
 | Libs/i18n/Translate.php | A | Portadas normalización, selección de locales, fallback/merge de catálogos y generación de catálogos. exportLangDef() es igual en ambos repositorios. | TranslateConvergenceTest.php: 7/7 pruebas, 19 aserciones en PHP 8.1 y 8.4. |
 | Api/ApiController.php | B / C | Se conserva el control genérico de callables y ACL de SimpleRest. La integración de GoProp con ImpersonationManager depende del subsistema de impersonación propio de GoProp y queda fuera del core. | ApiAuthorizationDispatchTest.php valida despacho y permisos: 11/11 pruebas junto con FrontControllerAuthorizationStatusTest.php; no hubo cambios de seguridad en este paso. |
 | Api/AuthController.php | B / C | SimpleRest conserva la validación opcional en el lookup de login. Los flujos persistentes/auditados de impersonación en GoProp llaman a clases de su subsistema propio; siguen siendo responsabilidad de GoProp. | Comparación de llamadas y dependencias; sin modificación de autenticación ni prueba de integración con tokens/DB en esta revisión. |
+| Handlers/ApiHandler.php | B / D | Se conserva la ruta de namespace Controllers\Api de SimpleRest. GoProp cambió a Controllers\api aunque sus controladores versionados están en app/Controllers/Api; la variante de minúsculas no se copia por el riesgo de resolución PSR-4 en sistemas sensibles a mayúsculas. | Inspección de namespace, autoload y rutas versionadas; no se ejecutó una carga de controlador en Linux. |
+| Handlers/ErrorHandler.php | A / B | Portada la validación de rango del código HTTP desde GoProp; se mantienen la respuesta HTML/JSON y el vaciado de buffers ya presentes en SimpleRest. | ErrorHandlerStatusCodeTest.php cubre seis códigos límite en PHP 8.1 y 8.4; no prueba el exit del response handler. |
 | Security/Acl.php, Security/Compiler/EffectivePermissionCompiler.php | B / C / D | SimpleRest conserva el rechazo de `*` como recurso. impersonate_write y el aplazamiento de persistencia están ligados a impersonación y al AclMakeCommand de GoProp. El reconciliador del paquete existente fine-grained-acl borra y recrea roles dentro de una transacción y restaura asignaciones; se mantiene como dueño esa integración opcional, con revisión de invariantes y pruebas aisladas MySQL/PostgreSQL pendiente antes de reusarla. No se ejecutó ninguna escritura de base de datos. | AclWildcardSemanticsTest.php: 6/6 pruebas, 8 aserciones en PHP 8.1 y 8.4; la reconciliación del catálogo no está cubierta en SimpleRest. |
 | Response.php | A / B / C | A — Conserva metadatos hermanos y regenera los campos reservados del envelope. B — Mantiene el emisor de status HTTP de SimpleRest. C — No incorpora la auditoría de mutaciones de impersonación, que depende de GoProp. | unit-tests/http/ResponseEnvelopeMetadataTest.php: 3/3 pruebas, 10 aserciones; no se ejecutaron rutas ni conexiones. |
 | Validator.php | A | Portado skipBoundsChecks() para que los filtros de lectura omitan solo los límites de escritura y mantengan la validación de tipo. | 2 pruebas focalizadas aprobadas. |
@@ -87,7 +90,6 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 | Ruta | Estado |
 | --- | --- |
 | Api/ApiController.php | Portada skipBoundsChecks(); se conserva el control genérico de ACL de SimpleRest. La integración de impersonación de GoProp permanece en su aplicación. |
-| Handlers/ApiHandler.php, Handlers/ErrorHandler.php | Pendiente de trazar resolución, errores y tests existentes. |
 | Helpers/loggers.php, Helpers/view.php | Pendiente de comparar efectos genéricos y dependencias del host. |
 | Interfaces/ISubResources.php | Pendiente de comparar contrato y consumidores. |
 | Libs/GoogleDrive.php, Libs/MailAuditor.php, Libs/PostmanGenerator.php | Pendiente de revisar comportamiento, dependencias opcionales y pruebas. |
@@ -118,6 +120,7 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 - CommandRegistryDispatchTest.php: 2/2 pruebas, 11 aserciones en PHP 8.1 y 8.4; los flags sin comando no ejecutan comandos.
 - CorsHandlerOriginTest.php: 2/2 pruebas, 4 aserciones en PHP 8.1 y 8.4; sin Origin no toca status/cabeceras y Origin no permitido sigue en 403.
 - FrontControllerAuthorizationStatusTest.php + ApiAuthorizationDispatchTest.php: 11/11 pruebas, 78 aserciones en PHP 8.1 y 8.4; valida ambos estados 401/403 y la regresión ACL, sin conexión a base de datos.
+- ErrorHandlerStatusCodeTest.php: 1/1 prueba, 6 aserciones en PHP 8.1 y 8.4; valida el mapeo de códigos de excepción a status HTTP sin invocar el handler que termina el proceso.
 - EnvHelperPrecedenceTest.php: 3/3 pruebas en PHP 8.1 y 8.4; verifica proceso > archivo y valor vacío explícito. PHP 8.4 informa la deprecación previa de `Env::set()`. Un smoke separado confirma que `System::getPHP()` mantiene el valor cargado desde archivo; no se conecta a una base de datos.
 - MailOptionsTest.php: 3/3 pruebas, 5 aserciones en PHP 8.1 y 8.4; validación de opciones, sin envío SMTP.
 - CollectionEntityValidationTest.php: 4/4 pruebas en PHP 8.1 y 8.4; comprobaciones de entidad sin acceso a base de datos.
