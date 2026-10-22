@@ -96,6 +96,36 @@ function assertDetectorSelfTest(): void
     fwrite(STDOUT, "Distribution gate self-test passed (4 rejected artifacts, 1 allowed framework file, .git marker guard).\n");
 }
 
+function withGitFsmonitorDisabled(callable $operation): string
+{
+    $previousCount = getenv('GIT_CONFIG_COUNT');
+    $index = $previousCount === false ? 0 : max(0, (int) $previousCount);
+    $keyName = 'GIT_CONFIG_KEY_' . $index;
+    $valueName = 'GIT_CONFIG_VALUE_' . $index;
+    $previousKey = getenv($keyName);
+    $previousValue = getenv($valueName);
+
+    putenv('GIT_CONFIG_COUNT=' . ($index + 1));
+    putenv($keyName . '=core.fsmonitor');
+    putenv($valueName . '=false');
+
+    try {
+        return $operation();
+    } finally {
+        foreach ([
+            'GIT_CONFIG_COUNT' => $previousCount,
+            $keyName => $previousKey,
+            $valueName => $previousValue,
+        ] as $name => $value) {
+            if ($value === false) {
+                putenv($name);
+            } else {
+                putenv($name . '=' . $value);
+            }
+        }
+    }
+}
+
 function runCommand(array $arguments, string $workingDirectory): string
 {
     $binary = getenv('COMPOSER_BINARY') ?: 'composer';
@@ -106,7 +136,9 @@ function runCommand(array $arguments, string $workingDirectory): string
             $binary = trim($composerCandidates[0]);
         }
     }
-    return runExecutable(array_merge([$binary], $arguments), $workingDirectory);
+    return withGitFsmonitorDisabled(
+        static fn(): string => runExecutable(array_merge([$binary], $arguments), $workingDirectory)
+    );
 }
 
 function runExecutable(array $arguments, string $workingDirectory): string
@@ -139,25 +171,27 @@ function runExecutable(array $arguments, string $workingDirectory): string
 
 function runGitCommand(array $arguments, string $workingDirectory): string
 {
-    $command = implode(' ', array_map('escapeshellarg', array_merge(['git'], $arguments))) . ' 2>&1';
-    $previousDirectory = getcwd();
-    if (!chdir($workingDirectory)) {
-        throw new RuntimeException("Cannot enter Git working directory: {$workingDirectory}");
-    }
-
-    try {
-        exec($command, $output, $exitCode);
-    } finally {
-        if ($previousDirectory !== false) {
-            chdir($previousDirectory);
+    return withGitFsmonitorDisabled(static function () use ($arguments, $workingDirectory): string {
+        $command = implode(' ', array_map('escapeshellarg', array_merge(['git'], $arguments))) . ' 2>&1';
+        $previousDirectory = getcwd();
+        if (!chdir($workingDirectory)) {
+            throw new RuntimeException("Cannot enter Git working directory: {$workingDirectory}");
         }
-    }
 
-    if ($exitCode !== 0) {
-        throw new RuntimeException("Git command failed ({$exitCode}): {$command}\n" . implode("\n", $output));
-    }
+        try {
+            exec($command, $output, $exitCode);
+        } finally {
+            if ($previousDirectory !== false) {
+                chdir($previousDirectory);
+            }
+        }
 
-    return implode("\n", $output);
+        if ($exitCode !== 0) {
+            throw new RuntimeException("Git command failed ({$exitCode}): {$command}\n" . implode("\n", $output));
+        }
+
+        return implode("\n", $output);
+    });
 }
 
 function scanArchive(string $archivePath, string $artifactLabel): array
@@ -731,7 +765,7 @@ try {
     fwrite(STDOUT, sprintf("PASS %-52s %4d files %8d bytes\n", 'generated application starter', $starterMetrics['files'], $starterMetrics['bytes']));
     if ($withConsumerInstall) {
         fwrite(STDOUT, "PASS external temporary Composer VCS install for all local packages\n");
-        fwrite(STDOUT, "PASS independent Composer VCS install for PDF and Code Tools\n");
+        fwrite(STDOUT, "PASS independent Composer VCS install for PDF, Code Tools, and Integrations\n");
     }
 } catch (Throwable $error) {
     fwrite(STDERR, $error->getMessage() . "\n");
