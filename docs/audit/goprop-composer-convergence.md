@@ -21,7 +21,7 @@ La comparación usa blobs Git del HEAD de cada repositorio, no hashes de archivo
 
 | Árbol | Ref corta | Archivos src/framework/ |
 | --- | --- | ---: |
-| SimpleRest | e5f22ac49 (master, igual a origin/master) | 272 |
+| SimpleRest | 820d4aa01 (master, igual a origin/master) | 272 |
 | GoProp | f83e7949 (main) | 274 |
 | Rutas comunes | — | 262 |
 | Comunes con blob distinto | — | 33 |
@@ -38,6 +38,7 @@ No hay cambios sin commit bajo src/framework/ en ninguno de los dos repositorios
 | src/framework/Request.php | A — Se normalizan nombres de cabecera para Apache y PHP built-in, se leen CONTENT_TYPE/CONTENT_LENGTH y se acepta application/json con parámetros. Se conservaron las APIs inmutables que ya tenía SimpleRest. | unit-tests/http/RequestInputParsingTest.php: 3/3 pruebas; php -l pasó. | 1795e8925 |
 | src/framework/Libs/Url.php, src/framework/Exceptions/InvalidRequestBodyException.php, index.php | A — El JSON malformado ahora produce una excepción de cliente tipada y el entrypoint responde HTTP 400 con un mensaje genérico. | La misma suite HTTP pasó. Una petición POST local con application/json; charset=utf-8 y JSON inválido devolvió HTTP 400 y el cuerpo INVALID_REQUEST_BODY; no llegó a ejecutar una ruta ni una operación de base de datos. | 1795e8925 |
 | src/framework/Libs/Validator.php, src/framework/Api/ApiController.php | A — Los filtros GET ignoran límites de longitud y rango destinados a escrituras, pero siguen validando el tipo del valor. | unit-tests/validator/ValidatorSkipBoundsContractTest.php: 2/2 pruebas; php -l pasó. No se arrancó la aplicación ni se abrió una conexión. | e5f22ac49 |
+| src/framework/Response.php | A — Al desenvolver data, se conservan los metadatos hermanos y se regeneran status_code/error. Se mantiene el emisor HTTP de SimpleRest y se excluye la auditoría de impersonación de GoProp. | unit-tests/http/ResponseEnvelopeMetadataTest.php: 3/3 pruebas, 10 aserciones; php -l pasó; sin bootstrap ni base de datos. | 820d4aa01 |
 
 Los commits funcionales se enviaron a origin/master. No se modificaron manifiestos, tags ni el directorio simplerest-pack.
 
@@ -55,7 +56,7 @@ Los commits funcionales se enviaron a origin/master. No se modificaron manifiest
 | FrontController.php | D | Pendiente acordar y probar el contrato 401 frente a 403 por estado de autenticación y permiso. No se cambia semántica de seguridad sin esa prueba. | Pendiente. |
 | Libs/CommandRegistry.php | D | Pendiente implementar precedencia y diagnóstico de colisiones sobre la infraestructura actual. | Pendiente; no se ha migrado GoProp. |
 | Libs/CorsHandler.php | D | GoProp no usa Referer como sustituto de Origin; revisar con pruebas antes de cambiar comportamiento CORS. | Pendiente. |
-| Response.php | D | El metadato hermano de data es una mejora reusable; los cambios de GoProp a status-lines y la auditoría de impersonación no se copiarán sin evaluación. | Pendiente de prueba de envelope y contrato HTTP. |
+| Response.php | A / B / C | A — Conserva metadatos hermanos y regenera los campos reservados del envelope. B — Mantiene el emisor de status HTTP de SimpleRest. C — No incorpora la auditoría de mutaciones de impersonación, que depende de GoProp. | unit-tests/http/ResponseEnvelopeMetadataTest.php: 3/3 pruebas, 10 aserciones; no se ejecutaron rutas ni conexiones. |
 | Validator.php | A | Portado skipBoundsChecks() para que los filtros de lectura omitan solo los límites de escritura y mantengan la validación de tipo. | 2 pruebas focalizadas aprobadas. |
 | Libs/Files.php | A candidata | GoProp conserva la ruta original cuando realpath() devuelve false, evitando un mensaje de error vacío. | Pendiente de prueba. |
 
@@ -90,6 +91,7 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 - QueryBuilderOrderByContractTest.php: 6/6.
 - RequestInputParsingTest.php: 3/3.
 - ValidatorSkipBoundsContractTest.php: 2/2.
+- ResponseEnvelopeMetadataTest.php: 3/3, 10 aserciones; incluye `data: null`, metadatos y payload escalar.
 - php -l en todos los PHP modificados: sin errores.
 - Servidor PHP built-in local: POST de JSON inválido con charset=utf-8 → HTTP 400 y respuesta JSON genérica.
 - No se ejecutó la suite completa ni pruebas que conecten a MySQL/PostgreSQL; no se configuró ni se modificó ninguna base de datos.
@@ -97,4 +99,4 @@ Las demás rutas comunes con blob distinto permanecen sin clasificación final. 
 
 ## Siguiente trabajo de Fase 1
 
-Continuar con los cambios genéricos priorizados —en especial metadatos de Response, CORS, Files, auth/ACL, mail y localización— con cambios pequeños y pruebas seguras. Después cerrar la clasificación de las 33 diferencias y las clases exclusivas. No pasar a Fase 2 hasta que ese gate esté completo.
+Continuar con los cambios genéricos priorizados —CORS, Files, auth/ACL, mail y localización— con cambios pequeños y pruebas seguras. Después cerrar la clasificación de las 33 diferencias y las clases exclusivas. No pasar a Fase 2 hasta que ese gate esté completo.
