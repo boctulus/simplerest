@@ -32,7 +32,7 @@ function dump($object, ?string $path = null, $append = false){
     Requiere que este habilitado el modo debug
 */
 function log_error($error){
-    if (!Config::get()['debug']){
+    if (!Config::get()['log_errors']){
         return;
     }
 

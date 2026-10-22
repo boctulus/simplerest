@@ -7,7 +7,7 @@ use Boctulus\Simplerest\Core\Libs\MailBase;
 
 /**
  * Audit mailer — captures every send() call to disk without delivering.
- * Files land in plugin_root/logs/mail/ as JSON.
+ * Files land in src/logs/mail/ as JSON (see logDir()).
  */
 class MailAuditor extends MailBase implements IMail
 {
