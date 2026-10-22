@@ -3,7 +3,7 @@ title: Ciclo de request
 source:
   - docs/core/README.md
   - docs/core/request-lifecycle.md
-source_revision: 1dff834829126b0c1c5aa60bd3ff13a75e7859f4
+source_revision: b91cce22f
 status: partial
 ---
 
@@ -31,4 +31,4 @@ En una rama de alias exacto de `WebRouter::resolve()`, el código asigna datos d
 
 ## Alcance de verificación
 
-Los archivos de pruebas consultados cubren registro y compilación de rutas, un caso de prioridad estática y parametrizada, y comportamiento de clones de request/response. Se inspeccionaron, pero no se ejecutaron en esta revisión. La configuración PHPUnit no incluye `unit-tests/`, y ninguna prueba citada establece por sí sola el orden completo del resolver de `index.php`, todos los exits o la rama de alias exacto.
+Los archivos de pruebas consultados cubren registro y compilación de rutas, un caso de prioridad estática y parametrizada, y comportamiento de clones de request/response. Se inspeccionaron, pero no se ejecutaron en esta revisión. `composer test` y la suite declarada en `phpunit.xml` incluyen `unit-tests/`; esto confirma la selección, no una ejecución exitosa. Ninguna prueba citada establece por sí sola el orden completo del resolver de `index.php`, todos los exits o la rama de alias exacto.
