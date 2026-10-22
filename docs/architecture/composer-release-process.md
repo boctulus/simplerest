@@ -50,4 +50,80 @@ Example dry run:
   -SourceCommit <40-character-source-sha>
 ```
 
-After review, run the same command with `-Push -Version v1.0.0`. The target repository must already exist and contain the same package root manifest name. A failed fast-forward or existing tag is a release blocker, not a reason to force an update.
+After review, run the same command with `-Push -Version <new-immutable-version>` only after verifying that the version does not already exist. The target repository must already exist and contain the same package root manifest name. A failed fast-forward or existing tag is a release blocker, not a reason to force an update.
+
+## Implementation record: distribution and modularization (2026-10-23)
+
+This record describes an unpublished candidate on branch `fix/composer-distribution-modularization-recovered-20261022`. The code changes are based on source commit `aaafd81bcbe0b099b2d801cfbdf6d2740fa42f50` and are present through commit `297064ff96b7b983fcee5ae5bbccc9b15f11dc12`. No release, tag, Packagist registration, push, deployment, or GoProp change was made. The published `v2.0.2` history above remains unchanged; the candidate manifests and artifacts below are not yet public.
+
+### P0 distribution boundary
+
+Composer core archives, extension archives, and the generated starter are different products and now have separate checks. `.gitattributes` excludes Git metadata from Composer archives. `.packignore`, `.packinclude`, and `scripts/pack_framework.php` preserve the starter's first-party bootstrap and assets while refusing `third_party`, even when an include rule would otherwise match it. The starter no longer depends on copied Bootstrap files or application views from the development checkout; its first-party welcome view is under `src/framework/Templates/FreshCopy/app/Views/home.php`.
+
+`packages/boctulus/friendlypos-web/third_party/` no longer contains the 495 copied QR Code and XLSX files. A source scan found no imports or runtime calls to those copies, so no replacement runtime dependency was added. If a later FriendlyPOS feature uses one of those libraries, its Composer requirement must be declared in that package. `friendlypos-web` remains proprietary and depends on `boctulus/openfactura-sdk`; it is not a public release candidate.
+
+The new gate, `scripts/distribution/verify-release-artifacts.php`, examines Composer-produced ZIPs for the core and all 14 local packages plus the generated starter. It rejects vendored directories, known third-party library signatures, and frontend distributions, while allowing first-party framework files. `--self-test` verifies four rejected fixtures, one allowed framework fixture, and the `.git` safety guard. `--with-consumer-install` creates temporary VCS repositories from the exact ZIPs, installs all local packages with the core in a clean Composer consumer, checks platform requirements and autoload smoke paths, and separately installs PDF and Code Tools from VCS against the stable Packagist core. These checks do not use a Composer `path` repository.
+
+| Artifact | Candidate result | Previous published core |
+| --- | ---: | ---: |
+| Core Composer ZIP | 274 files; 445,539 compressed bytes; 1,634,054 expanded bytes | `v2.0.2`: 273 files; 475,250 compressed bytes; 1,604,399 expanded bytes |
+| Generated starter | 457 files; 5,285,868 expanded bytes | Not a Composer core artifact |
+| `friendlypos-web` ZIP | 101 files; 292,184 expanded bytes | Before removal, 495 copied third-party files occupied its `third_party/` tree |
+| Third-party or frontend payload detected by the gate | 0 in core, extension ZIPs, and starter | — |
+
+This is not a meaningful reduction in the core's expanded size: the candidate is 29,655 bytes larger than the previously published core archive. The architectural improvement is that copied third-party payloads are rejected, the starter and Composer release have distinct rules, and two optional implementations now have standalone Composer contracts. The starter still contains the first-party application scaffold needed to be usable.
+
+### Core inventory and dependency boundary
+
+The PHP AST inventory in `docs/audit/simplerest-core-class-inventory-20261023.csv` covers 270 PHP files under `src/framework/` and 240 named classes, interfaces, traits, or enums. Those declarations comprise 201 `CORE`, 16 `OPTIONAL`, and 23 `INTERNAL` symbols. The two dynamic cleaner aliases are separate `LEGACY` entries, for 242 inventory rows total.
+
+| Category | Decision and current scope |
+| --- | --- |
+| `CORE` | Keep HTTP, Request/Response, routing, middleware, configuration/bootstrap, controllers and REST API, automatic endpoints, DB/Schema/Query Builder, essential security/authentication, and extension contracts. These responsibilities were not split. |
+| `OPTIONAL` | `AngularCleaner` and `BootstrapCleaner` implementations moved to `boctulus/simplerest-code-tools`. PDF stays in `boctulus/simplerest-pdf`. `Bt5Form`, `AdminLte`, `BootstrapPaginator`, `CMS_Scanner`, `DomCrawler`, Google Drive, WooCommerce, Hugging Face, and OneSignal remain in core for now; they require a separate API migration and feature tests before extraction. `DomCrawler`'s Symfony dependencies are now optional. |
+| `INTERNAL` | Generated starter templates are scaffolding, not runtime extension APIs. |
+| `LEGACY` | The two former cleaner FQCNs remain as deprecated shims and resolve to Code Tools when it is installed. A consumer that calls either cleaner must install the optional package; otherwise the shim throws a `LogicException` with the installation direction. |
+
+A read-only search of GoProp PHP outside its bundled framework found a direct use of `Bt5Form` in `app/Views/userlogin/login.php`; it found no direct GoProp references to the other listed integration classes. This supports retaining the UI builder and does not prove that other external consumers do not use the remaining public classes. No runtime GoProp test was run and GoProp was not modified.
+
+The candidate core manifest now requires PHP `>=8.1,<8.5`, `ext-pdo`, `ext-mbstring`, and three Composer packages: `doctrine/inflector`, `psr/http-message`, and `firebase/php-jwt`. Its lockfile has zero additional transitive production packages for those requirements. The baseline manifest required five Composer packages and locked three additional production transitives (eight runtime packages total); `symfony/dom-crawler` and `symfony/css-selector` are now in `require-dev` and `suggest`. The published `v2.0.2` manifest still has its old requirements until a future core release.
+
+All 14 local package manifests now declare their PHP range, license, real core or package requirements, PSR-4/provider metadata, and development requirements where applicable. The release gate runs `composer validate --strict --no-check-publish` on the root and all 14 manifests.
+
+### Local package inventory and publication status
+
+| Package | Classification | Decision |
+| --- | --- | --- |
+| `boctulus/az-seeder` | Test-data seeder | Development/support package; not a public consumer extension. |
+| `boctulus/basic-acl` | Framework ACL extension | Proprietary; keep private. |
+| `boctulus/cli-test` | CLI testing utility | Development-only; not a public runtime package. |
+| `boctulus/dummyapi` | Example/test API | Fixture package; not a public runtime package. |
+| `boctulus/exchange-rate` | Reusable integration candidate | Manifest/provider corrected; requires focused tests, consumer documentation, and isolated install review. |
+| `boctulus/fine-grained-acl` | Framework ACL extension | Proprietary; keep private. |
+| `boctulus/friendlypos-web` | Product/application integration | Proprietary; copied third-party code removed; not publishable as a public package. |
+| `boctulus/llm-providers` | Reusable AI integration candidate | Core dependency declared; requires focused tests and consumer documentation. |
+| `boctulus/openfactura-sdk` | Framework-coupled SDK | Core dependency and provider metadata declared; requires isolated tests and release review. |
+| `boctulus/shopifyconnector` | Reusable external integration candidate | PSR-4 metadata corrected; requires isolated tests and consumer documentation. |
+| `boctulus/simplerest-code-tools` | Optional development extension | Standalone Composer install, optimized autoload, command discovery, and 4 package tests (11 assertions) pass against stable core `v2.0.2`; ready for a reviewed split release. |
+| `boctulus/simplerest-pdf` | Optional PDF extension | Core constraint updated to `^2.0`; standalone Composer install, optimized autoload, and 1 package test (2 assertions) pass against stable core `v2.0.2`; ready for a reviewed split release. |
+| `boctulus/web-test` | Web testing utility | Development-only; not a public runtime package. |
+| `boctulus/zippy` | Product-specific application integration | Proprietary; keep private. |
+
+The repository still has 14 local subpackage manifests. All 14 were packaged and installed together from temporary VCS repositories in the consumer gate; only PDF and Code Tools were additionally installed and tested as independent candidates. The public package count was not changed by this work: no subpackage was pushed, tagged, or registered on Packagist.
+
+### Verification and remaining release gates
+
+On PHP 8.3.36 with Composer 2.8.5, the current candidate passed:
+
+- the distribution detector self-test;
+- strict Composer validation for the root and all 14 package manifests;
+- artifact scans for the core, all package ZIPs, and the starter;
+- a clean VCS consumer install of the core plus all 14 local packages, including optimized package autoload smoke paths and platform checks;
+- standalone PDF and Code Tools consumers against the stable Packagist core `v2.0.2`, including each package's test suite;
+- focused root Composer/CSS tests: 5 tests and 23 assertions;
+- standalone package-root installs and tests for PDF (1 test, 2 assertions) and Code Tools (4 tests, 11 assertions);
+- the documentation governance guard.
+
+CI now runs the focused tests and independent extension suites on PHP 8.1, 8.2, 8.3, and 8.4. The hosted matrix has not been run as part of this work; only PHP 8.3.36 was available locally. The full root PHPUnit suite was not run. Integration behavior for the retained optional classes and runtime compatibility with GoProp remain follow-up checks.
+
+The reproducible publication route remains `scripts/composer/split-existing-package.ps1` with an explicit source commit and no `-Push` for review. After reviewing the split commit and confirming each package's repository root manifest, a maintainer can publish an immutable new version and register or update the existing Packagist entry. Do not reuse an existing tag. Until the core candidate itself is released, Composer-only consumers still receive the dependency metadata of published `v2.0.2`.
