@@ -307,31 +307,102 @@ class DB
 		return static::getDefaultConnectionId() === static::$current_id_conn;
 	}
 	
-    static function closeConnection(string $conn_id = null) {
-		if ($conn_id == null){
-			$connectionId = static::$current_id_conn;
-			unset(static::$connections[static::$current_id_conn]);
-			unset(static::$transactionLevels[$connectionId]);
-			static::$current_id_conn = NULL; // undefined
-		} else {
-			static::$connections[$conn_id] = null;
-			unset(static::$transactionLevels[$conn_id]);
+	public static function closeConnection(?string $conn_id = null): void
+	{
+		$closeCurrent = $conn_id === null;
+		$connectionId = $conn_id ?? static::$current_id_conn;
+		if ($connectionId === null) {
+			return;
 		}
-		//echo 'Successfully disconnected from the database!';
+
+		static::assertConnectionCanClose($connectionId);
+
+		unset(static::$connections[$connectionId], static::$transactionLevels[$connectionId]);
+		if ($closeCurrent && static::$current_id_conn === $connectionId) {
+			static::$current_id_conn = null;
+		}
+	}
+
+	protected static function assertConnectionCanClose(string $connectionId): void
+	{
+		$connection = static::$connections[$connectionId] ?? null;
+		$managedTransaction = (int) (static::$transactionLevels[$connectionId] ?? 0) > 0;
+		$pdoTransaction = $connection instanceof \PDO && $connection->inTransaction();
+
+		if ($managedTransaction || $pdoTransaction) {
+			throw new \LogicException(
+				"Cannot close connection '{$connectionId}' while an active transaction is open."
+			);
+		}
 	}
 
 	static function getConnectionConfig(){
 		return Config::get()['db_connections'];
 	}
 
-	static function closeAllConnections(){
-		static::$connections = null;
+	public static function closeAllConnections(): void
+	{
+		$activeConnectionIds = static::activeTransactionConnectionIds();
+		if ($activeConnectionIds !== []) {
+			throw new \LogicException(
+				'Cannot close all database connections while active transactions are open on: ' .
+				implode(', ', $activeConnectionIds) . '.'
+			);
+		}
+
+		static::$connections = [];
+		static::$transactionLevels = [];
+	}
+
+	/** Roll back active transactions and close connections during request/error cleanup. */
+	public static function rollbackAndCloseAllConnections(): void
+	{
+		$failedConnectionIds = [];
+
+		foreach (static::$connections ?? [] as $connectionId => $connection) {
+			if (!$connection instanceof \PDO) {
+				unset(static::$transactionLevels[$connectionId]);
+				continue;
+			}
+
+			try {
+				if ($connection->inTransaction()) {
+					try {
+						$connection->rollBack();
+					} catch (\Throwable $e) {
+						// Check the PDO state below; some drivers can report a failed rollback
+						// after they have already ended the transaction.
+					}
+				}
+
+				if ($connection->inTransaction()) {
+					$failedConnectionIds[] = (string) $connectionId;
+				} else {
+					unset(static::$transactionLevels[$connectionId]);
+				}
+			} catch (\Throwable $e) {
+				$failedConnectionIds[] = (string) $connectionId;
+			}
+		}
+
+		if ($failedConnectionIds !== []) {
+			throw new \RuntimeException(
+				'Could not roll back active database transactions on: ' .
+				implode(', ', array_unique($failedConnectionIds)) . '.'
+			);
+		}
+
+		static::$connections = [];
 		static::$transactionLevels = [];
 	}
 	
 	public function __destruct()
     {
-        static::closeAllConnections();        
+        try {
+            static::rollbackAndCloseAllConnections();
+        } catch (\Throwable $e) {
+            // Destructors must not replace the error already ending the request.
+        }
     }
 	
 	static function countConnections(){

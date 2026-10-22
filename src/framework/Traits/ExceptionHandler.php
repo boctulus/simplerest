@@ -17,7 +17,11 @@ trait ExceptionHandler
      */
     function exception_handler(\Throwable $e) {
         $current_conn = DB::getCurrentConnectionId();
-        DB::closeAllConnections();
+        try {
+            DB::rollbackAndCloseAllConnections();
+        } catch (\Throwable $cleanupError) {
+            error_log('SimpleRest could not fully roll back database connections while handling an exception.');
+        }
 
         $error_msg = $e->getMessage();
 
@@ -177,4 +181,3 @@ trait ExceptionHandler
 		}
 	}
 }
-    

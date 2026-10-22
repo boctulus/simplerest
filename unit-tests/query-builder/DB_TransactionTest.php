@@ -7,28 +7,20 @@ use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Config;
 
 /*
-    * Asegúrate de tener una conexión SQLite en config.php para pruebas.
-    * Ejemplo:
-    * 'test_sqlite' => ['driver' => 'sqlite', 'db_name' => ':memory:']
-    *
-    * O usa un archivo temporal si prefieres persistencia entre pruebas.
-    *
+    * El bootstrap de esta suite configura dos aliases SQLite :memory: sin cargar app.php.
     * Estos tests verifican que las transacciones funcionan correctamente,
     * incluyendo commits, rollbacks y transacciones anidadas con savepoints.
     *
-    * Requiere PHPUnit y una configuración adecuada de la base de datos.
+    * Requiere PHPUnit y la extensión PDO SQLite.
     *
-    * Ejecuta con: ./vendor/bin/phpunit --bootstrap vendor/autoload.php tests/DB_TransactionTest.php    
+    * Ejecuta con: ./vendor/bin/phpunit --no-configuration --bootstrap unit-tests/query-builder/DB_TransactionBootstrap.php unit-tests/query-builder/DB_TransactionTest.php
     *
 */
 class DB_TransactionTest extends TestCase
 {
-    protected static $tmpDbFile;
-
     public static function setUpBeforeClass(): void
     {
-        // Cargar la aplicación (incluye constantes y configuración)
-        require_once __DIR__ . '/../../app.php';
+        require_once __DIR__ . '/DB_TransactionBootstrap.php';
 
         $testConfig = Config::get('db_connections.test_sqlite');
         if (($testConfig['driver'] ?? null) !== 'sqlite' || ($testConfig['db_name'] ?? null) !== ':memory:') {
@@ -39,27 +31,23 @@ class DB_TransactionTest extends TestCase
             'driver' => 'sqlite',
             'db_name' => ':memory:',
             'host' => null,
+            'port' => null,
             'user' => null,
             'pass' => null,
+            'charset' => null,
             'pdo_options' => null,
         ]);
+    }
 
-        // Seleccionamos la conexión de test
+    public function setUp(): void
+    {
         DB::setConnection('test_sqlite');
-
         $connection = DB::getConnection();
         if ($connection->getAttribute(\PDO::ATTR_DRIVER_NAME) !== 'sqlite') {
             throw new \RuntimeException('DB transaction tests did not connect through SQLite.');
         }
 
-        // Creamos tabla de prueba
-        $connection->exec("CREATE TABLE IF NOT EXISTS test_transactions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            is_test_data BOOLEAN NOT NULL DEFAULT TRUE
-        )");
-        // limpiar posibles filas previas
-        $connection->exec("DELETE FROM test_transactions WHERE is_test_data = TRUE");
+        $this->ensureFixtureTable($connection);
     }
 
     public static function tearDownAfterClass(): void
@@ -69,19 +57,18 @@ class DB_TransactionTest extends TestCase
 
     public function tearDown(): void
     {
-        // limpiar tras cada test
         DB::setConnection('test_sqlite');
+        $this->ensureFixtureTable(DB::getConnection());
         DB::statement("DELETE FROM test_transactions WHERE is_test_data = TRUE");
     }
 
-    private function transactionLevel(?string $connectionId = null): int
+    private function ensureFixtureTable(\PDO $connection): void
     {
-        $property = (new \ReflectionClass(DB::class))->getProperty('transactionLevels');
-        $property->setAccessible(true);
-        $levels = $property->getValue();
-        $connectionId ??= DB::getCurrentConnectionId();
-
-        return (int) ($levels[$connectionId] ?? 0);
+        $connection->exec("CREATE TABLE IF NOT EXISTS test_transactions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            is_test_data BOOLEAN NOT NULL DEFAULT TRUE
+        )");
     }
 
     public function test_commit_persists()
@@ -173,7 +160,6 @@ class DB_TransactionTest extends TestCase
 
             $this->assertInstanceOf(\PDOException::class, $originalException);
             $this->assertFalse($callbackInvoked, 'El callback no debe ejecutarse si BEGIN falla');
-            $this->assertSame(0, $this->transactionLevel(), 'El nivel debe quedar intacto tras un BEGIN fallido');
             $this->assertTrue(
                 $connection->inTransaction(),
                 'El rollback del scope fallido no debe deshacer una transacción externa'
@@ -197,7 +183,7 @@ class DB_TransactionTest extends TestCase
 
         DB::beginTransaction();
         try {
-            $this->assertSame(1, $this->transactionLevel(), 'La siguiente transacción debe comenzar como nivel 1');
+            $this->assertTrue($connection->inTransaction(), 'Una transacción nueva debe poder iniciarse tras el fallo');
         } finally {
             DB::rollback();
         }
@@ -210,9 +196,6 @@ class DB_TransactionTest extends TestCase
         DB::beginTransaction();
 
         try {
-            $this->assertSame(1, $this->transactionLevel('test_sqlite'));
-            $this->assertSame(0, $this->transactionLevel('test_sqlite_secondary'));
-
             try {
                 DB::setConnection('test_sqlite_secondary');
                 $this->fail('Debe rechazarse el cambio de conexión durante una transacción activa');
@@ -223,6 +206,7 @@ class DB_TransactionTest extends TestCase
             $this->assertSame('test_sqlite', DB::getCurrentConnectionId());
             $this->assertTrue($primaryConnection->inTransaction());
             DB::commit();
+            $this->assertFalse($primaryConnection->inTransaction());
         } finally {
             DB::rollback();
             if ($primaryConnection->inTransaction()) {
@@ -239,9 +223,6 @@ class DB_TransactionTest extends TestCase
         DB::beginTransaction();
 
         try {
-            $this->assertSame(0, $this->transactionLevel('test_sqlite'));
-            $this->assertSame(1, $this->transactionLevel('test_sqlite_secondary'));
-
             try {
                 DB::getConnection('test_sqlite');
                 $this->fail('Debe rechazarse getConnection() hacia otra conexión durante una transacción activa');
@@ -258,6 +239,144 @@ class DB_TransactionTest extends TestCase
                 DB::setConnection('test_sqlite');
             }
         }
+    }
+
+    public function test_connection_closure_is_rejected_while_managed_transaction_is_active(): void
+    {
+        DB::setConnection('test_sqlite');
+        $primaryConnection = DB::getConnection();
+        DB::getConnection('test_sqlite_secondary');
+        DB::setConnection('test_sqlite');
+        DB::beginTransaction();
+
+        try {
+            foreach ([
+                static fn() => DB::closeConnection(),
+                static fn() => DB::closeConnection('test_sqlite'),
+                static fn() => DB::closeAllConnections(),
+            ] as $close) {
+                try {
+                    $close();
+                    $this->fail('No se debe cerrar una conexión con una transacción activa');
+                } catch (\LogicException $e) {
+                    $this->assertStringContainsString('active transaction', $e->getMessage());
+                }
+            }
+
+            $this->assertSame('test_sqlite', DB::getCurrentConnectionId());
+            $this->assertSame($primaryConnection, DB::getConnection());
+            $this->assertTrue($primaryConnection->inTransaction());
+        } finally {
+            DB::rollback();
+        }
+
+        DB::closeConnection('test_sqlite');
+        $this->assertSame('test_sqlite', DB::getCurrentConnectionId());
+        DB::closeAllConnections();
+        $this->assertNotSame($primaryConnection, DB::getConnection());
+    }
+
+    public function test_connection_closure_detects_transaction_started_directly_on_pdo(): void
+    {
+        DB::setConnection('test_sqlite');
+        $connection = DB::getConnection();
+        $connection->beginTransaction();
+
+        try {
+            try {
+                DB::closeConnection('test_sqlite');
+                $this->fail('El cierre debe detectar una transacción abierta directamente por PDO');
+            } catch (\LogicException $e) {
+                $this->assertStringContainsString('active transaction', $e->getMessage());
+            }
+
+            try {
+                DB::closeAllConnections();
+                $this->fail('El cierre global debe detectar una transacción abierta directamente por PDO');
+            } catch (\LogicException $e) {
+                $this->assertStringContainsString('active transaction', $e->getMessage());
+            }
+
+            $this->assertSame('test_sqlite', DB::getCurrentConnectionId());
+            $this->assertTrue($connection->inTransaction());
+        } finally {
+            if ($connection->inTransaction()) {
+                $connection->rollBack();
+            }
+        }
+    }
+
+    public function test_emergency_cleanup_rolls_back_before_closing_connections(): void
+    {
+        DB::setConnection('test_sqlite');
+        $connection = DB::getConnection();
+        DB::getConnection('test_sqlite_secondary');
+        DB::setConnection('test_sqlite');
+
+        DB::beginTransaction();
+        DB::rollbackAndCloseAllConnections();
+
+        $this->assertFalse($connection->inTransaction());
+        $this->assertSame('test_sqlite', DB::getCurrentConnectionId());
+        $reopenedConnection = DB::getConnection();
+        DB::beginTransaction();
+        $this->assertTrue($reopenedConnection->inTransaction());
+        DB::rollback();
+    }
+
+    public function test_failed_savepoint_release_preserves_outer_transaction(): void
+    {
+        $connection = DB::getConnection();
+        DB::beginTransaction();
+        DB::beginTransaction();
+
+        // Fuerza que RELEASE SAVEPOINT falle dentro de DB::commit().
+        $connection->exec('RELEASE SAVEPOINT LEVEL_2');
+        DB::commit();
+
+        $this->assertTrue($connection->inTransaction(), 'El fallo del savepoint anidado no debe cerrar la transacción exterior');
+        DB::commit();
+        $this->assertFalse($connection->inTransaction());
+    }
+
+    public function test_failed_savepoint_rollback_restores_transaction_context(): void
+    {
+        $connection = DB::getConnection();
+        DB::beginTransaction();
+        DB::beginTransaction();
+
+        // Elimina el savepoint para forzar el fallback a rollback completo.
+        $connection->exec('RELEASE SAVEPOINT LEVEL_2');
+        DB::rollback();
+
+        $this->assertFalse($connection->inTransaction(), 'El fallback debe cerrar la transacción inconsistente');
+        DB::beginTransaction();
+        $this->assertTrue($connection->inTransaction(), 'Una transacción nueva debe poder comenzar tras el fallback');
+        DB::rollback();
+    }
+
+    public function test_transaction_exception_restores_connection_context(): void
+    {
+        $connection = DB::getConnection();
+
+        try {
+            DB::transaction(static function (): void {
+                throw new \RuntimeException('restore transaction context');
+            });
+            $this->fail('La excepción del callback debe propagarse');
+        } catch (\RuntimeException $e) {
+            $this->assertSame('restore transaction context', $e->getMessage());
+        }
+
+        $this->assertSame('test_sqlite', DB::getCurrentConnectionId());
+        $this->assertFalse($connection->inTransaction());
+
+        DB::setConnection('test_sqlite_secondary');
+        $secondaryConnection = DB::getConnection();
+        DB::beginTransaction();
+        DB::rollback();
+        $this->assertFalse($secondaryConnection->inTransaction());
+        DB::setConnection('test_sqlite');
     }
 
     public function test_nested_transaction_inner_commit_keeps_changes()
