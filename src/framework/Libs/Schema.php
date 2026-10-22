@@ -494,6 +494,16 @@ class Schema
 				}
 		
 				return (!empty($res));	
+
+			case 'pgsql':
+				$schema_name = $db_name ?? DB::schema() ?? 'public';
+				$res = DB::select("SELECT 1
+					FROM information_schema.tables
+					WHERE table_schema = ?
+						AND table_name = ?
+					LIMIT 1;", [$schema_name, $tb_name]);
+
+				return (!empty($res));
 		}
 	} 
 
@@ -1245,9 +1255,7 @@ class Schema
 			$cmd .= "COLLATE {$field['collation']} ";
 		}
 
-		$is_primary = $field_name !== null && isset($this->indices[$field_name]) && $this->indices[$field_name] === 'PRIMARY';
-
-		if (isset($field['nullable']) && !$is_primary){
+		if (isset($field['nullable'])){
 			$cmd .= "{$field['nullable']} ";
 		}else
 			$cmd .= "NOT NULL ";
@@ -1258,7 +1266,7 @@ class Schema
 
 		if (isset($field['auto'])){
 			$cmd .= "AUTO_INCREMENT PRIMARY KEY";
-		} elseif ($is_primary) {
+		} elseif ($field_name !== null && isset($this->indices[$field_name]) && $this->indices[$field_name] === 'PRIMARY') {
 			// Si el campo está marcado como PRIMARY KEY (sin AUTO_INCREMENT)
 			$cmd .= "PRIMARY KEY";
 		}
