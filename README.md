@@ -10,7 +10,7 @@ The framework has its own runtime and conventions. Its behavior is defined by th
 - `app/` — application controllers, models, commands, schemas, views, and modules used by this checkout.
 - `config/` — application configuration and route registration.
 - `database/` — database migration files used by this application.
-- `unit-tests/` — repository test files; this directory is not listed in the current `phpunit.xml` test suites.
+- `unit-tests/` — repository PHPUnit tests, selected by `composer test` and listed in the current `phpunit.xml` suite.
 - `examples/` — example code.
 - `packages/` — packages maintained in this repository.
 - `docs/` — topic documentation and the documentation audit record.
@@ -42,7 +42,7 @@ composer test
 composer cs
 ```
 
-`composer test` invokes `phpunit --colors=always`. The current `phpunit.xml` points to `tests/` and `packages/boctulus/friendlypos-web/tests`; the root `tests/` directory is absent and `unit-tests/` is not configured as a suite. Whether the command runs successfully or discovers the intended repository tests has not been verified. `composer cs` invokes PHPStan against `src` at level 7.
+`composer test` invokes `phpunit --colors=always unit-tests`. The current `phpunit.xml` also lists `unit-tests/` as its configured suite. This verifies the test selection only; whether the command runs successfully has not been verified. `composer cs` invokes PHPStan against `src` at level 7.
 
 ## Contributing
 

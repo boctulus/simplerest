@@ -1,12 +1,12 @@
 ---
 title: Continue documentation audit from current implementation
-current_step: 1
-next_step: null
+current_step: 2
+next_step: 3
 parallelizable_steps: []
 parent: null
 global_complexity: high
 for_agents: true
-next_step_complexity: null
+next_step_complexity: high
 tags: [documentation, audit, docs]
 ---
 ## Pasos planificados
