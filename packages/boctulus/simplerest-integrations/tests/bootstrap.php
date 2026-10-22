@@ -16,3 +16,10 @@ if ($autoloadFile === null) {
 }
 
 require_once $autoloadFile;
+
+if (!function_exists('is_cli')) {
+    function is_cli(): bool
+    {
+        return PHP_SAPI === 'cli';
+    }
+}

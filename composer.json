@@ -53,6 +53,9 @@
       ]
    },
    "autoload":{
+	  "files":[
+	    "src/framework/Compatibility/OptionalPackageClassAliases.php"
+	  ],
       "psr-4":{
          "Boctulus\\Simplerest\\Core\\":"src/framework/"
       },

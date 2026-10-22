@@ -6,7 +6,7 @@
     "require": {
         "php": ">=8.1,<8.5",
         "ext-curl": "*",
-        "boctulus/simplerest": "^2.0",
+        "boctulus/simplerest": "^2.0 || ^3.0",
         "symfony/css-selector": "^6.4",
         "symfony/dom-crawler": "^6.4"
     },
