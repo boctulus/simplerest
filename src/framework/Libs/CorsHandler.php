@@ -52,7 +52,11 @@ class CorsHandler
             return;
         }
 
-        $origin = $_SERVER['HTTP_ORIGIN'] ?? ($_SERVER['HTTP_REFERER'] ?? '');
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+        if ($origin === '') {
+            return;
+        }
 
         if ($this->isOriginAllowed($origin)) {
             $this->setCorsHeaders($origin);
