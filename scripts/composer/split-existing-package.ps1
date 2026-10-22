@@ -43,7 +43,7 @@ if ($LASTEXITCODE -ne 0 -or $manifestJson.name -ne $Package) {
     throw "Commit $resolvedCommit does not contain the expected package manifest for '$Package'."
 }
 
-$splitOutput = & git subtree split "--prefix=$($definition.Path)" $resolvedCommit
+$splitOutput = & git subtree split --quiet "--prefix=$($definition.Path)" $resolvedCommit
 if ($LASTEXITCODE -ne 0) {
     throw "git subtree split failed for '$Package' at $resolvedCommit."
 }
