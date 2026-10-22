@@ -1,20 +1,20 @@
 {
   "version": 1,
-  "generated_on": "2026-10-05",
-  "stage": "post-semantic public-map exclusion audit",
-  "scope": "Every Markdown file under docs after semantic review of public-map exclusions; no technical claims were changed.",
+  "generated_on": "2026-10-22",
+  "stage": "incremental Composer integration audit addition",
+  "scope": "Added one internal Composer integration audit and its audit-register link; adjusted counts incrementally from the 2026-10-05 inventory. The full inventory was not regenerated.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 761,
+  "inline_markdown_links_seen": 765,
   "counts": {
-    "markdown_scanned": 200,
+    "markdown_scanned": 201,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 386,
+    "local_markdown_links": 387,
     "broken_local_markdown_links": 0,
     "classifications": {
       "needs-review": 8,
       "canonical": 19,
-      "internal/audit": 74,
+      "internal/audit": 75,
       "legacy": 99
     }
   },
@@ -3722,6 +3722,18 @@
       ]
     },
     {
+      "path": "docs/audit/goprop-composer-integration-2026-10.md",
+      "classification": "internal/audit",
+      "basis": "One-time cross-repository audit of Composer release provenance, command loading, payload size, dependency constraints, and core parity; not public usage documentation.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/README.md",
+          "line": 292
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
       "path": "docs/audit/README.md",
       "classification": "internal/audit",
       "basis": "Audit register with claim-level evidence, finding states, and unresolved verification boundaries; not public usage documentation.",
@@ -3936,6 +3948,11 @@
           "target": "docs/audit/public-map-exclusion-review-2026-10-05.md",
           "exists": true,
           "line": 284
+        },
+        {
+          "target": "docs/audit/goprop-composer-integration-2026-10.md",
+          "exists": true,
+          "line": 292
         }
       ]
     },

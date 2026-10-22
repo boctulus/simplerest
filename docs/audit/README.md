@@ -286,3 +286,7 @@ See the [semantic review of excluded public-map pages](public-map-exclusion-revi
 ## Quarantined legacy pages
 
 Pages under [`pending/`](pending/README.md) are retained as audit inputs and are not part of the user documentation. In particular, `pending/framework/For-Reasoning-Architecture.md` is a proposal; its runtime profiles and command examples have not been verified as implemented SimpleRest features.
+
+## Composer integration audit
+
+See the [GoProp Composer integration audit](goprop-composer-integration-2026-10.md) for release-source, dependency, CLI discovery, package-size, and core-parity findings.

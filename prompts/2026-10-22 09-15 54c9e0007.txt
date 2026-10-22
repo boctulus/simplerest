@@ -1,0 +1,20 @@
+Tarea solicitada:
+
+Necesito que GoProp funcione con SimpleRest instalado como dependencia de Composer. Audita ambos repositorios y deja el resultado en D:\laragon\www\simplerest\docs\.
+
+Preguntas a resolver:
+- Los comandos CLI en app/Commands: propiedad del proyecto o del paquete Composer; riesgo de que SimpleRest reemplace los comandos propios de GoProp.
+- Qué comandos CLI de SimpleRest son útiles y si conviene distribuirlos como paquete o paquetes separados.
+- Si el paquete Composer publicado ya está reducido o todavía contiene código y assets que deberían excluirse.
+- Mejoras del core presentes en GoProp que no estén en el core canónico de SimpleRest.
+- Si Packagist distribuye D:\laragon\www\simplerest directamente o el resultado curado de php com pack.
+
+Contexto y steering posterior del usuario:
+- Continuar la auditoría actual; no retomar ni inspeccionar el contenido de la tarea activa transaction-connection-affinity.md de GoProp.
+- Incorporar el informe preliminar del usuario: registrar la fuente exacta de Packagist; distinguir repositorio de desarrollo, salida simplerest-pack y artefacto Composer; revisar autoload-dev, búsqueda CLI en vendor, precedencia y colisiones; medir contenido; comparar el core por hashes y evaluar diferencias semánticamente.
+- Bloqueo adicional: GoProp exige phpmailer/phpmailer ^6.9 y SimpleRest publicado/desarrollo exige ^7.1. El empaquetador convierte PHPMailer en sugerencia, por lo que hay que confirmar qué manifiesto usa Packagist.
+- No ejecutar el empaquetador durante la auditoría de solo lectura: limpia el destino antes de validar el origen.
+
+Alcance de esta ejecución:
+- Auditoría y documentación solamente; preservar cambios locales preexistentes.
+- No instalar Composer, no ejecutar el empaquetador, pruebas, migraciones ni bootstrap de la aplicación.
