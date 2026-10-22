@@ -32,10 +32,10 @@ status: partial
 
 ## Sobre esta documentación
 
-Este piloto publica una selección española curada de la fuente editorial canónica. Reordena el material para lectura y navegación; no sustituye `docs/` ni crea una fuente editorial independiente.
+Esta primera edición pública ofrece una selección española curada de la fuente editorial canónica. Reordena el material para lectura y navegación; no sustituye `docs/` ni crea una fuente editorial independiente.
 
-::: warning Estado del piloto
-No es una publicación completa del framework. Cada guía indica qué está trazado y qué no se ha comprobado; una página parcial no debe leerse como un procedimiento listo para producción.
+::: warning Cobertura en desarrollo
+La documentación todavía no cubre todas las capacidades del framework. Cada guía distingue lo verificado de lo pendiente; las secciones marcadas como parciales no deben tratarse como procedimientos validados para producción.
 :::
 
 ## Recorrido recomendado
@@ -45,4 +45,4 @@ No es una publicación completa del framework. Cada guía indica qué está traz
 3. [Ciclo de request](/core/request-lifecycle) recorre las ramas HTTP y CLI que están trazadas.
 4. Las guías de [Base de datos](/database), [HTTP/API](/api), [seguridad](/security) y [webhooks](/webhooks) detallan los contratos actuales y sus límites.
 
-El español ocupa `/`. Los directorios `/en/`, `/it/` y `/pt/` quedan reservados para traducciones futuras; este piloto no las genera ni publica enlaces a ellas.
+El español ocupa `/`. Los directorios `/en/`, `/it/` y `/pt/` quedan reservados para traducciones futuras; esta edición no las genera ni publica enlaces a ellas.
