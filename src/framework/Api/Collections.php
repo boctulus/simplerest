@@ -59,8 +59,9 @@ class Collections extends ApiController
         $entity = $data['entity'];
         $refs   = $data['refs'];
 
-        if (in_array(strtolower($entity), $this->forbidden_tables)){
-            error('Forbidden', 403, "Table '". $entity . "' is not available for collections");
+        $entityError = $this->entityValidationError($entity);
+        if ($entityError !== null){
+            error(...$entityError);
         }
 
         try {            
@@ -119,8 +120,14 @@ class Collections extends ApiController
                 if (!$sp && $row['belongs_to'] != auth()->uid()){
                     error('Forbidden', 403, 'You are not the owner');
                 }         
+
+                $storedEntity = (string) $row['entity'];
+                $entityError = $this->entityValidationError($storedEntity);
+                if ($entityError !== null){
+                    error(...$entityError);
+                }
                                
-                $entity = Strings::snakeToCamel($row['entity']);    
+                $entity = Strings::snakeToCamel($storedEntity);
            
                 $model  = get_model_name($entity);
 
@@ -206,6 +213,13 @@ class Collections extends ApiController
                 error('Forbidden', 403, 'You are not the owner');
             }         
 
+            $storedEntity = (string) $row['entity'];
+            $entityError = $this->entityValidationError($storedEntity, (string) $entity);
+            if ($entityError !== null){
+                error(...$entityError);
+            }
+            $entity = $storedEntity;
+
             $model = get_model_name($entity);
 
             if (!class_exists($model))
@@ -239,6 +253,19 @@ class Collections extends ApiController
         }
 
     } // 
+
+    protected function entityValidationError(string $entity, ?string $requestedEntity = null): ?array
+    {
+        if (in_array(strtolower($entity), $this->forbidden_tables, true)){
+            return ['Forbidden', 403, "Table '" . $entity . "' is not available for collections"];
+        }
+
+        if ($requestedEntity !== null && strtolower($requestedEntity) !== strtolower($entity)){
+            return ['Entity does not match the collection', 400, null];
+        }
+
+        return null;
+    }
         
         
 } // end class
