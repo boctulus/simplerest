@@ -825,9 +825,40 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function orderBy(array $o)
+	function orderBy($field, $direction = null)
 	{
-		$this->order = array_merge($this->order, $o);
+		if (is_array($field)) {
+			if ($direction !== null) {
+				throw new \InvalidArgumentException('The direction argument is only valid when ordering by a single field');
+			}
+
+			foreach ($field as $order_field => $order_direction) {
+				if (!is_string($order_field) || $order_field === '') {
+					throw new \InvalidArgumentException('Array orderBy arguments must be an associative array of field => direction pairs');
+				}
+
+				if (!is_string($order_direction) || !in_array(strtoupper($order_direction), ['ASC', 'DESC'], true)) {
+					throw new \InvalidArgumentException('Order direction must be ASC or DESC');
+				}
+			}
+
+			$this->order = array_merge($this->order, $field);
+			return $this;
+		}
+
+		if (!is_string($field) || $field === '') {
+			throw new \InvalidArgumentException('The orderBy field must be a non-empty string or an associative array of field => direction pairs');
+		}
+
+		if ($direction === null) {
+			throw new \InvalidArgumentException('The orderBy direction is required when ordering by a single field');
+		}
+
+		if (!is_string($direction) || !in_array(strtoupper($direction), ['ASC', 'DESC'], true)) {
+			throw new \InvalidArgumentException('Order direction must be ASC or DESC');
+		}
+
+		$this->order[$field] = $direction;
 		return $this;
 	}
 
