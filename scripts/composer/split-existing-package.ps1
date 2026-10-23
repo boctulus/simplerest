@@ -19,6 +19,8 @@ param(
     [ValidateSet('FilterRepo', 'Subtree')]
     [string]$Strategy = 'FilterRepo',
 
+    [switch]$PersistSplit,
+
     [switch]$Push
 )
 
@@ -166,6 +168,25 @@ if ($Strategy -eq 'Subtree') {
         }
         $splitMethod = "FilterRepo ($($filterRepoVersion -join ''))"
         Write-Output "Tree hash:     $filteredTree (matches source path tree)"
+
+        if ($PersistSplit) {
+            $persistedRef = "refs/package-splits/$($definition.Repository)"
+            & git -C $repositoryRoot show-ref --verify --quiet $persistedRef
+            if ($LASTEXITCODE -eq 0) {
+                throw "Local split ref '$persistedRef' already exists; refusing to replace it."
+            }
+
+            & git -C $repositoryRoot fetch --no-tags --no-write-fetch-head $clonePath "refs/heads/split-source:$persistedRef"
+            if ($LASTEXITCODE -ne 0) {
+                throw "Could not persist the validated split commit for '$Package'."
+            }
+
+            $persistedCommit = (& git -C $repositoryRoot rev-parse $persistedRef).Trim()
+            if ($LASTEXITCODE -ne 0 -or $persistedCommit -ne $splitCommit) {
+                throw "Persisted ref '$persistedRef' does not point to the validated split commit."
+            }
+            Write-Output "Persisted ref: $persistedRef"
+        }
     } finally {
         if (Test-Path -LiteralPath $clonePath) {
             $resolvedClonePath = [System.IO.Path]::GetFullPath((Resolve-Path -LiteralPath $clonePath).Path)
@@ -187,7 +208,11 @@ Write-Output "Package tree:  $splitCommit"
 Write-Output "Target repo:   $($definition.Repository)"
 
 if (-not $Push) {
-    Write-Output 'Dry run only. Re-run with -Push after package tests and release review pass.'
+    if ($PersistSplit) {
+        Write-Output 'Split persisted locally; no remote ref was changed.'
+    } else {
+        Write-Output 'Dry run only. Re-run with -Push after package tests and release review pass.'
+    }
     return
 }
 

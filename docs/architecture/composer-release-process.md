@@ -30,7 +30,7 @@ Moving public classes out of the core is incompatible with `v2.0.2`; keep that r
 
 ### Repository extraction and remaining blockers
 
-The tested extraction fallback in `scripts/composer/split-existing-package.ps1` uses `git filter-repo` inside a disposable shared clone. It avoids checking out the monorepo's overlong historical filenames, filters only the requested package path, verifies the resulting root tree hash matches the source package tree, and strictly validates the filtered Composer manifest. It changes no reference or file in the SimpleRest repository. The package trees below were split from source commit `3bf45ea5658afd30cd4165c4882e15520797e73d`:
+The tested extraction fallback in `scripts/composer/split-existing-package.ps1` uses `git filter-repo` inside a disposable shared clone. It avoids checking out the monorepo's overlong historical filenames, filters only the requested package path, verifies the resulting root tree hash matches the source package tree, and strictly validates the filtered Composer manifest. By default, it changes no reference or file in the SimpleRest repository. The optional `-PersistSplit` switch fetches the validated commit into `refs/package-splits/<vendor>/<package>` without changing a branch or tag; this keeps the commit available for a later fast-forward push. The package trees below were split from source commit `3bf45ea5658afd30cd4165c4882e15520797e73d`:
 
 | Package | Source tree | Filtered split HEAD | GitHub main / release tag |
 | --- | --- | --- |
