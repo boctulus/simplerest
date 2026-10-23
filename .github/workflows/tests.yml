@@ -94,3 +94,25 @@ jobs:
           if ($files.Count -ne 17) { throw "Snapshot should contain 17 curated files; found $($files.Count)" }
           if (Test-Path "$env:RUNNER_TEMP/curated-snapshot/repository/docs") { throw 'Internal documentation leaked into the package' }
           if (Test-Path "$env:RUNNER_TEMP/curated-snapshot/repository/archive") { throw 'Archived code leaked into the package' }
+
+  legacy-cli-smoke:
+    runs-on: ubuntu-latest
+    name: Legacy application CLI smoke
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: dom, mbstring, json, pdo
+          coverage: none
+          tools: composer:v2
+      - name: Install isolated development dependencies
+        env:
+          COMPOSER: composer-dev.json
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Verify php com does not crash
+        run: timeout 20s php com
+      - name: Verify help command
+        run: timeout 20s php com help
