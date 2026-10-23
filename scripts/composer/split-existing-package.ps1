@@ -1,7 +1,14 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('boctulus/simplerest-pdf', 'boctulus/simplerest-code-tools', 'boctulus/simplerest-integrations')]
+    [ValidateSet(
+        'boctulus/simplerest-fpdf',
+        'boctulus/simplerest-scaffolding',
+        'boctulus/simplerest-bootstrap-html',
+        'boctulus/simplerest-web-inspection',
+        'boctulus/simplerest-api-clients',
+        'boctulus/llm-providers'
+    )]
     [string]$Package,
 
     [string]$SourceCommit = 'HEAD',
@@ -12,26 +19,43 @@ param(
     [ValidateSet('FilterRepo', 'Subtree')]
     [string]$Strategy = 'FilterRepo',
 
+    [switch]$PersistSplit,
+
     [switch]$Push
 )
 
 $ErrorActionPreference = 'Stop'
 
 $packageDefinitions = @{
-    'boctulus/simplerest-pdf' = @{
-        Path = 'packages/boctulus/simplerest-pdf'
-        Repository = 'boctulus/simplerest-pdf'
-        Remote = 'git@github.com:boctulus/simplerest-pdf.git'
+    'boctulus/simplerest-fpdf' = @{
+        Path = 'packages/boctulus/simplerest-fpdf'
+        Repository = 'boctulus/simplerest-fpdf'
+        Remote = 'git@github.com:boctulus/simplerest-fpdf.git'
     }
-    'boctulus/simplerest-code-tools' = @{
-        Path = 'packages/boctulus/simplerest-code-tools'
-        Repository = 'boctulus/simplerest-code-tools'
-        Remote = 'git@github.com:boctulus/simplerest-code-tools.git'
+    'boctulus/simplerest-scaffolding' = @{
+        Path = 'packages/boctulus/simplerest-scaffolding'
+        Repository = 'boctulus/simplerest-scaffolding'
+        Remote = 'git@github.com:boctulus/simplerest-scaffolding.git'
     }
-    'boctulus/simplerest-integrations' = @{
-        Path = 'packages/boctulus/simplerest-integrations'
-        Repository = 'boctulus/simplerest-integrations'
-        Remote = 'git@github.com:boctulus/simplerest-integrations.git'
+    'boctulus/simplerest-bootstrap-html' = @{
+        Path = 'packages/boctulus/simplerest-bootstrap-html'
+        Repository = 'boctulus/simplerest-bootstrap-html'
+        Remote = 'git@github.com:boctulus/simplerest-bootstrap-html.git'
+    }
+    'boctulus/simplerest-web-inspection' = @{
+        Path = 'packages/boctulus/simplerest-web-inspection'
+        Repository = 'boctulus/simplerest-web-inspection'
+        Remote = 'git@github.com:boctulus/simplerest-web-inspection.git'
+    }
+    'boctulus/simplerest-api-clients' = @{
+        Path = 'packages/boctulus/simplerest-api-clients'
+        Repository = 'boctulus/simplerest-api-clients'
+        Remote = 'git@github.com:boctulus/simplerest-api-clients.git'
+    }
+    'boctulus/llm-providers' = @{
+        Path = 'packages/boctulus/llm-providers'
+        Repository = 'boctulus/llm-providers'
+        Remote = 'git@github.com:boctulus/llm-providers.git'
     }
 }
 
@@ -144,6 +168,25 @@ if ($Strategy -eq 'Subtree') {
         }
         $splitMethod = "FilterRepo ($($filterRepoVersion -join ''))"
         Write-Output "Tree hash:     $filteredTree (matches source path tree)"
+
+        if ($PersistSplit) {
+            $persistedRef = "refs/package-splits/$($definition.Repository)"
+            & git -C $repositoryRoot show-ref --verify --quiet $persistedRef
+            if ($LASTEXITCODE -eq 0) {
+                throw "Local split ref '$persistedRef' already exists; refusing to replace it."
+            }
+
+            & git -C $repositoryRoot fetch --no-tags --no-write-fetch-head $clonePath "refs/heads/split-source:$persistedRef"
+            if ($LASTEXITCODE -ne 0) {
+                throw "Could not persist the validated split commit for '$Package'."
+            }
+
+            $persistedCommit = (& git -C $repositoryRoot rev-parse $persistedRef).Trim()
+            if ($LASTEXITCODE -ne 0 -or $persistedCommit -ne $splitCommit) {
+                throw "Persisted ref '$persistedRef' does not point to the validated split commit."
+            }
+            Write-Output "Persisted ref: $persistedRef"
+        }
     } finally {
         if (Test-Path -LiteralPath $clonePath) {
             $resolvedClonePath = [System.IO.Path]::GetFullPath((Resolve-Path -LiteralPath $clonePath).Path)
@@ -165,7 +208,11 @@ Write-Output "Package tree:  $splitCommit"
 Write-Output "Target repo:   $($definition.Repository)"
 
 if (-not $Push) {
-    Write-Output 'Dry run only. Re-run with -Push after package tests and release review pass.'
+    if ($PersistSplit) {
+        Write-Output 'Split persisted locally; no remote ref was changed.'
+    } else {
+        Write-Output 'Dry run only. Re-run with -Push after package tests and release review pass.'
+    }
     return
 }
 

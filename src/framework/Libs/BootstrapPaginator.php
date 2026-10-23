@@ -6,7 +6,7 @@ $implementation = \Boctulus\Simplerest\Integrations\Libs\BootstrapPaginator::cla
 
 if (!class_exists($implementation)) {
     throw new \LogicException(
-        'BootstrapPaginator is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+        'BootstrapPaginator is optional. Install boctulus/simplerest-bootstrap-html from a Composer VCS repository.'
     );
 }
 

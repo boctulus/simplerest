@@ -453,7 +453,7 @@ class DBRels
 
             if (!class_exists($commandClass)) {
                 throw new \LogicException(
-                    "Pivots.php is missing for this schema. Install boctulus/simplerest-code-tools or run the pivot scan command before using relationships."
+                    "Pivots.php is missing for this schema. Install boctulus/simplerest-scaffolding or run the pivot scan command before using relationships."
                 );
             }
 

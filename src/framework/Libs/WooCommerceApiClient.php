@@ -6,7 +6,7 @@ $implementation = \Boctulus\Simplerest\Integrations\Libs\WooCommerceApiClient::c
 
 if (!class_exists($implementation)) {
     throw new \LogicException(
-        'WooCommerceApiClient is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+        'WooCommerceApiClient is optional. Install boctulus/simplerest-api-clients from a Composer VCS repository.'
     );
 }
 

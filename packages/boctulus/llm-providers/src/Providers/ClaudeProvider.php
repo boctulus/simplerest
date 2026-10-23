@@ -10,13 +10,7 @@ use Boctulus\LLMProviders\Exceptions\ProviderException;
 /**
  * Proveedor para Claude AI (Anthropic)
  *
- * Soporta los modelos de Claude incluyendo:
- * - Claude 3 Opus
- * - Claude 3 Sonnet
- * - Claude 3 Haiku
- * - Claude 2.1
- * - Claude 2.0
- * - Claude Instant 1.2
+ * Sends non-streaming Messages API requests to Anthropic.
  */
 class ClaudeProvider implements LLMProviderInterface
 {
@@ -29,7 +23,7 @@ class ClaudeProvider implements LLMProviderInterface
     protected $params;
     protected $error_msg;
 
-    protected $model = 'claude-3-sonnet-20240229';
+    protected $model = 'claude-sonnet-4-6';
 
     // API client
     public $client;
@@ -61,7 +55,6 @@ class ClaudeProvider implements LLMProviderInterface
                 "x-api-key" => $this->api_key,
                 "anthropic-version" => $this->api_version
             ])
-            ->disableSSL()
             ->enablePostRequestCache()
             ->decode();
     }
@@ -153,6 +146,7 @@ class ClaudeProvider implements LLMProviderInterface
     public function exec(?string $model = null): array
     {
         $model_endpoints = [
+            'claude-sonnet-4-6'       => static::MESSAGES,
             'claude-3-opus-20240229'   => static::MESSAGES,
             'claude-3-sonnet-20240229' => static::MESSAGES,
             'claude-3-haiku-20240307'  => static::MESSAGES,

@@ -1,6 +1,6 @@
 {
-    "name": "boctulus/simplerest-code-tools",
-    "description": "AST based PHP source transformation tools used by SimpleRest development commands",
+    "name": "boctulus/simplerest-scaffolding",
+    "description": "Code generators and PHP development tools for SimpleRest applications",
     "type": "library",
     "license": "MIT",
     "require": {

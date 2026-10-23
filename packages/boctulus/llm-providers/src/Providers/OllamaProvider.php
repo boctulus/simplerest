@@ -25,7 +25,6 @@ public function __construct()
         ->setHeaders([
             'Content-Type' => 'application/json'
         ])
-        ->disableSSL()
         ->enablePostRequestCache()
         ->decode();
 }

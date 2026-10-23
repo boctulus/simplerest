@@ -1,0 +1,7 @@
+<phpunit bootstrap="tests/bootstrap.php" colors="true" cacheDirectory=".phpunit.cache">
+    <testsuites>
+        <testsuite name="SimpleRest Web Inspection">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

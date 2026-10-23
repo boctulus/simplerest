@@ -53,8 +53,8 @@ class PackagerComposerManifestTest extends TestCase
         $this->assertSame('^7.1', $manifest['require']['firebase/php-jwt']);
         $this->assertArrayNotHasKey('symfony/dom-crawler', $manifest['require']);
         $this->assertArrayNotHasKey('symfony/css-selector', $manifest['require']);
-        $this->assertStringContainsString('explicit VCS repository', $manifest['suggest']['boctulus/simplerest-pdf']);
-        $this->assertStringContainsString('explicit VCS repository', $manifest['suggest']['boctulus/simplerest-code-tools']);
+        $this->assertStringContainsString('boctulus/simplerest-fpdf', implode(' ', array_keys($manifest['suggest'])));
+        $this->assertStringContainsString('boctulus/simplerest-scaffolding', implode(' ', array_keys($manifest['suggest'])));
         $this->assertSame('^5.2', $manifest['require']['vlucas/phpdotenv']);
         $this->assertArrayNotHasKey('phpmailer/phpmailer', $manifest['require']);
         $this->assertArrayNotHasKey('require-dev', $manifest);

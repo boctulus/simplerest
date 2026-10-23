@@ -5,10 +5,21 @@ declare(strict_types=1);
 use Boctulus\Simplerest\CodeTools\Cleaners\AngularCleaner;
 use Boctulus\Simplerest\CodeTools\Cleaners\BootstrapCleaner;
 use Boctulus\Simplerest\Core\Libs\PHPParser;
+use Boctulus\Simplerest\CodeTools\Commands\make\MakeApiCommand;
+use Boctulus\Simplerest\CodeTools\Commands\make\MakeControllerCommand;
+use Boctulus\Simplerest\CodeTools\Commands\make\MakeMigrationFileCommand;
+use Boctulus\Simplerest\CodeTools\Commands\make\MakeModelCommand;
 use PHPUnit\Framework\TestCase;
 
 final class CodeToolsPackageTest extends TestCase
 {
+    public function testRepresentativeGeneratorsAutoloadFromThePackageClassmap(): void
+    {
+        foreach ([MakeModelCommand::class, MakeControllerCommand::class, MakeApiCommand::class, MakeMigrationFileCommand::class] as $command) {
+            self::assertTrue(class_exists($command), $command);
+        }
+    }
+
     public function testReduceCodeKeepsRequestedMethodsAndDropsOtherMethods(): void
     {
         $source = <<<'PHP'

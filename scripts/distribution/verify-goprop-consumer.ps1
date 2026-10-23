@@ -26,7 +26,8 @@ if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($simpleRestRoot)) {
     throw 'Run this script from a SimpleRest Git working tree.'
 }
 $simpleRestRoot = [System.IO.Path]::GetFullPath($simpleRestRoot)
-$htmlBuildersPath = Join-Path $simpleRestRoot 'packages/boctulus/simplerest-html-builders'
+$bootstrapHtmlPath = Join-Path $simpleRestRoot 'packages/boctulus/simplerest-bootstrap-html'
+$webInspectionPath = Join-Path $simpleRestRoot 'packages/boctulus/simplerest-web-inspection'
 
 $autoloadFiles = @(
     'src/framework/Api/ApiController.php',
@@ -83,12 +84,14 @@ function Invoke-ComposerConsumer([string]$ConsumerPath, [bool]$IncludeHtmlBuilde
     $manifest = Get-Content -LiteralPath $goPropManifestPath -Raw | ConvertFrom-Json
     $manifest.require.'boctulus/simplerest' = '^3.0'
     if ($IncludeHtmlBuilders) {
-        $manifest.require | Add-Member -NotePropertyName 'boctulus/simplerest-html-builders' -NotePropertyValue '^1.0' -Force
+        $manifest.require | Add-Member -NotePropertyName 'boctulus/simplerest-bootstrap-html' -NotePropertyValue '^1.0' -Force
+        $manifest.require | Add-Member -NotePropertyName 'boctulus/simplerest-web-inspection' -NotePropertyValue '^1.0' -Force
     }
 
     $repositories = @(
         (New-PathRepository 'boctulus/simplerest' $simpleRestRoot '3.0.0'),
-        (New-PathRepository 'boctulus/simplerest-html-builders' $htmlBuildersPath '1.0.0')
+        (New-PathRepository 'boctulus/simplerest-bootstrap-html' $bootstrapHtmlPath '1.0.0'),
+        (New-PathRepository 'boctulus/simplerest-web-inspection' $webInspectionPath '1.0.0')
     ) + @($manifest.repositories)
     $manifest.repositories = $repositories
     $manifest.PSObject.Properties.Remove('require-dev')
@@ -160,21 +163,26 @@ try {
     $builderAvailable = class_exists($legacyBuilder);
 } catch (LogicException $error) {
     if ($mode !== 'without-html-builders'
-        || !str_contains($error->getMessage(), 'boctulus/simplerest-html-builders')) {
+        || !str_contains($error->getMessage(), 'boctulus/simplerest-bootstrap-html')) {
         fwrite(STDERR, "Unexpected legacy Bt5Form resolution error: {$error->getMessage()}\n");
         exit(1);
     }
-    fwrite(STDOUT, "EXPECTED BLOCKER: GoProp's current manifest lacks boctulus/simplerest-html-builders.\n");
+    fwrite(STDOUT, "EXPECTED BLOCKER: GoProp's current manifest lacks boctulus/simplerest-bootstrap-html.\n");
     fwrite(STDOUT, "PASS five local override classes loaded from GoProp files without redeclaration.\n");
     exit(0);
 }
 
 if ($mode === 'without-html-builders') {
-    fwrite(STDERR, "GoProp's current manifest unexpectedly resolved Bt5Form without the HTML Builders package.\n");
+    fwrite(STDERR, "GoProp's current manifest unexpectedly resolved Bt5Form without the Bootstrap HTML package.\n");
     exit(1);
 }
 if (!$builderAvailable || !class_exists('Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form')) {
-    fwrite(STDERR, "Bt5Form did not resolve after installing SimpleRest HTML Builders.\n");
+    fwrite(STDERR, "Bt5Form did not resolve after installing SimpleRest Bootstrap HTML.\n");
+    exit(1);
+}
+$legacyCrawler = 'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler';
+if (!class_exists($legacyCrawler) || !class_exists('Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler')) {
+    fwrite(STDERR, "GoProp's DomCrawler wrapper did not resolve after installing SimpleRest Web Inspection.\n");
     exit(1);
 }
 $builder = new ReflectionClass($legacyBuilder);
@@ -183,7 +191,8 @@ if ($builder->getName() !== 'Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form') {
     exit(1);
 }
 fwrite(STDOUT, "PASS five local override classes loaded from GoProp files without redeclaration.\n");
-fwrite(STDOUT, "PASS legacy Bt5Form resolved through boctulus/simplerest-html-builders.\n");
+fwrite(STDOUT, "PASS legacy Bt5Form resolved through boctulus/simplerest-bootstrap-html.\n");
+fwrite(STDOUT, "PASS legacy DomCrawler resolved through boctulus/simplerest-web-inspection.\n");
 '@
         [System.IO.File]::WriteAllText($smokePath, $smokeSource, [System.Text.UTF8Encoding]::new($false))
         $mode = if ($IncludeHtmlBuilders) { 'with-html-builders' } else { 'without-html-builders' }

@@ -6,7 +6,7 @@ $implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\CMSs\Magent
 
 if (!class_exists($implementation)) {
     throw new \LogicException(
-        'Magento is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+        'Magento is optional. Install boctulus/simplerest-web-inspection from a Composer VCS repository.'
     );
 }
 

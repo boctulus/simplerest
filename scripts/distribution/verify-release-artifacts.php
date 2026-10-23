@@ -527,14 +527,14 @@ if (__DISCOVER_CODE_TOOLS__) {
     $registry = new Boctulus\Simplerest\Core\Libs\CommandRegistry(false, [
         'application_path' => __DIR__ . '/app/Commands',
         'vendor_path' => __DIR__ . '/vendor',
-        'packages' => ['boctulus/simplerest-code-tools'],
+                'packages' => ['boctulus/simplerest-scaffolding'],
     ]);
     $registry->loadGroups();
     if (!$registry->hasGroup('make')) {
-        fwrite(STDERR, "SimpleRest command discovery did not register the Code Tools make group.\n");
+                fwrite(STDERR, "SimpleRest command discovery did not register the Scaffolding make group.\n");
         exit(1);
     }
-    fwrite(STDOUT, "Discovered the Code Tools make command group.\n");
+            fwrite(STDOUT, "Discovered the Scaffolding make command group.\n");
 }
 fwrite(STDOUT, 'Resolved ' . count($classes) . ' consumer classes and ' . count($traits) . " traits.\n");
 PHP;
@@ -565,7 +565,6 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
         'Boctulus\\Simplerest\\CodeTools\\Cleaners\\BootstrapCleaner',
         'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\BootstrapCleaner',
         'Boctulus\\Simplerest\\Core\\Libs\\PHPParser',
-        'Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator',
         'Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler',
         'Boctulus\\Simplerest\\Integrations\\Libs\\GoogleDrive',
         'Boctulus\\Simplerest\\Integrations\\Libs\\HuggingFace',
@@ -579,7 +578,6 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
         'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Squarespace',
         'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Wix',
         'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\WordPress',
-        'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator',
         'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler',
         'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive',
         'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace',
@@ -597,16 +595,18 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
         'Boctulus\\Simplerest\\HtmlBuilders\\AdminLte',
         'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
         'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte',
+        'Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator',
+        'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator',
         'Boctulus\\LLMProviders\\Factory\\LLMFactory',
     ], $providers), ['Boctulus\\ShopifyConnector\\Traits\\ShopifyWooCommerceAdaptorTrait'], true);
 
     $candidates = [
         [
-            'name' => 'boctulus/simplerest-pdf',
+            'name' => 'boctulus/simplerest-fpdf',
             'classes' => ['Boctulus\\Simplerest\\Core\\Libs\\PdfBase'],
         ],
         [
-            'name' => 'boctulus/simplerest-code-tools',
+            'name' => 'boctulus/simplerest-scaffolding',
             'classes' => [
                 'Boctulus\\Simplerest\\Core\\Libs\\PHPParser',
                 'Boctulus\\Simplerest\\CodeTools\\Cleaners\\BootstrapCleaner',
@@ -615,15 +615,24 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
             ],
         ],
         [
-            'name' => 'boctulus/simplerest-integrations',
+            'name' => 'boctulus/simplerest-api-clients',
             'classes' => [
-                'Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator',
-                'Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler',
                 'Boctulus\\Simplerest\\Integrations\\Libs\\GoogleDrive',
                 'Boctulus\\Simplerest\\Integrations\\Libs\\HuggingFace',
                 'Boctulus\\Simplerest\\Integrations\\Libs\\OneSignal',
                 'Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerce',
                 'Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerceApiClient',
+                'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive',
+                'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace',
+                'Boctulus\\Simplerest\\Core\\Libs\\OneSignal',
+                'Boctulus\\Simplerest\\Core\\Libs\\WooCommerce',
+                'Boctulus\\Simplerest\\Core\\Libs\\WooCommerceApiClient',
+            ],
+        ],
+        [
+            'name' => 'boctulus/simplerest-web-inspection',
+            'classes' => [
+                'Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler',
                 'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\Scanner',
                 'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Magento',
                 'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\PrestaShop',
@@ -631,13 +640,7 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
                 'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Squarespace',
                 'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Wix',
                 'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\WordPress',
-                'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator',
                 'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler',
-                'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive',
-                'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace',
-                'Boctulus\\Simplerest\\Core\\Libs\\OneSignal',
-                'Boctulus\\Simplerest\\Core\\Libs\\WooCommerce',
-                'Boctulus\\Simplerest\\Core\\Libs\\WooCommerceApiClient',
                 'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\Scanner',
                 'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Magento',
                 'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\PrestaShop',
@@ -655,12 +658,14 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
             ],
         ],
         [
-            'name' => 'boctulus/simplerest-html-builders',
+            'name' => 'boctulus/simplerest-bootstrap-html',
             'classes' => [
                 'Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form',
                 'Boctulus\\Simplerest\\HtmlBuilders\\AdminLte',
                 'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
                 'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte',
+                'Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator',
+                'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator',
             ],
         ],
     ];
@@ -682,7 +687,7 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
             $candidateConsumer,
             array_merge(['Boctulus\\Simplerest\\Core\\Request'], $candidate['classes']),
             [],
-            $candidate['name'] === 'boctulus/simplerest-code-tools'
+            $candidate['name'] === 'boctulus/simplerest-scaffolding'
         );
 
         $packageDirectory = $candidateConsumer . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $candidate['name']);
@@ -713,7 +718,7 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
         fwrite(STDOUT, "PASS {$candidate['name']} VCS consumer tests against Packagist core {$stableCore}\n");
     }
 
-    fwrite(STDOUT, "PASS independent Composer VCS install, optimized autoload, and package-owned tests for PDF, Code Tools, Integrations, LLM Providers, and HTML Builders against stable core v2\n");
+    fwrite(STDOUT, "PASS independent Composer VCS install, optimized autoload, and package-owned tests for FPDF, Scaffolding, Bootstrap HTML, Web Inspection, API Clients, and LLM Providers against stable core v2\n");
 }
 
 function extractComposerArtifact(string $archivePath, string $destination): void
@@ -825,24 +830,24 @@ function runMissingOptionalPackagesSmoke(string $consumerDirectory): void
 <?php
 require __DIR__ . '/vendor/autoload.php';
 $aliases = [
-    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form' => ['Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form', 'boctulus/simplerest-html-builders'],
-    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte' => ['Boctulus\\Simplerest\\HtmlBuilders\\AdminLte', 'boctulus/simplerest-html-builders'],
-    'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator' => ['Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler' => ['Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive' => ['Boctulus\\Simplerest\\Integrations\\Libs\\GoogleDrive', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace' => ['Boctulus\\Simplerest\\Integrations\\Libs\\HuggingFace', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\OneSignal' => ['Boctulus\\Simplerest\\Integrations\\Libs\\OneSignal', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\WooCommerce' => ['Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerce', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\WooCommerceApiClient' => ['Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerceApiClient', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\Scanner' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\Scanner', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Magento' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Magento', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\PrestaShop' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\PrestaShop', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Shopify' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Shopify', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Squarespace' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Squarespace', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Wix' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Wix', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\WordPress' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\WordPress', 'boctulus/simplerest-integrations'],
-    'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\AngularCleaner' => ['Boctulus\\Simplerest\\CodeTools\\Cleaners\\AngularCleaner', 'boctulus/simplerest-code-tools'],
-    'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\BootstrapCleaner' => ['Boctulus\\Simplerest\\CodeTools\\Cleaners\\BootstrapCleaner', 'boctulus/simplerest-code-tools'],
+    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form' => ['Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form', 'boctulus/simplerest-bootstrap-html'],
+    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte' => ['Boctulus\\Simplerest\\HtmlBuilders\\AdminLte', 'boctulus/simplerest-bootstrap-html'],
+    'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator' => ['Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator', 'boctulus/simplerest-bootstrap-html'],
+    'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler' => ['Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler', 'boctulus/simplerest-web-inspection'],
+    'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive' => ['Boctulus\\Simplerest\\Integrations\\Libs\\GoogleDrive', 'boctulus/simplerest-api-clients'],
+    'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace' => ['Boctulus\\Simplerest\\Integrations\\Libs\\HuggingFace', 'boctulus/simplerest-api-clients'],
+    'Boctulus\\Simplerest\\Core\\Libs\\OneSignal' => ['Boctulus\\Simplerest\\Integrations\\Libs\\OneSignal', 'boctulus/simplerest-api-clients'],
+    'Boctulus\\Simplerest\\Core\\Libs\\WooCommerce' => ['Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerce', 'boctulus/simplerest-api-clients'],
+    'Boctulus\\Simplerest\\Core\\Libs\\WooCommerceApiClient' => ['Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerceApiClient', 'boctulus/simplerest-api-clients'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\Scanner' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\Scanner', 'boctulus/simplerest-web-inspection'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Magento' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Magento', 'boctulus/simplerest-web-inspection'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\PrestaShop' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\PrestaShop', 'boctulus/simplerest-web-inspection'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Shopify' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Shopify', 'boctulus/simplerest-web-inspection'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Squarespace' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Squarespace', 'boctulus/simplerest-web-inspection'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Wix' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Wix', 'boctulus/simplerest-web-inspection'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\WordPress' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\WordPress', 'boctulus/simplerest-web-inspection'],
+    'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\AngularCleaner' => ['Boctulus\\Simplerest\\CodeTools\\Cleaners\\AngularCleaner', 'boctulus/simplerest-scaffolding'],
+    'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\BootstrapCleaner' => ['Boctulus\\Simplerest\\CodeTools\\Cleaners\\BootstrapCleaner', 'boctulus/simplerest-scaffolding'],
 ];
 
 foreach ($aliases as $legacyClass => [$implementation, $package]) {
@@ -877,21 +882,27 @@ PHP;
 function verifyCoreV3Consumers(string $artifactDirectory, array $packageManifests, string $temporaryDirectory): void
 {
     $releasePackageClasses = [
-        'boctulus/simplerest-pdf' => ['Boctulus\\Simplerest\\Core\\Libs\\PdfBase'],
-        'boctulus/simplerest-code-tools' => [
+        'boctulus/simplerest-fpdf' => ['Boctulus\\Simplerest\\Core\\Libs\\PdfBase'],
+        'boctulus/simplerest-scaffolding' => [
             'Boctulus\\Simplerest\\Core\\Libs\\PHPParser',
             'Boctulus\\Simplerest\\CodeTools\\Cleaners\\BootstrapCleaner',
             'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\BootstrapCleaner',
             'Boctulus\\Simplerest\\CodeTools\\Commands\\make\\MakeConsoleCommand',
         ],
-        'boctulus/simplerest-integrations' => [
-            'Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator',
-            'Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler',
+        'boctulus/simplerest-api-clients' => [
             'Boctulus\\Simplerest\\Integrations\\Libs\\GoogleDrive',
             'Boctulus\\Simplerest\\Integrations\\Libs\\HuggingFace',
             'Boctulus\\Simplerest\\Integrations\\Libs\\OneSignal',
             'Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerce',
             'Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerceApiClient',
+            'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive',
+            'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace',
+            'Boctulus\\Simplerest\\Core\\Libs\\OneSignal',
+            'Boctulus\\Simplerest\\Core\\Libs\\WooCommerce',
+            'Boctulus\\Simplerest\\Core\\Libs\\WooCommerceApiClient',
+        ],
+        'boctulus/simplerest-web-inspection' => [
+            'Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler',
             'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\Scanner',
             'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Magento',
             'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\PrestaShop',
@@ -899,13 +910,8 @@ function verifyCoreV3Consumers(string $artifactDirectory, array $packageManifest
             'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Squarespace',
             'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Wix',
             'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\WordPress',
-            'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator',
             'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler',
-            'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive',
-            'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace',
-            'Boctulus\\Simplerest\\Core\\Libs\\OneSignal',
-            'Boctulus\\Simplerest\\Core\\Libs\\WooCommerce',
-            'Boctulus\\Simplerest\\Core\\Libs\\WooCommerceApiClient',
+            'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler',
             'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\Scanner',
             'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Magento',
             'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\PrestaShop',
@@ -918,11 +924,13 @@ function verifyCoreV3Consumers(string $artifactDirectory, array $packageManifest
             'Boctulus\\LLMProviders\\Factory\\LLMFactory',
             'Boctulus\\LLMProviders\\Contracts\\LLMProviderInterface',
         ],
-        'boctulus/simplerest-html-builders' => [
+        'boctulus/simplerest-bootstrap-html' => [
             'Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form',
             'Boctulus\\Simplerest\\HtmlBuilders\\AdminLte',
             'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
             'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator',
+            'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator',
         ],
     ];
 
@@ -980,7 +988,7 @@ function verifyCoreV3Consumers(string $artifactDirectory, array $packageManifest
             $consumerDirectory,
             array_merge(['Boctulus\\Simplerest\\Core\\Request'], $classes),
             [],
-            $packageName === 'boctulus/simplerest-code-tools'
+            $packageName === 'boctulus/simplerest-scaffolding'
         );
         runPackageOwnedTests($consumerDirectory, $packageName);
         fwrite(STDOUT, "PASS {$packageName} independent artifact consumer against SimpleRest 3.0.0\n");

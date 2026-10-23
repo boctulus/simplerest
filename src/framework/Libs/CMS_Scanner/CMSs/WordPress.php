@@ -6,7 +6,7 @@ $implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\CMSs\WordPr
 
 if (!class_exists($implementation)) {
     throw new \LogicException(
-        'WordPress is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+        'WordPress is optional. Install boctulus/simplerest-web-inspection from a Composer VCS repository.'
     );
 }
 

@@ -1,8 +1,8 @@
 {
     "name": "boctulus/llm-providers",
-    "description": "Unified interface for multiple LLM providers (OpenAI, Claude, and more)",
+    "description": "Unified interface for OpenAI, Anthropic, xAI, and Ollama LLM providers",
     "type": "library",
-    "keywords": ["llm", "openai", "chatgpt", "claude", "anthropic", "ai", "machine-learning"],
+    "keywords": ["llm", "openai", "chatgpt", "claude", "anthropic", "xai", "ollama", "ai", "machine-learning"],
     "license": "MIT",
     "authors": [
         {

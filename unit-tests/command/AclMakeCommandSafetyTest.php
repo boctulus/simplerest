@@ -10,7 +10,7 @@ final class AclMakeCommandSafetyTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         $command = file_get_contents($root . '/app/Commands/acl/AclMakeCommand.php');
-        $legacy = file_get_contents($root . '/packages/boctulus/simplerest-code-tools/src/Commands/make/BaseMakeCommand.php');
+        $legacy = file_get_contents($root . '/packages/boctulus/simplerest-scaffolding/src/Commands/make/BaseMakeCommand.php');
         $acl = file_get_contents($root . '/packages/boctulus/fine-grained-acl/src/Acl.php');
 
         $this->assertStringNotContainsString("DB::table('roles')", $command);

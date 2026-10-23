@@ -1,14 +1,18 @@
 # SimpleRest Composer package boundaries
 
-## Existing package identities
+## Current package catalogue
 
-This design reuses the Composer names already present in the repository. It does not add a `simplerest-cli` package or another core package.
+The current names describe each extension's responsibility. Previously published package names remain available as legacy repositories with their existing immutable tags; the new names are separate Composer identities.
 
 | Composer name | Responsibility | Distribution decision |
 | --- | --- | --- |
 | `boctulus/simplerest` | Runtime framework core, including routing, HTTP, database abstractions, models, schema tools, security primitives, and the CLI contract/registry | Keep the existing root package identity. Its Composer autoload contains only `src/framework/`; Git archive exclusions reduce the installable `dist` artifact. |
-| `boctulus/simplerest-code-tools` | Optional PHP parser and reusable `make` command implementations | Keep the existing identity. Split this directory reproducibly from the monorepo for its own Git release history. Applications opt in to its commands. |
-| `boctulus/simplerest-pdf` | Optional `PdfBase` and FPDF integration | Keep the existing identity. Split this directory reproducibly from the monorepo for its own Git release history. |
+| `boctulus/simplerest-scaffolding` | PHP parser, `make` commands, code generators, and development helpers | Successor identity to Code Tools. Applications opt in to its commands. |
+| `boctulus/simplerest-bootstrap-html` | Bootstrap 5 forms, AdminLTE components, and Bootstrap pagination | Successor identity to HTML Builders; `AdminLte` continues to extend `Bt5Form`. |
+| `boctulus/simplerest-fpdf` | `PdfBase` adapter around the FPDF library | Successor identity to the old generic PDF package name. |
+| `boctulus/simplerest-web-inspection` | CMS and technology detection plus HTML selector helpers | Extracted from the former mixed Integrations bundle. |
+| `boctulus/simplerest-api-clients` | Google Drive, WooCommerce, OneSignal, and Hugging Face clients | Extracted from the former mixed Integrations bundle. |
+| `boctulus/llm-providers` | A unified interface for OpenAI, Anthropic, xAI, and Ollama providers | Separate extension candidate; provider-specific model contracts remain explicit. |
 | `boctulus/basic-acl` | Proprietary basic ACL extension | Keep as an existing local package. Its proprietary license means this work does not publish it publicly. |
 | `boctulus/fine-grained-acl` | Proprietary fine-grained ACL extension | Keep as an existing local package. GoProp retains its application-owned copy until a private distribution is independently authorized and validated. |
 
@@ -18,27 +22,27 @@ The root SimpleRest checkout remains the development application and source mono
 
 `BaseCommand`, `CommandRegistry`, dispatch, parsing, help, and collision checks remain in the core. GoProp and every host application retain their own `app/Commands/` directory and `com` entry point.
 
-`boctulus/simplerest-code-tools` contains the reusable `make` group and PHP source tools. The host application must list the package in `config/commands.php` to expose its commands; installation alone does not enable them. Composer-installed commands are loaded through the package classmap, and their classes use the package namespace so they do not collide with host classes that share a short name.
+`boctulus/simplerest-scaffolding` contains the reusable `make` group and PHP source tools. The host application must list the package in `config/commands.php` to expose its commands; installation alone does not enable them. Composer-installed commands are loaded through the package classmap, and their classes use the package namespace so they do not collide with host classes that share a short name.
 
 `CommandRegistry` resolves providers in this order: host application, explicitly enabled extensions, configured framework defaults. Cross-tier command or alias collisions choose the higher tier and emit a diagnostic. Same-tier collisions fail unless `overrides` identifies one provider. Overrides can select a lower tier explicitly. Host commands use provider ID `application`.
 
 ## Dependency contracts
 
-The core manifest is the source of truth for its PHP and runtime dependency constraints. GoProp's scraper uses the framework `DomCrawler` wrapper, so its base class is part of the core dependency contract. PHPMailer, Google API Client, and Guzzle are optional integrations and are not core installation requirements. `Mail::send`, Google Drive, and SendinBlue report a clear runtime error when their selected adapter lacks its required library; SendinBlue also requires its SDK classes to be supplied by the host application.
+The core manifest is the source of truth for its PHP and runtime dependency constraints. Web Inspection owns the `DomCrawler` wrapper and CMS scanner; API Clients owns external service clients. PHPMailer, Google API Client, and Guzzle are optional integrations and are not core installation requirements. `Mail::send`, Google Drive, and SendinBlue report a clear runtime error when their selected adapter lacks its required library; SendinBlue also requires its SDK classes to be supplied by the host application.
 
-The PDF package owns FPDF. The code-tools package owns PHP Parser. Neither dependency is installed by a production core-only consumer.
+The FPDF package owns FPDF. Scaffolding owns PHP Parser. Neither dependency is installed by a production core-only consumer.
 
 The root development checkout keeps Dotenv and test/tool dependencies under `require-dev`. The curated starter pack has its own runtime manifest and retains Dotenv because its application bootstrap loads `.env` files.
 
 ## Compatibility boundary
 
-Version 2 of the core removes `Core\Libs\PdfBase` and `Core\Libs\PHPParser` from the core tree. Their existing namespaces are provided by the existing PDF and code-tools package names. This is a major-version change and must not be backported to `v1.0.3` or represented by moving an existing tag.
+The current extraction candidate is core `3.0.0`; legacy class names remain compatibility aliases that identify the new owning package. This is a major-version change and must not be backported to `v2.0.2` or represented by moving an existing tag. The GoProp migration test is still pending, so core `3.0.0` remains untagged.
 
 GoProp's current manifest declares PHP `>=8.1,<8.4`; the SimpleRest core declares `>=8.1,<8.5`. Their supported intersection is PHP 8.1 through 8.3. The GoProp `dev` migration must preserve and test that application range before the branch is offered for integration.
 
 ## Distribution limits
 
-The root package's GitHub/Composer `dist` archive excludes the development application, tests, docs, local packages, backups, dumps, third-party frontend assets, and tooling through `.gitattributes`. Assets such as jQuery, Tailwind, Bootstrap, Font Awesome, and their CSS, fonts, and source maps belong to the host application and must not ship in SimpleRest Composer libraries. The root exclusions cover `/app/` and `/public/`; the existing Code Tools, PDF, and ACL package trees contain no frontend asset files. `split-existing-package.ps1` rejects frontend asset files before splitting Code Tools or PDF. For source installs, `build-core-source-snapshot.ps1` preserves the existing `boctulus/simplerest` identity while building a clean package tree from the root manifest and `src/framework/`; it does not add another package identity or change a published tag.
+The root package's GitHub/Composer `dist` archive excludes the development application, tests, docs, local packages, backups, dumps, third-party frontend assets, and tooling through `.gitattributes`. Assets such as jQuery, Tailwind, Bootstrap, Font Awesome, and their CSS, fonts, and source maps belong to the host application and must not ship in SimpleRest Composer libraries. The root exclusions cover `/app/` and `/public/`; the public extension package trees contain no frontend asset files. `split-existing-package.ps1` rejects frontend asset files before splitting a package. For source installs, `build-core-source-snapshot.ps1` preserves the existing `boctulus/simplerest` identity while building a clean package tree from the root manifest and `src/framework/`; it does not add another core identity or change a published tag.
 
 The exact Packagist `v1.0.3` ZIP at reference `e686ceee139f69c444c45a3c4f941842440f8a4f` measured 10,175 files, 430,530,282 compressed bytes and 669,324,750 expanded bytes. It contained 4,263 frontend asset files and 981 files under paths/names matching common third-party libraries, including jQuery and Bootstrap under application modules and `public/`. A `git archive` of candidate commit `439a18044` produced 273 files, 460,895 compressed bytes and 1,654,024 expanded bytes; it contains only `composer.json`, `LICENSE`, `README.md`, and `src/`, with zero JS, CSS, source map, font, or image files and zero matching third-party paths. This candidate is 97.32% smaller by file count, 99.75% smaller by expanded size and 99.89% smaller by compressed size. It is a Git archive measurement, not yet a tagged Composer VCS install. `.gitattributes` does not reduce `--prefer-source`: that mode still clones the SimpleRest development repository and its history. The release record reports both facts rather than treating archive exclusions as source-repository modularization.
 
@@ -54,4 +58,4 @@ A pre-release consumer resolved branch commit `74ac9ea59a637670ed53552443aad96bc
 
 The v2.0.2 tagged consumer install above closes the tagged distribution check for that release. For future releases, path-repository tests remain an iteration check only; readiness requires a fresh install from the committed VCS/archive references, with the resolved commit recorded.
 
-The two optional MIT packages use `git subtree split` from an explicit immutable SimpleRest commit. The script maps only their existing Composer names to the corresponding package directories and repositories. Proprietary ACL packages are outside that public split pipeline.
+Existing Git repositories and their tags are preserved as legacy identities. New package identities use the current `packages/boctulus/*` manifests and receive their own reviewed repository histories and release tags; Packagist registration is a separate later step. Proprietary ACL packages are outside that public split pipeline. Historical measurements and package names in the audit record above refer to the source commits stated with each measurement.

@@ -6,7 +6,7 @@ $implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\Scanner::cl
 
 if (!class_exists($implementation)) {
     throw new \LogicException(
-        'Scanner is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+        'Scanner is optional. Install boctulus/simplerest-web-inspection from a Composer VCS repository.'
     );
 }
 

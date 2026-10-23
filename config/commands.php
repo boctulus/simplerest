@@ -25,7 +25,7 @@ return [
     'paths'    => [],
 
     'packages' => [
-        'boctulus/simplerest-code-tools',
+        'boctulus/simplerest-scaffolding',
     ],
 
     'framework_paths' => [],
