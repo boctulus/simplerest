@@ -259,7 +259,6 @@ return [
 	'providers' => [
 		Boctulus\FineGrainedACL\FineGrainedAclServiceProvider::class,
 		//Boctulus\BasicACL\BasicAclServiceProvider::class,
-		Boctulus\WebTest\ServiceProvider::class,
 		Boctulus\LLMProviders\ServiceProvider::class,
 		// Boctulus\Simplerest\Modules\Xeni\ModuleProvider::class,
 		Boctulus\Simplerest\Modules\Security\ModuleProvider::class,

@@ -729,7 +729,7 @@ php com zippy csv comercio
 
 ### Ejemplo Completo: Package LLM-Providers
 
-#### Rutas CLI (`packages/boctulus/llm-providers/config/cli_routes.php`):
+#### Rutas CLI (`packages/boctulus/simplerest-llm-providers/config/cli_routes.php`):
 
 ```php
 <?php

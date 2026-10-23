@@ -125,7 +125,11 @@ foreach ($includes as $file_entry){
     }    
 }
     
-$config = include __DIR__ . '/config/config.php';
+$config = array_merge(
+    include __DIR__ . '/config/config.php',
+    include __DIR__ . '/config/databases.php'
+);
+Config::load($config);
 
 if ($config['debug']){
     if (function_exists('opcache_reset')) {
@@ -140,8 +144,13 @@ if ($config['debug']){
 
 Translate::useGettext($config['translate']['use_gettext']);
 
-$req  = request(); 
-$lang = $req->shiftQuery('lang') ?? $req->header('Accept-Language');
+if (PHP_SAPI === 'cli') {
+    $lang = null;
+} else {
+    $req  = request();
+    $lang = $req->shiftQuery('lang') ?? $req->header('Accept-Language');
+}
+
 setLang($lang); 
 
 foreach ($config['providers'] as $provider){

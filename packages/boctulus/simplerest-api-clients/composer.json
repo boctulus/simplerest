@@ -1,6 +1,6 @@
 {
     "name": "boctulus/simplerest-api-clients",
-    "description": "Optional Google Drive, WooCommerce, OneSignal, and Hugging Face clients for SimpleRest",
+    "description": "Optional Google Drive, WooCommerce, OneSignal, Hugging Face, WordPress, Pastebin, and SendinBlue clients for SimpleRest",
     "type": "library",
     "license": "MIT",
     "require": {
@@ -12,7 +12,8 @@
         "phpunit/phpunit": "^10.5"
     },
     "suggest": {
-        "google/apiclient": "Required only when using GoogleDrive; the integration reports a clear error until the SDK is installed."
+        "google/apiclient": "Required only when using GoogleDrive; the integration reports a clear error until the SDK is installed.",
+        "guzzlehttp/guzzle": "Required only when using the SendinBlue transactional email adapter."
     },
     "scripts": {
         "test": "phpunit --do-not-cache-result"
@@ -20,6 +21,9 @@
     "autoload": {
         "psr-4": {
             "Boctulus\\Simplerest\\Integrations\\": "src/"
-        }
+        },
+        "classmap": [
+            "src/LegacyCoreLibs/"
+        ]
     }
 }

@@ -67,7 +67,7 @@ Other audited inputs: [ACL command guide](../_internal/legacy/framework/commands
 - Default auth configuration and web auth pages: [config.php](../../config/config.php#L128), [auth routes](../../config/routes/auth.php#L1), and [MyAuthController.php](../../app/Controllers/MyAuthController.php#L45)
 - ACL definition and evaluation: [config/acl.php](../../config/acl.php#L1), [Acl.php](../../src/framework/Security/Acl.php#L61), [AclEngine.php](../../src/framework/Security/Engine/AclEngine.php#L46), and [EffectivePermissionCompiler.php](../../src/framework/Security/Compiler/EffectivePermissionCompiler.php#L80)
 - Automatic API resolution and action gate: [ApiHandler.php](../../src/framework/Handlers/ApiHandler.php#L18), [ResourceController.php](../../src/framework/Api/ResourceController.php#L36), [ApiController.php](../../src/framework/Api/ApiController.php#L121), and [FrontController.php](../../src/framework/FrontController.php#L96)
-- Optional ACL integration: [FineGrainedACL Acl.php](../../packages/boctulus/fine-grained-acl/src/Acl.php#L20) and [BasicACL Acl.php](../../packages/boctulus/basic-acl/src/Acl.php#L5)
+- Optional ACL integration: [FineGrainedACL Acl.php](../../packages/boctulus/simplerest-fine-grained-acl/src/Acl.php#L20) and [BasicACL Acl.php](../../packages/boctulus/simplerest-basic-acl/src/Acl.php#L5)
 
 ## Test coverage and verification performed
 

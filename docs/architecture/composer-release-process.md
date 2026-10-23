@@ -6,6 +6,11 @@
 
 This section supersedes older package and blocker statements below while preserving them as an audit trail.
 
+On 2026-10-23, the local Composer identities and monorepo paths for Basic ACL,
+Fine-Grained ACL, LLM Providers, AZ Seeder, and Shopify Connector were renamed
+with the `simplerest-` prefix. Their GitHub repository slugs and existing
+commits were not changed, and no package was published or tagged by this rename.
+
 | Disposition | Packages and action |
 | --- | --- |
 | Legacy GitHub identities | Preserve `boctulus/simplerest-pdf` (`v1.0.1`), `boctulus/simplerest-code-tools` (`v1.1.0`), `boctulus/simplerest-integrations` (`v1.0.0`), and `boctulus/simplerest-html-builders` (`v1.0.0`) with their tags unchanged. Their current READMEs point to the successor catalog. |
@@ -24,7 +29,7 @@ The six successor repositories were split from source commit `7cb44199e717e2485f
 | `boctulus/simplerest-bootstrap-html` | `7732d273558e334a8ae2bbcddc57a10ca84233dd` | `91a4d7a12f65bd5a071b7c59cad24f7ea497b887` |
 | `boctulus/simplerest-web-inspection` | `7182f6b9318eb6794b5f61329c17103835ef2c28` | `74cc232c2a208e44780fc0e06e1fad7bf8c8ebc4` |
 | `boctulus/simplerest-api-clients` | `f0fe1a4f910642976d727f861c7764cc854afb9d` | `241ab0ebf82ad4fffd4b657a08c726a3c0c1c832` |
-| `boctulus/llm-providers` | `593811387fdddb2d5e376cef72a95d4705b9add3` | `5a3cd4769d405dcde1a196a85828e1613c2e2a63` |
+| `boctulus/simplerest-llm-providers` | `593811387fdddb2d5e376cef72a95d4705b9add3` | `5a3cd4769d405dcde1a196a85828e1613c2e2a63` |
 
 `boctulus/simplerest-fpdf` is the successor identity for the standalone PDF adapter. It contains `PdfBase` and requires `boctulus/simplerest: ^2.0 || ^3.0` plus `setasign/fpdf: ^1.8`. FPDF remains absent from the core's mandatory `require` set. `ProductPDF` contains Relmotor-specific content and remains application code; `InvoiceGenerator` renders HTML views and is not an FPDF renderer.
 
@@ -70,7 +75,7 @@ The root package name remains `boctulus/simplerest`. Packagist consumes this Git
 
 The optional Composer packages `boctulus/simplerest-pdf` and `boctulus/simplerest-code-tools` use their existing repositories and are split from their monorepo directories with `git subtree split`. The new local candidate `boctulus/simplerest-integrations` uses the same reproducible split route, but has no independent repository or Packagist entry yet. A split commit is deterministic for a given source commit and path. The maintainer must record both SHAs. The script defaults to a dry run and refuses to force-update branches or reuse a version tag.
 
-The existing `boctulus/basic-acl` and `boctulus/fine-grained-acl` package manifests are proprietary. This pipeline does not create public repositories or Packagist entries for them.
+The existing `boctulus/simplerest-basic-acl` and `boctulus/simplerest-fine-grained-acl` package manifests are proprietary. This pipeline does not create public repositories or Packagist entries for them.
 
 As of 2026-10-22, the existing public GitHub repositories for Code Tools and PDF resolve and each has a `v1.0.0` tag. Their remote tag trees exactly match their corresponding package directories at SimpleRest commit `74ac9ea59a637670ed53552443aad96bc0e1c3af` (46 and 3 blobs). A clean consumer installed both tags directly through Composer VCS and resolved the core from Packagist; optimized autoload, platform checks, runtime class loading, package command discovery, and a host/package collision smoke passed. The Packagist P2 endpoint still returns 404 for Code Tools and PDF, so default Packagist-only installation remains unavailable. The existing Basic ACL and Fine-Grained ACL names are proprietary local packages; do not create duplicate identities or publish them through this pipeline.
 
@@ -166,16 +171,16 @@ All 15 local package manifests now declare their PHP range, license, real core o
 
 | Package | Classification | Decision |
 | --- | --- | --- |
-| `boctulus/az-seeder` | Test-data seeder | Development/support package; not a public consumer extension. |
-| `boctulus/basic-acl` | Framework ACL extension | Proprietary; keep private. |
+| `boctulus/simplerest-az-seeder` | Test-data seeder | Development/support package; not a public consumer extension. |
+| `boctulus/simplerest-basic-acl` | Framework ACL extension | Proprietary; keep private. |
 | `boctulus/cli-test` | CLI testing utility | Development-only; not a public runtime package. |
 | `boctulus/dummyapi` | Example/test API | Fixture package; not a public runtime package. |
 | `boctulus/exchange-rate` | Reusable integration candidate | Manifest/provider corrected; requires focused tests, consumer documentation, and isolated install review. |
-| `boctulus/fine-grained-acl` | Framework ACL extension | Proprietary; keep private. |
+| `boctulus/simplerest-fine-grained-acl` | Framework ACL extension | Proprietary; keep private. |
 | `boctulus/friendlypos-web` | Product/application integration | Proprietary; copied third-party code removed; not publishable as a public package. |
-| `boctulus/llm-providers` | Reusable AI integration candidate | Core dependency declared; requires focused tests and consumer documentation. |
+| `boctulus/simplerest-llm-providers` | Reusable AI integration candidate | Core dependency declared; requires focused tests and consumer documentation. |
 | `boctulus/openfactura-sdk` | Framework-coupled SDK | Core dependency and provider metadata declared; requires isolated tests and release review. |
-| `boctulus/shopifyconnector` | Reusable external integration candidate | PSR-4 metadata corrected; requires isolated tests and consumer documentation. |
+| `boctulus/simplerest-shopify-connector` | Reusable external integration candidate | PSR-4 metadata corrected; requires isolated tests and consumer documentation. |
 | `boctulus/simplerest-code-tools` | Optional development extension | Standalone Composer install, optimized autoload, command discovery, and 4 package tests (11 assertions) pass against stable core `v2.0.2`; test-ready for split review. |
 | `boctulus/simplerest-integrations` | Optional external/UI integrations | 14 optional implementations moved out of core; Composer VCS install, optimized autoload, and 5 package tests (15 assertions) pass against stable core `v2.0.2`; test-ready for split review. Google API Client is optional within this package. |
 | `boctulus/simplerest-pdf` | Optional PDF extension | Core constraint updated to `^2.0`; standalone Composer install, optimized autoload, and 1 package test (2 assertions) pass against stable core `v2.0.2`; test-ready for split review. |
@@ -211,7 +216,7 @@ The 14 extracted implementations are `BootstrapPaginator`; `CMS_Scanner\Scanner`
 
 An optimized Composer loader with `classmap-authoritative` did not discover the conditional `class_alias()` compatibility files. The candidate now loads `src/framework/Compatibility/OptionalPackageClassAliases.php` through Composer `autoload.files` and uses it as a fallback for the 14 integration names and two Code Tools cleaner names. Isolated consumers with the extension installed resolve both names under authoritative autoload. With only core `v2.0.2`, the former names resolve to the original core classes. With only the candidate core, the new names stay absent and requests for former names fail with a `LogicException` directing the consumer to the required optional package. The optional Google API SDK remains absent in the integration test environment; `GoogleDrive` reports its missing `google/apiclient` dependency clearly.
 
-`class_alias()` preserves common source references and instantiation, but it does not preserve every observable class identity: reflection reports the new implementation FQCN, and code that compares `get_class()` exactly or persists serialized class names can observe the move. Deployments that previously used these classes also need the new Composer package. Removing implementations from a published core is therefore a breaking change from `v2.0.2`; the correct core release line is `3.0.0`, not another `2.x`. Keep `v2.0.2` available unchanged and document the optional package requirements. The candidate packages audited here accept `^2.0 || ^3.0`; ten other local package manifests still require only `^2.0`: `az-seeder`, `basic-acl`, `cli-test`, `dummyapi`, `exchange-rate`, `fine-grained-acl`, `llm-providers`, `shopifyconnector`, `web-test`, and `zippy`. Those ten packages are not yet compatible with or tested against core `3.0.0`.
+`class_alias()` preserves common source references and instantiation, but it does not preserve every observable class identity: reflection reports the new implementation FQCN, and code that compares `get_class()` exactly or persists serialized class names can observe the move. Deployments that previously used these classes also need the new Composer package. Removing implementations from a published core is therefore a breaking change from `v2.0.2`; the correct core release line is `3.0.0`, not another `2.x`. Keep `v2.0.2` available unchanged and document the optional package requirements. The candidate packages audited here accept `^2.0 || ^3.0`; ten other local package manifests still require only `^2.0`: `simplerest-az-seeder`, `simplerest-basic-acl`, `cli-test`, `dummyapi`, `exchange-rate`, `simplerest-fine-grained-acl`, `simplerest-llm-providers`, `simplerest-shopify-connector`, `web-test`, and `zippy`. Those ten packages are not yet compatible with or tested against core `3.0.0`.
 
 The isolated Composer matrix enabled optimized autoload and authoritative classmaps, with a distinct `vendor/` per core version to avoid class collisions. Integrations passed 12 tests / 212 assertions with `v2.0.2` and 12 / 240 with the candidate; PDF passed 1 / 2 on each core; Code Tools passed 4 / 11 on each core. The assertion difference for Integrations reflects the different class identities of the concrete classes in `v2.0.2` and their aliases in the candidate. These tests cover offline contracts; they do not prove live provider or network behavior.
 

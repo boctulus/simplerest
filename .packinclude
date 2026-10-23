@@ -9,8 +9,8 @@ app/Controllers/HomeController.php
 app/Locale
 scripts/init/boot
 scripts/init/redirection
-packages/boctulus/basic-acl
-packages/boctulus/fine-grained-acl
+packages/boctulus/simplerest-basic-acl
+packages/boctulus/simplerest-fine-grained-acl
 public/assets/img
 public/assets/js
 public/assets/css

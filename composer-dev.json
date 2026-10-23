@@ -11,8 +11,29 @@
   },
   "autoload": {
     "psr-4": {
-      "Boctulus\\Simplerest\\Core\\": "src/framework/"
-    }
+      "Boctulus\\Simplerest\\Core\\": "src/framework/",
+      "Boctulus\\Simplerest\\": [
+        "app/",
+        "src/"
+      ],
+      "Boctulus\\FineGrainedACL\\": "packages/boctulus/simplerest-fine-grained-acl/src/",
+      "Boctulus\\LLMProviders\\": "packages/boctulus/simplerest-llm-providers/src/"
+    },
+    "classmap": [
+      "packages/boctulus/simplerest-scaffolding/src/",
+      "packages/boctulus/simplerest-api-clients/src/",
+      "packages/boctulus/simplerest-i18n/src/",
+      "packages/boctulus/simplerest-html-generation/src/",
+      "packages/boctulus/simplerest-jobs/src/",
+      "packages/boctulus/simplerest-geolocation/src/",
+      "packages/boctulus/simplerest-gd-image/src/",
+      "packages/boctulus/simplerest-string-obfuscation/src/",
+      "packages/boctulus/simplerest-machine-id/src/",
+      "packages/boctulus/simplerest-sse/src/"
+    ],
+    "files": [
+      "packages/boctulus/simplerest-i18n/src/helpers.php"
+    ]
   },
   "scripts": {
     "test:microcore": "phpunit --no-coverage unit-tests/microcore"

@@ -687,7 +687,7 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
             ],
         ],
         [
-            'name' => 'boctulus/llm-providers',
+            'name' => 'boctulus/simplerest-llm-providers',
             'classes' => [
                 'Boctulus\\LLMProviders\\Factory\\LLMFactory',
                 'Boctulus\\LLMProviders\\Contracts\\LLMProviderInterface',
@@ -1069,7 +1069,7 @@ function verifyCoreV3Consumers(string $artifactDirectory, array $packageManifest
             'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Wix',
             'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\WordPress',
         ],
-        'boctulus/llm-providers' => [
+        'boctulus/simplerest-llm-providers' => [
             'Boctulus\\LLMProviders\\Factory\\LLMFactory',
             'Boctulus\\LLMProviders\\Contracts\\LLMProviderInterface',
         ],
@@ -1144,8 +1144,8 @@ function verifyCoreV3Consumers(string $artifactDirectory, array $packageManifest
     }
 
     $privateAndTestPackages = [
-        'boctulus/basic-acl',
-        'boctulus/fine-grained-acl',
+        'boctulus/simplerest-basic-acl',
+        'boctulus/simplerest-fine-grained-acl',
         'boctulus/dummyapi',
         'boctulus/web-test',
     ];

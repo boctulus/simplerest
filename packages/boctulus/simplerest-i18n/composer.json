@@ -1,0 +1,15 @@
+{
+    "name": "boctulus/simplerest-i18n",
+    "description": "Gettext-style translation catalogs and language detection for SimpleRest",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["simplerest", "i18n", "gettext", "translation", "language-detection"],
+    "require": {
+        "php": ">=8.1,<8.5",
+        "boctulus/simplerest": "^2.0 || ^3.0"
+    },
+    "autoload": {
+        "classmap": ["src/"],
+        "files": ["src/helpers.php"]
+    }
+}

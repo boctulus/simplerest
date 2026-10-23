@@ -921,7 +921,7 @@ class SimpleRestPackager
         $composerData['suggest']['boctulus/simplerest-bootstrap-html'] = 'Optional Bootstrap 5 and AdminLTE builders plus Bootstrap pagination.';
         $composerData['suggest']['boctulus/simplerest-web-inspection'] = 'Optional CMS detection and HTML scraping tools; currently installed from GitHub through Composer VCS.';
         $composerData['suggest']['boctulus/simplerest-api-clients'] = 'Optional Google Drive, WooCommerce, OneSignal, and Hugging Face clients; currently installed from GitHub through Composer VCS.';
-        $composerData['suggest']['boctulus/llm-providers'] = 'Optional clients for OpenAI, Anthropic, xAI, and Ollama; currently installed from GitHub through Composer VCS.';
+        $composerData['suggest']['boctulus/simplerest-llm-providers'] = 'Optional clients for OpenAI, Anthropic, xAI, and Ollama; currently installed from GitHub through Composer VCS.';
 
         unset($composerData['require-dev']);
         echo "Kept only boot and core dependencies; removed development and optional dependencies\n";
@@ -953,7 +953,7 @@ class SimpleRestPackager
         if (isset($composerData['config']['preferred-install'])) {
             $filteredPreferredInstall = [];
             $problematicDeps = [
-                'boctulus/shopifyconnector',
+                'boctulus/simplerest-shopify-connector',
                 'boctulus/dummyapi',
                 'boctulus/api-client',
             ];

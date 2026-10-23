@@ -1,0 +1,30 @@
+{
+    "name": "boctulus/simplerest-basic-acl",
+    "description": "Basic ACL for SimpleRest",
+    "type": "library",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "boctulus",
+            "email": "boctulus@gmail.com"
+        }
+    ],
+    "keywords": ["simplerest", "acl", "basic"],
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\BasicACL\\": "src/"
+        }
+    },
+    "extra": {
+        "simplerest": {
+            "providers": [
+                "Boctulus\\BasicACL\\BasicAclServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": ">=8.1,<8.5",
+        "boctulus/simplerest": "^2.0 || ^3.0"
+    },
+    "require-dev": {}
+}

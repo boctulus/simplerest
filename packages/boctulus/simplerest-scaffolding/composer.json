@@ -6,6 +6,7 @@
     "require": {
         "php": ">=8.1,<8.5",
         "boctulus/simplerest": "^2.0 || ^3.0",
+        "boctulus/simplerest-i18n": "^1.0",
         "nikic/php-parser": "^5.4"
     },
     "require-dev": {
@@ -16,11 +17,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Boctulus\\Simplerest\\Core\\Libs\\": "src/",
             "Boctulus\\Simplerest\\CodeTools\\Cleaners\\": "src/Cleaners/"
         },
-        "classmap": [
-            "src/Commands/"
-        ]
+        "classmap": ["src/"]
     }
 }

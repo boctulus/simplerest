@@ -12,9 +12,9 @@ The current names describe each extension's responsibility. Previously published
 | `boctulus/simplerest-fpdf` | `PdfBase` adapter around the FPDF library | Successor identity to the old generic PDF package name. |
 | `boctulus/simplerest-web-inspection` | CMS and technology detection plus HTML selector helpers | Extracted from the former mixed Integrations bundle. |
 | `boctulus/simplerest-api-clients` | Google Drive, WooCommerce, OneSignal, and Hugging Face clients | Extracted from the former mixed Integrations bundle. |
-| `boctulus/llm-providers` | A unified interface for OpenAI, Anthropic, xAI, and Ollama providers | Separate extension candidate; provider-specific model contracts remain explicit. |
-| `boctulus/basic-acl` | Proprietary basic ACL extension | Keep as an existing local package. Its proprietary license means this work does not publish it publicly. |
-| `boctulus/fine-grained-acl` | Proprietary fine-grained ACL extension | Keep as an existing local package. GoProp retains its application-owned copy until a private distribution is independently authorized and validated. |
+| `boctulus/simplerest-llm-providers` | A unified interface for OpenAI, Anthropic, xAI, and Ollama providers | Separate extension candidate; provider-specific model contracts remain explicit. |
+| `boctulus/simplerest-basic-acl` | Proprietary basic ACL extension | Keep as an existing local package. Its proprietary license means this work does not publish it publicly. |
+| `boctulus/simplerest-fine-grained-acl` | Proprietary fine-grained ACL extension | Keep as an existing local package. GoProp retains its application-owned copy until a private distribution is independently authorized and validated. |
 
 The root SimpleRest checkout remains the development application and source monorepo. Production installation uses only the framework PSR-4 mapping. Development application mappings and local package mappings live under `autoload-dev`.
 

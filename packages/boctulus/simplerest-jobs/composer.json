@@ -1,0 +1,14 @@
+{
+    "name": "boctulus/simplerest-jobs",
+    "description": "Background service, cron job, and task helpers for SimpleRest applications",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["simplerest", "jobs", "cron", "background-service", "tasks"],
+    "require": {
+        "php": ">=8.1,<8.5",
+        "boctulus/simplerest": "^2.0 || ^3.0"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}

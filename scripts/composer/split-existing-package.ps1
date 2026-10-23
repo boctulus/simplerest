@@ -7,7 +7,7 @@ param(
         'boctulus/simplerest-bootstrap-html',
         'boctulus/simplerest-web-inspection',
         'boctulus/simplerest-api-clients',
-        'boctulus/llm-providers'
+        'boctulus/simplerest-llm-providers'
     )]
     [string]$Package,
 
@@ -52,8 +52,8 @@ $packageDefinitions = @{
         Repository = 'boctulus/simplerest-api-clients'
         Remote = 'git@github.com:boctulus/simplerest-api-clients.git'
     }
-    'boctulus/llm-providers' = @{
-        Path = 'packages/boctulus/llm-providers'
+    'boctulus/simplerest-llm-providers' = @{
+        Path = 'packages/boctulus/simplerest-llm-providers'
         Repository = 'boctulus/llm-providers'
         Remote = 'git@github.com:boctulus/llm-providers.git'
     }

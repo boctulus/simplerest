@@ -1,0 +1,14 @@
+{
+    "name": "boctulus/simplerest-geolocation",
+    "description": "Google Maps geocoding and GeoLite2 database lookup helpers for SimpleRest",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["simplerest", "geolocation", "geocoding", "google-maps", "geolite2"],
+    "require": {
+        "php": ">=8.1,<8.5",
+        "boctulus/simplerest": "^2.0 || ^3.0"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}

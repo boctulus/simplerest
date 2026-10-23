@@ -28,7 +28,7 @@ The microcore provides HTTP request parsing, route matching, generic middleware,
 | [`boctulus/simplerest-fpdf`](https://github.com/boctulus/simplerest-fpdf) | `PdfBase`, a SimpleRest adapter around FPDF |
 | [`boctulus/simplerest-web-inspection`](https://github.com/boctulus/simplerest-web-inspection) | CMS and technology detection plus HTML selector helpers |
 | [`boctulus/simplerest-api-clients`](https://github.com/boctulus/simplerest-api-clients) | Google Drive, WooCommerce, OneSignal, and Hugging Face clients |
-| [`boctulus/llm-providers`](https://github.com/boctulus/llm-providers) | Unified OpenAI, Anthropic, xAI, and Ollama provider interface |
+| [`boctulus/simplerest-llm-providers`](https://github.com/boctulus/llm-providers) | Unified OpenAI, Anthropic, xAI, and Ollama provider interface |
 
 The public extension tags and repositories were not changed by this refactor. New compatible extension versions and their migration guides remain pending. The BasicACL and FineGrainedACL extensions are proprietary and are not part of the public Composer catalogue.
 

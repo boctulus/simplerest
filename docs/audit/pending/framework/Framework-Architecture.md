@@ -119,16 +119,16 @@ simplerest/
 │       └── Tasks/
 │
 ├── packages/boctulus/           # ⬅ 11 PAQUETES LOCALES
-│   ├── fine-grained-acl/        # ACL avanzado
-│   ├── basic-acl/               # ACL básico
+│   ├── simplerest-fine-grained-acl/ # ACL avanzado
+│   ├── simplerest-basic-acl/    # ACL básico
 │   ├── zippy/                   # App completa
 │   ├── cli-test/                # Testing CLI
 │   ├── web-test/                # Testing web
-│   ├── llm-providers/           # OpenAI, Claude
+│   ├── simplerest-llm-providers/ # OpenAI, Claude
 │   ├── exchange-rate/           # Tipo de cambio
 │   ├── friendlypos-web/         # POS web
 │   ├── openfactura-sdk/         # Factura electrónica Chile
-│   ├── shopifyconnector/        # Shopify
+│   ├── simplerest-shopify-connector/ # Shopify
 │   └── dummyapi/                # API dummy
 │
 ├── config/                      # ⬅ CONFIGURACIÓN
