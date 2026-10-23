@@ -23,23 +23,19 @@ final class LegacyCliRuntimeTest extends TestCase
         );
     }
 
-    public function testLegacyCliCanPrintHelpWithoutMissingClassFatal(): void
+    public function testLegacyCliEntrypointIsKeptOutsideComposerPack(): void
     {
         $root = dirname(__DIR__, 2);
-        $proc = proc_open(
-            [PHP_BINARY, '-d', 'display_errors=1', $root . '/com'],
-            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
-            $pipes,
-            $root
-        );
-        self::assertIsResource($proc);
-        $output = stream_get_contents($pipes[1]);
-        $errors = stream_get_contents($pipes[2]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-        $status = proc_close($proc);
+        $entrypoint = (string) file_get_contents($root . '/com');
 
-        self::assertSame(0, $status, "Legacy CLI failed:\n" . $output . "\n" . $errors);
-        self::assertStringNotContainsString('Fatal error', $output . $errors);
+        self::assertStringContainsString("require_once __DIR__ . '/app.php';", $entrypoint);
+        self::assertFileExists($root . '/app/LegacyRuntime/autoload.php');
+        self::assertFileExists($root . '/app/LegacyCore/Libs/Files.php');
+
+        // The actual legacy CLI is exercised separately by the
+        // legacy-cli-smoke CI job using an ephemeral .env fixture.
+        // Never invoke the application bootstrap from a unit test because
+        // it could read an operator's real .env or production configuration.
     }
+
 }
