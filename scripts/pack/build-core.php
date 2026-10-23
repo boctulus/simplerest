@@ -64,11 +64,14 @@ final class SimpleRestCorePackBuilder
             throw new RuntimeException('The pack destination must be outside the source repository.');
         }
 
-        $listed = trim(self::git($source, [
-            'ls-tree', '-r', '--name-only', $commit, '--',
-            'composer.json', 'LICENSE', 'README.md', 'src/framework'
-        ]));
+        // Read the reviewed, versioned allowlist from the SAME immutable source
+        // commit. Curate only these files, even if the development checkout
+        // contains an independent legacy framework tree.
+        $listed = trim(self::git($source, ['show', $commit . ':scripts/pack/core-files.txt']));
         $paths = $listed === '' ? [] : preg_split('/\r?\n/', $listed);
+        if (count($paths) !== count(array_unique($paths))) {
+            throw new RuntimeException('Duplicate paths in the curated microcore allowlist.');
+        }
         $required = ['composer.json', 'LICENSE', 'README.md'];
         foreach ($required as $path) {
             if (!in_array($path, $paths, true)) {
@@ -85,8 +88,8 @@ final class SimpleRestCorePackBuilder
                 $phpFiles++;
             }
         }
-        if ($phpFiles === 0) {
-            throw new RuntimeException('Refusing to build an empty HTTP microcore.');
+        if ($phpFiles !== 14) {
+            throw new RuntimeException('Microcore allowlist must contain exactly 14 approved PHP files. Review an architectural expansion explicitly.');
         }
 
         $manifest = json_decode(self::git($source, ['show', $commit . ':composer.json']), true, 512, JSON_THROW_ON_ERROR);

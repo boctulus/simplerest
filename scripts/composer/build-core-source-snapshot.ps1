@@ -57,11 +57,16 @@ if ($curatedPath -ieq $sourcePath -or $curatedPath -ieq $outputPath) {
     throw 'Curated input, canonical source, and isolated snapshot output must be distinct directories.'
 }
 
-$paths = @(git ls-tree -r --name-only $resolvedCommit -- composer.json LICENSE README.md src/framework)
+# The pack-first, versioned allowlist defines the published microcore.
+# This must NOT enumerate every file in the development src/framework tree.
+$paths = @(git show ($resolvedCommit + ':scripts/pack/core-files.txt'))
 if ($LASTEXITCODE -ne 0) {
-    throw 'Could not enumerate the committed microcore source.'
+    throw 'Could not load the committed microcore curation manifest.'
 }
 $paths = @($paths | Where-Object { $_ -ne '' })
+if ($paths.Count -ne 17 -or @($paths | Select-Object -Unique).Count -ne $paths.Count) {
+    throw 'The curated core must have 17 unique files (3 root files plus 14 microcore PHP classes).'
+}
 foreach ($required in @('composer.json', 'LICENSE', 'README.md')) {
     if ($paths -notcontains $required) {
         throw "Required microcore source file missing: $required"
