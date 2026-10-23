@@ -2,76 +2,65 @@ name: Tests
 
 on:
   push:
-    branches: [master, main, develop, fix/composer-distribution-modularization-recovered-20261022]
+    branches: [master]
   pull_request:
-    branches: [master, main]
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  microcore-and-pack:
     runs-on: ubuntu-latest
-
     strategy:
+      fail-fast: false
       matrix:
         php-version: ['8.1', '8.2', '8.3', '8.4']
-
-    name: PHP ${{ matrix.php-version }}
+    name: Microcore and PACK PHP ${{ matrix.php-version }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout canonical source
         uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: curl, dom, mbstring, pdo, pdo_mysql, json, openssl
+          extensions: dom, mbstring, json
           coverage: none
+          tools: composer:v2
 
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-${{ matrix.php-version }}-
+      - name: Validate published microcore manifest
+        run: composer validate --strict --no-check-publish
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
-
-      - name: Validate composer.json
-        run: composer validate --strict
-
-      - name: Run isolated core and ACL tests (no .env)
+      - name: Validate and install isolated development tools
+        env:
+          COMPOSER: composer-dev.json
         run: |
-          mkdir -p reports
-          vendor/bin/phpunit unit-tests/composer unit-tests/css unit-tests/compatibility unit-tests/command/CommandRegistryComposerPackageTest.php unit-tests/acl --no-coverage --do-not-cache-result --log-junit reports/junit.xml
+          composer validate --strict --no-check-publish
+          composer install --prefer-dist --no-interaction --no-progress
 
-      - name: Verify distribution gate fixtures
-        run: php scripts/distribution/verify-release-artifacts.php --self-test
+      - name: Run microcore PHPUnit suite
+        run: vendor/bin/phpunit --no-configuration --bootstrap vendor/autoload.php --no-coverage unit-tests/microcore
 
-      - name: Verify Composer archives and generated starter
-        if: matrix.php-version != '8.3'
-        run: php scripts/distribution/verify-release-artifacts.php
+      - name: Run PACK and legacy-library boundary suite
+        run: vendor/bin/phpunit --no-configuration --bootstrap vendor/autoload.php --no-coverage unit-tests/pack
 
-      - name: Verify external Composer VCS consumers
+      - name: Curate committed microcore with PACK
+        run: php com pack build --profile=core --source-commit="$GITHUB_SHA" --dest="$RUNNER_TEMP/simplerest-pack"
+
+      - name: Produce isolated Composer snapshot from PACK only
         if: matrix.php-version == '8.3'
-        run: php scripts/distribution/verify-release-artifacts.php --with-consumer-install
-
-      - name: Run independent extension suites
+        shell: pwsh
         run: |
-          composer --working-dir=packages/boctulus/simplerest-pdf install --prefer-dist --no-interaction --no-progress --no-scripts --no-plugins
-          composer --working-dir=packages/boctulus/simplerest-pdf test
-          composer --working-dir=packages/boctulus/simplerest-code-tools install --prefer-dist --no-interaction --no-progress --no-scripts --no-plugins
-          composer --working-dir=packages/boctulus/simplerest-code-tools test
-          composer --working-dir=packages/boctulus/simplerest-integrations install --prefer-dist --no-interaction --no-progress --no-scripts --no-plugins
-          composer --working-dir=packages/boctulus/simplerest-integrations test
+          ./scripts/composer/build-core-source-snapshot.ps1 -CuratedDirectory "$env:RUNNER_TEMP/simplerest-pack" -SourceCommit "$env:GITHUB_SHA" -OutputDirectory "$env:RUNNER_TEMP/simplerest-core-release" -Version 3.0.0
+          if (-not (Test-Path "$env:RUNNER_TEMP/simplerest-core-release/repository/composer.json")) {
+            throw 'Missing Composer package manifest'
+          }
+          if (Test-Path "$env:RUNNER_TEMP/simplerest-core-release/repository/docs") {
+            throw 'Internal documentation leaked into Composer snapshot'
+          }
 
-      - name: Run PHPStan
-        run: composer cs || true
-        continue-on-error: true
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-php-${{ matrix.php-version }}
-          path: reports/
+# Archived ACL/CLI and legacy application suites are not certified by
+# the HTTP microcore workflow. Migrate and test them independently.

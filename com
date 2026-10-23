@@ -1,6 +1,12 @@
 #!/usr/bin/env php
 <?php
 
+// The Composer microcore packer must not boot the legacy application.
+if (($argv[1] ?? '') === 'pack' && in_array(($argv[2] ?? ''), ['build', 'run', 'package'], true)) {
+    require_once __DIR__ . '/scripts/pack/build-core.php';
+    exit(SimpleRestCorePackBuilder::main(array_slice($argv, 3)));
+}
+
 require_once __DIR__ . '/app.php';
 
 use Boctulus\Simplerest\Core\CliRouter;

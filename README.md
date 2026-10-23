@@ -51,6 +51,12 @@ WebRouter::get('/health', static fn (Request $request): array => ['status' => 'o
 FrontController::resolve();
 ```
 
+## Composer pack workflow
+
+The development checkout is not the public Composer distribution. Build the curated microcore with `php com pack build --profile=core` (or add `--dry-run`); the destination defaults to the sibling `simplerest-pack` directory. Existing dirty or non-curated destinations are rejected without deletion. The release snapshot is built **only from that curated output**, via `scripts/composer/build-core-source-snapshot.ps1 -CuratedDirectory <pack-path> -OutputDirectory <new-path> -SourceCommit <source-sha>`. These commands never publish automatically.
+
+The historical application bootstrap is not a microcore consumer. Its original classes are explicitly loaded for the development application outside the Composer autoload while that application is migrated. Full legacy CLI/application compatibility has not yet been certified.
+
 ## Getting started
 
 This checkout is an application repository as well as framework source. The Composer release contains the microcore only; it does not copy the legacy app bootstrap or automatically install extension code. The extraction archive in `archive/` is excluded from Composer artifacts and is not an autoload source.

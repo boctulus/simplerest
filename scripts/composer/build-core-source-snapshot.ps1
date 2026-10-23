@@ -1,12 +1,15 @@
 [CmdletBinding()]
 param(
+    [Parameter(Mandatory = $true)]
+    [string]$CuratedDirectory,
+
     [string]$SourceCommit = 'HEAD',
 
     [Parameter(Mandatory = $true)]
     [string]$OutputDirectory,
 
     [ValidatePattern('^v?\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$')]
-    [string]$Version = '2.0.0'
+    [string]$Version = '3.0.0'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -40,29 +43,80 @@ if (-not (Test-Path -LiteralPath $parentPath -PathType Container)) {
     throw "OutputDirectory parent must already exist and be verified: $parentPath"
 }
 
-$null = New-Item -ItemType Directory -Path $outputPath
 $archivePath = Join-Path $outputPath 'core-source.zip'
 $packagePath = Join-Path $outputPath 'repository'
+
+# Composer MUST consume the curated result of "php com pack build".
+# Never create a Composer package by archiving the development tree.
+if (-not (Test-Path -LiteralPath $CuratedDirectory -PathType Container)) {
+    throw "Missing curated pack. First run php com pack build --profile=core: $CuratedDirectory"
+}
+$curatedPath = (Resolve-Path -LiteralPath $CuratedDirectory).Path.TrimEnd('\', '/')
+$sourcePath = [System.IO.Path]::GetFullPath($repositoryRoot).TrimEnd('\', '/')
+if ($curatedPath -ieq $sourcePath -or $curatedPath -ieq $outputPath) {
+    throw 'Curated input, canonical source, and isolated snapshot output must be distinct directories.'
+}
+
+$paths = @(git ls-tree -r --name-only $resolvedCommit -- composer.json LICENSE README.md src/framework)
+if ($LASTEXITCODE -ne 0) {
+    throw 'Could not enumerate the committed microcore source.'
+}
+$paths = @($paths | Where-Object { $_ -ne '' })
+foreach ($required in @('composer.json', 'LICENSE', 'README.md')) {
+    if ($paths -notcontains $required) {
+        throw "Required microcore source file missing: $required"
+    }
+}
+$allow = @{}
+foreach ($path in $paths) {
+    if ($path -notin @('composer.json', 'LICENSE', 'README.md') -and
+        $path -cnotmatch '^src/framework/[A-Za-z0-9_/-]+\.php$') {
+        throw "Unexpected file in microcore source: $path"
+    }
+    $allow[$path] = $true
+    $inputFile = Join-Path $curatedPath ($path.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
+    if (-not (Test-Path -LiteralPath $inputFile -PathType Leaf)) {
+        throw "Pack output is missing $path. Rerun php com pack build."
+    }
+    $sourceBlob = (git rev-parse ($resolvedCommit + ':' + $path)).Trim()
+    if ($LASTEXITCODE -ne 0) {
+        throw "Cannot resolve source blob: $path"
+    }
+    $packBlob = (git hash-object -- $inputFile).Trim()
+    if ($LASTEXITCODE -ne 0 -or $packBlob -cne $sourceBlob) {
+        throw "Pack output differs from source commit at $path. Rebuild the curated pack using --source-commit=$resolvedCommit."
+    }
+}
+foreach ($candidate in @(Get-ChildItem -LiteralPath $curatedPath -File -Force -Recurse)) {
+    $relative = $candidate.FullName.Substring($curatedPath.Length + 1).Replace('\', '/')
+    if ($relative -eq '.git' -or $relative.StartsWith('.git/')) { continue }
+    if (-not $allow.ContainsKey($relative)) {
+        throw "Uncurated file in pack worktree: $relative. Refusing to publish development/legacy content."
+    }
+}
+$manifest = Get-Content -LiteralPath (Join-Path $curatedPath 'composer.json') -Raw | ConvertFrom-Json
+if ($manifest.name -ne 'boctulus/simplerest' -or
+    (@($manifest.require.PSObject.Properties.Name) -join ',') -cne 'php' -or
+    $manifest.PSObject.Properties.Name -contains 'require-dev' -or
+    $manifest.PSObject.Properties.Name -contains 'suggest' -or
+    $manifest.autoload.PSObject.Properties.Name -contains 'files') {
+    throw 'Curated Composer manifest is not the dependency-free SimpleRest microcore.'
+}
+
+$null = New-Item -ItemType Directory -Path $outputPath
 $null = New-Item -ItemType Directory -Path $packagePath
 
-git archive --format=zip --output=$archivePath $resolvedCommit -- composer.json LICENSE README.md src/framework
-if ($LASTEXITCODE -ne 0) {
-    throw "Could not create the core source snapshot from $resolvedCommit."
+# Copy only the pack output. This is the ONLY source of release bytes.
+foreach ($path in $paths) {
+    $inputFile = Join-Path $curatedPath ($path.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
+    $releaseFile = Join-Path $packagePath ($path.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
+    $dir = Split-Path -Parent $releaseFile
+    if (-not (Test-Path -LiteralPath $dir)) {
+        $null = New-Item -ItemType Directory -Path $dir -Force
+    }
+    Copy-Item -LiteralPath $inputFile -Destination $releaseFile
 }
-
-Expand-Archive -LiteralPath $archivePath -DestinationPath $packagePath
-$expectedTopLevel = @('LICENSE', 'README.md', 'composer.json', 'src')
-$actualTopLevel = @(Get-ChildItem -LiteralPath $packagePath -Force | Select-Object -ExpandProperty Name | Sort-Object)
-if (($actualTopLevel -join "`n") -cne (($expectedTopLevel | Sort-Object) -join "`n")) {
-    throw "Unexpected files in core snapshot. Expected only: $($expectedTopLevel -join ', '); found: $($actualTopLevel -join ', ')."
-}
-
-$assetPattern = '(?i)\.(js|mjs|cjs|ts|tsx|jsx|css|scss|sass|less|map|woff2?|ttf|otf|eot|svg|png|jpe?g|gif|webp|ico)$'
-$assets = @(Get-ChildItem -LiteralPath $packagePath -File -Recurse | Where-Object { $_.Name -match $assetPattern })
-if ($assets.Count -gt 0) {
-    $assetList = $assets | ForEach-Object { $_.FullName.Substring($packagePath.Length + 1) }
-    throw "The core snapshot must not contain frontend or third-party assets:`n$($assetList -join [Environment]::NewLine)"
-}
+Compress-Archive -Path (Join-Path $packagePath '*') -DestinationPath $archivePath
 
 $sourceDate = (git show -s --format=%cI $resolvedCommit).Trim()
 if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($sourceDate)) {
@@ -114,6 +168,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Could not set the package repository HEAD.' }
 git -C $packagePath tag $Version $snapshotCommit
 if ($LASTEXITCODE -ne 0) { throw "Could not create local validation tag '$Version'." }
 
+Write-Output "Curated pack:  $curatedPath"
 Write-Output "Package:       boctulus/simplerest (existing identity)"
 Write-Output "Source commit: $resolvedCommit"
 Write-Output "Package tree:  $tree"

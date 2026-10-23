@@ -31,6 +31,10 @@ if (!file_exists(ROOT_PATH . 'vendor'. DIRECTORY_SEPARATOR .'autoload.php')){
 
 require_once __DIR__.'/vendor/autoload.php';
 
+// The development application's legacy runtime is explicitly isolated from
+// the public HTTP microcore. This bootstrap loads the old class contracts.
+require_once __DIR__ . '/app/LegacyRuntime/autoload.php';
+
 /*
     Custom autoloader for Modules
 

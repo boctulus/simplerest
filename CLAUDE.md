@@ -1,5 +1,18 @@
 # CLAUDE.md — SimpleRest Framework Rules
 
+## Canonical framework changes and Composer PACK (MANDATORY)
+
+- Shared SimpleRest changes belong in `D:\laragon\www\simplerest` on `master`; never edit GoProp's vendor copy or a release worktree as authoritative source.
+- The **microcore** must not contain compatibility shims, aliases, or references to optional packages. Files, database, ACL, legacy CLI, HTML and Bootstrap belong outside the minimal Composer runtime, but their development consumers must be migrated and tested rather than silently broken.
+- `php com pack build --profile=core` is the **sole curation entrypoint** for a new core package. It is independent of legacy app.php and generates only the committed microcore.
+- Composer snapshots **must** use `scripts/composer/build-core-source-snapshot.ps1 -CuratedDirectory <pack-dir>`. Do not run Git archive of the development monorepo as a separate Composer release source.
+- Before touching `D:\laragon\www\simplerest-pack`, inspect Git status, tracked/untracked files, and expected ownership. PACK must fail instead of deleting, resetting, hiding, or overwriting unrelated files. Existing distributions may need an explicitly approved one-time migration.
+- Commit source modifications, run the isolated microcore, CLI, pack/snapshot and consumer gates, and record source/distribution SHAs. Never tag, push a release, repoint Packagist, or change a public repository without explicit release authorization.
+- `app/LegacyRuntime/autoload.php` is an explicit **application-only** migration bridge. It must not be loaded by a microcore Composer consumer and should eventually be replaced by proper optional packages.
+- Source of truth for release details: `docs/architecture/composer-release-process.md`.
+
+---
+
 ## 1. Stack (FIXED)
 
 ### Backend
