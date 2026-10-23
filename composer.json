@@ -61,13 +61,9 @@
          "Boctulus\\Simplerest\\Core\\Libs\\":["src/framework/Libs/", "packages/boctulus/simplerest-pdf/src/", "packages/boctulus/simplerest-code-tools/src/"],
          "Boctulus\\FineGrainedACL\\":"packages/boctulus/fine-grained-acl/src",
          "Boctulus\\BasicACL\\":"packages/boctulus/basic-acl/src",
-         "Boctulus\\Zippy\\":"packages/boctulus/zippy/src",
          "Boctulus\\CliTest\\":"packages/boctulus/cli-test/src",
          "Boctulus\\WebTest\\":"packages/boctulus/web-test/src",
          "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src",
-         "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src",
-         "Boctulus\\OpenfacturaSdk\\": "packages/boctulus/openfactura-sdk/src",
-         "Boctulus\\FriendlyposWeb\\": "packages/boctulus/friendlypos-web/src",
          "Boctulus\\AzSeeder\\": "packages/boctulus/az-seeder/src"
       },
       "classmap": [
