@@ -30,7 +30,11 @@ class Response implements \ArrayAccess
 
     public function __destruct()
     {
-        DB::closeAllConnections();
+        try {
+            DB::rollbackAndCloseAllConnections();
+        } catch (\Throwable $cleanupError) {
+            error_log('SimpleRest could not fully roll back database connections while closing a response.');
+        }
     }    
 
     static function getInstance(){

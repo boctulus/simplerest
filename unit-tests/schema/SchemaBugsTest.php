@@ -8,6 +8,16 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 
 class SchemaBugsTest extends TestCase
 {
+    private function schemaWithoutDatabase(string $tableName): Schema
+    {
+        $reflection = new \ReflectionClass(Schema::class);
+        /** @var Schema $schema */
+        $schema = $reflection->newInstanceWithoutConstructor();
+        $reflection->getProperty('tb_name')->setValue($schema, $tableName);
+
+        return $schema->dontExec();
+    }
+
     public static function setUpBeforeClass(): void
     {
         require_once __DIR__ . '/../../app.php';
@@ -20,11 +30,10 @@ class SchemaBugsTest extends TestCase
     */
     public function test_primary_key_forces_not_null_in_create(): void
     {
-        $schema = new Schema('_test_primary_nullable');
-        $schema->dontExec();
+        $schema = $this->schemaWithoutDatabase('_test_primary_nullable');
         $schema->int('id')->nullable()->primary();
         $schema->varchar('name');
-        $schema->create();
+        $schema->create(true);
 
         $sql = $schema->dd();
 
@@ -40,11 +49,10 @@ class SchemaBugsTest extends TestCase
 
     public function test_primary_without_nullable_works(): void
     {
-        $schema = new Schema('_test_primary_basic');
-        $schema->dontExec();
+        $schema = $this->schemaWithoutDatabase('_test_primary_basic');
         $schema->int('id')->primary();
         $schema->varchar('name');
-        $schema->create();
+        $schema->create(true);
 
         $sql = $schema->dd();
 
@@ -54,11 +62,10 @@ class SchemaBugsTest extends TestCase
 
     public function test_auto_increment_primary_still_works(): void
     {
-        $schema = new Schema('_test_auto_primary');
-        $schema->dontExec();
+        $schema = $this->schemaWithoutDatabase('_test_auto_primary');
         $schema->increments('id');
         $schema->varchar('name');
-        $schema->create();
+        $schema->create(true);
 
         $sql = $schema->dd();
 
@@ -73,7 +80,7 @@ class SchemaBugsTest extends TestCase
     */
     public function test_addUnique_with_single_column(): void
     {
-        $schema = new Schema('_test_unique_single');
+        $schema = $this->schemaWithoutDatabase('_test_unique_single');
         $schema->addUnique('email');
 
         $ref  = new \ReflectionProperty(Schema::class, 'commands');
@@ -86,7 +93,7 @@ class SchemaBugsTest extends TestCase
 
     public function test_addUnique_with_multiple_columns(): void
     {
-        $schema = new Schema('_test_unique_multi');
+        $schema = $this->schemaWithoutDatabase('_test_unique_multi');
         $schema->addUnique(['email', 'name']);
 
         $ref  = new \ReflectionProperty(Schema::class, 'commands');
@@ -99,13 +106,12 @@ class SchemaBugsTest extends TestCase
 
     public function test_addUnique_then_create_includes_unique(): void
     {
-        $schema = new Schema('_test_unique_create');
-        $schema->dontExec();
+        $schema = $this->schemaWithoutDatabase('_test_unique_create');
         $schema->increments('id');
         $schema->varchar('email');
         $schema->varchar('name');
         $schema->unique();  // marca field actual ('name') como UNIQUE via indices
-        $schema->create();
+        $schema->create(true);
 
         $sql = $schema->dd();
 

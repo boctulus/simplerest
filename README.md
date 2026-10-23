@@ -10,7 +10,7 @@ The framework has its own runtime and conventions. Its behavior is defined by th
 - `app/` — application controllers, models, commands, schemas, views, and modules used by this checkout.
 - `config/` — application configuration and route registration.
 - `database/` — database migration files used by this application.
-- `unit-tests/` — repository test files; this directory is not listed in the current `phpunit.xml` test suites.
+- `unit-tests/` — repository PHPUnit tests, selected by `composer test` and listed in the current `phpunit.xml` suite.
 - `examples/` — example code.
 - `packages/` — packages maintained in this repository.
 - `docs/` — topic documentation and the documentation audit record.
@@ -20,6 +20,10 @@ The framework has its own runtime and conventions. Its behavior is defined by th
 ## Requirements
 
 The current `composer.json` declares PHP `>=8.1,<8.5`. It also declares Composer dependencies. Database drivers, database setup, web-server configuration, and optional integrations depend on which features an application uses; consult the relevant guide before deployment.
+
+## Upload validation
+
+`FileUploader` accepts only HTTP-uploaded files whose filename extension and detected MIME type are allowlisted. Applications that accept additional types must configure `files.media_accepted.extensions` and `files.media_accepted.mime_types`, or call `setAllowedTypes()` before upload. CLI code that supplies a local file path is rejected.
 
 ## Getting started
 
@@ -38,7 +42,7 @@ composer test
 composer cs
 ```
 
-`composer test` invokes `phpunit --colors=always`. The current `phpunit.xml` points to `tests/` and `packages/boctulus/friendlypos-web/tests`; the root `tests/` directory is absent and `unit-tests/` is not configured as a suite. Whether the command runs successfully or discovers the intended repository tests has not been verified. `composer cs` invokes PHPStan against `src` at level 7.
+`composer test` invokes `phpunit --colors=always unit-tests`. The current `phpunit.xml` also lists `unit-tests/` as its configured suite. This verifies the test selection only; whether the command runs successfully has not been verified. `composer cs` invokes PHPStan against `src` at level 7.
 
 ## Contributing
 

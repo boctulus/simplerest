@@ -1,0 +1,15 @@
+Mandato de ejecucion del usuario:
+
+Completar la convergencia SimpleRest -> paquetes Composer existentes -> GoProp en la rama dev. Ejecutar el trabajo por fases y seguir avanzando, con cambios pequeños, pruebas y commits revisables; no detenerse en otra auditoria.
+
+Orden obligatorio:
+1. Cerrar la convergencia semantica del core: recalcular diferencias de src/framework, conservar mejoras correctas de SimpleRest, integrar mejoras genericas aprobadas de GoProp, clasificar cada diferencia y probar contratos sensibles.
+2. Modularizar la distribucion usando los nombres Composer que ya existen. No crear paquetes core/CLI nuevos ni duplicar nombres en Packagist, packagelist o registros. Reducir o cambiar el alcance de boctulus/simplerest, boctulus/simplerest-code-tools, boctulus/simplerest-pdf y los otros paquetes existentes cuando la evidencia lo justifique. Mantener BaseCommand, CommandRegistry y despacho en el core; las implementaciones de desarrollo deben ser opcionales.
+3. Validar artefactos y dependencias desde consumidores temporales limpios, incluyendo instalacion no-dev, autoload optimizado, clases de core, bootstrap minimo, HTTP y comandos; verificar PHP, PHPMailer, artefactos dist/source, tamanos y proveniencia. No usar ni limpiar D:\laragon\www\simplerest-pack. No publicar ni mover tags hasta que pasen los gates y exista una referencia revisable.
+4. Solo despues de aprobar las dependencias Composer, migrar GoProp en dev, sin editar main ni eliminar su core incrustado antes de demostrar paridad y rutas de clases sin duplicados.
+
+Repositorios: SimpleRest D:\laragon\www\simplerest; GoProp D:\laragon\www\goprop.
+
+Restricciones: preservar todos los cambios locales, especialmente adminlte_tpl.php y cualquier cambio preexistente; no resetear ni limpiar; no tocar datos de produccion ni ejecutar operaciones destructivas; las pruebas de DB solo usan bases desechables; no evitar invariantes de modelos; no cambiar silenciosamente seguridad, ACL, auth, routing o persistencia; mantener MySQL y PostgreSQL; no modificar tags existentes ni hacer force push; GoProp debe seguir funcional; una prueba de SimpleRest no prueba compatibilidad de GoProp.
+
+Mantener docs/audit/goprop-composer-convergence.md, docs/architecture/composer-packages.md y docs/architecture/composer-release-process.md con evidencia de archivos, paquetes existentes, dependencias, reproducibilidad, tamanos, pruebas, commits y bloqueos.

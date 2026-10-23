@@ -18,6 +18,6 @@ The schema generator passes `protected = false` into the file writer. In the cur
 
 ## Scope still under audit
 
-The framework also has a [`Schema` DDL builder](../../src/framework/Libs/Schema.php), separate from generated `ISchema` metadata. Its individual column methods, emitted SQL by driver, relation and pivot inference, and runtime validation contract are not documented here. [`SchemaBugsTest`](../../unit-tests/schema/SchemaBugsTest.php) contains SQL-generation assertions, but it was inspected only; the configured [PHPUnit suite](../../phpunit.xml) does not include `unit-tests/`.
+The framework also has a [`Schema` DDL builder](../../src/framework/Libs/Schema.php), separate from generated `ISchema` metadata. Its individual column methods, emitted SQL by driver, relation and pivot inference, and runtime validation contract are not documented here. [`SchemaBugsTest`](../../unit-tests/schema/SchemaBugsTest.php) contains SQL-generation assertions, but it was inspected only; `phpunit.xml` includes `unit-tests/`, and no test was executed in this audit.
 
 See the [claim-level schema and automatic API audit](../audit/README.md#claim-level-findings-schema-generation-and-automatic-api), the [database index](README.md), and the [pending legacy schema guide](../audit/pending/framework/Schemas.md).

@@ -32,6 +32,12 @@ class GoogleDrive
         Podria trabajar tambien on OAuth
     */
 	protected function __getClient($api_key = null){
+        if (!class_exists(\Google\Client::class)) {
+            throw new \LogicException(
+                'GoogleDrive requires google/apiclient. Install the optional Google Drive SDK before using this integration.'
+            );
+        }
+
 		$cfg = Config::get();
 
         $google_console_api_key = $this->api_key ?? $api_key ?? $cfg['google_console_api_key'];
@@ -40,12 +46,17 @@ class GoogleDrive
 
         // Disable SSL check in local
         if ($cfg['ssl_cert'] === false || env('APP_ENV') == 'local' || env('APP_ENV') == 'debug' || env('DEGUG') == 'true'){  
+            if (!class_exists(\GuzzleHttp\Client::class)) {
+                throw new \LogicException(
+                    'Disabling Google Drive TLS verification requires guzzlehttp/guzzle.'
+                );
+            }
+
             $guzzleClient = new \GuzzleHttp\Client(["curl" => [
                 CURLOPT_SSL_VERIFYPEER => false
             ]]);        
+            $client->setHttpClient($guzzleClient);
         }
-
-        $client->setHttpClient($guzzleClient);
 
         $client->setApplicationName($cfg['app_name']);
         $client->setDeveloperKey($google_console_api_key);
@@ -57,7 +68,15 @@ class GoogleDrive
     {
         $this->__getClient();
 
-        $class = 'Google_Service_Drive';
+        $class = class_exists('Google\\Service\\Drive')
+            ? 'Google\\Service\\Drive'
+            : 'Google_Service_Drive';
+        if (!class_exists($class)) {
+            throw new \LogicException(
+                'Google Drive service classes are unavailable. Install google/apiclient with the Drive service enabled.'
+            );
+        }
+
         return new $class($this->client);
     }
 

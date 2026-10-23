@@ -19,6 +19,7 @@ La migración es progresiva. Algunas páginas auditadas siguen en inglés y se e
 | HTTP y API | [API HTTP](api/README.md), [resolución de recursos](api/automatic-endpoints.md), [publicación de webhooks](api/webhooks.md) | Se documenta el despacho desde el código y la publicación de webhooks; no se ha reproducido un flujo completo de generación y CRUD ni una entrega HTTP de callback respaldada por base de datos. |
 | Seguridad | [Autenticación](security/authentication.md), [ACL](security/acl.md) | Alcance de código y pruebas focalizadas con límites explícitos; falta una petición de autorización respaldada por la base de datos. |
 | CLI | [Estado de CLI](cli/README.md) | Falta inventariar comandos y reproducir sus instrucciones. |
+| Composer | [Límites de paquetes Composer](architecture/composer-packages.md), [proceso de publicación](architecture/composer-release-process.md) | Contratos y límites de los paquetes existentes; una instalación de consumidor se declara verificada solo con evidencia de la versión publicada. |
 | Integraciones | [Estado de integraciones](integrations/README.md) | La presencia de un paquete no confirma por sí sola un contrato de integración. |
 | Despliegue | [Estado de despliegue](deployment/README.md) | Aún no hay instrucciones validadas de despliegue. |
 | Referencia | [Estado de referencia](reference/README.md) | Falta construir el catálogo de configuración, variables, comandos y métodos públicos. |

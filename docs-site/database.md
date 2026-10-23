@@ -5,7 +5,7 @@ source:
   - docs/database/connections.md
   - docs/database/query-builder.md
   - docs/database/schemas.md
-source_revision: 1dff834829126b0c1c5aa60bd3ff13a75e7859f4
+source_revision: b91cce22f1e3b8a2a201325ef7337e05277f7349
 status: partial
 ---
 
@@ -50,4 +50,4 @@ El generador produce una clase PHP que implementa `ISchema`; su `get()` devuelve
 
 ## Límites actuales
 
-Escrituras, transacciones, consultas raw, paginación, agregados, carga de relaciones, joins automáticos, DDL, migraciones, aislamiento por tenant y compatibilidad por driver siguen fuera del alcance verificado de estas páginas. Los tests de consulta consultados no se ejecutaron; el archivo PHPUnit configurado no incluye `unit-tests/`. Con `debug` activo, una excepción de conexión puede registrar la entrada de configuración seleccionada con valores de credenciales; los secretos no deben exponerse en logs compartidos.
+Escrituras, transacciones, consultas raw, paginación, agregados, carga de relaciones, joins automáticos, DDL, migraciones, aislamiento por tenant y compatibilidad por driver siguen fuera del alcance verificado de estas páginas. Los tests de consulta consultados no se ejecutaron; `composer test` y la suite declarada en `phpunit.xml` incluyen `unit-tests/`, pero esto no aporta un resultado de ejecución. Con `debug` activo, una excepción de conexión puede registrar la entrada de configuración seleccionada con valores de credenciales; los secretos no deben exponerse en logs compartidos.

@@ -1,0 +1,5 @@
+Para cerrar la puerta pendiente de Fase 1 voy a revisar las reglas locales de pruebas de datos y persistencia antes de intentar cualquier integración DB. Solo seguiré si puedo aislarlas con una base temporal y confirmar cómo el proyecto enruta esas pruebas, sin leer ni usar credenciales del entorno real.
+
+Estabas trabajando en la convergencia del nucleo de simplerest en goprop y simplerest como repo propio, haciendo que en goprop el framework simplerest sea un paquete instalable de composer. El trabajo esta en la rama 'dev' de goprop.
+
+CONTINUA

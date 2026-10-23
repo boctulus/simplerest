@@ -1,0 +1,57 @@
+# SimpleRest Composer package boundaries
+
+## Existing package identities
+
+This design reuses the Composer names already present in the repository. It does not add a `simplerest-cli` package or another core package.
+
+| Composer name | Responsibility | Distribution decision |
+| --- | --- | --- |
+| `boctulus/simplerest` | Runtime framework core, including routing, HTTP, database abstractions, models, schema tools, security primitives, and the CLI contract/registry | Keep the existing root package identity. Its Composer autoload contains only `src/framework/`; Git archive exclusions reduce the installable `dist` artifact. |
+| `boctulus/simplerest-code-tools` | Optional PHP parser and reusable `make` command implementations | Keep the existing identity. Split this directory reproducibly from the monorepo for its own Git release history. Applications opt in to its commands. |
+| `boctulus/simplerest-pdf` | Optional `PdfBase` and FPDF integration | Keep the existing identity. Split this directory reproducibly from the monorepo for its own Git release history. |
+| `boctulus/basic-acl` | Proprietary basic ACL extension | Keep as an existing local package. Its proprietary license means this work does not publish it publicly. |
+| `boctulus/fine-grained-acl` | Proprietary fine-grained ACL extension | Keep as an existing local package. GoProp retains its application-owned copy until a private distribution is independently authorized and validated. |
+
+The root SimpleRest checkout remains the development application and source monorepo. Production installation uses only the framework PSR-4 mapping. Development application mappings and local package mappings live under `autoload-dev`.
+
+## CLI ownership and registration
+
+`BaseCommand`, `CommandRegistry`, dispatch, parsing, help, and collision checks remain in the core. GoProp and every host application retain their own `app/Commands/` directory and `com` entry point.
+
+`boctulus/simplerest-code-tools` contains the reusable `make` group and PHP source tools. The host application must list the package in `config/commands.php` to expose its commands; installation alone does not enable them. Composer-installed commands are loaded through the package classmap, and their classes use the package namespace so they do not collide with host classes that share a short name.
+
+`CommandRegistry` resolves providers in this order: host application, explicitly enabled extensions, configured framework defaults. Cross-tier command or alias collisions choose the higher tier and emit a diagnostic. Same-tier collisions fail unless `overrides` identifies one provider. Overrides can select a lower tier explicitly. Host commands use provider ID `application`.
+
+## Dependency contracts
+
+The core manifest is the source of truth for its PHP and runtime dependency constraints. GoProp's scraper uses the framework `DomCrawler` wrapper, so its base class is part of the core dependency contract. PHPMailer, Google API Client, and Guzzle are optional integrations and are not core installation requirements. `Mail::send`, Google Drive, and SendinBlue report a clear runtime error when their selected adapter lacks its required library; SendinBlue also requires its SDK classes to be supplied by the host application.
+
+The PDF package owns FPDF. The code-tools package owns PHP Parser. Neither dependency is installed by a production core-only consumer.
+
+The root development checkout keeps Dotenv and test/tool dependencies under `require-dev`. The curated starter pack has its own runtime manifest and retains Dotenv because its application bootstrap loads `.env` files.
+
+## Compatibility boundary
+
+Version 2 of the core removes `Core\Libs\PdfBase` and `Core\Libs\PHPParser` from the core tree. Their existing namespaces are provided by the existing PDF and code-tools package names. This is a major-version change and must not be backported to `v1.0.3` or represented by moving an existing tag.
+
+GoProp's current manifest declares PHP `>=8.1,<8.4`; the SimpleRest core declares `>=8.1,<8.5`. Their supported intersection is PHP 8.1 through 8.3. The GoProp `dev` migration must preserve and test that application range before the branch is offered for integration.
+
+## Distribution limits
+
+The root package's GitHub/Composer `dist` archive excludes the development application, tests, docs, local packages, backups, dumps, third-party frontend assets, and tooling through `.gitattributes`. Assets such as jQuery, Tailwind, Bootstrap, Font Awesome, and their CSS, fonts, and source maps belong to the host application and must not ship in SimpleRest Composer libraries. The root exclusions cover `/app/` and `/public/`; the existing Code Tools, PDF, and ACL package trees contain no frontend asset files. `split-existing-package.ps1` rejects frontend asset files before splitting Code Tools or PDF. For source installs, `build-core-source-snapshot.ps1` preserves the existing `boctulus/simplerest` identity while building a clean package tree from the root manifest and `src/framework/`; it does not add another package identity or change a published tag.
+
+The exact Packagist `v1.0.3` ZIP at reference `e686ceee139f69c444c45a3c4f941842440f8a4f` measured 10,175 files, 430,530,282 compressed bytes and 669,324,750 expanded bytes. It contained 4,263 frontend asset files and 981 files under paths/names matching common third-party libraries, including jQuery and Bootstrap under application modules and `public/`. A `git archive` of candidate commit `439a18044` produced 273 files, 460,895 compressed bytes and 1,654,024 expanded bytes; it contains only `composer.json`, `LICENSE`, `README.md`, and `src/`, with zero JS, CSS, source map, font, or image files and zero matching third-party paths. This candidate is 97.32% smaller by file count, 99.75% smaller by expanded size and 99.89% smaller by compressed size. It is a Git archive measurement, not yet a tagged Composer VCS install. `.gitattributes` does not reduce `--prefer-source`: that mode still clones the SimpleRest development repository and its history. The release record reports both facts rather than treating archive exclusions as source-repository modularization.
+
+The existing public split repositories for Code Tools and PDF are available and contain immutable `v1.0.0` tags: Code Tools `8806fcb4447aece9968bc83e3032168b38184267` and PDF `4a056092ea67c511d7805e1aeba0274064d47881`. At SimpleRest source commit `74ac9ea59a637670ed53552443aad96bc0e1c3af`, their repository trees match the existing package directories file-for-file (46/46 and 3/3 blobs). Packagist's P2 endpoint returned 404 for these existing names on 2026-10-22, as it did for the proprietary ACL packages. Reuse the existing identities; do not create duplicates. A VCS consumer can resolve the public optional tags, while a Packagist-only consumer still cannot resolve Code Tools or PDF until the existing repositories are registered.
+
+On 2026-10-22 a clean consumer installed the actual GitHub VCS/archive references with `--no-dev --prefer-dist --optimize-autoloader` on PHP 8.2.35. Composer locked `boctulus/simplerest` v2.0.1 at `9ed4141dd84639799a4220ea58e4ebdaae0f4d3f`, Code Tools v1.0.0 at `8806fcb4447aece9968bc83e3032168b38184267`, and PDF v1.0.0 at `4a056092ea67c511d7805e1aeba0274064d47881`; `composer check-platform-reqs --no-dev` passed. The installed roots contained 273 core files (1,600,081 expanded bytes), 46 Code Tools files (195,312 bytes), and 3 PDF files (5,068 bytes). Each package root had zero frontend assets. Runtime reflection loaded `CommandRegistry`, `PHPParser`, `PdfBase`, and `MakeConsoleCommand` from their respective `vendor/` package paths. The Composer-installed `make:console` command was discovered; a host command with the same key won, emitted the collision diagnostic, and executed. `CommandRegistryComposerPackageTest.php` also passed 8/8 tests and 30 assertions. This verifies GitHub VCS distributions, not Packagist-only installation.
+
+The whole consumer's `vendor/` tree contains the optional upstream `setasign/fpdf` dependency's CSS and character-map resources (23 `.css`/`.map` files); those are from FPDF and are not SimpleRest package files or UI framework bundles. The consumer contained no jQuery, Tailwind, Bootstrap, or Font Awesome assets. Do not describe the entire transitive `vendor/` tree as asset-free; the asset exclusion claim applies to the SimpleRest, Code Tools, and PDF package roots.
+
+A pre-release consumer resolved branch commit `74ac9ea59a637670ed53552443aad96bc0e1c3af` through a temporary `2.0.2` branch alias alongside the existing Code Tools and PDF tags. On PHP 8.2.35, `--no-dev --prefer-dist --optimize-autoloader` and `composer check-platform-reqs --no-dev` passed; PHPMailer resolved to 6.12.0. Reflection loaded `Model`, `DB`, `Schema`, `FileUploader`, `CommandRegistry`, `Request`, and `FrontController` from the core package; optional package classes loaded from their vendor paths and `make:console` was discovered. Focused schema/upload tests passed 12/12 tests and 34 assertions. This was pre-release evidence; the immutable-tag consumer result is recorded below.
+
+`build-core-source-snapshot.ps1` assembled package commit `c15d0627afeae9d6bdd0067ee917b8ec7c043d41` from SimpleRest source commit `b7a48ac6d1c2c7bf99794b3e7d5ad6a70742c238`; the immutable `v2.0.2` tag is now published and indexed by Packagist at that source/dist reference. The exact public GitHub ZIP contains 273 files, 475,250 compressed bytes and 1,604,399 expanded bytes, with zero frontend assets or third-party UI bundle paths. Tagged consumers passed `--no-dev --prefer-dist --optimize-autoloader` and platform checks with Composer 2.8.5 on PHP 8.1.14, 8.2.35 and 8.3.36. A separate `--prefer-source` consumer resolved the same tag and also had 273 checked-out files with zero frontend assets (1,658,610 bytes on Windows with CRLF checkout). Its `.git` directory added 568,459,924 bytes because Composer cloned the SimpleRest repository history; the installed Git object database includes historical app paths for jQuery, Font Awesome, and SweetAlert. The checked-out tag tree is asset-free, but source mode stores historical assets inside `.git`. This is a repository-source limitation; a lean source install would require an independent source repository. No additional Composer package identity was created.
+
+The v2.0.2 tagged consumer install above closes the tagged distribution check for that release. For future releases, path-repository tests remain an iteration check only; readiness requires a fresh install from the committed VCS/archive references, with the resolved commit recorded.
+
+The two optional MIT packages use `git subtree split` from an explicit immutable SimpleRest commit. The script maps only their existing Composer names to the corresponding package directories and repositories. Proprietary ACL packages are outside that public split pipeline.

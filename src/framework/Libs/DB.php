@@ -19,7 +19,7 @@ class DB
 	protected static $raw_sql;
 	protected static $values = [];
 	protected static $tb_name;
-	protected static $transaction_level = 0;
+	protected static $transactionLevels = [];
 	protected static $default_primary_key_name = 'id';
 
 	const INFOMIX    = 'infomix';
@@ -76,7 +76,45 @@ class DB
 			throw new \InvalidArgumentException("Unregistered connection identifier for '$id'");
 		}
 
+		static::assertConnectionAffinity($id);
 		static::$current_id_conn = $id;
+	}
+
+	protected static function activeTransactionConnectionIds(): array
+	{
+		$activeConnectionIds = [];
+
+		foreach (static::$transactionLevels as $connectionId => $level) {
+			if ((int) $level > 0) {
+				$activeConnectionIds[(string) $connectionId] = true;
+			}
+		}
+
+		foreach (static::$connections ?? [] as $connectionId => $connection) {
+			if ($connection instanceof \PDO && $connection->inTransaction()) {
+				$activeConnectionIds[(string) $connectionId] = true;
+			}
+		}
+
+		return array_keys($activeConnectionIds);
+	}
+
+	protected static function assertConnectionAffinity(string $connectionId): void
+	{
+		$activeConnectionIds = static::activeTransactionConnectionIds();
+
+		if (count($activeConnectionIds) === 0) {
+			return;
+		}
+
+		if (count($activeConnectionIds) === 1 && $activeConnectionIds[0] === $connectionId) {
+			return;
+		}
+
+		throw new \LogicException(
+			"Cannot select connection '{$connectionId}' while an active transaction is bound to " .
+			implode(', ', $activeConnectionIds) . '.'
+		);
 	}
 
     public static function getConnection($conn_id = null) {	
@@ -89,6 +127,11 @@ class DB
 		}
 
 		if ($conn_id != null){
+			if (!isset($config['db_connections'][$conn_id])){
+				throw new \InvalidArgumentException('Invalid database selected for ' . $conn_id);
+			}
+
+			static::assertConnectionAffinity($conn_id);
 			static::$current_id_conn = $conn_id;	
 		} else {
 			if (static::$current_id_conn == null){
@@ -101,6 +144,8 @@ class DB
 				}	
 			}
 		}
+
+		static::assertConnectionAffinity(static::$current_id_conn);
 
 		if (isset(self::$connections[static::$current_id_conn]))
 			return self::$connections[static::$current_id_conn];
@@ -262,27 +307,102 @@ class DB
 		return static::getDefaultConnectionId() === static::$current_id_conn;
 	}
 	
-    static function closeConnection(string $conn_id = null) {
-		if ($conn_id == null){
-			unset(static::$connections[static::$current_id_conn]);
-			static::$current_id_conn = NULL; // undefined
-		} else {
-			static::$connections[$conn_id] = null;
+	public static function closeConnection(?string $conn_id = null): void
+	{
+		$closeCurrent = $conn_id === null;
+		$connectionId = $conn_id ?? static::$current_id_conn;
+		if ($connectionId === null) {
+			return;
 		}
-		//echo 'Successfully disconnected from the database!';
+
+		static::assertConnectionCanClose($connectionId);
+
+		unset(static::$connections[$connectionId], static::$transactionLevels[$connectionId]);
+		if ($closeCurrent && static::$current_id_conn === $connectionId) {
+			static::$current_id_conn = null;
+		}
+	}
+
+	protected static function assertConnectionCanClose(string $connectionId): void
+	{
+		$connection = static::$connections[$connectionId] ?? null;
+		$managedTransaction = (int) (static::$transactionLevels[$connectionId] ?? 0) > 0;
+		$pdoTransaction = $connection instanceof \PDO && $connection->inTransaction();
+
+		if ($managedTransaction || $pdoTransaction) {
+			throw new \LogicException(
+				"Cannot close connection '{$connectionId}' while an active transaction is open."
+			);
+		}
 	}
 
 	static function getConnectionConfig(){
 		return Config::get()['db_connections'];
 	}
 
-	static function closeAllConnections(){
-		static::$connections = null;
+	public static function closeAllConnections(): void
+	{
+		$activeConnectionIds = static::activeTransactionConnectionIds();
+		if ($activeConnectionIds !== []) {
+			throw new \LogicException(
+				'Cannot close all database connections while active transactions are open on: ' .
+				implode(', ', $activeConnectionIds) . '.'
+			);
+		}
+
+		static::$connections = [];
+		static::$transactionLevels = [];
+	}
+
+	/** Roll back active transactions and close connections during request/error cleanup. */
+	public static function rollbackAndCloseAllConnections(): void
+	{
+		$failedConnectionIds = [];
+
+		foreach (static::$connections ?? [] as $connectionId => $connection) {
+			if (!$connection instanceof \PDO) {
+				unset(static::$transactionLevels[$connectionId]);
+				continue;
+			}
+
+			try {
+				if ($connection->inTransaction()) {
+					try {
+						$connection->rollBack();
+					} catch (\Throwable $e) {
+						// Check the PDO state below; some drivers can report a failed rollback
+						// after they have already ended the transaction.
+					}
+				}
+
+				if ($connection->inTransaction()) {
+					$failedConnectionIds[] = (string) $connectionId;
+				} else {
+					unset(static::$transactionLevels[$connectionId]);
+				}
+			} catch (\Throwable $e) {
+				$failedConnectionIds[] = (string) $connectionId;
+			}
+		}
+
+		if ($failedConnectionIds !== []) {
+			throw new \RuntimeException(
+				'Could not roll back active database transactions on: ' .
+				implode(', ', array_unique($failedConnectionIds)) . '.'
+			);
+		}
+
+		static::$connections = [];
+		static::$transactionLevels = [];
 	}
 	
 	public function __destruct()
     {
-        static::closeAllConnections();        
+        try {
+            static::rollbackAndCloseAllConnections();
+        } catch (\Throwable $e) {
+            // Destructors must not replace the error already ending the request.
+        }
     }
 	
 	static function countConnections(){
@@ -686,26 +806,35 @@ class DB
 		#dd("Solicitud de inicio de transacción para => ". static::getCurrentConnectionId());
 
 		$conn = static::getConnection();
+		$connectionId = static::getCurrentConnectionId(true);
+		$transactionLevel = static::$transactionLevels[$connectionId] ?? 0;
 
-		static::$transaction_level++;
-
-		if (static::$transaction_level === 1) {
+		if ($transactionLevel === 0) {
 			// Primera transacción - usar BEGIN TRANSACTION
 			$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			$conn->beginTransaction();
+			static::$transactionLevels[$connectionId] = 1;
 			return;
 		}
 
 		// Transacción anidada - usar SAVEPOINT si el driver lo soporta
+		$nextLevel = $transactionLevel + 1;
 		if (static::supportsSavepoints()) {
-			$savepoint = 'LEVEL_' . static::$transaction_level;
+			$savepoint = 'LEVEL_' . $nextLevel;
 			$conn->exec("SAVEPOINT {$savepoint}");
 		}
+		static::$transactionLevels[$connectionId] = $nextLevel;
 		// Si no soporta savepoints, no hacemos nada - el rollback/commit anidado manejará el escenario
 	}
 
 	public static function commit(){
-		if (static::$transaction_level === 0){
+		$connectionId = static::getCurrentConnectionId();
+		if ($connectionId === null) {
+			return;
+		}
+
+		$transactionLevel = static::$transactionLevels[$connectionId] ?? 0;
+		if ($transactionLevel === 0){
 			// nothing to do
 			return;
 		}
@@ -715,19 +844,19 @@ class DB
 		// Verificar si PDO realmente tiene una transacción activa
 		if (!$conn->inTransaction()){
 			// No hay transacción activa en esta conexión, resetear el contador
-			static::$transaction_level = 0;
+			unset(static::$transactionLevels[$connectionId]);
 			return;
 		}
 
-		if (static::$transaction_level === 1) {
+		if ($transactionLevel === 1) {
 			// Última transacción - hacer COMMIT
 			$conn->commit();
-			static::$transaction_level--;
+			unset(static::$transactionLevels[$connectionId]);
 			return;
 		}
 
 		// Transacción anidada - liberar SAVEPOINT si el driver lo soporta
-		$savepoint = 'LEVEL_' . static::$transaction_level;
+		$savepoint = 'LEVEL_' . $transactionLevel;
 		if (static::supportsSavepoints()) {
 			try {
 				$conn->exec("RELEASE SAVEPOINT {$savepoint}");
@@ -735,11 +864,17 @@ class DB
 				// Si falla RELEASE podemos ignorarlo (se liberará en el commit final)
 			}
 		}
-		static::$transaction_level--;
+		static::$transactionLevels[$connectionId] = $transactionLevel - 1;
 	}
 
 	public static function rollback(){
-		if (static::$transaction_level === 0){
+		$connectionId = static::getCurrentConnectionId();
+		if ($connectionId === null) {
+			return;
+		}
+
+		$transactionLevel = static::$transactionLevels[$connectionId] ?? 0;
+		if ($transactionLevel === 0){
 			// nothing to do
 			return;
 		}
@@ -749,19 +884,19 @@ class DB
 		// Verificar si PDO realmente tiene una transacción activa
 		if (!$conn->inTransaction()){
 			// No hay transacción activa en esta conexión, resetear el contador
-			static::$transaction_level = 0;
+			unset(static::$transactionLevels[$connectionId]);
 			return;
 		}
 
-		if (static::$transaction_level === 1) {
+		if ($transactionLevel === 1) {
 			// Última transacción - hacer ROLLBACK completo
 			$conn->rollback();
-			static::$transaction_level = 0;
+			unset(static::$transactionLevels[$connectionId]);
 			return;
 		}
 
 		// Rollback a savepoint si el driver lo soporta, sino forzar rollback completo
-		$savepoint = 'LEVEL_' . static::$transaction_level;
+		$savepoint = 'LEVEL_' . $transactionLevel;
 		if (static::supportsSavepoints()) {
 			try {
 				$conn->exec("ROLLBACK TO SAVEPOINT {$savepoint}");
@@ -774,17 +909,17 @@ class DB
 			} catch (\Exception $e) {
 				// Si falla el rollback to savepoint, forzar rollback total para evitar inconsistencias
 				$conn->rollback();
-				static::$transaction_level = 0;
+				unset(static::$transactionLevels[$connectionId]);
 				return;
 			}
 		} else {
 			// No hay soporte de savepoints => forzar rollback completo
 			$conn->rollback();
-			static::$transaction_level = 0;
+			unset(static::$transactionLevels[$connectionId]);
 			return;
 		}
 
-		static::$transaction_level--;
+		static::$transactionLevels[$connectionId] = $transactionLevel - 1;
 	}
 
 	// https://github.com/laravel/framework/blob/4.1/src/Illuminate/DB/Connection.php#L417

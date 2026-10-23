@@ -3,7 +3,6 @@
 namespace Boctulus\Simplerest\Core\Libs;
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 
 use Boctulus\Simplerest\Core\Interfaces\IMail;
 use Boctulus\Simplerest\Core\Libs\Config;
@@ -152,6 +151,12 @@ class Mail extends MailBase implements IMail
         )
     */
     static function send($to, $subject = '', $body = '', $attachments = null, $from = [], Array $cc = [], $bcc = [], $reply_to = [], $alt_body = null) : bool {
+        if (!class_exists(PHPMailer::class)) {
+            throw new \LogicException(
+                'Mail::send() requires phpmailer/phpmailer. Install a PHPMailer version compatible with your application (6.9 or 7.1).'
+            );
+        }
+
         $config = Config::get();
 
         $body = trim($body);

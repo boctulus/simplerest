@@ -31,6 +31,6 @@ On the executed path, [`first()`](../../src/framework/Traits/QueryBuilderTrait.p
 
 ## Evidence and scope
 
-`ModelTest::test_get()` and `QueryBuilderExtendedTest::test_soft_deletes()` contain SQL assertions for selected query forms; the tests were inspected, not executed. These tests load the application, and normal `DB::table()` construction opens the configured connection. The configured [PHPUnit file](../../phpunit.xml) does not include `unit-tests/`, so these assertions are not evidence of the repository's default `composer test` run.
+`ModelTest::test_get()` and `QueryBuilderExtendedTest::test_soft_deletes()` contain SQL assertions for selected query forms; the tests were inspected, not executed. These tests load the application, and normal `DB::table()` construction opens the configured connection. The configured [PHPUnit file](../../phpunit.xml) includes `unit-tests/`, and `composer test` explicitly selects that directory; no test result is claimed here.
 
 Write operations, transaction behavior, execution-mode safety, raw-query contracts, pagination, aggregates, relation loading, automatic joins, and PostgreSQL compatibility remain outside this page's verified scope. See the [claim-level audit](../audit/README.md#claim-level-findings-query-builder), [connection behavior](connections.md), and [quarantined Query Builder guide](../audit/pending/framework/QueryBuilder.md).

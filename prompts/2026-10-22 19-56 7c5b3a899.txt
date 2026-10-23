@@ -1,0 +1,131 @@
+## Revisión de Fase 1 — GoProp / SimpleRest
+
+Mi valoración inicial es positiva: la integración de pruebas está bien encaminada, pero todavía no daría por cerrada la convergencia del framework.
+
+He localizado los dos commits en GitHub:
+
+- GoProp — 6041811d: aislamiento de pruebas de transacciones.
+- SimpleRest — 305169595: estado transaccional independiente por conexión.
+
+La distinción fundamental es que aquí hay dos objetivos diferentes:
+
+1. Seguridad de las pruebas: ejecutar las pruebas contra una base descartable, sin comprometer datos reales.
+2. Convergencia funcional: conseguir que GoProp utilice oficialmente el código de SimpleRest mediante Composer, sin depender de modificaciones manuales de vendor/.
+
+El primer objetivo tiene evidencias satisfactorias. El segundo continúa pendiente.
+
+### Qué considero conseguido
+
+| Componente | Evaluación |
+| --- | --- |
+| MySQL temporal para GoProp | Prueba de integración superada según el reporte |
+| SQLite :memory: para SimpleRest | Prueba de regresión superada según el reporte |
+| Estado transaccional por conexión | Implementado en el commit |
+| Restricción de cambios de conexión durante transacciones | Implementada |
+| Restauración del vendor original | Reportada, sin alteración permanente |
+| Publicación de paquete Composer actualizado | Pendiente |
+| GoProp ejecutando oficialmente la nueva versión | Pendiente |
+
+Hay un acierto especialmente importante: no se han mezclado los trabajos de desarrollo concurrentes con la actualización del framework. En un proyecto como GoProp, esto reduce considerablemente el riesgo de introducir regresiones difíciles de atribuir.
+
+## Hallazgos de la revisión de código
+
+### 1. Riesgo alto: closeConnection() puede romper la afinidad transaccional
+
+En DB.php, líneas 309–330, tanto closeConnection() como closeAllConnections() eliminan los niveles de transacción sin comprobar antes su estado.
+
+Por ejemplo:
+
+    DB::setConnection('main');
+    DB::beginTransaction();
+    DB::closeConnection();
+    DB::setConnection('test');
+
+Ese cambio de conexión debería estar prohibido mientras la transacción siga activa. Sin embargo, el cierre elimina el estado que permitiría detectarlo.
+
+Si alguien conserva una referencia al PDO anterior, podría continuar existiendo una transacción activa que SimpleRest ya no controla.
+
+Recomendación: prohibir el cierre de conexiones con transacciones activas en operaciones normales, o definir una operación explícita de cancelación y cierre. El cierre global de emergencia debe tener un contrato separado.
+
+Es especialmente relevante porque GoProp también utiliza closeAllConnections() en su manejo de excepciones.
+
+### 2. Riesgo alto: los tests nuevos todavía no son reproducibles con Composer
+
+He confirmado en el composer.lock de GoProp:
+
+Versión instalada oficialmente: SimpleRest v2.0.2
+
+Commit bloqueado: c15d0627
+
+El nuevo test de GoProp utiliza reflexión para inspeccionar transactionLevels, una propiedad incorporada en el nuevo commit de SimpleRest.
+
+Esto significa que:
+
+- Con el vendor modificado temporalmente, el test pasa.
+- Con composer install usando el lockfile vigente, el test no puede validar esa implementación porque aún no está presente.
+- Sin el entorno descartable configurado, la suite se salta.
+
+La prueba realizada es válida como ensayo de compatibilidad, pero todavía no constituye una integración reproducible desde Git.
+
+Haría obligatorio un gate CI que ejecute realmente esos tests contra la versión instalada mediante Composer y falle si se omiten.
+
+### 3. Riesgo medio: el bootstrap ocurre antes del control de seguridad
+
+En DB_TransactionTest.php, primero se ejecuta:
+
+    require_once __DIR__ . '/../../app.php';
+
+Y después se comprueba que la conexión corresponde a la base descartable.
+
+Pero app.php también carga Dotenv y ejecuta los providers de la aplicación.
+
+Esto no demuestra que se hayan utilizado credenciales reales. Sí demuestra que la protección está colocada después de ejecutar código de inicialización con posibles efectos secundarios.
+
+Recomiendo que el proceso de pruebas tenga un bootstrap mínimo o que un lanzador seguro configure y verifique el aislamiento antes de cargar la aplicación.
+
+### 4. Cobertura funcional: correcta, pero aún reducida
+
+Las pruebas cubren commits, rollbacks, savepoints anidados, fallos al iniciar transacciones y cambios de conexión.
+
+Faltaría ampliar la cobertura con escenarios de cierre durante una transacción, conexiones abiertas directamente mediante PDO, fallos de savepoints y restauración de contexto tras excepciones.
+
+Además, el bloqueo estricto puede afectar a operaciones legítimas existentes que intenten cambiar de base durante una transacción. Particularmente, revisaría los flujos de DemoControl, aprovisionamiento de demos privadas y operaciones multitenant antes de actualizar Composer.
+
+## Estado real de las ramas
+
+También he contrastado los commits con las ramas remotas.
+
+| Repositorio | Estado |
+| --- | --- |
+| GoProp dev | Contiene 6041811d |
+| GoProp main | Todavía no contiene ese commit |
+| SimpleRest master | Todavía no contiene 305169595 |
+| SimpleRest docu | Divergida respecto del commit revisado |
+
+Esto importa porque el siguiente paso debe ser una promoción controlada de código, no una modificación manual adicional de vendor/.
+
+## ¿Y POSDriven?
+
+He revisado también su package.json actual. POSDriven utiliza Node.js/Express, con drivers pg, mysql2 y sqlite3.
+
+Por tanto, esta corrección de SimpleRest no modifica POSDriven directamente.
+
+Lo reutilizable entre ambos proyectos es el criterio arquitectónico: conexiones identificadas explícitamente, estado transaccional asociado a su conexión, prohibición de cambios implícitos durante una transacción y pruebas sobre bases descartables.
+
+No recomendaría incorporar SimpleRest a POSDriven para resolver esto.
+
+## Próxima acción que recomiendo
+
+Antes de publicar una versión nueva de SimpleRest, encargaría a Codex una revisión muy delimitada:
+
+1. Corregir la gestión del cierre de conexiones con transacciones activas.
+2. Añadir pruebas para ese cierre y las excepciones correspondientes.
+3. Establecer un bootstrap de integración seguro antes de cargar GoProp.
+4. Auditar los consumidores de setConnection(), getConnection() y closeAllConnections() en GoProp.
+5. Verificar posteriormente una instalación limpia de Composer sin parchear vendor/, dejando la publicación de una versión para después de superar esos controles.
+
+No mezclaría en esta tarea funcionalidades de GoProp ni otras refactorizaciones de SimpleRest.
+
+Veredicto: aceptaría el cierre de la puerta de pruebas descartables de Fase 1, pero mantendría la tarea general en needs-review, con dos riesgos altos identificados, hasta corregirlos o descartarlos mediante pruebas específicas.
+
+El avance técnico es real. Lo que falta es convertir una ejecución aislada exitosa en una garantía de integración repetible y mantenible.

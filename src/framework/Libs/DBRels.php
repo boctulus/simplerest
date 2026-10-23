@@ -447,18 +447,27 @@ class DBRels
         $dir = get_schema_path(null, $tenant_id);
 
         if (!file_exists($dir . 'Pivots.php')) {
-            StdOut::hideResponse();
+            $commandClass = class_exists(\MakePivotScanCommand::class)
+                ? \MakePivotScanCommand::class
+                : 'Boctulus\\Simplerest\\CodeTools\\Commands\\make\\MakePivotScanCommand';
 
-            require_once __DIR__ . '/../../../app/Commands/make/PivotScanCommand.php';
-            $cmd = new \MakePivotScanCommand();
-
-            if (!empty($tenant_id)) {
-                $cmd->pivot_scan("--from:$tenant_id");
-            } else {
-                $cmd->pivot_scan();
+            if (!class_exists($commandClass)) {
+                throw new \LogicException(
+                    "Pivots.php is missing for this schema. Install boctulus/simplerest-code-tools or run the pivot scan command before using relationships."
+                );
             }
 
-            StdOut::showResponse();
+            StdOut::hideResponse();
+            try {
+                $cmd = new $commandClass();
+                if (!empty($tenant_id)) {
+                    $cmd->pivot_scan("--from:$tenant_id");
+                } else {
+                    $cmd->pivot_scan();
+                }
+            } finally {
+                StdOut::showResponse();
+            }
         }
 
         include $dir . 'Pivots.php';

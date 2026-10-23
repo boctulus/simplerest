@@ -24,7 +24,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: mbstring, pdo, pdo_mysql, json, openssl
+          extensions: dom, mbstring, pdo, pdo_mysql, json, openssl
           coverage: none
 
       - name: Cache Composer dependencies

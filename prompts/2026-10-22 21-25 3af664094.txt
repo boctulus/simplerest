@@ -1,0 +1,87 @@
+## Revisión de GoProp / SimpleRest — segunda iteración
+
+He revisado los tres commits nuevos y sus cambios en GitHub.
+
+La corrección de Codex resuelve sustancialmente los dos bloqueos principales que identifiqué. El avance es importante: GoProp ya no necesita copiar manualmente `DB.php` dentro de `vendor/` para probar el código candidato.
+
+| Requisito                                        | Resultado                                                 |
+| ------------------------------------------------ | --------------------------------------------------------- |
+| Protección de transacciones al cerrar conexiones | Implementada                                              |
+| Rollback y cierre de emergencia                  | Separados                                                 |
+| Bootstrap sin `app.php` ni `.env`                | Confirmado en código                                      |
+| Versión exacta en `composer.lock`                | Confirmada                                                |
+| Pruebas MySQL / SQLite                           | 13 pruebas y 43 aserciones reportadas en cada suite       |
+| Versión estable de SimpleRest                    | Pendiente                                                 |
+| Convergencia completa GoProp–SimpleRest          | Pendiente                                                 |
+
+Los commits revisados son [GoProp eb0c95f1](https://github.com/boctulus/goprop/commit/eb0c95f11deedc5914325349e3609163372a6eac), [SimpleRest 7d573d5e5](https://github.com/boctulus/simplerest/commit/7d573d5e5fed8e96296653386bd9d7118aaf99e8) y [SimpleRest 3af664094](https://github.com/boctulus/simplerest/commit/3af664094a8ba7055adc36db97a79f18e354fa34).
+
+La decisión de utilizar una rama Composer con referencia exacta es apropiada para una integración provisional en desarrollo, aunque no sustituye a una versión estable.
+
+## Tres observaciones adicionales
+
+### 1. `Response::__destruct()` continúa teniendo un efecto secundario peligroso
+
+He confirmado que `Response::create()` genera instancias independientes y que su destructor ejecuta:
+
+```
+DB::rollbackAndCloseAllConnections();
+```
+
+Por tanto, destruir una instancia de `Response` mientras hay una transacción activa puede cancelar esa transacción, aunque el request todavía esté procesándose.
+
+Esto no es una regresión introducida por Codex: anteriormente el destructor ya cerraba globalmente las conexiones. Ahora se ha hecho explícito el rollback y se ha añadido una prueba que confirma ese comportamiento.
+
+De hecho, encontré que `tests/response_envelope_contract_test.php` de GoProp conserva deliberadamente las instancias de `Response` para evitar que el recolector de basura cierre las conexiones durante las pruebas.
+
+Considero que debe corregirse más adelante: la responsabilidad de terminar transacciones y cerrar conexiones debería pertenecer al ciclo de vida del request, no al destructor de cualquier objeto `Response`.
+
+No bloquearía el gate de Fase 1 por este problema preexistente, pero sí una refactorización general del ciclo de vida de las conexiones.
+
+### 2. El gate de CI está bien diseñado, pero todavía es específico de `dev`
+
+He comprobado que el workflow:
+
+- Instala las dependencias con `composer install`, sin modificar manualmente `vendor/`.
+- Verifica el SHA de SimpleRest.
+- Utiliza una base MySQL temporal y una configuración aislada.
+- Rechaza los tests omitidos con `--fail-on-skipped`.
+- Se activa para determinados cambios en `dev` y admite ejecución manual.
+
+No he podido verificar independientemente los logs de la ejecución verde: el acceso disponible no devolvió estados asociados al commit ni ejecuciones de tipo pull request. El resultado exitoso de GitHub queda respaldado por el reporte de Codex, no por una segunda ejecución mía.
+
+Cuando se prepare la integración en `main`, debe ampliarse el gate a esa rama y comprobar el comportamiento con la versión de PHP utilizada en producción.
+
+El error no bloqueante de limpieza de `actions/checkout` merece una tarea separada, pero no invalida por sí solo las pruebas de DB.
+
+### 3. Hay documentación que quedó desactualizada
+
+En SimpleRest, `docs/audit/goprop-composer-convergence.md` todavía indica que la Fase 1 sigue abierta por las pruebas de integración DB.
+
+Eso ya no representa el estado comunicado por Codex.
+
+También aparece una distinción importante entre el commit de desarrollo y los commits de snapshots limpios utilizados para publicar versiones Composer. Esa separación de historiales es intencional en el proceso actual y debe respetarse cuando se publique la próxima versión.
+
+## Qué haría ahora
+
+No pediría otra gran ronda de modificaciones para estas mismas 13 pruebas. Las siguientes acciones deberían ser concretas:
+
+1. Cerrar formalmente el gate DB de Fase 1, registrando los commits, las pruebas realizadas y la referencia Composer bloqueada.
+2. Actualizar el documento de convergencia y la tarea `transaction-connection-affinity.md`, que todavía aparece en revisión del propietario.
+3. Auditar por separado el ciclo de vida de `Response`, especialmente sus destructores.
+4. Continuar con la matriz de divergencias entre `goprop/src/framework/` y el paquete SimpleRest, priorizando las clases que todavía impiden consumir exclusivamente el framework desde Composer.
+5. Publicar una versión estable únicamente cuando el próximo corte de integración tenga sus pruebas correspondientes y pase el procedimiento de publicación existente.
+
+No mezclaría en esta tarea funcionalidades de GoProp ni otras refactorizaciones de SimpleRest.
+
+## Veredicto
+
+Fase 1 — Gate DB: aceptable para cierre
+
+Convergencia global: sigue en ejecución
+
+Mi recomendación es aceptar el trabajo de Codex y avanzar de fase, dejando documentado el riesgo preexistente de `Response`.
+
+El objetivo importante no es conseguir más pruebas de la misma funcionalidad indefinidamente. Es que GoProp termine consumiendo SimpleRest como un framework externo, versionado y mantenible, sin tener que seguir sincronizando dos implementaciones del núcleo.
+
+Esta iteración es un paso verificable hacia ese objetivo.
