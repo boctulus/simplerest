@@ -1,10 +1,12 @@
 <?php
 
-// Application-only bootstrap for the pre-microcore CLI. These helpers live
-// outside the public Composer package, which deliberately has no helper autoload.
+// Legacy application-only bootstrap for the pre-microcore CLI.
+// This development checkout currently retains old helpers under src/framework.
+// PACK's explicit allowlist excludes them from every Composer core release.
+// When CLI/helpers are moved to their own package, update this path with tests.
 return [
     'include' => [
-        __DIR__ . '/../archive/simplerest-framework-extractions-2026-10-23/Helpers',
+        __DIR__ . '/../src/framework/Helpers',
         __DIR__ . '/../app/Helpers',
     ],
     'exclude' => [],
