@@ -1,5 +1,28 @@
 # Composer release process
 
+## Pack-first microcore release procedure (2026-10-23)
+
+This section supersedes all historical references below to building Composer releases directly from the development checkout.
+
+- **Canonical development:** D:\laragon\www\simplerest (Git master). All fixes and tests begin here; the HTTP microcore consists only of src/framework/.
+- **Curated distribution:** D:\laragon\www\simplerest-pack is the intended PACK output/worktree. Run `php com pack build --profile=core` from the development checkout. This command deliberately bypasses the obsolete app.php bootstrap and reads only the selected immutable Git source commit (default HEAD). The output consists of composer.json, LICENSE, README.md and PHP files under src/framework/.
+- **Safety:** PACK refuses dirty Git destinations and unexpected files. It never recursively cleans a worktree, deletes unrelated files, or changes Git tags/remotes. For an existing legacy/non-curated destination, first inspect its history and preserve all changes; establish a clean destination through an explicit, reviewed migration.
+- **Composer snapshot:** `scripts/composer/build-core-source-snapshot.ps1` now requires `-CuratedDirectory` and copies ONLY the previously generated curated PACK. It verifies each file's Git blob against `-SourceCommit`, rejects unrelated files, and creates a local validation tag inside a fresh isolated directory. It cannot silently fall back to Git archive of the monorepo.
+- **Publication is a separate action:** Review the resulting snapshot and manifest, run Composer/platform/microcore and consumer tests, and only then authorize a new immutable release tag and Packagist update. Neither PACK nor snapshot uploads to Packagist.
+- **Legacy application:** The pre-microcore application/CLI remains an independent development concern. Its explicitly loaded historical classes in app/LegacyCore and archive/ are not part of the Composer microcore autoload or pack output. This temporary development bridge needs dedicated regression tests and eventual migration to properly versioned extension packages.
+- **Consumer compatibility:** The core 3.0 release is incompatible with GoProp's current Composer pin until the application and required extensions are migrated and tested. Existing v2.0.2 tags are immutable.
+
+Recommended verification before any release:
+
+```powershell
+cd D:\laragon\www\simplerest
+php com pack build --profile=core --dry-run
+php com pack build --profile=core --source-commit=<source-sha> --dest=D:\laragon\www\simplerest-pack
+.\scripts\composer\build-core-source-snapshot.ps1 -CuratedDirectory D:\laragon\www\simplerest-pack -SourceCommit <source-sha> -OutputDirectory <fresh-disposable-directory> -Version 3.0.0
+```
+
+These are validation commands, not authorization to mutate a pre-existing dirty pack worktree or publish a release.
+
 > The current scope and evidence are recorded in **Current scope and status**. The implementation record farther below is historical; its package inventory, FriendlyPOS status, and GoProp conclusions predate the 2026-10-23 scope reset.
 
 ## Current scope and status (2026-10-23)
