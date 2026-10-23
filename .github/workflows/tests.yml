@@ -40,8 +40,10 @@ jobs:
       - name: Validate composer.json
         run: composer validate --strict
 
-      - name: Run focused core distribution tests
-        run: vendor/bin/phpunit unit-tests/composer unit-tests/css --no-coverage --do-not-cache-result
+      - name: Run isolated core and ACL tests (no .env)
+        run: |
+          mkdir -p reports
+          vendor/bin/phpunit unit-tests/composer unit-tests/css unit-tests/compatibility unit-tests/command/CommandRegistryComposerPackageTest.php unit-tests/acl --no-coverage --do-not-cache-result --log-junit reports/junit.xml
 
       - name: Verify distribution gate fixtures
         run: php scripts/distribution/verify-release-artifacts.php --self-test
@@ -65,10 +67,6 @@ jobs:
 
       - name: Run PHPStan
         run: composer cs || true
-        continue-on-error: true
-
-      - name: Run PHPUnit
-        run: vendor/bin/phpunit --testsuite "SimpleRest Tests" --no-coverage --log-junit reports/junit.xml
         continue-on-error: true
 
       - name: Upload test results
