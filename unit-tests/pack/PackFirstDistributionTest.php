@@ -50,7 +50,7 @@ final class PackFirstDistributionTest extends TestCase
         $class = 'Boctulus\\Simplerest\\Core\\Libs\\Files';
         self::assertTrue(class_exists($class));
         self::assertStringContainsString(
-            'archive/simplerest-framework-extractions-2026-10-23/Libs/Files.php',
+            'app/LegacyCore/Libs/Files.php',
             str_replace('\\', '/', (new ReflectionClass($class))->getFileName())
         );
         self::assertFileDoesNotExist($repo . '/src/framework/Libs/Files.php');

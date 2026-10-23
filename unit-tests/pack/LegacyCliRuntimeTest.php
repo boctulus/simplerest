@@ -18,7 +18,7 @@ final class LegacyCliRuntimeTest extends TestCase
             self::assertDirectoryExists($directory, "Legacy bootstrap helper directory missing: $directory");
         }
         self::assertStringContainsString(
-            'archive/simplerest-framework-extractions-2026-10-23/Helpers',
+            'app/LegacyCore/Helpers',
             str_replace('\\', '/', $autoload['include'][0])
         );
     }
