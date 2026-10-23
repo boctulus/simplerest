@@ -42,17 +42,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            if (!isLoggedIn()) {
+                window.location.replace(base_url + '/auth/login');
+                return;
+            }
+
             function render_username(){
                 $('#username_text').text(username());
             }
 
-            document.querySelector('#btn_logout').addEventListener("click", (e) => {
-                e.stopImmediatePropagation();
-                e.preventDefault();
-                console.log('LOG OUT');
-                
-                logout();
-            });
+            const logoutBtn = document.querySelector('#btn_logout');
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", (e) => {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    console.log('LOG OUT');
+                    logout();
+                });
+            }
             
             render_username();
         });        
@@ -318,7 +325,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         <!-- Main Footer -->
         <footer class="main-footer">
-            <?= $footer ?>
+            <?= $footer ?? '' ?>
         </footer>
     </div>
     <!-- ./wrapper -->
