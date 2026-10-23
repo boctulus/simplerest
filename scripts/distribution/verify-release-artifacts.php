@@ -9,6 +9,7 @@ declare(strict_types=1);
  *   php scripts/distribution/verify-release-artifacts.php
  *   php scripts/distribution/verify-release-artifacts.php --with-consumer-install
  *   php scripts/distribution/verify-release-artifacts.php --self-test
+ *   php scripts/distribution/verify-release-artifacts.php --microcore-only
  */
 
 $root = dirname(__DIR__, 2);
@@ -234,6 +235,32 @@ function scanArchive(string $archivePath, string $artifactLabel): array
     return ['files' => $fileCount, 'bytes' => filesize($archivePath) ?: 0, 'expandedBytes' => $expandedBytes];
 }
 
+function assertMicrocoreArtifactContents(string $archivePath): void
+{
+    $zip = new ZipArchive();
+    if ($zip->open($archivePath) !== true) {
+        throw new RuntimeException("Cannot inspect SimpleRest microcore artifact: {$archivePath}");
+    }
+
+    try {
+        for ($index = 0; $index < $zip->numFiles; $index++) {
+            $entry = $zip->getNameIndex($index);
+            if ($entry === false || str_ends_with($entry, '/')) {
+                continue;
+            }
+
+            if (in_array($entry, ['composer.json', 'README.md', 'LICENSE'], true)
+                || preg_match('~^src/framework/(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+\.php$~', $entry) === 1) {
+                continue;
+            }
+
+            throw new RuntimeException("Unexpected file in SimpleRest microcore artifact: {$entry}");
+        }
+    } finally {
+        $zip->close();
+    }
+}
+
 function scanDirectory(string $directory, string $artifactLabel): array
 {
     $violations = [];
@@ -409,23 +436,32 @@ function assertCoreRuntimeDependencyBoundary(string $manifestPath): void
 {
     $manifest = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
     $requiredPackages = array_keys($manifest['require'] ?? []);
-    $expectedPackages = [
-        'php',
-        'ext-pdo',
-        'ext-mbstring',
-        'doctrine/inflector',
-        'psr/http-message',
-        'firebase/php-jwt',
-    ];
+    $expectedPackages = ['php'];
     sort($requiredPackages);
     sort($expectedPackages);
 
     if ($requiredPackages !== $expectedPackages) {
         throw new RuntimeException(
-            "SimpleRest core runtime requirements changed outside the reviewed minimal set.\n"
+            "SimpleRest microcore must require only PHP at runtime.\n"
             . 'Expected: ' . implode(', ', $expectedPackages) . "\n"
             . 'Found: ' . implode(', ', $requiredPackages)
         );
+    }
+
+    foreach (['require-dev', 'suggest', 'autoload-dev'] as $forbiddenSection) {
+        if (array_key_exists($forbiddenSection, $manifest)) {
+            throw new RuntimeException("SimpleRest microcore manifest must not define {$forbiddenSection}.");
+        }
+    }
+
+    if (array_key_exists('files', $manifest['autoload'] ?? [])) {
+        throw new RuntimeException('SimpleRest microcore must not load PHP files by default.');
+    }
+
+    $gitattributesPath = dirname($manifestPath) . DIRECTORY_SEPARATOR . '.gitattributes';
+    $gitattributes = is_file($gitattributesPath) ? (string) file_get_contents($gitattributesPath) : '';
+    if (!str_contains($gitattributes, '/archive/ export-ignore')) {
+        throw new RuntimeException('Archived legacy implementations must be excluded from Composer artifacts.');
     }
 }
 
@@ -823,57 +859,170 @@ function runPackageOwnedTests(string $consumerDirectory, string $packageName): v
     ], $consumerDirectory);
 }
 
-function runMissingOptionalPackagesSmoke(string $consumerDirectory): void
+function runMicrocoreHttpSmoke(string $consumerDirectory): void
 {
-    $smokeFile = $consumerDirectory . DIRECTORY_SEPARATOR . 'missing-optional-packages-smoke.php';
+    $smokeFile = $consumerDirectory . DIRECTORY_SEPARATOR . 'microcore-http-smoke.php';
     $smokeSource = <<<'PHP'
 <?php
-require __DIR__ . '/vendor/autoload.php';
-$aliases = [
-    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form' => ['Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form', 'boctulus/simplerest-bootstrap-html'],
-    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte' => ['Boctulus\\Simplerest\\HtmlBuilders\\AdminLte', 'boctulus/simplerest-bootstrap-html'],
-    'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator' => ['Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator', 'boctulus/simplerest-bootstrap-html'],
-    'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler' => ['Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler', 'boctulus/simplerest-web-inspection'],
-    'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive' => ['Boctulus\\Simplerest\\Integrations\\Libs\\GoogleDrive', 'boctulus/simplerest-api-clients'],
-    'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace' => ['Boctulus\\Simplerest\\Integrations\\Libs\\HuggingFace', 'boctulus/simplerest-api-clients'],
-    'Boctulus\\Simplerest\\Core\\Libs\\OneSignal' => ['Boctulus\\Simplerest\\Integrations\\Libs\\OneSignal', 'boctulus/simplerest-api-clients'],
-    'Boctulus\\Simplerest\\Core\\Libs\\WooCommerce' => ['Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerce', 'boctulus/simplerest-api-clients'],
-    'Boctulus\\Simplerest\\Core\\Libs\\WooCommerceApiClient' => ['Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerceApiClient', 'boctulus/simplerest-api-clients'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\Scanner' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\Scanner', 'boctulus/simplerest-web-inspection'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Magento' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Magento', 'boctulus/simplerest-web-inspection'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\PrestaShop' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\PrestaShop', 'boctulus/simplerest-web-inspection'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Shopify' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Shopify', 'boctulus/simplerest-web-inspection'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Squarespace' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Squarespace', 'boctulus/simplerest-web-inspection'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Wix' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Wix', 'boctulus/simplerest-web-inspection'],
-    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\WordPress' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\WordPress', 'boctulus/simplerest-web-inspection'],
-    'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\AngularCleaner' => ['Boctulus\\Simplerest\\CodeTools\\Cleaners\\AngularCleaner', 'boctulus/simplerest-scaffolding'],
-    'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\BootstrapCleaner' => ['Boctulus\\Simplerest\\CodeTools\\Cleaners\\BootstrapCleaner', 'boctulus/simplerest-scaffolding'],
-];
+use Boctulus\Simplerest\Core\Container;
+use Boctulus\Simplerest\Core\FrontController;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\WebRouter;
 
-foreach ($aliases as $legacyClass => [$implementation, $package]) {
-    if (class_exists($implementation)) {
-        fwrite(STDERR, "Optional implementation unexpectedly loaded without its package: {$implementation}\n");
+require __DIR__ . '/vendor/autoload.php';
+$required = [
+    Request::class,
+    \Boctulus\Simplerest\Core\Response::class,
+    WebRouter::class,
+    FrontController::class,
+    \Boctulus\Simplerest\Core\Middleware::class,
+    Container::class,
+];
+foreach ($required as $class) {
+    if (!class_exists($class) && !interface_exists($class)) {
+        fwrite(STDERR, "Microcore symbol did not autoload: {$class}\n");
         exit(1);
     }
-    try {
-        class_exists($legacyClass);
-    } catch (LogicException $error) {
-        if (!str_contains($error->getMessage(), $package)) {
-            fwrite(STDERR, "Wrong package guidance for {$legacyClass}: {$error->getMessage()}\n");
-            exit(1);
-        }
-        continue;
+}
+
+$optional = [
+    'Boctulus\\Simplerest\\Core\\Libs\\DB',
+    'Boctulus\\Simplerest\\Core\\Api\\ApiController',
+    'Boctulus\\Simplerest\\Core\\Security\\Acl',
+    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
+    'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator',
+];
+foreach ($optional as $class) {
+    if (class_exists($class) || interface_exists($class) || trait_exists($class)) {
+        fwrite(STDERR, "Optional implementation leaked into the microcore artifact: {$class}\n");
+        exit(1);
     }
-    fwrite(STDERR, "Legacy optional class did not report its missing package: {$legacyClass}\n");
+}
+
+Container::reset();
+WebRouter::reset();
+WebRouter::get('/health', static fn (Request $request): array => ['status' => 'ok']);
+$health = FrontController::handle(new Request('GET', '/health'));
+$healthBody = json_decode($health->getBody(), true);
+if ($health->getStatusCode() !== 200 || $health->getHeaderLine('content-type') !== 'application/json; charset=utf-8' || $healthBody !== ['status' => 'ok']) {
+    fwrite(STDERR, "GET /health did not return the expected JSON response.\n");
     exit(1);
 }
 
-if (class_exists('Boctulus\\Simplerest\\Core\\Libs\\PdfBase')) {
-    fwrite(STDERR, "PDF package class unexpectedly loaded from a core-only consumer.\n");
+$protectedHandlerRan = false;
+WebRouter::get('/protected', static function () use (&$protectedHandlerRan): array {
+    $protectedHandlerRan = true;
+    return ['secret' => true];
+}, ['UnavailableAuthenticationProvider']);
+$protected = FrontController::handle(new Request('GET', '/protected'));
+if ($protected->getStatusCode() !== 503 || $protectedHandlerRan) {
+    fwrite(STDERR, "A protected route did not fail closed without its middleware provider.\n");
     exit(1);
 }
 
-fwrite(STDOUT, 'PASS ' . count($aliases) . " legacy aliases report absent extensions under authoritative autoload; PdfBase stays absent.\n");
+$routerSource = <<<'ROUTER'
+<?php
+use Boctulus\Simplerest\Core\FrontController;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\WebRouter;
+
+require __DIR__ . '/vendor/autoload.php';
+WebRouter::get('/health', static fn (Request $request): array => ['status' => 'ok']);
+WebRouter::get('/protected', static fn (): array => ['secret' => true], ['UnavailableAuthenticationProvider']);
+FrontController::resolve();
+ROUTER;
+$routerFile = __DIR__ . '/microcore-router.php';
+if (file_put_contents($routerFile, $routerSource) === false) {
+    fwrite(STDERR, "Could not create the temporary HTTP router.\n");
+    exit(1);
+}
+
+$probe = stream_socket_server('tcp://127.0.0.1:0', $errorNumber, $errorMessage);
+if (!is_resource($probe)) {
+    fwrite(STDERR, "Could not reserve a local HTTP test port: {$errorMessage}\n");
+    unlink($routerFile);
+    exit(1);
+}
+$address = stream_socket_get_name($probe, false);
+fclose($probe);
+$port = (int) substr(strrchr((string) $address, ':'), 1);
+$pipes = [];
+$server = proc_open(
+    [PHP_BINARY, '-S', "127.0.0.1:{$port}", $routerFile],
+    [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+    $pipes,
+    __DIR__
+);
+if (!is_resource($server)) {
+    fwrite(STDERR, "Could not start the temporary PHP HTTP server.\n");
+    unlink($routerFile);
+    exit(1);
+}
+
+foreach ([1, 2] as $pipeIndex) {
+    stream_set_blocking($pipes[$pipeIndex], false);
+}
+
+$fetch = static function (string $path) use ($port): array {
+    $socket = @stream_socket_client("tcp://127.0.0.1:{$port}", $errorNumber, $errorMessage, 1);
+    if (!is_resource($socket)) {
+        return [false, []];
+    }
+    stream_set_timeout($socket, 1);
+    fwrite($socket, "GET {$path} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n");
+    $response = stream_get_contents($socket);
+    fclose($socket);
+    if (!is_string($response)) {
+        return [false, []];
+    }
+    $separator = strpos($response, "\r\n\r\n");
+    if ($separator === false) {
+        return [false, []];
+    }
+
+    return [substr($response, $separator + 4), explode("\r\n", substr($response, 0, $separator))];
+};
+
+try {
+    $healthResponse = [false, []];
+    for ($attempt = 0; $attempt < 30 && $healthResponse[0] === false; $attempt++) {
+        $healthResponse = $fetch('/health');
+        if ($healthResponse[0] === false) {
+            usleep(50000);
+        }
+    }
+
+    [$healthBody, $healthHeaders] = $healthResponse;
+    $healthStatus = $healthHeaders[0] ?? '';
+    $contentType = '';
+    foreach ($healthHeaders as $header) {
+        if (stripos($header, 'Content-Type:') === 0) {
+            $contentType = trim(substr($header, strlen('Content-Type:')));
+        }
+    }
+    if (!is_string($healthBody)
+        || preg_match('/\\s200(?:\\s|$)/', $healthStatus) !== 1
+        || $contentType !== 'application/json; charset=utf-8'
+        || json_decode($healthBody, true) !== ['status' => 'ok']) {
+        throw new RuntimeException('A real HTTP GET /health did not return the expected JSON response.');
+    }
+
+    [$protectedBody, $protectedHeaders] = $fetch('/protected');
+    if (!is_string($protectedBody) || preg_match('/\\s503(?:\\s|$)/', $protectedHeaders[0] ?? '') !== 1) {
+        throw new RuntimeException('A real HTTP request to a protected route did not fail closed.');
+    }
+} finally {
+    proc_terminate($server);
+    foreach ($pipes as $pipe) {
+        if (is_resource($pipe)) {
+            fclose($pipe);
+        }
+    }
+    proc_close($server);
+    unlink($routerFile);
+}
+
+fwrite(STDOUT, "PASS isolated microcore autoload, real GET /health JSON, and fail-closed middleware without extensions.\n");
 PHP;
     file_put_contents($smokeFile, $smokeSource);
     runExecutable([PHP_BINARY, $smokeFile], $consumerDirectory);
@@ -970,7 +1119,7 @@ function verifyCoreV3Consumers(string $artifactDirectory, array $packageManifest
     writeVersionedPathConsumerManifest($coreOnlyConsumer, [$coreName => $packageDirectories[$coreName]]);
     installVcsConsumer($coreOnlyConsumer, true, true);
     assertConsumerLockVersion($coreOnlyConsumer, $coreName, '3.0.0');
-    runMissingOptionalPackagesSmoke($coreOnlyConsumer);
+    runMicrocoreHttpSmoke($coreOnlyConsumer);
 
     foreach ($releasePackageClasses as $packageName => $classes) {
         $consumerDirectory = $temporaryDirectory . DIRECTORY_SEPARATOR . 'consumer-core-3-' . str_replace('/', '-', substr($packageName, strlen('boctulus/')));
@@ -1037,6 +1186,57 @@ function verifyCoreV3Consumers(string $artifactDirectory, array $packageManifest
 if (in_array('--self-test', $argv, true)) {
     assertCoreRuntimeDependencyBoundary($root . DIRECTORY_SEPARATOR . 'composer.json');
     assertDetectorSelfTest();
+    exit(0);
+}
+
+if (in_array('--microcore-only', $argv, true)) {
+    assertCoreRuntimeDependencyBoundary($root . DIRECTORY_SEPARATOR . 'composer.json');
+    runCommand(['validate', '--strict', '--no-check-publish'], $root);
+    if (!class_exists(ZipArchive::class)) {
+        fwrite(STDERR, "The PHP zip extension is required to inspect Composer archives.\n");
+        exit(2);
+    }
+
+    $temporaryDirectory = createTemporaryDirectory();
+    try {
+        $artifactDirectory = $temporaryDirectory . DIRECTORY_SEPARATOR . 'artifacts';
+        $packageDirectory = $temporaryDirectory . DIRECTORY_SEPARATOR . 'package';
+        $consumerDirectory = $temporaryDirectory . DIRECTORY_SEPARATOR . 'consumer';
+        mkdir($artifactDirectory);
+        mkdir($consumerDirectory);
+
+        runCommand([
+            'archive',
+            '--format=zip',
+            '--dir=' . $artifactDirectory,
+            '--file=boctulus-simplerest-microcore',
+            '--no-scripts',
+            '--no-plugins',
+            '--no-interaction',
+        ], $root);
+
+        $archivePath = $artifactDirectory . DIRECTORY_SEPARATOR . 'boctulus-simplerest-microcore.zip';
+        if (!is_file($archivePath)) {
+            throw new RuntimeException('Composer did not create the SimpleRest microcore artifact.');
+        }
+        $metrics = scanArchive($archivePath, 'SimpleRest microcore');
+        assertMicrocoreArtifactContents($archivePath);
+        extractComposerArtifact($archivePath, $packageDirectory);
+        writeVersionedPathConsumerManifest($consumerDirectory, [
+            'boctulus/simplerest' => $packageDirectory,
+        ]);
+        installVcsConsumer($consumerDirectory, true, false);
+        assertConsumerLockVersion($consumerDirectory, 'boctulus/simplerest', '3.0.0');
+        runMicrocoreHttpSmoke($consumerDirectory);
+
+        fwrite(STDOUT, sprintf(
+            "PASS Composer microcore artifact: %d files, %d expanded bytes; isolated core-only consumer GET /health and protected-route checks passed.\n",
+            $metrics['files'],
+            $metrics['expandedBytes']
+        ));
+    } finally {
+        removeTemporaryDirectory($temporaryDirectory);
+    }
     exit(0);
 }
 

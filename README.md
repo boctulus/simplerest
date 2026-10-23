@@ -1,12 +1,12 @@
 # SimpleRest
 
-SimpleRest is a PHP framework for building HTTP applications and REST APIs. This repository contains the framework source, an application bootstrap, configuration and routing files, a command-line entry point, tests, examples, and locally developed packages.
+SimpleRest is a PHP framework whose Composer core is a small HTTP kernel. This monorepo also contains the legacy application, extension packages, tests, and an archive of code removed from the kernel while those capabilities are migrated or retired.
 
 The framework has its own runtime and conventions. Its behavior is defined by the code in this repository; similarities to other PHP frameworks are not a substitute for the SimpleRest API or architecture.
 
 ## Repository at a glance
 
-- `src/framework/` — framework classes, including the HTTP and CLI routers, request pipeline, API base classes, database utilities, and other core components.
+- `src/framework/` — the HTTP request/response, router, generic middleware pipeline, dependency container, and JSON front controller.
 - `app/` — application controllers, models, commands, schemas, views, and modules used by this checkout.
 - `config/` — application configuration and route registration.
 - `database/` — database migration files used by this application.
@@ -15,13 +15,11 @@ The framework has its own runtime and conventions. Its behavior is defined by th
 - `packages/` — packages maintained in this repository.
 - `docs/` — topic documentation and the documentation audit record.
 
-`index.php` loads `app.php`, then checks the web router, CLI router, and front controller in `config/config.php` order. A web route that matches and dispatches exits before later stages. The front controller builds its request-processing handlers from `front_behaviors`. See [Architecture](docs/architecture.md) for the evidence-backed overview.
+`app.php`, `index.php`, and `config/` still describe the legacy monolithic application bootstrap. They are not included in the Composer core artifact and have not yet been migrated to the microcore API.
 
 ## Framework and extensions
 
-SimpleRest provides automatic REST endpoints, routing, a database Query
-Builder, authentication hooks, and configurable ACL support. Applications can
-add focused extensions for common development and integration tasks:
+The microcore provides HTTP request parsing, route matching, generic middleware, dependency resolution, and JSON responses. It has no database, authentication, ACL, HTML, CLI, or external API implementation. The repository's existing extension packages remain separate from the core; their current tags predate this microcore boundary and have not yet been validated against it:
 
 | Composer package | What it provides |
 | --- | --- |
@@ -32,21 +30,30 @@ add focused extensions for common development and integration tasks:
 | [`boctulus/simplerest-api-clients`](https://github.com/boctulus/simplerest-api-clients) | Google Drive, WooCommerce, OneSignal, and Hugging Face clients |
 | [`boctulus/llm-providers`](https://github.com/boctulus/llm-providers) | Unified OpenAI, Anthropic, xAI, and Ollama provider interface |
 
-The optional packages are distributed through GitHub Composer repositories;
-Packagist registration is pending. The BasicACL and FineGrainedACL extensions
-are proprietary and are not part of the public Composer catalogue.
+The public extension tags and repositories were not changed by this refactor. New compatible extension versions and their migration guides remain pending. The BasicACL and FineGrainedACL extensions are proprietary and are not part of the public Composer catalogue.
 
 ## Requirements
 
-The current `composer.json` declares PHP `>=8.1,<8.5`. It also declares Composer dependencies. Database drivers, database setup, web-server configuration, and optional integrations depend on which features an application uses; consult the relevant guide before deployment.
+The public `composer.json` requires only PHP `>=8.1,<8.5`. A microcore installation does not require PDO, a database driver, JWT, PSR-7, Bootstrap, or SDK packages. Applications that install extensions must also satisfy those extensions' own requirements.
 
-## Upload validation
+## Microcore usage
 
-`FileUploader` accepts only HTTP-uploaded files whose filename extension and detected MIME type are allowlisted. Applications that accept additional types must configure `files.media_accepted.extensions` and `files.media_accepted.mime_types`, or call `setAllowedTypes()` before upload. CLI code that supplies a local file path is rejected.
+The 3.x microcore work is not tagged or published yet. Once a compatible 3.x release is available, a consumer can register a route and send its JSON response without application configuration or extensions:
+
+```php
+require __DIR__ . '/vendor/autoload.php';
+
+use Boctulus\Simplerest\Core\FrontController;
+use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\WebRouter;
+
+WebRouter::get('/health', static fn (Request $request): array => ['status' => 'ok']);
+FrontController::resolve();
+```
 
 ## Getting started
 
-This checkout is an application repository as well as framework source. Composer metadata describes the package as `boctulus/simplerest` of type `library`; that fact alone does not establish that a clean consumer project can install and run the framework as a standalone application. The installation and clean-start guide is being reconstructed and must be verified from a clean environment before it is treated as a copy-and-run tutorial.
+This checkout is an application repository as well as framework source. The Composer release contains the microcore only; it does not copy the legacy app bootstrap or automatically install extension code. The extraction archive in `archive/` is excluded from Composer artifacts and is not an autoload source.
 
 Start with the [canonical documentation map](docs/index.md). The [audit register](docs/audit/README.md) is internal; topic pages not linked from the map are legacy or pending audit input, not current specifications.
 
@@ -54,14 +61,15 @@ The [official Spanish documentation](https://boctulus.github.io/simplerest/) is 
 
 ## Development checks
 
-The Composer manifest currently defines these scripts:
+The monorepo keeps PHPUnit outside the public package manifest. In PowerShell, install its development dependencies and run the microcore checks with:
 
-```sh
-composer test
-composer cs
+```powershell
+$env:COMPOSER = 'composer-dev.json'
+composer install
+composer test:microcore
 ```
 
-`composer test` invokes `phpunit --colors=always unit-tests`. The current `phpunit.xml` also lists `unit-tests/` as its configured suite. This verifies test selection only; it does not establish a successful run. In [Actions run 39725153614](https://github.com/boctulus/simplerest/actions/runs/39725153614) for commit `0c7ef58`, PHPUnit exited 255 while loading `ApiCollectionsTest.php` because `app.php` could not read the absent `.env`; the step is non-blocking. That run also reported 4,402–4,481 PHPStan diagnostics across its PHP matrix, and that step is non-blocking too. No tests were run as part of this merge. `composer cs` invokes PHPStan against `src` at level 7.
+The legacy application suite still depends on migration work and is not represented by `test:microcore`.
 
 ## Contributing
 

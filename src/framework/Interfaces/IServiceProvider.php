@@ -1,21 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Boctulus\Simplerest\Core\Interfaces;
 
-interface IServiceProvider {
-    /**
-     * Bootstrap the application services.
-     * 
-     * Inicializa cualquier lógica que requieran los servicios registrados.
-     *
-     * @return void
-     */
+interface IServiceProvider
+{
     public function boot();
 
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
     public function register();
 }

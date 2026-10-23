@@ -20,7 +20,7 @@ Este documento es el inventario vivo de decisiones y cambios. No sustituye la au
 - `PdfBase` y `PHPParser` conservan el namespace público existente y se cargan desde sus paquetes respectivos. Los manifiestos de los paquetes agregan sus propios archivos bajo ese prefijo; no mantienen copias dentro del core. El `autoload-dev` raíz mantiene mapas locales solo para trabajar en el monorepo.
 - El nombre simplerest-cli no existe entre los paquetes locales inspeccionados. No se crea ni publica como parte de esta fase.
 - app/Commands/ sigue siendo propiedad de cada aplicación. El contrato de comando y su registro pertenecen al core; la distribución de implementaciones se decidirá usando los paquetes existentes y evidencia de consumidores.
-- La modularización ya tiene una tarjeta vigente en [simplerest-composer-core-packages.md](../to-do/simplerest-composer-core-packages.md). Esta auditoría registra decisiones/evidencia del core y no duplica esa tarea.
+- La modularización ya tiene una tarjeta vigente en [simplerest-composer-core-packages.md](../to-do/in-progress/simplerest-composer-core-packages.md). Esta auditoría registra decisiones/evidencia del core y no duplica esa tarea.
 
 ## Corte histórico de Composer y distribución (v2.0.1)
 

@@ -17,7 +17,7 @@ class PackagerComposerManifestTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_curated_starter_keeps_runtime_dependencies_and_dotenv(): void
+    public function test_curated_manifest_keeps_the_microcore_runtime_minimal(): void
     {
         $repositoryRoot = dirname(__DIR__, 2);
         require_once $repositoryRoot . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR
@@ -46,18 +46,14 @@ class PackagerComposerManifestTest extends TestCase
         );
 
         $this->assertSame('>=8.1,<8.5', $manifest['require']['php']);
-        $this->assertSame('*', $manifest['require']['ext-pdo']);
-        $this->assertSame('*', $manifest['require']['ext-mbstring']);
-        $this->assertSame('^2.0', $manifest['require']['doctrine/inflector']);
-        $this->assertSame('^2.0', $manifest['require']['psr/http-message']);
-        $this->assertSame('^7.1', $manifest['require']['firebase/php-jwt']);
+        $this->assertSame(['php', 'vlucas/phpdotenv'], array_keys($manifest['require']));
         $this->assertArrayNotHasKey('symfony/dom-crawler', $manifest['require']);
         $this->assertArrayNotHasKey('symfony/css-selector', $manifest['require']);
-        $this->assertStringContainsString('boctulus/simplerest-fpdf', implode(' ', array_keys($manifest['suggest'])));
-        $this->assertStringContainsString('boctulus/simplerest-scaffolding', implode(' ', array_keys($manifest['suggest'])));
         $this->assertSame('^5.2', $manifest['require']['vlucas/phpdotenv']);
         $this->assertArrayNotHasKey('phpmailer/phpmailer', $manifest['require']);
         $this->assertArrayNotHasKey('require-dev', $manifest);
+        $this->assertArrayNotHasKey('autoload-dev', $manifest);
+        $this->assertArrayNotHasKey('files', $manifest['autoload'] ?? []);
     }
 
     private function removeDirectory(string $directory): void

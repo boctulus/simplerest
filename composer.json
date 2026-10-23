@@ -1,105 +1,35 @@
 {
-	"name":"boctulus/simplerest",
-   "type":"library",
-   "description":"API Rest framework for PHP",
-   "keywords":[
-      "simplerest",
-      "framework",
-      "boctulus"
-   ],
-   "license":"MIT",
-   "authors":[
-      {
-         "name":"Pablo Gabriel Bozzolo",
-         "email":"boctulus@gmail.com"
-      }
-   ],
-   "require":{
-      "php":">=8.1,<8.5",
-		"ext-pdo": "*",
-		"ext-mbstring": "*",
-		"doctrine/inflector": "^2.0",
-		"psr/http-message": "^2.0",
-		"firebase/php-jwt": "^7.1"
-   },
-	"require-dev": {
-      "phpunit/phpunit": "^10.0",
-	  "phpstan/phpstan": "^1.10",
-	  "vlucas/phpdotenv": "^5.2",
-	  "phpmailer/phpmailer": "^7.1",
-	  "setasign/fpdf": "^1.8",
-	  "nikic/php-parser": "^5.4",
-	  "symfony/dom-crawler": "^6.4",
-	  "symfony/css-selector": "^6.4"
-	},
-	"suggest": {
-	  "phpmailer/phpmailer": "Optional SMTP adapter for Core\\Libs\\Mail; supports PHPMailer 6.9 and 7.1.",
-	  "boctulus/simplerest-api-clients": "Optional Google Drive, WooCommerce, OneSignal, and Hugging Face API clients; currently installed from GitHub through Composer VCS.",
-	  "boctulus/simplerest-web-inspection": "Optional CMS and technology detection plus HTML scraping; currently installed from GitHub through Composer VCS.",
-	  "guzzlehttp/guzzle": "Optional HTTP client used by the bundled SendinBlue adapter.",
-	  "ext-curl": "Optional HTTP transport acceleration for API clients and webhook integrations.",
-	  "ext-pdo_mysql": "Optional PDO MySQL driver when connecting to MySQL or MariaDB.",
-	  "ext-pdo_pgsql": "Optional PDO PostgreSQL driver when connecting to PostgreSQL.",
-	  "ext-pdo_sqlite": "Optional PDO SQLite driver when connecting to SQLite.",
-	  "boctulus/simplerest-fpdf": "Optional PdfBase adapter powered by the FPDF library; currently installed from GitHub through Composer VCS.",
-	  "boctulus/simplerest-scaffolding": "Optional make commands and PHP development tools; currently installed from GitHub through Composer VCS.",
-	  "boctulus/simplerest-bootstrap-html": "Optional Bootstrap 5 and AdminLTE builders plus Bootstrap pagination; preserves former core class names when installed.",
-	  "boctulus/llm-providers": "Optional unified clients for OpenAI, Anthropic, xAI, and Ollama; currently installed from GitHub through Composer VCS."
-	},
-   "scripts":{
-      "test": "phpunit --colors=always unit-tests",
-      "cs": "phpstan analyse src --level=7"
-   },
-   "extra":{
-      "google/apiclient-services":[
-         "Drive"
-      ]
-   },
-   "autoload":{
-	  "files":[
-	    "src/framework/Compatibility/OptionalPackageClassAliases.php"
-	  ],
-      "psr-4":{
-         "Boctulus\\Simplerest\\Core\\":"src/framework/"
-      },
-      "exclude-from-classmap": [
-         "src/framework/Templates/"
-      ]
-   },
-   "autoload-dev": {
-      "psr-4": {
-         "Boctulus\\Simplerest\\Tests\\": "unit-tests/",
-         "Boctulus\\Simplerest\\": ["app/", "src/"],
-         "Boctulus\\Simplerest\\Core\\Libs\\":["src/framework/Libs/", "packages/boctulus/simplerest-fpdf/src/", "packages/boctulus/simplerest-scaffolding/src/"],
-         "Boctulus\\Simplerest\\CodeTools\\Cleaners\\": "packages/boctulus/simplerest-scaffolding/src/Cleaners/",
-         "Boctulus\\Simplerest\\Integrations\\": ["packages/boctulus/simplerest-api-clients/src/", "packages/boctulus/simplerest-web-inspection/src/"],
-         "Boctulus\\Simplerest\\Integrations\\Libs\\": [
-            "packages/boctulus/simplerest-api-clients/src/Libs/",
-            "packages/boctulus/simplerest-web-inspection/src/Libs/",
-            "packages/boctulus/simplerest-bootstrap-html/src/"
-         ],
-         "Boctulus\\Simplerest\\HtmlBuilders\\": "packages/boctulus/simplerest-bootstrap-html/src/",
-         "Boctulus\\FineGrainedACL\\":"packages/boctulus/fine-grained-acl/src",
-         "Boctulus\\BasicACL\\":"packages/boctulus/basic-acl/src",
-         "Boctulus\\WebTest\\":"packages/boctulus/web-test/src",
-         "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src",
-         "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src",
-         "Boctulus\\AzSeeder\\": "packages/boctulus/az-seeder/src"
-      },
-      "classmap": [
-         "packages/boctulus/simplerest-scaffolding/src/Commands/"
-      ]
-   },
-   "config":{
-      "optimize-autoloader":true,
-      "allow-plugins":{
-         "php-http/discovery":true
-      },      
-      "preferred-install": {
-        "boctulus/api-client": "dist",
-        "boctulus/shopifyconnector": "dist"
-      }
-   },
-   "minimum-stability":"stable",
-   "prefer-stable":true
+  "name": "boctulus/simplerest",
+  "type": "library",
+  "description": "Minimal PHP HTTP core for SimpleRest applications",
+  "keywords": [
+    "simplerest",
+    "php",
+    "http",
+    "router",
+    "framework"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pablo Gabriel Bozzolo",
+      "email": "boctulus@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.1,<8.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Boctulus\\Simplerest\\Core\\": "src/framework/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "3.0.x-dev"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true
+  }
 }

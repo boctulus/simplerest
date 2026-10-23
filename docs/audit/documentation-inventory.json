@@ -2512,7 +2512,7 @@
           "line": 11
         },
         {
-          "target": "docs/to-do/simplerest-composer-core-packages.md",
+          "target": "docs/to-do/in-progress/simplerest-composer-core-packages.md",
           "exists": true,
           "line": 23
         }
@@ -4403,7 +4403,7 @@
       "outgoing_markdown_refs": []
     },
     {
-      "path": "docs/to-do/simplerest-composer-core-packages.md",
+      "path": "docs/to-do/in-progress/simplerest-composer-core-packages.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [

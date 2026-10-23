@@ -1,134 +1,77 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Boctulus\Simplerest\Core;
 
-use Boctulus\Simplerest\Core\Libs\Config;
-use Boctulus\Simplerest\Core\Libs\Msg;
-use Boctulus\Simplerest\Core\Request;
+use Boctulus\Simplerest\Core\Handlers\ErrorHandler;
+use Boctulus\Simplerest\Core\Handlers\MiddlewareHandler;
+use Throwable;
 
-class FrontController
+final class FrontController
 {
-    const DEFAULT_ACTION = "index";
-
-    private static function authorizationFailureStatusCode(bool $isAuthenticated): int
+    public static function handle(?Request $request = null): Response
     {
-        return $isAuthenticated ? 403 : 401;
-    }
-
-    static function resolve()
-    {
-        global $api_version;
-
-        $config = Config::get();
-        $res = Response::getInstance();
-        $req = Request::getInstance();
-
         try {
-            // 1. Instanciar handlers desde configuración
-            $handlers = [];
-            foreach ($config['front_behaviors'] as $key => $class) {
-                $handlers[$key] = new $class();
+            $request ??= Request::fromGlobals();
+            $route = WebRouter::match($request);
+
+            if ($route === null) {
+                return Response::json(['error' => 'Not Found'], 404);
+            }
+            if (($route['method_not_allowed'] ?? false) === true) {
+                return Response::json(['error' => 'Method Not Allowed'], 405, [
+                    'Allow' => implode(', ', $route['allowed']),
+                ]);
             }
 
-            // 2. Determinar tipo de entorno
-            $env = php_sapi_name() === 'cli' ? 'cli' : 'http';
+            $request->setAttribute('route.params', $route['params']);
+            $destination = static fn (Request $currentRequest): mixed => self::invokeHandler(
+                $route['handler'],
+                $currentRequest,
+                $route['params']
+            );
+            $result = (new MiddlewareHandler())->run($request, $route['middleware'], $destination);
 
-            // 3. Obtener parámetros de la request
-            [$params, $is_auth, $is_api] = $handlers['request']->parse($env);
-
-            // Si no hay parámetros, terminar
-            if (empty($params)) {
-                return;
-            }
-
-            // 4. Resolver clase, método y parámetros según el tipo de ruta
-            $api_version = null;
-
-            if ($is_auth) {
-                [$class_name, $method, $args, $api_version] = $handlers['auth']->resolve($params);
-            } elseif ($is_api) {
-                [$class_name, $method, $args, $api_version] = $handlers['api']->resolve($params);
-            } else {
-                [$class_name, $method, $args] = $handlers['request']->resolveController($params);
-            }
-
-            // 4.5. Verificar si el controlador pertenece a un package y si FrontController está habilitado
-            $packageInfo = Config::getPackageFromClass($class_name);
-
-            if ($packageInfo !== null) {
-                // Es un controlador de package, verificar configuración específica
-                $packageFrontController = Config::getPackageConfig(
-                    $packageInfo['vendor'],
-                    $packageInfo['package'],
-                    'front_controller',
-                    true // Default: habilitado
-                );
-
-                if (!$packageFrontController) {
-                    // FrontController deshabilitado para este package
-                    return;
-                }
-            }
-
-            // Set parameters in Request object for ArrayAccess
-            $req->setParams($args);
-
-            // 5. Validar existencia de clase y método
-            if (!class_exists($class_name)){
-                $res->error(Msg::CLASS_NOT_FOUND, 404, "Internal error - controller class $class_name not found");
-            }
-
-            if (!method_exists($class_name, $method)){
-                if ($env != 'cli' || $method != self::DEFAULT_ACTION){
-                    /*
-                        Si existe __call(), permite que el método sea manejado mágicamente
-                    */
-                    if (!method_exists($class_name, '__call')){
-                        $res->error("Internal error - method $method was not found in $class_name", 404);
-                    }
-                } else {
-                    // CLI sin método index - no ejecutar
-                    exit;
-                }
-            }
-
-            // 6. Ejecutar el método del controlador
-            $controller = new $class_name();
-
-            // Validar callable para API Rest
-            if ($is_api && !$is_auth){
-                if (!in_array($method, $controller->getCallable())){
-                    $is_authenticated = $req->isAuthenticated();
-                    $status_code = static::authorizationFailureStatusCode($is_authenticated);
-                    $message = $is_authenticated
-                        ? "Not authorized for $class_name:$method"
-                        : "Authentication required for $class_name:$method";
-
-                    $res->error($message, $status_code);
-                }
-            }
-
-            $data = call_user_func_array([$controller, $method], $args);
-
-            // 7. Procesar salida
-            if ($data !== null) {
-                $output = $handlers['output']->format($controller, $data);
-                $res->set($output);
-            }
-
-            // 8. Ejecutar middlewares
-            $handlers['middleware']->run($class_name, $method);
-
-            // 9. Enviar respuesta solo si hay datos
-            if (!$res->isEmpty()){
-                $res->flush();
-            }
-            exit;
-
-        } catch (\Throwable $e) {
-            $handlers['error']->handle($e);
+            return $result instanceof Response ? $result : Response::json($result);
+        } catch (Throwable $error) {
+            return (new ErrorHandler())->handle($error);
         }
     }
+
+    public static function resolve(): void
+    {
+        self::handle()->send();
+    }
+
+    private static function invokeHandler(mixed $handler, Request $request, array $params): mixed
+    {
+        if (is_callable($handler)) {
+            return $handler($request, $params);
+        }
+
+        if (is_array($handler) && count($handler) === 2) {
+            [$target, $method] = $handler;
+            $instance = is_string($target) ? Container::make($target) : $target;
+            if (is_object($instance) && is_string($method) && is_callable([$instance, $method])) {
+                return $instance->{$method}($request, $params);
+            }
+        }
+
+        if (is_string($handler)) {
+            [$class, $method] = str_contains($handler, '@')
+                ? explode('@', $handler, 2)
+                : [$handler, '__invoke'];
+            $instance = Container::make($class);
+            if (is_callable([$instance, $method])) {
+                return $instance->{$method}($request, $params);
+            }
+        }
+
+        if (is_object($handler) && is_callable($handler)) {
+            return $handler($request, $params);
+        }
+
+        throw new \InvalidArgumentException('The route handler is not callable.');
+    }
 }
-
-

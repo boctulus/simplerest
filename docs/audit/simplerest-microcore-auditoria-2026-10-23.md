@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-10-23  
 **Fuente:** GitHub `boctulus/simplerest`, rama `fix/composer-distribution-modularization-recovered-20261022`, commit `491f665cc8bc2cdd85b76159da6e662958cbdbee`.  
-**Estado:** auditoría de código realizada en modo lectura; el presente documento se conserva en `master` como registro y propuesta. No se han aplicado las extracciones descritas ni se ha modificado GoProp.  
+**Estado al redactar:** auditoría de código realizada en modo lectura; en el commit fuente todavía no se habían aplicado las extracciones. **Estado en `master`, 2026-10-23:** se aplicó una primera reducción del kernel y se archivaron candidatos; no se modificó GoProp ni se publicaron versiones nuevas.
 **Alcance:** todos los 270 archivos versionados bajo `src/framework/` en este commit. Los destinos son propuestas de arquitectura, **no pruebas de que cada archivo sea seguro de mover sin refactor**. Una parte de las clases se inspeccionó en código fuente; el resto está clasificado de forma conservadora por ruta y función, pendiente de grafo de dependencias y consumidores.
 
 ## Regla de arquitectura
@@ -460,3 +460,12 @@ Move webhook publishing/delivery to webhook extension..
 - `src/framework/Libs/WebhookHttpTransport.php`
 - `src/framework/Libs/WebhookPublisher.php`
 - `src/framework/Libs/WebhookSubscriptionMatcher.php`
+
+## Estado de implementación en master — 2026-10-23
+
+- `src/framework/` contiene 14 clases genéricas para HTTP, routing, middleware, DI, errores y configuración en memoria. Se retiraron de ese árbol 239 archivos candidatos y se conservaron en `archive/simplerest-framework-extractions-2026-10-23/`; Composer excluye ese archivo de sus artefactos y no lo autoload.
+- Se eliminaron los 17 archivos clasificados para borrar, incluidos el cargador de aliases y los shims. `composer.json` requiere únicamente PHP, no define `suggest`, `require-dev`, `autoload-dev` ni `autoload.files`; la configuración PHPUnit del monorepo vive en `composer-dev.json`.
+- `Request`, `Response`, `WebRouter`, `FrontController`, `MiddlewareHandler` y `ErrorHandler` se redujeron a un flujo HTTP genérico. Una ruta cuyo middleware no puede resolverse responde 503 antes de ejecutar el handler.
+- La prueba semántica de Graphify no pudo ejecutarse porque el servicio rechazó la credencial con HTTP 401; el mapa AST obtenido es auxiliar y presenta endpoints sin resolver. La revisión completa de consumidores y la migración de los paquetes existentes siguen pendientes.
+- Las páginas canónicas de arquitectura, API, base de datos, seguridad, CLI e integraciones todavía describen capacidades del framework anterior. Se clasifican como documentación pendiente de reconciliación con el nuevo contrato; no se reescribieron en esta implementación.
+- El core 3.x no tiene tag ni publicación en Packagist. Las etiquetas actuales de extensiones no se modificaron y no se afirma compatibilidad con este microcore.
