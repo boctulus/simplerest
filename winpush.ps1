@@ -1,3 +1,6 @@
+# Fast forward primero
+git pull --ff-only
+
 # Borro basura
 bash -c "rm -f nul"
 
