@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  base: '/simplerest/',
   title: 'SimpleRest | Documentación',
   description: 'Documentación pública curada de SimpleRest.',
   locales: {
