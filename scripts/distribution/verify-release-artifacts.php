@@ -405,6 +405,30 @@ function assertNoArchiveSuppliedGitMarker(string $repositoryDirectory): void
     }
 }
 
+function assertCoreRuntimeDependencyBoundary(string $manifestPath): void
+{
+    $manifest = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
+    $requiredPackages = array_keys($manifest['require'] ?? []);
+    $expectedPackages = [
+        'php',
+        'ext-pdo',
+        'ext-mbstring',
+        'doctrine/inflector',
+        'psr/http-message',
+        'firebase/php-jwt',
+    ];
+    sort($requiredPackages);
+    sort($expectedPackages);
+
+    if ($requiredPackages !== $expectedPackages) {
+        throw new RuntimeException(
+            "SimpleRest core runtime requirements changed outside the reviewed minimal set.\n"
+            . 'Expected: ' . implode(', ', $expectedPackages) . "\n"
+            . 'Found: ' . implode(', ', $requiredPackages)
+        );
+    }
+}
+
 function packageRepositoryEntries(array $repositories): array
 {
     $entries = [];
@@ -487,8 +511,8 @@ require __DIR__ . '/vendor/autoload.php';
 $classes = __EXPECTED_CLASSES__;
 $traits = __EXPECTED_TRAITS__;
 foreach ($classes as $class) {
-    if (!class_exists($class)) {
-        fwrite(STDERR, "Composer autoload did not resolve {$class}\n");
+    if (!class_exists($class) && !interface_exists($class) && !trait_exists($class)) {
+        fwrite(STDERR, "Composer autoload did not resolve class-like symbol {$class}\n");
         exit(1);
     }
 }
@@ -569,8 +593,11 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
         'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Squarespace',
         'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Wix',
         'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\WordPress',
-        'Boctulus\\OpenfacturaSdk\\Factory\\OpenFacturaSDKFactory',
-        'Boctulus\\FriendlyposWeb\\Controllers\\OpenFacturaController',
+        'Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form',
+        'Boctulus\\Simplerest\\HtmlBuilders\\AdminLte',
+        'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
+        'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte',
+        'Boctulus\\LLMProviders\\Factory\\LLMFactory',
     ], $providers), ['Boctulus\\ShopifyConnector\\Traits\\ShopifyWooCommerceAdaptorTrait'], true);
 
     $candidates = [
@@ -618,6 +645,22 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
                 'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Squarespace',
                 'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Wix',
                 'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\WordPress',
+            ],
+        ],
+        [
+            'name' => 'boctulus/llm-providers',
+            'classes' => [
+                'Boctulus\\LLMProviders\\Factory\\LLMFactory',
+                'Boctulus\\LLMProviders\\Contracts\\LLMProviderInterface',
+            ],
+        ],
+        [
+            'name' => 'boctulus/simplerest-html-builders',
+            'classes' => [
+                'Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form',
+                'Boctulus\\Simplerest\\HtmlBuilders\\AdminLte',
+                'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
+                'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte',
             ],
         ],
     ];
@@ -670,10 +713,321 @@ function installExternalVcsConsumers(array $packageManifests, array $repositorie
         fwrite(STDOUT, "PASS {$candidate['name']} VCS consumer tests against Packagist core {$stableCore}\n");
     }
 
-    fwrite(STDOUT, "PASS independent Composer VCS install, optimized autoload, and package-owned tests for PDF, Code Tools, and Integrations\n");
+    fwrite(STDOUT, "PASS independent Composer VCS install, optimized autoload, and package-owned tests for PDF, Code Tools, Integrations, LLM Providers, and HTML Builders against stable core v2\n");
+}
+
+function extractComposerArtifact(string $archivePath, string $destination): void
+{
+    if (!is_file($archivePath)) {
+        throw new RuntimeException("Composer artifact is missing: {$archivePath}");
+    }
+    if (!mkdir($destination, 0700, true)) {
+        throw new RuntimeException("Cannot create isolated package artifact directory: {$destination}");
+    }
+
+    $zip = new ZipArchive();
+    if ($zip->open($archivePath) !== true) {
+        throw new RuntimeException("Cannot open Composer artifact for the 3.0.0 consumer: {$archivePath}");
+    }
+    if (!$zip->extractTo($destination)) {
+        $zip->close();
+        throw new RuntimeException("Cannot extract Composer artifact for the 3.0.0 consumer: {$archivePath}");
+    }
+    $zip->close();
+
+    assertNoArchiveSuppliedGitMarker($destination);
+}
+
+function writeVersionedPathConsumerManifest(string $consumerDirectory, array $packageDirectories): void
+{
+    $repositories = [];
+    $requirements = [];
+    foreach ($packageDirectories as $name => $directory) {
+        $realDirectory = realpath($directory);
+        if ($realDirectory === false || !is_file($realDirectory . DIRECTORY_SEPARATOR . 'composer.json')) {
+            throw new RuntimeException("Package path repository is missing its Composer manifest: {$directory}");
+        }
+
+        $version = $name === 'boctulus/simplerest' ? '3.0.0' : '1.0.0';
+        $repositories[] = [
+            'type' => 'path',
+            'url' => str_replace('\\', '/', $realDirectory),
+            'options' => [
+                'symlink' => false,
+                'versions' => [$name => $version],
+            ],
+            'canonical' => true,
+        ];
+        $requirements[$name] = $version;
+    }
+
+    $manifest = [
+        'name' => 'boctulus/distribution-core-3-consumer',
+        'type' => 'project',
+        'repositories' => $repositories,
+        'require' => $requirements,
+        'require-dev' => ['phpunit/phpunit' => '^10.5'],
+        'minimum-stability' => 'stable',
+        'prefer-stable' => true,
+        'config' => [
+            'allow-plugins' => false,
+            'optimize-autoloader' => true,
+            'classmap-authoritative' => true,
+            'sort-packages' => true,
+        ],
+    ];
+
+    file_put_contents(
+        $consumerDirectory . DIRECTORY_SEPARATOR . 'composer.json',
+        json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . PHP_EOL
+    );
+}
+
+function assertConsumerLockVersion(string $consumerDirectory, string $packageName, string $expectedVersion): void
+{
+    $lockFile = $consumerDirectory . DIRECTORY_SEPARATOR . 'composer.lock';
+    $lock = json_decode((string) file_get_contents($lockFile), true, 512, JSON_THROW_ON_ERROR);
+    foreach (array_merge($lock['packages'] ?? [], $lock['packages-dev'] ?? []) as $lockedPackage) {
+        if (($lockedPackage['name'] ?? null) === $packageName) {
+            if (($lockedPackage['version'] ?? null) !== $expectedVersion) {
+                throw new RuntimeException(
+                    "Consumer resolved {$packageName} as " . ($lockedPackage['version'] ?? 'missing') . "; expected {$expectedVersion}."
+                );
+            }
+            return;
+        }
+    }
+
+    throw new RuntimeException("Consumer lock file does not contain {$packageName}.");
+}
+
+function runPackageOwnedTests(string $consumerDirectory, string $packageName): void
+{
+    $packageDirectory = $consumerDirectory . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $packageName);
+    $phpunitConfiguration = $packageDirectory . DIRECTORY_SEPARATOR . 'phpunit.xml.dist';
+    if (!is_file($phpunitConfiguration)) {
+        throw new RuntimeException("Independent package test configuration is missing: {$phpunitConfiguration}");
+    }
+
+    runExecutable([
+        PHP_BINARY,
+        $consumerDirectory . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'phpunit',
+        '--configuration',
+        $phpunitConfiguration,
+        '--do-not-cache-result',
+    ], $consumerDirectory);
+}
+
+function runMissingOptionalPackagesSmoke(string $consumerDirectory): void
+{
+    $smokeFile = $consumerDirectory . DIRECTORY_SEPARATOR . 'missing-optional-packages-smoke.php';
+    $smokeSource = <<<'PHP'
+<?php
+require __DIR__ . '/vendor/autoload.php';
+$aliases = [
+    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form' => ['Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form', 'boctulus/simplerest-html-builders'],
+    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte' => ['Boctulus\\Simplerest\\HtmlBuilders\\AdminLte', 'boctulus/simplerest-html-builders'],
+    'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator' => ['Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler' => ['Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive' => ['Boctulus\\Simplerest\\Integrations\\Libs\\GoogleDrive', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace' => ['Boctulus\\Simplerest\\Integrations\\Libs\\HuggingFace', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\OneSignal' => ['Boctulus\\Simplerest\\Integrations\\Libs\\OneSignal', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\WooCommerce' => ['Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerce', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\WooCommerceApiClient' => ['Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerceApiClient', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\Scanner' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\Scanner', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Magento' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Magento', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\PrestaShop' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\PrestaShop', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Shopify' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Shopify', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Squarespace' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Squarespace', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Wix' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Wix', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\WordPress' => ['Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\WordPress', 'boctulus/simplerest-integrations'],
+    'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\AngularCleaner' => ['Boctulus\\Simplerest\\CodeTools\\Cleaners\\AngularCleaner', 'boctulus/simplerest-code-tools'],
+    'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\BootstrapCleaner' => ['Boctulus\\Simplerest\\CodeTools\\Cleaners\\BootstrapCleaner', 'boctulus/simplerest-code-tools'],
+];
+
+foreach ($aliases as $legacyClass => [$implementation, $package]) {
+    if (class_exists($implementation)) {
+        fwrite(STDERR, "Optional implementation unexpectedly loaded without its package: {$implementation}\n");
+        exit(1);
+    }
+    try {
+        class_exists($legacyClass);
+    } catch (LogicException $error) {
+        if (!str_contains($error->getMessage(), $package)) {
+            fwrite(STDERR, "Wrong package guidance for {$legacyClass}: {$error->getMessage()}\n");
+            exit(1);
+        }
+        continue;
+    }
+    fwrite(STDERR, "Legacy optional class did not report its missing package: {$legacyClass}\n");
+    exit(1);
+}
+
+if (class_exists('Boctulus\\Simplerest\\Core\\Libs\\PdfBase')) {
+    fwrite(STDERR, "PDF package class unexpectedly loaded from a core-only consumer.\n");
+    exit(1);
+}
+
+fwrite(STDOUT, 'PASS ' . count($aliases) . " legacy aliases report absent extensions under authoritative autoload; PdfBase stays absent.\n");
+PHP;
+    file_put_contents($smokeFile, $smokeSource);
+    runExecutable([PHP_BINARY, $smokeFile], $consumerDirectory);
+}
+
+function verifyCoreV3Consumers(string $artifactDirectory, array $packageManifests, string $temporaryDirectory): void
+{
+    $releasePackageClasses = [
+        'boctulus/simplerest-pdf' => ['Boctulus\\Simplerest\\Core\\Libs\\PdfBase'],
+        'boctulus/simplerest-code-tools' => [
+            'Boctulus\\Simplerest\\Core\\Libs\\PHPParser',
+            'Boctulus\\Simplerest\\CodeTools\\Cleaners\\BootstrapCleaner',
+            'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\BootstrapCleaner',
+            'Boctulus\\Simplerest\\CodeTools\\Commands\\make\\MakeConsoleCommand',
+        ],
+        'boctulus/simplerest-integrations' => [
+            'Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\GoogleDrive',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\HuggingFace',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\OneSignal',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerce',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerceApiClient',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\Scanner',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Magento',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\PrestaShop',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Shopify',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Squarespace',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Wix',
+            'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\WordPress',
+            'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator',
+            'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler',
+            'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive',
+            'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace',
+            'Boctulus\\Simplerest\\Core\\Libs\\OneSignal',
+            'Boctulus\\Simplerest\\Core\\Libs\\WooCommerce',
+            'Boctulus\\Simplerest\\Core\\Libs\\WooCommerceApiClient',
+            'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\Scanner',
+            'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Magento',
+            'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\PrestaShop',
+            'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Shopify',
+            'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Squarespace',
+            'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Wix',
+            'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\WordPress',
+        ],
+        'boctulus/llm-providers' => [
+            'Boctulus\\LLMProviders\\Factory\\LLMFactory',
+            'Boctulus\\LLMProviders\\Contracts\\LLMProviderInterface',
+        ],
+        'boctulus/simplerest-html-builders' => [
+            'Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form',
+            'Boctulus\\Simplerest\\HtmlBuilders\\AdminLte',
+            'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
+            'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte',
+        ],
+    ];
+
+    $manifestByName = [];
+    foreach ($packageManifests as $manifestPath) {
+        $package = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
+        if (isset($package['name'])) {
+            $manifestByName[$package['name']] = $manifestPath;
+        }
+    }
+
+    $artifactPackagesDirectory = $temporaryDirectory . DIRECTORY_SEPARATOR . 'core-3-artifact-packages';
+    if (!mkdir($artifactPackagesDirectory, 0700)) {
+        throw new RuntimeException("Cannot create core 3.0.0 artifact package directory: {$artifactPackagesDirectory}");
+    }
+
+    $coreName = 'boctulus/simplerest';
+    $coreArtifact = $artifactDirectory . DIRECTORY_SEPARATOR . 'boctulus-simplerest-working-tree.zip';
+    $coreDirectory = $artifactPackagesDirectory . DIRECTORY_SEPARATOR . 'boctulus-simplerest';
+    extractComposerArtifact($coreArtifact, $coreDirectory);
+
+    $packageDirectories = [$coreName => $coreDirectory];
+    foreach (array_keys($releasePackageClasses) as $packageName) {
+        if (!isset($manifestByName[$packageName])) {
+            throw new RuntimeException("Distribution package manifest is missing: {$packageName}");
+        }
+        $archivePath = $artifactDirectory . DIRECTORY_SEPARATOR . str_replace('/', '-', $packageName) . '-working-tree.zip';
+        $packageDirectory = $artifactPackagesDirectory . DIRECTORY_SEPARATOR . str_replace('/', '-', $packageName);
+        extractComposerArtifact($archivePath, $packageDirectory);
+        $packageDirectories[$packageName] = $packageDirectory;
+    }
+
+    $coreOnlyConsumer = $temporaryDirectory . DIRECTORY_SEPARATOR . 'consumer-core-3-without-extensions';
+    if (!mkdir($coreOnlyConsumer, 0700)) {
+        throw new RuntimeException("Cannot create core-only 3.0.0 consumer: {$coreOnlyConsumer}");
+    }
+    writeVersionedPathConsumerManifest($coreOnlyConsumer, [$coreName => $packageDirectories[$coreName]]);
+    installVcsConsumer($coreOnlyConsumer, true, true);
+    assertConsumerLockVersion($coreOnlyConsumer, $coreName, '3.0.0');
+    runMissingOptionalPackagesSmoke($coreOnlyConsumer);
+
+    foreach ($releasePackageClasses as $packageName => $classes) {
+        $consumerDirectory = $temporaryDirectory . DIRECTORY_SEPARATOR . 'consumer-core-3-' . str_replace('/', '-', substr($packageName, strlen('boctulus/')));
+        if (!mkdir($consumerDirectory, 0700)) {
+            throw new RuntimeException("Cannot create isolated 3.0.0 package consumer: {$consumerDirectory}");
+        }
+
+        writeVersionedPathConsumerManifest($consumerDirectory, [
+            $coreName => $packageDirectories[$coreName],
+            $packageName => $packageDirectories[$packageName],
+        ]);
+        installVcsConsumer($consumerDirectory, true, true);
+        assertConsumerLockVersion($consumerDirectory, $coreName, '3.0.0');
+        runAutoloadSmoke(
+            $consumerDirectory,
+            array_merge(['Boctulus\\Simplerest\\Core\\Request'], $classes),
+            [],
+            $packageName === 'boctulus/simplerest-code-tools'
+        );
+        runPackageOwnedTests($consumerDirectory, $packageName);
+        fwrite(STDOUT, "PASS {$packageName} independent artifact consumer against SimpleRest 3.0.0\n");
+    }
+
+    $privateAndTestPackages = [
+        'boctulus/basic-acl',
+        'boctulus/fine-grained-acl',
+        'boctulus/dummyapi',
+        'boctulus/web-test',
+    ];
+    $combinedDirectories = $packageDirectories;
+    foreach ($privateAndTestPackages as $packageName) {
+        if (!isset($manifestByName[$packageName])) {
+            throw new RuntimeException("Private or test package manifest is missing: {$packageName}");
+        }
+        $archivePath = $artifactDirectory . DIRECTORY_SEPARATOR . str_replace('/', '-', $packageName) . '-working-tree.zip';
+        $packageDirectory = $artifactPackagesDirectory . DIRECTORY_SEPARATOR . str_replace('/', '-', $packageName);
+        extractComposerArtifact($archivePath, $packageDirectory);
+        $combinedDirectories[$packageName] = $packageDirectory;
+    }
+
+    $combinedConsumer = $temporaryDirectory . DIRECTORY_SEPARATOR . 'consumer-core-3-combined';
+    if (!mkdir($combinedConsumer, 0700)) {
+        throw new RuntimeException("Cannot create combined 3.0.0 consumer: {$combinedConsumer}");
+    }
+    writeVersionedPathConsumerManifest($combinedConsumer, $combinedDirectories);
+    installVcsConsumer($combinedConsumer, true, true);
+    assertConsumerLockVersion($combinedConsumer, $coreName, '3.0.0');
+    runAutoloadSmoke($combinedConsumer, [
+        'Boctulus\\Simplerest\\Core\\Request',
+        'Boctulus\\BasicACL\\BasicAclServiceProvider',
+        'Boctulus\\FineGrainedACL\\FineGrainedAclServiceProvider',
+        'Boctulus\\DummyApi\\ServiceProvider',
+        'Boctulus\\WebTest\\ServiceProvider',
+        'Boctulus\\LLMProviders\\Factory\\LLMFactory',
+        'Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form',
+        'Boctulus\\Simplerest\\HtmlBuilders\\AdminLte',
+        'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
+        'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte',
+    ], [], true);
+
+    fwrite(STDOUT, "PASS combined distribution consumer resolved scoped public, private ACL, and test packages with exact core identity 3.0.0 under optimized authoritative autoload\n");
 }
 
 if (in_array('--self-test', $argv, true)) {
+    assertCoreRuntimeDependencyBoundary($root . DIRECTORY_SEPARATOR . 'composer.json');
     assertDetectorSelfTest();
     exit(0);
 }
@@ -717,6 +1071,7 @@ try {
     }
 
     $composerManifests = array_merge([$root . DIRECTORY_SEPARATOR . 'composer.json'], $packageManifests);
+    assertCoreRuntimeDependencyBoundary($root . DIRECTORY_SEPARATOR . 'composer.json');
     foreach ($composerManifests as $manifest) {
         $manifestDirectory = dirname($manifest);
         $manifestName = json_decode((string) file_get_contents($manifest), true, 512, JSON_THROW_ON_ERROR)['name'] ?? basename($manifestDirectory);
@@ -755,7 +1110,6 @@ try {
             $package = json_decode((string) file_get_contents($job['directory'] . DIRECTORY_SEPARATOR . 'composer.json'), true, 512, JSON_THROW_ON_ERROR);
             $branchAlias = match ($package['name']) {
                 'boctulus/simplerest' => '2.0.x-dev',
-                'boctulus/openfactura-sdk' => '1.0.x-dev',
                 default => null,
             };
             $repositoryDirectory = $vcsRoot . DIRECTORY_SEPARATOR . str_replace('/', '-', $package['name']);
@@ -766,6 +1120,7 @@ try {
             );
         }
         installExternalVcsConsumers($packageManifests, $repositories, $consumerDirectory, $temporaryDirectory);
+        verifyCoreV3Consumers($artifactDirectory, $packageManifests, $temporaryDirectory);
     }
 
     foreach ($artifacts as $label => $metrics) {
@@ -773,8 +1128,8 @@ try {
     }
     fwrite(STDOUT, sprintf("PASS %-52s %4d files %8d bytes\n", 'generated application starter', $starterMetrics['files'], $starterMetrics['bytes']));
     if ($withConsumerInstall) {
-        fwrite(STDOUT, "PASS external temporary Composer VCS install for all local packages\n");
-        fwrite(STDOUT, "PASS independent Composer VCS install for PDF, Code Tools, and Integrations\n");
+        fwrite(STDOUT, "PASS external temporary Composer VCS install for the 2.x baseline\n");
+        fwrite(STDOUT, "PASS independent Composer artifact installs against exact core 3.0.0 identity\n");
     }
 } catch (Throwable $error) {
     fwrite(STDERR, $error->getMessage() . "\n");

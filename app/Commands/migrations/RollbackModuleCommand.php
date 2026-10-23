@@ -10,9 +10,9 @@ class RollbackModuleCommand extends BaseMigrationsCommand
         $this->description = 'Revierte migraciones de un módulo específico';
         $this->aliases     = ['module-rollback', 'rollback:module'];
         $this->examples    = [
-            'php com migrations rollback-module FriendlyPOS',
-            'php com migrations rollback-module FriendlyPOS --step=2',
-            'php com migrations rollback-module FriendlyPOS --all',
+            'php com migrations rollback-module ExampleModule',
+            'php com migrations rollback-module ExampleModule --step=2',
+            'php com migrations rollback-module ExampleModule --all',
         ];
     }
 

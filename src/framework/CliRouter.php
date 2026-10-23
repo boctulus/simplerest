@@ -73,7 +73,7 @@ class CliRouter
 
             Ejemplos:
             - php com version              -> match "version"
-            - php com zippy importer run   -> intenta "zippy:importer:run", "zippy:importer", "zippy"
+            - php com example importer run -> intenta "example:importer:run", "example:importer", "example"
             - php com pow 2 8              -> match "pow" con params [2, 8]
         */
         $matchedCommand = null;

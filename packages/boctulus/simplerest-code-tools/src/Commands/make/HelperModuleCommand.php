@@ -12,7 +12,7 @@ class MakeHelperModuleCommand extends BaseMakeCommand
         $this->command     = 'helper-module';
         $this->description = 'Genera un helper dentro de un módulo';
         $this->aliases     = [];
-        $this->examples    = ['php com make helper-module FriendlyPOS my_helper'];
+        $this->examples    = ['php com make helper-module ExampleModule my_helper'];
     }
 
     public static function config(): array

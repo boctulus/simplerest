@@ -13,7 +13,7 @@ class MakeMiddlewareModuleCommand extends BaseMakeCommand
         $this->description = 'Genera un middleware dentro de un módulo';
         $this->aliases     = [];
         $this->examples    = [
-            'php com make middleware-module FriendlyPOS MyMiddleware',
+            'php com make middleware-module ExampleModule MyMiddleware',
         ];
     }
 

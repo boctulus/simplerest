@@ -1,5 +1,36 @@
 # Composer release process
 
+> The current scope and evidence are recorded in **Current scope and status**. The implementation record farther below is historical; its package inventory, FriendlyPOS status, and GoProp conclusions predate the 2026-10-23 scope reset.
+
+## Current scope and status (2026-10-23)
+
+This section supersedes older package and blocker statements below while preserving them as an audit trail.
+
+| Disposition | Packages and action |
+| --- | --- |
+| Public Composer candidates | `boctulus/simplerest-pdf`, `boctulus/simplerest-code-tools`, `boctulus/simplerest-integrations`, `boctulus/llm-providers`, and `boctulus/simplerest-html-builders`. Each declares SimpleRest as a dependency. |
+| Private or test scope | Keep Basic ACL and Fine-Grained ACL private; keep Shopify Connector and Exchange Rate private; retain DummyAPI and Web Test as test packages. |
+| Removed from SimpleRest | FriendlyPOS, OpenFactura SDK, Zippy, and the unused CLI Test package. FriendlyPOS and OpenFactura are maintained with Haulmer in `sr-haulmer`; their old application tests are outside this release gate. No vendored code was restored. |
+
+`boctulus/simplerest-pdf` is already the standalone PDF package. It contains the reusable `PdfBase` adapter and requires `boctulus/simplerest: ^2.0 || ^3.0` plus `setasign/fpdf: ^1.8`. FPDF is absent from the core's mandatory `require` set. `ProductPDF` contains Relmotor-specific content and remains application code; `InvoiceGenerator` renders HTML views and is not an FPDF renderer.
+
+Moving public classes out of the core is incompatible with `v2.0.2`; keep that release unchanged and version the modular core as `3.0.0`. The candidate package consumers use isolated `vendor/` directories and a temporary path repository that assigns the core exact identity `3.0.0`. The public package candidates accept both `^2.0` and `^3.0` so the same package trees can be tested against the published `v2.0.2` baseline and the candidate. No tag, core release, Packagist registration, or package repository publication has occurred.
+
+### Current verification
+
+- The distribution gate validated the root and all 12 remaining package manifests, scanned their Composer archives and the generated starter, and found no copied third-party or frontend payload. The core archive contained 273 files. Its self-test rejected six prohibited fixtures, accepted two first-party framework fixtures, and rejected an archive-supplied `.git` marker.
+- Separate Composer consumers and package-owned tests passed for PDF, Code Tools, Integrations, LLM Providers, and HTML Builders against stable Packagist core `v2.0.2` and against temporary exact core `3.0.0` identity. A combined `3.0.0` consumer resolved the public candidates, private ACL packages, DummyAPI, and Web Test with optimized authoritative autoload.
+- Core ACL tests passed 76 tests / 123 assertions. Focused Composer, compatibility, and command-registry tests passed 12 / 62.
+- GoProp `dev` at `40e0548c917fcf2b157eabc5a3713f415854dbe9` was not modified. The read-only fixture in `scripts/distribution/verify-goprop-consumer.ps1` installed disposable consumers from GoProp's real requirements and `autoload.files`: all five overrides loaded from GoProp without a redeclaration. With the current GoProp requirement temporarily changed to `^3.0`, Composer installed the candidate core; `Bt5Form` failed when HTML Builders was absent and resolved through the compatibility alias when `boctulus/simplerest-html-builders` was added. GoProp's real manifest still pins the old `2.0.x-dev` alias, so it must update its core constraint and lockfile before consuming a `3.0.0` release.
+- The overrides load, but they do not match the candidate core's public method set: GoProp's `ApiController` lacks `hasUnrestrictedReadPermission()` and `getWebhookPublisher()`; its `Collections` and `Response` implementations also differ. Its `AuthController` contains GoProp-specific impersonation methods. This autoload smoke does not prove login, impersonation, ACL, REST, HTTP response, or database parity. Those differences need owner review and application-level tests before GoProp is called compatible.
+- Focused root tests requiring `app.php` could not load because this checkout has no `.env`; no environment file was created or retained. The full root suite and database-backed tests remain unverified. The runtime matrix is PHP 8.3 only; hosted PHP 8.1–8.4 CI remains pending.
+
+### Repository extraction and remaining blockers
+
+The tested extraction fallback in `scripts/composer/split-existing-package.ps1 -Strategy FilterRepo` uses `git filter-repo` inside a disposable shared clone. It avoids checking out the monorepo's overlong historical filenames, filters only the requested package path, verifies the resulting root tree hash matches the source package tree, and strictly validates the filtered Composer manifest. It changes no reference or file in the SimpleRest repository. Recompute the three package commits from the final reviewed source commit; do not use SHAs from earlier audits.
+
+P0/P1 remain open. The GoProp manifest and its five local overrides have not been updated, application-level GoProp parity is unproven, the complete root suite and supported-PHP CI matrix are pending, and no final package repository history has been pushed. Do not claim release readiness until these decisions and consumer checks close.
+
 ## Source of truth
 
 `D:\laragon\www\simplerest` is the canonical development repository. `D:\laragon\www\simplerest-pack` is a legacy generated application tree; it is not the Composer source and is never an automatically cleaned release destination.

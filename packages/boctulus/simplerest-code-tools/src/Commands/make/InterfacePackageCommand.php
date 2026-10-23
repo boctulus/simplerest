@@ -12,7 +12,7 @@ class MakeInterfacePackageCommand extends BaseMakeCommand
         $this->command     = 'interface-package';
         $this->description = 'Genera una interfaz dentro de un package';
         $this->aliases     = [];
-        $this->examples    = ['php com make interface-package zippy IMyInterface'];
+        $this->examples    = ['php com make interface-package example-package IMyInterface'];
     }
 
     public static function config(): array

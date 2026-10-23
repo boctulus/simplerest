@@ -9,6 +9,9 @@ param(
     [ValidatePattern('^v?\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$')]
     [string]$Version,
 
+    [ValidateSet('FilterRepo', 'Subtree')]
+    [string]$Strategy = 'FilterRepo',
+
     [switch]$Push
 )
 
@@ -33,6 +36,10 @@ $packageDefinitions = @{
 }
 
 $definition = $packageDefinitions[$Package]
+if ($Push -and $Strategy -eq 'FilterRepo') {
+    throw '-Push is not available with the disposable FilterRepo strategy. Use the Subtree strategy only in an explicitly authorized package publication workflow.'
+}
+
 $repositoryRoot = (git rev-parse --show-toplevel).Trim()
 if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($repositoryRoot)) {
     throw 'Run this script from a SimpleRest Git working tree.'
@@ -41,6 +48,11 @@ if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($repositoryRoot)) {
 $resolvedCommit = (git rev-parse "$SourceCommit^{commit}").Trim()
 if ($LASTEXITCODE -ne 0 -or $resolvedCommit -notmatch '^[0-9a-f]{40}$') {
     throw "SourceCommit '$SourceCommit' does not resolve to an immutable Git commit."
+}
+
+$sourceTree = (& git rev-parse "$($resolvedCommit):$($definition.Path)").Trim()
+if ($LASTEXITCODE -ne 0 -or $sourceTree -notmatch '^[0-9a-f]{40}$') {
+    throw "Package path '$($definition.Path)' does not resolve to a tree at $resolvedCommit."
 }
 
 $manifestJson = git show "${resolvedCommit}:$($definition.Path)/composer.json" | ConvertFrom-Json
@@ -60,18 +72,95 @@ if ($frontendAssets.Count -gt 0) {
     throw "Composer package '$Package' must not contain frontend or third-party assets. Remove these files from the package source before splitting:`n$assetList"
 }
 
-$splitOutput = & git subtree split -q "--prefix=$($definition.Path)" $resolvedCommit
-if ($LASTEXITCODE -ne 0) {
-    throw "git subtree split failed for '$Package' at $resolvedCommit."
-}
+$splitCommit = $null
+$splitMethod = $Strategy
 
-$splitCommit = @($splitOutput | Where-Object { $_ -match '^[0-9a-f]{40}$' } | Select-Object -Last 1)
-if ($splitCommit.Count -ne 1) {
-    throw "git subtree split did not return a package commit for '$Package'."
+if ($Strategy -eq 'Subtree') {
+    $splitOutput = & git subtree split -q "--prefix=$($definition.Path)" $resolvedCommit
+    if ($LASTEXITCODE -ne 0) {
+        throw "git subtree split failed for '$Package' at $resolvedCommit."
+    }
+
+    $subtreeCommits = @($splitOutput | Where-Object { $_ -match '^[0-9a-f]{40}$' } | Select-Object -Last 1)
+    if ($subtreeCommits.Count -ne 1) {
+        throw "git subtree split did not return a package commit for '$Package'."
+    }
+    $splitCommit = $subtreeCommits[0]
+} else {
+    $filterRepoVersion = & git filter-repo --version 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        throw "git filter-repo is required for the disposable-clone split strategy."
+    }
+
+    $tempRoot = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath()).TrimEnd([System.IO.Path]::DirectorySeparatorChar)
+    $clonePath = Join-Path $tempRoot ("simplerest-package-split-" + [guid]::NewGuid().ToString('N'))
+    try {
+        & git clone --shared --no-checkout $repositoryRoot $clonePath
+        if ($LASTEXITCODE -ne 0) {
+            throw "Could not create a disposable clone for '$Package'."
+        }
+
+        & git -C $clonePath update-ref refs/heads/split-source $resolvedCommit
+        if ($LASTEXITCODE -ne 0) {
+            throw "Could not create the source ref '$resolvedCommit' in the disposable clone."
+        }
+        & git -C $clonePath symbolic-ref HEAD refs/heads/split-source
+        if ($LASTEXITCODE -ne 0) {
+            throw "Could not select the package source ref in the disposable clone."
+        }
+
+        & git -C $clonePath filter-repo --force --refs refs/heads/split-source --path "$($definition.Path)/" --path-rename "$($definition.Path)/:"
+        if ($LASTEXITCODE -ne 0) {
+            throw "git filter-repo failed for '$Package' in the disposable clone."
+        }
+
+        $splitCommit = (& git -C $clonePath rev-parse refs/heads/split-source).Trim()
+        if ($LASTEXITCODE -ne 0 -or $splitCommit -notmatch '^[0-9a-f]{40}$') {
+            throw "Could not resolve the filtered package commit for '$Package'."
+        }
+
+        $filteredTree = (& git -C $clonePath rev-parse 'refs/heads/split-source^{tree}').Trim()
+        if ($LASTEXITCODE -ne 0 -or $filteredTree -ne $sourceTree) {
+            throw "Filtered package tree '$filteredTree' does not exactly match source package tree '$sourceTree'."
+        }
+
+        $filteredManifest = & git -C $clonePath show 'refs/heads/split-source:composer.json' 2>$null
+        if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace(($filteredManifest -join ''))) {
+            throw "Filtered package history for '$Package' does not contain composer.json at its root."
+        }
+        $filteredPackage = ($filteredManifest -join "`n") | ConvertFrom-Json
+        if ($filteredPackage.name -ne $Package) {
+            throw "Filtered package root declares '$($filteredPackage.name)' instead of '$Package'."
+        }
+
+        & composer --working-dir=$clonePath validate --strict --no-check-publish --no-interaction
+        if ($LASTEXITCODE -ne 0) {
+            throw "Filtered composer.json failed strict validation for '$Package'."
+        }
+
+        $splitTreeFiles = @(& git -C $clonePath ls-tree -r --name-only refs/heads/split-source)
+        if ($LASTEXITCODE -ne 0 -or $splitTreeFiles.Count -eq 0) {
+            throw "Could not inspect the filtered package tree for '$Package'."
+        }
+        $splitMethod = "FilterRepo ($($filterRepoVersion -join ''))"
+        Write-Output "Tree hash:     $filteredTree (matches source path tree)"
+    } finally {
+        if (Test-Path -LiteralPath $clonePath) {
+            $resolvedClonePath = [System.IO.Path]::GetFullPath((Resolve-Path -LiteralPath $clonePath).Path)
+            $tempPrefix = $tempRoot + [System.IO.Path]::DirectorySeparatorChar
+            $isInsideTemp = $resolvedClonePath.StartsWith($tempPrefix, [System.StringComparison]::OrdinalIgnoreCase)
+            $hasExpectedName = [System.IO.Path]::GetFileName($resolvedClonePath).StartsWith('simplerest-package-split-', [System.StringComparison]::Ordinal)
+            if (-not $isInsideTemp -or -not $hasExpectedName) {
+                throw "Refusing to remove an unverified disposable clone path: $resolvedClonePath"
+            }
+            Remove-Item -LiteralPath $resolvedClonePath -Recurse -Force
+        }
+    }
 }
 
 Write-Output "Package:       $Package"
 Write-Output "Source commit: $resolvedCommit"
+Write-Output "Split method:  $splitMethod"
 Write-Output "Package tree:  $splitCommit"
 Write-Output "Target repo:   $($definition.Repository)"
 
@@ -95,13 +184,13 @@ if ($Version) {
     }
 }
 
-git push $definition.Remote "$($splitCommit[0]):refs/heads/main"
+git push $definition.Remote "$splitCommit`:refs/heads/main"
 if ($LASTEXITCODE -ne 0) {
     throw "Could not push the package split to '$($definition.Repository)' main. No force push was attempted."
 }
 
 if ($Version) {
-    git push $definition.Remote "$($splitCommit[0]):refs/tags/$Version"
+    git push $definition.Remote "$splitCommit`:refs/tags/$Version"
     if ($LASTEXITCODE -ne 0) {
         throw "Could not create new tag '$Version' in '$($definition.Repository)'."
     }

@@ -10,8 +10,8 @@ class RefreshModuleCommand extends BaseMigrationsCommand
         $this->description = 'Revierte y re-aplica migraciones de un módulo (rollback-all + migrate)';
         $this->aliases     = ['module-refresh', 'refresh:module'];
         $this->examples    = [
-            'php com migrations refresh-module FriendlyPOS',
-            'php com migrations refresh-module FriendlyPOS --to=db_conn',
+            'php com migrations refresh-module ExampleModule',
+            'php com migrations refresh-module ExampleModule --to=db_conn',
         ];
     }
 

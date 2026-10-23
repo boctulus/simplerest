@@ -18,7 +18,7 @@
  * Example:
  *
  *   'paths'    => ['some/custom/Commands'],
- *   'packages' => ['boctulus/zippy', 'boctulus/dummyapi'],
+ *   'packages' => ['boctulus/dummyapi'],
  */
 
 return [

@@ -13,8 +13,8 @@ class MakeControllerModuleCommand extends BaseMakeCommand
         $this->description = 'Genera un controlador dentro de un módulo';
         $this->aliases     = ['ctrl-module'];
         $this->examples    = [
-            'php com make controller-module FriendlyPOS MyController',
-            'php com make controller-module FriendlyPOS MyController --force',
+            'php com make controller-module ExampleModule MyController',
+            'php com make controller-module ExampleModule MyController --force',
         ];
     }
 

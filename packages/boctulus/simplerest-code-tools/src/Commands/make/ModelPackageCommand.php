@@ -12,7 +12,7 @@ class MakeModelPackageCommand extends BaseMakeCommand
         $this->command     = 'model-package';
         $this->description = 'Genera un Model dentro de un package';
         $this->aliases     = [];
-        $this->examples    = ['php com make model-package zippy products --force'];
+        $this->examples    = ['php com make model-package example-package products --force'];
     }
 
     public static function config(): array

@@ -41,7 +41,8 @@
 	  "ext-pdo_pgsql": "Optional PDO PostgreSQL driver when connecting to PostgreSQL.",
 	  "ext-pdo_sqlite": "Optional PDO SQLite driver when connecting to SQLite.",
 	  "boctulus/simplerest-pdf": "Optional PDF integration; not registered on Packagist yet, so it currently requires an explicit VCS repository.",
-	  "boctulus/simplerest-code-tools": "Optional development tools; not registered on Packagist yet, so it currently requires an explicit VCS repository."
+	  "boctulus/simplerest-code-tools": "Optional development tools; currently requires an explicit VCS repository.",
+	  "boctulus/simplerest-html-builders": "Optional Bootstrap 5 and AdminLTE HTML builders; preserves the former core builder names when installed."
 	},
    "scripts":{
       "test": "phpunit --colors=always unit-tests",
@@ -70,15 +71,12 @@
          "Boctulus\\Simplerest\\Core\\Libs\\":["src/framework/Libs/", "packages/boctulus/simplerest-pdf/src/", "packages/boctulus/simplerest-code-tools/src/"],
          "Boctulus\\Simplerest\\CodeTools\\Cleaners\\": "packages/boctulus/simplerest-code-tools/src/Cleaners/",
          "Boctulus\\Simplerest\\Integrations\\": "packages/boctulus/simplerest-integrations/src/",
+         "Boctulus\\Simplerest\\HtmlBuilders\\": "packages/boctulus/simplerest-html-builders/src/",
          "Boctulus\\FineGrainedACL\\":"packages/boctulus/fine-grained-acl/src",
          "Boctulus\\BasicACL\\":"packages/boctulus/basic-acl/src",
-         "Boctulus\\Zippy\\":"packages/boctulus/zippy/src",
-         "Boctulus\\CliTest\\":"packages/boctulus/cli-test/src",
          "Boctulus\\WebTest\\":"packages/boctulus/web-test/src",
          "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src",
          "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src",
-         "Boctulus\\OpenfacturaSdk\\": "packages/boctulus/openfactura-sdk/src",
-         "Boctulus\\FriendlyposWeb\\": "packages/boctulus/friendlypos-web/src",
          "Boctulus\\AzSeeder\\": "packages/boctulus/az-seeder/src"
       },
       "classmap": [

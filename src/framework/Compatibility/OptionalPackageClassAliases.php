@@ -11,6 +11,14 @@ declare(strict_types=1);
  * Composer loader declines them.
  */
 $optionalClassAliases = [
+    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form' => [
+        'Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form',
+        'boctulus/simplerest-html-builders',
+    ],
+    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte' => [
+        'Boctulus\\Simplerest\\HtmlBuilders\\AdminLte',
+        'boctulus/simplerest-html-builders',
+    ],
     'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator',
         'boctulus/simplerest-integrations',

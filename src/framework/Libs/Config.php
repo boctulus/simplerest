@@ -151,7 +151,7 @@ class Config
      * Configuration is stored under: packages.{vendor}.{package}.*
      *
      * @param string $vendor Vendor name (e.g., 'boctulus')
-     * @param string $package Package name (e.g., 'zippy')
+     * @param string $package Package name (e.g., 'example-package')
      * @param array $config Package configuration array
      * @return void
      */
@@ -202,7 +202,7 @@ class Config
     static function getPackageFromClass(string $className): ?array
     {
         // Expected format: Vendor\Package\Controllers\SomeController
-        // or: Boctulus\Zippy\Controllers\CSVTestController
+        // or: Boctulus\ExamplePackage\Controllers\CSVTestController
 
         $parts = explode('\\', $className);
 

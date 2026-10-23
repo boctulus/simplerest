@@ -87,13 +87,11 @@ Package unificado para consumir APIs de distintos LLM (Large Language Models) co
 
 ## Instalación
 
-El package ya está incluido en Simplerest bajo `packages/boctulus/llm-providers`.
-
-Actualiza el autoload de Composer:
-
 ```bash
-composer dumpautoload
+composer require boctulus/llm-providers
 ```
+
+The package declares SimpleRest as its Composer dependency. Run its offline contract suite with `composer test`.
 
 ## Configuración
 

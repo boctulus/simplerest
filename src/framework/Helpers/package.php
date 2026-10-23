@@ -35,7 +35,7 @@ if (!function_exists('get_packages')) {
      * 
      * [
      *   'D:\\laragon\\www\\simplerest\\packages\\boctulus\\web-test\\',
-     *   'D:\\laragon\\www\\simplerest\\packages\\boctulus\\zippy\\',
+     *   'D:\\laragon\\www\\simplerest\\packages\\boctulus\\dummyapi\\',
      *   'D:\\laragon\\www\\simplerest\\packages\\devdojo\\calculator\\',
      * ]
      */
@@ -165,7 +165,7 @@ if (!function_exists('find_package_by_name')) {
     /**
      * Busca un package por su nombre (slug) en todos los packages disponibles
      *
-     * @param string $package_name Nombre del package (slug), ej: "web-test", "zippy"
+     * @param string $package_name Nombre del package (slug), ej: "web-test", "dummyapi"
      * @param string $base_path Base path donde buscar (null = PACKAGES_PATH)
      * @return array|null Array con info del package o null si no se encuentra
      *
