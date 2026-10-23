@@ -133,7 +133,7 @@ $config = array_merge(
     include __DIR__ . '/config/config.php',
     include __DIR__ . '/config/databases.php'
 );
-Config::load($config);
+Config::set('', $config);
 
 if ($config['debug']){
     if (function_exists('opcache_reset')) {
