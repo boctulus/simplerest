@@ -47,7 +47,7 @@ class TypeformController
         }
         
         // For direct route access, use standalone template (no WordPress dependencies)
-        return get_view(__DIR__ . '/../modules/Typeform/views/typeform-standalone.php', [
+        return get_view(__DIR__ . '/../Modules/Typeform/views/typeform-standalone.php', [
             'tos_link' => $tosLink,
             'background_image' => $backgroundImage,
             'brand_title' => $brandTitle,

@@ -50,7 +50,7 @@ This checkout is an application repository as well as framework source. Composer
 
 Start with the [canonical documentation map](docs/index.md). The [audit register](docs/audit/README.md) is internal; topic pages not linked from the map are legacy or pending audit input, not current specifications.
 
-The curated Spanish VitePress site lives in [`docs-site/`](docs-site/); it is a derivative, not the canonical source. See [documentation publishing](.github/DOCS-PUBLISHING.md) for the GitHub Pages rollout, build checks, and publication criteria. The public URL must be confirmed after the deployment succeeds.
+The [official Spanish documentation](https://boctulus.github.io/simplerest/) is published with VitePress from [`docs-site/`](docs-site/); it is a derivative, not the canonical source. See [documentation publishing](.github/DOCS-PUBLISHING.md) for build checks and publication criteria.
 
 ## Development checks
 
@@ -61,7 +61,7 @@ composer test
 composer cs
 ```
 
-`composer test` invokes `phpunit --colors=always unit-tests`. The current `phpunit.xml` also lists `unit-tests/` as its configured suite. This verifies the test selection only; whether the command runs successfully has not been verified. `composer cs` invokes PHPStan against `src` at level 7.
+`composer test` invokes `phpunit --colors=always unit-tests`. The current `phpunit.xml` also lists `unit-tests/` as its configured suite. This verifies test selection only; it does not establish a successful run. In [Actions run 39725153614](https://github.com/boctulus/simplerest/actions/runs/39725153614) for commit `0c7ef58`, PHPUnit exited 255 while loading `ApiCollectionsTest.php` because `app.php` could not read the absent `.env`; the step is non-blocking. That run also reported 4,402–4,481 PHPStan diagnostics across its PHP matrix, and that step is non-blocking too. No tests were run as part of this merge. `composer cs` invokes PHPStan against `src` at level 7.
 
 ## Contributing
 
