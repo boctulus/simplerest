@@ -9,11 +9,22 @@ This section supersedes older package and blocker statements below while preserv
 | Disposition | Packages and action |
 | --- | --- |
 | Legacy GitHub identities | Preserve `boctulus/simplerest-pdf` (`v1.0.1`), `boctulus/simplerest-code-tools` (`v1.1.0`), `boctulus/simplerest-integrations` (`v1.0.0`), and `boctulus/simplerest-html-builders` (`v1.0.0`) with their tags unchanged. Their current READMEs point to the successor catalog. |
-| Public extension catalog | Use `boctulus/simplerest-fpdf`, `boctulus/simplerest-scaffolding`, `boctulus/simplerest-bootstrap-html`, `boctulus/simplerest-web-inspection`, `boctulus/simplerest-api-clients`, and `boctulus/llm-providers`. Create the GitHub repositories without version tags; keep Packagist registration pending. |
+| Public extension catalog | The six successor repositories are public on GitHub with validated package trees on `main`. No successor version tags or Packagist entries have been created. |
 | Package boundaries | Bootstrap HTML owns `Bt5Form`, `AdminLte`, and `BootstrapPaginator`; Web Inspection owns `DomCrawler` and CMS detection; API Clients owns Google Drive, WooCommerce, OneSignal, and Hugging Face. PHP class namespaces and core compatibility names remain intact. |
 | Core release gate | Core `3.0.0` remains untagged. GoProp's full migration test is still pending; GoProp was not modified. Its consumer fixture now includes Bootstrap HTML and Web Inspection. |
 | Private or test scope | Keep Basic ACL and Fine-Grained ACL private; keep Shopify Connector and Exchange Rate private; retain DummyAPI and Web Test as test packages. A full AdminLTE dashboard or app shell remains outside the public Bootstrap HTML package. |
 | Removed from SimpleRest | FriendlyPOS, OpenFactura SDK, Zippy, and the unused CLI Test package. FriendlyPOS and OpenFactura are maintained with Haulmer in `sr-haulmer`; their old application tests are outside this release gate. No vendored code was restored. |
+
+The six successor repositories were split from source commit `7cb44199e717e2485f0b1bee357ccaa402016412`. Each GitHub `main` points to the listed split commit, and each split tree hash matches its package directory at that source commit. The repositories were empty before publication; no tags were pushed.
+
+| Package | GitHub `main` split commit | Verified package tree |
+| --- | --- | --- |
+| `boctulus/simplerest-fpdf` | `efc06d12c02909b801b9bc89a4d27219da9f7473` | `cbc6d32bb10455a7a5aa882059ccc1b54c8d6810` |
+| `boctulus/simplerest-scaffolding` | `e4a347660b87acab2eca06b4046ab996fcb446b2` | `645f9047f324182594a33e710965de46b42e3f29` |
+| `boctulus/simplerest-bootstrap-html` | `7732d273558e334a8ae2bbcddc57a10ca84233dd` | `91a4d7a12f65bd5a071b7c59cad24f7ea497b887` |
+| `boctulus/simplerest-web-inspection` | `7182f6b9318eb6794b5f61329c17103835ef2c28` | `74cc232c2a208e44780fc0e06e1fad7bf8c8ebc4` |
+| `boctulus/simplerest-api-clients` | `f0fe1a4f910642976d727f861c7764cc854afb9d` | `241ab0ebf82ad4fffd4b657a08c726a3c0c1c832` |
+| `boctulus/llm-providers` | `593811387fdddb2d5e376cef72a95d4705b9add3` | `5a3cd4769d405dcde1a196a85828e1613c2e2a63` |
 
 `boctulus/simplerest-fpdf` is the successor identity for the standalone PDF adapter. It contains `PdfBase` and requires `boctulus/simplerest: ^2.0 || ^3.0` plus `setasign/fpdf: ^1.8`. FPDF remains absent from the core's mandatory `require` set. `ProductPDF` contains Relmotor-specific content and remains application code; `InvoiceGenerator` renders HTML views and is not an FPDF renderer.
 
