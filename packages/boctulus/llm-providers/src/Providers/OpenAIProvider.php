@@ -60,7 +60,6 @@ class OpenAIProvider implements LLMProviderInterface
                 "Content-type"  => "application/json",
                 "Authorization" => "Bearer {$this->api_key}"
             ])
-            ->disableSSL()
             ->enablePostRequestCache()
             ->decode();
     }

@@ -16,7 +16,6 @@ class WooCommerceApiClient extends ApiClient
         $this->password = $consumer_secret;
 
         $this
-        ->withoutStrictSSL()
         ->contentType('application/json')
         ->userAgent('PostmanRuntime/7.34.0')
         ->decode();

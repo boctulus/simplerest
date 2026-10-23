@@ -6,7 +6,7 @@ $implementation = \Boctulus\Simplerest\Integrations\Libs\HuggingFace::class;
 
 if (!class_exists($implementation)) {
     throw new \LogicException(
-        'HuggingFace is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+        'HuggingFace is optional. Install boctulus/simplerest-api-clients from a Composer VCS repository.'
     );
 }
 

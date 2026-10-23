@@ -6,7 +6,7 @@ $implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\CMSs\Presta
 
 if (!class_exists($implementation)) {
     throw new \LogicException(
-        'PrestaShop is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+        'PrestaShop is optional. Install boctulus/simplerest-web-inspection from a Composer VCS repository.'
     );
 }
 

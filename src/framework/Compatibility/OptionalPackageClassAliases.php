@@ -13,75 +13,75 @@ declare(strict_types=1);
 $optionalClassAliases = [
     'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form' => [
         'Boctulus\\Simplerest\\HtmlBuilders\\Bt5Form',
-        'boctulus/simplerest-html-builders',
+        'boctulus/simplerest-bootstrap-html',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\AdminLte' => [
         'Boctulus\\Simplerest\\HtmlBuilders\\AdminLte',
-        'boctulus/simplerest-html-builders',
+        'boctulus/simplerest-bootstrap-html',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\BootstrapPaginator',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-bootstrap-html',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\DomCrawler' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\DomCrawler',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-web-inspection',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\GoogleDrive' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\GoogleDrive',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-api-clients',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\HuggingFace' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\HuggingFace',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-api-clients',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\OneSignal' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\OneSignal',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-api-clients',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\WooCommerce' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerce',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-api-clients',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\WooCommerceApiClient' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\WooCommerceApiClient',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-api-clients',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\Scanner' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\Scanner',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-web-inspection',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Magento' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Magento',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-web-inspection',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\PrestaShop' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\PrestaShop',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-web-inspection',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Shopify' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Shopify',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-web-inspection',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Squarespace' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Squarespace',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-web-inspection',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\Wix' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\Wix',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-web-inspection',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\CMS_Scanner\\CMSs\\WordPress' => [
         'Boctulus\\Simplerest\\Integrations\\Libs\\CMS_Scanner\\CMSs\\WordPress',
-        'boctulus/simplerest-integrations',
+        'boctulus/simplerest-web-inspection',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\AngularCleaner' => [
         'Boctulus\\Simplerest\\CodeTools\\Cleaners\\AngularCleaner',
-        'boctulus/simplerest-code-tools',
+        'boctulus/simplerest-scaffolding',
     ],
     'Boctulus\\Simplerest\\Core\\Libs\\code_cleaner\\BootstrapCleaner' => [
         'Boctulus\\Simplerest\\CodeTools\\Cleaners\\BootstrapCleaner',
-        'boctulus/simplerest-code-tools',
+        'boctulus/simplerest-scaffolding',
     ],
 ];
 

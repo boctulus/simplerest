@@ -29,7 +29,6 @@ class Scanner
     protected static function __getSite(string $url){
         $cli = ApiClient::instance($url)
         ->followLocations()
-        ->withoutStrictSSL()
         ->cache(3600 * 24 * 31)  // <-------------- deberian almacenarse headers tambien !!!
         ->userAgent(ApiClient::USER_AG_CHROME)
         ->get();
@@ -43,12 +42,13 @@ class Scanner
         static::$headers = $headers;
 
         if ($status == 0 || $status >= 400 || empty($data)){
-            dd($status,  'STATUS');
-            dd($error,   'ERROR');
-            dd($headers, 'HEADERS');
-
-            dd($cli->dump(), 'DUMP');
-            exit;
+            $detail = empty($error) ? '' : ' ' . (string) $error;
+            throw new \RuntimeException(sprintf(
+                'Unable to inspect %s (HTTP status %s).%s',
+                $url,
+                (string) $status,
+                $detail
+            ));
         }
 
         $res = $cli->getResponse();

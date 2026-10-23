@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Core\Libs\code_cleaner;
 
 /**
- * @deprecated The implementation is in boctulus/simplerest-code-tools.
+ * @deprecated The implementation is in boctulus/simplerest-scaffolding.
  */
 $implementation = \Boctulus\Simplerest\CodeTools\Cleaners\AngularCleaner::class;
 

@@ -1,14 +1,12 @@
 {
-    "name": "boctulus/simplerest-integrations",
-    "description": "Optional Google Drive, CMS scanning, HTML scraping, and service integrations for SimpleRest",
+    "name": "boctulus/simplerest-api-clients",
+    "description": "Optional Google Drive, WooCommerce, OneSignal, and Hugging Face clients for SimpleRest",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=8.1,<8.5",
         "ext-curl": "*",
-        "boctulus/simplerest": "^2.0 || ^3.0",
-        "symfony/css-selector": "^6.4",
-        "symfony/dom-crawler": "^6.4"
+        "boctulus/simplerest": "^2.0 || ^3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5"

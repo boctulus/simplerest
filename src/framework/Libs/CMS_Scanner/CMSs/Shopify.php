@@ -6,7 +6,7 @@ $implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\CMSs\Shopif
 
 if (!class_exists($implementation)) {
     throw new \LogicException(
-        'Shopify is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+        'Shopify is optional. Install boctulus/simplerest-web-inspection from a Composer VCS repository.'
     );
 }
 

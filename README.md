@@ -17,6 +17,25 @@ The framework has its own runtime and conventions. Its behavior is defined by th
 
 `index.php` loads `app.php`, then checks the web router, CLI router, and front controller in `config/config.php` order. A web route that matches and dispatches exits before later stages. The front controller builds its request-processing handlers from `front_behaviors`. See [Architecture](docs/architecture.md) for the evidence-backed overview.
 
+## Framework and extensions
+
+SimpleRest provides automatic REST endpoints, routing, a database Query
+Builder, authentication hooks, and configurable ACL support. Applications can
+add focused extensions for common development and integration tasks:
+
+| Composer package | What it provides |
+| --- | --- |
+| [`boctulus/simplerest-scaffolding`](https://github.com/boctulus/simplerest-scaffolding) | `make` commands, code generators, and PHP development tools |
+| [`boctulus/simplerest-bootstrap-html`](https://github.com/boctulus/simplerest-bootstrap-html) | Bootstrap 5 forms, AdminLTE components, and Bootstrap pagination |
+| [`boctulus/simplerest-fpdf`](https://github.com/boctulus/simplerest-fpdf) | `PdfBase`, a SimpleRest adapter around FPDF |
+| [`boctulus/simplerest-web-inspection`](https://github.com/boctulus/simplerest-web-inspection) | CMS and technology detection plus HTML selector helpers |
+| [`boctulus/simplerest-api-clients`](https://github.com/boctulus/simplerest-api-clients) | Google Drive, WooCommerce, OneSignal, and Hugging Face clients |
+| [`boctulus/llm-providers`](https://github.com/boctulus/llm-providers) | Unified OpenAI, Anthropic, xAI, and Ollama provider interface |
+
+The optional packages are distributed through GitHub Composer repositories;
+Packagist registration is pending. The BasicACL and FineGrainedACL extensions
+are proprietary and are not part of the public Composer catalogue.
+
 ## Requirements
 
 The current `composer.json` declares PHP `>=8.1,<8.5`. It also declares Composer dependencies. Database drivers, database setup, web-server configuration, and optional integrations depend on which features an application uses; consult the relevant guide before deployment.

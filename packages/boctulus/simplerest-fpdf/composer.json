@@ -1,6 +1,6 @@
 {
-    "name": "boctulus/simplerest-pdf",
-    "description": "PDF integration for SimpleRest, powered by FPDF",
+    "name": "boctulus/simplerest-fpdf",
+    "description": "FPDF adapter for SimpleRest applications",
     "type": "library",
     "license": "MIT",
     "require": {

@@ -1,9 +1,14 @@
-# SimpleRest Integrations
+# Legacy Integrations package
 
-Optional integrations and UI helpers for SimpleRest. This package contains Google Drive access, WooCommerce clients, OneSignal and Hugging Face clients, CMS detection, Symfony-based HTML scraping, and a Bootstrap paginator.
+The former `boctulus/simplerest-integrations` bundle has been split by
+responsibility. Its `v1.0.0` Git tag remains unchanged for existing users.
 
-The package does not contain copied Google, Symfony, JavaScript, or CSS distributions. Composer installs the declared PHP dependencies in the consuming project. Google Drive is isolated further: install `google/apiclient` only when using `GoogleDrive`; the client reports a clear error if its SDK is absent. The `boctulus/simplerest` core remains independent of this package and its dependencies.
+Use these successor packages for new applications:
 
-The implementation namespace is `Boctulus\Simplerest\Integrations\Libs`. In the unpublished core candidate, the former `Boctulus\Simplerest\Core\Libs` class names remain as compatibility aliases when this package is installed. A consumer using one of those features must require this package explicitly. The published core `v2.0.2` still contains its original implementations.
+- `boctulus/simplerest-api-clients` for Google Drive, WooCommerce, OneSignal,
+  and Hugging Face clients.
+- `boctulus/simplerest-web-inspection` for CMS detection and HTML scraping.
+- `boctulus/simplerest-bootstrap-html` for Bootstrap pagination and HTML
+  builders.
 
-This package is not registered on Packagist. Its manifest and tests are prepared for an independent Composer VCS install, but publication needs a reviewed repository split and API migration review.
+This directory is a migration notice, not an installable Composer package.

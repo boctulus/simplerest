@@ -3,8 +3,8 @@
 /**
  * Configuración del package LLM Providers
  *
- * Este archivo puede contener configuraciones personalizadas
- * para los proveedores de LLM.
+ * Archivo de referencia para las aplicaciones consumidoras. El ServiceProvider
+ * no lo carga automáticamente; la aplicación debe combinar estos valores.
  */
 
 return [
@@ -37,7 +37,12 @@ return [
         'claude' => [
             'api_key' => env('CLAUDE_API_KEY'),
             'api_version' => '2023-06-01',
-            'default_model' => 'claude-3-sonnet-20240229',
+            'default_model' => 'claude-sonnet-4-6',
+        ],
+
+        'grok' => [
+            'api_key' => env('XAI_API_KEY'),
+            'default_model' => 'grok-4.7',
         ],
     ],
 

@@ -15,7 +15,7 @@ use Boctulus\LLMProviders\Exceptions\ProviderException;
 class GrokProvider implements LLMProviderInterface
 {
     protected $api_key;
-    protected $model = 'grok-beta';
+    protected $model = 'grok-4.7';
     protected $messages = [];
     protected $params;
     protected $response;
@@ -45,7 +45,6 @@ class GrokProvider implements LLMProviderInterface
                 "Content-Type"  => "application/json",
                 "Authorization" => "Bearer {$this->api_key}"
             ])
-            ->disableSSL()
             ->enablePostRequestCache()
             ->decode();
     }

@@ -28,14 +28,16 @@ class HuggingFace
     ];
 
     function __construct($api_key = null, $api_version = null) {
-        $this->api_key = $api_key ?? Config::get()['huggingface_api_key'] ?? die('huggingface_api_key is required');
+        $this->api_key = $api_key ?? Config::get()['huggingface_api_key'] ?? null;
+        if (empty($this->api_key)) {
+            throw new \InvalidArgumentException('huggingface_api_key is required');
+        }
         $this->api_version = $api_version ?? self::DEFAULT_API_VERSION;
         $this->client = ApiClient::instance()
             ->setHeaders([
                 "Content-type" => "application/json",
                 "Authorization" => "Bearer " . $this->api_key
             ])
-            ->disableSSL()
             ->enablePostRequestCache()
             ->decode();
     }

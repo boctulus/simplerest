@@ -4,9 +4,8 @@ Package unificado para consumir APIs de distintos LLM (Large Language Models) co
 
 ## Estado del Proyecto
 
-**Versión**: 1.0.0
-**Estado**: Producción (Funcional)
-**Última actualización**: 2025-01
+**Estado**: extensión en revisión; todavía no registrada en Packagist
+**Última actualización**: 2026-10
 
 ### Observaciones sobre Implementación y Capacidades
 
@@ -25,7 +24,7 @@ Package unificado para consumir APIs de distintos LLM (Large Language Models) co
 
 1. **Funcionalidades Específicas**: Algunas características únicas de cada proveedor no están expuestas en la interfaz común
    - OpenAI: Análisis de imágenes, generación de audio (Whisper), DALL-E
-   - Claude: Streaming de respuestas, tool use (function calling)
+   - Claude: tool use (function calling)
    - Grok: Métodos específicos como `getSystemFingerprint()`, `getPromptTokensDetails()`
 
 2. **Respuestas Heterogéneas**: Aunque normalizadas, cada proveedor devuelve estructuras ligeramente diferentes
@@ -33,7 +32,7 @@ Package unificado para consumir APIs de distintos LLM (Large Language Models) co
    - Claude: `stop_reason` puede ser 'end_turn', 'stop_sequence', 'max_tokens'
    - Esto está documentado pero requiere atención del desarrollador
 
-3. **Testing Limitado**: No incluye tests automatizados (se recomienda agregar PHPUnit tests)
+3. **Pruebas**: incluye pruebas offline para el factory y los defaults; no llama a proveedores reales.
 
 4. **Sin Soporte para Streaming**: Actualmente no soporta respuestas en streaming (importante para UX en tiempo real)
 
@@ -58,7 +57,7 @@ Package unificado para consumir APIs de distintos LLM (Large Language Models) co
 #### 🚀 Mejoras Futuras Recomendadas
 
 1. Agregar soporte para streaming de respuestas
-2. Implementar tests unitarios con PHPUnit
+2. Ampliar pruebas de contratos para las respuestas de cada proveedor
 3. Agregar más proveedores (Gemini, Mistral, Llama, etc.)
 4. Soporte para embeddings de manera unificada
 5. Cache inteligente de respuestas con TTL configurable
@@ -80,22 +79,26 @@ Package unificado para consumir APIs de distintos LLM (Large Language Models) co
 
 | Proveedor | Alias | Estado | Modelos Principales |
 |-----------|-------|--------|---------------------|
-| **OpenAI** | `openai`, `chatgpt`, `gpt` | ✅ Completo | GPT-4, GPT-4o, GPT-3.5, DALL-E, Whisper |
-| **Claude AI** | `claude`, `anthropic` | ✅ Completo | Claude 3 Opus/Sonnet/Haiku, Claude 2 |
-| **Grok** | `grok`, `xai` | ✅ Completo | Grok Beta |
-| **Ollama** | `ollama` | ✅ Completo | Modelos locales (Llama, Mistral, etc) |
+| **OpenAI** | `openai`, `chatgpt`, `gpt` | Chat Completions y endpoints implementados por el provider | ID de modelo configurable; default actual: `gpt-4o-mini` |
+| **Anthropic** | `claude`, `anthropic` | Messages API, sin streaming | Default actual: `claude-sonnet-4-6` |
+| **xAI** | `grok`, `xai` | Chat Completions, sin streaming | Default actual: `grok-4.7` |
+| **Ollama** | `ollama` | API local configurada por el provider | Modelo local elegido por la aplicación |
 
 ## Instalación
 
 ```bash
-composer require boctulus/llm-providers
+composer config repositories.llm-providers vcs https://github.com/boctulus/llm-providers
+composer require boctulus/llm-providers:dev-main
 ```
 
-The package declares SimpleRest as its Composer dependency. Run its offline contract suite with `composer test`.
+The package declares SimpleRest as its Composer dependency. It is not on
+Packagist yet; install it from its public GitHub VCS repository until
+registration is completed. Run its offline contract suite with `composer test`.
 
 ## Configuración
 
-Configura tus API keys en el archivo de configuración:
+Configura las API keys que el provider lee desde SimpleRest `Config::get()` en
+la configuración de la aplicación:
 
 ```php
 // config/config.php
@@ -106,7 +109,7 @@ return [
 ];
 ```
 
-O mediante el archivo de configuración del package:
+El paquete incluye un archivo de referencia para configuración adicional:
 
 ```php
 // packages/boctulus/llm-providers/config/config.php
@@ -121,11 +124,11 @@ return [
         'claude' => [
             'api_key' => env('CLAUDE_API_KEY'),
             'api_version' => '2023-06-01',
-            'default_model' => 'claude-3-sonnet-20240229',
+            'default_model' => 'claude-sonnet-4-6',
         ],
         'grok' => [
             'api_key' => env('XAI_API_KEY'),
-            'default_model' => 'grok-beta',
+            'default_model' => 'grok-4.7',
         ],
         'ollama' => [
             'default_model' => 'llama2', // O cualquier otro modelo que tengas
@@ -133,6 +136,10 @@ return [
     ],
 ];
 ```
+
+El `ServiceProvider` no carga este archivo automáticamente. La aplicación debe
+cargar o combinar esos valores explícitamente; el `LLMFactory` solo consulta
+las API keys de `Config::get()` y los defaults definidos en cada provider.
 
 ## Uso Básico
 
@@ -199,7 +206,7 @@ use Boctulus\LLMProviders\Factory\LLMFactory;
 
 $llm = LLMFactory::claude();
 
-$llm->setModel('claude-3-sonnet-20240229')
+$llm->setModel('claude-sonnet-4-6')
     ->setParams(['max_tokens' => 200]);
 
 $llm->addContent('Explica la teoría de la relatividad en términos simples');
@@ -223,7 +230,7 @@ use Boctulus\LLMProviders\Factory\LLMFactory;
 
 $llm = LLMFactory::grok();
 
-$llm->setModel('grok-beta')
+$llm->setModel('grok-4.7')
     ->setTemperature(0.5)
     ->setMaxTokens(300);
 
@@ -362,38 +369,19 @@ $respuesta3 = askLLM('grok', '¿Qué es PHP?');
 
 ## Modelos Soportados
 
-### OpenAI
+Cada provider acepta IDs de modelo conforme a la API implementada y la cuenta
+del consumidor. Los modelos disponibles cambian con frecuencia; verifica los
+IDs y precios en la documentación del proveedor antes de configurar una
+aplicación:
 
-#### Recomendados
-- `gpt-4o-mini` ⭐ (económico, excelente relación calidad-precio)
-- `gpt-4o` (potente, con capacidad de visión)
-- `gpt-4` (muy potente, costoso)
+- [Modelos de OpenAI](https://platform.openai.com/docs/models)
+- [Modelos y deprecaciones de Anthropic](https://docs.anthropic.com/en/docs/about-claude/model-deprecations)
+- [Modelos de xAI](https://docs.x.ai/developers/models)
+- [Biblioteca de Ollama](https://ollama.com/library)
 
-#### Otros
-- Serie O1: `o1-preview`, `o1-mini` (razonamiento avanzado)
-- Serie GPT-3.5: `gpt-3.5-turbo-1106` (ahora más caro que gpt-4o-mini)
-- Imágenes: `dall-e-3`, `dall-e-2`
-- Audio: `whisper-1`, `tts-1`, `tts-1-hd`
-
-### Claude AI
-
-- `claude-3-opus-20240229` (más potente, costoso)
-- `claude-3-sonnet-20240229` ⭐ (balance ideal)
-- `claude-3-haiku-20240307` (más rápido, económico)
-- `claude-2.1`, `claude-2.0` (versiones anteriores)
-- `claude-instant-1.2` (rápido y económico)
-
-### Grok (X.AI)
-
-- `grok-beta` (modelo principal)
-
-### Ollama
-
-Cualquier modelo instalado localmente, por ejemplo:
-- `llama2`
-- `mistral`
-- `codellama`
-- `phi`
+El código conserva algunos IDs antiguos por compatibilidad, pero el proveedor
+puede haberlos retirado. Los defaults documentados arriba son los usados por
+esta versión del paquete.
 
 ## Manejo de Errores
 
@@ -530,28 +518,12 @@ packages/boctulus/llm-providers/
 └── README.md
 ```
 
-## Testing (Recomendado)
+## Testing
 
-Aunque no incluye tests por defecto, se recomienda agregar:
-
-```php
-// tests/OpenAIProviderTest.php
-use PHPUnit\Framework\TestCase;
-use Boctulus\LLMProviders\Factory\LLMFactory;
-
-class OpenAIProviderTest extends TestCase
-{
-    public function testBasicCompletion()
-    {
-        $llm = LLMFactory::openai();
-        $llm->addContent('Say "test"');
-        $response = $llm->exec();
-
-        $this->assertEquals(200, $response['status']);
-        $this->assertIsString($llm->getContent());
-    }
-}
-```
+Run the package's offline PHPUnit suite with `composer test`. It covers provider
+aliases, unknown provider handling, and current defaults without sending API
+requests. Live provider checks require credentials and are not part of that
+suite.
 
 ## Troubleshooting
 
@@ -598,19 +570,15 @@ if (!$llm->wereTokenEnough()) {
 }
 ```
 
-## Comparación de Costos (Aproximados)
+## Precios
 
-| Proveedor | Modelo | Input (1M tokens) | Output (1M tokens) |
-|-----------|--------|-------------------|-------------------|
-| OpenAI | gpt-4o-mini | $0.15 | $0.60 |
-| OpenAI | gpt-4o | $2.50 | $10.00 |
-| OpenAI | gpt-4 | $30.00 | $60.00 |
-| Claude | haiku | $0.25 | $1.25 |
-| Claude | sonnet | $3.00 | $15.00 |
-| Claude | opus | $15.00 | $75.00 |
-| Grok | grok-beta | TBD | TBD |
+Los precios dependen del modelo, región, modalidad y fecha. Consulta las
+páginas oficiales antes de estimar costes:
 
-*Precios aproximados al 2025-01, sujetos a cambio*
+- [Precios de OpenAI](https://openai.com/api/pricing/)
+- [Precios de Anthropic](https://www.anthropic.com/pricing)
+- [Precios de xAI](https://docs.x.ai/docs/models)
+- [Precios de Ollama Cloud](https://ollama.com/pricing)
 
 ## Contribuir
 

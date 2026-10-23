@@ -1,6 +1,6 @@
 {
-    "name": "boctulus/simplerest-html-builders",
-    "description": "Bootstrap 5 and AdminLTE HTML builders for SimpleRest",
+    "name": "boctulus/simplerest-bootstrap-html",
+    "description": "Bootstrap 5 and AdminLTE HTML builders and pagination for SimpleRest",
     "type": "library",
     "license": "MIT",
     "require": {
@@ -12,7 +12,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Boctulus\\Simplerest\\HtmlBuilders\\": "src/"
+            "Boctulus\\Simplerest\\HtmlBuilders\\": "src/",
+            "Boctulus\\Simplerest\\Integrations\\Libs\\": "src/"
         }
     },
     "scripts": {

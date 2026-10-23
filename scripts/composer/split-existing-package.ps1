@@ -1,7 +1,14 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('boctulus/simplerest-pdf', 'boctulus/simplerest-code-tools', 'boctulus/simplerest-integrations')]
+    [ValidateSet(
+        'boctulus/simplerest-fpdf',
+        'boctulus/simplerest-scaffolding',
+        'boctulus/simplerest-bootstrap-html',
+        'boctulus/simplerest-web-inspection',
+        'boctulus/simplerest-api-clients',
+        'boctulus/llm-providers'
+    )]
     [string]$Package,
 
     [string]$SourceCommit = 'HEAD',
@@ -18,20 +25,35 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $packageDefinitions = @{
-    'boctulus/simplerest-pdf' = @{
-        Path = 'packages/boctulus/simplerest-pdf'
-        Repository = 'boctulus/simplerest-pdf'
-        Remote = 'git@github.com:boctulus/simplerest-pdf.git'
+    'boctulus/simplerest-fpdf' = @{
+        Path = 'packages/boctulus/simplerest-fpdf'
+        Repository = 'boctulus/simplerest-fpdf'
+        Remote = 'git@github.com:boctulus/simplerest-fpdf.git'
     }
-    'boctulus/simplerest-code-tools' = @{
-        Path = 'packages/boctulus/simplerest-code-tools'
-        Repository = 'boctulus/simplerest-code-tools'
-        Remote = 'git@github.com:boctulus/simplerest-code-tools.git'
+    'boctulus/simplerest-scaffolding' = @{
+        Path = 'packages/boctulus/simplerest-scaffolding'
+        Repository = 'boctulus/simplerest-scaffolding'
+        Remote = 'git@github.com:boctulus/simplerest-scaffolding.git'
     }
-    'boctulus/simplerest-integrations' = @{
-        Path = 'packages/boctulus/simplerest-integrations'
-        Repository = 'boctulus/simplerest-integrations'
-        Remote = 'git@github.com:boctulus/simplerest-integrations.git'
+    'boctulus/simplerest-bootstrap-html' = @{
+        Path = 'packages/boctulus/simplerest-bootstrap-html'
+        Repository = 'boctulus/simplerest-bootstrap-html'
+        Remote = 'git@github.com:boctulus/simplerest-bootstrap-html.git'
+    }
+    'boctulus/simplerest-web-inspection' = @{
+        Path = 'packages/boctulus/simplerest-web-inspection'
+        Repository = 'boctulus/simplerest-web-inspection'
+        Remote = 'git@github.com:boctulus/simplerest-web-inspection.git'
+    }
+    'boctulus/simplerest-api-clients' = @{
+        Path = 'packages/boctulus/simplerest-api-clients'
+        Repository = 'boctulus/simplerest-api-clients'
+        Remote = 'git@github.com:boctulus/simplerest-api-clients.git'
+    }
+    'boctulus/llm-providers' = @{
+        Path = 'packages/boctulus/llm-providers'
+        Repository = 'boctulus/llm-providers'
+        Remote = 'git@github.com:boctulus/llm-providers.git'
     }
 }
 

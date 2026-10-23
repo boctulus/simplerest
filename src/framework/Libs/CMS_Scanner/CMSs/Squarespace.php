@@ -6,7 +6,7 @@ $implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\CMSs\Square
 
 if (!class_exists($implementation)) {
     throw new \LogicException(
-        'Squarespace is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+        'Squarespace is optional. Install boctulus/simplerest-web-inspection from a Composer VCS repository.'
     );
 }
 
