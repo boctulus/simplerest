@@ -2,7 +2,7 @@ name: Tests
 
 on:
   push:
-    branches: [master, main, develop]
+    branches: [master, main, develop, fix/composer-distribution-modularization-recovered-20261022]
   pull_request:
     branches: [master, main]
 
