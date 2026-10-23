@@ -64,3 +64,33 @@ jobs:
 
 # Archived ACL/CLI and legacy application suites are not certified by
 # the HTTP microcore workflow. Migrate and test them independently.
+
+  pack-curation:
+    runs-on: ubuntu-latest
+    name: Curated PACK Composer distribution
+    steps:
+      - name: Checkout canonical source
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+      - name: Curate only approved files from immutable Git commit
+        run: |
+          php com pack build --profile=core --dry-run
+          php com pack build --profile=core --source-commit="$GITHUB_SHA" --dest="$RUNNER_TEMP/curated-core"
+          test "$(find "$RUNNER_TEMP/curated-core" -type f | wc -l)" -eq 17
+          test ! -e "$RUNNER_TEMP/curated-core/src/framework/Libs/Files.php"
+          test ! -e "$RUNNER_TEMP/curated-core/docs"
+          test ! -e "$RUNNER_TEMP/curated-core/archive"
+      - name: Snapshot only curated PACK into Composer release repository
+        shell: pwsh
+        run: |
+          ./scripts/composer/build-core-source-snapshot.ps1 -CuratedDirectory "$env:RUNNER_TEMP/curated-core" -SourceCommit "$env:GITHUB_SHA" -OutputDirectory "$env:RUNNER_TEMP/curated-snapshot" -Version 3.0.0
+          if (-not (Test-Path "$env:RUNNER_TEMP/curated-snapshot/repository/composer.json")) { throw 'Composer snapshot is missing' }
+          $files = @(Get-ChildItem "$env:RUNNER_TEMP/curated-snapshot/repository" -File -Recurse)
+          if ($files.Count -ne 17) { throw "Snapshot should contain 17 curated files; found $($files.Count)" }
+          if (Test-Path "$env:RUNNER_TEMP/curated-snapshot/repository/docs") { throw 'Internal documentation leaked into the package' }
+          if (Test-Path "$env:RUNNER_TEMP/curated-snapshot/repository/archive") { throw 'Archived code leaked into the package' }
