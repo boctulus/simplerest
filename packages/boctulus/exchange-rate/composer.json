@@ -2,7 +2,6 @@
     "name": "boctulus/exchange-rate",
     "description": "Currencies Exchange Rate",
     "type": "library",
-    "version": "1.0.0",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -12,7 +11,7 @@
     "extra": {
         "simplerest": {
             "providers": [
-                "Boctulus\\ExchangeRate\\ServiceProvider"
+                "Boctulus\\ExchangeRate\\ExchangeRateServiceProvider"
             ]
         }
     },
@@ -23,6 +22,8 @@
         }
     ],
     "keywords": ["composer", "currencies"],
-    "require": {},
-    "require-dev": {}
+    "require": {
+        "php": ">=8.1,<8.5",
+        "boctulus/simplerest": "^2.0"
+    }
 }

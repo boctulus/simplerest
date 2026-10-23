@@ -12,7 +12,7 @@ class MakeHelperPackageCommand extends BaseMakeCommand
         $this->command     = 'helper-package';
         $this->description = 'Genera un helper dentro de un package';
         $this->aliases     = [];
-        $this->examples    = ['php com make helper-package zippy my_helper'];
+        $this->examples    = ['php com make helper-package example-package my_helper'];
     }
 
     public static function config(): array

@@ -12,7 +12,7 @@ class MakeLibModuleCommand extends BaseMakeCommand
         $this->command     = 'lib-module';
         $this->description = 'Genera una librería dentro de un módulo';
         $this->aliases     = [];
-        $this->examples    = ['php com make lib-module FriendlyPOS MyLib'];
+        $this->examples    = ['php com make lib-module ExampleModule MyLib'];
     }
 
     public static function config(): array

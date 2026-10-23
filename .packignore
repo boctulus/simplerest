@@ -7,6 +7,8 @@ __releases/
 .idea/
 .phpunit.cache/
 composer.lock
+package.json
+package-lock.json
 .agents/
 .codex/
 .gemini/
@@ -36,6 +38,9 @@ docs/
 storage/cache/
 app/
 public/assets/
+public/assets/third_party/
+third_party/
+scripts/
 packages/
 database/migrations
 database/seeders

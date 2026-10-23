@@ -16,11 +16,11 @@
    ],
    "require":{
       "php":">=8.1,<8.5",
+		"ext-pdo": "*",
+		"ext-mbstring": "*",
 		"doctrine/inflector": "^2.0",
 		"psr/http-message": "^2.0",
-		"firebase/php-jwt": "^7.1",
-		"symfony/dom-crawler": "^6.4",
-		"symfony/css-selector": "^6.4"
+		"firebase/php-jwt": "^7.1"
    },
 	"require-dev": {
       "phpunit/phpunit": "^10.0",
@@ -28,14 +28,21 @@
 	  "vlucas/phpdotenv": "^5.2",
 	  "phpmailer/phpmailer": "^7.1",
 	  "setasign/fpdf": "^1.8",
-	  "nikic/php-parser": "^5.4"
+	  "nikic/php-parser": "^5.4",
+	  "symfony/dom-crawler": "^6.4",
+	  "symfony/css-selector": "^6.4"
 	},
 	"suggest": {
 	  "phpmailer/phpmailer": "Optional SMTP adapter for Core\\Libs\\Mail; supports PHPMailer 6.9 and 7.1.",
-	  "google/apiclient": "Optional Google Drive integration for Core\\Libs\\GoogleDrive.",
-	  "guzzlehttp/guzzle": "Optional HTTP client used by Google Drive and the bundled SendinBlue adapter.",
-	  "boctulus/simplerest-pdf": "Optional PDF base class and FPDF integration.",
-	  "boctulus/simplerest-code-tools": "Optional PHP source tools and make commands."
+	  "boctulus/simplerest-integrations": "Optional Google Drive, CMS scanner, scraping, WooCommerce, OneSignal, Hugging Face, and Bootstrap paginator integrations; not registered on Packagist yet, so it currently requires an explicit VCS repository.",
+	  "guzzlehttp/guzzle": "Optional HTTP client used by the bundled SendinBlue adapter.",
+	  "ext-curl": "Optional HTTP transport acceleration for API clients and webhook integrations.",
+	  "ext-pdo_mysql": "Optional PDO MySQL driver when connecting to MySQL or MariaDB.",
+	  "ext-pdo_pgsql": "Optional PDO PostgreSQL driver when connecting to PostgreSQL.",
+	  "ext-pdo_sqlite": "Optional PDO SQLite driver when connecting to SQLite.",
+	  "boctulus/simplerest-pdf": "Optional PDF integration; not registered on Packagist yet, so it currently requires an explicit VCS repository.",
+	  "boctulus/simplerest-code-tools": "Optional development tools; currently requires an explicit VCS repository.",
+	  "boctulus/simplerest-html-builders": "Optional Bootstrap 5 and AdminLTE HTML builders; preserves the former core builder names when installed."
 	},
    "scripts":{
       "test": "phpunit --colors=always unit-tests",
@@ -47,6 +54,9 @@
       ]
    },
    "autoload":{
+	  "files":[
+	    "src/framework/Compatibility/OptionalPackageClassAliases.php"
+	  ],
       "psr-4":{
          "Boctulus\\Simplerest\\Core\\":"src/framework/"
       },
@@ -59,11 +69,14 @@
          "Boctulus\\Simplerest\\Tests\\": "unit-tests/",
          "Boctulus\\Simplerest\\": ["app/", "src/"],
          "Boctulus\\Simplerest\\Core\\Libs\\":["src/framework/Libs/", "packages/boctulus/simplerest-pdf/src/", "packages/boctulus/simplerest-code-tools/src/"],
+         "Boctulus\\Simplerest\\CodeTools\\Cleaners\\": "packages/boctulus/simplerest-code-tools/src/Cleaners/",
+         "Boctulus\\Simplerest\\Integrations\\": "packages/boctulus/simplerest-integrations/src/",
+         "Boctulus\\Simplerest\\HtmlBuilders\\": "packages/boctulus/simplerest-html-builders/src/",
          "Boctulus\\FineGrainedACL\\":"packages/boctulus/fine-grained-acl/src",
          "Boctulus\\BasicACL\\":"packages/boctulus/basic-acl/src",
-         "Boctulus\\CliTest\\":"packages/boctulus/cli-test/src",
          "Boctulus\\WebTest\\":"packages/boctulus/web-test/src",
          "Boctulus\\LLMProviders\\": "packages/boctulus/llm-providers/src",
+         "Boctulus\\ExchangeRate\\": "packages/boctulus/exchange-rate/src",
          "Boctulus\\AzSeeder\\": "packages/boctulus/az-seeder/src"
       },
       "classmap": [

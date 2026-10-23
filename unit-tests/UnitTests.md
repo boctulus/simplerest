@@ -98,7 +98,8 @@ automation/
 **Problemas conocidos:**
 - `$config` variable undefined en varios test files (error de bootstrap)
 - `parse_url(null)` y `rtrim(null)` causan PHP warnings en PHP 8.x
-- phpunit.xml tiene cobertura mal configurada (apunta a friendlypos-web en vez de src/framework)
+
+La ruta antigua de cobertura a FriendlyPOS se eliminó al retirar ese paquete de este repositorio (2026-10-23).
 
 ---
 

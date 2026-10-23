@@ -12,7 +12,7 @@ class MakeInterfaceModuleCommand extends BaseMakeCommand
         $this->command     = 'interface-module';
         $this->description = 'Genera una interfaz dentro de un módulo';
         $this->aliases     = [];
-        $this->examples    = ['php com make interface-module FriendlyPOS IMyInterface'];
+        $this->examples    = ['php com make interface-module ExampleModule IMyInterface'];
     }
 
     public static function config(): array

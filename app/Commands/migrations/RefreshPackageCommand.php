@@ -10,8 +10,8 @@ class RefreshPackageCommand extends BaseMigrationsCommand
         $this->description = 'Revierte y re-aplica migraciones de un package (rollback-all + migrate)';
         $this->aliases     = ['package-refresh', 'refresh:package'];
         $this->examples    = [
-            'php com migrations refresh-package zippy',
-            'php com migrations refresh-package zippy --to=db_conn',
+            'php com migrations refresh-package ExamplePackage',
+            'php com migrations refresh-package ExamplePackage --to=db_conn',
         ];
     }
 

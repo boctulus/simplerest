@@ -13,8 +13,8 @@ class MakeControllerPackageCommand extends BaseMakeCommand
         $this->description = 'Genera un controlador dentro de un package';
         $this->aliases     = ['ctrl-package'];
         $this->examples    = [
-            'php com make controller-package zippy MyController',
-            'php com make controller-package zippy MyController --force',
+            'php com make controller-package example-package MyController',
+            'php com make controller-package example-package MyController --force',
         ];
     }
 

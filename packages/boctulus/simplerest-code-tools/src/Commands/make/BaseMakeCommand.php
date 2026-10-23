@@ -354,18 +354,18 @@ abstract class BaseMakeCommand extends BaseCommand
 
         # Package Migrations
 
-        make migrations:package zippy categories --create
-        make migrations:package zippy users --table=users --edit
+        make migrations:package example-package categories --create
+        make migrations:package example-package users --table=users --edit
         make migrations:package dummyapi products --table=products --class_name=ProductsAddDescription
         make migrations:package web-test orders --create --table=orders
-        make migrations:package zippy categories --remove
+        make migrations:package example-package categories --remove
 
         # Module Migrations
 
-        make migrations:module FriendlyPOS products --create
-        make migrations:module FriendlyPOS users --table=users --edit
-        make migrations:module FriendlyPOS orders --table=orders --class_name=OrdersAddStatus
-        make migrations:module FriendlyPOS products --remove
+        make migrations:module ExampleModule products --create
+        make migrations:module ExampleModule users --table=users --edit
+        make migrations:module ExampleModule orders --table=orders --class_name=OrdersAddStatus
+        make migrations:module ExampleModule products --remove
         
         ℹ  Use `php com migrations help` for specific help on migrations.
 
@@ -387,7 +387,7 @@ abstract class BaseMakeCommand extends BaseCommand
 
         Ex:
 
-        make interface OpenFactura --from=D:\laragon\www\Boctulus\Simplerest\app\libs\OpenFacturaSDK.php
+        make interface InvoiceGateway --from=D:\laragon\www\Boctulus\Simplerest\app\libs\InvoiceGateway.php
 
         # Mixed examples
         
@@ -2618,16 +2618,16 @@ abstract class BaseMakeCommand extends BaseCommand
 
         Usage: php com make migrations:package {package_name} {migration_name} [options]
 
-        Example: php com make migrations:package zippy categories --create
-                 php com make migrations:package zippy users --table=users --edit
-                 php com make migrations:package zippy categories --remove
+        Example: php com make migrations:package example-package categories --create
+                 php com make migrations:package example-package users --table=users --edit
+                 php com make migrations:package example-package categories --remove
     */
     function migrations_package(...$opt)
     {
         if (count($opt) < 2) {
             StdOut::print("\nError: Package name and migration name are required.\n");
             StdOut::print("Usage: php com make migrations:package {package_name} {migration_name} [options]\n");
-            StdOut::print("Example: php com make migrations:package zippy categories --create\n\n");
+            StdOut::print("Example: php com make migrations:package example-package categories --create\n\n");
             return;
         }
 
@@ -2663,16 +2663,16 @@ abstract class BaseMakeCommand extends BaseCommand
 
         Usage: php com make migrations:module {module_name} {migration_name} [options]
 
-        Example: php com make migrations:module FriendlyPOS products --create
-                 php com make migrations:module FriendlyPOS users --table=users --edit
-                 php com make migrations:module FriendlyPOS products --remove
+        Example: php com make migrations:module ExampleModule products --create
+                 php com make migrations:module ExampleModule users --table=users --edit
+                 php com make migrations:module ExampleModule products --remove
     */
     function migrations_module(...$opt)
     {
         if (count($opt) < 2) {
             StdOut::print("\nError: Module name and migration name are required.\n");
             StdOut::print("Usage: php com make migrations:module {module_name} {migration_name} [options]\n");
-            StdOut::print("Example: php com make migrations:module FriendlyPOS products --create\n\n");
+            StdOut::print("Example: php com make migrations:module ExampleModule products --create\n\n");
             return;
         }
 
@@ -3498,14 +3498,14 @@ abstract class BaseMakeCommand extends BaseCommand
 
         Usage: php com make controller:package {package_name} {controller_name}
 
-        Example: php com make controller:package zippy MyController
+        Example: php com make controller:package example-package MyController
     */
     function controller_package(...$opt)
     {
         if (count($opt) < 2) {
             StdOut::print("\nError: Package name and controller name are required.\n");
             StdOut::print("Usage: php com make controller:package {package_name} {controller_name}\n");
-            StdOut::print("Example: php com make controller:package zippy MyController\n\n");
+            StdOut::print("Example: php com make controller:package example-package MyController\n\n");
             return;
         }
 
@@ -3558,14 +3558,14 @@ abstract class BaseMakeCommand extends BaseCommand
 
         Usage: php com make controller:module {module_name} {controller_name}
 
-        Example: php com make controller:module FriendlyPOS MyController
+        Example: php com make controller:module ExampleModule MyController
     */
     function controller_module(...$opt)
     {
         if (count($opt) < 2) {
             StdOut::print("\nError: Module name and controller name are required.\n");
             StdOut::print("Usage: php com make controller:module {module_name} {controller_name}\n");
-            StdOut::print("Example: php com make controller:module FriendlyPOS MyController\n\n");
+            StdOut::print("Example: php com make controller:module ExampleModule MyController\n\n");
             return;
         }
 
@@ -3613,7 +3613,7 @@ abstract class BaseMakeCommand extends BaseCommand
         if (count($opt) < 2) {
             StdOut::print("\nError: Package name and middleware name are required.\n");
             StdOut::print("Usage: php com make middleware:package {package_name} {middleware_name}\n");
-            StdOut::print("Example: php com make middleware:package zippy MyMiddleware\n\n");
+            StdOut::print("Example: php com make middleware:package example-package MyMiddleware\n\n");
             return;
         }
 

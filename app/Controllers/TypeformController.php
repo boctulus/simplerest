@@ -14,7 +14,6 @@ class TypeformController
         // Ensure proper HTTP status code for all responses
         // This prevents 404 errors that can occur in some server configurations
         http_response_code(200);
-        header('X-Powered-By: FriendlyPOS');
     }
     function get()
     {

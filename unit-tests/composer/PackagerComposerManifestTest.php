@@ -46,11 +46,15 @@ class PackagerComposerManifestTest extends TestCase
         );
 
         $this->assertSame('>=8.1,<8.5', $manifest['require']['php']);
+        $this->assertSame('*', $manifest['require']['ext-pdo']);
+        $this->assertSame('*', $manifest['require']['ext-mbstring']);
         $this->assertSame('^2.0', $manifest['require']['doctrine/inflector']);
         $this->assertSame('^2.0', $manifest['require']['psr/http-message']);
         $this->assertSame('^7.1', $manifest['require']['firebase/php-jwt']);
-        $this->assertSame('^6.4', $manifest['require']['symfony/dom-crawler']);
-        $this->assertSame('^6.4', $manifest['require']['symfony/css-selector']);
+        $this->assertArrayNotHasKey('symfony/dom-crawler', $manifest['require']);
+        $this->assertArrayNotHasKey('symfony/css-selector', $manifest['require']);
+        $this->assertStringContainsString('explicit VCS repository', $manifest['suggest']['boctulus/simplerest-pdf']);
+        $this->assertStringContainsString('explicit VCS repository', $manifest['suggest']['boctulus/simplerest-code-tools']);
         $this->assertSame('^5.2', $manifest['require']['vlucas/phpdotenv']);
         $this->assertArrayNotHasKey('phpmailer/phpmailer', $manifest['require']);
         $this->assertArrayNotHasKey('require-dev', $manifest);

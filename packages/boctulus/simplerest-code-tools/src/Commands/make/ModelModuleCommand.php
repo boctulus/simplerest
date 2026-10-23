@@ -12,7 +12,7 @@ class MakeModelModuleCommand extends BaseMakeCommand
         $this->command     = 'model-module';
         $this->description = 'Genera un Model dentro de un módulo';
         $this->aliases     = [];
-        $this->examples    = ['php com make model-module FriendlyPOS products --force'];
+        $this->examples    = ['php com make model-module ExampleModule products --force'];
     }
 
     public static function config(): array

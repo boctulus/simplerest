@@ -2,17 +2,12 @@
 
 namespace Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs;
 
-use Boctulus\Simplerest\Core\Libs\Strings;
+$implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\CMSs\Shopify::class;
 
-class Shopify
-{
-    static function isIt($content){
-        return Strings::containsAny([
-            'shopify-digital-wallet', 'shopify-checkout-api-token', 
-            'Shopify.shop', 'Shopify.theme', '.myshopify.com', 'https://cdn.shopify.com', 'window.Shopify'        
-        ], $content);
-    }
-
-
+if (!class_exists($implementation)) {
+    throw new \LogicException(
+        'Shopify is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+    );
 }
 
+class_alias($implementation, __NAMESPACE__ . '\\Shopify');

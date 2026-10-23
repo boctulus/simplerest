@@ -13,9 +13,9 @@ class MakeMigrationsModuleCommand extends BaseMakeCommand
         $this->description = 'Crea un archivo de migración dentro de un módulo';
         $this->aliases     = ['migration-module'];
         $this->examples    = [
-            'php com make migrations-module FriendlyPOS products --create',
-            'php com make migrations-module FriendlyPOS users --table=users --edit',
-            'php com make migrations-module FriendlyPOS products --remove',
+            'php com make migrations-module ExampleModule products --create',
+            'php com make migrations-module ExampleModule users --table=users --edit',
+            'php com make migrations-module ExampleModule products --remove',
         ];
     }
 

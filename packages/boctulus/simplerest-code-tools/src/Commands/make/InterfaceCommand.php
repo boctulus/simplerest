@@ -14,7 +14,7 @@ class MakeInterfaceCommand extends BaseMakeCommand
         $this->aliases     = [];
         $this->examples    = [
             'php com make interface SomeClass',
-            'php com make interface OpenFactura --from=D:/path/to/OpenFacturaSDK.php',
+            'php com make interface InvoiceGateway --from=D:/path/to/InvoiceGateway.php',
             'php com make interface pluggable --remove',
         ];
     }

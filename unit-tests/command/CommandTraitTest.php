@@ -199,9 +199,9 @@ class CommandTraitTest extends TestCase
     }
 
     /**
-     * Test caso real: comando zippy process_categories
+     * Test de parsing con opciones de un comando de aplicación
      */
-    public function testRealWorldZippyCommand()
+    public function testRealWorldApplicationCommand()
     {
         $args = ['--limit=100', '--dry-run', '--strategy=llm'];
         $result = $this->command->parseOptionsPublic($args);

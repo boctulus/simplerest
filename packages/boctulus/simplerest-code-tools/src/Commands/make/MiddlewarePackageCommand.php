@@ -13,7 +13,7 @@ class MakeMiddlewarePackageCommand extends BaseMakeCommand
         $this->description = 'Genera un middleware dentro de un package';
         $this->aliases     = [];
         $this->examples    = [
-            'php com make middleware-package zippy MyMiddleware',
+            'php com make middleware-package example-package MyMiddleware',
         ];
     }
 

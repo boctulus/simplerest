@@ -10,9 +10,9 @@ class MigrateModuleCommand extends BaseMigrationsCommand
         $this->description = 'Ejecuta migraciones de un módulo específico';
         $this->aliases     = ['module-migrate', 'migrate:module'];
         $this->examples    = [
-            'php com migrations migrate-module FriendlyPOS',
-            'php com migrations migrate-module FriendlyPOS --step=2',
-            'php com migrations migrate-module FriendlyPOS --to=db_conn',
+            'php com migrations migrate-module ExampleModule',
+            'php com migrations migrate-module ExampleModule --step=2',
+            'php com migrations migrate-module ExampleModule --to=db_conn',
         ];
     }
 

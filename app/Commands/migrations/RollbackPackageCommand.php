@@ -10,9 +10,9 @@ class RollbackPackageCommand extends BaseMigrationsCommand
         $this->description = 'Revierte migraciones de un package específico';
         $this->aliases     = ['package-rollback', 'rollback:package'];
         $this->examples    = [
-            'php com migrations rollback-package zippy',
-            'php com migrations rollback-package zippy --step=1',
-            'php com migrations rollback-package zippy --all',
+            'php com migrations rollback-package ExamplePackage',
+            'php com migrations rollback-package ExamplePackage --step=1',
+            'php com migrations rollback-package ExamplePackage --all',
         ];
     }
 

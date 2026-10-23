@@ -1,0 +1,27 @@
+{
+    "name": "boctulus/simplerest-integrations",
+    "description": "Optional Google Drive, CMS scanning, HTML scraping, and service integrations for SimpleRest",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1,<8.5",
+        "ext-curl": "*",
+        "boctulus/simplerest": "^2.0 || ^3.0",
+        "symfony/css-selector": "^6.4",
+        "symfony/dom-crawler": "^6.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "suggest": {
+        "google/apiclient": "Required only when using GoogleDrive; the integration reports a clear error until the SDK is installed."
+    },
+    "scripts": {
+        "test": "phpunit --do-not-cache-result"
+    },
+    "autoload": {
+        "psr-4": {
+            "Boctulus\\Simplerest\\Integrations\\": "src/"
+        }
+    }
+}

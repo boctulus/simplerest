@@ -12,7 +12,7 @@ class MakeLibPackageCommand extends BaseMakeCommand
         $this->command     = 'lib-package';
         $this->description = 'Genera una librería dentro de un package';
         $this->aliases     = [];
-        $this->examples    = ['php com make lib-package zippy MyLib'];
+        $this->examples    = ['php com make lib-package example-package MyLib'];
     }
 
     public static function config(): array

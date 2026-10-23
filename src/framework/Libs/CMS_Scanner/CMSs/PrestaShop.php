@@ -2,14 +2,12 @@
 
 namespace Boctulus\Simplerest\Core\Libs\CMS_Scanner\CMSs;
 
-use Boctulus\Simplerest\Core\Libs\Strings;
+$implementation = \Boctulus\Simplerest\Integrations\Libs\CMS_Scanner\CMSs\PrestaShop::class;
 
-class PrestaShop
-{
-    static function isIt($content){
-        return Strings::containsAny(['var prestashop =', 'prestashop.on('], $content);
-    }
-
-
+if (!class_exists($implementation)) {
+    throw new \LogicException(
+        'PrestaShop is optional. Install boctulus/simplerest-integrations from a Composer VCS repository.'
+    );
 }
 
+class_alias($implementation, __NAMESPACE__ . '\\PrestaShop');

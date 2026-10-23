@@ -13,9 +13,9 @@ class MakeMigrationsPackageCommand extends BaseMakeCommand
         $this->description = 'Crea un archivo de migración dentro de un package';
         $this->aliases     = ['migration-package'];
         $this->examples    = [
-            'php com make migrations-package zippy categories --create',
-            'php com make migrations-package zippy users --table=users --edit',
-            'php com make migrations-package zippy categories --remove',
+            'php com make migrations-package example-package categories --create',
+            'php com make migrations-package example-package users --table=users --edit',
+            'php com make migrations-package example-package categories --remove',
         ];
     }
 

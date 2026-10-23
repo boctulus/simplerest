@@ -10,9 +10,9 @@ class MigratePackageCommand extends BaseMigrationsCommand
         $this->description = 'Ejecuta migraciones de un package específico';
         $this->aliases     = ['package-migrate', 'migrate:package'];
         $this->examples    = [
-            'php com migrations migrate-package zippy',
-            'php com migrations migrate-package zippy --step=2',
-            'php com migrations migrate-package zippy --to=db_conn',
+            'php com migrations migrate-package ExamplePackage',
+            'php com migrations migrate-package ExamplePackage --step=2',
+            'php com migrations migrate-package ExamplePackage --to=db_conn',
         ];
     }
 
