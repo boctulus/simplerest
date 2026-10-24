@@ -3,7 +3,7 @@
 ## Verified documentation
 
 - [Automatic API resource resolution](automatic-endpoints.md) — resolver mapping, model-name derivation, generator scaffold, and front-controller checks traced to source; no complete CRUD workflow was run.
-- [Webhook publishing](webhooks.md) — subscription CRUD, internal and API event publishing, connection/owner matching, conditions, callback policy and HMAC verification; fixture tests cover matching and delivery boundaries, but database-backed callback delivery has not been exercised.
+- [Webhook publishing](webhooks.md) — subscription CRUD, internal and API event publishing, connection/owner matching, conditions, callback policy and HMAC verification; focused tests cover the configured connection selector, but real database-backed delivery has not been exercised.
 
 ## Authorization status
 

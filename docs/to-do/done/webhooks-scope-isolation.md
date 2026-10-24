@@ -1,12 +1,12 @@
 ---
 title: "Webhooks: aislamiento de tenant y ownership"
-current_step: 3
-next_step: 3
+current_step: 6
+next_step: null
 parallelizable_steps: []
 parent: null
 global_complexity: high
 for_agents: true
-next_step_complexity: high
+next_step_complexity: null
 tags: [webhooks, security, multitenancy, ownership]
 ---
 
@@ -14,7 +14,7 @@ tags: [webhooks, security, multitenancy, ownership]
 
 Eliminar cualquier posibilidad de que una suscripción de webhook reciba eventos fuera de su scope. La tabla actual contiene `belongs_to`, pero el dispatcher debe demostrar y aplicar explícitamente el aislamiento correcto para cada modo de tenancy soportado por SimpleRest.
 
-## Problema actual
+## Problema observado en la auditoría inicial (2026-10-04)
 
 El lookup del matcher está centrado en `op + entity`, selecciona la conexión `main` explícitamente y no aplica filtro de propietario. Debe definirse por separado cómo intervienen la conexión seleccionada y `belongs_to`; no son el mismo scope.
 
@@ -55,3 +55,17 @@ Este trabajo es de seguridad: no debe resolverse suponiendo que `belongs_to` equ
 - `WebhookEvent::scopeContext` es metadato interno confiable, no entrada de usuario ni prueba de autorización. `ApiController` deriva `connection_id` y el modo de owner después de aplicar sus ACL. Los publishers internos deben declarar el owner/scope global de forma explícita; no se infiere ownership desde `actorId`. Una conexión no default debe identificarse expresamente.
 - En `update`, resolver owner es una lectura de scope separada: no incorpora columnas previas a los datos usados por las condiciones y conserva la semántica legacy ya cubierta por pruebas. Para update se usa el owner del estado persistido después de la operación; para delete se lee la fila borrada incluida en el scope del matcher.
 - Las lecturas y escrituras CRUD de subscriptions continúan aplicando el scope de owner existente en `ApiController`; el matcher debe añadir el mismo límite de owner a la selección de deliveries. No se cambia el comportamiento ACL general ni el valor actual `restrict_by_tenant`.
+
+## Implementación y verificación — cierre (2026-10-24)
+
+- El matcher selecciona las subscriptions y las filas previas dentro de `connection_id`. Para `single`, compara `owner_id` con `belongs_to`; para `rows`, cada subscription recibe solo las filas de su owner; `global` solo se usa de forma explícita y no filtra subscriptions por `belongs_to`.
+- El selector real de `DB` falla cerrado ante conexiones desconocidas y cuando falta `connection_id` mientras hay una conexión no predeterminada activa. Al terminar, restaura la conexión previa; si no había una activa y seleccionó una no predeterminada, deja seleccionada la conexión default.
+- `ApiController` construye el contexto después de sus controles ACL y aplica los controles CRUD existentes de propietario. El publisher interno sigue siendo responsable de autorizar su caller y de construir contexto desde datos confiables; `actorId` no reemplaza al owner.
+- No se agregó una columna ni una migración para el scope: usa los alias configurados y `belongs_to` ya existentes.
+- Las pruebas cubren owners distintos con el mismo evento, separación de filas de `list`, fallos cerrados y el selector de `DB` con configuración en memoria. `php vendor/bin/phpunit --no-coverage unit-tests/webhooks/WebhookPublisherTest.php unit-tests/webhooks/WebhookEndpointPolicyTest.php` pasó con 17 tests y 87 assertions (2026-10-24). Esta verificación no abre PDO ni lee subscriptions reales.
+- La guía canónica `docs/api/webhooks.md` y su página derivada describen CRUD, publicación interna y CRUD, matching/condiciones, scope, payload y firma, política del callback, límites del transporte y ausencia actual de cola/reintentos/replay.
+
+### Límites de verificación
+
+- La suite focalizada usa datos en memoria/fixtures; no se probó dispatch con una base de datos real ni se llamó a un callback HTTP real.
+- La entrega sigue siendo síncrona y no tiene outbox, reintentos automáticos, historial persistido ni replay. La tarjeta `docs/to-do/webhooks-async-delivery-reliability.md` trata ese trabajo separado.

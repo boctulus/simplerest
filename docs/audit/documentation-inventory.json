@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "generated_on": "2026-10-23",
-  "stage": "post-merge documentation path and link refresh",
-  "scope": "Refreshed the Markdown path set, classifications, and inline local-link references after the Composer package documentation and task proposal were added and the audit continuation moved.",
+  "generated_on": "2026-10-24",
+  "stage": "post-webhook scope isolation task completion",
+  "scope": "Refreshed the completed webhook task-card path and reconciled the current Markdown set, including an existing unregistered issue note.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
   "inline_markdown_links_seen": 779,
   "counts": {
-    "markdown_scanned": 208,
+    "markdown_scanned": 209,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
     "local_markdown_links": 401,
@@ -14,7 +14,7 @@
     "classifications": {
       "needs-review": 11,
       "canonical": 19,
-      "internal/audit": 79,
+      "internal/audit": 80,
       "legacy": 99
     }
   },
@@ -24,7 +24,7 @@
     "docs/to-do/done/webhooks-callback-security.md",
     "docs/to-do/done/webhooks-decouple-dispatcher.md",
     "docs/to-do/webhooks-async-delivery-reliability.md",
-    "docs/to-do/in-progress/webhooks-scope-isolation.md"
+    "docs/to-do/done/webhooks-scope-isolation.md"
   ],
   "documents": [
     {
@@ -4156,6 +4156,13 @@
       "outgoing_markdown_refs": []
     },
     {
+      "path": "docs/issues/microcore-pack-cli-codex-review-2026-10-23.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
       "path": "docs/issues/pgsql-compatibility.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
@@ -4396,6 +4403,13 @@
       "outgoing_markdown_refs": []
     },
     {
+      "path": "docs/to-do/done/webhooks-scope-isolation.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
       "path": "docs/to-do/env-credential-branch-commit-audit.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
@@ -4416,13 +4430,6 @@
     },
     {
       "path": "docs/to-do/in-progress/documentation-audit-continuation.md",
-      "classification": "internal/audit",
-      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
-      "outgoing_markdown_refs": []
-    },
-    {
-      "path": "docs/to-do/in-progress/webhooks-scope-isolation.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [],

@@ -3,6 +3,8 @@
 namespace Boctulus\Simplerest\tests;
 
 use Boctulus\Simplerest\Core\Interfaces\IWebhookTransport;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\WebhookDeliveryDispatcher;
 use Boctulus\Simplerest\Core\Libs\WebhookEvent;
 use Boctulus\Simplerest\Core\Libs\WebhookPublisher;
@@ -78,6 +80,33 @@ final class ConnectionScopedInMemoryWebhookSubscriptionMatcher extends WebhookSu
     {
         return array_values(array_filter(
             $this->subscriptionsByConnection[$this->selectedConnectionId] ?? [],
+            fn (array $subscription): bool =>
+                $subscription['op'] === $event->getEventType()
+                && $subscription['entity'] === $event->getEntity()
+        ));
+    }
+
+    protected function loadEntityData(WebhookEvent $event)
+    {
+        return null;
+    }
+}
+
+final class ConfiguredConnectionWebhookSubscriptionMatcher extends WebhookSubscriptionMatcher
+{
+    public array $connectionsRead = [];
+
+    public function __construct(private array $subscriptionsByConnection)
+    {
+    }
+
+    protected function loadSubscriptions(WebhookEvent $event): iterable
+    {
+        $connectionId = DB::getCurrentConnectionId();
+        $this->connectionsRead[] = $connectionId;
+
+        return array_values(array_filter(
+            $this->subscriptionsByConnection[$connectionId] ?? [],
             fn (array $subscription): bool =>
                 $subscription['op'] === $event->getEventType()
                 && $subscription['entity'] === $event->getEntity()
@@ -484,6 +513,110 @@ final class WebhookPublisherTest extends TestCase
 
         $this->assertSame([], $unresolved);
         $this->assertSame([], $unknownConnection);
+    }
+
+    public function test_real_connection_selector_scopes_and_restores_configured_connections(): void
+    {
+        $configData = new \ReflectionProperty(Config::class, 'data');
+        $currentConnection = new \ReflectionProperty(DB::class, 'current_id_conn');
+        $previousConfig = $configData->getValue();
+        $previousConnection = $currentConnection->getValue();
+
+        $configData->setValue(null, [
+            'db_connection_default' => 'main',
+            'db_connections' => [
+                'main' => [],
+                'tenant-a' => [],
+                'tenant-b' => [],
+            ],
+        ]);
+
+        try {
+            $currentConnection->setValue(null, 'tenant-b');
+            $matcher = new ConfiguredConnectionWebhookSubscriptionMatcher([
+                'tenant-a' => [
+                    [
+                        'id' => 51,
+                        'op' => 'payment.refunded',
+                        'entity' => 'payments',
+                        'belongs_to' => 12,
+                        'callback' => 'https://callback.test/tenant-a-owner-12',
+                    ],
+                    [
+                        'id' => 52,
+                        'op' => 'payment.refunded',
+                        'entity' => 'payments',
+                        'belongs_to' => 13,
+                        'callback' => 'https://callback.test/tenant-a-owner-13',
+                    ],
+                ],
+                'tenant-b' => [[
+                    'id' => 53,
+                    'op' => 'payment.refunded',
+                    'entity' => 'payments',
+                    'belongs_to' => 12,
+                    'callback' => 'https://callback.test/tenant-b-owner-12',
+                ]],
+            ]);
+
+            $event = new WebhookEvent(
+                'payment.refunded',
+                'payments',
+                ['amount' => 125],
+                'payment-42',
+                8,
+                [
+                    'connection_id' => 'tenant-a',
+                    'owner_scope' => 'single',
+                    'owner_field' => 'belongs_to',
+                    'owner_id' => 12,
+                ]
+            );
+
+            $matches = iterator_to_array($matcher->findMatches($event));
+
+            $this->assertSame([51], array_column(array_column($matches, 'subscription'), 'id'));
+            $this->assertSame(['tenant-a'], $matcher->connectionsRead);
+            $this->assertSame('tenant-b', DB::getCurrentConnectionId());
+
+            $missingConnection = iterator_to_array($matcher->findMatches(new WebhookEvent(
+                'payment.refunded',
+                'payments',
+                ['amount' => 125],
+                'payment-43',
+                8,
+                ['owner_scope' => 'global']
+            )));
+
+            $this->assertSame([], $missingConnection);
+            $this->assertSame(['tenant-a'], $matcher->connectionsRead);
+            $this->assertSame('tenant-b', DB::getCurrentConnectionId());
+
+            $unknownConnection = iterator_to_array($matcher->findMatches(new WebhookEvent(
+                'payment.refunded',
+                'payments',
+                ['amount' => 125],
+                'payment-44',
+                8,
+                [
+                    'connection_id' => 'tenant-missing',
+                    'owner_scope' => 'global',
+                ]
+            )));
+
+            $this->assertSame([], $unknownConnection);
+            $this->assertSame(['tenant-a'], $matcher->connectionsRead);
+            $this->assertSame('tenant-b', DB::getCurrentConnectionId());
+
+            $currentConnection->setValue(null, null);
+            iterator_to_array($matcher->findMatches($event));
+
+            $this->assertSame('main', DB::getCurrentConnectionId());
+            $this->assertSame(['tenant-a', 'tenant-a'], $matcher->connectionsRead);
+        } finally {
+            $currentConnection->setValue(null, $previousConnection);
+            $configData->setValue(null, $previousConfig);
+        }
     }
 
     public function test_dispatcher_skips_subscriptions_without_a_valid_server_generated_secret(): void

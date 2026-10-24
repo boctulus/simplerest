@@ -120,17 +120,17 @@ Las condiciones no seleccionan filas de `list`: una suscripción `list` con `con
 
 ### Scope de conexión y propietario
 
-El scope ya se aplica en el matcher. `connection_id` selecciona la conexión activa para leer suscripciones y datos de la entidad, y se restaura la conexión previa al terminar. Es un alias configurado de conexión; no es una columna `tenant_id`. Si un publisher interno omite `connection_id`, el matcher solo puede usar la conexión predeterminada cuando no hay una conexión no predeterminada activa. Conviene incluirla siempre.
+El scope ya se aplica en el matcher. `connection_id` selecciona la conexión activa para leer suscripciones y datos de la entidad. Es un alias configurado que puede representar una base o un prefijo; no es una columna `tenant_id`. Si el matcher entra con una conexión activa, la restaura al terminar. Si no había una conexión activa y seleccionó una no predeterminada, deja seleccionada la predeterminada al finalizar. Si un publisher interno omite `connection_id`, el matcher solo puede usar la conexión predeterminada cuando no hay una conexión no predeterminada activa. Conviene incluirla siempre.
 
 `owner_scope` también es explícito y no se deriva de `actorId`:
 
 - `single` requiere `owner_field` y `owner_id`; solo coincide con suscripciones cuyo `belongs_to` sea el mismo propietario. Un owner null explícito solo coincide con suscripciones cuyo `belongs_to` también sea null.
 - `rows` solo es válido para `list`; cada fila debe incluir `owner_field` y cada suscripción recibe únicamente las filas que coinciden con su `belongs_to`.
-- `global` se usa para entidades sin campo owner y permite coincidencias de `op` y `entity` dentro de la misma conexión.
+- `global` se usa para entidades sin campo owner y permite coincidencias de `op` y `entity` dentro de la misma conexión, sin filtrar subscriptions por `belongs_to`.
 
 `ApiController` construye este contexto después de aplicar sus controles de ACL. En operaciones singulares deriva el owner del payload o de la fila persistida; en `list` solicita el filtrado por filas. Un owner sin resolver, un modo inválido, una conexión desconocida o un `list` sin el campo owner requerido no produce entregas. El publisher interno debe construir el contexto desde datos confiables y después de autorizar la operación; `WebhookPublisher` no autoriza por sí mismo al actor.
 
-Las pruebas focalizadas usan fixtures que modelan conexiones y owners distintos, particionan filas de `list` y comprueban el fallo cerrado. No se ha ejecutado una lectura de suscripciones ni una entrega con una base de datos real.
+No se requiere una migración para el aislamiento: se usan el alias de conexión y `belongs_to` existentes. Las pruebas focalizadas particionan filas de `list`, cubren owners distintos y ejercitan el selector real de conexiones de `DB` con configuración en memoria; comprueban el fallo cerrado y la restauración del estado de conexión. No abren conexiones ni leen subscriptions desde una base de datos real.
 
 ## Callbacks y secretos
 
@@ -200,7 +200,7 @@ El publisher realiza la entrega de forma síncrona mediante `WebhookHttpTranspor
 
 Las suscripciones se entregan en secuencia dentro del mismo flujo que publica el evento. Por eso la latencia puede crecer con el número de callbacks; cada petición puede esperar hasta 10 s. No hay cola, reintentos automáticos, registro persistido por intento ni replay manual en esta ruta. Aunque el transporte produce un resultado interno, el dispatcher no lo expone ni lo guarda.
 
-Las pruebas focalizadas cubren matching, scope de conexión/owner con fixtures, condiciones legacy de `update`, firma, política IP/DNS y opciones de transporte con fixtures. No se ha ejecutado una lectura de suscripciones respaldada por base de datos ni una llamada HTTP a un callback real.
+Las pruebas focalizadas cubren matching, aislamiento de conexión/owner (incluido el selector de `DB` con configuración en memoria), condiciones legacy de `update`, firma, política IP/DNS y opciones de transporte con fixtures. No se ha ejecutado una lectura de suscripciones respaldada por una base de datos real ni una llamada HTTP a un callback real.
 
 ## Diferencia respecto de EventBus
 
