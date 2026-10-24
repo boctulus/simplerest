@@ -17,7 +17,7 @@ export default defineConfig({
             text: 'Guías',
             items: [
               { text: 'Arquitectura', link: '/architecture' },
-              { text: 'Ciclo de request', link: '/core/request-lifecycle' },
+              { text: 'Recorrido HTTP de una petición', link: '/core/request-lifecycle' },
               { text: 'Request y Response', link: '/core/request-response' },
               { text: 'Routing HTTP (WebRouter)', link: '/core/web-routing' },
               { text: 'Microcore y paquetes', link: '/core/microcore' },
@@ -25,6 +25,10 @@ export default defineConfig({
               { text: 'Base de datos', link: '/database' },
               { text: 'Query Builder', link: '/database/query-builder' },
               { text: 'Model y ModelRecord', link: '/database/model' },
+              { text: 'Relaciones y subrecursos', link: '/database/relations' },
+              { text: 'Consultas SQL raw', link: '/database/raw-queries' },
+              { text: 'Transacciones', link: '/database/transactions' },
+              { text: 'Compatibilidad de drivers', link: '/database/driver-compatibility' },
               { text: 'Constructor DDL de esquemas', link: '/database/schema-builder' },
               { text: 'Ciclo de migraciones', link: '/database/migrations' }
             ]
@@ -80,7 +84,7 @@ export default defineConfig({
             text: 'Fundamentos',
             items: [
               { text: 'Arquitectura', link: '/architecture' },
-              { text: 'Ciclo de request', link: '/core/request-lifecycle' },
+              { text: 'Recorrido HTTP de una petición', link: '/core/request-lifecycle' },
               { text: 'Request y Response', link: '/core/request-response' },
               { text: 'Routing HTTP (WebRouter)', link: '/core/web-routing' },
               { text: 'Microcore y paquetes', link: '/core/microcore' },
@@ -114,6 +118,10 @@ export default defineConfig({
               { text: 'Base de datos', link: '/database' },
               { text: 'Query Builder', link: '/database/query-builder' },
               { text: 'Model y ModelRecord', link: '/database/model' },
+              { text: 'Relaciones y subrecursos', link: '/database/relations' },
+              { text: 'Consultas SQL raw', link: '/database/raw-queries' },
+              { text: 'Transacciones', link: '/database/transactions' },
+              { text: 'Compatibilidad de drivers', link: '/database/driver-compatibility' },
               { text: 'Constructor DDL de esquemas', link: '/database/schema-builder' },
               { text: 'Ciclo de migraciones', link: '/database/migrations' },
               { text: 'HTTP/API', link: '/api' },

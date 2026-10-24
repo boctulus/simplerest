@@ -3,7 +3,7 @@ title: Query Builder
 source:
   - docs/database/query-builder.md
   - docs/audit/README.md
-source_revision: 683d89509c036f2495e7ba22b2b8a4128273f95c
+source_revision: e0a3dc3f5843be258eed7d5cc1edec13031d5f87
 status: partial
 ---
 
@@ -29,7 +29,9 @@ Esta referencia describe los caminos actuales del código y los separa de result
 
 ## Proyección, joins y límites
 
-La clase ofrece `select()`, `addSelect()`, `selectRaw()`, `distinct()`, joins `join`, `leftJoin`, `rightJoin`, `crossJoin`, `naturalJoin` y `joinRaw`; `joinTo()`/`connectTo()` dependen de metadatos de relaciones. Para ordenar están `orderBy()`, variantes asc/desc, `orderByRaw()` y `reorder()`. `limit()`/`take()`, `offset()`/`skip()` y `paginate()` fijan ventanas. `groupBy()`, `having()`, `union()` y `unionAll()` están declarados; su compatibilidad por dialecto no se probó.
+La clase ofrece `select()`, `addSelect()`, `selectRaw()`, `distinct()`, joins `join`, `leftJoin`, `rightJoin`, `crossJoin`, `naturalJoin` y `joinRaw`; `joinTo()`/`connectTo()` dependen de metadatos de relaciones. Para ordenar están `orderBy()`, variantes asc/desc, `orderByRaw()` y `reorder()`. `limit()`/`take()` y `offset()`/`skip()` fijan límites. `paginate($page, $page_size)` calcula `(tamaño * página) - tamaño`, toma `paginator.default_limit` o 10 si falta un tamaño, y sólo configura el límite y el offset. No calcula el total de filas ni retorna metadatos de página. Las aserciones de fuente inspeccionadas fijan offset 0 para página 1 y offset 20 para página 3; no se ejecutaron.
+
+`groupBy()`, `having()`, `union()` y `unionAll()` están declarados; su compatibilidad por dialecto no se probó. Para joins inferidos y subrecursos, consulta [Relaciones, joins y subrecursos](/database/relations).
 
 En esta versión, los nombres cronológicos difieren del uso esperado: `oldest()` produce orden descendente por `created_at`, `latest()` delega a `oldest()` y `newest()` produce ascendente. Tests de fuente afirman dos formas SQL; no se ejecutaron.
 
@@ -40,11 +42,11 @@ En esta versión, los nombres cronológicos difieren del uso esperado: `oldest()
 - `find()` añade la condición y devuelve el builder. `findOr()` y `findOrFail()` verifican existencia antes de usar el fallback o lanzar.
 - `value()` obtiene un escalar; `pluck()` selecciona una columna; `assoc()`, `asObject()` y `column()` cambian el fetch mode.
 - `get(..., $pristine = true)` y `first(..., $pristine = true)` omiten mutators/transformers de salida.
-- `count()`, `avg()`, `sum()`, `min()` y `max()` usan `aggregate()`. La implementación actual castea el resultado obtenido a entero; no se afirma contrato para agregados agrupados.
+- `count()`, `avg()`, `sum()`, `min()` y `max()` usan `aggregate()`. La ruta sin `groupBy()` castea el escalar a entero, incluso `AVG` y `SUM`, lo que puede perder decimales. La ruta agrupada castea el resultado de `fetchAll()` a entero, así que no ofrece un contrato de colección. Ningún agregado se ejecutó contra una base real.
 
 ## Escrituras y borrados
 
-`create()`, `insert()`, `rawInsert()`, `bulkInsert()`, `createOrIgnore()`, `createOrUpdate()`, `insertOrIgnore()` e `insertOrUpdate()` siguen caminos distintos de hooks y transacción. No se ejecutaron efectos de escritura.
+`create()`, `insert()`, `rawInsert()`, `bulkInsert()`, `createOrIgnore()`, `createOrUpdate()`, `insertOrIgnore()` e `insertOrUpdate()` siguen caminos distintos de hooks y transacción. No se ejecutaron efectos de escritura. La [referencia de SQL raw](/database/raw-queries) cubre la fachada estática `DB`; la [referencia de transacciones](/database/transactions) cubre límites y rollback.
 
 `update()` requiere datos no vacíos, conexión y un `WHERE` no vacío; después aplica configuración de mutación, fillables, validación y hooks. `delete()` puede marcar el registro como borrado lógico si el modelo lo configura; `forceDelete()` selecciona borrado físico y exige condición. `truncate()` no tiene filtro por filas.
 

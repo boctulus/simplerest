@@ -1,5 +1,5 @@
 ---
-title: Ciclo de request
+title: Recorrido HTTP de una petición
 source:
   - docs/core/README.md
   - docs/core/request-lifecycle.md

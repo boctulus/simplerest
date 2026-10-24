@@ -5,22 +5,26 @@ source:
   - docs/database/connections.md
   - docs/database/query-builder.md
   - docs/database/model.md
+  - docs/database/relations.md
+  - docs/database/raw-queries.md
+  - docs/database/transactions.md
+  - docs/database/driver-compatibility.md
   - docs/database/schemas.md
   - docs/database/schema-builder.md
   - docs/database/migrations.md
-source_revision: 0d6dfdd0feb07531af7a8ca327a58c291c6a2206
+source_revision: e0a3dc3f5843be258eed7d5cc1edec13031d5f87
 status: partial
 ---
 
 # Base de datos
 
-Esta sección reúne selección de conexiones, consultas, modelos, descriptores, DDL y migraciones. El código se trazó en fuente; no se ejecutó una consulta ni se probó conectividad o compatibilidad por motor. Las referencias separadas describen el [Query Builder](/database/query-builder), [Model/ModelRecord](/database/model), el [constructor DDL](/database/schema-builder) y el [ciclo de migraciones](/database/migrations).
+Esta sección reúne conexiones, consultas, modelos, relaciones, SQL raw, transacciones, descriptores, DDL y migraciones. Los contratos descritos se trazaron en fuente; no se ejecutaron consultas, escrituras, transacciones, DDL ni migraciones. Las guías separadas cubren [Query Builder](/database/query-builder), [Model/ModelRecord](/database/model), [relaciones y subrecursos](/database/relations), [SQL raw](/database/raw-queries), [transacciones](/database/transactions), [compatibilidad por driver](/database/driver-compatibility), [constructor DDL](/database/schema-builder) y [migraciones](/database/migrations).
 
 ## Conexiones
 
 La configuración combina `config/config.php` con `config/databases.php` y define conexiones junto con un identificador predeterminado. Cada entrada requiere `driver` y `db_name`; también puede definir host, puerto, usuario, contraseña, opciones PDO y charset.
 
-`DB::setConnection($id)` selecciona una conexión configurada, pero no abre PDO. `DB::getConnection($id = null)` devuelve el handle cacheado o crea uno de forma diferida. Sin identificador actual, elige la única conexión configurada o el valor por defecto; con varias conexiones y sin default lanza una excepción. El código contiene ramas PDO para `mysql`, `sqlite`, `pgsql` y `sqlsrv`, con aliases `mariadb`, `postgres` y `mssql`. Esto describe ramas de fuente, no extensiones instaladas ni compatibilidad de consultas.
+`DB::setConnection($id)` selecciona una conexión configurada, pero no abre PDO. `DB::getConnection($id = null)` devuelve el handle cacheado o crea uno de forma diferida. Sin identificador actual, elige la única conexión configurada o el valor por defecto; con varias conexiones y sin default lanza una excepción. La construcción PDO tiene ramas para `mysql`, `sqlite`, `pgsql` y `sqlsrv`, y acepta los aliases `mariadb`, `postgres` y `mssql`. `DB::driver()` devuelve el valor configurado original, que algunas ramas comparan literalmente; los aliases no garantizan que todas las funciones por driver los reconozcan. Esto describe código, no extensiones instaladas ni compatibilidad global.
 
 Este ejemplo representa la forma de la API; no se ejecutó contra una base configurada:
 
@@ -29,7 +33,7 @@ DB::setConnection('main');
 $pdo = DB::getConnection();
 ```
 
-El parámetro `$tenant_id` de ciertos métodos `DB` se usa como identificador de conexión configurada. Eso no define aislamiento, propiedad ni un esquema por tenant. Además, `withConnection()` y `withDefaultConnection()` contienen retornos en `finally`, que suprimen una excepción lanzada por el callback.
+El parámetro `$tenant_id` de ciertos métodos `DB` se usa como identificador de conexión configurada. Eso no define aislamiento, propiedad ni un esquema por tenant. `withConnection()` y `withDefaultConnection()` retornan el resultado desde `try` y restauran una conexión previa en `finally` cuando existía; el bloque `finally` no retorna un valor. La propagación de excepciones no se volvió a ejecutar en esta revisión y un error durante la restauración podría afectar el resultado. Una transacción activa también impide cambiar o cerrar su conexión; consulta [transacciones](/database/transactions) y [límites por driver](/database/driver-compatibility).
 
 ## Query Builder
 
@@ -43,9 +47,19 @@ El parámetro `$tenant_id` de ciertos métodos `DB` se usa como identificador de
 
 `dontExec()` evita preparar y ejecutar la sentencia, pero no vuelve offline el camino estándar: `DB::table()` conecta por defecto y el binding puede conectar antes de consultar `$exec`. Cuando `first()` no encuentra fila, la fuente devuelve `[]`, no `null`; ese caso no se probó con una base real.
 
+`paginate()` fija `LIMIT` y el offset `(tamaño * página) - tamaño`; usa `paginator.default_limit` o 10 si no se pasa un tamaño. No calcula total de filas ni devuelve metadatos de páginas. `count()`, `avg()`, `sum()`, `min()` y `max()` pasan por una implementación que castea a entero el escalar y también el `fetchAll()` de la ruta agrupada; no se debe asumir precisión decimal ni una colección agrupada.
+
 ::: warning Los modos preview/simulate no garantizan ausencia de escrituras
 La fuente comprueba algunos modos en `create()` y `executeInsert()`, pero `update()` y `delete()` ejecutan con `$exec` activo sin comprobar el modo seleccionado. No trates `preview()` o `simulate()` como una garantía global de no escritura.
 :::
+
+## Relaciones, transacciones y SQL raw
+
+`join()` puede inferir relaciones desde el esquema; `joinTo()` delega a esa ruta. `connectTo()` usa un cargador de subrecursos con subconsultas y agregados JSON, no una unión plana. Los pivotes pueden depender de un archivo generado y de un comando de escaneo. La [guía de relaciones](/database/relations) describe el cache incompleto y los límites del resultado; no se ejecutaron consultas relacionadas.
+
+`DB::transaction()` administra la conexión seleccionada y usa savepoints sólo para ciertos valores exactos del driver. Un rollback anidado puede revertir toda la transacción si esa ruta no se activa. Consulta [transacciones](/database/transactions); su fuente y tests no se ejecutaron.
+
+La [guía de SQL raw](/database/raw-queries) detalla el binding posicional, prefijos de tablas, métodos de escritura y operaciones sin filtro. `safeSelect()` no sanitiza SQL y su delegación actual coloca el argumento de statement en la posición de prefijo.
 
 ## Model y ModelRecord
 
@@ -65,4 +79,4 @@ El generador produce una clase PHP que implementa `ISchema`; su `get()` devuelve
 
 ## Límites actuales
 
-Escrituras, transacciones reales, consultas raw, paginación, agregados, carga de relaciones, joins automáticos, ejecución de migraciones, aislamiento por tenant y compatibilidad por driver siguen sin verificarse en una base de datos. El constructor DDL y el ciclo de migraciones están trazados en fuente, pero no se ejecutaron. Los tests de consulta consultados no se ejecutaron; `composer test` y la suite declarada en `phpunit.xml` incluyen `unit-tests/`, pero esto no aporta un resultado de ejecución. Con `debug` activo, una excepción de conexión puede registrar la entrada de configuración seleccionada con valores de credenciales; los secretos no deben exponerse en logs compartidos.
+Escrituras, transacciones, consultas raw, paginación, agregados, relaciones, joins, migraciones y DDL siguen sin verificarse mediante ejecución de base de datos. Las guías explican rutas de fuente y hallazgos concretos, no una matriz completa de compatibilidad. Los tests consultados no se ejecutaron; `composer test` y la suite declarada en `phpunit.xml` incluyen `unit-tests/`, pero esto no aporta un resultado de ejecución. Con `debug` activo, una excepción de conexión puede registrar la entrada de configuración seleccionada con valores de credenciales; no expongas secretos en logs compartidos.
