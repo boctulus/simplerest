@@ -2,13 +2,13 @@
 
 Este inventario refleja el checkout del 2026-10-24: hay 23 directorios con `composer.json` bajo `packages/boctulus/` y un directorio adicional, `simplerest-integrations`, que sólo conserva un aviso de migración y no es instalable por Composer. El paquete raíz `boctulus/simplerest` se documenta por separado.
 
-Se inspeccionaron los manifiestos, README y puntos de entrada PHP. Los 23 manifiestos declaran licencia MIT salvo los dos paquetes ACL, que declaran `proprietary`. Esta lista describe el código local y sus dependencias declaradas; no demuestra registro en Packagist, que un repositorio o tag siga disponible, instalación en consumidor, compatibilidad con servicios externos ni una promesa de soporte. Los resultados de publicación fechados están en el [proceso de release](../architecture/composer-release-process.md).
+Se inspeccionaron los manifiestos, README y puntos de entrada PHP. Los 23 manifiestos declaran licencia MIT salvo los dos paquetes ACL, que declaran `proprietary`. Ni el manifiesto raíz ni los 23 manifiestos locales declaran metadatos de soporte o mantenimiento; por eso el estado de soporte de cada paquete se clasifica como **no declarado en este checkout**. Esta lista describe el código local y sus dependencias declaradas; no demuestra registro en Packagist, que un repositorio o tag siga disponible, instalación en consumidor ni compatibilidad con servicios externos. Los resultados de publicación fechados están en el [proceso de release](../architecture/composer-release-process.md).
 
 ## Paquetes Composer
 
 Todas las versiones locales declaran PHP `>=8.1,<8.5`. Salvo las excepciones indicadas, los paquetes que dependen del core declaran `boctulus/simplerest ^2.0 || ^3.0`. La columna de dependencias enumera requisitos directos externos al core; las dependencias sugeridas u opcionales se aclaran en su guía.
 
-| Área | Composer | API o responsabilidad | Dependencias declaradas | Estado y límite documentado |
+| Área | Composer | API o responsabilidad | Dependencias declaradas | Estado local y límite documentado |
 | --- | --- | --- | --- | --- |
 | Clientes | `boctulus/simplerest-api-clients` | Google Drive, Hugging Face, OneSignal, WooCommerce y adaptadores heredados para WordPress, Pastebin y SendinBlue. | `ext-curl`, `simplerest-mail ^1.0`; sugiere Google API Client y Guzzle. | Llama servicios externos, puede descargar o publicar datos y requiere credenciales o SDK opcionales. Véase [API Clients](../integrations/api-clients.md). |
 | Datos de prueba | `boctulus/simplerest-az-seeder` | `AZSeederService`: crea productos asociados a un usuario de prueba y expone `cleanup()` y `cleanupAll()`. | Ninguna adicional al core. Sólo acepta core `^2.0`. | Herramienta de soporte/desarrollo; escribe y borra filas. `cleanupAll()` borra productos del usuario de prueba encontrado en `main`. No usar contra datos reales. Véase [seeder AZ](test-data-seeder.md). |

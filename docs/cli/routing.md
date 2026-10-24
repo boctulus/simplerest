@@ -20,7 +20,7 @@ CliRouter::group('tools', function () {
 });
 ```
 
-El registro corresponde al código fuente; no se ejecutó `php com`. `group()` combina prefijos con `:` y admite anidamiento. Para el grupo anterior, el nombre registrado queda `tools:version`.
+El registro y los callbacks corresponden al código fuente; en esta revisión sólo se ejecutaron pantallas de ayuda de `php com`, sin invocar ninguna ruta registrada en `CliRouter`. `group()` combina prefijos con `:` y admite anidamiento. Para el grupo anterior, el nombre registrado queda `tools:version`.
 
 ## Resolución y argumentos
 

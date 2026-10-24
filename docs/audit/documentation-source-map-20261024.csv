@@ -1,0 +1,370 @@
+path,tree,kind,classification,owner_doc,mapping_basis
+src/framework/Api/ApiController.php,src/framework,php-file,public-core,docs/api/resource-controllers.md,Core source family Api/ApiController.php -> docs/api/resource-controllers.md
+src/framework/Api/Collections.php,src/framework,php-file,public-core,docs/api/collections.md,Core source family Api/Collections.php -> docs/api/collections.md
+src/framework/Api/Download.php,src/framework,php-file,public-core,docs/api/file-endpoints.md,Core source family Api/Download.php -> docs/api/file-endpoints.md
+src/framework/Api/Files.php,src/framework,php-file,public-core,docs/api/file-endpoints.md,Core source family Api/Files.php -> docs/api/file-endpoints.md
+src/framework/Api/MySelf.php,src/framework,php-file,public-core,docs/security/authentication.md,Core source family Api/MySelf.php -> docs/security/authentication.md
+src/framework/Api/ResourceController.php,src/framework,php-file,public-core,docs/api/resource-controllers.md,Core source family Api/ResourceController.php -> docs/api/resource-controllers.md
+src/framework/Api/TrashCan.php,src/framework,php-file,public-core,docs/api/trashcan.md,Core source family Api/TrashCan.php -> docs/api/trashcan.md
+src/framework/CliRouter.php,src/framework,php-file,public-core,docs/cli/routing.md,Core source family CliRouter.php -> docs/cli/routing.md
+src/framework/Collections.php,src/framework,php-file,public-core,docs/api/collections.md,Core source family Collections.php -> docs/api/collections.md
+src/framework/Commands/BaseCommand.php,src/framework,php-file,public-core,docs/cli/commands.md,Core source family Commands/BaseCommand.php -> docs/cli/commands.md
+src/framework/Constants.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Constants.php -> docs/reference/README.md
+src/framework/Container.php,src/framework,php-file,public-core,docs/core/dependency-container.md,Core source family Container.php -> docs/core/dependency-container.md
+src/framework/Controllers/ConsoleController.php,src/framework,php-file,public-core,docs/core/handlers.md,Core source family Controllers/ConsoleController.php -> docs/core/handlers.md
+src/framework/Controllers/Controller.php,src/framework,php-file,public-core,docs/core/handlers.md,Core source family Controllers/Controller.php -> docs/core/handlers.md
+src/framework/Controllers/WebController.php,src/framework,php-file,public-core,docs/core/handlers.md,Core source family Controllers/WebController.php -> docs/core/handlers.md
+src/framework/Exceptions/BaseException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/BaseException.php -> docs/core/error-handling.md
+src/framework/Exceptions/ColumnTableNotFoundException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/ColumnTableNotFoundException.php -> docs/core/error-handling.md
+src/framework/Exceptions/EmptySchemaException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/EmptySchemaException.php -> docs/core/error-handling.md
+src/framework/Exceptions/FileNotFoundException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/FileNotFoundException.php -> docs/core/error-handling.md
+src/framework/Exceptions/InvalidRequestBodyException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/InvalidRequestBodyException.php -> docs/core/error-handling.md
+src/framework/Exceptions/InvalidValidationException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/InvalidValidationException.php -> docs/core/error-handling.md
+src/framework/Exceptions/MiddlewareNotFoundException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/MiddlewareNotFoundException.php -> docs/core/error-handling.md
+src/framework/Exceptions/NotFileButDirectoryException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/NotFileButDirectoryException.php -> docs/core/error-handling.md
+src/framework/Exceptions/NotImplementedException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/NotImplementedException.php -> docs/core/error-handling.md
+src/framework/Exceptions/SchemaException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/SchemaException.php -> docs/core/error-handling.md
+src/framework/Exceptions/SqlException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/SqlException.php -> docs/core/error-handling.md
+src/framework/Exceptions/TableAlreadyExistsException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/TableAlreadyExistsException.php -> docs/core/error-handling.md
+src/framework/Exceptions/TableNotFoundException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/TableNotFoundException.php -> docs/core/error-handling.md
+src/framework/Exceptions/UnreadableFileException.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Exceptions/UnreadableFileException.php -> docs/core/error-handling.md
+src/framework/FoldersAclExtension.php,src/framework,php-file,public-core,docs/security/acl.md,Core source family FoldersAclExtension.php -> docs/security/acl.md
+src/framework/FrontController.php,src/framework,php-file,public-core,docs/core/request-lifecycle.md,Core source family FrontController.php -> docs/core/request-lifecycle.md
+src/framework/Handlers/ApiHandler.php,src/framework,php-file,public-core,docs/api/resource-controllers.md,Core source family Handlers/ApiHandler.php -> docs/api/resource-controllers.md
+src/framework/Handlers/AuthHandler.php,src/framework,php-file,public-core,docs/security/authentication.md,Core source family Handlers/AuthHandler.php -> docs/security/authentication.md
+src/framework/Handlers/ErrorHandler.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Handlers/ErrorHandler.php -> docs/core/error-handling.md
+src/framework/Handlers/MiddlewareHandler.php,src/framework,php-file,public-core,docs/core/middleware.md,Core source family Handlers/MiddlewareHandler.php -> docs/core/middleware.md
+src/framework/Handlers/OutputHandler.php,src/framework,php-file,public-core,docs/core/handlers.md,Core source family Handlers/OutputHandler.php -> docs/core/handlers.md
+src/framework/Handlers/RequestHandler.php,src/framework,php-file,public-core,docs/core/handlers.md,Core source family Handlers/RequestHandler.php -> docs/core/handlers.md
+src/framework/Helpers/cache.php,src/framework,php-file,public-core,docs/services/cache.md,Core source family Helpers/cache.php -> docs/services/cache.md
+src/framework/Helpers/config.php,src/framework,php-file,public-core,docs/core/configuration-environment.md,Core source family Helpers/config.php -> docs/core/configuration-environment.md
+src/framework/Helpers/date.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Helpers/date.php -> docs/reference/README.md
+src/framework/Helpers/db.php,src/framework,php-file,public-core,docs/database/model.md,Core source family Helpers/db.php -> docs/database/model.md
+src/framework/Helpers/debug.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Helpers/debug.php -> docs/core/error-handling.md
+src/framework/Helpers/env.php,src/framework,php-file,public-core,docs/core/configuration-environment.md,Core source family Helpers/env.php -> docs/core/configuration-environment.md
+src/framework/Helpers/etc.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Helpers/etc.php -> docs/reference/README.md
+src/framework/Helpers/factories.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Helpers/factories.php -> docs/reference/README.md
+src/framework/Helpers/gdrive.php,src/framework,php-file,public-core,docs/integrations/api-clients.md,Core source family Helpers/gdrive.php -> docs/integrations/api-clients.md
+src/framework/Helpers/html.php,src/framework,php-file,public-core,docs/core/content-conversion.md,Core source family Helpers/html.php -> docs/core/content-conversion.md
+src/framework/Helpers/http.php,src/framework,php-file,public-core,docs/core/web-routing.md,Core source family Helpers/http.php -> docs/core/web-routing.md
+src/framework/Helpers/loggers.php,src/framework,php-file,public-core,docs/core/logging.md,Core source family Helpers/loggers.php -> docs/core/logging.md
+src/framework/Helpers/options.php,src/framework,php-file,public-core,docs/core/configuration-environment.md,Core source family Helpers/options.php -> docs/core/configuration-environment.md
+src/framework/Helpers/package.php,src/framework,php-file,public-core,docs/packages/catalog.md,Core source family Helpers/package.php -> docs/packages/catalog.md
+src/framework/Helpers/polyfill.php,src/framework,php-file,compatibility-polyfill,docs/reference/README.md,Core source family Helpers/polyfill.php -> docs/reference/README.md
+src/framework/Helpers/system.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Helpers/system.php -> docs/reference/README.md
+src/framework/Helpers/url.php,src/framework,php-file,public-core,docs/core/web-routing.md,Core source family Helpers/url.php -> docs/core/web-routing.md
+src/framework/Helpers/view.php,src/framework,php-file,public-core,docs/services/views.md,Core source family Helpers/view.php -> docs/services/views.md
+src/framework/Helpers/wp_dummies.php,src/framework,php-file,legacy-compatibility-shim,docs/packages/legacy-helpers.md,Core source family Helpers/wp_dummies.php -> docs/packages/legacy-helpers.md
+src/framework/Interfaces/Arrayable.php,src/framework,php-file,public-core-contract,docs/reference/README.md,Core source family Interfaces/Arrayable.php -> docs/reference/README.md
+src/framework/Interfaces/IAcl.php,src/framework,php-file,public-core-contract,docs/security/authorization-engine.md,Core source family Interfaces/IAcl.php -> docs/security/authorization-engine.md
+src/framework/Interfaces/IAclBuilder.php,src/framework,php-file,public-core-contract,docs/security/authorization-engine.md,Core source family Interfaces/IAclBuilder.php -> docs/security/authorization-engine.md
+src/framework/Interfaces/IAclPolicy.php,src/framework,php-file,public-core-contract,docs/security/authorization-engine.md,Core source family Interfaces/IAclPolicy.php -> docs/security/authorization-engine.md
+src/framework/Interfaces/IAclRuntime.php,src/framework,php-file,public-core-contract,docs/security/authorization-engine.md,Core source family Interfaces/IAclRuntime.php -> docs/security/authorization-engine.md
+src/framework/Interfaces/IApi.php,src/framework,php-file,public-core-contract,docs/api/resource-controllers.md,Core source family Interfaces/IApi.php -> docs/api/resource-controllers.md
+src/framework/Interfaces/IAuth.php,src/framework,php-file,public-core-contract,docs/security/authentication.md,Core source family Interfaces/IAuth.php -> docs/security/authentication.md
+src/framework/Interfaces/ICache.php,src/framework,php-file,public-core-contract,docs/services/cache.md,Core source family Interfaces/ICache.php -> docs/services/cache.md
+src/framework/Interfaces/ICommand.php,src/framework,php-file,public-core-contract,docs/cli/commands.md,Core source family Interfaces/ICommand.php -> docs/cli/commands.md
+src/framework/Interfaces/ICountable.php,src/framework,php-file,public-core-contract,docs/reference/README.md,Core source family Interfaces/ICountable.php -> docs/reference/README.md
+src/framework/Interfaces/IDbAccess.php,src/framework,php-file,public-core-contract,docs/database/connections.md,Core source family Interfaces/IDbAccess.php -> docs/database/connections.md
+src/framework/Interfaces/IMemoization.php,src/framework,php-file,public-core-contract,docs/services/cache.md,Core source family Interfaces/IMemoization.php -> docs/services/cache.md
+src/framework/Interfaces/IMigration.php,src/framework,php-file,public-core-contract,docs/database/migrations.md,Core source family Interfaces/IMigration.php -> docs/database/migrations.md
+src/framework/Interfaces/IMyArrayAccess.php,src/framework,php-file,public-core-contract,docs/reference/README.md,Core source family Interfaces/IMyArrayAccess.php -> docs/reference/README.md
+src/framework/Interfaces/IObserver.php,src/framework,php-file,public-core-contract,docs/services/event-bus.md,Core source family Interfaces/IObserver.php -> docs/services/event-bus.md
+src/framework/Interfaces/IProcessable.php,src/framework,php-file,public-core-contract,docs/reference/README.md,Core source family Interfaces/IProcessable.php -> docs/reference/README.md
+src/framework/Interfaces/ISchema.php,src/framework,php-file,public-core-contract,docs/database/schemas.md,Core source family Interfaces/ISchema.php -> docs/database/schemas.md
+src/framework/Interfaces/IServiceProvider.php,src/framework,php-file,public-core-contract,docs/core/service-providers.md,Core source family Interfaces/IServiceProvider.php -> docs/core/service-providers.md
+src/framework/Interfaces/ISubResources.php,src/framework,php-file,public-core-contract,docs/database/relations.md,Core source family Interfaces/ISubResources.php -> docs/database/relations.md
+src/framework/Interfaces/ISubject.php,src/framework,php-file,public-core-contract,docs/services/event-bus.md,Core source family Interfaces/ISubject.php -> docs/services/event-bus.md
+src/framework/Interfaces/ITransformer.php,src/framework,php-file,public-core-contract,docs/security/authentication.md,Core source family Interfaces/ITransformer.php -> docs/security/authentication.md
+src/framework/Interfaces/IUpdateBatch.php,src/framework,php-file,public-core-contract,docs/database/query-builder.md,Core source family Interfaces/IUpdateBatch.php -> docs/database/query-builder.md
+src/framework/Interfaces/IValidator.php,src/framework,php-file,public-core-contract,docs/services/validation.md,Core source family Interfaces/IValidator.php -> docs/services/validation.md
+src/framework/Interfaces/IWebhookTransport.php,src/framework,php-file,public-core-contract,docs/api/webhooks.md,Core source family Interfaces/IWebhookTransport.php -> docs/api/webhooks.md
+src/framework/Libs/ApacheWebServer.php,src/framework,php-file,public-core,docs/core/filesystem.md,Core source family Libs/ApacheWebServer.php -> docs/core/filesystem.md
+src/framework/Libs/ApiClient.php,src/framework,php-file,public-core,docs/core/api-client.md,Core source family Libs/ApiClient.php -> docs/core/api-client.md
+src/framework/Libs/Arrays.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Arrays.php -> docs/reference/README.md
+src/framework/Libs/Base64Uploader.php,src/framework,php-file,public-core,docs/core/file-uploads.md,Core source family Libs/Base64Uploader.php -> docs/core/file-uploads.md
+src/framework/Libs/Bytes.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Bytes.php -> docs/reference/README.md
+src/framework/Libs/Cache.php,src/framework,php-file,public-core,docs/services/cache.md,Core source family Libs/Cache.php -> docs/services/cache.md
+src/framework/Libs/Cli.php,src/framework,php-file,public-core,docs/cli/commands.md,Core source family Libs/Cli.php -> docs/cli/commands.md
+src/framework/Libs/CommandRegistry.php,src/framework,php-file,public-core,docs/cli/commands.md,Core source family Libs/CommandRegistry.php -> docs/cli/commands.md
+src/framework/Libs/Config.php,src/framework,php-file,public-core,docs/core/configuration-environment.md,Core source family Libs/Config.php -> docs/core/configuration-environment.md
+src/framework/Libs/Cookie.php,src/framework,php-file,public-core,docs/core/sessions-cookies.md,Core source family Libs/Cookie.php -> docs/core/sessions-cookies.md
+src/framework/Libs/CookieJar.php,src/framework,php-file,public-core,docs/core/sessions-cookies.md,Core source family Libs/CookieJar.php -> docs/core/sessions-cookies.md
+src/framework/Libs/CorsHandler.php,src/framework,php-file,public-core,docs/core/cors.md,Core source family Libs/CorsHandler.php -> docs/core/cors.md
+src/framework/Libs/Curl.php,src/framework,php-file,public-core,docs/core/api-client.md,Core source family Libs/Curl.php -> docs/core/api-client.md
+src/framework/Libs/DB.php,src/framework,php-file,public-core,docs/database/query-builder.md,Core source family Libs/DB.php -> docs/database/query-builder.md
+src/framework/Libs/DBCache.php,src/framework,php-file,public-core,docs/services/cache.md,Core source family Libs/DBCache.php -> docs/services/cache.md
+src/framework/Libs/DBRels.php,src/framework,php-file,public-core,docs/database/relations.md,Core source family Libs/DBRels.php -> docs/database/relations.md
+src/framework/Libs/Date.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Date.php -> docs/reference/README.md
+src/framework/Libs/Env.php,src/framework,php-file,public-core,docs/core/configuration-environment.md,Core source family Libs/Env.php -> docs/core/configuration-environment.md
+src/framework/Libs/EventBus.php,src/framework,php-file,public-core,docs/services/event-bus.md,Core source family Libs/EventBus.php -> docs/services/event-bus.md
+src/framework/Libs/Factory.php,src/framework,php-file,public-core,docs/core/dependency-container.md,Core source family Libs/Factory.php -> docs/core/dependency-container.md
+src/framework/Libs/FileCache.php,src/framework,php-file,public-core,docs/services/cache.md,Core source family Libs/FileCache.php -> docs/services/cache.md
+src/framework/Libs/FileUploader.php,src/framework,php-file,public-core,docs/core/file-uploads.md,Core source family Libs/FileUploader.php -> docs/core/file-uploads.md
+src/framework/Libs/Files.php,src/framework,php-file,public-core,docs/core/filesystem.md,Core source family Libs/Files.php -> docs/core/filesystem.md
+src/framework/Libs/HTML.php,src/framework,php-file,public-core,docs/core/content-conversion.md,Core source family Libs/HTML.php -> docs/core/content-conversion.md
+src/framework/Libs/Image.php,src/framework,php-file,public-core,docs/core/content-conversion.md,Core source family Libs/Image.php -> docs/core/content-conversion.md
+src/framework/Libs/InMemoryCache.php,src/framework,php-file,public-core,docs/services/cache.md,Core source family Libs/InMemoryCache.php -> docs/services/cache.md
+src/framework/Libs/JobQueue.php,src/framework,php-file,public-core,docs/packages/background-jobs.md,Core source family Libs/JobQueue.php -> docs/packages/background-jobs.md
+src/framework/Libs/JsonLd.php,src/framework,php-file,public-core,docs/core/content-conversion.md,Core source family Libs/JsonLd.php -> docs/core/content-conversion.md
+src/framework/Libs/Logger.php,src/framework,php-file,public-core,docs/core/logging.md,Core source family Libs/Logger.php -> docs/core/logging.md
+src/framework/Libs/MediaType.php,src/framework,php-file,public-core,docs/core/content-conversion.md,Core source family Libs/MediaType.php -> docs/core/content-conversion.md
+src/framework/Libs/Memoization.php,src/framework,php-file,public-core,docs/services/cache.md,Core source family Libs/Memoization.php -> docs/services/cache.md
+src/framework/Libs/Messurements.php,src/framework,php-file,internal-framework-support,docs/performance/README.md,Core source family Libs/Messurements.php -> docs/performance/README.md
+src/framework/Libs/MetadataParser.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/MetadataParser.php -> docs/reference/README.md
+src/framework/Libs/Migration.php,src/framework,php-file,public-core,docs/database/migrations.md,Core source family Libs/Migration.php -> docs/database/migrations.md
+src/framework/Libs/MockNames.php,src/framework,php-file,internal-test-support,docs/reference/README.md,Core source family Libs/MockNames.php -> docs/reference/README.md
+src/framework/Libs/Module.php,src/framework,php-file,public-core,docs/architecture/composer-packages.md,Core source family Libs/Module.php -> docs/architecture/composer-packages.md
+src/framework/Libs/Msg.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Msg.php -> docs/reference/README.md
+src/framework/Libs/MySQLDatabaseBackup.php,src/framework,php-file,public-core,docs/core/archives-backups.md,Core source family Libs/MySQLDatabaseBackup.php -> docs/core/archives-backups.md
+src/framework/Libs/Num.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Num.php -> docs/reference/README.md
+src/framework/Libs/Options.php,src/framework,php-file,public-core,docs/core/configuration-environment.md,Core source family Libs/Options.php -> docs/core/configuration-environment.md
+src/framework/Libs/PHPLexicalAnalyzer.php,src/framework,php-file,public-core,docs/packages/scaffolding.md,Core source family Libs/PHPLexicalAnalyzer.php -> docs/packages/scaffolding.md
+src/framework/Libs/Paginator.php,src/framework,php-file,public-core,docs/database/pagination.md,Core source family Libs/Paginator.php -> docs/database/pagination.md
+src/framework/Libs/Parallex.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Parallex.php -> docs/reference/README.md
+src/framework/Libs/RandomGenerator.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/RandomGenerator.php -> docs/reference/README.md
+src/framework/Libs/Reflector.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Reflector.php -> docs/reference/README.md
+src/framework/Libs/Schema.php,src/framework,php-file,public-core,docs/database/schemas.md,Core source family Libs/Schema.php -> docs/database/schemas.md
+src/framework/Libs/Session.php,src/framework,php-file,public-core,docs/core/sessions-cookies.md,Core source family Libs/Session.php -> docs/core/sessions-cookies.md
+src/framework/Libs/SiteMap.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/SiteMap.php -> docs/reference/README.md
+src/framework/Libs/SortedIterator.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/SortedIterator.php -> docs/reference/README.md
+src/framework/Libs/StdOut.php,src/framework,php-file,public-core,docs/cli/commands.md,Core source family Libs/StdOut.php -> docs/cli/commands.md
+src/framework/Libs/Strings.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Strings.php -> docs/reference/README.md
+src/framework/Libs/System.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/System.php -> docs/reference/README.md
+src/framework/Libs/SystemMessages.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Libs/SystemMessages.php -> docs/core/error-handling.md
+src/framework/Libs/TemporaryExceptionHandler.php,src/framework,php-file,internal-framework-support,docs/core/error-handling.md,Core source family Libs/TemporaryExceptionHandler.php -> docs/core/error-handling.md
+src/framework/Libs/Time.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Time.php -> docs/reference/README.md
+src/framework/Libs/TimeZone.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/TimeZone.php -> docs/reference/README.md
+src/framework/Libs/Update.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Update.php -> docs/reference/README.md
+src/framework/Libs/Url.php,src/framework,php-file,public-core,docs/core/web-routing.md,Core source family Libs/Url.php -> docs/core/web-routing.md
+src/framework/Libs/Utils.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Libs/Utils.php -> docs/reference/README.md
+src/framework/Libs/ValidationRules.php,src/framework,php-file,public-core,docs/services/validation.md,Core source family Libs/ValidationRules.php -> docs/services/validation.md
+src/framework/Libs/Validator.php,src/framework,php-file,public-core,docs/services/validation.md,Core source family Libs/Validator.php -> docs/services/validation.md
+src/framework/Libs/VarDump.php,src/framework,php-file,public-core,docs/core/logging.md,Core source family Libs/VarDump.php -> docs/core/logging.md
+src/framework/Libs/WebhookDeliveryDispatcher.php,src/framework,php-file,public-core,docs/api/webhooks.md,Core source family Libs/WebhookDeliveryDispatcher.php -> docs/api/webhooks.md
+src/framework/Libs/WebhookEndpointPolicy.php,src/framework,php-file,public-core,docs/api/webhooks.md,Core source family Libs/WebhookEndpointPolicy.php -> docs/api/webhooks.md
+src/framework/Libs/WebhookEvent.php,src/framework,php-file,public-core,docs/api/webhooks.md,Core source family Libs/WebhookEvent.php -> docs/api/webhooks.md
+src/framework/Libs/WebhookHttpTransport.php,src/framework,php-file,public-core,docs/api/webhooks.md,Core source family Libs/WebhookHttpTransport.php -> docs/api/webhooks.md
+src/framework/Libs/WebhookPublisher.php,src/framework,php-file,public-core,docs/api/webhooks.md,Core source family Libs/WebhookPublisher.php -> docs/api/webhooks.md
+src/framework/Libs/WebhookSubscriptionMatcher.php,src/framework,php-file,public-core,docs/api/webhooks.md,Core source family Libs/WebhookSubscriptionMatcher.php -> docs/api/webhooks.md
+src/framework/Libs/XML.php,src/framework,php-file,public-core,docs/core/content-conversion.md,Core source family Libs/XML.php -> docs/core/content-conversion.md
+src/framework/Libs/ZipManager.php,src/framework,php-file,public-core,docs/core/archives-backups.md,Core source family Libs/ZipManager.php -> docs/core/archives-backups.md
+src/framework/Middleware.php,src/framework,php-file,public-core,docs/core/middleware.md,Core source family Middleware.php -> docs/core/middleware.md
+src/framework/Model.php,src/framework,php-file,public-core,docs/database/model.md,Core source family Model.php -> docs/database/model.md
+src/framework/ModelRecord.php,src/framework,php-file,public-core,docs/database/model.md,Core source family ModelRecord.php -> docs/database/model.md
+src/framework/Request.php,src/framework,php-file,public-core,docs/core/request-response.md,Core source family Request.php -> docs/core/request-response.md
+src/framework/Response.php,src/framework,php-file,public-core,docs/core/request-response.md,Core source family Response.php -> docs/core/request-response.md
+src/framework/Security/Acl.php,src/framework,php-file,public-core,docs/security/authorization-engine.md,Core source family Security/Acl.php -> docs/security/authorization-engine.md
+src/framework/Security/Compiler/EffectivePermissionCompiler.php,src/framework,php-file,internal-security-implementation,docs/security/authorization-engine.md,Core source family Security/Compiler/EffectivePermissionCompiler.php -> docs/security/authorization-engine.md
+src/framework/Security/Compiler/TbPermissionBits.php,src/framework,php-file,internal-security-implementation,docs/security/authorization-engine.md,Core source family Security/Compiler/TbPermissionBits.php -> docs/security/authorization-engine.md
+src/framework/Security/Contracts/AclEngineInterface.php,src/framework,php-file,public-core-contract,docs/security/authorization-engine.md,Core source family Security/Contracts/AclEngineInterface.php -> docs/security/authorization-engine.md
+src/framework/Security/Contracts/AuthorizationPolicyInterface.php,src/framework,php-file,public-core-contract,docs/security/authorization-engine.md,Core source family Security/Contracts/AuthorizationPolicyInterface.php -> docs/security/authorization-engine.md
+src/framework/Security/Contracts/AuthorizationServiceInterface.php,src/framework,php-file,public-core-contract,docs/security/authorization-engine.md,Core source family Security/Contracts/AuthorizationServiceInterface.php -> docs/security/authorization-engine.md
+src/framework/Security/Domain/AclContext.php,src/framework,php-file,internal-security-implementation,docs/security/authorization-engine.md,Core source family Security/Domain/AclContext.php -> docs/security/authorization-engine.md
+src/framework/Security/Domain/CapabilityTypeResolver.php,src/framework,php-file,internal-security-implementation,docs/security/authorization-engine.md,Core source family Security/Domain/CapabilityTypeResolver.php -> docs/security/authorization-engine.md
+src/framework/Security/Engine/AclEngine.php,src/framework,php-file,internal-security-implementation,docs/security/authorization-engine.md,Core source family Security/Engine/AclEngine.php -> docs/security/authorization-engine.md
+src/framework/Security/Explanation/PermissionExplanation.php,src/framework,php-file,internal-security-implementation,docs/security/authorization-engine.md,Core source family Security/Explanation/PermissionExplanation.php -> docs/security/authorization-engine.md
+src/framework/Security/Service/RoleHierarchyService.php,src/framework,php-file,internal-security-implementation,docs/security/authorization-engine.md,Core source family Security/Service/RoleHierarchyService.php -> docs/security/authorization-engine.md
+src/framework/Security/Snapshot/AclSnapshot.php,src/framework,php-file,internal-security-implementation,docs/security/authorization-engine.md,Core source family Security/Snapshot/AclSnapshot.php -> docs/security/authorization-engine.md
+src/framework/ServiceProvider.php,src/framework,php-file,public-core,docs/core/service-providers.md,Core source family ServiceProvider.php -> docs/core/service-providers.md
+src/framework/Templates/ApiRestfulController.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/ApiRestfulController.php -> docs/packages/scaffolding.md
+src/framework/Templates/Command.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Command.php -> docs/packages/scaffolding.md
+src/framework/Templates/ConsoleController.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/ConsoleController.php -> docs/packages/scaffolding.md
+src/framework/Templates/Controller.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Controller.php -> docs/packages/scaffolding.md
+src/framework/Templates/CronJob.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/CronJob.php -> docs/packages/scaffolding.md
+src/framework/Templates/DTO.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/DTO.php -> docs/packages/scaffolding.md
+src/framework/Templates/Exception.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Exception.php -> docs/packages/scaffolding.md
+src/framework/Templates/FreshCopy/app/Views/home.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/FreshCopy/app/Views/home.php -> docs/packages/scaffolding.md
+src/framework/Templates/FreshCopy/config/routes.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/FreshCopy/config/routes.php -> docs/packages/scaffolding.md
+src/framework/Templates/Helper.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Helper.php -> docs/packages/scaffolding.md
+src/framework/Templates/Interface.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Interface.php -> docs/packages/scaffolding.md
+src/framework/Templates/Lib.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Lib.php -> docs/packages/scaffolding.md
+src/framework/Templates/Middleware.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Middleware.php -> docs/packages/scaffolding.md
+src/framework/Templates/Migration.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Migration.php -> docs/packages/scaffolding.md
+src/framework/Templates/Migration_New.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Migration_New.php -> docs/packages/scaffolding.md
+src/framework/Templates/Model.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Model.php -> docs/packages/scaffolding.md
+src/framework/Templates/ModelWithoutSchema.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/ModelWithoutSchema.php -> docs/packages/scaffolding.md
+src/framework/Templates/Module/Main.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Module/Main.php -> docs/packages/scaffolding.md
+src/framework/Templates/Module/config/config.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Module/config/config.php -> docs/packages/scaffolding.md
+src/framework/Templates/Module/config/routes.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Module/config/routes.php -> docs/packages/scaffolding.md
+src/framework/Templates/Module/src/ModuleProvider.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Module/src/ModuleProvider.php -> docs/packages/scaffolding.md
+src/framework/Templates/PackageConfig.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/PackageConfig.php -> docs/packages/scaffolding.md
+src/framework/Templates/Page.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Page.php -> docs/packages/scaffolding.md
+src/framework/Templates/Schema.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Schema.php -> docs/packages/scaffolding.md
+src/framework/Templates/ServiceProvider.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/ServiceProvider.php -> docs/packages/scaffolding.md
+src/framework/Templates/Task.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Task.php -> docs/packages/scaffolding.md
+src/framework/Templates/TestCase.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/TestCase.php -> docs/packages/scaffolding.md
+src/framework/Templates/Trait.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/Trait.php -> docs/packages/scaffolding.md
+src/framework/Templates/UpdateBatch.php,src/framework,php-file,internal-template,docs/packages/scaffolding.md,Core source family Templates/UpdateBatch.php -> docs/packages/scaffolding.md
+src/framework/Traits/CommandTrait.php,src/framework,php-file,public-core,docs/cli/commands.md,Core source family Traits/CommandTrait.php -> docs/cli/commands.md
+src/framework/Traits/ErrorReporting.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Traits/ErrorReporting.php -> docs/core/error-handling.md
+src/framework/Traits/EventBusTrait.php,src/framework,php-file,public-core,docs/services/event-bus.md,Core source family Traits/EventBusTrait.php -> docs/services/event-bus.md
+src/framework/Traits/ExceptionHandler.php,src/framework,php-file,public-core,docs/core/error-handling.md,Core source family Traits/ExceptionHandler.php -> docs/core/error-handling.md
+src/framework/Traits/InsertWithSubResourcesTrait.php,src/framework,php-file,public-core,docs/database/relations.md,Core source family Traits/InsertWithSubResourcesTrait.php -> docs/database/relations.md
+src/framework/Traits/PagesTrait.php,src/framework,php-file,public-core,docs/database/pagination.md,Core source family Traits/PagesTrait.php -> docs/database/pagination.md
+src/framework/Traits/QueryBuilderTrait.php,src/framework,php-file,public-core,docs/database/query-builder.md,Core source family Traits/QueryBuilderTrait.php -> docs/database/query-builder.md
+src/framework/Traits/RelationshipTrait.php,src/framework,php-file,public-core,docs/database/relations.md,Core source family Traits/RelationshipTrait.php -> docs/database/relations.md
+src/framework/Traits/SubResourceHandler.php,src/framework,php-file,public-core,docs/database/relations.md,Core source family Traits/SubResourceHandler.php -> docs/database/relations.md
+src/framework/Traits/TimeExecutionTrait.php,src/framework,php-file,public-core,docs/performance/README.md,Core source family Traits/TimeExecutionTrait.php -> docs/performance/README.md
+src/framework/Traits/UnitTestCaseRunAllTrait.php,src/framework,php-file,internal-test-support,docs/reference/README.md,Core source family Traits/UnitTestCaseRunAllTrait.php -> docs/reference/README.md
+src/framework/Traits/UnitTestCaseSQLTrait.php,src/framework,php-file,internal-test-support,docs/reference/README.md,Core source family Traits/UnitTestCaseSQLTrait.php -> docs/reference/README.md
+src/framework/Traits/Uuids.php,src/framework,php-file,public-core,docs/reference/README.md,Core source family Traits/Uuids.php -> docs/reference/README.md
+src/framework/View.php,src/framework,php-file,public-core,docs/services/views.md,Core source family View.php -> docs/services/views.md
+src/framework/WebRouter.php,src/framework,php-file,public-core,docs/core/web-routing.md,Core source family WebRouter.php -> docs/core/web-routing.md
+packages/boctulus/simplerest-api-clients/src/LegacyCoreLibs/Pastebin.php,packages/boctulus,php-file,legacy-adapter,docs/integrations/api-clients.md,simplerest-api-clients source family -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-api-clients/src/LegacyCoreLibs/SendinBlue.php,packages/boctulus,php-file,legacy-adapter,docs/integrations/api-clients.md,simplerest-api-clients source family -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-api-clients/src/LegacyCoreLibs/WP.php,packages/boctulus,php-file,legacy-adapter,docs/integrations/api-clients.md,simplerest-api-clients source family -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-api-clients/src/Libs/GoogleDrive.php,packages/boctulus,php-file,public-package-source,docs/integrations/api-clients.md,simplerest-api-clients source family -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-api-clients/src/Libs/HuggingFace.php,packages/boctulus,php-file,public-package-source,docs/integrations/api-clients.md,simplerest-api-clients source family -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-api-clients/src/Libs/OneSignal.php,packages/boctulus,php-file,public-package-source,docs/integrations/api-clients.md,simplerest-api-clients source family -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-api-clients/src/Libs/WooCommerce.php,packages/boctulus,php-file,public-package-source,docs/integrations/api-clients.md,simplerest-api-clients source family -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-api-clients/src/Libs/WooCommerceApiClient.php,packages/boctulus,php-file,public-package-source,docs/integrations/api-clients.md,simplerest-api-clients source family -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-api-clients/tests/ApiClientsPackageTest.php,packages/boctulus,php-file,internal-test,docs/integrations/api-clients.md,simplerest-api-clients source family -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-api-clients/tests/bootstrap.php,packages/boctulus,php-file,internal-test,docs/integrations/api-clients.md,simplerest-api-clients source family -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-az-seeder/src/AZSeederService.php,packages/boctulus,php-file,public-package-source,docs/packages/test-data-seeder.md,simplerest-az-seeder source family -> docs/packages/test-data-seeder.md
+packages/boctulus/simplerest-az-seeder/src/ServiceProvider.php,packages/boctulus,php-file,public-package-source,docs/packages/test-data-seeder.md,simplerest-az-seeder source family -> docs/packages/test-data-seeder.md
+packages/boctulus/simplerest-basic-acl/src/Acl.php,packages/boctulus,php-file,public-package-source,docs/security/acl-implementations.md,simplerest-basic-acl source family -> docs/security/acl-implementations.md
+packages/boctulus/simplerest-basic-acl/src/BasicAclServiceProvider.php,packages/boctulus,php-file,public-package-source,docs/security/acl-implementations.md,simplerest-basic-acl source family -> docs/security/acl-implementations.md
+packages/boctulus/simplerest-bootstrap-html/src/AdminLte.php,packages/boctulus,php-file,public-package-source,docs/packages/html-content.md,simplerest-bootstrap-html source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-bootstrap-html/src/BootstrapPaginator.php,packages/boctulus,php-file,public-package-source,docs/packages/html-content.md,simplerest-bootstrap-html source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-bootstrap-html/src/Bt5Form.php,packages/boctulus,php-file,public-package-source,docs/packages/html-content.md,simplerest-bootstrap-html source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-bootstrap-html/tests/HtmlBuildersPackageTest.php,packages/boctulus,php-file,internal-test,docs/packages/html-content.md,simplerest-bootstrap-html source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-bootstrap-html/tests/bootstrap.php,packages/boctulus,php-file,internal-test,docs/packages/html-content.md,simplerest-bootstrap-html source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-css/src/CSS.php,packages/boctulus,php-file,public-package-source,docs/packages/html-content.md,simplerest-css source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-fine-grained-acl/src/Acl.php,packages/boctulus,php-file,public-package-source,docs/security/acl-implementations.md,simplerest-fine-grained-acl source family -> docs/security/acl-implementations.md
+packages/boctulus/simplerest-fine-grained-acl/src/FineGrainedAclServiceProvider.php,packages/boctulus,php-file,public-package-source,docs/security/acl-implementations.md,simplerest-fine-grained-acl source family -> docs/security/acl-implementations.md
+packages/boctulus/simplerest-fpdf/src/PdfBase.php,packages/boctulus,php-file,public-package-source,docs/packages/media-output.md,simplerest-fpdf source family -> docs/packages/media-output.md
+packages/boctulus/simplerest-fpdf/tests/PdfPackageTest.php,packages/boctulus,php-file,internal-test,docs/packages/media-output.md,simplerest-fpdf source family -> docs/packages/media-output.md
+packages/boctulus/simplerest-fpdf/tests/bootstrap.php,packages/boctulus,php-file,internal-test,docs/packages/media-output.md,simplerest-fpdf source family -> docs/packages/media-output.md
+packages/boctulus/simplerest-gd-image/src/Imaginator.php,packages/boctulus,php-file,public-package-source,docs/packages/media-output.md,simplerest-gd-image source family -> docs/packages/media-output.md
+packages/boctulus/simplerest-geolocation/src/GeoLite2.php,packages/boctulus,php-file,public-package-source,docs/integrations/geolocation.md,simplerest-geolocation source family -> docs/integrations/geolocation.md
+packages/boctulus/simplerest-geolocation/src/GoogleMaps.php,packages/boctulus,php-file,public-package-source,docs/integrations/geolocation.md,simplerest-geolocation source family -> docs/integrations/geolocation.md
+packages/boctulus/simplerest-html/src/HtmlMinifier.php,packages/boctulus,php-file,public-package-source,docs/packages/html-content.md,simplerest-html source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-html-generation/src/CustomTags.php,packages/boctulus,php-file,public-package-source,docs/packages/html-content.md,simplerest-html-generation source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-html-generation/src/EasyHTMLTable.php,packages/boctulus,php-file,public-package-source,docs/packages/html-content.md,simplerest-html-generation source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-html-generation/src/HtmlBuilder/Html.php,packages/boctulus,php-file,public-package-source,docs/packages/html-content.md,simplerest-html-generation source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-html-generation/src/HtmlBuilder/Tag.php,packages/boctulus,php-file,public-package-source,docs/packages/html-content.md,simplerest-html-generation source family -> docs/packages/html-content.md
+packages/boctulus/simplerest-i18n/src/LangDetector.php,packages/boctulus,php-file,public-package-source,docs/packages/localization.md,simplerest-i18n source family -> docs/packages/localization.md
+packages/boctulus/simplerest-i18n/src/helpers.php,packages/boctulus,php-file,package-global-helper,docs/packages/localization.md,simplerest-i18n source family -> docs/packages/localization.md
+packages/boctulus/simplerest-i18n/src/i18n/AlternativeGetTextTranslator.php,packages/boctulus,php-file,public-package-source,docs/packages/localization.md,simplerest-i18n source family -> docs/packages/localization.md
+packages/boctulus/simplerest-i18n/src/i18n/POParser.php,packages/boctulus,php-file,public-package-source,docs/packages/localization.md,simplerest-i18n source family -> docs/packages/localization.md
+packages/boctulus/simplerest-i18n/src/i18n/Translate.php,packages/boctulus,php-file,public-package-source,docs/packages/localization.md,simplerest-i18n source family -> docs/packages/localization.md
+packages/boctulus/simplerest-jobs/src/BackgroundService.php,packages/boctulus,php-file,public-package-source,docs/packages/background-jobs.md,simplerest-jobs source family -> docs/packages/background-jobs.md
+packages/boctulus/simplerest-jobs/src/CronJob.php,packages/boctulus,php-file,public-package-source,docs/packages/background-jobs.md,simplerest-jobs source family -> docs/packages/background-jobs.md
+packages/boctulus/simplerest-jobs/src/CronJobMananger.php,packages/boctulus,php-file,public-package-source,docs/packages/background-jobs.md,simplerest-jobs source family -> docs/packages/background-jobs.md
+packages/boctulus/simplerest-jobs/src/Task.php,packages/boctulus,php-file,public-package-source,docs/packages/background-jobs.md,simplerest-jobs source family -> docs/packages/background-jobs.md
+packages/boctulus/simplerest-jwt-auth/src/AuthController.php,packages/boctulus,php-file,public-package-source,docs/security/jwt.md,simplerest-jwt-auth source family -> docs/security/jwt.md
+packages/boctulus/simplerest-llm-providers/config/cli_routes.php,packages/boctulus,php-file,package-configuration,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/config/config.php,packages/boctulus,php-file,package-configuration,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/src/Contracts/LLMProviderInterface.php,packages/boctulus,php-file,public-package-source,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/src/Controllers/LlmController.php,packages/boctulus,php-file,public-package-source,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/src/Exceptions/ProviderException.php,packages/boctulus,php-file,public-package-source,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/src/Factory/LLMFactory.php,packages/boctulus,php-file,public-package-source,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/src/Providers/ClaudeProvider.php,packages/boctulus,php-file,public-package-source,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/src/Providers/GrokProvider.php,packages/boctulus,php-file,public-package-source,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/src/Providers/OllamaProvider.php,packages/boctulus,php-file,public-package-source,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/src/Providers/OpenAIProvider.php,packages/boctulus,php-file,public-package-source,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/src/ServiceProvider.php,packages/boctulus,php-file,public-package-source,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/tests/LLMFactoryTest.php,packages/boctulus,php-file,internal-test,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-llm-providers/tests/bootstrap.php,packages/boctulus,php-file,internal-test,docs/integrations/llm-providers.md,simplerest-llm-providers source family -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-machine-id/src/Hardware.php,packages/boctulus,php-file,legacy-package-source,docs/packages/legacy-helpers.md,simplerest-machine-id source family -> docs/packages/legacy-helpers.md
+packages/boctulus/simplerest-mail/src/EmailTemplate.php,packages/boctulus,php-file,public-package-source,docs/integrations/mail.md,simplerest-mail source family -> docs/integrations/mail.md
+packages/boctulus/simplerest-mail/src/Interfaces/IMail.php,packages/boctulus,php-file,public-package-source,docs/integrations/mail.md,simplerest-mail source family -> docs/integrations/mail.md
+packages/boctulus/simplerest-mail/src/Mail.php,packages/boctulus,php-file,public-package-source,docs/integrations/mail.md,simplerest-mail source family -> docs/integrations/mail.md
+packages/boctulus/simplerest-mail/src/MailAuditor.php,packages/boctulus,php-file,public-package-source,docs/integrations/mail.md,simplerest-mail source family -> docs/integrations/mail.md
+packages/boctulus/simplerest-mail/src/MailBase.php,packages/boctulus,php-file,public-package-source,docs/integrations/mail.md,simplerest-mail source family -> docs/integrations/mail.md
+packages/boctulus/simplerest-mail/src/MailFromRemoteWP.php,packages/boctulus,php-file,public-package-source,docs/integrations/mail.md,simplerest-mail source family -> docs/integrations/mail.md
+packages/boctulus/simplerest-psr7/src/ResponseAdapter.php,packages/boctulus,php-file,public-package-source,docs/packages/http-adapters.md,simplerest-psr7 source family -> docs/packages/http-adapters.md
+packages/boctulus/simplerest-psr7/src/ServerRequestAdapter.php,packages/boctulus,php-file,public-package-source,docs/packages/http-adapters.md,simplerest-psr7 source family -> docs/packages/http-adapters.md
+packages/boctulus/simplerest-psr7/src/StreamAdapter.php,packages/boctulus,php-file,public-package-source,docs/packages/http-adapters.md,simplerest-psr7 source family -> docs/packages/http-adapters.md
+packages/boctulus/simplerest-psr7/src/UriAdapter.php,packages/boctulus,php-file,public-package-source,docs/packages/http-adapters.md,simplerest-psr7 source family -> docs/packages/http-adapters.md
+packages/boctulus/simplerest-psr7/src/helpers.php,packages/boctulus,php-file,package-global-helper,docs/packages/http-adapters.md,simplerest-psr7 source family -> docs/packages/http-adapters.md
+packages/boctulus/simplerest-scaffolding/src/Cleaners/AngularCleaner.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Cleaners/BootstrapCleaner.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/CodeReducer.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/AnyCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ApiCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/BaseMakeCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/CommandCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ConsoleCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ControllerCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ControllerModuleCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ControllerPackageCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/CronjobCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/CssScanCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/DbScanCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/DtoCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ExceptionCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/HelperCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/HelperModuleCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/HelperPackageCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/InterfaceCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/InterfaceModuleCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/InterfacePackageCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/LibCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/LibModuleCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/LibPackageCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/MiddlewareCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/MiddlewareModuleCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/MiddlewarePackageCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/MigrationCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/MigrationsModuleCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/MigrationsPackageCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ModelCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ModelModuleCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ModelPackageCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/PageCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/PivotScanCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ProviderCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/RelationScanCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/SchemaCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/SystemConstantsCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/TaskCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/TestcaseCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/TraitCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/TransCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/ViewCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Commands/make/WidgetCommand.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/Obfuscator.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/PHPParser.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/src/PostmanGenerator.php,packages/boctulus,php-file,public-package-source,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/tests/CodeToolsPackageTest.php,packages/boctulus,php-file,internal-test,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-scaffolding/tests/bootstrap.php,packages/boctulus,php-file,internal-test,docs/packages/scaffolding.md,simplerest-scaffolding source family -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-shopify-connector/src/Shopify.php,packages/boctulus,php-file,public-package-source,docs/integrations/shopify.md,simplerest-shopify-connector source family -> docs/integrations/shopify.md
+packages/boctulus/simplerest-shopify-connector/src/Traits/ShopifyWooCommerceAdaptorTrait.php,packages/boctulus,php-file,public-package-source,docs/integrations/shopify.md,simplerest-shopify-connector source family -> docs/integrations/shopify.md
+packages/boctulus/simplerest-sse/src/SSE.php,packages/boctulus,php-file,public-package-source,docs/packages/http-adapters.md,simplerest-sse source family -> docs/packages/http-adapters.md
+packages/boctulus/simplerest-string-obfuscation/src/SimpleCrypt.php,packages/boctulus,php-file,legacy-package-source,docs/packages/legacy-helpers.md,simplerest-string-obfuscation source family -> docs/packages/legacy-helpers.md
+packages/boctulus/simplerest-web-inspection/src/Libs/CMS_Scanner/CMSs/Magento.php,packages/boctulus,php-file,public-package-source,docs/integrations/web-inspection.md,simplerest-web-inspection source family -> docs/integrations/web-inspection.md
+packages/boctulus/simplerest-web-inspection/src/Libs/CMS_Scanner/CMSs/PrestaShop.php,packages/boctulus,php-file,public-package-source,docs/integrations/web-inspection.md,simplerest-web-inspection source family -> docs/integrations/web-inspection.md
+packages/boctulus/simplerest-web-inspection/src/Libs/CMS_Scanner/CMSs/Shopify.php,packages/boctulus,php-file,public-package-source,docs/integrations/web-inspection.md,simplerest-web-inspection source family -> docs/integrations/web-inspection.md
+packages/boctulus/simplerest-web-inspection/src/Libs/CMS_Scanner/CMSs/Squarespace.php,packages/boctulus,php-file,public-package-source,docs/integrations/web-inspection.md,simplerest-web-inspection source family -> docs/integrations/web-inspection.md
+packages/boctulus/simplerest-web-inspection/src/Libs/CMS_Scanner/CMSs/Wix.php,packages/boctulus,php-file,public-package-source,docs/integrations/web-inspection.md,simplerest-web-inspection source family -> docs/integrations/web-inspection.md
+packages/boctulus/simplerest-web-inspection/src/Libs/CMS_Scanner/CMSs/WordPress.php,packages/boctulus,php-file,public-package-source,docs/integrations/web-inspection.md,simplerest-web-inspection source family -> docs/integrations/web-inspection.md
+packages/boctulus/simplerest-web-inspection/src/Libs/CMS_Scanner/Scanner.php,packages/boctulus,php-file,public-package-source,docs/integrations/web-inspection.md,simplerest-web-inspection source family -> docs/integrations/web-inspection.md
+packages/boctulus/simplerest-web-inspection/src/Libs/DomCrawler.php,packages/boctulus,php-file,public-package-source,docs/integrations/web-inspection.md,simplerest-web-inspection source family -> docs/integrations/web-inspection.md
+packages/boctulus/simplerest-web-inspection/tests/WebInspectionPackageTest.php,packages/boctulus,php-file,internal-test,docs/integrations/web-inspection.md,simplerest-web-inspection source family -> docs/integrations/web-inspection.md
+packages/boctulus/simplerest-web-inspection/tests/bootstrap.php,packages/boctulus,php-file,internal-test,docs/integrations/web-inspection.md,simplerest-web-inspection source family -> docs/integrations/web-inspection.md
+packages/boctulus/simplerest-api-clients/,packages/boctulus,package-directory,public-package-directory,docs/integrations/api-clients.md,Composer package directory simplerest-api-clients -> docs/integrations/api-clients.md
+packages/boctulus/simplerest-az-seeder/,packages/boctulus,package-directory,public-package-directory,docs/packages/test-data-seeder.md,Composer package directory simplerest-az-seeder -> docs/packages/test-data-seeder.md
+packages/boctulus/simplerest-basic-acl/,packages/boctulus,package-directory,public-package-directory,docs/security/acl-implementations.md,Composer package directory simplerest-basic-acl -> docs/security/acl-implementations.md
+packages/boctulus/simplerest-bootstrap-html/,packages/boctulus,package-directory,public-package-directory,docs/packages/html-content.md,Composer package directory simplerest-bootstrap-html -> docs/packages/html-content.md
+packages/boctulus/simplerest-css/,packages/boctulus,package-directory,public-package-directory,docs/packages/html-content.md,Composer package directory simplerest-css -> docs/packages/html-content.md
+packages/boctulus/simplerest-fine-grained-acl/,packages/boctulus,package-directory,public-package-directory,docs/security/acl-implementations.md,Composer package directory simplerest-fine-grained-acl -> docs/security/acl-implementations.md
+packages/boctulus/simplerest-fpdf/,packages/boctulus,package-directory,public-package-directory,docs/packages/media-output.md,Composer package directory simplerest-fpdf -> docs/packages/media-output.md
+packages/boctulus/simplerest-gd-image/,packages/boctulus,package-directory,public-package-directory,docs/packages/media-output.md,Composer package directory simplerest-gd-image -> docs/packages/media-output.md
+packages/boctulus/simplerest-geolocation/,packages/boctulus,package-directory,public-package-directory,docs/integrations/geolocation.md,Composer package directory simplerest-geolocation -> docs/integrations/geolocation.md
+packages/boctulus/simplerest-html/,packages/boctulus,package-directory,public-package-directory,docs/packages/html-content.md,Composer package directory simplerest-html -> docs/packages/html-content.md
+packages/boctulus/simplerest-html-generation/,packages/boctulus,package-directory,public-package-directory,docs/packages/html-content.md,Composer package directory simplerest-html-generation -> docs/packages/html-content.md
+packages/boctulus/simplerest-i18n/,packages/boctulus,package-directory,public-package-directory,docs/packages/localization.md,Composer package directory simplerest-i18n -> docs/packages/localization.md
+packages/boctulus/simplerest-integrations/,packages/boctulus,package-directory,legacy-bundle-no-php,docs/packages/catalog.md,Historical migration notice only; no Composer manifest or PHP source
+packages/boctulus/simplerest-jobs/,packages/boctulus,package-directory,public-package-directory,docs/packages/background-jobs.md,Composer package directory simplerest-jobs -> docs/packages/background-jobs.md
+packages/boctulus/simplerest-jwt-auth/,packages/boctulus,package-directory,public-package-directory,docs/security/jwt.md,Composer package directory simplerest-jwt-auth -> docs/security/jwt.md
+packages/boctulus/simplerest-llm-providers/,packages/boctulus,package-directory,public-package-directory,docs/integrations/llm-providers.md,Composer package directory simplerest-llm-providers -> docs/integrations/llm-providers.md
+packages/boctulus/simplerest-machine-id/,packages/boctulus,package-directory,public-package-directory,docs/packages/legacy-helpers.md,Composer package directory simplerest-machine-id -> docs/packages/legacy-helpers.md
+packages/boctulus/simplerest-mail/,packages/boctulus,package-directory,public-package-directory,docs/integrations/mail.md,Composer package directory simplerest-mail -> docs/integrations/mail.md
+packages/boctulus/simplerest-psr7/,packages/boctulus,package-directory,public-package-directory,docs/packages/http-adapters.md,Composer package directory simplerest-psr7 -> docs/packages/http-adapters.md
+packages/boctulus/simplerest-scaffolding/,packages/boctulus,package-directory,public-package-directory,docs/packages/scaffolding.md,Composer package directory simplerest-scaffolding -> docs/packages/scaffolding.md
+packages/boctulus/simplerest-shopify-connector/,packages/boctulus,package-directory,public-package-directory,docs/integrations/shopify.md,Composer package directory simplerest-shopify-connector -> docs/integrations/shopify.md
+packages/boctulus/simplerest-sse/,packages/boctulus,package-directory,public-package-directory,docs/packages/http-adapters.md,Composer package directory simplerest-sse -> docs/packages/http-adapters.md
+packages/boctulus/simplerest-string-obfuscation/,packages/boctulus,package-directory,public-package-directory,docs/packages/legacy-helpers.md,Composer package directory simplerest-string-obfuscation -> docs/packages/legacy-helpers.md
+packages/boctulus/simplerest-web-inspection/,packages/boctulus,package-directory,public-package-directory,docs/integrations/web-inspection.md,Composer package directory simplerest-web-inspection -> docs/integrations/web-inspection.md

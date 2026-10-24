@@ -24,7 +24,7 @@ La migración es progresiva. Algunas páginas auditadas siguen en inglés y se e
 | Integraciones | [Índice de integraciones](integrations/README.md), [API Clients](integrations/api-clients.md), [Shopify Connector](integrations/shopify.md), [proveedores LLM](integrations/llm-providers.md), [correo](integrations/mail.md), [geolocalización](integrations/geolocation.md), [inspección web](integrations/web-inspection.md) | Contratos de código; no se reprodujeron llamadas externas, envío de correo, instalación de consumidores ni compatibilidad actual con proveedores. El bundle `simplerest-integrations` es sólo un aviso de migración. |
 | Despliegue | [Guía de despliegue](deployment/README.md) | El workflow de GitHub Pages está configurado; el despliegue de una aplicación SimpleRest no tiene una receta validada en este checkout. |
 | Rendimiento | [Guía de medición](performance/README.md) | Se clasificaron los scripts existentes y sus efectos; el informe numérico es histórico y no se reprodujo. |
-| Referencia | [Estado de referencia](reference/README.md) | Falta construir el catálogo de configuración, variables, comandos y métodos públicos. |
+| Referencia | [Referencia pública](reference/README.md) | Catálogo de configuración y entorno, helpers globales, entradas CLI, contratos y familias de clases; distingue carga de aplicación, Composer y componentes internos. |
 
 ## Cómo interpretar el estado
 

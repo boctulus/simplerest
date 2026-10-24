@@ -8,6 +8,8 @@ Salvo por el atajo de empaquetado, `com` carga `app.php`, retira `--debug`/`-d` 
 
 `php com pack build`, `php com pack run` y `php com pack package` toman una rama especial: cargan `scripts/pack/build-core.php` y terminan sin arrancar `app.php` ni `CommandRegistry`.
 
+Esta rama especial no usa la ayuda normal de `CommandRegistry`: en esta revisión `php com pack build --help` devolvió `Unsupported pack option: --help`. `php com help pack` sí muestra el resumen del grupo; `php com pack dry-run` es el modo de vista previa previsto por el código.
+
 ## Descubrimiento y prioridad
 
 `CommandRegistry` lee `config/commands.php`. Descubre archivos `*Command.php` en carpetas por grupo, empezando por la ruta host `COMMANDS_PATH`, seguida por rutas adicionales, paquetes Composer habilitados y rutas configuradas para framework. Omite carpetas cuyo nombre empieza por `.` o `_`, y archivos base cuyo nombre comienza por `Base` o `Abstract`.
@@ -49,7 +51,23 @@ php com migrations help
 php com migrations migrate --help
 ```
 
-Esas cuatro consultas de ayuda se ejecutaron en este checkout. No se ejecutó ningún subcomando operativo durante esta revisión.
+En esta revisión se ejecutaron la ayuda global, la ayuda de grupo para `file`, `migrations`, `sql`, `users`, `todo`, `skill`, `make`, `module`, `pack`, `mysql`, `doc`, `acl` y `system`, y `--help` para comandos seleccionados. Sólo se solicitaron pantallas de ayuda; no se ejecutó ningún subcomando operativo.
+
+## Efectos observables por grupo
+
+La ayuda y la implementación exponen estas diferencias que afectan el uso. La tabla no sustituye `--help` para el contrato completo de argumentos.
+
+| Grupo o comandos | Efecto observado en la implementación |
+| --- | --- |
+| `sql` | `count`, `describe`, `find`, `find-by`, `list`, `select` y `query` son consultas; `query` documenta `SELECT`, `SHOW` y `DESCRIBE`. `export` escribe CSV o JSON. `statement` ejecuta sentencias no-`SELECT`; el código exige `--force` para `DROP`, `TRUNCATE` y `DELETE` sin `WHERE`, pero no para `INSERT`, `UPDATE` ni `DELETE` con `WHERE`. |
+| `migrations` | `list` inspecciona archivos. `make` crea un archivo de migración; `migrate` y sus variantes ejecutan DDL, mientras `rollback`, `redo`, `reset` y `refresh` revierten o vuelven a aplicar migraciones. `clear` vacía el registro `migrations` sin revertir DDL. `fresh` elimina todas las tablas y requiere `--to` y `--force`. |
+| `acl` y `users` | Algunos comandos leen el usuario, los roles y los permisos de la base configurada; otros modifican esos registros. `clear-tb` y `replace-tb` alteran permisos de tabla; `replace-tb` deja en `NULL` los permisos omitidos. `users delete-user` sólo establece `is_active = 0` y exige `--force`. |
+| `file`, `todo` y `skill` | `file copy` escribe archivos; `file delete` los elimina con `unlink()` y ofrece `--dry-run` y `--force`. Los comandos `todo` crean o modifican tarjetas; `todo delete` mueve el archivo a `docs/to-do/abandoned/`. `skill create` y `skill delete` escriben o eliminan skills; `skill delete` puede afectar varias ubicaciones de agentes y ofrece `--dry-run`. |
+| `make` | El grupo habilitado aporta generadores que escriben archivos y comandos de inspección que pueden consultar la base configurada. En `make model`, `--force` permite sobrescribir y `--remove` elimina el archivo generado. Véase [scaffolding y herramientas de desarrollo](../packages/scaffolding.md); no se ejecutó ningún generador. |
+| `doc`, `module` y `pack` | `doc from-json` imprime Markdown derivado de un JSON. `module to-package` copia el módulo, genera manifiestos y archivos del paquete, y elimina el módulo original salvo que se pase `--keep-module`. `pack build` genera el directorio de distribución indicado; `pack dry-run` muestra la operación sin aplicarla. No se ejecutó ninguna conversión ni empaquetado. |
+| `system` y `mysql` | `system clear` ejecuta `composer dump-autoload -o` y `composer clear-cache`; `opcache-clear` reinicia el OPcache disponible. Los comandos del grupo `mysql` activan, desactivan o vuelcan el log de consultas de SimpleRest; no son controles del servicio MySQL. |
+
+Los comandos que cambian base de datos, archivos, cuentas, permisos, autoload o paquetes no se deben inferir como ejecutados por consultar su ayuda. Para `--force`, destinos de base, rutas y opciones de sobrescritura, revisa la ayuda concreta y el código del comando.
 
 ## Límite de verificación
 
