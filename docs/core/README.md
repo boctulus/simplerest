@@ -4,6 +4,7 @@
 
 - [Architecture overview](../architecture.md) — verified entry-point, bootstrap, routing, and front-controller relationships for this checkout.
 - [Request lifecycle](request-lifecycle.md) — source-traced router short-circuit, front-controller branches, and response finalization.
+- [ApiClient](api-client.md) — source-traced outbound HTTP client, response accessors, cache/auth helpers, and implementation limits; no network request was run.
 
 ## Pending audit
 
