@@ -1,19 +1,19 @@
 {
   "version": 1,
   "generated_on": "2026-10-24",
-  "stage": "post Query Builder, Model, and ApiClient reference expansion",
-  "scope": "Added canonical Query Builder, Model/ModelRecord, and ApiClient coverage; refreshed the public map and local Markdown link inventory.",
+  "stage": "post Request and Response core reference expansion",
+  "scope": "Added a canonical HTTP message reference and recorded the normalized tenant-header mismatch; refreshed the public map and Markdown link inventory.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 807,
+  "inline_markdown_links_seen": 813,
   "counts": {
-    "markdown_scanned": 211,
+    "markdown_scanned": 212,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 417,
+    "local_markdown_links": 423,
     "broken_local_markdown_links": 0,
     "classifications": {
       "needs-review": 11,
-      "canonical": 21,
+      "canonical": 22,
       "internal/audit": 80,
       "legacy": 99
     }
@@ -2354,7 +2354,28 @@
       "path": "docs/architecture.md",
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/Framework-Architecture.md",
+          "line": 1
+        },
+        {
+          "source": "docs/core/README.md",
+          "line": 5
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 3
+        },
+        {
+          "source": "docs/core/request-response.md",
+          "line": 3
+        },
+        {
+          "source": "docs/index.md",
+          "line": 10
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/core/request-lifecycle.md",
@@ -3396,6 +3417,10 @@
           "line": 64
         },
         {
+          "source": "docs/core/request-response.md",
+          "line": 23
+        },
+        {
           "source": "docs/database/model.md",
           "line": 60
         },
@@ -3421,42 +3446,42 @@
         {
           "target": "docs/audit/pending/framework/QuickStart.md",
           "exists": true,
-          "line": 247
+          "line": 256
         },
         {
           "target": "docs/audit/authentication-acl.md",
           "exists": true,
-          "line": 297
+          "line": 306
         },
         {
           "target": "docs/audit/public-map-exclusion-review-2026-10-05.md",
           "exists": true,
-          "line": 307
+          "line": 316
         },
         {
           "target": "docs/audit/pending/README.md",
           "exists": true,
-          "line": 311
+          "line": 320
         },
         {
           "target": "docs/audit/goprop-composer-integration-2026-10.md",
           "exists": true,
-          "line": 315
+          "line": 324
         },
         {
           "target": "docs/audit/goprop-composer-convergence.md",
           "exists": true,
-          "line": 315
+          "line": 324
         },
         {
           "target": "docs/architecture/composer-packages.md",
           "exists": true,
-          "line": 315
+          "line": 324
         },
         {
           "target": "docs/architecture/composer-release-process.md",
           "exists": true,
-          "line": 315
+          "line": 324
         }
       ]
     },
@@ -3489,14 +3514,19 @@
           "line": 6
         },
         {
-          "target": "docs/core/api-client.md",
+          "target": "docs/core/request-response.md",
           "exists": true,
           "line": 7
         },
         {
+          "target": "docs/core/api-client.md",
+          "exists": true,
+          "line": 8
+        },
+        {
           "target": "docs/audit/pending/README.md",
           "exists": true,
-          "line": 11
+          "line": 12
         }
       ]
     },
@@ -3507,7 +3537,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/core/README.md",
-          "line": 7
+          "line": 8
         },
         {
           "source": "docs/index.md",
@@ -3574,6 +3604,14 @@
           "line": 6
         },
         {
+          "source": "docs/core/request-response.md",
+          "line": 3
+        },
+        {
+          "source": "docs/core/request-response.md",
+          "line": 57
+        },
+        {
           "source": "docs/index.md",
           "line": 17
         }
@@ -3618,6 +3656,43 @@
           "target": "docs/audit/pending/framework/Response.md",
           "exists": true,
           "line": 37
+        }
+      ]
+    },
+    {
+      "path": "docs/core/request-response.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/README.md",
+          "line": 7
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/architecture.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 57
         }
       ]
     },
@@ -4235,6 +4310,11 @@
         },
         {
           "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/request-response.md",
           "exists": true,
           "line": 17
         },

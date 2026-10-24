@@ -81,6 +81,15 @@ When a source trace finds an ambiguity, keep it **Partial** or **Unverified** an
 | The existing router tests prove the full request lifecycle and currently pass | `WebRouterTest` asserts route registration, compiled patterns, and ordering. `WebRouterFunctionalTest` contains HTTP assertions for grouped routes, parameters, priority, and non-200 on a miss; it uses a configured running server. Neither covers `index.php` order, front-controller stage conditions, alias response flush, or process exits. The configured PHPUnit paths include `unit-tests/`, but no tests were run | Rejected as a coverage/pass claim | State test assertions as source evidence only; retain execution status as unresolved under the PHPUnit finding |
 | `Request::getOption()` source precedence and the full `Response` immutable-method contract are established by the lifecycle tests | `RequestImmutableMethodsTest` asserts clone independence for query parameters, headers, and body; `ResponseImmutableMethodsTest` asserts clone independence for status, headers, body, and JSON state. Those assertions do not test `getOption()` precedence or HTTP lifecycle dispatch | Unverified for the old helper claims | Keep these helper APIs in the pending pages for a later claim-level audit |
 
+## Claim-level findings: Request and Response
+
+| Claim | Evidence in this checkout | State | Documentation action |
+| --- | --- | --- | --- |
+| `Request::getTenantId()` reads `X-TENANT-ID` from normalized headers | `Request::getHeaders()` lowercases names; `getTenantId()` indexes the same map with uppercase `X-TENANT-ID`. Its query `tenantid` path is checked first | Rejected for the normalized header fallback; source-level mismatch | Document the query lookup and mismatch; do not promise the header fallback |
+| `Request` implements the complete PSR-7 server-request contract | The class implements `ArrayAccess` and `Arrayable`; its clone helpers cover selected query/header/body fields, while destructive readers remain available | Rejected | Call the helpers PSR-7-inspired and state their partial surface |
+| `Response::withHeader()` replaces an existing header as PSR-7 requires | `withHeader()` appends a formatted line; `withAddedHeader()` also appends. Focused test source asserts multiple added lines | Rejected for replacement semantics | Document the actual append behavior and avoid claiming full PSR-7 response semantics |
+| Every response helper emits a body immediately | `send()`/`sendJson()` set response state; `flush()` prints then exits. `error()` and `redirect()` are terminal paths | Rejected | Distinguish state-building methods from terminal emission |
+
 ## Legacy claim inventory: schema-generated and automatic API
 
 These legacy pages were inspected to locate claims. Their prose is not evidence for any status below; the findings are based on current source, configuration, and test assertions.

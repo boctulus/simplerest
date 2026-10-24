@@ -32,3 +32,13 @@ El mapa español enlaza únicamente fuentes revisadas. VitePress replica esas fu
 6. **Authentication and ACL** — audit auth flows, permissions, configuration, and tests; investigate POST/PATCH callable anomalies without modifying implementation; document findings and commit.
 7. **CLI and migrations** — audit command discovery, command behavior, migration configuration and tests; only publish runnable examples that were executed; update canonical pages and commit.
 8. **ApiClient, integrations, deployment, and performance** — document ApiClient as its own core reference, then audit remaining topics in dependency order, separating implemented behavior from environment-dependent claims and measurements; update canonical pages, links, and commit each topic separately.
+
+## Estado de cobertura
+
+- **Inicio/bootstrap:** auditoría de instalación y arranque con un flujo HTTP mínimo reproducido; el consumo como dependencia Composer y el CRUD con base de datos siguen sin validar.
+- **Core/HTTP:** el ciclo HTTP está separado del recorrido CLI; Request/Response y ApiClient tienen referencias propias con límites de fuente explícitos. Definición de rutas, middleware y otras piezas del core siguen en cola.
+- **Datos:** conexiones, Query Builder, Model/ModelRecord y descriptores de esquema tienen referencias; no se ejecutó el conjunto de consultas sobre una base real. Relaciones, migraciones, subrecursos, transacciones y drivers siguen pendientes.
+- **API/seguridad:** resolución de endpoints, autenticación, ACL y webhooks están trazados con sus límites; faltan recorridos completos de CRUD/autorización con una base configurada.
+- **CLI/operación/servicios:** inventario de comandos, migraciones, cache, EventBus, vistas, i18n, formularios, integraciones y despliegue todavía requiere revisión y referencias de uso.
+
+La cobertura fuente no se marca como reproducción funcional. Cada área pendiente conserva esa distinción hasta tener evidencia propia.

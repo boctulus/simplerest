@@ -9,6 +9,7 @@
     "docs/getting-started/README.md",
     "docs/core/README.md",
     "docs/core/request-lifecycle.md",
+    "docs/core/request-response.md",
     "docs/core/api-client.md",
     "docs/database/README.md",
     "docs/database/connections.md",
