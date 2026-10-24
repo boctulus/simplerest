@@ -1,8 +1,8 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Libs;
+namespace Boctulus\Simplerest\Mail;
 
-use Boctulus\Simplerest\Core\Interfaces\IMail;
+use Boctulus\Simplerest\Mail\Interfaces\IMail;
 use Boctulus\Simplerest\Core\Model;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\Factory;

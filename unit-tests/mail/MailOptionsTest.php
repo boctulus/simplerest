@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\tests\mail;
 
-use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Mail\Mail;
 use Boctulus\Simplerest\Core\Libs\Env;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPUnit\Framework\TestCase;

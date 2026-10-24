@@ -1,13 +1,18 @@
 # SimpleRest Mail
 
-`boctulus/simplerest-mail` contains the PHPMailer-based SMTP sender and the
-email template helper. It was extracted from the core so the framework itself
-requires nothing but PHP.
+`boctulus/simplerest-mail` contains all of SimpleRest's mail code: the
+PHPMailer-based SMTP sender, the mailer contract and base class, the audit and
+remote WordPress mailers, and the email template helper. It was extracted from
+the core so the framework itself requires nothing but PHP.
 
-The existing class names are kept:
+Classes (namespace `Boctulus\Simplerest\Mail\`, PSR-4 from `src/`):
 
-- `Boctulus\Simplerest\Core\Libs\Mail` (extends the core `MailBase`, implements `IMail`)
-- `Boctulus\Simplerest\Core\Libs\EmailTemplate`
+- `Mail` (SMTP via PHPMailer; extends `MailBase`, implements `IMail`)
+- `MailBase`
+- `MailAuditor` (writes each send to JSON instead of delivering)
+- `MailFromRemoteWP` (sends through a remote WordPress endpoint)
+- `EmailTemplate`
+- `Interfaces\IMail`
 
-`MailBase`, `IMail`, `MailAuditor` and `MailFromRemoteWP` remain in the core
-because they have no external dependencies.
+These classes were previously `Boctulus\Simplerest\Core\Libs\...` and
+`Boctulus\Simplerest\Core\Interfaces\IMail`; there are no aliases for the old names.

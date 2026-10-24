@@ -17,7 +17,8 @@
         "src/"
       ],
       "Boctulus\\FineGrainedACL\\": "packages/boctulus/simplerest-fine-grained-acl/src/",
-      "Boctulus\\LLMProviders\\": "packages/boctulus/simplerest-llm-providers/src/"
+      "Boctulus\\LLMProviders\\": "packages/boctulus/simplerest-llm-providers/src/",
+      "Boctulus\\Simplerest\\Mail\\": "packages/boctulus/simplerest-mail/src/"
     },
     "classmap": [
       "packages/boctulus/simplerest-scaffolding/src/",
@@ -31,7 +32,6 @@
       "packages/boctulus/simplerest-machine-id/src/",
       "packages/boctulus/simplerest-sse/src/",
       "packages/boctulus/simplerest-psr7/src/",
-      "packages/boctulus/simplerest-mail/src/",
       "packages/boctulus/simplerest-jwt-auth/src/",
       "packages/boctulus/simplerest-css/src/",
       "packages/boctulus/simplerest-html/src/"

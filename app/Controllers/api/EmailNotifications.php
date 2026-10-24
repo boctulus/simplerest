@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Controllers\Api;
 
-use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Mail\Mail;
 use Boctulus\Simplerest\Core\Libs\Logger;
 use Boctulus\Simplerest\Core\Api\ApiController; 
 use Boctulus\Simplerest\Core\Libs\DBRels;

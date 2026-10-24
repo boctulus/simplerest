@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Boctulus\Simplerest\Core\Libs;
+namespace Boctulus\Simplerest\Mail;
 
+use Boctulus\Simplerest\Core\Libs\Arrays;
 use Boctulus\Simplerest\Core\Libs\Logger;
-use Boctulus\Simplerest\Core\Interfaces\IMail;
+use Boctulus\Simplerest\Mail\Interfaces\IMail;
 
 /*  
     Ej:

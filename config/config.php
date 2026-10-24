@@ -1,7 +1,7 @@
 <?php
 
 use Boctulus\Simplerest\Core\Libs\Env;
-use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Mail\Mail;
 use Boctulus\Simplerest\Core\Libs\Paginator;
 
 

@@ -4,7 +4,7 @@ namespace Boctulus\Simplerest\Controllers;
 
 use Boctulus\Simplerest\Core\Api\AuthController;
 use Boctulus\Simplerest\Core\Libs\Logger;
-use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Mail\Mail;
 use Boctulus\Simplerest\Models\main\UsersModel;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;

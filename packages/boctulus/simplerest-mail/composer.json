@@ -10,6 +10,8 @@
         "boctulus/simplerest": "^2.0 || ^3.0"
     },
     "autoload": {
-        "classmap": ["src/"]
+        "psr-4": {
+            "Boctulus\\Simplerest\\Mail\\": "src/"
+        }
     }
 }

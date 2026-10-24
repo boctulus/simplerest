@@ -28,12 +28,12 @@ Estos paquetes conservan los nombres de clase originales. Para usar sus clases h
 | Paquete | Qué contiene | Dependencia | Qué queda en el core |
 | --- | --- | --- | --- |
 | `boctulus/simplerest-psr7` | Adaptadores PSR-7 de `Request` y `Response`, y los helpers `psr7_*()` | `psr/http-message` | `Request` y `Response` |
-| `boctulus/simplerest-mail` | `Mail` (SMTP con PHPMailer) y `EmailTemplate` | `phpmailer/phpmailer` | `MailBase`, `IMail`, `MailAuditor`, `MailFromRemoteWP` |
+| `boctulus/simplerest-mail` | Todo el correo en `Boctulus\Simplerest\Mail\`: `Mail` (SMTP con PHPMailer), `MailBase`, `MailAuditor`, `MailFromRemoteWP`, `EmailTemplate` e `IMail` | `phpmailer/phpmailer` | Nada de correo |
 | `boctulus/simplerest-jwt-auth` | `Api\AuthController` (login, refresh, registro y tokens) | `firebase/php-jwt`, la librería JWT para PHP | `IAuth` y `Factory::auth()` |
 | `boctulus/simplerest-css` | `CSS`: descarga y extracción de hojas de estilo, formateo y reglas CSS | `sabberworm/php-css-parser` | `HTML` y `XML` |
 | `boctulus/simplerest-html` | `HtmlMinifier`: minificación de HTML y eliminación de CSS y clases de un HTML | Ninguna externa | `HTML` y `Strings` |
 
-Ningún paquete extraído depende de otro. `simplerest-html` no necesita `simplerest-css`: quitar `<style>` o atributos `class` de un HTML es reescribir HTML, no parsear CSS.
+Ningún paquete extraído depende de otro; `simplerest-api-clients` sí requiere `simplerest-mail`, porque su cliente SendinBlue es un mailer. `simplerest-html` no necesita `simplerest-css`: quitar `<style>` o atributos `class` de un HTML es reescribir HTML, no parsear CSS.
 
 Otros paquetes, como `simplerest-scaffolding`, `simplerest-bootstrap-html`, `simplerest-web-inspection` o `simplerest-api-clients`, siguen el mismo criterio y están en el catálogo de límites de paquetes Composer.
 

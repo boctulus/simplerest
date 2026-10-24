@@ -1,7 +1,8 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Libs;
+namespace Boctulus\Simplerest\Mail;
 
+use Boctulus\Simplerest\Core\Libs\Logger;
 use Boctulus\Simplerest\Core\Libs\Strings;
 
 class EmailTemplate

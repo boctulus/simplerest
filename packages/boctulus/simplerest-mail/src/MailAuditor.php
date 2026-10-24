@@ -1,9 +1,9 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Libs;
+namespace Boctulus\Simplerest\Mail;
 
-use Boctulus\Simplerest\Core\Interfaces\IMail;
-use Boctulus\Simplerest\Core\Libs\MailBase;
+use Boctulus\Simplerest\Core\Libs\Logger;
+use Boctulus\Simplerest\Mail\Interfaces\IMail;
 
 /**
  * Audit mailer — captures every send() call to disk without delivering.
@@ -11,9 +11,15 @@ use Boctulus\Simplerest\Core\Libs\MailBase;
  */
 class MailAuditor extends MailBase implements IMail
 {
+    /*
+        Same directory as when this class lived in the core
+        (src/framework/Libs): the src/ folder of the SimpleRest core.
+    */
     private static function logDir(): string
     {
-        return dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'mail';
+        $coreLibs = dirname((new \ReflectionClass(Logger::class))->getFileName());
+
+        return dirname($coreLibs, 2) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'mail';
     }
 
     static function send(

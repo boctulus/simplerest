@@ -1,6 +1,6 @@
 <?php
 
-namespace Boctulus\Simplerest\Core\Interfaces;
+namespace Boctulus\Simplerest\Mail\Interfaces;
 
 interface IMail {
     

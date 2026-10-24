@@ -12,17 +12,19 @@ El catálogo completo de paquetes y sus decisiones de distribución está en [L�
 
 ## Paquetes extraídos el 2026-10-24
 
-Los paquetes conservan los nombres de clase originales (salvo `HtmlMinifier`, que reúne métodos que antes estaban en `Strings` y `CSS`) y se cargan por `classmap`. No hay aliases ni shims. Un consumidor que necesite alguna de estas clases debe instalar el paquete correspondiente; con solo `boctulus/simplerest` la clase no existe.
+Los paquetes conservan los nombres de clase originales y se cargan por `classmap`, con dos excepciones: `HtmlMinifier` reúne métodos que antes estaban en `Strings` y `CSS`, y `simplerest-mail` usa su propio namespace `Boctulus\Simplerest\Mail\` (PSR-4). No hay aliases ni shims. Un consumidor que necesite alguna de estas clases debe instalar el paquete correspondiente; con solo `boctulus/simplerest` la clase no existe.
 
 | Paquete | Clases y archivos | Dependencia propia | Se queda en el core |
 | --- | --- | --- | --- |
 | `boctulus/simplerest-psr7` | `Psr7\ServerRequestAdapter`, `Psr7\ResponseAdapter`, `Psr7\StreamAdapter`, `Psr7\UriAdapter` y los helpers `psr7_*()` (antes `Helpers/psr7.php`, ahora `src/helpers.php` en `autoload.files` del paquete) | `psr/http-message` `^2.0` | `Request` y `Response` |
-| `boctulus/simplerest-mail` | `Libs\Mail` (envío SMTP con PHPMailer) y `Libs\EmailTemplate` (que llama a `Mail::send`) | `phpmailer/phpmailer` `^6.9 \|\| ^7.1` | `Libs\MailBase`, `Interfaces\IMail`, `Libs\MailAuditor`, `Libs\MailFromRemoteWP` |
+| `boctulus/simplerest-mail` | Todo el correo, en `Boctulus\Simplerest\Mail\`: `Mail` (envío SMTP con PHPMailer), `MailBase`, `MailAuditor`, `MailFromRemoteWP`, `EmailTemplate` e `Interfaces\IMail`. Antes eran `Core\Libs\...` y `Core\Interfaces\IMail` | `phpmailer/phpmailer` `^6.9 \|\| ^7.1` | Nada de correo |
 | `boctulus/simplerest-jwt-auth` | `Api\AuthController` (login, refresh, registro y tokens de email/contraseña) | `firebase/php-jwt` `^7.1`, la librería JWT para PHP; no usa la plataforma Firebase | `Interfaces\IAuth` y `Factory::auth()` |
 | `boctulus/simplerest-css` | `Libs\CSS`: descarga y extracción de hojas de estilo de una página, `beautifier()`, `getCSSRules()` y `getCSSClasses()` | `sabberworm/php-css-parser` `^8.4` (antes no estaba declarada en ningún manifiesto) | `Libs\HTML` y `Libs\XML` |
 | `boctulus/simplerest-html` | `Libs\HtmlMinifier`: `minify()` (antes `Strings::minimifyHTML()`), `removeCSS()` y `removeCSSClasses()` (antes en `CSS`) | Ninguna externa | `Libs\HTML` y el resto de `Libs\Strings` |
 
-Cada paquete requiere además `boctulus/simplerest` `^2.0 || ^3.0`. Ningún paquete extraído depende de otro.
+Cada paquete requiere además `boctulus/simplerest` `^2.0 || ^3.0`. Ningún paquete extraído depende de otro. `boctulus/simplerest-api-clients` requiere `boctulus/simplerest-mail` `^1.0`, porque `SendinBlue` extiende `MailBase` e implementa `IMail`.
+
+`MailBase`, `IMail`, `MailAuditor` y `MailFromRemoteWP` se quedaron primero en el core porque no tienen dependencias externas. Se movieron al paquete el 2026-10-24, porque la ausencia de dependencias no basta para que una clase pertenezca al core. `MailAuditor` sigue escribiendo en el mismo directorio que antes (`src/logs/mail` del core).
 
 `simplerest-css` y `simplerest-html` se separaron por dominio: `removeCSS()` y `removeCSSClasses()` no parsean CSS sino que reescriben HTML (quitan bloques `<style>` y atributos `style`/`class`), por eso pertenecen a `HtmlMinifier`. Así `simplerest-html` no necesita `simplerest-css`.
 
@@ -39,7 +41,7 @@ Desde el 2026-10-24 el alias vuelve a ser el plural de la tabla relacionada. Lo 
 - `composer-dev.json` registra los paquetes extraídos en `classmap` y los helpers PSR-7 en `files`.
 - `app/Controllers/CssExtractorController.php` usa `CSS` y depende ahora de `boctulus/simplerest-css`.
 - Las dependencias externas de los paquetes (`psr/http-message`, `phpmailer/phpmailer`, `firebase/php-jwt`) no están en `composer-dev.json`, igual que las de los demás paquetes locales. Sin ellas, cargar las clases que las usan falla, y las pruebas de correo y autenticación que las necesitan siguen fallando en el entorno de desarrollo.
-- `app/Controllers/MyAuthController.php` y `DumbAuthController.php` extienden `AuthController`; los controladores de `app/` que usan `Mail` dependen ahora de `boctulus/simplerest-mail`.
+- `app/Controllers/MyAuthController.php` y `DumbAuthController.php` extienden `AuthController`; los controladores de `app/`, `config/` y `unit-tests/mail/` que usan `Mail` importan `Boctulus\Simplerest\Mail\Mail` y dependen de `boctulus/simplerest-mail`. GoProp (`app/Libs/Mail/Mailer.php`, `app/Services/MessageEmailService.php` y dos tests) todavía usa los nombres `Core\Libs\Mail` y `Core\Libs\EmailTemplate`, y falta migrarlo.
 
 ## Pendiente
 

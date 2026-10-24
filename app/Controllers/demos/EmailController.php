@@ -5,7 +5,7 @@ namespace Boctulus\Simplerest\Controllers\demos;
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Response;
-use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Mail\Mail;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\SendinBlue;

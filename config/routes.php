@@ -2,7 +2,7 @@
 
 
 use Boctulus\Simplerest\Core\Libs\Logger;
-use Boctulus\Simplerest\Core\Libs\Mail;
+use Boctulus\Simplerest\Mail\Mail;
 use Boctulus\Simplerest\Core\Libs\SiteMap;
 use Boctulus\Simplerest\Core\Libs\System;
 use Boctulus\Simplerest\Core\WebRouter;

@@ -3,7 +3,8 @@
 namespace Boctulus\Simplerest\Core\Libs;
 
 use GuzzleHttp;
-use Boctulus\Simplerest\Core\Interfaces\IMail;
+use Boctulus\Simplerest\Mail\Interfaces\IMail;
+use Boctulus\Simplerest\Mail\MailBase;
 use Boctulus\Simplerest\Core\Libs\Logger;
 use Boctulus\Simplerest\Core\Libs\StdOut;
 use Boctulus\Simplerest\Libs\SendinBlue\Client\Api\TransactionalEmailsApi;
