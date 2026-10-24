@@ -5,10 +5,11 @@ namespace Boctulus\Simplerest\Core\Libs;
 use Boctulus\Simplerest\Core\Commands\BaseCommand;
 
 /**
- * Auto-discovers and dispatches commands organized in group folders.
+ * Auto-discovers commands from group folders and flat command roots.
  *
  * Convention:
- *   app/Commands/{group}/{Name}Command.php  → php com {group} {name}
+ *   app/Commands/{group}/{Name}Command.php → group comes from the directory
+ *   flat package src/Commands/{Name}Command.php → group comes from BaseCommand::$group
  *
  * Directories starting with '_' or '.' are skipped (e.g., _disabled).
  * Files starting with 'Base' or 'Abstract' are skipped (base classes).
@@ -53,6 +54,10 @@ class CommandRegistry
         foreach ($this->buildSearchSources($config) as $source) {
             $basePath = $source['path'];
             if (!is_dir($basePath)) continue;
+
+            if (in_array($source['id'], $config['packages'] ?? [], true)) {
+                $this->loadCommandsFromDirectory($basePath, null, $source['id'], $source['tier']);
+            }
 
             foreach (scandir($basePath) as $entry) {
                 if ($entry === '.' || $entry === '..') continue;
@@ -222,7 +227,7 @@ class CommandRegistry
         return $path;
     }
 
-    private function loadCommandsFromDirectory(string $dirPath, string $groupName, string $sourceId, string $tier): void
+    private function loadCommandsFromDirectory(string $dirPath, ?string $groupName, string $sourceId, string $tier): void
     {
         $files = glob($dirPath . DIRECTORY_SEPARATOR . '*Command.php') ?: [];
 
@@ -235,7 +240,7 @@ class CommandRegistry
         }
     }
 
-    private function loadCommandFromFile(string $filePath, string $groupName, string $sourceId, string $tier): void
+    private function loadCommandFromFile(string $filePath, ?string $groupName, string $sourceId, string $tier): void
     {
         $canonicalFilePath = realpath($filePath) ?: $filePath;
         $commandClass = null;
@@ -283,9 +288,14 @@ class CommandRegistry
         if (!($instance instanceof BaseCommand)) return;
         if (empty($instance->command)) return;
 
-        $instance->group = $groupName;
+        if ($groupName !== null) {
+            $instance->group = $groupName;
+        }
 
-        $key = "{$groupName}:{$instance->command}";
+        $commandGroup = $groupName ?? $instance->group;
+        if ($commandGroup === '') return;
+
+        $key = "{$commandGroup}:{$instance->command}";
         $this->commandCandidates[$key][] = [
             'instance' => $instance,
             'source' => $sourceId,
@@ -297,9 +307,9 @@ class CommandRegistry
                 throw new \InvalidArgumentException("Command '{$key}' declares an empty or invalid alias.");
             }
 
-            $aliasKey = "{$groupName}:{$alias}";
+            $aliasKey = "{$commandGroup}:{$alias}";
             $this->aliasCandidates[$aliasKey][] = [
-                'group' => $groupName,
+                'group' => $commandGroup,
                 'command' => $instance->command,
                 'owner_key' => $key,
                 'source' => $sourceId,
@@ -308,7 +318,7 @@ class CommandRegistry
         }
 
         if ($this->debug) {
-            echo "  ✓ {$groupName} {$instance->command}\n";
+            echo "  ✓ {$commandGroup} {$instance->command}\n";
         }
     }
 
