@@ -326,3 +326,7 @@ Pages under [`pending/`](pending/README.md) are retained as audit inputs and are
 ## Composer integration audit
 
 See the [initial GoProp Composer integration audit](goprop-composer-integration-2026-10.md) and the live [SimpleRest–GoProp convergence report](goprop-composer-convergence.md) for release-source, package-boundary, dependency, CLI-discovery, and core-parity findings. The package contracts and release workflow are maintained in [Composer package boundaries](../architecture/composer-packages.md) and [Composer release process](../architecture/composer-release-process.md).
+
+### Integration package autoload status (2026-10-24)
+
+The compatibility claim for extracted API Clients classes remains unresolved. The package test and `scripts/distribution/verify-release-artifacts.php` enumerate old `Boctulus\Simplerest\Core\Libs\` names for Google Drive, Hugging Face, OneSignal, and WooCommerce. The current package manifest maps `src/` to `Boctulus\Simplerest\Integrations\`, and classmaps `src/LegacyCoreLibs/`; that directory contains the legacy `WP`, `Pastebin`, and `SendinBlue` classes, but no alias declarations for the four clients. The root production autoload maps only `src/framework/`. The current Composer boundary guide already labels the former core alias loader obsolete. **Classification:** pending package/test/distribution reconciliation; the package tests and clean consumer were not run in this audit. Do not claim the old FQCNs autoload until an isolated consumer validates them or the manifests and tests are reconciled.
