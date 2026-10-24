@@ -13,6 +13,7 @@ export default defineConfig({
         nav: [
           { text: 'Inicio', link: '/' },
           { text: 'Primeros pasos', link: '/getting-started' },
+          { text: 'Referencia pública', link: '/reference' },
           {
             text: 'Guías',
             items: [
@@ -200,7 +201,8 @@ export default defineConfig({
               { text: 'Catálogo php com', link: '/cli/commands' },
               { text: 'Routing CLI (CliRouter)', link: '/cli/routing' },
               { text: 'Despliegue', link: '/deployment' },
-              { text: 'Rendimiento', link: '/performance' }
+              { text: 'Rendimiento', link: '/performance' },
+              { text: 'Referencia pública', link: '/reference' }
             ]
           }
         ],

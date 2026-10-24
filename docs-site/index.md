@@ -26,7 +26,7 @@ features:
 source:
   - docs/index.md
   - docs/documentation-governance.md
-source_revision: 0cd8a411195c4373648faf320416191e3018ecc3
+source_revision: efa2bc11c53b3f2d9d940b45326ffb0df117dce1
 status: partial
 ---
 
@@ -47,5 +47,6 @@ La documentación todavía no cubre todas las capacidades del framework. Cada gu
 5. Las guías de [Base de datos](/database), [Query Builder](/database/query-builder), [paginación](/database/pagination), [Model/ModelRecord](/database/model), [constructor DDL](/database/schema-builder), [migraciones](/database/migrations), [filesystem](/core/filesystem), [uploads](/core/file-uploads), [ZIP y backups](/core/archives-backups), [HTML/XML e imágenes](/core/content-conversion), [ApiClient](/core/api-client), [HTTP/API](/api), [endpoints automáticos](/api/automatic-endpoints), [autenticación](/security/authentication), [ACL](/security/acl) y [webhooks](/webhooks) detallan los contratos actuales y sus límites.
 6. Revisa [API Clients](/integrations/api-clients), [Shopify Connector](/integrations/shopify) y [proveedores LLM](/integrations/llm-providers) para las integraciones opcionales.
 7. CLI tiene dos guías independientes: el [catálogo de `php com`](/cli/commands) y el [routing CLI con CliRouter](/cli/routing). [Despliegue](/deployment) y [rendimiento](/performance) separan lo automatizado de lo pendiente de reproducir.
+8. La [referencia pública](/reference) reúne claves de configuración, variables de entorno, helpers globales, entradas CLI, contratos y familias de clases, con límites explícitos de carga y uso.
 
 El español ocupa `/`. Los directorios `/en/`, `/it/` y `/pt/` quedan reservados para traducciones futuras; esta edición no las genera ni publica enlaces a ellas.
