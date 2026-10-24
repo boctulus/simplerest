@@ -19,6 +19,7 @@ export default defineConfig({
               { text: 'Arquitectura', link: '/architecture' },
               { text: 'Ciclo de request', link: '/core/request-lifecycle' },
               { text: 'Request y Response', link: '/core/request-response' },
+              { text: 'Routing HTTP (WebRouter)', link: '/core/web-routing' },
               { text: 'Microcore y paquetes', link: '/core/microcore' },
               { text: 'ApiClient', link: '/core/api-client' },
               { text: 'Base de datos', link: '/database' },
@@ -33,6 +34,10 @@ export default defineConfig({
               { text: 'Seguridad', link: '/security' },
               { text: 'Webhooks', link: '/webhooks' }
             ]
+          },
+          {
+            text: 'Operación',
+            items: [{ text: 'Routing CLI (CliRouter)', link: '/cli/routing' }]
           }
         ],
         sidebar: [
@@ -46,6 +51,7 @@ export default defineConfig({
               { text: 'Arquitectura', link: '/architecture' },
               { text: 'Ciclo de request', link: '/core/request-lifecycle' },
               { text: 'Request y Response', link: '/core/request-response' },
+              { text: 'Routing HTTP (WebRouter)', link: '/core/web-routing' },
               { text: 'Microcore y paquetes', link: '/core/microcore' },
               { text: 'ApiClient', link: '/core/api-client' }
             ]
@@ -60,6 +66,10 @@ export default defineConfig({
               { text: 'Seguridad', link: '/security' },
               { text: 'Webhooks', link: '/webhooks' }
             ]
+          },
+          {
+            text: 'Operación',
+            items: [{ text: 'Routing CLI (CliRouter)', link: '/cli/routing' }]
           }
         ],
         outline: { label: 'En esta página' },
