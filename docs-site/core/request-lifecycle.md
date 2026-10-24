@@ -9,7 +9,7 @@ status: partial
 
 # Recorrido de una petición HTTP
 
-Este recorrido HTTP está trazado en el código del checkout. El orden global de `WebRouter`, `CliRouter` y `FrontController` está explicado en [Arquitectura](/architecture); aquí CLI no forma parte del ciclo de petición HTTP. Esta guía tampoco cubre por completo las APIs de `Request`, `Response`, middleware ni la definición de rutas.
+Este recorrido HTTP está trazado en el código del checkout. La página se limita a la entrada HTTP, sus resolvers y las ramas del front controller. No cubre por completo las APIs de `Request`, `Response`, middleware ni la definición de rutas.
 
 ## Enrutamiento HTTP y continuidad al front controller
 

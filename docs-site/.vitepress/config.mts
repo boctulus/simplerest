@@ -24,13 +24,15 @@ export default defineConfig({
               { text: 'ApiClient', link: '/core/api-client' },
               { text: 'Base de datos', link: '/database' },
               { text: 'Query Builder', link: '/database/query-builder' },
-              { text: 'Model y ModelRecord', link: '/database/model' }
+              { text: 'Model y ModelRecord', link: '/database/model' },
+              { text: 'Constructor DDL de esquemas', link: '/database/schema-builder' }
             ]
           },
           {
             text: 'HTTP y seguridad',
             items: [
               { text: 'HTTP/API', link: '/api' },
+              { text: 'Endpoints automáticos', link: '/api/automatic-endpoints' },
               { text: 'Seguridad', link: '/security' },
               { text: 'Webhooks', link: '/webhooks' }
             ]
@@ -62,7 +64,9 @@ export default defineConfig({
               { text: 'Base de datos', link: '/database' },
               { text: 'Query Builder', link: '/database/query-builder' },
               { text: 'Model y ModelRecord', link: '/database/model' },
+              { text: 'Constructor DDL de esquemas', link: '/database/schema-builder' },
               { text: 'HTTP/API', link: '/api' },
+              { text: 'Endpoints automáticos', link: '/api/automatic-endpoints' },
               { text: 'Seguridad', link: '/security' },
               { text: 'Webhooks', link: '/webhooks' }
             ]

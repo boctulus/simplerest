@@ -26,7 +26,7 @@ features:
 source:
   - docs/index.md
   - docs/documentation-governance.md
-source_revision: cfb6365c0bea2fcfc90b807f0f6a5c61740d6753
+source_revision: cd60be5f8416cdcbbe7011e07486c4b65c0e0df2
 status: partial
 ---
 
@@ -44,6 +44,7 @@ La documentación todavía no cubre todas las capacidades del framework. Cada gu
 2. [Arquitectura](/architecture) sitúa los componentes de entrada y despacho.
 3. [Ciclo de request](/core/request-lifecycle) recorre la ruta HTTP; [Request y Response](/core/request-response) describe los mensajes y sus helpers; [WebRouter](/core/web-routing) detalla el registro HTTP.
 4. [Microcore y paquetes](/core/microcore) explica qué incluye el core y qué librerías se instalan como paquetes.
-5. Las guías de [Base de datos](/database), el [ApiClient](/core/api-client), [HTTP/API](/api), [seguridad](/security) y [webhooks](/webhooks) detallan los contratos actuales y sus límites. [CliRouter](/cli/routing) documenta los comandos CLI como recorrido independiente del ciclo HTTP.
+5. Las guías de [Base de datos](/database), [Query Builder](/database/query-builder), [Model/ModelRecord](/database/model), [constructor DDL](/database/schema-builder), [ApiClient](/core/api-client), [HTTP/API](/api), [endpoints automáticos](/api/automatic-endpoints), [seguridad](/security) y [webhooks](/webhooks) detallan los contratos actuales y sus límites.
+6. [Routing CLI](/cli/routing) documenta el registro y despacho de comandos de consola en una guía aparte.
 
 El español ocupa `/`. Los directorios `/en/`, `/it/` y `/pt/` quedan reservados para traducciones futuras; esta edición no las genera ni publica enlaces a ellas.

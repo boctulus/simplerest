@@ -6,13 +6,14 @@ source:
   - docs/database/query-builder.md
   - docs/database/model.md
   - docs/database/schemas.md
-source_revision: 683d89509c036f2495e7ba22b2b8a4128273f95c
+  - docs/database/schema-builder.md
+source_revision: cd60be5f8416cdcbbe7011e07486c4b65c0e0df2
 status: partial
 ---
 
 # Base de datos
 
-Esta sección reúne selección de conexiones, consultas, modelos y descriptores de esquema. El código se trazó en fuente; no se ejecutó una consulta ni se probó conectividad o compatibilidad por motor. Las referencias separadas describen el [Query Builder](/database/query-builder) y [Model/ModelRecord](/database/model).
+Esta sección reúne selección de conexiones, consultas, modelos y descriptores de esquema. El código se trazó en fuente; no se ejecutó una consulta ni se probó conectividad o compatibilidad por motor. Las referencias separadas describen el [Query Builder](/database/query-builder), [Model/ModelRecord](/database/model) y el [constructor DDL](/database/schema-builder).
 
 ## Conexiones
 
@@ -53,6 +54,10 @@ La fuente comprueba algunos modos en `create()` y `executeInsert()`, pero `updat
 
 El generador produce una clase PHP que implementa `ISchema`; su `get()` devuelve metadatos de tabla, campos, tipos, reglas, clave primaria y relaciones. `make schema` inspecciona una tabla existente y escribe el descriptor: no crea la tabla ni una migración. Parte de la introspección usa SQL orientado a MySQL; un probe aislado con SQLite rechazó `SHOW COLUMNS`. El writer recibe `protected = false`, por lo que la fuente actual permite reemplazar un descriptor existente sin `--force`. No se ejecutó el generador ni DDL.
 
+## Constructor DDL
+
+`Schema` es otro componente: compila y ejecuta sentencias para crear o alterar tablas. No equivale a un descriptor `ISchema` ni a una migración con historial. Consulta la [referencia del constructor DDL](/database/schema-builder) para columnas, modificadores, índices, claves foráneas, métodos de alteración, introspección y límites específicos de la implementación. No se ejecutó DDL.
+
 ## Límites actuales
 
-Escrituras, transacciones, consultas raw, paginación, agregados, carga de relaciones, joins automáticos, DDL, migraciones, aislamiento por tenant y compatibilidad por driver siguen fuera del alcance verificado de estas páginas. Los tests de consulta consultados no se ejecutaron; `composer test` y la suite declarada en `phpunit.xml` incluyen `unit-tests/`, pero esto no aporta un resultado de ejecución. Con `debug` activo, una excepción de conexión puede registrar la entrada de configuración seleccionada con valores de credenciales; los secretos no deben exponerse en logs compartidos.
+Escrituras, transacciones, consultas raw, paginación, agregados, carga de relaciones, joins automáticos, migraciones, aislamiento por tenant y compatibilidad por driver siguen fuera del alcance funcional verificado. El constructor DDL está trazado en fuente, pero no se ejecutó. Los tests de consulta consultados no se ejecutaron; `composer test` y la suite declarada en `phpunit.xml` incluyen `unit-tests/`, pero esto no aporta un resultado de ejecución. Con `debug` activo, una excepción de conexión puede registrar la entrada de configuración seleccionada con valores de credenciales; los secretos no deben exponerse en logs compartidos.
