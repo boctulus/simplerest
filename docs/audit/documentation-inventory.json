@@ -1,19 +1,19 @@
 {
   "version": 1,
   "generated_on": "2026-10-24",
-  "stage": "post CLI command and migration lifecycle references",
-  "scope": "Added canonical references for CommandRegistry and migrations; updated affected paths, their link edges, line numbers, and classification totals while retaining unrelated historical inbound references.",
+  "stage": "post service references",
+  "scope": "Added canonical references for cache, EventBus, PHP views, i18n, server validation, and HTML form builders; updated the public map and only the affected link edges while retaining unrelated historical inbound references.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 862,
+  "inline_markdown_links_seen": 885,
   "counts": {
-    "markdown_scanned": 217,
+    "markdown_scanned": 224,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 459,
+    "local_markdown_links": 482,
     "broken_local_markdown_links": 0,
     "classifications": {
       "needs-review": 11,
-      "canonical": 27,
+      "canonical": 34,
       "internal/audit": 80,
       "legacy": 99
     }
@@ -2444,6 +2444,10 @@
         {
           "source": "docs/packages/README.md",
           "line": 11
+        },
+        {
+          "source": "docs/services/forms.md",
+          "line": 24
         }
       ],
       "outgoing_markdown_refs": [
@@ -3583,7 +3587,7 @@
         },
         {
           "source": "docs/index.md",
-          "line": 21
+          "line": 22
         }
       ],
       "outgoing_markdown_refs": [
@@ -3619,7 +3623,7 @@
         },
         {
           "source": "docs/index.md",
-          "line": 21
+          "line": 22
         }
       ],
       "outgoing_markdown_refs": [
@@ -3663,7 +3667,7 @@
         },
         {
           "source": "docs/index.md",
-          "line": 21
+          "line": 22
         }
       ],
       "outgoing_markdown_refs": [
@@ -3739,6 +3743,10 @@
         {
           "source": "docs/index.md",
           "line": 17
+        },
+        {
+          "source": "docs/services/cache.md",
+          "line": 35
         }
       ],
       "outgoing_markdown_refs": [
@@ -3995,6 +4003,10 @@
         {
           "source": "docs/index.md",
           "line": 18
+        },
+        {
+          "source": "docs/services/cache.md",
+          "line": 39
         }
       ],
       "outgoing_markdown_refs": [
@@ -4099,6 +4111,14 @@
         {
           "source": "docs/index.md",
           "line": 18
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 16
+        },
+        {
+          "source": "docs/services/event-bus.md",
+          "line": 45
         }
       ],
       "outgoing_markdown_refs": [
@@ -4772,49 +4792,84 @@
           "line": 20
         },
         {
-          "target": "docs/cli/README.md",
+          "target": "docs/services/README.md",
           "exists": true,
           "line": 21
+        },
+        {
+          "target": "docs/services/cache.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/services/event-bus.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/services/views.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/services/i18n.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/services/validation.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/services/forms.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/cli/README.md",
+          "exists": true,
+          "line": 22
         },
         {
           "target": "docs/cli/commands.md",
           "exists": true,
-          "line": 21
+          "line": 22
         },
         {
           "target": "docs/cli/routing.md",
           "exists": true,
-          "line": 21
+          "line": 22
         },
         {
           "target": "docs/architecture/composer-packages.md",
           "exists": true,
-          "line": 22
+          "line": 23
         },
         {
           "target": "docs/architecture/composer-release-process.md",
           "exists": true,
-          "line": 22
+          "line": 23
         },
         {
           "target": "docs/integrations/README.md",
           "exists": true,
-          "line": 23
+          "line": 24
         },
         {
           "target": "docs/deployment/README.md",
           "exists": true,
-          "line": 24
+          "line": 25
         },
         {
           "target": "docs/reference/README.md",
           "exists": true,
-          "line": 25
+          "line": 26
         },
         {
           "target": "docs/documentation-governance.md",
           "exists": true,
-          "line": 31
+          "line": 32
         }
       ]
     },
@@ -4825,7 +4880,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/index.md",
-          "line": 23
+          "line": 24
         }
       ],
       "outgoing_markdown_refs": []
@@ -4960,7 +5015,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/index.md",
-          "line": 25
+          "line": 26
         }
       ],
       "outgoing_markdown_refs": []
@@ -5080,6 +5135,220 @@
           "target": "docs/audit/authentication-acl.md",
           "exists": true,
           "line": 7
+        }
+      ]
+    },
+    {
+      "path": "docs/services/README.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 21
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/services/cache.md",
+          "exists": true,
+          "line": 7
+        },
+        {
+          "target": "docs/services/event-bus.md",
+          "exists": true,
+          "line": 8
+        },
+        {
+          "target": "docs/services/views.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/services/i18n.md",
+          "exists": true,
+          "line": 10
+        },
+        {
+          "target": "docs/services/validation.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/services/forms.md",
+          "exists": true,
+          "line": 12
+        },
+        {
+          "target": "docs/database/model.md",
+          "exists": true,
+          "line": 16
+        }
+      ]
+    },
+    {
+      "path": "docs/services/cache.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 21
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 7
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/core/api-client.md",
+          "exists": true,
+          "line": 35
+        },
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 39
+        }
+      ]
+    },
+    {
+      "path": "docs/services/event-bus.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 21
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 8
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/model.md",
+          "exists": true,
+          "line": 45
+        }
+      ]
+    },
+    {
+      "path": "docs/services/forms.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 21
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 12
+        },
+        {
+          "source": "docs/services/validation.md",
+          "line": 3
+        },
+        {
+          "source": "docs/services/views.md",
+          "line": 43
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/services/validation.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/architecture/composer-packages.md",
+          "exists": true,
+          "line": 24
+        }
+      ]
+    },
+    {
+      "path": "docs/services/i18n.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 21
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 10
+        },
+        {
+          "source": "docs/services/validation.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/services/validation.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 21
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 11
+        },
+        {
+          "source": "docs/services/forms.md",
+          "line": 3
+        },
+        {
+          "source": "docs/services/views.md",
+          "line": 43
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/services/forms.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/services/i18n.md",
+          "exists": true,
+          "line": 46
+        }
+      ]
+    },
+    {
+      "path": "docs/services/views.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 21
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 9
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/services/forms.md",
+          "exists": true,
+          "line": 43
+        },
+        {
+          "target": "docs/services/validation.md",
+          "exists": true,
+          "line": 43
         }
       ]
     },

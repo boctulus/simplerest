@@ -1,6 +1,6 @@
 # Request lifecycle
 
-This page describes the source-traced HTTP request path for this checkout. The process-wide choice and order of the web router, CLI router, and front controller belong to [Architecture](../architecture.md), not to this request guide. It is not a complete route-definition, request-helper, or response-format guide; those legacy claims remain under audit.
+This page describes the source-traced HTTP request path for this checkout. The process-wide choice of HTTP components belongs to [Architecture](../architecture.md); this guide follows only the HTTP path. It is not a complete route-definition, request-helper, or response-format guide; those legacy claims remain under audit.
 
 ## HTTP route handoff
 
