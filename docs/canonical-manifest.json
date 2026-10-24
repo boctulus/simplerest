@@ -37,6 +37,7 @@
     "docs/integrations/README.md",
     "docs/integrations/api-clients.md",
     "docs/integrations/shopify.md",
+    "docs/integrations/llm-providers.md",
     "docs/deployment/README.md",
     "docs/reference/README.md"
   ],

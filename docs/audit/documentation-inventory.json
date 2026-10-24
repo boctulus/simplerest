@@ -1,19 +1,19 @@
 {
   "version": 1,
   "generated_on": "2026-10-24",
-  "stage": "post API client and Shopify references",
-  "scope": "Added source-traced API client and Shopify references; updated the integrations index, canonical map, and only affected Markdown link edges.",
+  "stage": "post LLM provider reference",
+  "scope": "Added a source-traced LLM providers reference, updated the canonical integration map, and refreshed only affected Markdown link edges.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 896,
+  "inline_markdown_links_seen": 905,
   "counts": {
-    "markdown_scanned": 226,
+    "markdown_scanned": 227,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 493,
+    "local_markdown_links": 502,
     "broken_local_markdown_links": 0,
     "classifications": {
       "needs-review": 11,
-      "canonical": 36,
+      "canonical": 37,
       "internal/audit": 80,
       "legacy": 99
     }
@@ -2426,6 +2426,10 @@
         {
           "source": "docs/integrations/shopify.md",
           "line": 21
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 83
         }
       ],
       "outgoing_markdown_refs": [
@@ -2457,7 +2461,11 @@
         },
         {
           "source": "docs/integrations/README.md",
-          "line": 10
+          "line": 11
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 83
         }
       ],
       "outgoing_markdown_refs": [
@@ -2470,6 +2478,58 @@
           "target": "docs/architecture/composer-packages.md",
           "exists": true,
           "line": 27
+        }
+      ]
+    },
+    {
+      "path": "docs/integrations/llm-providers.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 24
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 10
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 58
+        },
+        {
+          "target": "docs/core/api-client.md",
+          "exists": true,
+          "line": 82
+        },
+        {
+          "target": "docs/integrations/api-clients.md",
+          "exists": true,
+          "line": 83
+        },
+        {
+          "target": "docs/integrations/shopify.md",
+          "exists": true,
+          "line": 83
+        },
+        {
+          "target": "docs/architecture/composer-packages.md",
+          "exists": true,
+          "line": 84
+        },
+        {
+          "target": "docs/architecture/composer-release-process.md",
+          "exists": true,
+          "line": 84
         }
       ]
     },
@@ -2523,6 +2583,10 @@
         {
           "source": "docs/integrations/shopify.md",
           "line": 27
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 84
         }
       ],
       "outgoing_markdown_refs": [
@@ -2545,6 +2609,10 @@
         {
           "source": "docs/integrations/README.md",
           "line": 3
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 84
         }
       ],
       "outgoing_markdown_refs": []
@@ -3584,6 +3652,14 @@
         {
           "source": "docs/integrations/api-clients.md",
           "line": 21
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 9
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 58
         }
       ],
       "outgoing_markdown_refs": [
@@ -3830,6 +3906,10 @@
         {
           "source": "docs/services/cache.md",
           "line": 35
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 82
         }
       ],
       "outgoing_markdown_refs": [
@@ -4950,6 +5030,11 @@
           "line": 24
         },
         {
+          "target": "docs/integrations/llm-providers.md",
+          "exists": true,
+          "line": 24
+        },
+        {
           "target": "docs/deployment/README.md",
           "exists": true,
           "line": 25
@@ -4997,9 +5082,14 @@
           "line": 9
         },
         {
-          "target": "docs/integrations/shopify.md",
+          "target": "docs/integrations/llm-providers.md",
           "exists": true,
           "line": 10
+        },
+        {
+          "target": "docs/integrations/shopify.md",
+          "exists": true,
+          "line": 11
         }
       ]
     },
