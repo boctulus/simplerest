@@ -1,19 +1,19 @@
 {
   "version": 1,
   "generated_on": "2026-10-24",
-  "stage": "post service references",
-  "scope": "Added canonical references for cache, EventBus, PHP views, i18n, server validation, and HTML form builders; updated the public map and only the affected link edges while retaining unrelated historical inbound references.",
+  "stage": "post API client and Shopify references",
+  "scope": "Added source-traced API client and Shopify references; updated the integrations index, canonical map, and only affected Markdown link edges.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 885,
+  "inline_markdown_links_seen": 896,
   "counts": {
-    "markdown_scanned": 224,
+    "markdown_scanned": 226,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 482,
+    "local_markdown_links": 493,
     "broken_local_markdown_links": 0,
     "classifications": {
       "needs-review": 11,
-      "canonical": 34,
+      "canonical": 36,
       "internal/audit": 80,
       "legacy": 99
     }
@@ -2411,6 +2411,69 @@
       ]
     },
     {
+      "path": "docs/integrations/api-clients.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 24
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 9
+        },
+        {
+          "source": "docs/integrations/shopify.md",
+          "line": 21
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/integrations/README.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/architecture/composer-packages.md",
+          "exists": true,
+          "line": 23
+        }
+      ]
+    },
+    {
+      "path": "docs/integrations/shopify.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 24
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 10
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/integrations/api-clients.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/architecture/composer-packages.md",
+          "exists": true,
+          "line": 27
+        }
+      ]
+    },
+    {
       "path": "docs/packages/README.md",
       "classification": "needs-review",
       "basis": "Added 2026-10-24 to document the packages extracted from the core; public canonical status requires maintainer disposition.",
@@ -2448,6 +2511,18 @@
         {
           "source": "docs/services/forms.md",
           "line": 24
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 3
+        },
+        {
+          "source": "docs/integrations/api-clients.md",
+          "line": 23
+        },
+        {
+          "source": "docs/integrations/shopify.md",
+          "line": 27
         }
       ],
       "outgoing_markdown_refs": [
@@ -2466,6 +2541,10 @@
         {
           "source": "docs/audit/README.md",
           "line": 328
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 3
         }
       ],
       "outgoing_markdown_refs": []
@@ -3501,6 +3580,10 @@
         {
           "source": "docs/database/schemas.md",
           "line": 23
+        },
+        {
+          "source": "docs/integrations/api-clients.md",
+          "line": 21
         }
       ],
       "outgoing_markdown_refs": [
@@ -4857,6 +4940,16 @@
           "line": 24
         },
         {
+          "target": "docs/integrations/api-clients.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/integrations/shopify.md",
+          "exists": true,
+          "line": 24
+        },
+        {
           "target": "docs/deployment/README.md",
           "exists": true,
           "line": 25
@@ -4881,9 +4974,34 @@
         {
           "source": "docs/index.md",
           "line": 24
+        },
+        {
+          "source": "docs/integrations/api-clients.md",
+          "line": 23
         }
       ],
-      "outgoing_markdown_refs": []
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/architecture/composer-packages.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/architecture/composer-release-process.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/integrations/api-clients.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/integrations/shopify.md",
+          "exists": true,
+          "line": 10
+        }
+      ]
     },
     {
       "path": "docs/issues/acl-literal-wildcard-path-divergence.md",

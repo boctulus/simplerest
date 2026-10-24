@@ -35,6 +35,8 @@
     "docs/cli/commands.md",
     "docs/cli/routing.md",
     "docs/integrations/README.md",
+    "docs/integrations/api-clients.md",
+    "docs/integrations/shopify.md",
     "docs/deployment/README.md",
     "docs/reference/README.md"
   ],
