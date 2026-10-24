@@ -1,6 +1,6 @@
 # Cross-origin requests (CORS)
 
-SimpleRest provides `CorsHandler` and a global `cors()` helper. Neither is installed automatically by bootstrap or `FrontController`; application code must call the helper or handler on the paths that need CORS behavior.
+SimpleRest provides `CorsHandler` and a global `cors()` helper. Neither is installed globally by bootstrap or `FrontController`. The HTTP constructor of `Api\ResourceController` calls `cors()`; other request paths must invoke the helper or handler explicitly.
 
 ## Configuration and matching
 
