@@ -74,9 +74,16 @@ export default defineConfig({
             items: [
               { text: 'HTTP/API', link: '/api' },
               { text: 'Endpoints automáticos', link: '/api/automatic-endpoints' },
+              { text: 'Controladores API de recursos', link: '/api/resource-controllers' },
+              { text: 'Collections API', link: '/api/collections' },
+              { text: 'TrashCan API', link: '/api/trashcan' },
+              { text: 'Endpoints de archivos', link: '/api/file-endpoints' },
               { text: 'Seguridad', link: '/security' },
               { text: 'Autenticación', link: '/security/authentication' },
+              { text: 'Autenticación JWT', link: '/security/jwt' },
               { text: 'ACL y autorización API', link: '/security/acl' },
+              { text: 'Implementaciones ACL', link: '/security/acl-implementations' },
+              { text: 'Motor de autorización', link: '/security/authorization-engine' },
               { text: 'Webhooks', link: '/webhooks' }
             ]
           },
@@ -174,9 +181,16 @@ export default defineConfig({
               { text: 'Ciclo de migraciones', link: '/database/migrations' },
               { text: 'HTTP/API', link: '/api' },
               { text: 'Endpoints automáticos', link: '/api/automatic-endpoints' },
+              { text: 'Controladores API de recursos', link: '/api/resource-controllers' },
+              { text: 'Collections API', link: '/api/collections' },
+              { text: 'TrashCan API', link: '/api/trashcan' },
+              { text: 'Endpoints de archivos', link: '/api/file-endpoints' },
               { text: 'Seguridad', link: '/security' },
               { text: 'Autenticación', link: '/security/authentication' },
+              { text: 'Autenticación JWT', link: '/security/jwt' },
               { text: 'ACL y autorización API', link: '/security/acl' },
+              { text: 'Implementaciones ACL', link: '/security/acl-implementations' },
+              { text: 'Motor de autorización', link: '/security/authorization-engine' },
               { text: 'Webhooks', link: '/webhooks' }
             ]
           },

@@ -3,7 +3,11 @@ title: API HTTP
 source:
   - docs/api/README.md
   - docs/api/automatic-endpoints.md
-source_revision: cd60be5f8416cdcbbe7011e07486c4b65c0e0df2
+  - docs/api/resource-controllers.md
+  - docs/api/collections.md
+  - docs/api/trashcan.md
+  - docs/api/file-endpoints.md
+source_revision: 5192298b785bdcdd8751d38eb6b7be97abb83d4d
 status: partial
 ---
 
@@ -27,4 +31,6 @@ Generar un esquema no crea por sí solo el controlador ni el modelo. Aunque exis
 
 El controlador de recursos incorporado comprueba credenciales y calcula acciones invocables antes de despachar. La página de [Seguridad](/security) describe esa frontera y distingue el mecanismo core de la configuración de aplicación.
 
-La referencia de [endpoints automáticos](/api/automatic-endpoints) documenta la conversión de parámetros GET y los métodos de escritura trazados en el código, con sus límites por rama. Es una descripción de fuente: no se ejecutó una petición HTTP respaldada por base de datos ni un recorrido CRUD de extremo a extremo. Serialización, validación y autorización siguen requiriendo reproducción funcional.
+La referencia de [endpoints automáticos](/api/automatic-endpoints) cubre parámetros GET y ramas de escritura. Las guías de [controladores de recursos](/api/resource-controllers), [Collections](/api/collections), [TrashCan](/api/trashcan) y [archivos](/api/file-endpoints) separan sus contratos y límites.
+
+Estas páginas trazan el código, pero no se ejecutaron serialización de respuestas, peticiones respaldadas por base de datos ni flujos CRUD completos. Los límites de autorización y el enlace de descarga discrepante permanecen explícitos.

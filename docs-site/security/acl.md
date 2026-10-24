@@ -3,7 +3,7 @@ title: ACL y autorización de API
 source:
   - docs/security/acl.md
   - docs/audit/authentication-acl.md
-source_revision: 7cb44199e717e2485f0b1bee357ccaa402016412
+source_revision: 5192298b785bdcdd8751d38eb6b7be97abb83d4d
 status: partial
 ---
 
@@ -25,7 +25,7 @@ Los permisos de recurso son acciones por tabla: `show`, `show_all`, `list`, `lis
 
 El `config/acl.php` de este checkout selecciona el paquete opcional `FineGrainedACL`, obtiene nombres de roles y permisos especiales desde la base de datos, declara roles de aplicación y escribe un objeto ACL serializado. La variable local `$acl_cache` vale `false`, por lo que reconstruye y escribe el objeto en vez de restaurarlo desde el archivo. `BasicACL` y `FineGrainedACL` son integraciones opcionales; el factory core no las descubre ni enlaza automáticamente.
 
-El controlador de autenticación core resuelve roles desde un campo de rol del usuario cuando está presente, o desde `user_roles` y `roles`. Login y API key cargan `user_tb_permissions` y `user_sp_permissions`; el JWT lleva esos permisos en su payload de acceso. `FineGrainedACL` también carga filas de denegación explícita por usuario.
+El controlador JWT del paquete opcional resuelve roles desde un campo de rol del usuario cuando está presente, o desde `user_roles` y `roles`. Login y API key cargan `user_tb_permissions` y `user_sp_permissions`; el JWT lleva esos permisos en su payload de acceso. `FineGrainedACL` sobrescribe un hook para cargar filas de denegación por usuario, pero eso no demuestra que todos los helpers ACL las consulten. Los contextos construidos por la fachada y la llamada por defecto a `hasSpecialPermission()` pasan UID nulo; `hasResourcePermission()` tampoco agrega denies de usuario. Consulta [Implementaciones ACL](/security/acl-implementations) y el [motor de autorización](/security/authorization-engine).
 
 La configuración actual declara `read_all` y `write_all` para guest. Son grants explícitos de esta aplicación; el ACL core no los concede por defecto. El catálogo efectivo de permisos especiales y el resultado de ejecución de la base de datos no se consultaron.
 
