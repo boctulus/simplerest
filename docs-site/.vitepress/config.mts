@@ -18,8 +18,12 @@ export default defineConfig({
             items: [
               { text: 'Arquitectura', link: '/architecture' },
               { text: 'Ciclo de request', link: '/core/request-lifecycle' },
+              { text: 'Request y Response', link: '/core/request-response' },
               { text: 'Microcore y paquetes', link: '/core/microcore' },
-              { text: 'Base de datos', link: '/database' }
+              { text: 'ApiClient', link: '/core/api-client' },
+              { text: 'Base de datos', link: '/database' },
+              { text: 'Query Builder', link: '/database/query-builder' },
+              { text: 'Model y ModelRecord', link: '/database/model' }
             ]
           },
           {
@@ -41,13 +45,17 @@ export default defineConfig({
             items: [
               { text: 'Arquitectura', link: '/architecture' },
               { text: 'Ciclo de request', link: '/core/request-lifecycle' },
-              { text: 'Microcore y paquetes', link: '/core/microcore' }
+              { text: 'Request y Response', link: '/core/request-response' },
+              { text: 'Microcore y paquetes', link: '/core/microcore' },
+              { text: 'ApiClient', link: '/core/api-client' }
             ]
           },
           {
             text: 'Guías técnicas',
             items: [
               { text: 'Base de datos', link: '/database' },
+              { text: 'Query Builder', link: '/database/query-builder' },
+              { text: 'Model y ModelRecord', link: '/database/model' },
               { text: 'HTTP/API', link: '/api' },
               { text: 'Seguridad', link: '/security' },
               { text: 'Webhooks', link: '/webhooks' }

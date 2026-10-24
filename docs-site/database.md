@@ -4,14 +4,15 @@ source:
   - docs/database/README.md
   - docs/database/connections.md
   - docs/database/query-builder.md
+  - docs/database/model.md
   - docs/database/schemas.md
-source_revision: b91cce22f1e3b8a2a201325ef7337e05277f7349
+source_revision: 683d89509c036f2495e7ba22b2b8a4128273f95c
 status: partial
 ---
 
 # Base de datos
 
-Esta guía reúne tres alcances distintos: selección de conexiones, un camino de lectura del Query Builder y descriptores de esquema. El código se trazó en fuente; no se ejecutó una consulta ni se probó conectividad o compatibilidad por motor.
+Esta sección reúne selección de conexiones, consultas, modelos y descriptores de esquema. El código se trazó en fuente; no se ejecutó una consulta ni se probó conectividad o compatibilidad por motor. Las referencias separadas describen el [Query Builder](/database/query-builder) y [Model/ModelRecord](/database/model).
 
 ## Conexiones
 
@@ -28,9 +29,9 @@ $pdo = DB::getConnection();
 
 El parámetro `$tenant_id` de ciertos métodos `DB` se usa como identificador de conexión configurada. Eso no define aislamiento, propiedad ni un esquema por tenant. Además, `withConnection()` y `withDefaultConnection()` contienen retornos en `finally`, que suprimen una excepción lanzada por el callback.
 
-## Lecturas con Query Builder
+## Query Builder
 
-`DB::table($from, $alias = null, $connect = true)` resuelve un modelo de aplicación para un nombre de tabla; si recibe una expresión que contiene ` FROM ` usa `MyModel::fromRaw()`. La ruta depende del mapeo de modelos y de una conexión válida.
+`DB::table($from, $alias = null, $connect = true)` resuelve un modelo de aplicación para un nombre de tabla; si recibe una expresión que contiene ` FROM ` usa `MyModel::fromRaw()`. La ruta depende del mapeo de modelos y de una conexión válida. Consulta el [catálogo completo de métodos y comportamientos](/database/query-builder).
 
 - `select()` admite campos separados, un array o una cadena separada por comas.
 - `where()` admite formas como `where('id', 7)`, `where('id', '>', 2)` y una condición en array.
@@ -43,6 +44,10 @@ El parámetro `$tenant_id` de ciertos métodos `DB` se usa como identificador de
 ::: warning Los modos preview/simulate no garantizan ausencia de escrituras
 La fuente comprueba algunos modos en `create()` y `executeInsert()`, pero `update()` y `delete()` ejecutan con `$exec` activo sin comprobar el modo seleccionado. No trates `preview()` o `simulate()` como una garantía global de no escritura.
 :::
+
+## Model y ModelRecord
+
+`Model` compone la configuración de tabla, esquema y Query Builder. `ModelRecord` ofrece un estado por fila para hidratar resultados, detectar cambios y delegar la persistencia. Su contrato tiene diferencias concretas respecto de las consultas tradicionales, incluidas la hidratación con fetch asociativo, la clave primaria original y el posible borrado lógico. La [referencia de Model/ModelRecord](/database/model) describe esas ramas y sus límites.
 
 ## Descriptores de esquema
 
