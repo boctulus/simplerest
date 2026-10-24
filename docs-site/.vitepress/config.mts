@@ -18,6 +18,7 @@ export default defineConfig({
             items: [
               { text: 'Arquitectura', link: '/architecture' },
               { text: 'Ciclo de request', link: '/core/request-lifecycle' },
+              { text: 'Microcore y paquetes', link: '/core/microcore' },
               { text: 'Base de datos', link: '/database' }
             ]
           },
@@ -39,7 +40,8 @@ export default defineConfig({
             text: 'Fundamentos',
             items: [
               { text: 'Arquitectura', link: '/architecture' },
-              { text: 'Ciclo de request', link: '/core/request-lifecycle' }
+              { text: 'Ciclo de request', link: '/core/request-lifecycle' },
+              { text: 'Microcore y paquetes', link: '/core/microcore' }
             ]
           },
           {

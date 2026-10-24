@@ -43,6 +43,7 @@ La documentación todavía no cubre todas las capacidades del framework. Cada gu
 1. [Primeros pasos](/getting-started) explica el estado de las rutas de instalación disponibles.
 2. [Arquitectura](/architecture) sitúa los componentes de entrada y despacho.
 3. [Ciclo de request](/core/request-lifecycle) recorre las ramas HTTP y CLI que están trazadas.
-4. Las guías de [Base de datos](/database), [HTTP/API](/api), [seguridad](/security) y [webhooks](/webhooks) detallan los contratos actuales y sus límites.
+4. [Microcore y paquetes](/core/microcore) explica qué incluye el core y qué librerías se instalan como paquetes.
+5. Las guías de [Base de datos](/database), [HTTP/API](/api), [seguridad](/security) y [webhooks](/webhooks) detallan los contratos actuales y sus límites.
 
 El español ocupa `/`. Los directorios `/en/`, `/it/` y `/pt/` quedan reservados para traducciones futuras; esta edición no las genera ni publica enlaces a ellas.
