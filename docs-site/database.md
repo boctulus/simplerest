@@ -7,13 +7,14 @@ source:
   - docs/database/model.md
   - docs/database/schemas.md
   - docs/database/schema-builder.md
-source_revision: cd60be5f8416cdcbbe7011e07486c4b65c0e0df2
+  - docs/database/migrations.md
+source_revision: 0d6dfdd0feb07531af7a8ca327a58c291c6a2206
 status: partial
 ---
 
 # Base de datos
 
-Esta sección reúne selección de conexiones, consultas, modelos y descriptores de esquema. El código se trazó en fuente; no se ejecutó una consulta ni se probó conectividad o compatibilidad por motor. Las referencias separadas describen el [Query Builder](/database/query-builder), [Model/ModelRecord](/database/model) y el [constructor DDL](/database/schema-builder).
+Esta sección reúne selección de conexiones, consultas, modelos, descriptores, DDL y migraciones. El código se trazó en fuente; no se ejecutó una consulta ni se probó conectividad o compatibilidad por motor. Las referencias separadas describen el [Query Builder](/database/query-builder), [Model/ModelRecord](/database/model), el [constructor DDL](/database/schema-builder) y el [ciclo de migraciones](/database/migrations).
 
 ## Conexiones
 
@@ -58,6 +59,10 @@ El generador produce una clase PHP que implementa `ISchema`; su `get()` devuelve
 
 `Schema` es otro componente: compila y ejecuta sentencias para crear o alterar tablas. No equivale a un descriptor `ISchema` ni a una migración con historial. Consulta la [referencia del constructor DDL](/database/schema-builder) para columnas, modificadores, índices, claves foráneas, métodos de alteración, introspección y límites específicos de la implementación. No se ejecutó DDL.
 
+## Migraciones
+
+`php com migrations` registra migraciones aplicadas y dispone de comandos para aplicar, revertir, repetir o restablecer cambios. La [referencia del ciclo de migraciones](/database/migrations) detalla el formato de los archivos, el tracking, los comandos y límites de `--simulate`. Se inspeccionó la fuente y se consultó la ayuda; no se ejecutaron migraciones ni DDL.
+
 ## Límites actuales
 
-Escrituras, transacciones, consultas raw, paginación, agregados, carga de relaciones, joins automáticos, migraciones, aislamiento por tenant y compatibilidad por driver siguen fuera del alcance funcional verificado. El constructor DDL está trazado en fuente, pero no se ejecutó. Los tests de consulta consultados no se ejecutaron; `composer test` y la suite declarada en `phpunit.xml` incluyen `unit-tests/`, pero esto no aporta un resultado de ejecución. Con `debug` activo, una excepción de conexión puede registrar la entrada de configuración seleccionada con valores de credenciales; los secretos no deben exponerse en logs compartidos.
+Escrituras, transacciones reales, consultas raw, paginación, agregados, carga de relaciones, joins automáticos, ejecución de migraciones, aislamiento por tenant y compatibilidad por driver siguen sin verificarse en una base de datos. El constructor DDL y el ciclo de migraciones están trazados en fuente, pero no se ejecutaron. Los tests de consulta consultados no se ejecutaron; `composer test` y la suite declarada en `phpunit.xml` incluyen `unit-tests/`, pero esto no aporta un resultado de ejecución. Con `debug` activo, una excepción de conexión puede registrar la entrada de configuración seleccionada con valores de credenciales; los secretos no deben exponerse en logs compartidos.

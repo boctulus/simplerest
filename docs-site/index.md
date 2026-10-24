@@ -26,7 +26,7 @@ features:
 source:
   - docs/index.md
   - docs/documentation-governance.md
-source_revision: cd60be5f8416cdcbbe7011e07486c4b65c0e0df2
+source_revision: 0d6dfdd0feb07531af7a8ca327a58c291c6a2206
 status: partial
 ---
 
@@ -44,7 +44,7 @@ La documentación todavía no cubre todas las capacidades del framework. Cada gu
 2. [Arquitectura](/architecture) sitúa los componentes de entrada y despacho.
 3. [Ciclo de request](/core/request-lifecycle) recorre la ruta HTTP; [Request y Response](/core/request-response) describe los mensajes y sus helpers; [WebRouter](/core/web-routing) detalla el registro HTTP.
 4. [Microcore y paquetes](/core/microcore) explica qué incluye el core y qué librerías se instalan como paquetes.
-5. Las guías de [Base de datos](/database), [Query Builder](/database/query-builder), [Model/ModelRecord](/database/model), [constructor DDL](/database/schema-builder), [ApiClient](/core/api-client), [HTTP/API](/api), [endpoints automáticos](/api/automatic-endpoints), [autenticación](/security/authentication), [ACL](/security/acl) y [webhooks](/webhooks) detallan los contratos actuales y sus límites.
-6. [Routing CLI](/cli/routing) documenta el registro y despacho de comandos de consola en una guía aparte.
+5. Las guías de [Base de datos](/database), [Query Builder](/database/query-builder), [Model/ModelRecord](/database/model), [constructor DDL](/database/schema-builder), [migraciones](/database/migrations), [ApiClient](/core/api-client), [HTTP/API](/api), [endpoints automáticos](/api/automatic-endpoints), [autenticación](/security/authentication), [ACL](/security/acl) y [webhooks](/webhooks) detallan los contratos actuales y sus límites.
+6. CLI tiene dos guías independientes: el [catálogo de `php com`](/cli/commands) y el [routing CLI con CliRouter](/cli/routing).
 
 El español ocupa `/`. Los directorios `/en/`, `/it/` y `/pt/` quedan reservados para traducciones futuras; esta edición no las genera ni publica enlaces a ellas.

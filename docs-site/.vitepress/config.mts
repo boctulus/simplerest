@@ -25,7 +25,8 @@ export default defineConfig({
               { text: 'Base de datos', link: '/database' },
               { text: 'Query Builder', link: '/database/query-builder' },
               { text: 'Model y ModelRecord', link: '/database/model' },
-              { text: 'Constructor DDL de esquemas', link: '/database/schema-builder' }
+              { text: 'Constructor DDL de esquemas', link: '/database/schema-builder' },
+              { text: 'Ciclo de migraciones', link: '/database/migrations' }
             ]
           },
           {
@@ -41,7 +42,10 @@ export default defineConfig({
           },
           {
             text: 'Operación',
-            items: [{ text: 'Routing CLI (CliRouter)', link: '/cli/routing' }]
+            items: [
+              { text: 'Catálogo php com', link: '/cli/commands' },
+              { text: 'Routing CLI (CliRouter)', link: '/cli/routing' }
+            ]
           }
         ],
         sidebar: [
@@ -67,6 +71,7 @@ export default defineConfig({
               { text: 'Query Builder', link: '/database/query-builder' },
               { text: 'Model y ModelRecord', link: '/database/model' },
               { text: 'Constructor DDL de esquemas', link: '/database/schema-builder' },
+              { text: 'Ciclo de migraciones', link: '/database/migrations' },
               { text: 'HTTP/API', link: '/api' },
               { text: 'Endpoints automáticos', link: '/api/automatic-endpoints' },
               { text: 'Seguridad', link: '/security' },
@@ -77,7 +82,10 @@ export default defineConfig({
           },
           {
             text: 'Operación',
-            items: [{ text: 'Routing CLI (CliRouter)', link: '/cli/routing' }]
+            items: [
+              { text: 'Catálogo php com', link: '/cli/commands' },
+              { text: 'Routing CLI (CliRouter)', link: '/cli/routing' }
+            ]
           }
         ],
         outline: { label: 'En esta página' },
