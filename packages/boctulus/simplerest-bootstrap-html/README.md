@@ -18,9 +18,9 @@ composer require boctulus/simplerest-bootstrap-html:dev-main
 The existing PHP namespaces remain available:
 `Boctulus\Simplerest\HtmlBuilders\Bt5Form`,
 `Boctulus\Simplerest\HtmlBuilders\AdminLte`, and
-`Boctulus\Simplerest\Integrations\Libs\BootstrapPaginator`. SimpleRest keeps
-the former core class names as compatibility aliases when this package is
-installed.
+`Boctulus\Simplerest\Integrations\Libs\BootstrapPaginator`. Composer loads
+these preserved class names from this optional package; the core does not add
+`class_alias()` shims for them.
 
 ```php
 use Boctulus\Simplerest\HtmlBuilders\AdminLte;

@@ -1,6 +1,8 @@
 # SimpleRest Composer package boundaries
 
-## Current package catalogue
+## Selected package-boundary decisions
+
+This page records distribution and architecture decisions for selected packages; it is not the full local package inventory. The [package catalogue](../packages/catalog.md) lists every current `packages/boctulus/*/composer.json` and the separate migration-only directory.
 
 The current names describe each extension's responsibility. Previously published package names remain available as legacy repositories with their existing immutable tags; the new names are separate Composer identities.
 

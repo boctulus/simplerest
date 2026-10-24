@@ -6,16 +6,16 @@
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
   "inline_markdown_links_seen": 1110,
   "counts": {
-    "markdown_scanned": 253,
+    "markdown_scanned": 265,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 626,
+    "local_markdown_links": 677,
     "broken_local_markdown_links": 0,
     "classifications": {
-      "canonical": 63,
-      "internal/audit": 80,
       "legacy": 99,
-      "needs-review": 11
+      "canonical": 76,
+      "internal/audit": 80,
+      "needs-review": 10
     }
   },
   "deferred_webhook_paths": [],
@@ -38,21 +38,52 @@
       "path": "docs/_internal/legacy/ACL.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/Authentication.md",
+          "line": 115
+        },
+        {
+          "source": "docs/_internal/legacy/commands/AclCommands.md",
+          "line": 413
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 75
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 357
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/legacy/ApiClient.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 142
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 358
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/legacy/Authentication.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 74
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/ACL.md",
@@ -65,7 +96,20 @@
       "path": "docs/_internal/legacy/AutoJoins.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 60
+        },
+        {
+          "source": "docs/_internal/legacy/Schemas.md",
+          "line": 173
+        },
+        {
+          "source": "docs/_internal/legacy/SubResources.md",
+          "line": 68
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/Schemas.md",
@@ -88,14 +132,40 @@
       "path": "docs/_internal/legacy/AutomaticEndpoints-Summary.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 66
+        },
+        {
+          "source": "docs/_internal/legacy/ORM-STATUS.md",
+          "line": 41
+        },
+        {
+          "source": "docs/_internal/legacy/Schemas.md",
+          "line": 168
+        },
+        {
+          "source": "docs/_internal/legacy/SubResources.md",
+          "line": 69
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/legacy/Caching.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 85
+        },
+        {
+          "source": "docs/_internal/legacy/Performance.md",
+          "line": 103
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/QueryBuilder.md",
@@ -113,7 +183,16 @@
       "path": "docs/_internal/legacy/CHANGELOG-acl.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 76
+        },
+        {
+          "source": "docs/_internal/legacy/MIGRATION-v0.9.md",
+          "line": 71
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -121,6 +200,10 @@
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
       "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Authentication.md",
+          "line": 191
+        },
         {
           "source": "docs/audit/authentication-acl.md",
           "line": 60
@@ -132,14 +215,40 @@
       "path": "docs/_internal/legacy/CHANGELOG-PSR.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 381
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 37
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 381
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/legacy/CHANGELOG.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/MIGRATION-v0.9.md",
+          "line": 297
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 28
+        },
+        {
+          "source": "docs/_internal/legacy/MIGRATION-v0.9.md",
+          "line": 97
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/to-do/SimpleRest_Plan_de_Trabajo.md",
@@ -157,14 +266,40 @@
       "path": "docs/_internal/legacy/CommandLine.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 93
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 359
+        },
+        {
+          "source": "docs/_internal/legacy/unit-tests-pruebas-unitarias.md",
+          "line": 116
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 694
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 694
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/legacy/commands/AclCommands.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 95
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/ACL.md",
@@ -177,21 +312,40 @@
       "path": "docs/_internal/legacy/commands/PackCommand.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 94
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/legacy/core-directives.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 25
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/legacy/Deployment.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 178
+        },
+        {
+          "source": "docs/_internal/legacy/Performance.md",
+          "line": 104
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/QuickStart.md",
@@ -209,7 +363,12 @@
       "path": "docs/_internal/legacy/EventBus.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 151
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/Framework-Architecture.md",
@@ -222,7 +381,20 @@
       "path": "docs/_internal/legacy/Exceptions.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 64
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM.md",
+          "line": 1402
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM.md",
+          "line": 1402
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -244,6 +416,26 @@
         {
           "source": "docs/_internal/legacy/EventBus.md",
           "line": 87
+        },
+        {
+          "source": "docs/_internal/legacy/framework/EventBus.md",
+          "line": 87
+        },
+        {
+          "source": "docs/_internal/legacy/framework/MIGRATION-v0.9.md",
+          "line": 298
+        },
+        {
+          "source": "docs/_internal/legacy/FrontController.md",
+          "line": 72
+        },
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 23
+        },
+        {
+          "source": "docs/_internal/legacy/MIGRATION-v0.9.md",
+          "line": 98
         }
       ],
       "outgoing_markdown_refs": []
@@ -254,8 +446,24 @@
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/_internal/legacy/framework/Authentication.md",
+          "line": 189
+        },
+        {
+          "source": "docs/_internal/legacy/framework/commands/AclCommands.md",
+          "line": 413
+        },
+        {
           "source": "docs/audit/authentication-acl.md",
           "line": 58
+        },
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 363
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
         }
       ],
       "outgoing_markdown_refs": []
@@ -264,7 +472,12 @@
       "path": "docs/_internal/legacy/framework/ApiClient.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 364
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -275,6 +488,10 @@
         {
           "source": "docs/audit/authentication-acl.md",
           "line": 28
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
         }
       ],
       "outgoing_markdown_refs": [
@@ -312,7 +529,12 @@
       "path": "docs/_internal/legacy/framework/Caching.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Performance.md",
+          "line": 103
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/audit/pending/framework/QueryBuilder.md",
@@ -330,7 +552,12 @@
       "path": "docs/_internal/legacy/framework/CommandLine.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 365
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -369,7 +596,12 @@
       "path": "docs/_internal/legacy/framework/Deployment.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Performance.md",
+          "line": 104
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/audit/pending/framework/QuickStart.md",
@@ -430,7 +662,12 @@
       "path": "docs/_internal/legacy/framework/Helpers.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/ViewEngine.md",
+          "line": 89
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "src/framework/Helpers/",
@@ -450,14 +687,24 @@
       "path": "docs/_internal/legacy/framework/HTML-Form-builder.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/ViewEngine.md",
+          "line": 88
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/legacy/framework/i18n.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/Validation.md",
+          "line": 113
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/framework/Validation.md",
@@ -470,7 +717,20 @@
       "path": "docs/_internal/legacy/framework/ImmutableMethods.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 24
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 66
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 380
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/framework/PSR-7.md",
@@ -483,7 +743,12 @@
       "path": "docs/_internal/legacy/framework/Middlewares.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 362
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -658,6 +923,18 @@
         {
           "source": "docs/_internal/legacy/framework/ImmutableMethods.md",
           "line": 355
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 23
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 47
+        },
+        {
+          "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
+          "line": 379
         }
       ],
       "outgoing_markdown_refs": []
@@ -841,7 +1118,12 @@
       "path": "docs/_internal/legacy/framework/Routing.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 359
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/audit/pending/framework/Routing.md",
@@ -872,6 +1154,14 @@
         {
           "source": "docs/audit/authentication-acl.md",
           "line": 58
+        },
+        {
+          "source": "docs/audit/pending/framework/ORM-STATUS.md",
+          "line": 42
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 178
         }
       ],
       "outgoing_markdown_refs": []
@@ -920,6 +1210,10 @@
         {
           "source": "docs/_internal/legacy/framework/i18n.md",
           "line": 57
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 177
         }
       ],
       "outgoing_markdown_refs": [
@@ -975,7 +1269,12 @@
       "path": "docs/_internal/legacy/FrontController.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 24
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/Routing.md",
@@ -993,7 +1292,16 @@
       "path": "docs/_internal/legacy/Helpers.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 160
+        },
+        {
+          "source": "docs/_internal/legacy/ViewEngine.md",
+          "line": 89
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "src/framework/Helpers/",
@@ -1006,21 +1314,44 @@
       "path": "docs/_internal/legacy/HTML-Form-builder.AdminLTE.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 123
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/legacy/HTML-Form-builder.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 122
+        },
+        {
+          "source": "docs/_internal/legacy/ViewEngine.md",
+          "line": 88
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/_internal/legacy/i18n.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 170
+        },
+        {
+          "source": "docs/_internal/legacy/Validation.md",
+          "line": 113
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/Validation.md",
@@ -1033,7 +1364,24 @@
       "path": "docs/_internal/legacy/ImmutableMethods.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/legacy/INDEX-2026-05.md",
+          "line": 36
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 24
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 66
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 380
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/PSR-7.md",
@@ -1046,7 +1394,12 @@
       "path": "docs/_internal/legacy/INDEX-2026-05.md",
       "classification": "legacy",
       "basis": "May 2026 historical documentation index retained for provenance; superseded by docs/index.md.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/README.md",
+          "line": 21
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/README.md",
@@ -1323,6 +1676,10 @@
         {
           "source": "docs/_internal/legacy/INDEX-2026-05.md",
           "line": 49
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 356
         }
       ],
       "outgoing_markdown_refs": []
@@ -1483,6 +1840,14 @@
         {
           "source": "docs/_internal/legacy/Pacakges.md",
           "line": 4
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 695
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 695
         }
       ],
       "outgoing_markdown_refs": []
@@ -1530,6 +1895,18 @@
         {
           "source": "docs/_internal/legacy/INDEX-2026-05.md",
           "line": 35
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 23
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 47
+        },
+        {
+          "source": "docs/_internal/legacy/PSR-SUMMARY.md",
+          "line": 379
         }
       ],
       "outgoing_markdown_refs": []
@@ -1665,6 +2042,30 @@
         {
           "source": "docs/_internal/legacy/ORM-STATUS.md",
           "line": 39
+        },
+        {
+          "source": "docs/_internal/legacy/QuickStart.md",
+          "line": 354
+        },
+        {
+          "source": "docs/_internal/legacy/Schemas.md",
+          "line": 172
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 693
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM.md",
+          "line": 1401
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
+          "line": 693
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM.md",
+          "line": 1401
         }
       ],
       "outgoing_markdown_refs": []
@@ -1738,6 +2139,14 @@
         {
           "source": "docs/_internal/legacy/INDEX-2026-05.md",
           "line": 15
+        },
+        {
+          "source": "docs/_internal/legacy/TestingGuide.md",
+          "line": 74
+        },
+        {
+          "source": "docs/_internal/legacy/unit-tests-pruebas-unitarias.md",
+          "line": 117
         }
       ],
       "outgoing_markdown_refs": []
@@ -1782,6 +2191,10 @@
         {
           "source": "docs/_internal/legacy/QuickStart.md",
           "line": 353
+        },
+        {
+          "source": "docs/_internal/legacy/WebRouter.md",
+          "line": 3
         }
       ],
       "outgoing_markdown_refs": []
@@ -1802,6 +2215,14 @@
         {
           "source": "docs/_internal/legacy/Multi-Tenant.md",
           "line": 76
+        },
+        {
+          "source": "docs/_internal/legacy/SubResources.md",
+          "line": 67
+        },
+        {
+          "source": "docs/_internal/legacy/Validation.md",
+          "line": 112
         }
       ],
       "outgoing_markdown_refs": [
@@ -2086,7 +2507,16 @@
       "path": "docs/_internal/to-do/orm/ORM-Laravel-like.md",
       "classification": "needs-review",
       "basis": "Substantive ORM and CRUD how-to; claims conflict with preserved ORM status material and need current Model, CLI, and test evidence before publication.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/_internal/to-do/orm/ORM.md",
+          "line": 201
+        },
+        {
+          "source": "docs/_internal/to-do/orm/ORM.md",
+          "line": 1400
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/to-do/orm/ORM.md",
@@ -2167,6 +2597,10 @@
         {
           "source": "docs/_internal/legacy/PSR-SUMMARY.md",
           "line": 468
+        },
+        {
+          "source": "docs/_internal/to-do/phase-4-psr15-middleware.md",
+          "line": 628
         }
       ],
       "outgoing_markdown_refs": [
@@ -2197,6 +2631,10 @@
         {
           "source": "docs/_internal/to-do/phase-3-psr17-factories.md",
           "line": 385
+        },
+        {
+          "source": "docs/_internal/to-do/phase-5-stream-interface.md",
+          "line": 694
         }
       ],
       "outgoing_markdown_refs": [
@@ -2302,15 +2740,19 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/database/pagination.md",
-          "line": 19
-        },
-        {
           "source": "docs/api/README.md",
           "line": 5
         },
         {
+          "source": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "line": 1
+        },
+        {
           "source": "docs/index.md",
+          "line": 19
+        },
+        {
+          "source": "docs/database/pagination.md",
           "line": 19
         },
         {
@@ -2365,16 +2807,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/core/file-uploads.md",
-          "line": 37
-        },
-        {
           "source": "docs/audit/authentication-acl.md",
           "line": 58
         },
         {
           "source": "docs/index.md",
           "line": 19
+        },
+        {
+          "source": "docs/core/file-uploads.md",
+          "line": 37
         }
       ],
       "outgoing_markdown_refs": [
@@ -2477,6 +2919,10 @@
           "line": 5
         },
         {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 3
+        },
+        {
           "source": "docs/core/request-response.md",
           "line": 3
         },
@@ -2491,10 +2937,6 @@
         {
           "source": "docs/deployment/README.md",
           "line": 26
-        },
-        {
-          "source": "docs/core/request-lifecycle.md",
-          "line": 3
         },
         {
           "source": "docs/index.md",
@@ -2724,10 +3166,6 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/integrations/README.md",
-          "line": 9
-        },
-        {
           "source": "docs/integrations/shopify.md",
           "line": 21
         },
@@ -2738,6 +3176,14 @@
         {
           "source": "docs/index.md",
           "line": 24
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 9
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 13
         }
       ],
       "outgoing_markdown_refs": [
@@ -2764,16 +3210,20 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/integrations/README.md",
-          "line": 11
-        },
-        {
           "source": "docs/integrations/llm-providers.md",
           "line": 83
         },
         {
           "source": "docs/index.md",
           "line": 24
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 11
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 32
         }
       ],
       "outgoing_markdown_refs": [
@@ -2795,12 +3245,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/index.md",
+          "line": 24
+        },
+        {
           "source": "docs/integrations/README.md",
           "line": 10
         },
         {
-          "source": "docs/index.md",
-          "line": 24
+          "source": "docs/packages/catalog.md",
+          "line": 27
         }
       ],
       "outgoing_markdown_refs": [
@@ -2843,12 +3297,16 @@
     },
     {
       "path": "docs/packages/README.md",
-      "classification": "needs-review",
-      "basis": "Added 2026-10-24 to document the packages extracted from the core; public canonical status requires maintainer disposition.",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
           "source": "docs/architecture/composer-packages.md",
-          "line": 36
+          "line": 38
+        },
+        {
+          "source": "docs/index.md",
+          "line": 23
         },
         {
           "source": "docs/to-do/in-progress/simplerest-composer-core-packages.md",
@@ -2857,7 +3315,17 @@
       ],
       "outgoing_markdown_refs": [
         {
+          "target": "docs/packages/catalog.md",
+          "exists": true,
+          "line": 11
+        },
+        {
           "target": "docs/architecture/composer-packages.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/architecture/composer-release-process.md",
           "exists": true,
           "line": 11
         }
@@ -2868,18 +3336,6 @@
       "classification": "needs-review",
       "basis": "Linked from docs/index.md but not listed in docs/canonical-manifest.json; public canonical status requires maintainer disposition.",
       "incoming_markdown_refs": [
-        {
-          "source": "docs/packages/README.md",
-          "line": 11
-        },
-        {
-          "source": "docs/services/forms.md",
-          "line": 24
-        },
-        {
-          "source": "docs/integrations/README.md",
-          "line": 3
-        },
         {
           "source": "docs/integrations/api-clients.md",
           "line": 23
@@ -2893,19 +3349,36 @@
           "line": 84
         },
         {
+          "source": "docs/packages/README.md",
+          "line": 11
+        },
+        {
           "source": "docs/audit/README.md",
           "line": 328
         },
         {
           "source": "docs/index.md",
           "line": 23
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 3
+        },
+        {
+          "source": "docs/services/forms.md",
+          "line": 24
         }
       ],
       "outgoing_markdown_refs": [
         {
+          "target": "docs/packages/catalog.md",
+          "exists": true,
+          "line": 5
+        },
+        {
           "target": "docs/packages/README.md",
           "exists": true,
-          "line": 36
+          "line": 38
         }
       ]
     },
@@ -2915,33 +3388,56 @@
       "basis": "Linked from docs/index.md but not listed in docs/canonical-manifest.json; public canonical status requires maintainer disposition.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/integrations/README.md",
-          "line": 3
-        },
-        {
           "source": "docs/integrations/llm-providers.md",
           "line": 84
         },
         {
-          "source": "docs/deployment/README.md",
-          "line": 13
+          "source": "docs/packages/README.md",
+          "line": 11
         },
         {
           "source": "docs/audit/README.md",
           "line": 328
         },
         {
+          "source": "docs/deployment/README.md",
+          "line": 13
+        },
+        {
           "source": "docs/index.md",
           "line": 23
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 3
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 5
         }
       ],
-      "outgoing_markdown_refs": []
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/packages/catalog.md",
+          "exists": true,
+          "line": 195
+        }
+      ]
     },
     {
       "path": "docs/architecture/simplerest-cli-modularity-rfc.md",
       "classification": "internal/audit",
       "basis": "Deferred architecture RFC; records a future CLI design and does not describe implemented public behavior.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/architecture/simplerest-composer-migration-p0.md",
+          "line": 7
+        },
+        {
+          "source": "docs/architecture/simplerest-composer-migration-p0.md",
+          "line": 92
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/architecture/simplerest-composer-migration-p0.md",
@@ -2988,16 +3484,16 @@
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/audit/README.md",
-          "line": 310
-        },
-        {
           "source": "docs/api/README.md",
           "line": 14
         },
         {
-          "source": "docs/security/README.md",
-          "line": 10
+          "source": "docs/audit/README.md",
+          "line": 310
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
         },
         {
           "source": "docs/security/acl.md",
@@ -3010,6 +3506,10 @@
         {
           "source": "docs/security/authentication.md",
           "line": 3
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 10
         },
         {
           "source": "docs/api/collections.md",
@@ -3141,6 +3641,14 @@
         {
           "source": "docs/_internal/legacy/framework/AutoJoins.md",
           "line": 5
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 175
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 93
         }
       ],
       "outgoing_markdown_refs": [
@@ -3178,6 +3686,18 @@
         {
           "source": "docs/audit/authentication-acl.md",
           "line": 58
+        },
+        {
+          "source": "docs/audit/pending/framework/ORM-STATUS.md",
+          "line": 43
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 170
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 94
         }
       ],
       "outgoing_markdown_refs": [
@@ -3210,7 +3730,12 @@
       "path": "docs/audit/pending/framework/Framework-Architecture.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/FrontController.md",
+          "line": 74
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/architecture.md",
@@ -3302,7 +3827,12 @@
       "path": "docs/audit/pending/framework/ORM-STATUS.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 361
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/audit/README.md",
@@ -3334,6 +3864,18 @@
         {
           "source": "docs/_internal/legacy/framework/PGSQL-Compatibility.md",
           "line": 5
+        },
+        {
+          "source": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+          "line": 3
+        },
+        {
+          "source": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
+          "line": 7
+        },
+        {
+          "source": "docs/issues/pgsql-compatibility.md",
+          "line": 6
         }
       ],
       "outgoing_markdown_refs": [
@@ -3348,7 +3890,12 @@
       "path": "docs/audit/pending/framework/PGSQL-Known-Issues.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/issues/pgsql-compatibility.md",
+          "line": 5
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/audit/README.md",
@@ -3411,6 +3958,14 @@
           "line": 41
         },
         {
+          "source": "docs/audit/pending/framework/QuickStart.md",
+          "line": 360
+        },
+        {
+          "source": "docs/audit/pending/framework/Schemas.md",
+          "line": 174
+        },
+        {
           "source": "docs/database/query-builder.md",
           "line": 87
         }
@@ -3440,6 +3995,10 @@
         {
           "source": "docs/audit/README.md",
           "line": 260
+        },
+        {
+          "source": "docs/getting-started/README.md",
+          "line": 69
         }
       ],
       "outgoing_markdown_refs": [
@@ -3504,7 +4063,12 @@
       "path": "docs/audit/pending/framework/README.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/pending/README.md",
+          "line": 5
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/audit/README.md",
@@ -3589,6 +4153,10 @@
           "line": 73
         },
         {
+          "source": "docs/audit/pending/framework/WebRouter.md",
+          "line": 5
+        },
+        {
           "source": "docs/core/request-lifecycle.md",
           "line": 35
         }
@@ -3622,6 +4190,10 @@
         {
           "source": "docs/audit/pending/framework/Multi-Tenant.md",
           "line": 78
+        },
+        {
+          "source": "docs/audit/pending/framework/SubResources.md",
+          "line": 92
         },
         {
           "source": "docs/database/schemas.md",
@@ -3786,20 +4358,20 @@
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/core/README.md",
-          "line": 26
+          "source": "docs/api/README.md",
+          "line": 18
         },
         {
           "source": "docs/audit/README.md",
           "line": 324
         },
         {
-          "source": "docs/database/README.md",
-          "line": 19
+          "source": "docs/core/README.md",
+          "line": 26
         },
         {
-          "source": "docs/api/README.md",
-          "line": 18
+          "source": "docs/database/README.md",
+          "line": 19
         }
       ],
       "outgoing_markdown_refs": [
@@ -3865,8 +4437,52 @@
           "line": 69
         },
         {
+          "source": "docs/api/README.md",
+          "line": 18
+        },
+        {
           "source": "docs/architecture.md",
           "line": 34
+        },
+        {
+          "source": "docs/core/configuration-environment.md",
+          "line": 25
+        },
+        {
+          "source": "docs/core/cors.md",
+          "line": 21
+        },
+        {
+          "source": "docs/core/dependency-container.md",
+          "line": 30
+        },
+        {
+          "source": "docs/core/error-handling.md",
+          "line": 25
+        },
+        {
+          "source": "docs/core/logging.md",
+          "line": 19
+        },
+        {
+          "source": "docs/core/middleware.md",
+          "line": 27
+        },
+        {
+          "source": "docs/core/sessions-cookies.md",
+          "line": 21
+        },
+        {
+          "source": "docs/integrations/api-clients.md",
+          "line": 21
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 9
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 58
         },
         {
           "source": "docs/audit/pending/framework/AutoJoins.md",
@@ -3985,30 +4601,6 @@
           "line": 64
         },
         {
-          "source": "docs/core/configuration-environment.md",
-          "line": 25
-        },
-        {
-          "source": "docs/core/cors.md",
-          "line": 21
-        },
-        {
-          "source": "docs/core/dependency-container.md",
-          "line": 30
-        },
-        {
-          "source": "docs/core/error-handling.md",
-          "line": 25
-        },
-        {
-          "source": "docs/core/logging.md",
-          "line": 19
-        },
-        {
-          "source": "docs/core/middleware.md",
-          "line": 27
-        },
-        {
           "source": "docs/core/request-lifecycle.md",
           "line": 25
         },
@@ -4019,10 +4611,6 @@
         {
           "source": "docs/core/request-response.md",
           "line": 23
-        },
-        {
-          "source": "docs/core/sessions-cookies.md",
-          "line": 21
         },
         {
           "source": "docs/core/web-routing.md",
@@ -4037,10 +4625,6 @@
           "line": 48
         },
         {
-          "source": "docs/database/model.md",
-          "line": 60
-        },
-        {
           "source": "docs/database/query-builder.md",
           "line": 36
         },
@@ -4053,8 +4637,8 @@
           "line": 87
         },
         {
-          "source": "docs/database/raw-queries.md",
-          "line": 15
+          "source": "docs/database/model.md",
+          "line": 60
         },
         {
           "source": "docs/database/README.md",
@@ -4063,10 +4647,6 @@
         {
           "source": "docs/database/README.md",
           "line": 19
-        },
-        {
-          "source": "docs/database/relations.md",
-          "line": 33
         },
         {
           "source": "docs/database/schema-builder.md",
@@ -4081,20 +4661,32 @@
           "line": 31
         },
         {
-          "source": "docs/integrations/api-clients.md",
-          "line": 21
+          "source": "docs/framework/Index.md",
+          "line": 7
         },
         {
-          "source": "docs/integrations/llm-providers.md",
-          "line": 9
+          "source": "docs/getting-started/README.md",
+          "line": 69
         },
         {
-          "source": "docs/integrations/llm-providers.md",
-          "line": 58
+          "source": "docs/issues/pgsql-compatibility.md",
+          "line": 7
+        },
+        {
+          "source": "docs/README.md",
+          "line": 19
         },
         {
           "source": "docs/performance/README.md",
           "line": 18
+        },
+        {
+          "source": "docs/database/raw-queries.md",
+          "line": 15
+        },
+        {
+          "source": "docs/database/relations.md",
+          "line": 33
         },
         {
           "source": "docs/core/file-uploads.md",
@@ -4107,10 +4699,6 @@
         {
           "source": "docs/core/filesystem.md",
           "line": 39
-        },
-        {
-          "source": "docs/api/README.md",
-          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -4183,6 +4771,11 @@
           "target": "docs/architecture/composer-release-process.md",
           "exists": true,
           "line": 328
+        },
+        {
+          "target": "docs/packages/catalog.md",
+          "exists": true,
+          "line": 416
         }
       ]
     },
@@ -4238,6 +4831,14 @@
         {
           "source": "docs/security/authorization-engine.md",
           "line": 23
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 31
+        },
+        {
+          "source": "docs/packages/scaffolding.md",
+          "line": 13
         }
       ],
       "outgoing_markdown_refs": [
@@ -4264,16 +4865,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/cli/README.md",
+          "line": 6
+        },
+        {
           "source": "docs/cli/commands.md",
           "line": 3
         },
         {
           "source": "docs/cli/commands.md",
           "line": 56
-        },
-        {
-          "source": "docs/cli/README.md",
-          "line": 6
         },
         {
           "source": "docs/core/web-routing.md",
@@ -4421,23 +5022,23 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 82
+        },
+        {
           "source": "docs/core/README.md",
           "line": 9
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
         },
         {
           "source": "docs/services/cache.md",
           "line": 35
         },
         {
-          "source": "docs/integrations/llm-providers.md",
-          "line": 82
-        },
-        {
           "source": "docs/core/filesystem.md",
-          "line": 17
-        },
-        {
-          "source": "docs/index.md",
           "line": 17
         }
       ],
@@ -4523,6 +5124,10 @@
         {
           "source": "docs/api/resource-controllers.md",
           "line": 3
+        },
+        {
+          "source": "docs/packages/http-adapters.md",
+          "line": 14
         }
       ],
       "outgoing_markdown_refs": [
@@ -4574,10 +5179,6 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/core/README.md",
-          "line": 8
-        },
-        {
           "source": "docs/audit/README.md",
           "line": 65
         },
@@ -4586,12 +5187,16 @@
           "line": 66
         },
         {
-          "source": "docs/database/pagination.md",
-          "line": 19
+          "source": "docs/core/README.md",
+          "line": 8
         },
         {
           "source": "docs/index.md",
           "line": 17
+        },
+        {
+          "source": "docs/database/pagination.md",
+          "line": 19
         },
         {
           "source": "docs/api/resource-controllers.md",
@@ -4632,12 +5237,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/core/README.md",
-          "line": 7
-        },
-        {
           "source": "docs/audit/README.md",
           "line": 63
+        },
+        {
+          "source": "docs/core/README.md",
+          "line": 7
         },
         {
           "source": "docs/index.md",
@@ -4690,36 +5295,36 @@
           "line": 3
         },
         {
-          "source": "docs/database/migrations.md",
-          "line": 53
+          "source": "docs/database/query-builder.md",
+          "line": 87
         },
         {
           "source": "docs/database/model.md",
           "line": 11
         },
         {
+          "source": "docs/database/README.md",
+          "line": 5
+        },
+        {
           "source": "docs/database/schema-builder.md",
           "line": 66
+        },
+        {
+          "source": "docs/database/migrations.md",
+          "line": 53
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
         },
         {
           "source": "docs/services/cache.md",
           "line": 39
         },
         {
-          "source": "docs/database/README.md",
-          "line": 5
-        },
-        {
-          "source": "docs/database/query-builder.md",
-          "line": 87
-        },
-        {
           "source": "docs/database/raw-queries.md",
           "line": 24
-        },
-        {
-          "source": "docs/index.md",
-          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -4769,6 +5374,10 @@
           "line": 3
         },
         {
+          "source": "docs/database/connections.md",
+          "line": 48
+        },
+        {
           "source": "docs/database/model.md",
           "line": 11
         },
@@ -4777,8 +5386,8 @@
           "line": 6
         },
         {
-          "source": "docs/database/connections.md",
-          "line": 48
+          "source": "docs/index.md",
+          "line": 18
         },
         {
           "source": "docs/database/raw-queries.md",
@@ -4787,10 +5396,6 @@
         {
           "source": "docs/database/pagination.md",
           "line": 7
-        },
-        {
-          "source": "docs/index.md",
-          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -4862,24 +5467,24 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/services/README.md",
-          "line": 16
-        },
-        {
-          "source": "docs/services/event-bus.md",
-          "line": 45
+          "source": "docs/database/query-builder.md",
+          "line": 87
         },
         {
           "source": "docs/database/README.md",
           "line": 8
         },
         {
-          "source": "docs/database/query-builder.md",
-          "line": 87
-        },
-        {
           "source": "docs/index.md",
           "line": 18
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 16
+        },
+        {
+          "source": "docs/services/event-bus.md",
+          "line": 45
         },
         {
           "source": "docs/api/trashcan.md",
@@ -5006,14 +5611,6 @@
           "line": 69
         },
         {
-          "source": "docs/database/migrations.md",
-          "line": 53
-        },
-        {
-          "source": "docs/database/schemas.md",
-          "line": 21
-        },
-        {
           "source": "docs/audit/README.md",
           "line": 121
         },
@@ -5026,12 +5623,20 @@
           "line": 10
         },
         {
-          "source": "docs/database/driver-compatibility.md",
-          "line": 22
+          "source": "docs/database/migrations.md",
+          "line": 53
+        },
+        {
+          "source": "docs/database/schemas.md",
+          "line": 21
         },
         {
           "source": "docs/index.md",
           "line": 18
+        },
+        {
+          "source": "docs/database/driver-compatibility.md",
+          "line": 22
         }
       ],
       "outgoing_markdown_refs": [
@@ -5063,12 +5668,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/cli/commands.md",
-          "line": 56
-        },
-        {
           "source": "docs/cli/README.md",
           "line": 7
+        },
+        {
+          "source": "docs/cli/commands.md",
+          "line": 56
         },
         {
           "source": "docs/database/README.md",
@@ -5115,12 +5720,16 @@
           "line": 60
         },
         {
+          "source": "docs/database/README.md",
+          "line": 9
+        },
+        {
           "source": "docs/database/schema-builder.md",
           "line": 66
         },
         {
-          "source": "docs/database/README.md",
-          "line": 9
+          "source": "docs/index.md",
+          "line": 18
         },
         {
           "source": "docs/database/driver-compatibility.md",
@@ -5129,10 +5738,6 @@
         {
           "source": "docs/database/relations.md",
           "line": 7
-        },
-        {
-          "source": "docs/index.md",
-          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -5203,6 +5808,10 @@
         {
           "source": "docs/index.md",
           "line": 33
+        },
+        {
+          "source": "docs/README.md",
+          "line": 3
         }
       ],
       "outgoing_markdown_refs": []
@@ -5246,7 +5855,16 @@
       "path": "docs/framework/_internal/to-do/orm/ORM-Laravel-like.md",
       "classification": "needs-review",
       "basis": "Substantive ORM and CRUD how-to; claims conflict with preserved ORM status material and need current Model, CLI, and test evidence before publication.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM.md",
+          "line": 201
+        },
+        {
+          "source": "docs/framework/_internal/to-do/orm/ORM.md",
+          "line": 1400
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/framework/_internal/to-do/orm/ORM.md",
@@ -5323,6 +5941,10 @@
         {
           "source": "docs/_internal/legacy/framework/PSR-SUMMARY.md",
           "line": 468
+        },
+        {
+          "source": "docs/framework/_internal/to-do/phase-4-psr15-middleware.md",
+          "line": 628
         }
       ],
       "outgoing_markdown_refs": [
@@ -5353,6 +5975,10 @@
         {
           "source": "docs/framework/_internal/to-do/phase-3-psr17-factories.md",
           "line": 385
+        },
+        {
+          "source": "docs/framework/_internal/to-do/phase-5-stream-interface.md",
+          "line": 694
         }
       ],
       "outgoing_markdown_refs": [
@@ -5524,12 +6150,20 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/audit/README.md",
+          "line": 11
+        },
+        {
           "source": "docs/framework/Index.md",
           "line": 3
         },
         {
-          "source": "docs/audit/README.md",
-          "line": 11
+          "source": "docs/README.md",
+          "line": 5
+        },
+        {
+          "source": "docs/README.md",
+          "line": 21
         }
       ],
       "outgoing_markdown_refs": [
@@ -5809,6 +6443,16 @@
           "line": 22
         },
         {
+          "target": "docs/packages/catalog.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/packages/README.md",
+          "exists": true,
+          "line": 23
+        },
+        {
           "target": "docs/architecture/composer-packages.md",
           "exists": true,
           "line": 23
@@ -5835,6 +6479,21 @@
         },
         {
           "target": "docs/integrations/llm-providers.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/integrations/mail.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/integrations/geolocation.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/integrations/web-inspection.md",
           "exists": true,
           "line": 24
         },
@@ -5872,6 +6531,10 @@
         {
           "source": "docs/index.md",
           "line": 24
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 47
         }
       ],
       "outgoing_markdown_refs": [
@@ -5899,6 +6562,26 @@
           "target": "docs/integrations/shopify.md",
           "exists": true,
           "line": 11
+        },
+        {
+          "target": "docs/integrations/geolocation.md",
+          "exists": true,
+          "line": 12
+        },
+        {
+          "target": "docs/integrations/mail.md",
+          "exists": true,
+          "line": 13
+        },
+        {
+          "target": "docs/integrations/web-inspection.md",
+          "exists": true,
+          "line": 14
+        },
+        {
+          "target": "docs/packages/catalog.md",
+          "exists": true,
+          "line": 18
         }
       ]
     },
@@ -6098,16 +6781,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/framework/Index.md",
-          "line": 9
-        },
-        {
           "source": "docs/api/README.md",
           "line": 14
         },
         {
           "source": "docs/audit/authentication-acl.md",
           "line": 58
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
         },
         {
           "source": "docs/index.md",
@@ -6196,16 +6879,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/framework/Index.md",
-          "line": 9
-        },
-        {
           "source": "docs/api/README.md",
           "line": 14
         },
         {
           "source": "docs/audit/authentication-acl.md",
           "line": 28
+        },
+        {
+          "source": "docs/framework/Index.md",
+          "line": 9
         },
         {
           "source": "docs/index.md",
@@ -6334,12 +7017,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/services/README.md",
-          "line": 7
-        },
-        {
           "source": "docs/index.md",
           "line": 21
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 7
         }
       ],
       "outgoing_markdown_refs": [
@@ -6361,12 +7044,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/services/README.md",
-          "line": 8
-        },
-        {
           "source": "docs/index.md",
           "line": 21
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 8
         }
       ],
       "outgoing_markdown_refs": [
@@ -6383,6 +7066,10 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/index.md",
+          "line": 21
+        },
+        {
           "source": "docs/services/README.md",
           "line": 12
         },
@@ -6396,10 +7083,6 @@
         },
         {
           "source": "docs/database/pagination.md",
-          "line": 21
-        },
-        {
-          "source": "docs/index.md",
           "line": 21
         }
       ],
@@ -6422,16 +7105,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/index.md",
+          "line": 21
+        },
+        {
           "source": "docs/services/README.md",
           "line": 10
         },
         {
           "source": "docs/services/validation.md",
           "line": 46
-        },
-        {
-          "source": "docs/index.md",
-          "line": 21
         }
       ],
       "outgoing_markdown_refs": []
@@ -6441,6 +7124,10 @@
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 21
+        },
         {
           "source": "docs/services/README.md",
           "line": 11
@@ -6452,10 +7139,6 @@
         {
           "source": "docs/services/views.md",
           "line": 43
-        },
-        {
-          "source": "docs/index.md",
-          "line": 21
         }
       ],
       "outgoing_markdown_refs": [
@@ -6477,16 +7160,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/index.md",
+          "line": 21
+        },
+        {
           "source": "docs/services/README.md",
           "line": 9
         },
         {
           "source": "docs/core/filesystem.md",
           "line": 37
-        },
-        {
-          "source": "docs/index.md",
-          "line": 21
         }
       ],
       "outgoing_markdown_refs": [
@@ -6619,10 +7302,6 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/database/README.md",
-          "line": 15
-        },
-        {
           "source": "docs/database/connections.md",
           "line": 48
         },
@@ -6631,12 +7310,16 @@
           "line": 87
         },
         {
-          "source": "docs/database/transactions.md",
-          "line": 25
+          "source": "docs/database/README.md",
+          "line": 15
         },
         {
           "source": "docs/index.md",
           "line": 18
+        },
+        {
+          "source": "docs/database/transactions.md",
+          "line": 25
         }
       ],
       "outgoing_markdown_refs": [
@@ -6668,12 +7351,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/database/README.md",
-          "line": 14
-        },
-        {
           "source": "docs/database/query-builder.md",
           "line": 87
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 14
         },
         {
           "source": "docs/index.md",
@@ -6704,14 +7387,6 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/database/README.md",
-          "line": 12
-        },
-        {
-          "source": "docs/database/driver-compatibility.md",
-          "line": 22
-        },
-        {
           "source": "docs/database/query-builder.md",
           "line": 46
         },
@@ -6720,8 +7395,16 @@
           "line": 87
         },
         {
+          "source": "docs/database/README.md",
+          "line": 12
+        },
+        {
           "source": "docs/index.md",
           "line": 18
+        },
+        {
+          "source": "docs/database/driver-compatibility.md",
+          "line": 22
         }
       ],
       "outgoing_markdown_refs": [
@@ -6743,24 +7426,24 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/database/README.md",
-          "line": 13
-        },
-        {
           "source": "docs/database/connections.md",
           "line": 32
-        },
-        {
-          "source": "docs/database/driver-compatibility.md",
-          "line": 22
         },
         {
           "source": "docs/database/query-builder.md",
           "line": 59
         },
         {
+          "source": "docs/database/README.md",
+          "line": 13
+        },
+        {
           "source": "docs/index.md",
           "line": 18
+        },
+        {
+          "source": "docs/database/driver-compatibility.md",
+          "line": 22
         }
       ],
       "outgoing_markdown_refs": [
@@ -7085,6 +7768,10 @@
         {
           "source": "docs/security/README.md",
           "line": 6
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 26
         }
       ],
       "outgoing_markdown_refs": [
@@ -7110,12 +7797,20 @@
           "line": 20
         },
         {
+          "source": "docs/security/acl.md",
+          "line": 17
+        },
+        {
           "source": "docs/security/README.md",
           "line": 8
         },
         {
-          "source": "docs/security/acl.md",
-          "line": 17
+          "source": "docs/packages/catalog.md",
+          "line": 15
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -7151,16 +7846,20 @@
           "line": 20
         },
         {
-          "source": "docs/security/README.md",
+          "source": "docs/security/acl.md",
           "line": 9
         },
         {
-          "source": "docs/security/acl.md",
+          "source": "docs/security/README.md",
           "line": 9
         },
         {
           "source": "docs/security/acl-implementations.md",
           "line": 14
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -7185,6 +7884,438 @@
           "line": 23
         }
       ]
+    },
+    {
+      "path": "docs/integrations/geolocation.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 24
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 12
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 21
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/integrations/mail.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 24
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 13
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 29
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/integrations/web-inspection.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 24
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 14
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 35
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/packages/background-jobs.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 25
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/packages/catalog.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/packages/README.md",
+          "line": 11
+        },
+        {
+          "source": "docs/architecture/composer-packages.md",
+          "line": 5
+        },
+        {
+          "source": "docs/architecture/composer-release-process.md",
+          "line": 195
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 416
+        },
+        {
+          "source": "docs/index.md",
+          "line": 23
+        },
+        {
+          "source": "docs/integrations/README.md",
+          "line": 18
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/architecture/composer-release-process.md",
+          "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/integrations/api-clients.md",
+          "exists": true,
+          "line": 13
+        },
+        {
+          "target": "docs/packages/test-data-seeder.md",
+          "exists": true,
+          "line": 14
+        },
+        {
+          "target": "docs/security/acl-implementations.md",
+          "exists": true,
+          "line": 15
+        },
+        {
+          "target": "docs/packages/html-content.md",
+          "exists": true,
+          "line": 16
+        },
+        {
+          "target": "docs/packages/html-content.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/security/acl-implementations.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/security/authorization-engine.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/packages/media-output.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/packages/media-output.md",
+          "exists": true,
+          "line": 20
+        },
+        {
+          "target": "docs/integrations/geolocation.md",
+          "exists": true,
+          "line": 21
+        },
+        {
+          "target": "docs/packages/html-content.md",
+          "exists": true,
+          "line": 22
+        },
+        {
+          "target": "docs/packages/html-content.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/packages/localization.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/packages/background-jobs.md",
+          "exists": true,
+          "line": 25
+        },
+        {
+          "target": "docs/security/jwt.md",
+          "exists": true,
+          "line": 26
+        },
+        {
+          "target": "docs/integrations/llm-providers.md",
+          "exists": true,
+          "line": 27
+        },
+        {
+          "target": "docs/packages/legacy-helpers.md",
+          "exists": true,
+          "line": 28
+        },
+        {
+          "target": "docs/integrations/mail.md",
+          "exists": true,
+          "line": 29
+        },
+        {
+          "target": "docs/packages/http-adapters.md",
+          "exists": true,
+          "line": 30
+        },
+        {
+          "target": "docs/packages/scaffolding.md",
+          "exists": true,
+          "line": 31
+        },
+        {
+          "target": "docs/cli/commands.md",
+          "exists": true,
+          "line": 31
+        },
+        {
+          "target": "docs/integrations/shopify.md",
+          "exists": true,
+          "line": 32
+        },
+        {
+          "target": "docs/packages/http-adapters.md",
+          "exists": true,
+          "line": 33
+        },
+        {
+          "target": "docs/packages/legacy-helpers.md",
+          "exists": true,
+          "line": 34
+        },
+        {
+          "target": "docs/integrations/web-inspection.md",
+          "exists": true,
+          "line": 35
+        },
+        {
+          "target": "docs/packages/html-content.md",
+          "exists": true,
+          "line": 43
+        },
+        {
+          "target": "docs/packages/media-output.md",
+          "exists": true,
+          "line": 44
+        },
+        {
+          "target": "docs/packages/http-adapters.md",
+          "exists": true,
+          "line": 45
+        },
+        {
+          "target": "docs/packages/localization.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/packages/background-jobs.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/packages/test-data-seeder.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/packages/scaffolding.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/packages/legacy-helpers.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/integrations/README.md",
+          "exists": true,
+          "line": 47
+        }
+      ]
+    },
+    {
+      "path": "docs/packages/html-content.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 16
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 17
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 22
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 23
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 43
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/packages/http-adapters.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 30
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 33
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 45
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 14
+        }
+      ]
+    },
+    {
+      "path": "docs/packages/legacy-helpers.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 28
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 34
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/packages/localization.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 24
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/packages/media-output.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 19
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 20
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 44
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/packages/scaffolding.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 31
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/cli/commands.md",
+          "exists": true,
+          "line": 13
+        }
+      ]
+    },
+    {
+      "path": "docs/packages/test-data-seeder.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 14
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 46
+        }
+      ],
+      "outgoing_markdown_refs": []
     }
   ]
 }

@@ -8,7 +8,7 @@ No significa un namespace paralelo, reescrituras mínimas de clases del core ni 
 
 `unit-tests/microcore/MicrocoreIsolationTest.php` hace cumplir el criterio: el manifiesto raíz requiere solo `php` y `doctrine/inflector`, el core no referencia librerías externas (salvo `Doctrine\Inflector\` en `Traits/SubResourceHandler.php`), cada clase del core carga sin `vendor/` ni paquetes, y no hay `class_alias`.
 
-El catálogo completo de paquetes y sus decisiones de distribución está en [Límites de paquetes Composer](../architecture/composer-packages.md).
+El [catálogo de paquetes](catalog.md) recorre cada manifiesto local y sus límites de uso. Las decisiones de distribución seleccionadas están en [Límites de paquetes Composer](../architecture/composer-packages.md), y el estado de los gates de release en [Proceso de publicación](../architecture/composer-release-process.md).
 
 ## Paquetes extraídos el 2026-10-24
 

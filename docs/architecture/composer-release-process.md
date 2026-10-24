@@ -190,7 +190,9 @@ The other 12 local packages also declare `boctulus/simplerest ^2.0`; `friendlypo
 
 All 15 local package manifests now declare their PHP range, license, real core or package requirements, PSR-4/provider metadata, and development requirements where applicable. The release gate runs `composer validate --strict --no-check-publish` on the root and all 15 manifests.
 
-### Local package inventory and publication status
+### Local package inventory and publication status (2026-10-22 snapshot)
+
+The table and counts in this section preserve the 2026-10-22 release review. They are historical review results, not the current local package inventory; use the [package catalogue](../packages/catalog.md) for the manifest scan in this checkout.
 
 | Package | Classification | Decision |
 | --- | --- | --- |
@@ -210,7 +212,7 @@ All 15 local package manifests now declare their PHP range, license, real core o
 | `boctulus/web-test` | Web testing utility | Development-only; not a public runtime package. |
 | `boctulus/zippy` | Product-specific application integration | Proprietary; keep private. |
 
-The repository now has 15 local subpackage manifests. All 15 were packaged and installed together from temporary VCS repositories in the consumer gate; PDF, Code Tools, and Integrations were also installed and tested as independent candidates. The last Packagist count verified in the 2026-10-22 audit was one package (`boctulus/simplerest`); this task did not requery Packagist and did not push, tag, or register a subpackage. Three packages are ready for split review; none is release-ready until the split commit and repository root are verified.
+At that snapshot the repository had 15 local subpackage manifests. Those 15 were packaged and installed together from temporary VCS repositories in that consumer gate; PDF, Code Tools, and Integrations were also installed and tested as independent candidates. The last Packagist count verified in the 2026-10-22 audit was one package (`boctulus/simplerest`); that review did not requery Packagist and did not push, tag, or register a subpackage. Its “three packages ready for split review” status is historical and does not state their present release readiness.
 
 ### Verification and remaining release gates
 
