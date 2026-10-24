@@ -33,7 +33,7 @@ For collection reads, `ApiController::get()` consumes these parameters before ca
 | `fields` | Comma-separated projection; each requested field must exist in the model attributes or the method returns a 400 error. |
 | `exclude` | Comma-separated hidden fields; each field is checked against model attributes. |
 | `pretty` | Enables pretty response formatting except for false-like values handled in source. |
-| `page`, `pageSize` | Read through configured paginator parameter names. The page size is capped at `paginator.max_limit`; a missing page defaults to 1 when pagination is requested. |
+| `page`, `pageSize` | Read through configured paginator parameter names. The page size is capped at `paginator.max_limit`; a missing page defaults to 1 when pagination is requested. The separate [`Paginator` and response-metadata layers](../database/pagination.md) are documented independently. |
 | `limit`, `offset` | Used when `page`/`pageSize` were not supplied. A missing/zero limit selects the configured maximum; a positive limit is capped at that maximum. |
 | `orderBy` | Passed to the Query Builder as an order expression. |
 | `order[field]` | Accepted as a map when each direction is `ASC` or `DESC` (case-insensitive). The nested key `orderBy[field]` is not the branch implemented here. |

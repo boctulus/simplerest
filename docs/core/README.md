@@ -16,6 +16,10 @@
 - [Sessions and cookies](sessions-cookies.md) — PHP session and cookie wrappers with their exposed parameters.
 - [Error handling](error-handling.md) — FrontController and global exception paths, status mapping, and exception families.
 - [Logging](logging.md) — Logger helpers, configuration gates, and filename limitations.
+- [Filesystem and paths](filesystem.md) — `Files` path helpers, storage operations, downloads, temp files, and asset boundaries; source-traced, no file was written or deleted.
+- [File uploads](file-uploads.md) — multipart `FileUploader` and the separate, incomplete base64 helper; source-traced, no HTTP upload was run.
+- [ZIP and backups](archives-backups.md) — `ZipManager`, file-copy backups, and MySQL export helpers with their write and trust boundaries.
+- [HTML, XML, and images](content-conversion.md) — DOM extraction, conversions, image checks, and terminal image output; not an HTML sanitization guide.
 
 ## Remaining runtime audit
 

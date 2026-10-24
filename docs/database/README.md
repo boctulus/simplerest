@@ -4,6 +4,7 @@
 
 - [Connection selection and PDO adapter paths](connections.md) — source-level behavior only; live database connectivity and driver compatibility were not reproduced.
 - [Query Builder](query-builder.md) — source-level construction, method families, reads, writes, execution modes, binding boundaries, and soft-delete filtering; no database query was run.
+- [Pagination](pagination.md) — boundaries between Query Builder limits, `Paginator`, API request parameters, and response metadata; no query or array pagination was executed.
 - [Model and records](model.md) — source-level `Model` composition and `ModelRecord` hydration/persistence behavior; test fixtures were inspected but not executed.
 - [Schema descriptor generation](schemas.md) — source-level descriptor format and generator paths; no generator or DDL operation was run.
 - [Schema DDL builder](schema-builder.md) — source-level column, index, foreign-key, create/alter, and metadata API; no table DDL was executed.
