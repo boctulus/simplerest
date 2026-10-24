@@ -7,7 +7,8 @@
 - [Model and records](model.md) — source-level `Model` composition and `ModelRecord` hydration/persistence behavior; test fixtures were inspected but not executed.
 - [Schema descriptor generation](schemas.md) — source-level descriptor format and generator paths; no generator or DDL operation was run.
 - [Schema DDL builder](schema-builder.md) — source-level column, index, foreign-key, create/alter, and metadata API; no table DDL was executed.
+- [Migration lifecycle](migrations.md) — source-traced file loading, tracking, command effects, and simulation limits; no migration or database operation was run.
 
 ## Pending audit
 
-Database execution of writes, execution-mode safety, transactions, raw-query effects, pagination, aggregates, relation loading, automatic joins, DDL behavior by driver, migrations, tenant isolation, and per-driver query compatibility remain under audit. Source presence and SQL assertions are not presented as executed database behavior. See the [pending audit area](../audit/pending/README.md), [database claim-level evidence](../audit/README.md#claim-level-findings-database-connections), and [schema and automatic API findings](../audit/README.md#claim-level-findings-schema-generation-and-automatic-api).
+Database execution of writes, execution-mode safety, transactions, raw-query effects, pagination, aggregates, relation loading, automatic joins, DDL behavior by driver, migration execution, tenant isolation, and per-driver query compatibility remain unverified. Source presence and SQL assertions are not presented as executed database behavior. See the [pending audit area](../audit/pending/README.md), [database claim-level evidence](../audit/README.md#claim-level-findings-database-connections), and [schema and automatic API findings](../audit/README.md#claim-level-findings-schema-generation-and-automatic-api).
