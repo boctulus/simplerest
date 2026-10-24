@@ -18,15 +18,15 @@ features:
     details: Consulta qué partes de instalación y arranque están comprobadas antes de seguir instrucciones.
     link: /getting-started
   - title: Sigue el recorrido de una petición
-    details: Revisa los puntos de entrada, los routers y las ramas condicionales del front controller.
+    details: Revisa la entrada HTTP, el traspaso al FrontController y sus ramas condicionales.
     link: /core/request-lifecycle
   - title: Explora las guías actuales
-    details: Base de datos, HTTP/API, seguridad y webhooks, con límites visibles donde falta una reproducción completa.
+    details: Datos, HTTP/API, seguridad, servicios y operación, con límites visibles donde falta una reproducción completa.
     link: /database
 source:
   - docs/index.md
   - docs/documentation-governance.md
-source_revision: 0d6dfdd0feb07531af7a8ca327a58c291c6a2206
+source_revision: 88a81da51b6c8c4c035180e3004023391205f616
 status: partial
 ---
 

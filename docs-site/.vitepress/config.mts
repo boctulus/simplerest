@@ -30,6 +30,18 @@ export default defineConfig({
             ]
           },
           {
+            text: 'Servicios',
+            items: [
+              { text: 'Índice de servicios', link: '/services' },
+              { text: 'Cache', link: '/services/cache' },
+              { text: 'EventBus', link: '/services/event-bus' },
+              { text: 'Vistas PHP', link: '/services/views' },
+              { text: 'Traducciones', link: '/services/i18n' },
+              { text: 'Validación', link: '/services/validation' },
+              { text: 'HTML y formularios', link: '/services/forms' }
+            ]
+          },
+          {
             text: 'HTTP y seguridad',
             items: [
               { text: 'HTTP/API', link: '/api' },
@@ -62,6 +74,18 @@ export default defineConfig({
               { text: 'Routing HTTP (WebRouter)', link: '/core/web-routing' },
               { text: 'Microcore y paquetes', link: '/core/microcore' },
               { text: 'ApiClient', link: '/core/api-client' }
+            ]
+          },
+          {
+            text: 'Servicios',
+            items: [
+              { text: 'Servicios del framework', link: '/services' },
+              { text: 'Cache', link: '/services/cache' },
+              { text: 'EventBus', link: '/services/event-bus' },
+              { text: 'Vistas PHP', link: '/services/views' },
+              { text: 'Traducciones', link: '/services/i18n' },
+              { text: 'Validación', link: '/services/validation' },
+              { text: 'HTML y formularios', link: '/services/forms' }
             ]
           },
           {
