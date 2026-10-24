@@ -16,8 +16,8 @@ The introspection uses MySQL-oriented SQL, including `SHOW COLUMNS` and `informa
 
 The schema generator passes `protected = false` into the file writer. In the current source this allows an existing schema file to be replaced without `--force`. No generator was run against the working tree.
 
-## Scope still under audit
+## Separate DDL builder
 
-The framework also has a [`Schema` DDL builder](../../src/framework/Libs/Schema.php), separate from generated `ISchema` metadata. Its individual column methods, emitted SQL by driver, relation and pivot inference, and runtime validation contract are not documented here. [`SchemaBugsTest`](../../unit-tests/schema/SchemaBugsTest.php) contains SQL-generation assertions, but it was inspected only; `phpunit.xml` includes `unit-tests/`, and no test was executed in this audit.
+The [`Schema` DDL builder](schema-builder.md) creates and alters database tables; it is separate from generated `ISchema` metadata and from migrations. Its MySQL-oriented SQL, per-method limits, and unexecuted status are documented on that page. This descriptor page does not promise driver portability or describe runtime validation of every generated rule.
 
 See the [claim-level schema and automatic API audit](../audit/README.md#claim-level-findings-schema-generation-and-automatic-api), the [database index](README.md), and the [pending legacy schema guide](../audit/pending/framework/Schemas.md).

@@ -16,6 +16,7 @@
     "docs/database/connections.md",
     "docs/database/query-builder.md",
     "docs/database/model.md",
+    "docs/database/schema-builder.md",
     "docs/database/schemas.md",
     "docs/api/README.md",
     "docs/api/automatic-endpoints.md",
