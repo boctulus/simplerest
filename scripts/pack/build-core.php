@@ -82,7 +82,8 @@ final class SimpleRestCorePackBuilder
 
         $manifest = json_decode(self::git($source, ['show', $commit . ':composer.json']), true, 512, JSON_THROW_ON_ERROR);
         if (($manifest['name'] ?? null) !== 'boctulus/simplerest'
-            || array_keys($manifest['require'] ?? []) !== ['php']
+            // php plus the approved doctrine/inflector exception (SubResourceHandler)
+            || array_keys($manifest['require'] ?? []) !== ['php', 'doctrine/inflector']
             || isset($manifest['autoload']['files'])
             || isset($manifest['suggest'])
             || isset($manifest['require-dev'])) {

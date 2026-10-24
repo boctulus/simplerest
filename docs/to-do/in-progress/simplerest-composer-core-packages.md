@@ -11,7 +11,7 @@ tags: [composer, architecture, microcore, testing]
 ---
 ## Corrección del maintainer (2026-10-24)
 
-El contrato de alcance de abajo interpretó mal "microcore" y queda reemplazado. Microcore es el árbol completo de `src/framework/`, que requiere solo PHP; las librerías demasiado específicas o con dependencias externas pasan a paquetes en `packages/boctulus/` que declaran esa dependencia. No se vacía `src/framework/` ni se reescriben clases del core en versiones mínimas. El commit `f42c3f1dd` restauró `src/framework/`, eliminó `app/LegacyCore/` y `app/LegacyRuntime/` y extrajo `simplerest-psr7`, `simplerest-mail` y `simplerest-jwt-auth`. Detalle en [Paquetes extraídos del core](../../packages/README.md). El texto original se conserva como historial.
+El contrato de alcance de abajo interpretó mal "microcore" y queda reemplazado. Microcore es el árbol completo de `src/framework/`, que requiere solo PHP (con `doctrine/inflector` como única excepción aprobada); las librerías demasiado específicas o con dependencias externas pasan a paquetes en `packages/boctulus/` que declaran esa dependencia. No se vacía `src/framework/` ni se reescriben clases del core en versiones mínimas. El commit `f42c3f1dd` restauró `src/framework/`, eliminó `app/LegacyCore/` y `app/LegacyRuntime/` y extrajo `simplerest-psr7`, `simplerest-mail` y `simplerest-jwt-auth`. Detalle en [Paquetes extraídos del core](../../packages/README.md). El texto original se conserva como historial.
 
 ## Contrato de alcance vigente (reemplazado el 2026-10-24)
 

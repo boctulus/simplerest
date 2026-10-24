@@ -3,7 +3,7 @@
 `boctulus/simplerest-mail` contains all of SimpleRest's mail code: the
 PHPMailer-based SMTP sender, the mailer contract and base class, the audit and
 remote WordPress mailers, and the email template helper. It was extracted from
-the core so the framework itself requires nothing but PHP.
+the core so the framework itself does not carry this package's dependencies.
 
 Classes (namespace `Boctulus\Simplerest\Mail\`, PSR-4 from `src/`):
 

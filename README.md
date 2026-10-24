@@ -34,7 +34,7 @@ The public extension tags and repositories were not changed by this refactor. Ne
 
 ## Requirements
 
-The public `composer.json` requires only PHP `>=8.1,<8.5`. A microcore installation does not require PDO, a database driver, JWT, PSR-7, Bootstrap, or SDK packages. Applications that install extensions must also satisfy those extensions' own requirements.
+The public `composer.json` requires only PHP `>=8.1,<8.5` and `doctrine/inflector` `^2.0` (used to name pivot subresources). A microcore installation does not require PDO, a database driver, JWT, PSR-7, Bootstrap, or SDK packages. Applications that install extensions must also satisfy those extensions' own requirements.
 
 ## Microcore usage
 

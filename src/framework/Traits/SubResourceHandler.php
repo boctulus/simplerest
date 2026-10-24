@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Boctulus\Simplerest\Core\Traits;
 
+use Doctrine\Inflector\InflectorFactory;
 use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Core\Libs\Inflector;
 use Boctulus\Simplerest\Core\Libs\Schema;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Model;
@@ -132,7 +132,8 @@ trait SubResourceHandler
             if (!empty($pivot)) {
                 $bridge = $pivot['bridge'];
                 $fks = $pivot['fks'];
-                $relationshipName = Inflector::pluralize($tb);
+                $inflector = InflectorFactory::create()->build();
+                $relationshipName = $inflector->pluralize($tb);
                 $allRelationPaths[] = [
                     'type' => 'pivot',
                     'bridge' => $bridge,

@@ -8,6 +8,9 @@ use PHPUnit\Framework\TestCase;
  * The microcore is the whole src/framework tree. "Micro" means it requires
  * nothing but PHP: any library that needs an external dependency lives in its
  * own package under packages/boctulus, which declares that dependency.
+ *
+ * Approved exception (2026-10-24): doctrine/inflector, used only by
+ * Traits/SubResourceHandler to pluralize pivot relation aliases.
  */
 final class MicrocoreIsolationTest extends TestCase
 {
@@ -17,16 +20,21 @@ final class MicrocoreIsolationTest extends TestCase
         'Composer\\',
     ];
 
+    /** Approved external dependencies: package => [namespace prefix, files allowed to use it]. */
+    private const APPROVED_DEPENDENCIES = [
+        'doctrine/inflector' => ['Doctrine\\Inflector\\', ['Traits/SubResourceHandler.php']],
+    ];
+
     private static function root(): string
     {
         return dirname(__DIR__, 2);
     }
 
-    public function testCoreManifestRequiresOnlyPhp(): void
+    public function testCoreManifestRequiresOnlyPhpAndApprovedDependencies(): void
     {
         $manifest = json_decode((string) file_get_contents(self::root() . '/composer.json'), true, 512, JSON_THROW_ON_ERROR);
 
-        self::assertSame(['php'], array_keys($manifest['require'] ?? []));
+        self::assertSame(['php', ...array_keys(self::APPROVED_DEPENDENCIES)], array_keys($manifest['require'] ?? []));
         self::assertArrayNotHasKey('require-dev', $manifest);
         self::assertArrayNotHasKey('suggest', $manifest);
         self::assertArrayNotHasKey('autoload-dev', $manifest);
@@ -117,6 +125,11 @@ final class MicrocoreIsolationTest extends TestCase
     {
         foreach (self::ALLOWED_PREFIXES as $prefix) {
             if (str_starts_with($name, $prefix)) {
+                return true;
+            }
+        }
+        foreach (self::APPROVED_DEPENDENCIES as [$prefix, $files]) {
+            if (str_starts_with($name, $prefix) && in_array($relative, $files, true)) {
                 return true;
             }
         }

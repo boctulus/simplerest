@@ -9,13 +9,13 @@ status: partial
 
 # Microcore y paquetes
 
-El core de SimpleRest es el árbol completo de `src/framework/`, con el namespace `Boctulus\Simplerest\Core\`. Que sea un microcore significa que no requiere nada más que PHP. No es un núcleo recortado a unas pocas clases ni un namespace aparte.
+El core de SimpleRest es el árbol completo de `src/framework/`, con el namespace `Boctulus\Simplerest\Core\`. Que sea un microcore significa que no requiere nada más que PHP, con una única excepción: `doctrine/inflector`. No es un núcleo recortado a unas pocas clases ni un namespace aparte.
 
-Cuando una librería es demasiado específica o necesita una dependencia externa, se convierte en un paquete de `packages/boctulus/` que declara esa dependencia en su propio `composer.json`. El core sigue completo y sin dependencias.
+Cuando una librería es demasiado específica o necesita una dependencia externa, se convierte en un paquete de `packages/boctulus/` que declara esa dependencia en su propio `composer.json`. El core sigue completo.
 
 ## Qué garantiza el core
 
-- El `composer.json` de `boctulus/simplerest` requiere únicamente `php`.
+- El `composer.json` de `boctulus/simplerest` requiere únicamente `php` y `doctrine/inflector`.
 - Cada clase de `src/framework/` carga sin `vendor/` y sin ningún paquete instalado.
 - El core no contiene aliases (`class_alias`) ni shims de compatibilidad.
 
@@ -37,9 +37,9 @@ Ningún paquete extraído depende de otro; `simplerest-api-clients` sí requiere
 
 Otros paquetes, como `simplerest-scaffolding`, `simplerest-bootstrap-html`, `simplerest-web-inspection` o `simplerest-api-clients`, siguen el mismo criterio y están en el catálogo de límites de paquetes Composer.
 
-## Relaciones pivot sin doctrine/inflector
+## Relaciones pivot y doctrine/inflector
 
-Los subrecursos ya no dependen de `doctrine/inflector`, pero el alias de una relación pivot sigue siendo el plural de la tabla relacionada (`status` → `statuses`, `person` → `people`). Lo calcula `Inflector::pluralize()` del core, que reproduce las reglas de plural en inglés de `doctrine/inflector` 2.1.0. Una prueba compara su salida con la de Doctrine, así que la clave del JSON de subrecursos no cambia.
+El alias de una relación pivot es el plural de la tabla relacionada (`status` → `statuses`, `person` → `people`) y lo calcula `doctrine/inflector`, la única dependencia del core además de PHP. Se usa solo en los subrecursos, que forman parte de `Model` y `ApiController`, por eso no puede ir a un paquete. Una prueba fija los plurales de todas las tablas conocidas, así que una actualización de la librería no puede cambiar en silencio la clave del JSON de subrecursos.
 
 ## Límites conocidos
 

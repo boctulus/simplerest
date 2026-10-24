@@ -28,7 +28,7 @@ final class PackFirstDistributionTest extends TestCase
             self::assertFileDoesNotExist($dest . '/archive');
             self::assertFileDoesNotExist($dest . '/docs');
             $manifest = json_decode((string) file_get_contents($dest . '/composer.json'), true, 512, JSON_THROW_ON_ERROR);
-            self::assertSame(['php'], array_keys($manifest['require']));
+            self::assertSame(['php', 'doctrine/inflector'], array_keys($manifest['require']));
         } finally {
             if (is_dir($dest)) {
                 $iterator = new RecursiveIteratorIterator(

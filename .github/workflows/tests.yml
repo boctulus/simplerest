@@ -62,7 +62,8 @@ jobs:
             throw 'Internal documentation leaked into Composer snapshot'
           }
 
-# The microcore suite certifies that src/framework requires only PHP.
+# The microcore suite certifies that src/framework requires only PHP and the
+# approved doctrine/inflector exception.
 # Application and package suites are migrated and tested independently.
 
   pack-curation:

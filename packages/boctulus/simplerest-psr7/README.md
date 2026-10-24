@@ -2,7 +2,7 @@
 
 `boctulus/simplerest-psr7` wraps SimpleRest's `Request` and `Response` in
 PSR-7 (`psr/http-message`) interfaces. It was extracted from the core so the
-framework itself requires nothing but PHP.
+framework itself does not carry this package's dependencies.
 
 The existing class names are kept:
 

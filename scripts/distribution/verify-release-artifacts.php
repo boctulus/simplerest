@@ -436,13 +436,14 @@ function assertCoreRuntimeDependencyBoundary(string $manifestPath): void
 {
     $manifest = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
     $requiredPackages = array_keys($manifest['require'] ?? []);
-    $expectedPackages = ['php'];
+    // php plus the approved doctrine/inflector exception (SubResourceHandler)
+    $expectedPackages = ['php', 'doctrine/inflector'];
     sort($requiredPackages);
     sort($expectedPackages);
 
     if ($requiredPackages !== $expectedPackages) {
         throw new RuntimeException(
-            "SimpleRest microcore must require only PHP at runtime.\n"
+            "SimpleRest microcore must require only PHP and doctrine/inflector at runtime.\n"
             . 'Expected: ' . implode(', ', $expectedPackages) . "\n"
             . 'Found: ' . implode(', ', $requiredPackages)
         );

@@ -18,6 +18,6 @@ attributes, and `HtmlMinifier::removeCSSClasses()` removes all or selected
 
 `HtmlMinifier::minify()` was `Strings::minimifyHTML()` in the core, and the two
 removal methods were `CSS::removeCSS()` and `CSS::removeCSSClasses()`. They
-were extracted so the framework itself requires nothing but PHP. The package
+were extracted so the framework itself does not carry this package's dependencies. The package
 depends only on the core: it uses the core `HTML` and `Strings` helpers and
 does not require `boctulus/simplerest-css`.
