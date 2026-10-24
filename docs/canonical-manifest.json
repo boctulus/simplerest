@@ -39,6 +39,7 @@
     "docs/integrations/shopify.md",
     "docs/integrations/llm-providers.md",
     "docs/deployment/README.md",
+    "docs/performance/README.md",
     "docs/reference/README.md"
   ],
   "rewrite_guard": {

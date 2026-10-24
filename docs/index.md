@@ -22,7 +22,8 @@ La migración es progresiva. Algunas páginas auditadas siguen en inglés y se e
 | CLI | [CLI](cli/README.md), [catálogo `php com`](cli/commands.md), [routing CLI](cli/routing.md) | CommandRegistry y grupos de ayuda se contrastaron con el checkout; no se ejecutaron subcomandos operativos. CliRouter conserva una referencia independiente. |
 | Composer | [Límites de paquetes Composer](architecture/composer-packages.md), [proceso de publicación](architecture/composer-release-process.md) | Contratos y límites de los paquetes existentes; una instalación de consumidor se declara verificada solo con evidencia de la versión publicada. |
 | Integraciones | [Índice de integraciones](integrations/README.md), [API Clients](integrations/api-clients.md), [Shopify Connector](integrations/shopify.md), [proveedores LLM](integrations/llm-providers.md) | Contratos de código para clientes, Shopify y providers LLM; no se reprodujeron llamadas externas ni instalación de consumidores. El bundle `simplerest-integrations` es sólo un aviso de migración. |
-| Despliegue | [Estado de despliegue](deployment/README.md) | Aún no hay instrucciones validadas de despliegue. |
+| Despliegue | [Guía de despliegue](deployment/README.md) | El workflow de GitHub Pages está configurado; el despliegue de una aplicación SimpleRest no tiene una receta validada en este checkout. |
+| Rendimiento | [Guía de medición](performance/README.md) | Se clasificaron los scripts existentes y sus efectos; el informe numérico es histórico y no se reprodujo. |
 | Referencia | [Estado de referencia](reference/README.md) | Falta construir el catálogo de configuración, variables, comandos y métodos públicos. |
 
 ## Cómo interpretar el estado

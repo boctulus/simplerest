@@ -1,19 +1,19 @@
 {
   "version": 1,
   "generated_on": "2026-10-24",
-  "stage": "post LLM provider reference",
-  "scope": "Added a source-traced LLM providers reference, updated the canonical integration map, and refreshed only affected Markdown link edges.",
+  "stage": "post deployment and performance references",
+  "scope": "Added evidence-based deployment and performance references, updated the public map, and refreshed only affected Markdown link edges.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 905,
+  "inline_markdown_links_seen": 911,
   "counts": {
-    "markdown_scanned": 227,
+    "markdown_scanned": 228,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 502,
+    "local_markdown_links": 508,
     "broken_local_markdown_links": 0,
     "classifications": {
       "needs-review": 11,
-      "canonical": 37,
+      "canonical": 38,
       "internal/audit": 80,
       "legacy": 99
     }
@@ -2395,6 +2395,10 @@
         {
           "source": "docs/index.md",
           "line": 10
+        },
+        {
+          "source": "docs/deployment/README.md",
+          "line": 26
         }
       ],
       "outgoing_markdown_refs": [
@@ -2613,6 +2617,10 @@
         {
           "source": "docs/integrations/llm-providers.md",
           "line": 84
+        },
+        {
+          "source": "docs/deployment/README.md",
+          "line": 13
         }
       ],
       "outgoing_markdown_refs": []
@@ -3660,6 +3668,14 @@
         {
           "source": "docs/integrations/llm-providers.md",
           "line": 58
+        },
+        {
+          "source": "docs/deployment/README.md",
+          "line": 31
+        },
+        {
+          "source": "docs/performance/README.md",
+          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -3986,6 +4002,10 @@
         {
           "source": "docs/index.md",
           "line": 17
+        },
+        {
+          "source": "docs/deployment/README.md",
+          "line": 26
         }
       ],
       "outgoing_markdown_refs": [
@@ -4524,13 +4544,39 @@
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [],
-      "outgoing_markdown_refs": []
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/architecture/composer-release-process.md",
+          "exists": true,
+          "line": 13
+        },
+        {
+          "target": "docs/architecture.md",
+          "exists": true,
+          "line": 26
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 26
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 31
+        }
+      ]
     },
     {
       "path": "docs/documentation-governance.md",
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 33
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -5040,14 +5086,19 @@
           "line": 25
         },
         {
-          "target": "docs/reference/README.md",
+          "target": "docs/performance/README.md",
           "exists": true,
           "line": 26
         },
         {
+          "target": "docs/reference/README.md",
+          "exists": true,
+          "line": 27
+        },
+        {
           "target": "docs/documentation-governance.md",
           "exists": true,
-          "line": 32
+          "line": 33
         }
       ]
     },
@@ -5217,13 +5268,31 @@
       ]
     },
     {
-      "path": "docs/reference/README.md",
+      "path": "docs/performance/README.md",
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
           "source": "docs/index.md",
           "line": 26
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 18
+        }
+      ]
+    },
+    {
+      "path": "docs/reference/README.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 27
         }
       ],
       "outgoing_markdown_refs": []
