@@ -28,9 +28,11 @@ Cada paquete requiere además `boctulus/simplerest` `^2.0 || ^3.0`. Ningún paqu
 
 ## Cambio en el core sin paquete: Inflector
 
-`Traits\SubResourceHandler` usaba `doctrine/inflector` en una sola llamada, para pluralizar el alias de una relación pivot. Como el trait lo usan `Model` y `ApiController`, no se extrajo: se eliminó la dependencia. Desde el 2026-10-24 el alias de una relación pivot es el nombre de la tabla relacionada.
+`Traits\SubResourceHandler` usaba `doctrine/inflector` en una sola llamada, para pluralizar el alias de una relación pivot. Como el trait lo usan `Model` y `ApiController`, no se extrajo: se eliminó la dependencia externa.
 
-Para tablas con nombre en plural, como es habitual en SimpleRest, el alias no cambia. Para una tabla con nombre singular cambia la clave del JSON de subrecursos. Ninguna prueba automática cubre todavía ese caso.
+Una primera versión (commit `f42c3f1dd`) usó el nombre de la tabla relacionada sin pluralizar. Era una regresión: cambiaba la clave del JSON de subrecursos para tablas con nombre singular o irregular (`status`, `person`, `category`). En los esquemas de SimpleRest y GoProp todas las tablas de pivots ya estaban en plural, por lo que ningún alias existente cambió.
+
+Desde el 2026-10-24 el alias vuelve a ser el plural de la tabla relacionada. Lo calcula `Libs\Inflector::pluralize()`, una copia sin dependencias de las reglas de plural en inglés de `doctrine/inflector` 2.1.0 (la versión bloqueada antes de la extracción). `unit-tests/microcore/InflectorParityTest.php` compara su salida con un fixture de 627 casos generado con Doctrine 2.1.0, que incluye todas las tablas de esos esquemas y todas las reglas en inglés.
 
 ## Consumidores en este monorepo
 

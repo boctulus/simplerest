@@ -37,9 +37,9 @@ Ningún paquete extraído depende de otro. `simplerest-html` no necesita `simple
 
 Otros paquetes, como `simplerest-scaffolding`, `simplerest-bootstrap-html`, `simplerest-web-inspection` o `simplerest-api-clients`, siguen el mismo criterio y están en el catálogo de límites de paquetes Composer.
 
-## Relaciones pivot sin Inflector
+## Relaciones pivot sin doctrine/inflector
 
-Los subrecursos ya no usan `doctrine/inflector`. El alias de una relación pivot es el nombre de la tabla relacionada. Con tablas en plural, que es lo habitual, la respuesta no cambia; con una tabla en singular, la clave del JSON de subrecursos es ese nombre en singular. Este caso todavía no tiene una prueba automática.
+Los subrecursos ya no dependen de `doctrine/inflector`, pero el alias de una relación pivot sigue siendo el plural de la tabla relacionada (`status` → `statuses`, `person` → `people`). Lo calcula `Inflector::pluralize()` del core, que reproduce las reglas de plural en inglés de `doctrine/inflector` 2.1.0. Una prueba compara su salida con la de Doctrine, así que la clave del JSON de subrecursos no cambia.
 
 ## Límites conocidos
 
