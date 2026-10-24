@@ -1,19 +1,19 @@
 {
   "version": 1,
   "generated_on": "2026-10-24",
-  "stage": "post deployment and performance references",
-  "scope": "Added evidence-based deployment and performance references, updated the public map, and refreshed only affected Markdown link edges.",
+  "stage": "database remainder references",
+  "scope": "Added canonical references for database relations, transactions, raw queries, and driver compatibility; refreshed link edges affected by the database documentation.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 911,
+  "inline_markdown_links_seen": 962,
   "counts": {
-    "markdown_scanned": 228,
+    "markdown_scanned": 232,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 508,
+    "local_markdown_links": 533,
     "broken_local_markdown_links": 0,
     "classifications": {
       "needs-review": 11,
-      "canonical": 38,
+      "canonical": 42,
       "internal/audit": 80,
       "legacy": 99
     }
@@ -2271,7 +2271,12 @@
       "path": "docs/api/automatic-endpoints.md",
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 19
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/audit/README.md",
@@ -2304,7 +2309,12 @@
       "path": "docs/api/README.md",
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 19
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/api/automatic-endpoints.md",
@@ -2351,6 +2361,10 @@
         {
           "source": "docs/api/README.md",
           "line": 6
+        },
+        {
+          "source": "docs/index.md",
+          "line": 19
         }
       ],
       "outgoing_markdown_refs": []
@@ -2377,10 +2391,6 @@
           "line": 5
         },
         {
-          "source": "docs/core/request-lifecycle.md",
-          "line": 3
-        },
-        {
           "source": "docs/core/request-response.md",
           "line": 3
         },
@@ -2393,12 +2403,16 @@
           "line": 45
         },
         {
-          "source": "docs/index.md",
-          "line": 10
-        },
-        {
           "source": "docs/deployment/README.md",
           "line": 26
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 3
+        },
+        {
+          "source": "docs/index.md",
+          "line": 10
         }
       ],
       "outgoing_markdown_refs": [
@@ -2420,10 +2434,6 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 24
-        },
-        {
           "source": "docs/integrations/README.md",
           "line": 9
         },
@@ -2434,6 +2444,10 @@
         {
           "source": "docs/integrations/llm-providers.md",
           "line": 83
+        },
+        {
+          "source": "docs/index.md",
+          "line": 24
         }
       ],
       "outgoing_markdown_refs": [
@@ -2460,16 +2474,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 24
-        },
-        {
           "source": "docs/integrations/README.md",
           "line": 11
         },
         {
           "source": "docs/integrations/llm-providers.md",
           "line": 83
+        },
+        {
+          "source": "docs/index.md",
+          "line": 24
         }
       ],
       "outgoing_markdown_refs": [
@@ -2491,12 +2505,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 24
-        },
-        {
           "source": "docs/integrations/README.md",
           "line": 10
+        },
+        {
+          "source": "docs/index.md",
+          "line": 24
         }
       ],
       "outgoing_markdown_refs": [
@@ -2565,10 +2579,6 @@
       "basis": "Linked from docs/index.md but not listed in docs/canonical-manifest.json; public canonical status requires maintainer disposition.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/audit/README.md",
-          "line": 328
-        },
-        {
           "source": "docs/packages/README.md",
           "line": 11
         },
@@ -2591,6 +2601,14 @@
         {
           "source": "docs/integrations/llm-providers.md",
           "line": 84
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 328
+        },
+        {
+          "source": "docs/index.md",
+          "line": 23
         }
       ],
       "outgoing_markdown_refs": [
@@ -2607,10 +2625,6 @@
       "basis": "Linked from docs/index.md but not listed in docs/canonical-manifest.json; public canonical status requires maintainer disposition.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/audit/README.md",
-          "line": 328
-        },
-        {
           "source": "docs/integrations/README.md",
           "line": 3
         },
@@ -2621,6 +2635,14 @@
         {
           "source": "docs/deployment/README.md",
           "line": 13
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 328
+        },
+        {
+          "source": "docs/index.md",
+          "line": 23
         }
       ],
       "outgoing_markdown_refs": []
@@ -2885,6 +2907,10 @@
         {
           "source": "docs/_internal/legacy/framework/FrontController.md",
           "line": 3
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 35
         }
       ],
       "outgoing_markdown_refs": [
@@ -2918,6 +2944,10 @@
         {
           "source": "docs/_internal/legacy/framework/Multi-Tenant.md",
           "line": 6
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 48
         }
       ],
       "outgoing_markdown_refs": [
@@ -3184,6 +3214,10 @@
         {
           "source": "docs/_internal/legacy/framework/Request.md",
           "line": 3
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 35
         }
       ],
       "outgoing_markdown_refs": [
@@ -3202,6 +3236,10 @@
         {
           "source": "docs/_internal/legacy/framework/Response.md",
           "line": 3
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 35
         }
       ],
       "outgoing_markdown_refs": [
@@ -3224,6 +3262,10 @@
         {
           "source": "docs/audit/pending/framework/FrontController.md",
           "line": 73
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 35
         }
       ],
       "outgoing_markdown_refs": [
@@ -3389,6 +3431,10 @@
         {
           "source": "docs/_internal/legacy/framework/WebRouter.md",
           "line": 3
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 35
         }
       ],
       "outgoing_markdown_refs": [
@@ -3419,16 +3465,16 @@
           "line": 14
         },
         {
-          "source": "docs/audit/README.md",
-          "line": 324
-        },
-        {
           "source": "docs/core/README.md",
           "line": 11
         },
         {
+          "source": "docs/audit/README.md",
+          "line": 324
+        },
+        {
           "source": "docs/database/README.md",
-          "line": 14
+          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -3630,26 +3676,6 @@
           "line": 60
         },
         {
-          "source": "docs/database/query-builder.md",
-          "line": 36
-        },
-        {
-          "source": "docs/database/query-builder.md",
-          "line": 65
-        },
-        {
-          "source": "docs/database/query-builder.md",
-          "line": 87
-        },
-        {
-          "source": "docs/database/README.md",
-          "line": 14
-        },
-        {
-          "source": "docs/database/README.md",
-          "line": 14
-        },
-        {
           "source": "docs/database/schema-builder.md",
           "line": 66
         },
@@ -3676,6 +3702,50 @@
         {
           "source": "docs/performance/README.md",
           "line": 18
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 25
+        },
+        {
+          "source": "docs/core/request-lifecycle.md",
+          "line": 33
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 18
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 18
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 36
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 48
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 36
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 65
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 87
+        },
+        {
+          "source": "docs/database/raw-queries.md",
+          "line": 15
+        },
+        {
+          "source": "docs/database/relations.md",
+          "line": 33
         }
       ],
       "outgoing_markdown_refs": [
@@ -3916,16 +3986,16 @@
           "line": 9
         },
         {
-          "source": "docs/index.md",
-          "line": 17
-        },
-        {
           "source": "docs/services/cache.md",
           "line": 35
         },
         {
           "source": "docs/integrations/llm-providers.md",
           "line": 82
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
         }
       ],
       "outgoing_markdown_refs": [
@@ -4000,12 +4070,12 @@
           "line": 3
         },
         {
-          "source": "docs/index.md",
-          "line": 17
-        },
-        {
           "source": "docs/deployment/README.md",
           "line": 26
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
         }
       ],
       "outgoing_markdown_refs": [
@@ -4017,37 +4087,37 @@
         {
           "target": "docs/audit/README.md",
           "exists": true,
-          "line": 27
+          "line": 25
         },
         {
           "target": "docs/audit/README.md",
           "exists": true,
-          "line": 35
+          "line": 33
         },
         {
           "target": "docs/audit/pending/framework/Routing.md",
           "exists": true,
-          "line": 37
+          "line": 35
         },
         {
           "target": "docs/audit/pending/framework/WebRouter.md",
           "exists": true,
-          "line": 37
+          "line": 35
         },
         {
           "target": "docs/audit/pending/framework/FrontController.md",
           "exists": true,
-          "line": 37
+          "line": 35
         },
         {
           "target": "docs/audit/pending/framework/Request.md",
           "exists": true,
-          "line": 37
+          "line": 35
         },
         {
           "target": "docs/audit/pending/framework/Response.md",
           "exists": true,
-          "line": 37
+          "line": 35
         }
       ]
     },
@@ -4057,16 +4127,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/core/README.md",
+          "line": 8
+        },
+        {
           "source": "docs/audit/README.md",
           "line": 65
         },
         {
           "source": "docs/audit/README.md",
           "line": 66
-        },
-        {
-          "source": "docs/core/README.md",
-          "line": 8
         },
         {
           "source": "docs/index.md",
@@ -4102,12 +4172,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/audit/README.md",
-          "line": 63
-        },
-        {
           "source": "docs/core/README.md",
           "line": 7
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 63
         },
         {
           "source": "docs/index.md",
@@ -4168,45 +4238,60 @@
           "line": 11
         },
         {
-          "source": "docs/database/query-builder.md",
-          "line": 59
+          "source": "docs/database/schema-builder.md",
+          "line": 66
         },
         {
-          "source": "docs/database/query-builder.md",
-          "line": 87
+          "source": "docs/services/cache.md",
+          "line": 39
         },
         {
           "source": "docs/database/README.md",
           "line": 5
         },
         {
-          "source": "docs/database/schema-builder.md",
-          "line": 66
+          "source": "docs/database/query-builder.md",
+          "line": 87
+        },
+        {
+          "source": "docs/database/raw-queries.md",
+          "line": 24
         },
         {
           "source": "docs/index.md",
           "line": 18
-        },
-        {
-          "source": "docs/services/cache.md",
-          "line": 39
         }
       ],
       "outgoing_markdown_refs": [
         {
+          "target": "docs/database/transactions.md",
+          "exists": true,
+          "line": 32
+        },
+        {
           "target": "docs/audit/README.md",
           "exists": true,
-          "line": 46
+          "line": 36
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 48
         },
         {
           "target": "docs/audit/pending/framework/Multi-Tenant.md",
           "exists": true,
-          "line": 46
+          "line": 48
         },
         {
           "target": "docs/database/query-builder.md",
           "exists": true,
-          "line": 46
+          "line": 48
+        },
+        {
+          "target": "docs/database/driver-compatibility.md",
+          "exists": true,
+          "line": 48
         }
       ]
     },
@@ -4224,16 +4309,20 @@
           "line": 3
         },
         {
-          "source": "docs/database/connections.md",
-          "line": 46
-        },
-        {
           "source": "docs/database/model.md",
           "line": 11
         },
         {
           "source": "docs/database/README.md",
           "line": 6
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 48
+        },
+        {
+          "source": "docs/database/raw-queries.md",
+          "line": 30
         },
         {
           "source": "docs/index.md",
@@ -4247,7 +4336,12 @@
           "line": 36
         },
         {
-          "target": "docs/database/connections.md",
+          "target": "docs/database/relations.md",
+          "exists": true,
+          "line": 46
+        },
+        {
+          "target": "docs/database/transactions.md",
           "exists": true,
           "line": 59
         },
@@ -4255,6 +4349,21 @@
           "target": "docs/audit/README.md",
           "exists": true,
           "line": 65
+        },
+        {
+          "target": "docs/database/raw-queries.md",
+          "exists": true,
+          "line": 87
+        },
+        {
+          "target": "docs/database/relations.md",
+          "exists": true,
+          "line": 87
+        },
+        {
+          "target": "docs/database/driver-compatibility.md",
+          "exists": true,
+          "line": 87
         },
         {
           "target": "docs/audit/README.md",
@@ -4284,24 +4393,24 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/database/query-builder.md",
-          "line": 87
-        },
-        {
-          "source": "docs/database/README.md",
-          "line": 7
-        },
-        {
-          "source": "docs/index.md",
-          "line": 18
-        },
-        {
           "source": "docs/services/README.md",
           "line": 16
         },
         {
           "source": "docs/services/event-bus.md",
           "line": 45
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 7
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 87
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -4373,19 +4482,39 @@
           "line": 10
         },
         {
+          "target": "docs/database/relations.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/database/transactions.md",
+          "exists": true,
+          "line": 12
+        },
+        {
+          "target": "docs/database/raw-queries.md",
+          "exists": true,
+          "line": 13
+        },
+        {
+          "target": "docs/database/driver-compatibility.md",
+          "exists": true,
+          "line": 14
+        },
+        {
           "target": "docs/audit/pending/README.md",
           "exists": true,
-          "line": 14
+          "line": 18
         },
         {
           "target": "docs/audit/README.md",
           "exists": true,
-          "line": 14
+          "line": 18
         },
         {
           "target": "docs/audit/README.md",
           "exists": true,
-          "line": 14
+          "line": 18
         }
       ]
     },
@@ -4399,6 +4528,14 @@
           "line": 69
         },
         {
+          "source": "docs/database/migrations.md",
+          "line": 53
+        },
+        {
+          "source": "docs/database/schemas.md",
+          "line": 21
+        },
+        {
           "source": "docs/audit/README.md",
           "line": 121
         },
@@ -4407,16 +4544,12 @@
           "line": 135
         },
         {
-          "source": "docs/database/migrations.md",
-          "line": 53
-        },
-        {
           "source": "docs/database/README.md",
           "line": 9
         },
         {
-          "source": "docs/database/schemas.md",
-          "line": 21
+          "source": "docs/database/driver-compatibility.md",
+          "line": 22
         },
         {
           "source": "docs/index.md",
@@ -4504,12 +4637,20 @@
           "line": 60
         },
         {
+          "source": "docs/database/schema-builder.md",
+          "line": 66
+        },
+        {
           "source": "docs/database/README.md",
           "line": 8
         },
         {
-          "source": "docs/database/schema-builder.md",
-          "line": 66
+          "source": "docs/database/driver-compatibility.md",
+          "line": 22
+        },
+        {
+          "source": "docs/database/relations.md",
+          "line": 7
         },
         {
           "source": "docs/index.md",
@@ -4543,7 +4684,12 @@
       "path": "docs/deployment/README.md",
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 25
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/architecture/composer-release-process.md",
@@ -4572,6 +4718,10 @@
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 9
+        },
         {
           "source": "docs/index.md",
           "line": 33
@@ -4871,7 +5021,12 @@
       "path": "docs/getting-started/README.md",
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 11
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/audit/README.md",
@@ -4891,12 +5046,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/audit/README.md",
-          "line": 11
-        },
-        {
           "source": "docs/framework/Index.md",
           "line": 3
+        },
+        {
+          "source": "docs/audit/README.md",
+          "line": 11
         }
       ],
       "outgoing_markdown_refs": [
@@ -4957,6 +5112,26 @@
         },
         {
           "target": "docs/database/model.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/relations.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/raw-queries.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/transactions.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/driver-compatibility.md",
           "exists": true,
           "line": 18
         },
@@ -5108,12 +5283,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 24
-        },
-        {
           "source": "docs/integrations/api-clients.md",
           "line": 23
+        },
+        {
+          "source": "docs/index.md",
+          "line": 24
         }
       ],
       "outgoing_markdown_refs": [
@@ -5469,12 +5644,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 21
-        },
-        {
           "source": "docs/services/README.md",
           "line": 7
+        },
+        {
+          "source": "docs/index.md",
+          "line": 21
         }
       ],
       "outgoing_markdown_refs": [
@@ -5496,12 +5671,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 21
-        },
-        {
           "source": "docs/services/README.md",
           "line": 8
+        },
+        {
+          "source": "docs/index.md",
+          "line": 21
         }
       ],
       "outgoing_markdown_refs": [
@@ -5518,10 +5693,6 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 21
-        },
-        {
           "source": "docs/services/README.md",
           "line": 12
         },
@@ -5532,6 +5703,10 @@
         {
           "source": "docs/services/views.md",
           "line": 43
+        },
+        {
+          "source": "docs/index.md",
+          "line": 21
         }
       ],
       "outgoing_markdown_refs": [
@@ -5553,16 +5728,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 21
-        },
-        {
           "source": "docs/services/README.md",
           "line": 10
         },
         {
           "source": "docs/services/validation.md",
           "line": 46
+        },
+        {
+          "source": "docs/index.md",
+          "line": 21
         }
       ],
       "outgoing_markdown_refs": []
@@ -5572,10 +5747,6 @@
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
-        {
-          "source": "docs/index.md",
-          "line": 21
-        },
         {
           "source": "docs/services/README.md",
           "line": 11
@@ -5587,6 +5758,10 @@
         {
           "source": "docs/services/views.md",
           "line": 43
+        },
+        {
+          "source": "docs/index.md",
+          "line": 21
         }
       ],
       "outgoing_markdown_refs": [
@@ -5608,12 +5783,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 21
-        },
-        {
           "source": "docs/services/README.md",
           "line": 9
+        },
+        {
+          "source": "docs/index.md",
+          "line": 21
         }
       ],
       "outgoing_markdown_refs": [
@@ -5734,6 +5909,164 @@
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [],
       "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/database/driver-compatibility.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/database/README.md",
+          "line": 14
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 48
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 87
+        },
+        {
+          "source": "docs/database/transactions.md",
+          "line": 25
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/schemas.md",
+          "exists": true,
+          "line": 22
+        },
+        {
+          "target": "docs/database/schema-builder.md",
+          "exists": true,
+          "line": 22
+        },
+        {
+          "target": "docs/database/relations.md",
+          "exists": true,
+          "line": 22
+        },
+        {
+          "target": "docs/database/transactions.md",
+          "exists": true,
+          "line": 22
+        }
+      ]
+    },
+    {
+      "path": "docs/database/raw-queries.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/database/README.md",
+          "line": 13
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 87
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 15
+        },
+        {
+          "target": "docs/database/connections.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 30
+        }
+      ]
+    },
+    {
+      "path": "docs/database/relations.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/database/README.md",
+          "line": 11
+        },
+        {
+          "source": "docs/database/driver-compatibility.md",
+          "line": 22
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 46
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 87
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/schemas.md",
+          "exists": true,
+          "line": 7
+        },
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 33
+        }
+      ]
+    },
+    {
+      "path": "docs/database/transactions.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/database/README.md",
+          "line": 12
+        },
+        {
+          "source": "docs/database/connections.md",
+          "line": 32
+        },
+        {
+          "source": "docs/database/driver-compatibility.md",
+          "line": 22
+        },
+        {
+          "source": "docs/database/query-builder.md",
+          "line": 59
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/database/driver-compatibility.md",
+          "exists": true,
+          "line": 25
+        }
+      ]
     }
   ]
 }

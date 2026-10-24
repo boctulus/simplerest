@@ -1,7 +1,7 @@
 ---
 title: Continue documentation audit from current implementation
-current_step: 9
-next_step: 10
+current_step: 11
+next_step: 12
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -45,11 +45,12 @@ El mapa español enlaza únicamente fuentes revisadas. VitePress replica esas fu
 
 - **Inicio/bootstrap:** auditoría de instalación y arranque con un flujo HTTP mínimo reproducido; el consumo como dependencia Composer y el CRUD con base de datos siguen sin validar.
 - **Core/HTTP:** el ciclo HTTP está separado del recorrido CLI; WebRouter, Request/Response y ApiClient tienen referencias propias con límites de fuente explícitos. Middleware y otras piezas del core siguen en cola.
-- **Datos:** conexiones, Query Builder, Model/ModelRecord, descriptores, constructor DDL y migraciones tienen referencias separadas; no se ejecutaron consultas, DDL ni migraciones sobre una base real. Relaciones, subrecursos, transacciones y drivers siguen pendientes.
+- **Datos:** conexiones, Query Builder, Model/ModelRecord, relaciones/subrecursos, SQL raw, transacciones, compatibilidad por driver, descriptores, constructor DDL y migraciones tienen referencias separadas. No se ejecutaron consultas, escrituras, transacciones, DDL ni migraciones; las pruebas relacionadas sólo se inspeccionaron.
 - **API/seguridad:** resolución de endpoints y conversión de parámetros GET están trazadas en fuente, junto con autenticación, ACL y webhooks; faltan peticiones reales y recorridos CRUD/autorización con una base configurada.
 - **CLI/migraciones:** CliRouter, `CommandRegistry`/`php com` y el ciclo de migraciones tienen referencias separadas. Se consultó la ayuda de CLI; no se ejecutó ningún comando operativo ni migración.
 - **Servicios:** referencias canónicas y públicas separadas para cache, EventBus, vistas, i18n, validación del servidor y builders HTML/formularios; se documentaron diferencias entre drivers, dependencias Composer y límites de escape. Fuente auditada; no se ejecutaron operaciones de cache, render, formulario ni traducción.
-- **Integraciones/operación:** ApiClient ya tiene una referencia propia; faltan completar la auditoría de integraciones, despliegue y rendimiento.
+- **Integraciones/operación:** ApiClient, API Clients, Shopify, LLM Providers, despliegue y rendimiento tienen referencias canónicas y derivadas. El build de VitePress pasa; no se ejecutaron llamadas externas, benchmarks ni despliegues productivos.
+- **Datos restantes:** el paso 10 quedó documentado a nivel de fuente. Relaciones/pivots, transacciones, SQL raw, paginación/agregados, joins automáticos, aislamiento tenant y drivers conservan límites de ejecución no verificados; el paso 11 sigue con el runtime y HTTP.
 
 La cobertura fuente no se marca como reproducción funcional. Cada área pendiente conserva esa distinción hasta tener evidencia propia.
 

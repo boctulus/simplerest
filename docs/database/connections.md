@@ -29,9 +29,11 @@ $pdo = DB::getConnection();
 
 In `DB::select()`, `insert()`, and `statement()`, the parameter named `$tenant_id` is passed to `getConnection()` as a configured connection identifier. These methods try to restore a previously selected identifier; when there was no previous identifier, the source does not restore the null state. This does not establish tenant ownership, tenant isolation, schema-per-tenant behavior, or a naming rule for tenant connections.
 
+While a transaction is active, the source guards connection selection and closure so the transaction stays bound to its selected connection. That connection-affinity check is not a tenant authorization or row-filtering policy. The transaction nesting and rollback behavior are described separately in [Database transactions](transactions.md).
+
 The legacy `DB::connection('name')->table(...)` example is not this project's API. `DB::getConnection()` returns a PDO handle, while `DB::table()` is the separate model-backed query entry point; its Query Builder contract remains under audit.
 
-`DB::withConnection()` and `DB::withDefaultConnection()` contain `return` statements in `finally` blocks. A local PHP probe confirmed that this suppresses a callback exception. Do not rely on these helpers to propagate callback errors; no project test for this behavior was found.
+[`DB::withConnection()`](../../src/framework/Libs/DB.php#L1689) and [`DB::withDefaultConnection()`](../../src/framework/Libs/DB.php#L1711) run the callback inside `try` and restore a previous connection identifier in `finally` when one existed. In the current source, the callback result is returned from `try`; `finally` has no return statement. If there was no previously selected identifier, these helpers do not restore the null state. Exception propagation was not re-executed in this audit, and a failure during connection restoration could still affect the outcome. The earlier ledger entry that claimed unconditional exception suppression is classified as stale in the [database re-audit](../audit/README.md#database-re-audit-2026-10-24).
 
 ## Failure-reporting finding
 
@@ -43,4 +45,4 @@ When `debug` is enabled, the PDO exception handler in [`DB::getConnection()`](..
 - **Rejected:** the legacy `DB::connection()` fluent example and its Oracle, Firebird, DB2, Informix, and Sybase entries.
 - **Partial or unresolved:** live connectivity, driver extensions and per-driver query compatibility, tenant isolation, prefix-based tenancy, and exception behavior for any alternative setup.
 
-See the [claim-level connection findings](../audit/README.md#claim-level-findings-database-connections), the [quarantined legacy page](../audit/pending/framework/Multi-Tenant.md), and the [source-traced Query Builder read path](query-builder.md).
+See the [claim-level connection findings](../audit/README.md#claim-level-findings-database-connections), the [quarantined legacy page](../audit/pending/framework/Multi-Tenant.md), the [source-traced Query Builder read path](query-builder.md), and the [operation-specific driver limits](driver-compatibility.md).
