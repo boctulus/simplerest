@@ -53,6 +53,14 @@ export default defineConfig({
             ]
           },
           {
+            text: 'Integraciones',
+            items: [
+              { text: 'Índice', link: '/integrations' },
+              { text: 'API Clients', link: '/integrations/api-clients' },
+              { text: 'Shopify Connector', link: '/integrations/shopify' }
+            ]
+          },
+          {
             text: 'Operación',
             items: [
               { text: 'Catálogo php com', link: '/cli/commands' },
@@ -86,6 +94,14 @@ export default defineConfig({
               { text: 'Traducciones', link: '/services/i18n' },
               { text: 'Validación', link: '/services/validation' },
               { text: 'HTML y formularios', link: '/services/forms' }
+            ]
+          },
+          {
+            text: 'Integraciones',
+            items: [
+              { text: 'Índice de integraciones', link: '/integrations' },
+              { text: 'API Clients', link: '/integrations/api-clients' },
+              { text: 'Shopify Connector', link: '/integrations/shopify' }
             ]
           },
           {

@@ -21,12 +21,12 @@ features:
     details: Revisa la entrada HTTP, el traspaso al FrontController y sus ramas condicionales.
     link: /core/request-lifecycle
   - title: Explora las guías actuales
-    details: Datos, HTTP/API, seguridad, servicios y operación, con límites visibles donde falta una reproducción completa.
+    details: Datos, HTTP/API, seguridad, servicios, integraciones y operación, con límites visibles donde falta una reproducción completa.
     link: /database
 source:
   - docs/index.md
   - docs/documentation-governance.md
-source_revision: 88a81da51b6c8c4c035180e3004023391205f616
+source_revision: ee8eddfddb1a40de0d021cf6d66f3300f5bfda60
 status: partial
 ---
 
