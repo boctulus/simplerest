@@ -24,6 +24,7 @@ export default defineConfig({
               { text: 'ApiClient', link: '/core/api-client' },
               { text: 'Base de datos', link: '/database' },
               { text: 'Query Builder', link: '/database/query-builder' },
+              { text: 'Paginación', link: '/database/pagination' },
               { text: 'Model y ModelRecord', link: '/database/model' },
               { text: 'Relaciones y subrecursos', link: '/database/relations' },
               { text: 'Consultas SQL raw', link: '/database/raw-queries' },
@@ -45,6 +46,15 @@ export default defineConfig({
               { text: 'Sesiones y cookies', link: '/core/sessions-cookies' },
               { text: 'Manejo de errores', link: '/core/error-handling' },
               { text: 'Logging', link: '/core/logging' }
+            ]
+          },
+          {
+            text: 'Archivos y contenido',
+            items: [
+              { text: 'Filesystem y rutas', link: '/core/filesystem' },
+              { text: 'Uploads', link: '/core/file-uploads' },
+              { text: 'ZIP y backups', link: '/core/archives-backups' },
+              { text: 'Conversión HTML/XML e imágenes', link: '/core/content-conversion' }
             ]
           },
           {
@@ -120,6 +130,15 @@ export default defineConfig({
             ]
           },
           {
+            text: 'Archivos y contenido',
+            items: [
+              { text: 'Filesystem y rutas', link: '/core/filesystem' },
+              { text: 'Uploads', link: '/core/file-uploads' },
+              { text: 'ZIP y backups', link: '/core/archives-backups' },
+              { text: 'Conversión HTML/XML e imágenes', link: '/core/content-conversion' }
+            ]
+          },
+          {
             text: 'Servicios',
             items: [
               { text: 'Servicios del framework', link: '/services' },
@@ -145,6 +164,7 @@ export default defineConfig({
             items: [
               { text: 'Base de datos', link: '/database' },
               { text: 'Query Builder', link: '/database/query-builder' },
+              { text: 'Paginación', link: '/database/pagination' },
               { text: 'Model y ModelRecord', link: '/database/model' },
               { text: 'Relaciones y subrecursos', link: '/database/relations' },
               { text: 'Consultas SQL raw', link: '/database/raw-queries' },

@@ -3,7 +3,7 @@ title: Request y Response
 source:
   - docs/core/request-response.md
   - docs/audit/README.md
-source_revision: 85cbc2197c22cb2565a165c9f9ade69b4bd078e4
+source_revision: 0cd8a411195c4373648faf320416191e3018ecc3
 status: partial
 ---
 
@@ -39,7 +39,7 @@ Esta referencia describe los mensajes HTTP y sus helpers. No forma parte del flu
 
 `Response::getInstance()` es singleton; `Response::create()` construye otra instancia. Cuando el objeto se destruye, el destructor intenta rollback y cierre de todas las conexiones DB; ten en cuenta el ciclo de vida de una instancia creada explícitamente.
 
-`set()` guarda los datos; `get()` y `__toString()` los exponen. Un array se codifica a JSON si no está marcado para codificación diferida. `send()` prepara el envelope `data`, `status_code` y `error` para arrays/objetos y conserva metadatos adicionales. `sendJson()` y `json()` preparan estado JSON. Estos métodos no equivalen todos a una emisión inmediata. `Response::format()` solo produce un array con el envelope y los extras.
+`set()` guarda los datos; `get()` y `__toString()` los exponen. Un array se codifica a JSON si no está marcado para codificación diferida. `send()` prepara el envelope `data`, `status_code` y `error` para arrays/objetos y conserva metadatos adicionales. `sendJson()` y `json()` preparan estado JSON. Estos métodos no equivalen todos a una emisión inmediata. `Response::format()` solo produce un array con el envelope y los extras. Consulta [Paginación](/database/pagination) para la relación entre metadata y límites de Query Builder.
 
 `code()` guarda un código para después; `status()` establece el status HTTP; `sendCode()` prepara JSON mínimo y `sendOK()` intenta establecer 200. `addHeaders()` reemplaza la lista guardada; `addHeader()` y `setHeader()` añaden una línea. `withStatus()`, `withHeader()`, `withAddedHeader()`, `withoutHeader()`, `withBody()` y `withJson()` devuelven clones. `withHeader()` añade una línea, no reemplaza como en PSR-7. La clase ofrece una superficie inspirada, no el contrato completo.
 

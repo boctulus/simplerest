@@ -3,7 +3,7 @@ title: Query Builder
 source:
   - docs/database/query-builder.md
   - docs/audit/README.md
-source_revision: e0a3dc3f5843be258eed7d5cc1edec13031d5f87
+source_revision: 0cd8a411195c4373648faf320416191e3018ecc3
 status: partial
 ---
 
@@ -29,7 +29,7 @@ Esta referencia describe los caminos actuales del código y los separa de result
 
 ## Proyección, joins y límites
 
-La clase ofrece `select()`, `addSelect()`, `selectRaw()`, `distinct()`, joins `join`, `leftJoin`, `rightJoin`, `crossJoin`, `naturalJoin` y `joinRaw`; `joinTo()`/`connectTo()` dependen de metadatos de relaciones. Para ordenar están `orderBy()`, variantes asc/desc, `orderByRaw()` y `reorder()`. `limit()`/`take()` y `offset()`/`skip()` fijan límites. `paginate($page, $page_size)` calcula `(tamaño * página) - tamaño`, toma `paginator.default_limit` o 10 si falta un tamaño, y sólo configura el límite y el offset. No calcula el total de filas ni retorna metadatos de página. Las aserciones de fuente inspeccionadas fijan offset 0 para página 1 y offset 20 para página 3; no se ejecutaron.
+La clase ofrece `select()`, `addSelect()`, `selectRaw()`, `distinct()`, joins `join`, `leftJoin`, `rightJoin`, `crossJoin`, `naturalJoin` y `joinRaw`; `joinTo()`/`connectTo()` dependen de metadatos de relaciones. Para ordenar están `orderBy()`, variantes asc/desc, `orderByRaw()` y `reorder()`. `limit()`/`take()` y `offset()`/`skip()` fijan límites. `paginate($page, $page_size)` calcula `(tamaño * página) - tamaño`, toma `paginator.default_limit` o 10 si falta un tamaño, y sólo configura el límite y el offset. No calcula el total de filas ni retorna metadatos de página. Las aserciones de fuente inspeccionadas fijan offset 0 para página 1 y offset 20 para página 3; no se ejecutaron. La clase `Paginator`, los parámetros API y los metadatos de respuesta están en [Paginación](/database/pagination).
 
 `groupBy()`, `having()`, `union()` y `unionAll()` están declarados; su compatibilidad por dialecto no se probó. Para joins inferidos y subrecursos, consulta [Relaciones, joins y subrecursos](/database/relations).
 

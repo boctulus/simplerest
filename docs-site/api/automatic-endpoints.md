@@ -3,7 +3,7 @@ title: Resolución y parámetros de endpoints automáticos
 source:
   - docs/api/automatic-endpoints.md
   - docs/audit/README.md
-source_revision: cd60be5f8416cdcbbe7011e07486c4b65c0e0df2
+source_revision: 0cd8a411195c4373648faf320416191e3018ecc3
 status: partial
 ---
 
@@ -42,7 +42,7 @@ El resolver valida que el path tenga un segmento con forma de versión y lo devu
 | `fields` | Proyección separada por comas; cada campo debe existir en los atributos del modelo o el método retorna error 400. |
 | `exclude` | Lista de campos a ocultar, separados por comas y comprobados contra los atributos del modelo. |
 | `pretty` | Activa formato legible salvo los valores false-like que reconoce el código. |
-| `page`, `pageSize` | Usa los nombres configurados para el paginador. El tamaño tiene límite `paginator.max_limit`; si se solicita paginación sin página, el default es 1. |
+| `page`, `pageSize` | Usa los nombres configurados para el paginador. El tamaño tiene límite `paginator.max_limit`; si se solicita paginación sin página, el default es 1. Consulta también [Paginación](/database/pagination). |
 | `limit`, `offset` | Se usa cuando no se enviaron `page`/`pageSize`. Un límite ausente o cero selecciona el máximo configurado; uno positivo queda limitado a ese máximo. |
 | `orderBy` | Se pasa al Query Builder como expresión de orden. |
 | `order[field]` | Se acepta como mapa si cada dirección es `ASC` o `DESC`, sin distinguir mayúsculas. La rama no implementa la clave anidada `orderBy[field]`. |
