@@ -12,6 +12,9 @@ The current names describe each extension's responsibility. Previously published
 | `boctulus/simplerest-fpdf` | `PdfBase` adapter around the FPDF library | Successor identity to the old generic PDF package name. |
 | `boctulus/simplerest-web-inspection` | CMS and technology detection plus HTML selector helpers | Extracted from the former mixed Integrations bundle. |
 | `boctulus/simplerest-api-clients` | Google Drive, WooCommerce, OneSignal, and Hugging Face clients | Extracted from the former mixed Integrations bundle. |
+| `boctulus/simplerest-psr7` | PSR-7 adapters for `Request`/`Response` and the `psr7_*()` helpers | Extracted from the core on 2026-10-24; owns `psr/http-message`. Class names unchanged. |
+| `boctulus/simplerest-mail` | PHPMailer SMTP sender (`Mail`) and `EmailTemplate` | Extracted from the core on 2026-10-24; owns `phpmailer/phpmailer`. `MailBase` and `IMail` stay in the core. |
+| `boctulus/simplerest-jwt-auth` | JWT authentication controller (`Api\AuthController`) | Extracted from the core on 2026-10-24; owns `firebase/php-jwt`. `IAuth` stays in the core. |
 | `boctulus/simplerest-llm-providers` | A unified interface for OpenAI, Anthropic, xAI, and Ollama providers | Separate extension candidate; provider-specific model contracts remain explicit. |
 | `boctulus/simplerest-basic-acl` | Proprietary basic ACL extension | Keep as an existing local package. Its proprietary license means this work does not publish it publicly. |
 | `boctulus/simplerest-fine-grained-acl` | Proprietary fine-grained ACL extension | Keep as an existing local package. GoProp retains its application-owned copy until a private distribution is independently authorized and validated. |
@@ -28,7 +31,7 @@ The root SimpleRest checkout remains the development application and source mono
 
 ## Dependency contracts
 
-The core manifest is the source of truth for its PHP and runtime dependency constraints. Web Inspection owns the `DomCrawler` wrapper and CMS scanner; API Clients owns external service clients. PHPMailer, Google API Client, and Guzzle are optional integrations and are not core installation requirements. `Mail::send`, Google Drive, and SendinBlue report a clear runtime error when their selected adapter lacks its required library; SendinBlue also requires its SDK classes to be supplied by the host application.
+The core manifest is the source of truth for its PHP and runtime dependency constraints. Since 2026-10-24 it requires only PHP: the core is the whole `src/framework/` tree, and a library that needs an external dependency moves to a package that declares it (see [Paquetes extraídos del core](../packages/README.md)). Web Inspection owns the `DomCrawler` wrapper and CMS scanner; API Clients owns external service clients. PHPMailer, Google API Client, and Guzzle are optional integrations and are not core installation requirements; since 2026-10-24 `Mail` lives in `boctulus/simplerest-mail`, which requires PHPMailer. `Mail::send`, Google Drive, and SendinBlue report a clear runtime error when their selected adapter lacks its required library; SendinBlue also requires its SDK classes to be supplied by the host application.
 
 The FPDF package owns FPDF. Scaffolding owns PHP Parser. Neither dependency is installed by a production core-only consumer.
 
@@ -36,7 +39,7 @@ The root development checkout keeps Dotenv and test/tool dependencies under `req
 
 ## Compatibility boundary
 
-The current extraction candidate is core `3.0.0`; legacy class names remain compatibility aliases that identify the new owning package. This is a major-version change and must not be backported to `v2.0.2` or represented by moving an existing tag. The GoProp migration test is still pending, so core `3.0.0` remains untagged.
+The current extraction candidate is core `3.0.0`; legacy class names remain compatibility aliases that identify the new owning package. (Obsolete since 2026-10-23: the alias loader `Compatibility/OptionalPackageClassAliases.php` was removed and the core must not contain aliases. Extracted packages keep the original class names instead.) This is a major-version change and must not be backported to `v2.0.2` or represented by moving an existing tag. The GoProp migration test is still pending, so core `3.0.0` remains untagged.
 
 GoProp's current manifest declares PHP `>=8.1,<8.4`; the SimpleRest core declares `>=8.1,<8.5`. Their supported intersection is PHP 8.1 through 8.3. The GoProp `dev` migration must preserve and test that application range before the branch is offered for integration.
 

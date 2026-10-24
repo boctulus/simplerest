@@ -9,7 +9,11 @@ for_agents: false
 next_step_complexity: medium
 tags: [composer, architecture, microcore, testing]
 ---
-## Contrato de alcance vigente
+## Corrección del maintainer (2026-10-24)
+
+El contrato de alcance de abajo interpretó mal "microcore" y queda reemplazado. Microcore es el árbol completo de `src/framework/`, que requiere solo PHP; las librerías demasiado específicas o con dependencias externas pasan a paquetes en `packages/boctulus/` que declaran esa dependencia. No se vacía `src/framework/` ni se reescriben clases del core en versiones mínimas. El commit `f42c3f1dd` restauró `src/framework/`, eliminó `app/LegacyCore/` y `app/LegacyRuntime/` y extrajo `simplerest-psr7`, `simplerest-mail` y `simplerest-jwt-auth`. Detalle en [Paquetes extraídos del core](../../packages/README.md). El texto original se conserva como historial.
+
+## Contrato de alcance vigente (reemplazado el 2026-10-24)
 
 El paquete raíz conserva la identidad `boctulus/simplerest`; no crear otro core ni cambiar tags publicados. El core debe contener únicamente arranque HTTP, routing, middleware genérico y respuestas JSON. Las extensiones se cargan solo por decisión explícita del consumidor mediante proveedores genéricos. No se admiten aliases, shims, fallbacks con `class_exists`, referencias a nombres concretos de paquetes, ni carga opcional automática. Bootstrap/AdminLTE queda fuera del núcleo y se conserva únicamente en la extensión legacy existente si sus contratos pasan validación.
 
@@ -20,7 +24,7 @@ No modificar GoProp ni publicar paquetes o versiones en Packagist durante esta t
 - `src/framework/` quedó reducido a 14 clases genéricas de HTTP, routing, middleware, DI, errores y configuración en memoria. Los 239 candidatos de extracción se conservaron bajo `archive/simplerest-framework-extractions-2026-10-23/`; ese directorio no se autoload y queda fuera de los artefactos Composer.
 - Se eliminaron los 17 elementos clasificados para borrado, incluidos aliases y shims. El manifiesto publicable requiere únicamente PHP y expone solo el namespace del microcore. PHPUnit del monorepo se declara por separado en `composer-dev.json`.
 - La extracción semántica de Graphify respondió HTTP 401; se conservó únicamente el mapa AST. Ese mapa no reemplaza la revisión de consumidores ni demuestra que los paquetes de extensión actuales sean compatibles con el microcore.
-- `php scripts/distribution/verify-release-artifacts.php --microcore-only` pasó: el ZIP contiene 17 archivos, instala como paquete local aislado, responde una petición HTTP real `GET /health` con JSON y devuelve 503 para middleware protegido ausente.
+- `php scripts/distribution/verify-release-artifacts.php --microcore-only` pasó el 2026-10-23 con un ZIP de 17 archivos y una prueba HTTP `GET /health` que usaba la API de las clases mínimas reescritas. Desde `f42c3f1dd` (2026-10-24) el ZIP contiene el árbol completo de `src/framework/` (221 archivos en esa revisión) y la prueba de humo comprueba que un consumidor con solo `boctulus/simplerest` carga el core real (`Request`, `DB`, `Model`, `ApiController`, `Acl`, `IAuth`) y no las clases de paquetes (`AuthController`, `Mail`, adaptadores PSR-7). Pasó sobre un checkout limpio de esa revisión.
 - Pasaron las 4 pruebas focalizadas del microcore (19 aserciones), la prueba del manifiesto del empaquetador (9 aserciones), la validación Composer del paquete y el guard documental.
 - El mapa semántico de consumidores no se pudo completar y los paquetes/extensiones existentes y el bootstrap monolítico aún no se migraron al microcore. Sus tags siguen intactos; no se publicaron versiones nuevas ni se creó tag para el core.
 

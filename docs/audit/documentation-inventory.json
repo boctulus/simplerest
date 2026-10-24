@@ -4,15 +4,15 @@
   "stage": "post-merge documentation path and link refresh",
   "scope": "Refreshed the Markdown path set, classifications, and inline local-link references after the Composer package documentation and task proposal were added and the audit continuation moved.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 776,
+  "inline_markdown_links_seen": 779,
   "counts": {
-    "markdown_scanned": 207,
+    "markdown_scanned": 208,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 398,
+    "local_markdown_links": 401,
     "broken_local_markdown_links": 0,
     "classifications": {
-      "needs-review": 10,
+      "needs-review": 11,
       "canonical": 19,
       "internal/audit": 79,
       "legacy": 99
@@ -2369,11 +2369,44 @@
       ]
     },
     {
+      "path": "docs/packages/README.md",
+      "classification": "needs-review",
+      "basis": "Added 2026-10-24 to document the packages extracted from the core; public canonical status requires maintainer disposition.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/architecture/composer-packages.md",
+          "line": 34
+        },
+        {
+          "source": "docs/to-do/in-progress/simplerest-composer-core-packages.md",
+          "line": 14
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/architecture/composer-packages.md",
+          "exists": true,
+          "line": 11
+        }
+      ]
+    },
+    {
       "path": "docs/architecture/composer-packages.md",
       "classification": "needs-review",
       "basis": "Linked from docs/index.md but not listed in docs/canonical-manifest.json; public canonical status requires maintainer disposition.",
-      "incoming_markdown_refs": [],
-      "outgoing_markdown_refs": []
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/packages/README.md",
+          "line": 11
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/packages/README.md",
+          "exists": true,
+          "line": 34
+        }
+      ]
     },
     {
       "path": "docs/architecture/composer-release-process.md",
@@ -4412,7 +4445,13 @@
           "line": 23
         }
       ],
-      "outgoing_markdown_refs": []
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/packages/README.md",
+          "exists": true,
+          "line": 14
+        }
+      ]
     },
     {
       "path": "docs/to-do/webhooks-async-delivery-reliability.md",

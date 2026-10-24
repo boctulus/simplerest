@@ -1,0 +1,40 @@
+# Paquetes extraídos del core
+
+## Criterio del microcore
+
+El microcore es el árbol completo de `src/framework/` (namespace `Boctulus\Simplerest\Core\`). "Micro" significa que el core no requiere nada más que PHP: una librería demasiado específica o que necesita una dependencia externa se convierte en un paquete bajo `packages/boctulus/` que declara esa dependencia en su propio `composer.json`.
+
+No significa un namespace paralelo, reescrituras mínimas de clases del core ni vaciar `src/framework/`. Esa interpretación se aplicó el 2026-10-23 y se revirtió el 2026-10-24 (commit `f42c3f1dd`).
+
+`unit-tests/microcore/MicrocoreIsolationTest.php` hace cumplir el criterio: el manifiesto raíz requiere solo `php`, el core no referencia librerías externas, cada clase del core carga sin `vendor/` ni paquetes, y no hay `class_alias`.
+
+El catálogo completo de paquetes y sus decisiones de distribución está en [Límites de paquetes Composer](../architecture/composer-packages.md).
+
+## Paquetes extraídos el 2026-10-24
+
+Los tres paquetes conservan los nombres de clase originales y se cargan por `classmap`. No hay aliases ni shims. Un consumidor que necesite alguna de estas clases debe instalar el paquete correspondiente; con solo `boctulus/simplerest` la clase no existe.
+
+| Paquete | Clases y archivos | Dependencia propia | Se queda en el core |
+| --- | --- | --- | --- |
+| `boctulus/simplerest-psr7` | `Psr7\ServerRequestAdapter`, `Psr7\ResponseAdapter`, `Psr7\StreamAdapter`, `Psr7\UriAdapter` y los helpers `psr7_*()` (antes `Helpers/psr7.php`, ahora `src/helpers.php` en `autoload.files` del paquete) | `psr/http-message` `^2.0` | `Request` y `Response` |
+| `boctulus/simplerest-mail` | `Libs\Mail` (envío SMTP con PHPMailer) y `Libs\EmailTemplate` (que llama a `Mail::send`) | `phpmailer/phpmailer` `^6.9 \|\| ^7.1` | `Libs\MailBase`, `Interfaces\IMail`, `Libs\MailAuditor`, `Libs\MailFromRemoteWP` |
+| `boctulus/simplerest-jwt-auth` | `Api\AuthController` (login, refresh, registro y tokens de email/contraseña) | `firebase/php-jwt` `^7.1`, la librería JWT para PHP; no usa la plataforma Firebase | `Interfaces\IAuth` y `Factory::auth()` |
+
+Cada paquete requiere además `boctulus/simplerest` `^2.0 || ^3.0`.
+
+## Cambio en el core sin paquete: Inflector
+
+`Traits\SubResourceHandler` usaba `doctrine/inflector` en una sola llamada, para pluralizar el alias de una relación pivot. Como el trait lo usan `Model` y `ApiController`, no se extrajo: se eliminó la dependencia. Desde el 2026-10-24 el alias de una relación pivot es el nombre de la tabla relacionada.
+
+Para tablas con nombre en plural, como es habitual en SimpleRest, el alias no cambia. Para una tabla con nombre singular cambia la clave del JSON de subrecursos. Ninguna prueba automática cubre todavía ese caso.
+
+## Consumidores en este monorepo
+
+- `composer-dev.json` registra los tres paquetes en `classmap` y los helpers PSR-7 en `files`.
+- Las dependencias externas de los paquetes (`psr/http-message`, `phpmailer/phpmailer`, `firebase/php-jwt`) no están en `composer-dev.json`, igual que las de los demás paquetes locales. Sin ellas, cargar las clases que las usan falla, y las pruebas de correo y autenticación que las necesitan siguen fallando en el entorno de desarrollo.
+- `app/Controllers/MyAuthController.php` y `DumbAuthController.php` extienden `AuthController`; los controladores de `app/` que usan `Mail` dependen ahora de `boctulus/simplerest-mail`.
+
+## Pendiente
+
+- `Libs\CSS::beautifier()` y `Libs\CSS::getCSSRules()` usan `sabberworm/php-css-parser`, que ningún manifiesto declara. El resto de `CSS` no tiene dependencias externas y lo usa `Libs\Strings`. Está registrado como deuda conocida en `MicrocoreIsolationTest`; falta decidir su destino.
+- `Libs\Factory::auth()` instancia `Boctulus\Simplerest\Controllers\MyAuthController`, una clase de la aplicación. Es un acoplamiento del core con `app/` anterior a esta extracción.
