@@ -1,21 +1,21 @@
 {
   "version": 1,
   "generated_on": "2026-10-24",
-  "stage": "database remainder references",
-  "scope": "Added canonical references for database relations, transactions, raw queries, and driver compatibility; refreshed link edges affected by the database documentation.",
+  "stage": "core runtime references",
+  "scope": "Added source-traced core runtime references and refreshed link edges for changed core index sources.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 962,
+  "inline_markdown_links_seen": 989,
   "counts": {
-    "markdown_scanned": 232,
+    "markdown_scanned": 241,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 533,
+    "local_markdown_links": 560,
     "broken_local_markdown_links": 0,
     "classifications": {
-      "needs-review": 11,
-      "canonical": 42,
+      "canonical": 51,
       "internal/audit": 80,
-      "legacy": 99
+      "legacy": 99,
+      "needs-review": 11
     }
   },
   "deferred_webhook_paths": [],
@@ -2429,6 +2429,202 @@
       ]
     },
     {
+      "path": "docs/core/configuration-environment.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/README.md",
+          "line": 12
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 25
+        }
+      ]
+    },
+    {
+      "path": "docs/core/cors.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/README.md",
+          "line": 15
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 21
+        }
+      ]
+    },
+    {
+      "path": "docs/core/dependency-container.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/README.md",
+          "line": 14
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 30
+        }
+      ]
+    },
+    {
+      "path": "docs/core/error-handling.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/handlers.md",
+          "line": 22
+        },
+        {
+          "source": "docs/core/README.md",
+          "line": 17
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 25
+        }
+      ]
+    },
+    {
+      "path": "docs/core/handlers.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/README.md",
+          "line": 11
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/core/error-handling.md",
+          "exists": true,
+          "line": 22
+        }
+      ]
+    },
+    {
+      "path": "docs/core/logging.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/README.md",
+          "line": 18
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 19
+        }
+      ]
+    },
+    {
+      "path": "docs/core/middleware.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/README.md",
+          "line": 10
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 27
+        }
+      ]
+    },
+    {
+      "path": "docs/core/service-providers.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/README.md",
+          "line": 13
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/core/sessions-cookies.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/README.md",
+          "line": 16
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/audit/README.md",
+          "exists": true,
+          "line": 21
+        }
+      ]
+    },
+    {
       "path": "docs/integrations/api-clients.md",
       "classification": "canonical",
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
@@ -3475,6 +3671,10 @@
         {
           "source": "docs/database/README.md",
           "line": 18
+        },
+        {
+          "source": "docs/core/README.md",
+          "line": 22
         }
       ],
       "outgoing_markdown_refs": [
@@ -3664,44 +3864,28 @@
           "line": 64
         },
         {
-          "source": "docs/core/request-response.md",
-          "line": 23
+          "source": "docs/core/configuration-environment.md",
+          "line": 25
         },
         {
-          "source": "docs/core/web-routing.md",
-          "line": 41
-        },
-        {
-          "source": "docs/database/model.md",
-          "line": 60
-        },
-        {
-          "source": "docs/database/schema-builder.md",
-          "line": 66
-        },
-        {
-          "source": "docs/database/schemas.md",
-          "line": 23
-        },
-        {
-          "source": "docs/integrations/api-clients.md",
+          "source": "docs/core/cors.md",
           "line": 21
         },
         {
-          "source": "docs/integrations/llm-providers.md",
-          "line": 9
+          "source": "docs/core/dependency-container.md",
+          "line": 30
         },
         {
-          "source": "docs/integrations/llm-providers.md",
-          "line": 58
+          "source": "docs/core/error-handling.md",
+          "line": 25
         },
         {
-          "source": "docs/deployment/README.md",
-          "line": 31
+          "source": "docs/core/logging.md",
+          "line": 19
         },
         {
-          "source": "docs/performance/README.md",
-          "line": 18
+          "source": "docs/core/middleware.md",
+          "line": 27
         },
         {
           "source": "docs/core/request-lifecycle.md",
@@ -3712,12 +3896,16 @@
           "line": 33
         },
         {
-          "source": "docs/database/README.md",
-          "line": 18
+          "source": "docs/core/request-response.md",
+          "line": 23
         },
         {
-          "source": "docs/database/README.md",
-          "line": 18
+          "source": "docs/core/sessions-cookies.md",
+          "line": 21
+        },
+        {
+          "source": "docs/core/web-routing.md",
+          "line": 41
         },
         {
           "source": "docs/database/connections.md",
@@ -3726,6 +3914,10 @@
         {
           "source": "docs/database/connections.md",
           "line": 48
+        },
+        {
+          "source": "docs/database/model.md",
+          "line": 60
         },
         {
           "source": "docs/database/query-builder.md",
@@ -3744,8 +3936,44 @@
           "line": 15
         },
         {
+          "source": "docs/database/README.md",
+          "line": 18
+        },
+        {
+          "source": "docs/database/README.md",
+          "line": 18
+        },
+        {
           "source": "docs/database/relations.md",
           "line": 33
+        },
+        {
+          "source": "docs/database/schema-builder.md",
+          "line": 66
+        },
+        {
+          "source": "docs/database/schemas.md",
+          "line": 23
+        },
+        {
+          "source": "docs/deployment/README.md",
+          "line": 31
+        },
+        {
+          "source": "docs/integrations/api-clients.md",
+          "line": 21
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 9
+        },
+        {
+          "source": "docs/integrations/llm-providers.md",
+          "line": 58
+        },
+        {
+          "source": "docs/performance/README.md",
+          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -3970,9 +4198,59 @@
           "line": 9
         },
         {
-          "target": "docs/audit/pending/README.md",
+          "target": "docs/core/middleware.md",
+          "exists": true,
+          "line": 10
+        },
+        {
+          "target": "docs/core/handlers.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/core/configuration-environment.md",
+          "exists": true,
+          "line": 12
+        },
+        {
+          "target": "docs/core/service-providers.md",
           "exists": true,
           "line": 13
+        },
+        {
+          "target": "docs/core/dependency-container.md",
+          "exists": true,
+          "line": 14
+        },
+        {
+          "target": "docs/core/cors.md",
+          "exists": true,
+          "line": 15
+        },
+        {
+          "target": "docs/core/sessions-cookies.md",
+          "exists": true,
+          "line": 16
+        },
+        {
+          "target": "docs/core/error-handling.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/logging.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/audit/pending/README.md",
+          "exists": true,
+          "line": 22
+        },
+        {
+          "target": "docs/to-do/in-progress/documentation-audit-continuation.md",
+          "exists": true,
+          "line": 22
         }
       ]
     },
@@ -5071,6 +5349,46 @@
           "line": 11
         },
         {
+          "target": "docs/core/api-client.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/configuration-environment.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/cors.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/dependency-container.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/error-handling.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/handlers.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/logging.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/core/middleware.md",
+          "exists": true,
+          "line": 17
+        },
+        {
           "target": "docs/core/README.md",
           "exists": true,
           "line": 17
@@ -5081,52 +5399,27 @@
           "line": 17
         },
         {
-          "target": "docs/core/web-routing.md",
-          "exists": true,
-          "line": 17
-        },
-        {
           "target": "docs/core/request-response.md",
           "exists": true,
           "line": 17
         },
         {
-          "target": "docs/core/api-client.md",
+          "target": "docs/core/service-providers.md",
           "exists": true,
           "line": 17
         },
         {
-          "target": "docs/database/README.md",
+          "target": "docs/core/sessions-cookies.md",
           "exists": true,
-          "line": 18
+          "line": 17
+        },
+        {
+          "target": "docs/core/web-routing.md",
+          "exists": true,
+          "line": 17
         },
         {
           "target": "docs/database/connections.md",
-          "exists": true,
-          "line": 18
-        },
-        {
-          "target": "docs/database/query-builder.md",
-          "exists": true,
-          "line": 18
-        },
-        {
-          "target": "docs/database/model.md",
-          "exists": true,
-          "line": 18
-        },
-        {
-          "target": "docs/database/relations.md",
-          "exists": true,
-          "line": 18
-        },
-        {
-          "target": "docs/database/raw-queries.md",
-          "exists": true,
-          "line": 18
-        },
-        {
-          "target": "docs/database/transactions.md",
           "exists": true,
           "line": 18
         },
@@ -5136,7 +5429,32 @@
           "line": 18
         },
         {
-          "target": "docs/database/schemas.md",
+          "target": "docs/database/migrations.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/model.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/query-builder.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/raw-queries.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/README.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/database/relations.md",
           "exists": true,
           "line": 18
         },
@@ -5146,17 +5464,22 @@
           "line": 18
         },
         {
-          "target": "docs/database/migrations.md",
+          "target": "docs/database/schemas.md",
           "exists": true,
           "line": 18
         },
         {
-          "target": "docs/api/README.md",
+          "target": "docs/database/transactions.md",
+          "exists": true,
+          "line": 18
+        },
+        {
+          "target": "docs/api/automatic-endpoints.md",
           "exists": true,
           "line": 19
         },
         {
-          "target": "docs/api/automatic-endpoints.md",
+          "target": "docs/api/README.md",
           "exists": true,
           "line": 19
         },
@@ -5166,19 +5489,14 @@
           "line": 19
         },
         {
-          "target": "docs/security/authentication.md",
-          "exists": true,
-          "line": 20
-        },
-        {
           "target": "docs/security/acl.md",
           "exists": true,
           "line": 20
         },
         {
-          "target": "docs/services/README.md",
+          "target": "docs/security/authentication.md",
           "exists": true,
-          "line": 21
+          "line": 20
         },
         {
           "target": "docs/services/cache.md",
@@ -5191,7 +5509,7 @@
           "line": 21
         },
         {
-          "target": "docs/services/views.md",
+          "target": "docs/services/forms.md",
           "exists": true,
           "line": 21
         },
@@ -5201,22 +5519,27 @@
           "line": 21
         },
         {
+          "target": "docs/services/README.md",
+          "exists": true,
+          "line": 21
+        },
+        {
           "target": "docs/services/validation.md",
           "exists": true,
           "line": 21
         },
         {
-          "target": "docs/services/forms.md",
+          "target": "docs/services/views.md",
           "exists": true,
           "line": 21
         },
         {
-          "target": "docs/cli/README.md",
+          "target": "docs/cli/commands.md",
           "exists": true,
           "line": 22
         },
         {
-          "target": "docs/cli/commands.md",
+          "target": "docs/cli/README.md",
           "exists": true,
           "line": 22
         },
@@ -5236,22 +5559,22 @@
           "line": 23
         },
         {
-          "target": "docs/integrations/README.md",
-          "exists": true,
-          "line": 24
-        },
-        {
           "target": "docs/integrations/api-clients.md",
           "exists": true,
           "line": 24
         },
         {
-          "target": "docs/integrations/shopify.md",
+          "target": "docs/integrations/llm-providers.md",
           "exists": true,
           "line": 24
         },
         {
-          "target": "docs/integrations/llm-providers.md",
+          "target": "docs/integrations/README.md",
+          "exists": true,
+          "line": 24
+        },
+        {
+          "target": "docs/integrations/shopify.md",
           "exists": true,
           "line": 24
         },
@@ -5875,7 +6198,12 @@
       "path": "docs/to-do/in-progress/documentation-audit-continuation.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/core/README.md",
+          "line": 22
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {

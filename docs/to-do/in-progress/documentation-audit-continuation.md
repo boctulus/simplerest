@@ -1,7 +1,7 @@
 ---
 title: Continue documentation audit from current implementation
-current_step: 11
-next_step: 12
+current_step: 12
+next_step: 13
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -36,7 +36,7 @@ El mapa español enlaza únicamente fuentes revisadas. VitePress replica esas fu
 10. **Database remainder** — complete the still-pending relation and pivot APIs, transaction behavior, raw-query effects, pagination/aggregates, automatic joins, tenant isolation, and per-driver compatibility. Map each claim to source and focused tests; keep database execution unverified unless it is run against an approved disposable database.
 11. **Core runtime and HTTP remainder** — document middleware contracts, closure-route middleware, handler extension points, CORS, configuration/environment loading, service providers/container, sessions/cookies, logging, error handling, and relevant exception families. Split pages by responsibility rather than placing unrelated components in a request-lifecycle narrative.
 12. **Files, uploads, and output utilities** — audit upload/download helpers, filesystem paths, static assets, media/image, ZIP, backup, XML/HTML, pagination, and response formatters. Describe path and trust boundaries; do not claim a safe upload or deployment path without a reproduced configuration.
-13. **API and security extensions** — cover resource controllers and serialization, collections/trashcan, automatic CRUD edges, JWT, basic/fine-grained ACL packages, CORS, and security utilities. Keep optional package behavior and core behavior in separate references.
+13. **API and security extensions** — cover resource controllers and serialization, collections/trashcan, automatic CRUD edges, JWT, basic/fine-grained ACL packages, and security utilities. CORS belongs to the existing core reference; document only its API integration here and link back. Keep optional package behavior and core behavior in separate references.
 14. **Packages and integrations catalog** — classify all Composer packages by capability and support status. Write package guides in groups where the APIs share a contract, and individual guides for integrations with distinct configuration or network behavior. Identify unverified installability, provider credentials, external side effects, and legacy packages.
 15. **CLI and developer workflows remainder** — expand the existing `php com` catalog where the command registry exposes material argument/side-effect contracts, document scaffolding and generators, and distinguish application commands from `CliRouter` routes. Do not run commands that write project or database state without an approved disposable target.
 16. **Public API reference and closure audit** — replace the reference placeholder with categorized configuration keys, environment variables, global helpers, command entry points, interfaces/traits, and public class families. Map every PHP file under `src/framework` and each package under `packages/boctulus` to an owning guide or an explicit internal/legacy classification; refresh inventory and public VitePress navigation and close the audit only after link/build checks.
@@ -44,13 +44,15 @@ El mapa español enlaza únicamente fuentes revisadas. VitePress replica esas fu
 ## Estado de cobertura
 
 - **Inicio/bootstrap:** auditoría de instalación y arranque con un flujo HTTP mínimo reproducido; el consumo como dependencia Composer y el CRUD con base de datos siguen sin validar.
-- **Core/HTTP:** el ciclo HTTP está separado del recorrido CLI; WebRouter, Request/Response y ApiClient tienen referencias propias con límites de fuente explícitos. Middleware y otras piezas del core siguen en cola.
+- **Core/HTTP:** el ciclo HTTP está separado del orden global de resolvers, que vive en Arquitectura. WebRouter, Request/Response, ApiClient, middleware, handlers, configuración/entorno, providers, Container, CORS, sesiones/cookies, errores y logging tienen referencias por responsabilidad. Son trazas de fuente; no se ejecutaron sus recorridos de runtime.
 - **Datos:** conexiones, Query Builder, Model/ModelRecord, relaciones/subrecursos, SQL raw, transacciones, compatibilidad por driver, descriptores, constructor DDL y migraciones tienen referencias separadas. No se ejecutaron consultas, escrituras, transacciones, DDL ni migraciones; las pruebas relacionadas sólo se inspeccionaron.
 - **API/seguridad:** resolución de endpoints y conversión de parámetros GET están trazadas en fuente, junto con autenticación, ACL y webhooks; faltan peticiones reales y recorridos CRUD/autorización con una base configurada.
 - **CLI/migraciones:** CliRouter, `CommandRegistry`/`php com` y el ciclo de migraciones tienen referencias separadas. Se consultó la ayuda de CLI; no se ejecutó ningún comando operativo ni migración.
 - **Servicios:** referencias canónicas y públicas separadas para cache, EventBus, vistas, i18n, validación del servidor y builders HTML/formularios; se documentaron diferencias entre drivers, dependencias Composer y límites de escape. Fuente auditada; no se ejecutaron operaciones de cache, render, formulario ni traducción.
 - **Integraciones/operación:** ApiClient, API Clients, Shopify, LLM Providers, despliegue y rendimiento tienen referencias canónicas y derivadas. El build de VitePress pasa; no se ejecutaron llamadas externas, benchmarks ni despliegues productivos.
 - **Datos restantes:** el paso 10 quedó documentado a nivel de fuente. Relaciones/pivots, transacciones, SQL raw, paginación/agregados, joins automáticos, aislamiento tenant y drivers conservan límites de ejecución no verificados; el paso 11 sigue con el runtime y HTTP.
+- **Runtime core:** el paso 11 quedó documentado y clasificado en el ledger. Permanecen sin reproducir middleware, CORS, sesiones/cookies, contenedor, proveedores, logging y manejo de errores; la revisión del renderer local confirma que la fuente pública actual del ciclo HTTP no contiene `CliRouter`.
+- **Archivos/utilidades:** el paso 12 es el siguiente; uploads, descargas y utilidades de filesystem/output siguen pendientes.
 
 La cobertura fuente no se marca como reproducción funcional. Cada área pendiente conserva esa distinción hasta tener evidencia propia.
 
