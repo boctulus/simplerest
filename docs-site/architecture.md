@@ -3,7 +3,7 @@ title: Arquitectura
 source:
   - docs/architecture.md
   - docs/core/request-lifecycle.md
-source_revision: 1dff834829126b0c1c5aa60bd3ff13a75e7859f4
+source_revision: e11c6fbc630a9af064f50c6f5f1575bf5c45ecc4
 status: partial
 ---
 
@@ -34,4 +34,4 @@ Composer mapea `Boctulus\Simplerest\Core\` a `src/framework/`; el namespace de a
 
 Este checkout reúne el código del framework y una aplicación configurada. La existencia de `src/framework/` no demuestra por sí sola que una instalación consumidora funcione sin los archivos de la aplicación.
 
-Para el detalle de las ramas HTTP y CLI, consulta el [ciclo de request](/core/request-lifecycle).
+Para el recorrido HTTP posterior a la resolución de rutas, consulta el [ciclo de request](/core/request-lifecycle).
