@@ -34,6 +34,8 @@ export default defineConfig({
               { text: 'HTTP/API', link: '/api' },
               { text: 'Endpoints automáticos', link: '/api/automatic-endpoints' },
               { text: 'Seguridad', link: '/security' },
+              { text: 'Autenticación', link: '/security/authentication' },
+              { text: 'ACL y autorización API', link: '/security/acl' },
               { text: 'Webhooks', link: '/webhooks' }
             ]
           },
@@ -68,6 +70,8 @@ export default defineConfig({
               { text: 'HTTP/API', link: '/api' },
               { text: 'Endpoints automáticos', link: '/api/automatic-endpoints' },
               { text: 'Seguridad', link: '/security' },
+              { text: 'Autenticación', link: '/security/authentication' },
+              { text: 'ACL y autorización API', link: '/security/acl' },
               { text: 'Webhooks', link: '/webhooks' }
             ]
           },
