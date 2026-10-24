@@ -41,8 +41,6 @@ El mapa español enlaza únicamente fuentes revisadas. VitePress replica esas fu
 15. **CLI and developer workflows remainder — complete** — expand the existing `php com` catalog where the command registry exposes material argument/side-effect contracts, document scaffolding and generators, and distinguish application commands from `CliRouter` routes. Do not run commands that write project or database state without an approved disposable target.
 16. **Public API reference and closure audit — completed** — replaced the reference placeholder with categorized configuration keys, environment variables, global helpers, command entry points, interfaces/traits, and public class families. Mapped every PHP file under `src/framework` and each package under `packages/boctulus` to an owning guide or an explicit internal/legacy classification; refreshed the inventory and public VitePress navigation. The governance and broken-link checks passed, and the VitePress build completed successfully.
 
-La transición de esta tarjeta a `done` queda pendiente de aprobación explícita para mover el archivo, requerida por `AGENTS.md`; por ahora permanece en `in-progress`.
-
 ## Estado de cobertura
 
 - **Inicio/bootstrap:** auditoría de instalación y arranque con un flujo HTTP mínimo reproducido; el consumo como dependencia Composer y el CRUD con base de datos siguen sin validar.

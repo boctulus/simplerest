@@ -23,4 +23,4 @@
 
 ## Remaining runtime audit
 
-These core references are source-traced; their runtime paths were not exercised. Legacy pages stay in the [pending audit area](../audit/pending/README.md) until their remaining claims are traced. The broader framework coverage plan is in the [documentation audit continuation](../to-do/in-progress/documentation-audit-continuation.md).
+These core references are source-traced; their runtime paths were not exercised. Legacy pages stay in the [pending audit area](../audit/pending/README.md) until their remaining claims are traced. The broader framework coverage plan is in the [documentation audit continuation](../to-do/done/documentation-audit-continuation.md).
