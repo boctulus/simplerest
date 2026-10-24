@@ -59,11 +59,11 @@ When a source trace finds an ambiguity, keep it **Partial** or **Unverified** an
 
 | Legacy source | Claims located for this phase | Disposition |
 | --- | --- | --- |
-| `docs/framework/Routing.md` → `pending/framework/Routing.md` | Combined WebRouter, CliRouter, package routing, front-controller handler, error, and request-flow descriptions | Preserved under `pending/framework/`; only the resolver and dispatch-flow claims below are promoted. Other router syntax, package, and CLI claims remain pending their phases |
-| `docs/framework/WebRouter.md` → `pending/framework/WebRouter.md` | Route registration, groups, parameters, matching priority, and wildcards | Preserved under `pending/framework/`; only source-traced route compilation, matching, and short-circuit claims below are promoted |
+| `docs/framework/Routing.md` → `pending/framework/Routing.md` | Combined WebRouter, CliRouter, package routing, front-controller handler, error, and request-flow descriptions | Preserved under `pending/framework/`; HTTP registration and CLI command routing are now traced separately in their owning guides. Other package-specific and end-to-end claims remain pending |
+| `docs/framework/WebRouter.md` → `pending/framework/WebRouter.md` | Route registration, groups, parameters, matching priority, and wildcards | Preserved under `pending/framework/`; source-traced registration and matching limits are promoted in the [WebRouter reference](../core/web-routing.md). Route examples have not been run |
 | `docs/framework/FrontController.md` → `pending/framework/FrontController.md` | A fixed six-handler pipeline and configurable handler classes | Preserved under `pending/framework/`; handler instantiation and conditional execution are documented from source below |
-| `docs/framework/Request.md` → `pending/framework/Request.md` | Query/body/route/header lookup, parsing, and immutable-method claims | Preserved under `pending/framework/`; this phase traces only request parsing in the front-controller lifecycle. The `Request` helper API remains pending |
-| `docs/framework/Response.md` → `pending/framework/Response.md` | Output formatting, termination, and immutable-method claims | Preserved under `pending/framework/`; this phase traces only response finalization. Other output and immutable-method claims remain pending |
+| `docs/framework/Request.md` → `pending/framework/Request.md` | Query/body/route/header lookup, parsing, and immutable-method claims | Preserved under `pending/framework/`; the current `Request` helper surface is traced in [Request y Response](../core/request-response.md), with unsupported and untested claims kept explicit |
+| `docs/framework/Response.md` → `pending/framework/Response.md` | Output formatting, termination, and immutable-method claims | Preserved under `pending/framework/`; current envelope, clone-helper, and terminal-emission behavior is traced in [Request y Response](../core/request-response.md) |
 
 ## Claim-level findings: routing and request lifecycle
 
@@ -89,6 +89,17 @@ When a source trace finds an ambiguity, keep it **Partial** or **Unverified** an
 | `Request` implements the complete PSR-7 server-request contract | The class implements `ArrayAccess` and `Arrayable`; its clone helpers cover selected query/header/body fields, while destructive readers remain available | Rejected | Call the helpers PSR-7-inspired and state their partial surface |
 | `Response::withHeader()` replaces an existing header as PSR-7 requires | `withHeader()` appends a formatted line; `withAddedHeader()` also appends. Focused test source asserts multiple added lines | Rejected for replacement semantics | Document the actual append behavior and avoid claiming full PSR-7 response semantics |
 | Every response helper emits a body immediately | `send()`/`sendJson()` set response state; `flush()` prints then exits. `error()` and `redirect()` are terminal paths | Rejected | Distinguish state-building methods from terminal emission |
+
+## Claim-level findings: routing APIs
+
+| Claim | Evidence in this checkout | State | Documentation action |
+| --- | --- | --- | --- |
+| `WebRouter::name()` and `getRouteByName()` establish named-route dispatch | Registration stores a name-to-URI map, `getRouteByName()` returns a URL from that URI, while `resolve()` indexes its alias map using the incoming path. The focused test only inspects stored registration. The exact-alias branch sets response data and exits without `flush()` | Partial; URL generation and dispatch are not one verified contract | Document registration and URL construction, but do not prescribe alias-path dispatch or its output |
+| `WebRouter::resolve()` requires an exact segment count for every static route | The static branch compares the route segments with the beginning of `static::$params` and passes the remaining values as handler arguments; no test covers a static prefix with extra segments | Partial; source behavior is clear but no intended route contract is established | State the behavior as an implementation limit and avoid assuming exact-match handling |
+| Closure routes and controller routes receive the same WebRouter middleware loop | The closure branch sets response data directly; the controller branch includes `config/middlewares.php` and runs matching middleware before response flush | Rejected | Keep route-handler middleware behavior explicit; no runtime middleware scenario was run |
+| `CliRouter::alias()` and `name()` are used to resolve command aliases | Both methods write `static::$aliases`; `resolve()` only searches `static::$routes` and never reads the alias map | Rejected for dispatch support | Label these methods unimplemented for resolution |
+| `CliRouter::compile()` compiles CLI route metadata | The method body is `// nothing`; CLI lookup operates on routes registered in memory | Rejected | Do not claim a CLI compilation phase |
+| The route syntax in legacy WebRouter/CLI pages is fully executable | `WebRouterTest` inspects registration and patterns; `WebRouterFunctionalTest` requires an available server. No dedicated `CliRouter` tests were found in the inspected test paths. Neither route examples nor CLI invocations were run | Unverified for execution | Publish only the source-traced syntax and keep runtime status explicit |
 
 ## Legacy claim inventory: schema-generated and automatic API
 

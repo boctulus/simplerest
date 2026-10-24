@@ -4,9 +4,10 @@
 
 - [Architecture overview](../architecture.md) — verified entry-point, bootstrap, routing, and front-controller relationships for this checkout.
 - [Request lifecycle](request-lifecycle.md) — source-traced router short-circuit, front-controller branches, and response finalization.
+- [Routing HTTP](web-routing.md) — WebRouter registration, parameters, precedence, and source-level limits; no route was run.
 - [Request y Response](request-response.md) — request input, response envelopes, clone helpers, and emission boundaries; source-traced, not runtime-tested.
 - [ApiClient](api-client.md) — source-traced outbound HTTP client, response accessors, cache/auth helpers, and implementation limits; no network request was run.
 
 ## Pending audit
 
-Route-definition examples, middleware behavior beyond the dispatch order, and dependency wiring remain under review. Legacy pages stay in the [pending audit area](../audit/pending/README.md) until their claims are traced.
+Middleware behavior beyond the dispatch order, closure-route middleware handling, and dependency wiring remain under review. Legacy pages stay in the [pending audit area](../audit/pending/README.md) until their claims are traced.

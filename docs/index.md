@@ -14,11 +14,11 @@ La migración es progresiva. Algunas páginas auditadas siguen en inglés y se e
 
 | Tema | Páginas actuales | Alcance y límites |
 | --- | --- | --- |
-| Núcleo | [Core](core/README.md), [ciclo HTTP](core/request-lifecycle.md), [Request y Response](core/request-response.md), [ApiClient](core/api-client.md) | Referencias separadas para el ciclo, mensajes HTTP y cliente saliente; routing y middleware mantienen límites de auditoría. ApiClient tiene anomalías de verbos y timeout registradas. |
+| Núcleo | [Core](core/README.md), [ciclo HTTP](core/request-lifecycle.md), [Routing HTTP](core/web-routing.md), [Request y Response](core/request-response.md), [ApiClient](core/api-client.md) | Referencias separadas para el ciclo, WebRouter, mensajes HTTP y cliente saliente; middleware mantiene límites de auditoría. ApiClient tiene anomalías de verbos y timeout registradas. |
 | Base de datos | [Base de datos](database/README.md), [conexiones](database/connections.md), [Query Builder](database/query-builder.md), [Model y registros](database/model.md), [esquemas](database/schemas.md) | Referencias de código para selección de conexión, Query Builder y Model/ModelRecord; conectividad, resultados de escritura, transacciones y compatibilidad por motor siguen sin reproducirse. |
 | HTTP y API | [API HTTP](api/README.md), [resolución de recursos](api/automatic-endpoints.md), [publicación de webhooks](api/webhooks.md) | Webhooks cubre suscripciones, publicación CRUD e interna, matching por conexión/owner, condiciones y seguridad del callback; falta una prueba de entrega con base de datos y callback HTTP reales. |
 | Seguridad | [Autenticación](security/authentication.md), [ACL](security/acl.md) | Alcance de código y pruebas focalizadas con límites explícitos; falta una petición de autorización respaldada por la base de datos. |
-| CLI | [Estado de CLI](cli/README.md) | Falta inventariar comandos y reproducir sus instrucciones. |
+| CLI | [CLI](cli/README.md), [routing CLI](cli/routing.md) | CliRouter está trazado en fuente; CommandRegistry, comandos operativos y migraciones siguen pendientes. |
 | Composer | [Límites de paquetes Composer](architecture/composer-packages.md), [proceso de publicación](architecture/composer-release-process.md) | Contratos y límites de los paquetes existentes; una instalación de consumidor se declara verificada solo con evidencia de la versión publicada. |
 | Integraciones | [Estado de integraciones](integrations/README.md) | La presencia de un paquete no confirma por sí sola un contrato de integración. |
 | Despliegue | [Estado de despliegue](deployment/README.md) | Aún no hay instrucciones validadas de despliegue. |
