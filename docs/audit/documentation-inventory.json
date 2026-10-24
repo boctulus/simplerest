@@ -1,18 +1,18 @@
 {
   "version": 1,
   "generated_on": "2026-10-24",
-  "stage": "files, uploads, and output utilities",
-  "scope": "Added source-traced filesystem, upload, archive, content-conversion, and pagination references; refreshed changed link edges while preserving the prior document and edge order.",
+  "stage": "API and security extensions",
+  "scope": "Added source-traced API controller, collection, trashcan, file endpoint, JWT, ACL implementation, and authorization engine references; refreshed changed link edges while preserving prior document and edge order.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 1027,
+  "inline_markdown_links_seen": 1110,
   "counts": {
-    "markdown_scanned": 246,
+    "markdown_scanned": 253,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 583,
+    "local_markdown_links": 626,
     "broken_local_markdown_links": 0,
     "classifications": {
-      "canonical": 56,
+      "canonical": 63,
       "internal/audit": 80,
       "legacy": 99,
       "needs-review": 11
@@ -120,7 +120,12 @@
       "path": "docs/_internal/legacy/CHANGELOG-password-reset-security.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 60
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -247,7 +252,12 @@
       "path": "docs/_internal/legacy/framework/ACL.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -261,7 +271,12 @@
       "path": "docs/_internal/legacy/framework/Authentication.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 28
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/framework/ACL.md",
@@ -322,7 +337,12 @@
       "path": "docs/_internal/legacy/framework/commands/AclCommands.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 60
+        }
+      ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/_internal/legacy/framework/ACL.md",
@@ -844,7 +864,16 @@
       "path": "docs/_internal/legacy/framework/SimpleRest-API-Rest.md",
       "classification": "legacy",
       "basis": "Quarantined historical material under docs/_internal/legacy; not a current public contract.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 28
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -2273,12 +2302,28 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/database/pagination.md",
+          "line": 19
+        },
+        {
+          "source": "docs/api/README.md",
+          "line": 5
+        },
+        {
           "source": "docs/index.md",
           "line": 19
         },
         {
-          "source": "docs/database/pagination.md",
-          "line": 19
+          "source": "docs/api/resource-controllers.md",
+          "line": 3
+        },
+        {
+          "source": "docs/api/collections.md",
+          "line": 3
+        },
+        {
+          "source": "docs/api/trashcan.md",
+          "line": 25
         }
       ],
       "outgoing_markdown_refs": [
@@ -2320,12 +2365,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 19
-        },
-        {
           "source": "docs/core/file-uploads.md",
           "line": 37
+        },
+        {
+          "source": "docs/audit/authentication-acl.md",
+          "line": 58
+        },
+        {
+          "source": "docs/index.md",
+          "line": 19
         }
       ],
       "outgoing_markdown_refs": [
@@ -2335,34 +2384,54 @@
           "line": 5
         },
         {
-          "target": "docs/api/webhooks.md",
+          "target": "docs/api/resource-controllers.md",
           "exists": true,
           "line": 6
         },
         {
-          "target": "docs/security/authentication.md",
+          "target": "docs/api/collections.md",
+          "exists": true,
+          "line": 7
+        },
+        {
+          "target": "docs/api/trashcan.md",
+          "exists": true,
+          "line": 8
+        },
+        {
+          "target": "docs/api/file-endpoints.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/api/webhooks.md",
           "exists": true,
           "line": 10
+        },
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 14
         },
         {
           "target": "docs/security/acl.md",
           "exists": true,
-          "line": 10
+          "line": 14
         },
         {
           "target": "docs/audit/authentication-acl.md",
           "exists": true,
-          "line": 10
+          "line": 14
         },
         {
           "target": "docs/audit/pending/README.md",
           "exists": true,
-          "line": 14
+          "line": 18
         },
         {
           "target": "docs/audit/README.md",
           "exists": true,
-          "line": 14
+          "line": 18
         }
       ]
     },
@@ -2373,11 +2442,15 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/api/README.md",
-          "line": 6
+          "line": 10
         },
         {
           "source": "docs/index.md",
           "line": 19
+        },
+        {
+          "source": "docs/api/resource-controllers.md",
+          "line": 33
         }
       ],
       "outgoing_markdown_refs": []
@@ -2475,6 +2548,14 @@
         {
           "source": "docs/index.md",
           "line": 17
+        },
+        {
+          "source": "docs/api/resource-controllers.md",
+          "line": 3
+        },
+        {
+          "source": "docs/api/resource-controllers.md",
+          "line": 7
         }
       ],
       "outgoing_markdown_refs": [
@@ -2907,12 +2988,52 @@
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/audit/README.md",
+          "line": 310
+        },
+        {
           "source": "docs/api/README.md",
+          "line": 14
+        },
+        {
+          "source": "docs/security/README.md",
           "line": 10
         },
         {
-          "source": "docs/audit/README.md",
-          "line": 310
+          "source": "docs/security/acl.md",
+          "line": 3
+        },
+        {
+          "source": "docs/security/acl.md",
+          "line": 17
+        },
+        {
+          "source": "docs/security/authentication.md",
+          "line": 3
+        },
+        {
+          "source": "docs/api/collections.md",
+          "line": 13
+        },
+        {
+          "source": "docs/api/file-endpoints.md",
+          "line": 23
+        },
+        {
+          "source": "docs/api/file-endpoints.md",
+          "line": 27
+        },
+        {
+          "source": "docs/security/acl-implementations.md",
+          "line": 14
+        },
+        {
+          "source": "docs/security/acl-implementations.md",
+          "line": 22
+        },
+        {
+          "source": "docs/security/authorization-engine.md",
+          "line": 19
         }
       ],
       "outgoing_markdown_refs": [
@@ -2968,11 +3089,6 @@
         },
         {
           "target": "docs/_internal/legacy/CHANGELOG-password-reset-security.md",
-          "exists": true,
-          "line": 60
-        },
-        {
-          "target": "app/Modules/Xeni/docs/api_authorization.md",
           "exists": true,
           "line": 60
         }
@@ -3670,10 +3786,6 @@
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/api/README.md",
-          "line": 14
-        },
-        {
           "source": "docs/core/README.md",
           "line": 26
         },
@@ -3684,6 +3796,10 @@
         {
           "source": "docs/database/README.md",
           "line": 19
+        },
+        {
+          "source": "docs/api/README.md",
+          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -3747,10 +3863,6 @@
         {
           "source": "docs/api/automatic-endpoints.md",
           "line": 69
-        },
-        {
-          "source": "docs/api/README.md",
-          "line": 14
         },
         {
           "source": "docs/architecture.md",
@@ -3995,6 +4107,10 @@
         {
           "source": "docs/core/filesystem.md",
           "line": 39
+        },
+        {
+          "source": "docs/api/README.md",
+          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -4118,6 +4234,10 @@
         {
           "source": "docs/index.md",
           "line": 22
+        },
+        {
+          "source": "docs/security/authorization-engine.md",
+          "line": 23
         }
       ],
       "outgoing_markdown_refs": [
@@ -4313,11 +4433,11 @@
           "line": 82
         },
         {
-          "source": "docs/index.md",
+          "source": "docs/core/filesystem.md",
           "line": 17
         },
         {
-          "source": "docs/core/filesystem.md",
+          "source": "docs/index.md",
           "line": 17
         }
       ],
@@ -4399,6 +4519,10 @@
         {
           "source": "docs/index.md",
           "line": 17
+        },
+        {
+          "source": "docs/api/resource-controllers.md",
+          "line": 3
         }
       ],
       "outgoing_markdown_refs": [
@@ -4462,12 +4586,16 @@
           "line": 66
         },
         {
+          "source": "docs/database/pagination.md",
+          "line": 19
+        },
+        {
           "source": "docs/index.md",
           "line": 17
         },
         {
-          "source": "docs/database/pagination.md",
-          "line": 19
+          "source": "docs/api/resource-controllers.md",
+          "line": 17
         }
       ],
       "outgoing_markdown_refs": [
@@ -4657,12 +4785,12 @@
           "line": 30
         },
         {
-          "source": "docs/index.md",
-          "line": 18
-        },
-        {
           "source": "docs/database/pagination.md",
           "line": 7
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -4752,6 +4880,10 @@
         {
           "source": "docs/index.md",
           "line": 18
+        },
+        {
+          "source": "docs/api/trashcan.md",
+          "line": 25
         }
       ],
       "outgoing_markdown_refs": [
@@ -5577,6 +5709,26 @@
           "line": 19
         },
         {
+          "target": "docs/api/resource-controllers.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/api/collections.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/api/trashcan.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/api/file-endpoints.md",
+          "exists": true,
+          "line": 19
+        },
+        {
           "target": "docs/api/webhooks.md",
           "exists": true,
           "line": 19
@@ -5587,7 +5739,22 @@
           "line": 20
         },
         {
+          "target": "docs/security/jwt.md",
+          "exists": true,
+          "line": 20
+        },
+        {
           "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 20
+        },
+        {
+          "target": "docs/security/acl-implementations.md",
+          "exists": true,
+          "line": 20
+        },
+        {
+          "target": "docs/security/authorization-engine.md",
           "exists": true,
           "line": 20
         },
@@ -5739,28 +5906,52 @@
       "path": "docs/issues/acl-literal-wildcard-path-divergence.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 38
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/issues/api-controller-missing-impersonation-types.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 28
+        },
+        {
+          "source": "docs/api/resource-controllers.md",
+          "line": 11
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/issues/api-method-override-acl-mismatch.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 46
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
       "path": "docs/issues/api-per-user-acl-callables.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 46
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -5771,6 +5962,10 @@
         {
           "source": "docs/audit/authentication-acl.md",
           "line": 25
+        },
+        {
+          "source": "docs/security/authentication.md",
+          "line": 48
         }
       ],
       "outgoing_markdown_refs": []
@@ -5779,7 +5974,16 @@
       "path": "docs/issues/http-response-uses-invalid-http2-status-line.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
-      "incoming_markdown_refs": [],
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/security/acl.md",
+          "line": 52
+        },
+        {
+          "source": "docs/security/authentication.md",
+          "line": 38
+        }
+      ],
       "outgoing_markdown_refs": []
     },
     {
@@ -5894,20 +6098,48 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        },
+        {
           "source": "docs/api/README.md",
-          "line": 10
+          "line": 14
         },
         {
           "source": "docs/audit/authentication-acl.md",
           "line": 58
         },
         {
-          "source": "docs/framework/Index.md",
+          "source": "docs/index.md",
+          "line": 20
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 7
+        },
+        {
+          "source": "docs/api/resource-controllers.md",
           "line": 9
         },
         {
-          "source": "docs/index.md",
-          "line": 20
+          "source": "docs/api/trashcan.md",
+          "line": 25
+        },
+        {
+          "source": "docs/security/jwt.md",
+          "line": 41
+        },
+        {
+          "source": "docs/security/acl-implementations.md",
+          "line": 3
+        },
+        {
+          "source": "docs/security/authorization-engine.md",
+          "line": 3
+        },
+        {
+          "source": "docs/security/authorization-engine.md",
+          "line": 17
         }
       ],
       "outgoing_markdown_refs": [
@@ -5915,6 +6147,21 @@
           "target": "docs/audit/authentication-acl.md",
           "exists": true,
           "line": 3
+        },
+        {
+          "target": "docs/security/authorization-engine.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/security/acl-implementations.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 17
         },
         {
           "target": "docs/issues/api-controller-missing-impersonation-types.md",
@@ -5949,20 +6196,32 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/framework/Index.md",
+          "line": 9
+        },
+        {
           "source": "docs/api/README.md",
-          "line": 10
+          "line": 14
         },
         {
           "source": "docs/audit/authentication-acl.md",
           "line": 28
         },
         {
-          "source": "docs/framework/Index.md",
+          "source": "docs/index.md",
+          "line": 20
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 5
+        },
+        {
+          "source": "docs/api/resource-controllers.md",
           "line": 9
         },
         {
-          "source": "docs/index.md",
-          "line": 20
+          "source": "docs/security/jwt.md",
+          "line": 3
         }
       ],
       "outgoing_markdown_refs": [
@@ -5995,14 +6254,29 @@
           "line": 5
         },
         {
-          "target": "docs/security/acl.md",
+          "target": "docs/security/jwt.md",
           "exists": true,
           "line": 6
         },
         {
-          "target": "docs/audit/authentication-acl.md",
+          "target": "docs/security/acl.md",
           "exists": true,
           "line": 7
+        },
+        {
+          "target": "docs/security/acl-implementations.md",
+          "exists": true,
+          "line": 8
+        },
+        {
+          "target": "docs/security/authorization-engine.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 10
         }
       ]
     },
@@ -6121,11 +6395,11 @@
           "line": 43
         },
         {
-          "source": "docs/index.md",
+          "source": "docs/database/pagination.md",
           "line": 21
         },
         {
-          "source": "docs/database/pagination.md",
+          "source": "docs/index.md",
           "line": 21
         }
       ],
@@ -6207,12 +6481,12 @@
           "line": 9
         },
         {
-          "source": "docs/index.md",
-          "line": 21
-        },
-        {
           "source": "docs/core/filesystem.md",
           "line": 37
+        },
+        {
+          "source": "docs/index.md",
+          "line": 21
         }
       ],
       "outgoing_markdown_refs": [
@@ -6503,12 +6777,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 17
-        },
-        {
           "source": "docs/core/README.md",
           "line": 21
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
         }
       ],
       "outgoing_markdown_refs": []
@@ -6519,12 +6793,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 17
-        },
-        {
           "source": "docs/core/README.md",
           "line": 22
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
         }
       ],
       "outgoing_markdown_refs": []
@@ -6535,12 +6809,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/core/README.md",
+          "line": 20
+        },
+        {
           "source": "docs/index.md",
           "line": 17
         },
         {
-          "source": "docs/core/README.md",
-          "line": 20
+          "source": "docs/api/file-endpoints.md",
+          "line": 3
         }
       ],
       "outgoing_markdown_refs": [
@@ -6562,12 +6840,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 17
-        },
-        {
           "source": "docs/core/README.md",
           "line": 19
+        },
+        {
+          "source": "docs/index.md",
+          "line": 17
         }
       ],
       "outgoing_markdown_refs": [
@@ -6599,10 +6877,6 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/index.md",
-          "line": 18
-        },
-        {
           "source": "docs/api/automatic-endpoints.md",
           "line": 36
         },
@@ -6617,6 +6891,10 @@
         {
           "source": "docs/database/README.md",
           "line": 7
+        },
+        {
+          "source": "docs/index.md",
+          "line": 18
         }
       ],
       "outgoing_markdown_refs": [
@@ -6639,6 +6917,272 @@
           "target": "docs/services/forms.md",
           "exists": true,
           "line": 21
+        }
+      ]
+    },
+    {
+      "path": "docs/api/resource-controllers.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 6
+        },
+        {
+          "source": "docs/index.md",
+          "line": 19
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/api/automatic-endpoints.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/request-lifecycle.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/cors.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/core/cors.md",
+          "exists": true,
+          "line": 7
+        },
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 9
+        },
+        {
+          "target": "docs/issues/api-controller-missing-impersonation-types.md",
+          "exists": true,
+          "line": 11
+        },
+        {
+          "target": "docs/core/request-response.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/api/webhooks.md",
+          "exists": true,
+          "line": 33
+        }
+      ]
+    },
+    {
+      "path": "docs/api/collections.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 7
+        },
+        {
+          "source": "docs/index.md",
+          "line": 19
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/api/automatic-endpoints.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 13
+        }
+      ]
+    },
+    {
+      "path": "docs/api/trashcan.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 8
+        },
+        {
+          "source": "docs/index.md",
+          "line": 19
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 25
+        },
+        {
+          "target": "docs/api/automatic-endpoints.md",
+          "exists": true,
+          "line": 25
+        },
+        {
+          "target": "docs/database/model.md",
+          "exists": true,
+          "line": 25
+        }
+      ]
+    },
+    {
+      "path": "docs/api/file-endpoints.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/api/README.md",
+          "line": 9
+        },
+        {
+          "source": "docs/index.md",
+          "line": 19
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/core/file-uploads.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 23
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 27
+        }
+      ]
+    },
+    {
+      "path": "docs/security/jwt.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 20
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 6
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/security/authentication.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 41
+        }
+      ]
+    },
+    {
+      "path": "docs/security/acl-implementations.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 20
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 8
+        },
+        {
+          "source": "docs/security/acl.md",
+          "line": 17
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/security/authorization-engine.md",
+          "exists": true,
+          "line": 14
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 14
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 22
+        }
+      ]
+    },
+    {
+      "path": "docs/security/authorization-engine.md",
+      "classification": "canonical",
+      "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
+      "incoming_markdown_refs": [
+        {
+          "source": "docs/index.md",
+          "line": 20
+        },
+        {
+          "source": "docs/security/README.md",
+          "line": 9
+        },
+        {
+          "source": "docs/security/acl.md",
+          "line": 9
+        },
+        {
+          "source": "docs/security/acl-implementations.md",
+          "line": 14
+        }
+      ],
+      "outgoing_markdown_refs": [
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 3
+        },
+        {
+          "target": "docs/security/acl.md",
+          "exists": true,
+          "line": 17
+        },
+        {
+          "target": "docs/audit/authentication-acl.md",
+          "exists": true,
+          "line": 19
+        },
+        {
+          "target": "docs/cli/commands.md",
+          "exists": true,
+          "line": 23
         }
       ]
     }

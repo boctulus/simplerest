@@ -1,6 +1,6 @@
 # Authentication
 
-This reference describes the current framework path. Authentication behavior still depends on the application controller, database schema, configured handlers, and secrets. The claim-level evidence and limits are recorded in the [audit ledger](../audit/authentication-acl.md).
+This reference traces the current application's path. Credential detection and the `IAuth` contract are in the framework core; the JWT `AuthController` implementation is supplied by the optional [`simplerest-jwt-auth` package](../../packages/boctulus/simplerest-jwt-auth/src/AuthController.php), and this app wires it through `MyAuthController`. Authentication still depends on application wiring, database schema, configured handlers, and secrets. The claim-level evidence and limits are recorded in the [audit ledger](../audit/authentication-acl.md).
 
 ## Request routing and credential checks
 
@@ -47,7 +47,7 @@ The Google Maps key previously present in source also occurs in the local <code>
 
 Historical tracked <code>.env</code> revisions also contain non-empty credential-like values. Some may be placeholders; their validity and provider-side rotation were not verified. See the open [credential review and rotation issue](../issues/historical-environment-credentials-require-rotation.md); complete it before release.
 
-The secure <code>pwdv</code> password-reset flow in this checkout is implemented by <code>app/Controllers/MyAuthController.php</code>, an application override. It is not the generic core <code>AuthController</code> contract. The current app also contains Google/Facebook configuration and application controllers; their presence does not establish a core OAuth login integration.
+The secure <code>pwdv</code> password-reset flow in this checkout is implemented by <code>app/Controllers/MyAuthController.php</code>, an application override of the optional JWT package controller. SimpleRest core does not contain <code>src/framework/Api/AuthController.php</code>. The current app also contains Google/Facebook configuration and application controllers; their presence does not establish a core OAuth login integration.
 
 The core controller depends on the application-provided <code>MyAuthController</code> class selected by <code>AuthHandler</code> and <code>Factory</code>. A standalone consumer must supply compatible application wiring; this repository's application configuration is not a framework default.
 
@@ -56,6 +56,6 @@ The core controller depends on the application-provided <code>MyAuthController</
 - [Request credential detection](../../src/framework/Request.php#L254)
 - [Auth route parsing](../../src/framework/Handlers/RequestHandler.php#L74) and [action resolution](../../src/framework/Handlers/AuthHandler.php#L18)
 - [Auth provider factory](../../src/framework/Libs/Factory.php#L20) and [IAuth contract](../../src/framework/Interfaces/IAuth.php#L5)
-- [ResourceController check](../../src/framework/Api/ResourceController.php#L36), [FrontController order](../../src/framework/FrontController.php#L109), and [core auth check](../../src/framework/Api/AuthController.php#L806)
+- [ResourceController check](../../src/framework/Api/ResourceController.php#L36), [FrontController order](../../src/framework/FrontController.php#L109), and [JWT package auth check](../../packages/boctulus/simplerest-jwt-auth/src/AuthController.php#L806)
 - [Users table setting](../../config/config.php#L128) and [token settings](../../config/config.php#L173)
 - Existing test sources include [HTTP auth tests](../../unit-tests/auth/AuthTest.php#L180) and application-specific [password-reset tests](../../unit-tests/auth/PasswordResetTest.php#L70). They were inspected but not run in this focused runtime phase. No successful login, valid API key/JWT request, or database-backed authorization request was performed.
