@@ -15,6 +15,8 @@ The current names describe each extension's responsibility. Previously published
 | `boctulus/simplerest-psr7` | PSR-7 adapters for `Request`/`Response` and the `psr7_*()` helpers | Extracted from the core on 2026-10-24; owns `psr/http-message`. Class names unchanged. |
 | `boctulus/simplerest-mail` | PHPMailer SMTP sender (`Mail`) and `EmailTemplate` | Extracted from the core on 2026-10-24; owns `phpmailer/phpmailer`. `MailBase` and `IMail` stay in the core. |
 | `boctulus/simplerest-jwt-auth` | JWT authentication controller (`Api\AuthController`) | Extracted from the core on 2026-10-24; owns `firebase/php-jwt`. `IAuth` stays in the core. |
+| `boctulus/simplerest-css` | Stylesheet download/extraction and CSS parsing (`CSS`) | Extracted from the core on 2026-10-24; owns `sabberworm/php-css-parser`, which the core never declared. |
+| `boctulus/simplerest-html` | HTML minification for scraped pages (`HtmlMinifier`, formerly `Strings::minimifyHTML()`) | Extracted from the core on 2026-10-24; depends only on the core. |
 | `boctulus/simplerest-llm-providers` | A unified interface for OpenAI, Anthropic, xAI, and Ollama providers | Separate extension candidate; provider-specific model contracts remain explicit. |
 | `boctulus/simplerest-basic-acl` | Proprietary basic ACL extension | Keep as an existing local package. Its proprietary license means this work does not publish it publicly. |
 | `boctulus/simplerest-fine-grained-acl` | Proprietary fine-grained ACL extension | Keep as an existing local package. GoProp retains its application-owned copy until a private distribution is independently authorized and validated. |

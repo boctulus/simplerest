@@ -2375,7 +2375,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/architecture/composer-packages.md",
-          "line": 34
+          "line": 36
         },
         {
           "source": "docs/to-do/in-progress/simplerest-composer-core-packages.md",
@@ -2404,7 +2404,7 @@
         {
           "target": "docs/packages/README.md",
           "exists": true,
-          "line": 34
+          "line": 36
         }
       ]
     },

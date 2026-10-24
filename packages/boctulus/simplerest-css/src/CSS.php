@@ -267,58 +267,6 @@ class CSS
         return $desminifiedCSS;
     }
 
-    static function removeCSSClasses(string $html, $classesToRemove = null) : string {
-        if (!empty($classesToRemove)) {
-            $classesToRemove = array_fill_keys(
-                array_map(static fn($class): string => trim((string) $class), $classesToRemove),
-                true
-            );
-
-            return preg_replace_callback(
-                '/(?<![A-Za-z0-9_:-])(class\s*=\s*)(["\'`])([^"\'`]*)\\2/i',
-                static function (array $match) use ($classesToRemove): string {
-                    $classes = preg_split('/\s+/', trim($match[3]), -1, PREG_SPLIT_NO_EMPTY) ?: [];
-                    $remainingClasses = array_values(array_filter(
-                        $classes,
-                        static fn(string $class): bool => !isset($classesToRemove[$class])
-                    ));
-
-                    if (count($remainingClasses) === count($classes)) {
-                        return $match[0];
-                    }
-
-                    return $match[1] . $match[2] . implode(' ', $remainingClasses) . $match[2];
-                },
-                $html
-            ) ?? $html;
-        }
-
-        return preg_replace_callback('/<[^<>]*\sclass=[\'"`][^\'"`]*[\'"`][^<>]*>/i', function($match) {
-            return preg_replace('/\sclass=[\'"`][^\'"`]*[\'"`]/i', '', $match[0]);
-        }, $html);        
-    }
-
-    static function removeCSS(string $page, bool $remove_style_sections = true, bool $remove_css_inline = true) : string
-     {
-		// Eliminar CSS entre etiquetas <style></style>
-		if ($remove_style_sections) {
-			$page = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', '', $page);
-		}
-		
-		// Eliminar CSS inline dentro del atributo style=""
-		if ($remove_css_inline) {
-			$page = preg_replace('/style="[^"]*"/i', '', $page);
-		}
-
-        /*
-            Elimino class="" vacios
-        */
-
-        $page = str_replace('class=""', '', $page);     
-		
-		return $page;
-	}
-
     /*
         Devuelve un array con todas las clases de CSS utilizadas en el documento
 

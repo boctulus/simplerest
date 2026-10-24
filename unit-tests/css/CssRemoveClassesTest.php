@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\Tests\Css;
 
-use Boctulus\Simplerest\Core\Libs\CSS;
+use Boctulus\Simplerest\Core\Libs\HtmlMinifier;
 use PHPUnit\Framework\TestCase;
 
 class CssRemoveClassesTest extends TestCase
@@ -13,7 +13,7 @@ class CssRemoveClassesTest extends TestCase
 
         self::assertSame(
             '<span class="remove-extra"></span>',
-            CSS::removeCSSClasses($html, ['remove-first', 'keep', 'remove-last'])
+            HtmlMinifier::removeCSSClasses($html, ['remove-first', 'keep', 'remove-last'])
         );
     }
 
@@ -21,6 +21,6 @@ class CssRemoveClassesTest extends TestCase
     {
         $html = '<span class="keep  keep-extra"></span>';
 
-        self::assertSame($html, CSS::removeCSSClasses($html, ['keep-not-this']));
+        self::assertSame($html, HtmlMinifier::removeCSSClasses($html, ['keep-not-this']));
     }
 }

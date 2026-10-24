@@ -11,14 +11,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class MicrocoreIsolationTest extends TestCase
 {
-    /**
-     * Known references to external libraries still inside the core.
-     * Each entry is debt to extract into a package; never add new ones.
-     */
-    private const PENDING_EXTERNAL_REFERENCES = [
-        'Sabberworm\\CSS\\' => ['Libs/CSS.php'],
-    ];
-
     /** Composer runtime classes, used only behind class_exists() checks. */
     private const ALLOWED_PREFIXES = [
         'Boctulus\\Simplerest\\',
@@ -88,6 +80,7 @@ final class MicrocoreIsolationTest extends TestCase
             'Libs/EmailTemplate.php' => 'simplerest-mail/src/EmailTemplate.php',
             'Psr7/ServerRequestAdapter.php' => 'simplerest-psr7/src/ServerRequestAdapter.php',
             'Helpers/psr7.php' => 'simplerest-psr7/src/helpers.php',
+            'Libs/CSS.php' => 'simplerest-css/src/CSS.php',
         ] as $coreFile => $packageFile) {
             self::assertFileDoesNotExist("$root/src/framework/$coreFile");
             self::assertFileExists("$root/packages/boctulus/$packageFile");
@@ -120,11 +113,6 @@ final class MicrocoreIsolationTest extends TestCase
     {
         foreach (self::ALLOWED_PREFIXES as $prefix) {
             if (str_starts_with($name, $prefix)) {
-                return true;
-            }
-        }
-        foreach (self::PENDING_EXTERNAL_REFERENCES as $prefix => $files) {
-            if (str_starts_with($name, $prefix) && in_array($relative, $files, true)) {
                 return true;
             }
         }
