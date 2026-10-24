@@ -1,7 +1,7 @@
 ---
 title: Continue documentation audit from current implementation
-current_step: 7
-next_step: 8
+current_step: 8
+next_step: 9
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -38,9 +38,9 @@ El mapa español enlaza únicamente fuentes revisadas. VitePress replica esas fu
 
 - **Inicio/bootstrap:** auditoría de instalación y arranque con un flujo HTTP mínimo reproducido; el consumo como dependencia Composer y el CRUD con base de datos siguen sin validar.
 - **Core/HTTP:** el ciclo HTTP está separado del recorrido CLI; WebRouter, Request/Response y ApiClient tienen referencias propias con límites de fuente explícitos. Middleware y otras piezas del core siguen en cola.
-- **Datos:** conexiones, Query Builder, Model/ModelRecord, descriptores y constructor DDL tienen referencias separadas; no se ejecutaron consultas ni DDL sobre una base real. Relaciones, migraciones, subrecursos, transacciones y drivers siguen pendientes.
+- **Datos:** conexiones, Query Builder, Model/ModelRecord, descriptores, constructor DDL y migraciones tienen referencias separadas; no se ejecutaron consultas, DDL ni migraciones sobre una base real. Relaciones, subrecursos, transacciones y drivers siguen pendientes.
 - **API/seguridad:** resolución de endpoints y conversión de parámetros GET están trazadas en fuente, junto con autenticación, ACL y webhooks; faltan peticiones reales y recorridos CRUD/autorización con una base configurada.
-- **CLI/migraciones:** CliRouter tiene referencia propia; el registro `php com` y el ciclo de migraciones todavía requieren auditoría y referencias de uso.
+- **CLI/migraciones:** CliRouter, `CommandRegistry`/`php com` y el ciclo de migraciones tienen referencias separadas. Se consultó la ayuda de CLI; no se ejecutó ningún comando operativo ni migración.
 - **Servicios:** cache, EventBus, vistas, i18n y formularios requieren auditoría y referencias de uso.
 - **Integraciones/operación:** ApiClient ya tiene una referencia propia; faltan completar la auditoría de integraciones, despliegue y rendimiento.
 
