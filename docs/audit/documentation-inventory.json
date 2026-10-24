@@ -1,15 +1,15 @@
 {
   "version": 1,
   "generated_on": "2026-10-24",
-  "stage": "post-webhook scope isolation task completion",
-  "scope": "Refreshed the completed webhook task-card path and reconciled the current Markdown set, including an existing unregistered issue note.",
+  "stage": "post-HTTP request lifecycle separation",
+  "scope": "Refreshed the completed webhook task-card path, reconciled the current Markdown set, and updated the request lifecycle cross-reference to Architecture.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 779,
+  "inline_markdown_links_seen": 780,
   "counts": {
     "markdown_scanned": 209,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 401,
+    "local_markdown_links": 402,
     "broken_local_markdown_links": 0,
     "classifications": {
       "needs-review": 11,
@@ -3471,6 +3471,11 @@
         }
       ],
       "outgoing_markdown_refs": [
+        {
+          "target": "docs/architecture.md",
+          "exists": true,
+          "line": 3
+        },
         {
           "target": "docs/audit/README.md",
           "exists": true,
