@@ -65,7 +65,9 @@ export default defineConfig({
             text: 'Operación',
             items: [
               { text: 'Catálogo php com', link: '/cli/commands' },
-              { text: 'Routing CLI (CliRouter)', link: '/cli/routing' }
+              { text: 'Routing CLI (CliRouter)', link: '/cli/routing' },
+              { text: 'Despliegue', link: '/deployment' },
+              { text: 'Rendimiento', link: '/performance' }
             ]
           }
         ],
@@ -126,7 +128,9 @@ export default defineConfig({
             text: 'Operación',
             items: [
               { text: 'Catálogo php com', link: '/cli/commands' },
-              { text: 'Routing CLI (CliRouter)', link: '/cli/routing' }
+              { text: 'Routing CLI (CliRouter)', link: '/cli/routing' },
+              { text: 'Despliegue', link: '/deployment' },
+              { text: 'Rendimiento', link: '/performance' }
             ]
           }
         ],

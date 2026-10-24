@@ -26,13 +26,13 @@ features:
 source:
   - docs/index.md
   - docs/documentation-governance.md
-source_revision: ee8eddfddb1a40de0d021cf6d66f3300f5bfda60
+source_revision: 7354ea996d206b90398a4cd0e5e5526711182a5e
 status: partial
 ---
 
 ## Sobre esta documentación
 
-Esta primera edición pública ofrece una selección española curada de la fuente editorial canónica. Reordena el material para lectura y navegación; no sustituye `docs/` ni crea una fuente editorial independiente.
+La documentación pública ofrece una selección española curada de la fuente editorial canónica. Reordena el material para lectura y navegación; no sustituye `docs/` ni crea una fuente editorial independiente.
 
 ::: warning Cobertura en desarrollo
 La documentación todavía no cubre todas las capacidades del framework. Cada guía distingue lo verificado de lo pendiente; las secciones marcadas como parciales no deben tratarse como procedimientos validados para producción.
@@ -45,6 +45,7 @@ La documentación todavía no cubre todas las capacidades del framework. Cada gu
 3. [Ciclo de request](/core/request-lifecycle) recorre la ruta HTTP; [Request y Response](/core/request-response) describe los mensajes y sus helpers; [WebRouter](/core/web-routing) detalla el registro HTTP.
 4. [Microcore y paquetes](/core/microcore) explica qué incluye el core y qué librerías se instalan como paquetes.
 5. Las guías de [Base de datos](/database), [Query Builder](/database/query-builder), [Model/ModelRecord](/database/model), [constructor DDL](/database/schema-builder), [migraciones](/database/migrations), [ApiClient](/core/api-client), [HTTP/API](/api), [endpoints automáticos](/api/automatic-endpoints), [autenticación](/security/authentication), [ACL](/security/acl) y [webhooks](/webhooks) detallan los contratos actuales y sus límites.
-6. CLI tiene dos guías independientes: el [catálogo de `php com`](/cli/commands) y el [routing CLI con CliRouter](/cli/routing).
+6. Revisa [API Clients](/integrations/api-clients), [Shopify Connector](/integrations/shopify) y [proveedores LLM](/integrations/llm-providers) para las integraciones opcionales.
+7. CLI tiene dos guías independientes: el [catálogo de `php com`](/cli/commands) y el [routing CLI con CliRouter](/cli/routing). [Despliegue](/deployment) y [rendimiento](/performance) separan lo automatizado de lo pendiente de reproducir.
 
 El español ocupa `/`. Los directorios `/en/`, `/it/` y `/pt/` quedan reservados para traducciones futuras; esta edición no las genera ni publica enlaces a ellas.
