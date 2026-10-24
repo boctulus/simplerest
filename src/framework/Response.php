@@ -1,114 +1,673 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Boctulus\Simplerest\Core;
 
-use JsonException;
-use Stringable;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Url;
 
-final class Response implements Stringable
+class Response implements \ArrayAccess 
 {
-    private int $statusCode;
-    private array $headers;
-    private string $body;
+    protected $data = [];
+    protected $to_be_encoded;
+    protected $headers = [];
+    protected $http_code = NULL;
+    protected $http_code_msg = '';
+    protected $config;
+    protected $pretty;
+    protected $paginator_params;
+    protected $as_object = false;
+    protected $fake_status_codes = false; // send 200 instead
+    protected $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+    protected static $instance = NULL;    
 
-    public function __construct(string $body = '', int $statusCode = 200, array $headers = [])
-    {
-        if ($statusCode < 100 || $statusCode > 599) {
-            throw new \InvalidArgumentException('HTTP status must be between 100 and 599.');
-        }
 
-        $this->statusCode = $statusCode;
-        $this->headers = $headers;
-        $this->body = $body;
+    protected function __construct() {
+        $this->config = Config::get();
+        $this->pretty = $this->config['pretty'];
     }
 
-    public static function json(mixed $data, int $statusCode = 200, array $headers = []): self
+    public function __destruct()
     {
         try {
-            $body = json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        } catch (JsonException $exception) {
-            throw new \RuntimeException('The response could not be encoded as JSON.', 0, $exception);
+            DB::rollbackAndCloseAllConnections();
+        } catch (\Throwable $cleanupError) {
+            error_log('SimpleRest could not fully roll back database connections while closing a response.');
+        }
+    }    
+
+    static function getInstance(){
+        // For backward compatibility we maintain the singleton instance
+        if(static::$instance == NULL){
+            static::$instance = new static();
+        }
+        return static::$instance;
+    }
+
+    // Method to create a new instance (non-singleton)
+    static function create(){
+        return new static();
+    }
+
+    /**
+     * For testing purposes only - allows setting a mock Response instance
+     *
+     * @param Response|null $instance
+     */
+    public static function setInstance($instance): void
+    {
+        static::$instance = $instance;
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->data[$offset]);
+    }
+
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->data[$offset] ?? null;
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        if ($offset === null) {
+            $this->data[] = $value;
+        } else {
+            $this->data[$offset] = $value;
+        }
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        unset($this->data[$offset]);
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->data;
+    }
+
+    static protected function header(string $header, bool $replace = true, int $response_code = 0){
+        if (php_sapi_name() != 'cli'){
+            header($header, $replace, $response_code);
+        }  
+    }
+
+    protected function emitStatusCode(int $http_code): void
+    {
+        if (php_sapi_name() != 'cli' && !headers_sent()) {
+            http_response_code($http_code);
+        }
+    }
+    
+    static function redirect(string $url, int $http_code = 307) {
+        // Verificar si las cabeceras ya han sido enviadas
+        if (!headers_sent()) {          
+            // Verificar si se ha proporcionado un código HTTP válido
+            switch ($http_code){
+                case 301:
+                case 302:
+                case 307:
+                case 308:
+                    break;
+                default:
+                    throw new \InvalidArgumentException("Código HTTP no válido para redirección");
+            }
+
+            http_response_code($http_code);
+            
+            // Configurar la cabecera de ubicación para la redirección
+            header("Location: $url");
+            exit;
+        } else {
+            // Si las cabeceras ya han sido enviadas, lanzar una excepción
+            throw new \Exception("Las cabeceras ya han sido enviadas");
+        }
+    }    
+
+    function asObject(bool $val = true){
+        $this->as_object = $val;
+    }
+
+    function addHeaders(array $headers)
+    {
+        $this->headers = $headers;
+        return $this;
+    }
+
+    function addHeader(string $header)
+    {
+        $this->headers[] = $header;
+        return $this;
+    }
+
+    // Alias de addHeader()
+    function setHeader(string $header){
+        return $this->addHeader($header);
+    }
+
+    /**
+     * sendHeaders
+     *
+     * @param  mixed $headers
+     *
+     * @return void
+     */
+    private function sendHeaders(array $headers = []) {
+        if (php_sapi_name() == 'cli'){
+            return;
         }
 
-        $headers = ['Content-Type' => 'application/json; charset=utf-8'] + $headers;
-        return new self($body, $statusCode, $headers);
+        foreach ($headers as $k => $val){
+            if (empty($val))
+                continue;
+            
+            header("$k:$val");
+        }
     }
 
-    public function statusCode(): int
+    function code(int $http_code, string $msg = '')
     {
-        return $this->statusCode;
+        $this->http_code_msg = $msg;
+        $this->http_code = $http_code;
+        return $this;
     }
 
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
+    function setPretty(bool $state){
+        $this->pretty = $state;
+        return $this;
     }
 
-    public function headers(): array
+    protected function do_encode($data)
     {
-        return $this->headers;
+        $this->header('Content-type:application/json;charset=utf-8');
+
+        $options = $this->pretty ? $this->options | JSON_PRETTY_PRINT : $this->pretty;
+
+        return json_encode($data, $options);
     }
 
-    public function header(string $name): ?string
+    function encode(){
+        $this->to_be_encoded = true;
+        return $this;
+    }
+
+    function setPaginatorParams($row_count, $count, $current_page, $page_count, $page_size, $nextUrl){
+        $formatter = Config::get()['paginator']['formatter'];
+
+        $this->to_be_encoded    = true;
+
+        $this->paginator_params = $formatter(
+            $row_count, $count, $current_page, $page_count, $page_size, $nextUrl
+        );
+
+        return $this;
+    }
+
+    /**
+     * Unwrap a response payload while retaining caller-provided metadata.
+     */
+    private function extractCallerMetadata(&$data): array
     {
-        foreach ($this->headers as $key => $value) {
-            if (strcasecmp((string) $key, $name) === 0) {
-                return is_array($value) ? implode(', ', $value) : (string) $value;
+        if (!is_array($data) || !array_key_exists('data', $data)) {
+            return [];
+        }
+
+        $metadata = array_diff_key($data, array_flip(['data', 'status_code', 'error']));
+        $data = $data['data'];
+
+        return $metadata;
+    }
+
+    function send($data, $http_code = NULL){
+        if ($http_code >= 400) {
+            return $this->error($data, $http_code);
+        }
+
+        $http_code = $http_code != NULL ? $http_code : ($this->http_code !== null ? $this->http_code : 200);
+
+        $this->emitStatusCode($http_code);
+
+        if ($this->as_object || is_object($data) || is_array($data)) {
+            $arr = [];
+
+            if ($this->config['paginator']['position'] == 'TOP'){
+                if ($this->paginator_params != NULL){
+                    $arr = array_merge($arr, $this->paginator_params);
+                }
+            }
+
+            $caller_metadata = $this->extractCallerMetadata($data);
+
+            $data = array_merge([
+                    'data' => $data,
+                    'status_code' => $http_code,
+                    'error' => []
+            ], $caller_metadata, $arr);
+
+            $this->http_code = $http_code; //
+
+            if ($this->config['paginator']['position'] == 'BOTTOM'){
+                if ($this->paginator_params != NULL){
+                    $data = array_merge($data, $this->paginator_params);
+                }
             }
         }
-        return null;
+
+        $this->set( $data );
+        return $this;
     }
 
-    public function getHeaderLine(string $name): string
-    {
-        return $this->header($name) ?? '';
-    }
+    private function zip($data){
+        $data  = gzcompress($data, 9);
 
-    public function body(): string
-    {
-        return $this->body;
-    }
+        ob_start("ob_gzhandler");
+        echo $data; 
+        ob_end_flush();
+    } 
 
-    public function getBody(): string
-    {
-        return $this->body;
-    }
+    function sendCode(int $http_code){
+        $this->set( json_encode(['status_code' => $http_code]) );
 
-    public function withStatus(int $statusCode): self
-    {
-        $response = clone $this;
-        $response->statusCode = $statusCode;
-        return $response;
-    }
-
-    public function withHeader(string $name, string $value): self
-    {
-        $response = clone $this;
-        foreach (array_keys($response->headers) as $key) {
-            if (strcasecmp((string) $key, $name) === 0) {
-                unset($response->headers[$key]);
-            }
+        if (!$this->fake_status_codes){
+            http_response_code($http_code);
         }
-        $response->headers[$name] = $value;
-        return $response;
-    }
 
-    public function send(): void
-    {
+        $this->http_code = $http_code; //
+
+        return $this;
+    }
+ 
+
+    function sendOK(){
         if (!headers_sent()) {
-            http_response_code($this->statusCode);
-            foreach ($this->headers as $name => $value) {
-                header($name . ': ' . $value, true);
+            http_response_code(200);
+        }
+        
+        return static::$instance; 
+    }
+
+    // send as JSON
+    function sendJson($data, $http_code = null, ?string $error_msg = null){
+        $http_code = $http_code != null ? $http_code : ($this->http_code !== null ? $this->http_code : 200);
+
+        $this->to_be_encoded = true;
+
+        $this->emitStatusCode($http_code);
+
+        $caller_metadata = $this->extractCallerMetadata($data);
+
+        $res = [
+            'data' => $data,
+            'status_code' => $http_code,
+            'error' => $error_msg ?? ''
+        ];
+
+        $res = array_merge($res, $caller_metadata);
+
+        $this->http_code = $http_code; //
+
+        $this->set($res);
+
+        return $this;
+    }
+
+
+   
+    /**
+     * error
+     *
+     *
+     * @return void
+     */
+    function error($error = null, ?int $http_code = null, $detail = null, ?string $location = null)
+    {
+        if (is_string($error)){
+            $message = $error;
+        } elseif (is_array($error)){
+            $type    = $error['type'] ?? null;
+            $message = $error['text'] ?? null;
+            $code    = $error['code'];
+        }
+
+        if (php_sapi_name() != 'cli'){
+            if (!headers_sent()) {
+                if ($http_code == NULL)
+                    if ($this->http_code != NULL)
+                        $http_code = $this->http_code;
+                    else
+                        $http_code = 500;
+
+                if ($http_code != NULL && !$this->fake_status_codes)
+                    $this->emitStatusCode($http_code);
             }
         }
 
-        echo $this->body;
+        $this->http_code = $http_code; //
+        $res['status'] = $http_code;
+
+        /*
+            https://www.baeldung.com/rest-api-error-handling-best-practices
+        */
+
+        // Parche 14-Nov-2022 -modificado en 2023-
+
+        if (Url::isPostman() || Url::isInsomnia()){
+            if (is_string($detail)){
+                $detail = trim($detail);
+                $detail = Strings::isJSON($detail) ? json_decode($detail, true, 512, JSON_UNESCAPED_SLASHES) : $detail;
+            }
+        }
+
+        $res['error'] = [
+            'type'     => $type    ?? null,
+            'code'     => $code    ?? null,
+            'message'  => $message,
+            'detail'   => $detail,
+            'location' => $location  // <--- location deberia ser rellado automaticamente leyendo el stack
+        ];
+
+        $this->set($res);
+        $this->flush();
+
+        exit;
     }
 
-    public function __toString(): string
+    function set($data){
+        $this->data = $data;
+        return $this;
+    }
+
+    function get(){
+        // Parche aplicado el 14-Nov-2022
+
+        // If already marked to be encoded, return raw data (will be encoded in flush())
+        if ($this->to_be_encoded) {
+            return $this->data;
+        }
+
+        if (is_array($this->data)){
+            $this->header('Content-type:application/json;charset=utf-8');
+            return json_encode($this->data);
+        }
+
+        return $this->data;
+    }
+
+    function __toString()
     {
-        return $this->body;
+        return $this->get();
+    }
+
+    function isEmpty(){
+        return $this->data == null || (is_array($this->data) && empty($this->data));
+    }
+
+    /*
+        Este método podría reducirse practicamente a generar distintos
+        tipos de excepciones que serían capturadas por un Handler.php
+
+        https://stackoverflow.com/a/30832286/980631
+        https://tutsforweb.com/how-to-create-custom-404-page-laravel/
+    */
+    function flush(){
+        // print_r(['Memory usage'=> System::getMemoryUsage()]);
+        // print_r("<br>");
+
+        // var_dump($this->data);
+
+        if ($this->to_be_encoded){
+            $this->data = $this->do_encode($this->data);
+            $this->header('Content-type:application/json;charset=utf-8');
+        } else{
+            $accept = request()->header('Accept');
+
+            if (Strings::startsWith('application/json', $accept)){
+                $this->to_be_encoded = true;
+
+                // Si la data ya es un string JSON (p.ej. la encodeó OutputHandler::format()
+                // en acciones que RETORNAN su payload, como ?defs=1 / ?_schema=1), no
+                // re-encodear: hacerlo produciría un JSON doblemente serializado.
+                if (is_string($this->data) && Strings::isJSON($this->data)) {
+                    $this->header('Content-type:application/json;charset=utf-8');
+                } else {
+                    $this->data = $this->do_encode($this->data);
+                    $this->header('Content-type:application/json;charset=utf-8');
+                }
+            }
+        }
+
+        $cli = (php_sapi_name() == 'cli');
+
+        if (isset($this->data['error']) && !empty($this->data['error'])){
+            // print_r('*'); // *
+
+            $message  = $this->data['error']['message'] ?? '--';
+            $type     = $this->data['error']['type'] ?? '--';
+            $code     = $this->data['error']['code'] ?? '--';
+            $detail   = $this->data['error']['detail'] ?? '--';
+            $location = $this->data['error']['location'] ?? '--';
+
+            if (is_array($detail)){
+                $detail = json_encode($detail);
+            }
+
+            if (is_array($detail) || !$this->to_be_encoded){
+                echo $this->do_encode($this->data);
+            } else {
+                echo "--| Error: \"$message\". -|Type: $type. -|Code: $code -| Location: $location -|Detail: $detail" .  PHP_EOL. PHP_EOL;
+            }
+
+        } else {
+            if (is_array($this->data) && !$this->to_be_encoded){
+                echo $this->do_encode($this->data);
+            } else {
+                echo $this->data;
+            }
+        }
+
+        exit;
+    }
+
+
+    /*
+        Ejecuta un callback cuano $cond es verdadero
+    */
+    function when($cond, $fn, ...$args){
+        if ($cond){
+            $fn($this, ...$args);
+        }
+        
+        return $this;
+    }
+
+    /*
+        Formatea la respuesta y solo envia el http status code
+
+        $extra esta disponible para adiciones a la respuesta
+        
+        Ej:
+
+        return Response::format($products, 200, '', [
+            'paginator' => [
+                'total' => $total_rows
+            ]
+        ]);
+
+        Respuesta (ejemplo)
+
+        {
+           ...
+            "status_code": 200,
+            "error": "",
+            "paginator": {
+                "total": "218"
+            }
+        }
+    */
+    static function format($data, $http_code = 200, $error_msg = '', $extra = []){
+        // Combina los arrays manteniendo las claves asociativas
+        return array_merge([
+            'data' => $data, 
+            'status_code' => $http_code,
+            'error' => $error_msg
+        ], $extra);
+    }
+
+    function status(int $http_code)
+    {
+        $this->emitStatusCode($http_code);
+
+        $this->http_code = $http_code;
+        return $this;
+    }
+
+    function json($data)
+    {
+        $this->to_be_encoded = true;
+
+        $response = [
+            'data' => $data,
+            'status_code' => $this->http_code ?? 200,
+            'error' => []
+        ];
+
+        $this->set($response);
+        return $this;
+    }
+
+    static function formatError($error_msg, $error_code = null){
+        return [
+            'message' => $error_msg,
+            'code'    => $error_code
+        ];
+    }
+
+    // ==================== PHASE 2: Immutable Methods (PSR-7 inspired) ====================
+
+    /**
+     * Return a new instance with the specified status code
+     *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the instance, and MUST return a new instance with
+     * the modified status code.
+     *
+     * @param int $code The 3-digit integer result code to set
+     * @param string $reasonPhrase The reason phrase to use (optional)
+     * @return self A new instance with the specified status code
+     */
+    public function withStatus(int $code, string $reasonPhrase = '')
+    {
+        if ($code < 100 || $code > 599) {
+            throw new \InvalidArgumentException('Invalid HTTP status code');
+        }
+
+        $new = clone $this;
+        $new->http_code = $code;
+        $new->http_code_msg = $reasonPhrase;
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance with the specified header
+     *
+     * @param string $name Header name
+     * @param string|string[] $value Header value(s)
+     * @return self A new instance with the specified header
+     */
+    public function withHeader(string $name, $value)
+    {
+        $new = clone $this;
+
+        if ($new->headers === null) {
+            $new->headers = [];
+        }
+
+        $headerString = is_array($value) ? implode(', ', $value) : $value;
+        $new->headers[] = "$name: $headerString";
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance with the specified added header value
+     *
+     * @param string $name Header name
+     * @param string|string[] $value Header value(s) to add
+     * @return self A new instance with the added header value
+     */
+    public function withAddedHeader(string $name, $value)
+    {
+        $new = clone $this;
+
+        if ($new->headers === null) {
+            $new->headers = [];
+        }
+
+        $headerString = is_array($value) ? implode(', ', $value) : $value;
+        $new->headers[] = "$name: $headerString";
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance without the specified header
+     *
+     * @param string $name Header name to remove
+     * @return self A new instance without the specified header
+     */
+    public function withoutHeader(string $name)
+    {
+        $new = clone $this;
+
+        if ($new->headers !== null) {
+            $new->headers = array_filter($new->headers, function($header) use ($name) {
+                return stripos($header, $name . ':') !== 0;
+            });
+            $new->headers = array_values($new->headers); // Re-index array
+        }
+
+        return $new;
+    }
+
+    /**
+     * Return a new instance with the specified body
+     *
+     * @param mixed $body The new body data
+     * @return self A new instance with the specified body
+     */
+    public function withBody($body)
+    {
+        $new = clone $this;
+        $new->data = $body;
+        return $new;
+    }
+
+    /**
+     * Return a new instance with JSON body and appropriate headers
+     *
+     * Convenience method for creating JSON responses
+     *
+     * @param mixed $data The data to encode as JSON
+     * @param int $status HTTP status code
+     * @return self A new instance with JSON body
+     */
+    public function withJson($data, int $status = 200)
+    {
+        $new = clone $this;
+        $new->http_code = $status;
+        $new->to_be_encoded = true;
+        $new->data = $data;
+
+        // Add Content-Type header
+        if ($new->headers === null) {
+            $new->headers = [];
+        }
+        $new->headers[] = 'Content-Type: application/json';
+
+        return $new;
     }
 }

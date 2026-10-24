@@ -18,7 +18,7 @@ final class LegacyCliRuntimeTest extends TestCase
             self::assertDirectoryExists($directory, "Legacy bootstrap helper directory missing: $directory");
         }
         self::assertStringContainsString(
-            'app/LegacyCore/Helpers',
+            'src/framework/Helpers',
             str_replace('\\', '/', $autoload['include'][0])
         );
     }
@@ -29,8 +29,7 @@ final class LegacyCliRuntimeTest extends TestCase
         $entrypoint = (string) file_get_contents($root . '/com');
 
         self::assertStringContainsString("require_once __DIR__ . '/app.php';", $entrypoint);
-        self::assertFileExists($root . '/app/LegacyRuntime/autoload.php');
-        self::assertFileExists($root . '/app/LegacyCore/Libs/Files.php');
+        self::assertFileExists($root . '/src/framework/Libs/Files.php');
 
         // The actual legacy CLI is exercised separately by the
         // legacy-cli-smoke CI job using an ephemeral .env fixture.

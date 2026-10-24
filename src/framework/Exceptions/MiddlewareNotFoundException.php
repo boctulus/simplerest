@@ -1,10 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Boctulus\Simplerest\Core\Exceptions;
 
 class MiddlewareNotFoundException extends BaseException
 {
-    protected int $httpStatus = 503;
+    protected static string $errorCode = 'HTTP>MIDDLEWARE_NOT_FOUND';
 }

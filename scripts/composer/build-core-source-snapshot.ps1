@@ -57,26 +57,22 @@ if ($curatedPath -ieq $sourcePath -or $curatedPath -ieq $outputPath) {
     throw 'Curated input, canonical source, and isolated snapshot output must be distinct directories.'
 }
 
-# The pack-first, versioned allowlist defines the published microcore.
-# This must NOT enumerate every file in the development src/framework tree.
-$paths = @(git show ($resolvedCommit + ':scripts/pack/core-files.txt'))
+# The core is the whole committed src/framework tree plus the root package
+# files, exactly as "php com pack build --profile=core" curates it.
+$frameworkPaths = @(git ls-tree -r --name-only $resolvedCommit -- src/framework)
 if ($LASTEXITCODE -ne 0) {
-    throw 'Could not load the committed microcore curation manifest.'
+    throw 'Could not list the committed src/framework tree.'
 }
-$paths = @($paths | Where-Object { $_ -ne '' })
-if ($paths.Count -ne 17 -or @($paths | Select-Object -Unique).Count -ne $paths.Count) {
-    throw 'The curated core must have 17 unique files (3 root files plus 14 microcore PHP classes).'
+$frameworkPaths = @($frameworkPaths | Where-Object { $_ -ne '' })
+if ($frameworkPaths.Count -eq 0) {
+    throw "Commit $resolvedCommit has no src/framework tree."
 }
-foreach ($required in @('composer.json', 'LICENSE', 'README.md')) {
-    if ($paths -notcontains $required) {
-        throw "Required microcore source file missing: $required"
-    }
-}
+$paths = @('composer.json', 'LICENSE', 'README.md') + $frameworkPaths
 $allow = @{}
 foreach ($path in $paths) {
     if ($path -notin @('composer.json', 'LICENSE', 'README.md') -and
-        $path -cnotmatch '^src/framework/[A-Za-z0-9_/-]+\.php$') {
-        throw "Unexpected file in microcore source: $path"
+        ($path -cnotmatch '^src/framework/[A-Za-z0-9_./-]+$' -or $path.Contains('..'))) {
+        throw "Unexpected file in core source: $path"
     }
     $allow[$path] = $true
     $inputFile = Join-Path $curatedPath ($path.Replace('/', [System.IO.Path]::DirectorySeparatorChar))

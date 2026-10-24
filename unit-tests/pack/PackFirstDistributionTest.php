@@ -43,17 +43,14 @@ final class PackFirstDistributionTest extends TestCase
         }
     }
 
-    public function testOldFilesLibraryLivesOutsideComposerMicrocore(): void
+    public function testFilesLibraryLoadsFromCanonicalFramework(): void
     {
-        $repo = dirname(__DIR__, 2);
-        require_once $repo . '/app/LegacyRuntime/autoload.php';
         $class = 'Boctulus\\Simplerest\\Core\\Libs\\Files';
         self::assertTrue(class_exists($class));
         self::assertStringContainsString(
-            'app/LegacyCore/Libs/Files.php',
+            'src/framework/Libs/Files.php',
             str_replace('\\', '/', (new ReflectionClass($class))->getFileName())
         );
-        self::assertFileDoesNotExist($repo . '/src/framework/Libs/Files.php');
     }
 
     private function execute(array $command, string $cwd): array

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Curated, dependency-free Composer microcore pack builder.
+ * Dependency-free Composer core pack builder (the whole src/framework tree).
  *
  * This is the implementation of "php com pack build". It runs BEFORE the
  * application's old CLI/bootstrap and never loads optional framework code.
@@ -64,33 +64,21 @@ final class SimpleRestCorePackBuilder
             throw new RuntimeException('The pack destination must be outside the source repository.');
         }
 
-        // Read the reviewed, versioned allowlist from the SAME immutable source
-        // commit. Curate only these files, even if the development checkout
-        // contains an independent legacy framework tree.
-        $listed = trim(self::git($source, ['show', $commit . ':scripts/pack/core-files.txt']));
-        $paths = $listed === '' ? [] : preg_split('/\r?\n/', $listed);
-        if (count($paths) !== count(array_unique($paths))) {
-            throw new RuntimeException('Duplicate paths in the curated microcore allowlist.');
-        }
+        // The core is the whole committed src/framework tree of the SAME immutable
+        // source commit, plus the root package files. Libraries too specific for
+        // the core live in packages/boctulus, never in a separate core namespace.
         $required = ['composer.json', 'LICENSE', 'README.md'];
-        foreach ($required as $path) {
-            if (!in_array($path, $paths, true)) {
-                throw new RuntimeException("Required package file missing from commit: $path");
+        $listed = trim(self::git($source, ['ls-tree', '-r', '--name-only', $commit, '--', 'src/framework']));
+        $frameworkPaths = $listed === '' ? [] : preg_split('/\r?\n/', $listed);
+        if ($frameworkPaths === []) {
+            throw new RuntimeException('The source commit has no src/framework tree.');
+        }
+        foreach ($frameworkPaths as $path) {
+            if (!preg_match('~^src/framework/[A-Za-z0-9_./-]+$~D', $path) || str_contains($path, '..')) {
+                throw new RuntimeException("Unexpected path inside the core tree: $path");
             }
         }
-        $phpFiles = 0;
-        foreach ($paths as $path) {
-            if (!in_array($path, $required, true)
-                && !preg_match('~^src/framework/[a-zA-Z0-9_/-]+\.php$~D', $path)) {
-                throw new RuntimeException("Unexpected source inside curated core: $path");
-            }
-            if (str_starts_with($path, 'src/framework/')) {
-                $phpFiles++;
-            }
-        }
-        if ($phpFiles !== 14) {
-            throw new RuntimeException('Microcore allowlist must contain exactly 14 approved PHP files. Review an architectural expansion explicitly.');
-        }
+        $paths = array_merge($required, $frameworkPaths);
 
         $manifest = json_decode(self::git($source, ['show', $commit . ':composer.json']), true, 512, JSON_THROW_ON_ERROR);
         if (($manifest['name'] ?? null) !== 'boctulus/simplerest'

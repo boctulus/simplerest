@@ -1,0 +1,16 @@
+{
+    "name": "boctulus/simplerest-psr7",
+    "description": "PSR-7 adapters and helpers for SimpleRest Request and Response",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["simplerest", "psr-7", "http-message", "adapter"],
+    "require": {
+        "php": ">=8.1,<8.5",
+        "psr/http-message": "^2.0",
+        "boctulus/simplerest": "^2.0 || ^3.0"
+    },
+    "autoload": {
+        "classmap": ["src/"],
+        "files": ["src/helpers.php"]
+    }
+}

@@ -1,7 +1,7 @@
 {
   "name": "boctulus/simplerest",
   "type": "library",
-  "description": "Minimal PHP HTTP core for SimpleRest applications",
+  "description": "Lightweight PHP REST framework core. Specific libraries are distributed as separate packages.",
   "keywords": [
     "simplerest",
     "php",
@@ -22,7 +22,10 @@
   "autoload": {
     "psr-4": {
       "Boctulus\\Simplerest\\Core\\": "src/framework/"
-    }
+    },
+    "exclude-from-classmap": [
+      "src/framework/Templates/"
+    ]
   },
   "extra": {
     "branch-alias": {

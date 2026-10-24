@@ -2,90 +2,132 @@
 
 declare(strict_types=1);
 
-use Boctulus\Simplerest\Core\Container;
-use Boctulus\Simplerest\Core\FrontController;
-use Boctulus\Simplerest\Core\Request;
-use Boctulus\Simplerest\Core\WebRouter;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * The microcore is the whole src/framework tree. "Micro" means it requires
+ * nothing but PHP: any library that needs an external dependency lives in its
+ * own package under packages/boctulus, which declares that dependency.
+ */
 final class MicrocoreIsolationTest extends TestCase
 {
-    protected function setUp(): void
+    /**
+     * Known references to external libraries still inside the core.
+     * Each entry is debt to extract into a package; never add new ones.
+     */
+    private const PENDING_EXTERNAL_REFERENCES = [
+        'Sabberworm\\CSS\\' => ['Libs/CSS.php'],
+    ];
+
+    /** Composer runtime classes, used only behind class_exists() checks. */
+    private const ALLOWED_PREFIXES = [
+        'Boctulus\\Simplerest\\',
+        'Composer\\',
+    ];
+
+    private static function root(): string
     {
-        Container::reset();
-        WebRouter::reset();
+        return dirname(__DIR__, 2);
     }
 
-    public function testHealthRouteReturnsJsonWithoutApplicationConfiguration(): void
+    public function testCoreManifestRequiresOnlyPhp(): void
     {
-        WebRouter::get('/health', static fn (Request $request): array => ['status' => 'ok']);
-
-        $response = FrontController::handle(new Request('GET', '/health'));
-
-        self::assertSame(200, $response->getStatusCode());
-        self::assertSame('application/json; charset=utf-8', $response->getHeaderLine('content-type'));
-        self::assertSame(['status' => 'ok'], json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR));
-    }
-
-    public function testMissingRequiredMiddlewareStopsProtectedHandler(): void
-    {
-        $handlerRan = false;
-        WebRouter::get(
-            '/protected',
-            static function () use (&$handlerRan): array {
-                $handlerRan = true;
-                return ['secret' => 'unavailable'];
-            },
-            ['Boctulus\\MissingAuthenticationProvider']
-        );
-
-        $response = FrontController::handle(new Request('GET', '/protected'));
-
-        self::assertSame(503, $response->getStatusCode());
-        self::assertFalse($handlerRan);
-    }
-
-    public function testCoreManifestHasNoOptionalRuntimeOrDefaultLoads(): void
-    {
-        $root = dirname(__DIR__, 2);
-        $manifest = json_decode((string) file_get_contents($root . '/composer.json'), true, 512, JSON_THROW_ON_ERROR);
+        $manifest = json_decode((string) file_get_contents(self::root() . '/composer.json'), true, 512, JSON_THROW_ON_ERROR);
 
         self::assertSame(['php'], array_keys($manifest['require'] ?? []));
         self::assertArrayNotHasKey('require-dev', $manifest);
         self::assertArrayNotHasKey('suggest', $manifest);
         self::assertArrayNotHasKey('autoload-dev', $manifest);
         self::assertArrayNotHasKey('files', $manifest['autoload'] ?? []);
-
-        $autoloadConfig = (string) file_get_contents($root . '/config/autoload.php');
-        self::assertStringNotContainsString('src/framework/Helpers', $autoloadConfig);
+        self::assertSame(['Boctulus\\Simplerest\\Core\\' => 'src/framework/'], $manifest['autoload']['psr-4'] ?? null);
     }
 
-    public function testKernelHasNoOptionalPackageAliasesOrReferences(): void
+    public function testCoreHasNoExternalLibraryReferences(): void
     {
-        $root = dirname(__DIR__, 2);
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
-            $root . '/src/framework',
-            FilesystemIterator::SKIP_DOTS
-        ));
-        $source = '';
-        foreach ($iterator as $file) {
-            if ($file->isFile() && $file->getExtension() === 'php') {
-                $source .= file_get_contents($file->getPathname()) . "\n";
+        $core = self::root() . '/src/framework/';
+        $found = [];
+        foreach ($this->corePhpFiles($core) as $relative => $source) {
+            foreach (token_get_all($source) as $token) {
+                if (!is_array($token) || !in_array($token[0], [T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED], true)) {
+                    continue;
+                }
+                $name = ltrim($token[1], '\\');
+                if (!str_contains($name, '\\') || $this->isAllowed($name, $relative)) {
+                    continue;
+                }
+                $found[] = "$relative: $name";
             }
         }
 
-        self::assertDoesNotMatchRegularExpression('/class_alias\s*\(/i', $source);
-        self::assertDoesNotMatchRegularExpression('/boctulus\\\\simplerest-(api-clients|web-inspection|bootstrap-html|scaffolding|fpdf)/i', $source);
-        self::assertDoesNotMatchRegularExpression('/Firebase\\\\JWT|psr\\/http-message|Doctrine\\\\Inflector|PDO/i', $source);
-        self::assertDoesNotMatchRegularExpression('/Bt5Form|AdminLte|BootstrapPaginator|Bootstrap/i', $source);
+        self::assertSame([], array_values(array_unique($found)), 'Move libraries with external dependencies to a package.');
+    }
 
+    public function testEveryCoreClassLoadsWithoutVendorOrPackages(): void
+    {
+        $process = proc_open(
+            [PHP_BINARY, __DIR__ . '/fixtures/load-core-classes.php', self::root()],
+            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes
+        );
+        self::assertIsResource($process);
+        $stdout = stream_get_contents($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+
+        self::assertSame(0, proc_close($process), $stderr . $stdout);
+        self::assertMatchesRegularExpression('/^loaded=\d+$/m', (string) $stdout);
+    }
+
+    public function testExtractedLibrariesLiveInTheirPackages(): void
+    {
+        $root = self::root();
         foreach ([
-            'Boctulus\\Simplerest\\Core\\Libs\\DB',
-            'Boctulus\\Simplerest\\Core\\Api\\ApiController',
-            'Boctulus\\Simplerest\\Core\\Security\\Acl',
-            'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
-        ] as $optionalClass) {
-            self::assertFalse(class_exists($optionalClass), $optionalClass . ' must not load from the microcore autoloader.');
+            'Api/AuthController.php' => 'simplerest-jwt-auth/src/AuthController.php',
+            'Libs/Mail.php' => 'simplerest-mail/src/Mail.php',
+            'Libs/EmailTemplate.php' => 'simplerest-mail/src/EmailTemplate.php',
+            'Psr7/ServerRequestAdapter.php' => 'simplerest-psr7/src/ServerRequestAdapter.php',
+            'Helpers/psr7.php' => 'simplerest-psr7/src/helpers.php',
+        ] as $coreFile => $packageFile) {
+            self::assertFileDoesNotExist("$root/src/framework/$coreFile");
+            self::assertFileExists("$root/packages/boctulus/$packageFile");
         }
+    }
+
+    public function testCoreHasNoClassAliases(): void
+    {
+        foreach ($this->corePhpFiles(self::root() . '/src/framework/') as $relative => $source) {
+            self::assertDoesNotMatchRegularExpression('/\bclass_alias\s*\(/i', $source, $relative);
+        }
+    }
+
+    /** @return array<string, string> relative path => source, Templates excluded */
+    private function corePhpFiles(string $core): array
+    {
+        $files = [];
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($core, FilesystemIterator::SKIP_DOTS));
+        foreach ($iterator as $file) {
+            $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($core)));
+            if ($file->getExtension() === 'php' && !str_starts_with($relative, 'Templates/')) {
+                $files[$relative] = (string) file_get_contents($file->getPathname());
+            }
+        }
+        ksort($files);
+        return $files;
+    }
+
+    private function isAllowed(string $name, string $relative): bool
+    {
+        foreach (self::ALLOWED_PREFIXES as $prefix) {
+            if (str_starts_with($name, $prefix)) {
+                return true;
+            }
+        }
+        foreach (self::PENDING_EXTERNAL_REFERENCES as $prefix => $files) {
+            if (str_starts_with($name, $prefix) && in_array($relative, $files, true)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

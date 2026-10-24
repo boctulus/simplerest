@@ -2,7 +2,7 @@
 
 namespace Boctulus\Simplerest\tests\Validator;
 
-require_once __DIR__ . '/../../src/framework/Helpers/i18n.php';
+require_once __DIR__ . '/../../packages/boctulus/simplerest-i18n/src/helpers.php';
 
 use Boctulus\Simplerest\Core\Libs\Validator;
 use PHPUnit\Framework\TestCase;

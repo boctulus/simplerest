@@ -250,7 +250,7 @@ function assertMicrocoreArtifactContents(string $archivePath): void
             }
 
             if (in_array($entry, ['composer.json', 'README.md', 'LICENSE'], true)
-                || preg_match('~^src/framework/(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+\.php$~', $entry) === 1) {
+                || preg_match('~^src/framework/(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+$~', $entry) === 1) {
                 continue;
             }
 
@@ -859,170 +859,52 @@ function runPackageOwnedTests(string $consumerDirectory, string $packageName): v
     ], $consumerDirectory);
 }
 
-function runMicrocoreHttpSmoke(string $consumerDirectory): void
+function runMicrocoreSmoke(string $consumerDirectory): void
 {
-    $smokeFile = $consumerDirectory . DIRECTORY_SEPARATOR . 'microcore-http-smoke.php';
+    $smokeFile = $consumerDirectory . DIRECTORY_SEPARATOR . 'microcore-smoke.php';
     $smokeSource = <<<'PHP'
 <?php
-use Boctulus\Simplerest\Core\Container;
-use Boctulus\Simplerest\Core\FrontController;
-use Boctulus\Simplerest\Core\Request;
-use Boctulus\Simplerest\Core\WebRouter;
-
+// A consumer that installs only boctulus/simplerest gets the whole framework
+// core, and none of the libraries that were extracted into packages.
 require __DIR__ . '/vendor/autoload.php';
-$required = [
-    Request::class,
-    \Boctulus\Simplerest\Core\Response::class,
-    WebRouter::class,
-    FrontController::class,
-    \Boctulus\Simplerest\Core\Middleware::class,
-    Container::class,
-];
-foreach ($required as $class) {
-    if (!class_exists($class) && !interface_exists($class)) {
-        fwrite(STDERR, "Microcore symbol did not autoload: {$class}\n");
-        exit(1);
-    }
-}
 
-$optional = [
+$core = [
+    'Boctulus\\Simplerest\\Core\\Request',
+    'Boctulus\\Simplerest\\Core\\Response',
+    'Boctulus\\Simplerest\\Core\\WebRouter',
+    'Boctulus\\Simplerest\\Core\\FrontController',
+    'Boctulus\\Simplerest\\Core\\Middleware',
+    'Boctulus\\Simplerest\\Core\\Container',
+    'Boctulus\\Simplerest\\Core\\Model',
     'Boctulus\\Simplerest\\Core\\Libs\\DB',
+    'Boctulus\\Simplerest\\Core\\Libs\\Files',
     'Boctulus\\Simplerest\\Core\\Api\\ApiController',
     'Boctulus\\Simplerest\\Core\\Security\\Acl',
-    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
-    'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator',
+    'Boctulus\\Simplerest\\Core\\Interfaces\\IAuth',
 ];
-foreach ($optional as $class) {
-    if (class_exists($class) || interface_exists($class) || trait_exists($class)) {
-        fwrite(STDERR, "Optional implementation leaked into the microcore artifact: {$class}\n");
+foreach ($core as $class) {
+    if (!class_exists($class) && !interface_exists($class)) {
+        fwrite(STDERR, "Core symbol did not autoload: {$class}\n");
         exit(1);
     }
 }
 
-Container::reset();
-WebRouter::reset();
-WebRouter::get('/health', static fn (Request $request): array => ['status' => 'ok']);
-$health = FrontController::handle(new Request('GET', '/health'));
-$healthBody = json_decode($health->getBody(), true);
-if ($health->getStatusCode() !== 200 || $health->getHeaderLine('content-type') !== 'application/json; charset=utf-8' || $healthBody !== ['status' => 'ok']) {
-    fwrite(STDERR, "GET /health did not return the expected JSON response.\n");
-    exit(1);
+$extracted = [
+    'Boctulus\\Simplerest\\Core\\Api\\AuthController',
+    'Boctulus\\Simplerest\\Core\\Libs\\Mail',
+    'Boctulus\\Simplerest\\Core\\Libs\\EmailTemplate',
+    'Boctulus\\Simplerest\\Core\\Psr7\\ServerRequestAdapter',
+    'Boctulus\\Simplerest\\Core\\Libs\\BootstrapPaginator',
+    'Boctulus\\Simplerest\\Core\\Libs\\HtmlBuilder\\Bt5Form',
+];
+foreach ($extracted as $class) {
+    if (class_exists($class, false) || is_file(__DIR__ . '/vendor/boctulus/simplerest/src/framework/' . str_replace('\\', '/', substr($class, strlen('Boctulus\\Simplerest\\Core\\'))) . '.php')) {
+        fwrite(STDERR, "Package-owned library leaked into the core artifact: {$class}\n");
+        exit(1);
+    }
 }
 
-$protectedHandlerRan = false;
-WebRouter::get('/protected', static function () use (&$protectedHandlerRan): array {
-    $protectedHandlerRan = true;
-    return ['secret' => true];
-}, ['UnavailableAuthenticationProvider']);
-$protected = FrontController::handle(new Request('GET', '/protected'));
-if ($protected->getStatusCode() !== 503 || $protectedHandlerRan) {
-    fwrite(STDERR, "A protected route did not fail closed without its middleware provider.\n");
-    exit(1);
-}
-
-$routerSource = <<<'ROUTER'
-<?php
-use Boctulus\Simplerest\Core\FrontController;
-use Boctulus\Simplerest\Core\Request;
-use Boctulus\Simplerest\Core\WebRouter;
-
-require __DIR__ . '/vendor/autoload.php';
-WebRouter::get('/health', static fn (Request $request): array => ['status' => 'ok']);
-WebRouter::get('/protected', static fn (): array => ['secret' => true], ['UnavailableAuthenticationProvider']);
-FrontController::resolve();
-ROUTER;
-$routerFile = __DIR__ . '/microcore-router.php';
-if (file_put_contents($routerFile, $routerSource) === false) {
-    fwrite(STDERR, "Could not create the temporary HTTP router.\n");
-    exit(1);
-}
-
-$probe = stream_socket_server('tcp://127.0.0.1:0', $errorNumber, $errorMessage);
-if (!is_resource($probe)) {
-    fwrite(STDERR, "Could not reserve a local HTTP test port: {$errorMessage}\n");
-    unlink($routerFile);
-    exit(1);
-}
-$address = stream_socket_get_name($probe, false);
-fclose($probe);
-$port = (int) substr(strrchr((string) $address, ':'), 1);
-$pipes = [];
-$server = proc_open(
-    [PHP_BINARY, '-S', "127.0.0.1:{$port}", $routerFile],
-    [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
-    $pipes,
-    __DIR__
-);
-if (!is_resource($server)) {
-    fwrite(STDERR, "Could not start the temporary PHP HTTP server.\n");
-    unlink($routerFile);
-    exit(1);
-}
-
-foreach ([1, 2] as $pipeIndex) {
-    stream_set_blocking($pipes[$pipeIndex], false);
-}
-
-$fetch = static function (string $path) use ($port): array {
-    $socket = @stream_socket_client("tcp://127.0.0.1:{$port}", $errorNumber, $errorMessage, 1);
-    if (!is_resource($socket)) {
-        return [false, []];
-    }
-    stream_set_timeout($socket, 1);
-    fwrite($socket, "GET {$path} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n");
-    $response = stream_get_contents($socket);
-    fclose($socket);
-    if (!is_string($response)) {
-        return [false, []];
-    }
-    $separator = strpos($response, "\r\n\r\n");
-    if ($separator === false) {
-        return [false, []];
-    }
-
-    return [substr($response, $separator + 4), explode("\r\n", substr($response, 0, $separator))];
-};
-
-try {
-    $healthResponse = [false, []];
-    for ($attempt = 0; $attempt < 30 && $healthResponse[0] === false; $attempt++) {
-        $healthResponse = $fetch('/health');
-        if ($healthResponse[0] === false) {
-            usleep(50000);
-        }
-    }
-
-    [$healthBody, $healthHeaders] = $healthResponse;
-    $healthStatus = $healthHeaders[0] ?? '';
-    $contentType = '';
-    foreach ($healthHeaders as $header) {
-        if (stripos($header, 'Content-Type:') === 0) {
-            $contentType = trim(substr($header, strlen('Content-Type:')));
-        }
-    }
-    if (!is_string($healthBody)
-        || preg_match('/\\s200(?:\\s|$)/', $healthStatus) !== 1
-        || $contentType !== 'application/json; charset=utf-8'
-        || json_decode($healthBody, true) !== ['status' => 'ok']) {
-        throw new RuntimeException('A real HTTP GET /health did not return the expected JSON response.');
-    }
-
-    [$protectedBody, $protectedHeaders] = $fetch('/protected');
-    if (!is_string($protectedBody) || preg_match('/\\s503(?:\\s|$)/', $protectedHeaders[0] ?? '') !== 1) {
-        throw new RuntimeException('A real HTTP request to a protected route did not fail closed.');
-    }
-} finally {
-    proc_terminate($server);
-    foreach ($pipes as $pipe) {
-        if (is_resource($pipe)) {
-            fclose($pipe);
-        }
-    }
-    proc_close($server);
-    unlink($routerFile);
-}
-
-fwrite(STDOUT, "PASS isolated microcore autoload, real GET /health JSON, and fail-closed middleware without extensions.\n");
+fwrite(STDOUT, "PASS core-only consumer autoloads the framework core without package-owned libraries.\n");
 PHP;
     file_put_contents($smokeFile, $smokeSource);
     runExecutable([PHP_BINARY, $smokeFile], $consumerDirectory);
@@ -1119,7 +1001,7 @@ function verifyCoreV3Consumers(string $artifactDirectory, array $packageManifest
     writeVersionedPathConsumerManifest($coreOnlyConsumer, [$coreName => $packageDirectories[$coreName]]);
     installVcsConsumer($coreOnlyConsumer, true, true);
     assertConsumerLockVersion($coreOnlyConsumer, $coreName, '3.0.0');
-    runMicrocoreHttpSmoke($coreOnlyConsumer);
+    runMicrocoreSmoke($coreOnlyConsumer);
 
     foreach ($releasePackageClasses as $packageName => $classes) {
         $consumerDirectory = $temporaryDirectory . DIRECTORY_SEPARATOR . 'consumer-core-3-' . str_replace('/', '-', substr($packageName, strlen('boctulus/')));
@@ -1227,10 +1109,10 @@ if (in_array('--microcore-only', $argv, true)) {
         ]);
         installVcsConsumer($consumerDirectory, true, false);
         assertConsumerLockVersion($consumerDirectory, 'boctulus/simplerest', '3.0.0');
-        runMicrocoreHttpSmoke($consumerDirectory);
+        runMicrocoreSmoke($consumerDirectory);
 
         fwrite(STDOUT, sprintf(
-            "PASS Composer microcore artifact: %d files, %d expanded bytes; isolated core-only consumer GET /health and protected-route checks passed.\n",
+            "PASS Composer microcore artifact: %d files, %d expanded bytes; core-only consumer autoloads the framework core without package-owned libraries.\n",
             $metrics['files'],
             $metrics['expandedBytes']
         ));

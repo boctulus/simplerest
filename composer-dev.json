@@ -29,10 +29,17 @@
       "packages/boctulus/simplerest-gd-image/src/",
       "packages/boctulus/simplerest-string-obfuscation/src/",
       "packages/boctulus/simplerest-machine-id/src/",
-      "packages/boctulus/simplerest-sse/src/"
+      "packages/boctulus/simplerest-sse/src/",
+      "packages/boctulus/simplerest-psr7/src/",
+      "packages/boctulus/simplerest-mail/src/",
+      "packages/boctulus/simplerest-jwt-auth/src/"
     ],
     "files": [
-      "packages/boctulus/simplerest-i18n/src/helpers.php"
+      "packages/boctulus/simplerest-i18n/src/helpers.php",
+      "packages/boctulus/simplerest-psr7/src/helpers.php"
+    ],
+    "exclude-from-classmap": [
+      "src/framework/Templates/"
     ]
   },
   "scripts": {
