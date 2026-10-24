@@ -34,6 +34,20 @@ export default defineConfig({
             ]
           },
           {
+            text: 'Runtime del core',
+            items: [
+              { text: 'Middleware', link: '/core/middleware' },
+              { text: 'Handlers de FrontController', link: '/core/handlers' },
+              { text: 'Configuración y entorno', link: '/core/configuration-environment' },
+              { text: 'Proveedores de servicios', link: '/core/service-providers' },
+              { text: 'Container de dependencias', link: '/core/dependency-container' },
+              { text: 'CORS', link: '/core/cors' },
+              { text: 'Sesiones y cookies', link: '/core/sessions-cookies' },
+              { text: 'Manejo de errores', link: '/core/error-handling' },
+              { text: 'Logging', link: '/core/logging' }
+            ]
+          },
+          {
             text: 'Servicios',
             items: [
               { text: 'Índice de servicios', link: '/services' },
@@ -89,6 +103,20 @@ export default defineConfig({
               { text: 'Routing HTTP (WebRouter)', link: '/core/web-routing' },
               { text: 'Microcore y paquetes', link: '/core/microcore' },
               { text: 'ApiClient', link: '/core/api-client' }
+            ]
+          },
+          {
+            text: 'Runtime del core',
+            items: [
+              { text: 'Middleware', link: '/core/middleware' },
+              { text: 'Handlers de FrontController', link: '/core/handlers' },
+              { text: 'Configuración y entorno', link: '/core/configuration-environment' },
+              { text: 'Proveedores de servicios', link: '/core/service-providers' },
+              { text: 'Container de dependencias', link: '/core/dependency-container' },
+              { text: 'CORS', link: '/core/cors' },
+              { text: 'Sesiones y cookies', link: '/core/sessions-cookies' },
+              { text: 'Manejo de errores', link: '/core/error-handling' },
+              { text: 'Logging', link: '/core/logging' }
             ]
           },
           {
