@@ -1,7 +1,7 @@
 ---
 title: Continue documentation audit from current implementation
-current_step: 5
-next_step: 5
+current_step: 7
+next_step: 8
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -31,7 +31,8 @@ El mapa español enlaza únicamente fuentes revisadas. VitePress replica esas fu
 5. **Schemas and automatic API** — audit schema/model/API generators, DDL builder methods, resolver and dispatch rules, GET parameter conversion, generated templates, and tests; keep the generator-to-CRUD workflow unresolved until run in a controlled setup; publish separate schema-descriptor, DDL, and API references with source/runtime boundaries.
 6. **Authentication and ACL** — audit auth flows, permissions, configuration, and tests; investigate POST/PATCH callable anomalies without modifying implementation; document findings and commit.
 7. **CLI commands and migrations** — keep `CliRouter` separate from the `php com` command registry; audit command discovery, command behavior, migration configuration and tests; only publish runnable examples that were executed; update canonical pages and commit.
-8. **ApiClient, integrations, deployment, and performance** — ApiClient now has its own core reference; audit integrations, deployment, and performance in dependency order, separating implemented behavior from environment-dependent claims and measurements; update canonical pages, links, and commit each topic separately.
+8. **Services** — audit cache, EventBus, views, i18n, and forms against their implementation and tests; publish separate usage references with environment/runtime limits and update the canonical map.
+9. **ApiClient, integrations, deployment, and performance** — ApiClient now has its own core reference; audit its remaining contract, integrations, deployment, and performance in dependency order, separating implemented behavior from environment-dependent claims and measurements; update canonical pages, links, and commit each topic separately.
 
 ## Estado de cobertura
 
@@ -39,6 +40,8 @@ El mapa español enlaza únicamente fuentes revisadas. VitePress replica esas fu
 - **Core/HTTP:** el ciclo HTTP está separado del recorrido CLI; WebRouter, Request/Response y ApiClient tienen referencias propias con límites de fuente explícitos. Middleware y otras piezas del core siguen en cola.
 - **Datos:** conexiones, Query Builder, Model/ModelRecord, descriptores y constructor DDL tienen referencias separadas; no se ejecutaron consultas ni DDL sobre una base real. Relaciones, migraciones, subrecursos, transacciones y drivers siguen pendientes.
 - **API/seguridad:** resolución de endpoints y conversión de parámetros GET están trazadas en fuente, junto con autenticación, ACL y webhooks; faltan peticiones reales y recorridos CRUD/autorización con una base configurada.
-- **CLI/operación/servicios:** CliRouter tiene referencia propia; inventario de `php com`, migraciones, cache, EventBus, vistas, i18n, formularios, integraciones y despliegue todavía requiere revisión y referencias de uso.
+- **CLI/migraciones:** CliRouter tiene referencia propia; el registro `php com` y el ciclo de migraciones todavía requieren auditoría y referencias de uso.
+- **Servicios:** cache, EventBus, vistas, i18n y formularios requieren auditoría y referencias de uso.
+- **Integraciones/operación:** ApiClient ya tiene una referencia propia; faltan completar la auditoría de integraciones, despliegue y rendimiento.
 
 La cobertura fuente no se marca como reproducción funcional. Cada área pendiente conserva esa distinción hasta tener evidencia propia.
