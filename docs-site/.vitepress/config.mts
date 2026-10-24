@@ -57,6 +57,7 @@ export default defineConfig({
             items: [
               { text: 'Índice', link: '/integrations' },
               { text: 'API Clients', link: '/integrations/api-clients' },
+              { text: 'Proveedores LLM', link: '/integrations/llm-providers' },
               { text: 'Shopify Connector', link: '/integrations/shopify' }
             ]
           },
@@ -101,6 +102,7 @@ export default defineConfig({
             items: [
               { text: 'Índice de integraciones', link: '/integrations' },
               { text: 'API Clients', link: '/integrations/api-clients' },
+              { text: 'Proveedores LLM', link: '/integrations/llm-providers' },
               { text: 'Shopify Connector', link: '/integrations/shopify' }
             ]
           },
