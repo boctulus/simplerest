@@ -1,6 +1,6 @@
 # Helpers heredados de host
 
-Esta página registra dos helpers de alcance estrecho que no comparten una API; se agrupan aquí porque sus nombres históricos pueden sugerir garantías que el código no ofrece.
+Esta página conserva como referencia histórica dos helpers de alcance estrecho que no comparten una API; sus nombres pueden sugerir garantías que el código no ofrece. En el checkout del 2026-10-24, `simplerest-machine-id` y `simplerest-string-obfuscation` no tienen directorio ni manifiesto Composer local, así que esta guía no implica que se puedan instalar desde el monorepo.
 
 ## Identificador de máquina
 

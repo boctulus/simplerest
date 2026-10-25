@@ -1,0 +1,1 @@
+Revierte el movimiento: devuelve app/LegacyCore a src/framework (namespace canónico) y propón cómo separar el microcore sin vaciar la carpeta.

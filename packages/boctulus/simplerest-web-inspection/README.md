@@ -17,9 +17,10 @@ composer config repositories.simplerest-web-inspection vcs https://github.com/bo
 composer require boctulus/simplerest-web-inspection:dev-main
 ```
 
-Existing PHP names under `Boctulus\Simplerest\Integrations\Libs` remain in
-place for compatibility. This package does not include API clients or HTML
-presentation builders.
+Implementation classes live under `Boctulus\Simplerest\Integrations\Libs`.
+`src/legacy_aliases.php` preserves their previous `Boctulus\Simplerest\Core\Libs`
+class names when those names are not already provided by the installed core.
+This package does not include API clients or HTML presentation builders.
 
 ```php
 use Boctulus\Simplerest\Integrations\Libs\DomCrawler;

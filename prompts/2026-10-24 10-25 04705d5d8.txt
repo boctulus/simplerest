@@ -1,0 +1,1 @@
+Esta mal toda la interpretacion de microcore. Microcore no significa otro namespace como src/microcore/ sino que librerias demasiado especificas se convirtieran en packages

@@ -1,0 +1,5 @@
+Habias creado un paquete para Mail dejando varias clases fuera: D:\laragon\www\simplerest\packages\boctulus\simplerest-mail\src
+
+Ahora corrige namespaces
+
+[Respuestas] Namespace: Boctulus\Simplerest\Mail\ (PSR-4); IMail se mueve al paquete; migrar solo consumidores de SimpleRest (GoProp queda pendiente).

@@ -3,7 +3,7 @@
 `boctulus/simplerest-css` contains the `CSS` helper: it downloads and extracts
 a page's stylesheets, parses and beautifies CSS, reads CSS rules for given
 classes, and lists the CSS classes used in an HTML document. Removing CSS from
-HTML belongs to `HtmlMinifier` in `boctulus/simplerest-html`. It requires
+HTML belongs to `HtmlMinifier` in `boctulus/simplerest-codereducer`. It requires
 `sabberworm/php-css-parser` (used by `beautifier()` and `getCSSRules()`). It
 was extracted from the core so the framework itself does not carry this package's dependencies.
 

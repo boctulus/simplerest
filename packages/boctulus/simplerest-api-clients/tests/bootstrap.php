@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 $autoloadFile = null;
-foreach ([dirname(__DIR__, 4), dirname(__DIR__)] as $projectRoot) {
+foreach ([dirname(__DIR__), dirname(__DIR__, 4)] as $projectRoot) {
     $candidate = $projectRoot . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
     if (is_file($candidate)) {
         $autoloadFile = $candidate;
@@ -12,7 +12,7 @@ foreach ([dirname(__DIR__, 4), dirname(__DIR__)] as $projectRoot) {
 }
 
 if ($autoloadFile === null) {
-    throw new RuntimeException('Composer autoload file is missing from the monorepo, package checkout, and consumer paths.');
+    throw new RuntimeException('Composer autoload file is missing from the package checkout, consumer project, or monorepo.');
 }
 
 require_once $autoloadFile;

@@ -1,0 +1,1 @@
+Si una libreria usa doctrine/inflector quizas deba ser un package con su propia dependencia. Eso SI es pensar como microframwork

@@ -1,0 +1,1 @@
+Sí: corrige pack (core = src/framework completo), CI, MicrocoreIsolationTest y la regla de CLAUDE.md según mi definición de microcore. Muéstrame los cambios antes de commitear.

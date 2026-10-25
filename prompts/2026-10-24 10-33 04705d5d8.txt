@@ -1,0 +1,1 @@
+Apruebo el plan: extrae simplerest-psr7, simplerest-mail y simplerest-jwt-auth, y resuelve Inflector con la opción que recomiendas. Luego pack = src/framework completo con require solo php, CI, MicrocoreIsolationTest y CLAUDE.md. Muéstrame el diff antes de commitear.

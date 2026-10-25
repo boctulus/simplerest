@@ -2,9 +2,7 @@
 
 `boctulus/simplerest-scaffolding` provides the `make` command group for
 generating SimpleRest application code: models, controllers, APIs, migrations,
-middleware, modules, packages, and related project files. It also includes
-`PHPParser`, `CodeReducer`, `Obfuscator`, `PostmanGenerator`, and optional
-Angular and Bootstrap HTML cleaners.
+middleware, modules, packages, and related project files.
 
 The package is not registered on Packagist yet. Install it from GitHub for
 now:
@@ -29,12 +27,4 @@ php com make model users
 ```
 
 The host application keeps its own `app/Commands/` directory and command entry
-point. The package requires `nikic/php-parser` and the SimpleRest core.
-
-`Boctulus\Simplerest\CodeTools\Cleaners\AngularCleaner` and
-`Boctulus\Simplerest\CodeTools\Cleaners\BootstrapCleaner` live here. The
-legacy `Core\Libs` classes are class-mapped from this package; the microcore
-does not provide aliases for them. The `make trans` command uses the separate
-`boctulus/simplerest-i18n` package. `PHPParser` also contains an experimental
-static-to-instance conversion helper with known limitations; it is not
-presented as a production-safe generator.
+point. The package requires the SimpleRest core and `boctulus/simplerest-i18n`.

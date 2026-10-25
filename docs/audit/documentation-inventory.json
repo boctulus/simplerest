@@ -1,20 +1,20 @@
 {
   "version": 1,
   "generated_on": "2026-10-24",
-  "stage": "Public API reference and closure audit",
-  "scope": "Added the categorized public API reference and refreshed its local Markdown link edges; mapped every current framework/package PHP file and package directory to an owning guide or explicit internal/legacy classification.",
+  "stage": "Package documentation and link graph refresh",
+  "scope": "Refreshed package documentation references and classified every current Markdown document under docs/ after the package reorganization.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 1336,
+  "inline_markdown_links_seen": 1384,
   "counts": {
-    "markdown_scanned": 265,
+    "markdown_scanned": 266,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 738,
+    "local_markdown_links": 736,
     "broken_local_markdown_links": 0,
     "classifications": {
       "legacy": 99,
       "canonical": 76,
-      "internal/audit": 80,
+      "internal/audit": 81,
       "needs-review": 10
     }
   },
@@ -2891,16 +2891,16 @@
           "line": 19
         },
         {
-          "source": "docs/api/resource-controllers.md",
-          "line": 33
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 107
         },
         {
           "source": "docs/reference/README.md",
           "line": 129
+        },
+        {
+          "source": "docs/api/resource-controllers.md",
+          "line": 33
         }
       ],
       "outgoing_markdown_refs": []
@@ -3008,16 +3008,16 @@
           "line": 17
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 127
+        },
+        {
           "source": "docs/api/resource-controllers.md",
           "line": 3
         },
         {
           "source": "docs/api/resource-controllers.md",
           "line": 7
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 127
         }
       ],
       "outgoing_markdown_refs": [
@@ -3230,29 +3230,29 @@
           "line": 9
         },
         {
-          "source": "docs/packages/catalog.md",
-          "line": 13
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 50
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 13
         }
       ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/audit/README.md",
           "exists": true,
-          "line": 21
+          "line": 20
         },
         {
           "target": "docs/integrations/README.md",
           "exists": true,
-          "line": 23
+          "line": 22
         },
         {
           "target": "docs/architecture/composer-packages.md",
           "exists": true,
-          "line": 23
+          "line": 22
         }
       ]
     },
@@ -3274,12 +3274,12 @@
           "line": 11
         },
         {
-          "source": "docs/packages/catalog.md",
-          "line": 32
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 109
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 32
         }
       ],
       "outgoing_markdown_refs": [
@@ -3309,12 +3309,12 @@
           "line": 10
         },
         {
-          "source": "docs/packages/catalog.md",
-          "line": 27
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 109
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 26
         }
       ],
       "outgoing_markdown_refs": [
@@ -3362,7 +3362,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/architecture/composer-packages.md",
-          "line": 38
+          "line": 40
         },
         {
           "source": "docs/index.md",
@@ -3398,7 +3398,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/integrations/api-clients.md",
-          "line": 23
+          "line": 22
         },
         {
           "source": "docs/integrations/shopify.md",
@@ -3414,7 +3414,7 @@
         },
         {
           "source": "docs/audit/README.md",
-          "line": 328
+          "line": 329
         },
         {
           "source": "docs/index.md",
@@ -3438,7 +3438,7 @@
         {
           "target": "docs/packages/README.md",
           "exists": true,
-          "line": 38
+          "line": 40
         }
       ]
     },
@@ -3457,7 +3457,7 @@
         },
         {
           "source": "docs/audit/README.md",
-          "line": 328
+          "line": 329
         },
         {
           "source": "docs/deployment/README.md",
@@ -3549,7 +3549,7 @@
         },
         {
           "source": "docs/audit/README.md",
-          "line": 310
+          "line": 311
         },
         {
           "source": "docs/framework/Index.md",
@@ -3651,6 +3651,11 @@
           "target": "docs/_internal/legacy/CHANGELOG-password-reset-security.md",
           "exists": true,
           "line": 60
+        },
+        {
+          "target": "app/Modules/Xeni/docs/api_authorization.md",
+          "exists": true,
+          "line": 60
         }
       ]
     },
@@ -3661,7 +3666,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/audit/README.md",
-          "line": 328
+          "line": 329
         }
       ],
       "outgoing_markdown_refs": [
@@ -3688,7 +3693,7 @@
         },
         {
           "source": "docs/audit/README.md",
-          "line": 328
+          "line": 329
         }
       ],
       "outgoing_markdown_refs": []
@@ -4423,7 +4428,7 @@
         },
         {
           "source": "docs/audit/README.md",
-          "line": 324
+          "line": 325
         },
         {
           "source": "docs/core/README.md",
@@ -4454,7 +4459,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/audit/README.md",
-          "line": 320
+          "line": 321
         }
       ],
       "outgoing_markdown_refs": []
@@ -4534,7 +4539,7 @@
         },
         {
           "source": "docs/integrations/api-clients.md",
-          "line": 21
+          "line": 20
         },
         {
           "source": "docs/integrations/llm-providers.md",
@@ -4800,42 +4805,42 @@
         {
           "target": "docs/audit/authentication-acl.md",
           "exists": true,
-          "line": 310
+          "line": 311
         },
         {
           "target": "docs/audit/public-map-exclusion-review-2026-10-05.md",
           "exists": true,
-          "line": 320
+          "line": 321
         },
         {
           "target": "docs/audit/pending/README.md",
           "exists": true,
-          "line": 324
+          "line": 325
         },
         {
           "target": "docs/audit/goprop-composer-integration-2026-10.md",
           "exists": true,
-          "line": 328
+          "line": 329
         },
         {
           "target": "docs/audit/goprop-composer-convergence.md",
           "exists": true,
-          "line": 328
+          "line": 329
         },
         {
           "target": "docs/architecture/composer-packages.md",
           "exists": true,
-          "line": 328
+          "line": 329
         },
         {
           "target": "docs/architecture/composer-release-process.md",
           "exists": true,
-          "line": 328
+          "line": 329
         },
         {
           "target": "docs/packages/catalog.md",
           "exists": true,
-          "line": 416
+          "line": 417
         }
       ]
     },
@@ -4889,18 +4894,6 @@
           "line": 22
         },
         {
-          "source": "docs/security/authorization-engine.md",
-          "line": 23
-        },
-        {
-          "source": "docs/packages/catalog.md",
-          "line": 31
-        },
-        {
-          "source": "docs/packages/scaffolding.md",
-          "line": 13
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 37
         },
@@ -4915,6 +4908,18 @@
         {
           "source": "docs/reference/README.md",
           "line": 123
+        },
+        {
+          "source": "docs/security/authorization-engine.md",
+          "line": 23
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 31
+        },
+        {
+          "source": "docs/packages/scaffolding.md",
+          "line": 15
         }
       ],
       "outgoing_markdown_refs": [
@@ -4924,19 +4929,19 @@
           "line": 3
         },
         {
+          "target": "docs/packages/scaffolding.md",
+          "exists": true,
+          "line": 66
+        },
+        {
           "target": "docs/database/migrations.md",
           "exists": true,
-          "line": 56
+          "line": 74
         },
         {
           "target": "docs/cli/routing.md",
           "exists": true,
-          "line": 56
-        },
-        {
-          "target": "docs/packages/scaffolding.md",
-          "exists": true,
-          "line": 66
+          "line": 74
         }
       ]
     },
@@ -4955,7 +4960,7 @@
         },
         {
           "source": "docs/cli/commands.md",
-          "line": 56
+          "line": 74
         },
         {
           "source": "docs/core/web-routing.md",
@@ -5119,16 +5124,16 @@
           "line": 17
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 128
+        },
+        {
           "source": "docs/services/cache.md",
           "line": 35
         },
         {
           "source": "docs/core/filesystem.md",
           "line": 17
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 128
         }
       ],
       "outgoing_markdown_refs": [
@@ -5211,16 +5216,16 @@
           "line": 17
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 121
+        },
+        {
           "source": "docs/api/resource-controllers.md",
           "line": 3
         },
         {
           "source": "docs/packages/http-adapters.md",
           "line": 14
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 121
         }
       ],
       "outgoing_markdown_refs": [
@@ -5288,16 +5293,16 @@
           "line": 17
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 121
+        },
+        {
           "source": "docs/database/pagination.md",
           "line": 19
         },
         {
           "source": "docs/api/resource-controllers.md",
           "line": 17
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 121
         }
       ],
       "outgoing_markdown_refs": [
@@ -5420,16 +5425,16 @@
           "line": 18
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 105
+        },
+        {
           "source": "docs/services/cache.md",
           "line": 39
         },
         {
           "source": "docs/database/raw-queries.md",
           "line": 24
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 105
         }
       ],
       "outgoing_markdown_refs": [
@@ -5495,16 +5500,16 @@
           "line": 18
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 125
+        },
+        {
           "source": "docs/database/raw-queries.md",
           "line": 30
         },
         {
           "source": "docs/database/pagination.md",
           "line": 7
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 125
         }
       ],
       "outgoing_markdown_refs": [
@@ -5588,6 +5593,10 @@
           "line": 18
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 125
+        },
+        {
           "source": "docs/services/README.md",
           "line": 16
         },
@@ -5598,10 +5607,6 @@
         {
           "source": "docs/api/trashcan.md",
           "line": 25
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 125
         }
       ],
       "outgoing_markdown_refs": [
@@ -5786,7 +5791,7 @@
         },
         {
           "source": "docs/cli/commands.md",
-          "line": 56
+          "line": 74
         },
         {
           "source": "docs/database/README.md",
@@ -5853,20 +5858,20 @@
           "line": 18
         },
         {
-          "source": "docs/database/driver-compatibility.md",
-          "line": 22
-        },
-        {
-          "source": "docs/database/relations.md",
-          "line": 7
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 105
         },
         {
           "source": "docs/reference/README.md",
           "line": 125
+        },
+        {
+          "source": "docs/database/driver-compatibility.md",
+          "line": 22
+        },
+        {
+          "source": "docs/database/relations.md",
+          "line": 7
         }
       ],
       "outgoing_markdown_refs": [
@@ -6655,7 +6660,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/integrations/api-clients.md",
-          "line": 23
+          "line": 22
         },
         {
           "source": "docs/index.md",
@@ -6663,7 +6668,7 @@
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 47
+          "line": 46
         }
       ],
       "outgoing_markdown_refs": [
@@ -7206,6 +7211,11 @@
           "target": "docs/packages/catalog.md",
           "exists": true,
           "line": 130
+        },
+        {
+          "target": "src/framework/Libs/",
+          "exists": true,
+          "line": 139
         }
       ]
     },
@@ -7229,6 +7239,10 @@
         {
           "source": "docs/index.md",
           "line": 20
+        },
+        {
+          "source": "docs/reference/README.md",
+          "line": 126
         },
         {
           "source": "docs/security/README.md",
@@ -7257,10 +7271,6 @@
         {
           "source": "docs/security/authorization-engine.md",
           "line": 17
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 126
         }
       ],
       "outgoing_markdown_refs": [
@@ -7333,6 +7343,14 @@
           "line": 20
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 103
+        },
+        {
+          "source": "docs/reference/README.md",
+          "line": 124
+        },
+        {
           "source": "docs/security/README.md",
           "line": 5
         },
@@ -7343,14 +7361,6 @@
         {
           "source": "docs/security/jwt.md",
           "line": 3
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 103
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 124
         }
       ],
       "outgoing_markdown_refs": [
@@ -7467,16 +7477,16 @@
           "line": 21
         },
         {
-          "source": "docs/services/README.md",
-          "line": 7
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 104
         },
         {
           "source": "docs/reference/README.md",
           "line": 127
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 7
         }
       ],
       "outgoing_markdown_refs": [
@@ -7502,16 +7512,16 @@
           "line": 21
         },
         {
-          "source": "docs/services/README.md",
-          "line": 8
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 107
         },
         {
           "source": "docs/reference/README.md",
           "line": 127
+        },
+        {
+          "source": "docs/services/README.md",
+          "line": 8
         }
       ],
       "outgoing_markdown_refs": [
@@ -7591,6 +7601,14 @@
           "line": 21
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 107
+        },
+        {
+          "source": "docs/reference/README.md",
+          "line": 127
+        },
+        {
           "source": "docs/services/README.md",
           "line": 11
         },
@@ -7601,14 +7619,6 @@
         {
           "source": "docs/services/views.md",
           "line": 43
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 107
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 127
         }
       ],
       "outgoing_markdown_refs": [
@@ -7634,16 +7644,16 @@
           "line": 21
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 121
+        },
+        {
           "source": "docs/services/README.md",
           "line": 9
         },
         {
           "source": "docs/core/filesystem.md",
           "line": 37
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 121
         }
       ],
       "outgoing_markdown_refs": [
@@ -7740,6 +7750,13 @@
     },
     {
       "path": "docs/to-do/Index.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
+      "path": "docs/to-do/in-progress/documentacion-publica-ingles.md",
       "classification": "internal/audit",
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [],
@@ -7877,16 +7894,16 @@
           "line": 18
         },
         {
-          "source": "docs/database/driver-compatibility.md",
-          "line": 22
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 105
         },
         {
           "source": "docs/reference/README.md",
           "line": 125
+        },
+        {
+          "source": "docs/database/driver-compatibility.md",
+          "line": 22
         }
       ],
       "outgoing_markdown_refs": [
@@ -7990,12 +8007,12 @@
           "line": 17
         },
         {
-          "source": "docs/api/file-endpoints.md",
-          "line": 3
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 128
+        },
+        {
+          "source": "docs/api/file-endpoints.md",
+          "line": 3
         }
       ],
       "outgoing_markdown_refs": [
@@ -8293,7 +8310,7 @@
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 26
+          "line": 25
         }
       ],
       "outgoing_markdown_refs": [
@@ -8332,7 +8349,7 @@
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 18
+          "line": 19
         }
       ],
       "outgoing_markdown_refs": [
@@ -8368,6 +8385,14 @@
           "line": 20
         },
         {
+          "source": "docs/reference/README.md",
+          "line": 102
+        },
+        {
+          "source": "docs/reference/README.md",
+          "line": 126
+        },
+        {
           "source": "docs/security/acl.md",
           "line": 9
         },
@@ -8381,15 +8406,7 @@
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 18
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 102
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 126
+          "line": 19
         }
       ],
       "outgoing_markdown_refs": [
@@ -8430,7 +8447,7 @@
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 21
+          "line": 22
         }
       ],
       "outgoing_markdown_refs": []
@@ -8449,12 +8466,12 @@
           "line": 13
         },
         {
-          "source": "docs/packages/catalog.md",
-          "line": 29
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 109
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 27
         }
       ],
       "outgoing_markdown_refs": []
@@ -8474,7 +8491,7 @@
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 35
+          "line": 34
         }
       ],
       "outgoing_markdown_refs": []
@@ -8486,11 +8503,11 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/packages/catalog.md",
-          "line": 25
+          "line": 24
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 46
+          "line": 45
         }
       ],
       "outgoing_markdown_refs": []
@@ -8514,7 +8531,7 @@
         },
         {
           "source": "docs/audit/README.md",
-          "line": 416
+          "line": 417
         },
         {
           "source": "docs/index.md",
@@ -8558,20 +8575,15 @@
         {
           "target": "docs/packages/html-content.md",
           "exists": true,
-          "line": 17
+          "line": 18
         },
         {
           "target": "docs/security/acl-implementations.md",
           "exists": true,
-          "line": 18
+          "line": 19
         },
         {
           "target": "docs/security/authorization-engine.md",
-          "exists": true,
-          "line": 18
-        },
-        {
-          "target": "docs/packages/media-output.md",
           "exists": true,
           "line": 19
         },
@@ -8581,54 +8593,44 @@
           "line": 20
         },
         {
-          "target": "docs/integrations/geolocation.md",
+          "target": "docs/packages/media-output.md",
           "exists": true,
           "line": 21
         },
         {
-          "target": "docs/packages/html-content.md",
+          "target": "docs/integrations/geolocation.md",
           "exists": true,
           "line": 22
         },
         {
-          "target": "docs/packages/html-content.md",
+          "target": "docs/packages/localization.md",
           "exists": true,
           "line": 23
         },
         {
-          "target": "docs/packages/localization.md",
+          "target": "docs/packages/background-jobs.md",
           "exists": true,
           "line": 24
         },
         {
-          "target": "docs/packages/background-jobs.md",
+          "target": "docs/security/jwt.md",
           "exists": true,
           "line": 25
         },
         {
-          "target": "docs/security/jwt.md",
+          "target": "docs/integrations/llm-providers.md",
           "exists": true,
           "line": 26
         },
         {
-          "target": "docs/integrations/llm-providers.md",
+          "target": "docs/integrations/mail.md",
           "exists": true,
           "line": 27
         },
         {
-          "target": "docs/packages/legacy-helpers.md",
-          "exists": true,
-          "line": 28
-        },
-        {
-          "target": "docs/integrations/mail.md",
-          "exists": true,
-          "line": 29
-        },
-        {
           "target": "docs/packages/http-adapters.md",
           "exists": true,
-          "line": 30
+          "line": 28
         },
         {
           "target": "docs/packages/scaffolding.md",
@@ -8651,59 +8653,54 @@
           "line": 33
         },
         {
-          "target": "docs/packages/legacy-helpers.md",
+          "target": "docs/integrations/web-inspection.md",
           "exists": true,
           "line": 34
         },
         {
-          "target": "docs/integrations/web-inspection.md",
-          "exists": true,
-          "line": 35
-        },
-        {
           "target": "docs/packages/html-content.md",
           "exists": true,
-          "line": 43
+          "line": 42
         },
         {
           "target": "docs/packages/media-output.md",
           "exists": true,
-          "line": 44
+          "line": 43
         },
         {
           "target": "docs/packages/http-adapters.md",
           "exists": true,
-          "line": 45
+          "line": 44
         },
         {
           "target": "docs/packages/localization.md",
           "exists": true,
-          "line": 46
+          "line": 45
         },
         {
           "target": "docs/packages/background-jobs.md",
           "exists": true,
-          "line": 46
+          "line": 45
         },
         {
           "target": "docs/packages/test-data-seeder.md",
           "exists": true,
-          "line": 46
+          "line": 45
         },
         {
           "target": "docs/packages/scaffolding.md",
           "exists": true,
-          "line": 46
+          "line": 45
         },
         {
           "target": "docs/packages/legacy-helpers.md",
           "exists": true,
-          "line": 46
+          "line": 45
         },
         {
           "target": "docs/integrations/README.md",
           "exists": true,
-          "line": 47
+          "line": 46
         }
       ]
     },
@@ -8718,19 +8715,11 @@
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 17
+          "line": 18
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 22
-        },
-        {
-          "source": "docs/packages/catalog.md",
-          "line": 23
-        },
-        {
-          "source": "docs/packages/catalog.md",
-          "line": 43
+          "line": 42
         }
       ],
       "outgoing_markdown_refs": []
@@ -8741,8 +8730,12 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
+          "source": "docs/reference/README.md",
+          "line": 11
+        },
+        {
           "source": "docs/packages/catalog.md",
-          "line": 30
+          "line": 28
         },
         {
           "source": "docs/packages/catalog.md",
@@ -8750,11 +8743,7 @@
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 45
-        },
-        {
-          "source": "docs/reference/README.md",
-          "line": 11
+          "line": 44
         }
       ],
       "outgoing_markdown_refs": [
@@ -8772,15 +8761,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/packages/catalog.md",
-          "line": 28
-        },
-        {
-          "source": "docs/packages/catalog.md",
-          "line": 34
-        },
-        {
-          "source": "docs/packages/catalog.md",
-          "line": 46
+          "line": 45
         }
       ],
       "outgoing_markdown_refs": []
@@ -8791,16 +8772,16 @@
       "basis": "Listed in docs/canonical-manifest.json as protected editorial source.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/packages/catalog.md",
-          "line": 24
-        },
-        {
-          "source": "docs/packages/catalog.md",
-          "line": 46
-        },
-        {
           "source": "docs/reference/README.md",
           "line": 11
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 23
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 45
         }
       ],
       "outgoing_markdown_refs": []
@@ -8812,15 +8793,15 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/packages/catalog.md",
-          "line": 19
-        },
-        {
-          "source": "docs/packages/catalog.md",
           "line": 20
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 44
+          "line": 21
+        },
+        {
+          "source": "docs/packages/catalog.md",
+          "line": 43
         }
       ],
       "outgoing_markdown_refs": []
@@ -8840,14 +8821,14 @@
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 46
+          "line": 45
         }
       ],
       "outgoing_markdown_refs": [
         {
           "target": "docs/cli/commands.md",
           "exists": true,
-          "line": 13
+          "line": 15
         }
       ]
     },
@@ -8862,7 +8843,7 @@
         },
         {
           "source": "docs/packages/catalog.md",
-          "line": 46
+          "line": 45
         }
       ],
       "outgoing_markdown_refs": []

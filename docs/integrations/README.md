@@ -6,7 +6,7 @@ Esta sección separa los paquetes opcionales del core y describe lo que implemen
 
 | Integración | Propietario | Alcance de esta referencia |
 | --- | --- | --- |
-| [API Clients](api-clients.md) | `boctulus/simplerest-api-clients` | Google Drive, WooCommerce, OneSignal, Hugging Face y adaptadores heredados de WordPress, Pastebin y SendinBlue; fuente y tests inspeccionados, sin llamadas externas. |
+| [API Clients](api-clients.md) | `boctulus/simplerest-api-clients` | Google Drive, WooCommerce, OneSignal, Hugging Face y adaptadores heredados de Pastebin y SendinBlue; fuente y tests inspeccionados, sin llamadas externas. |
 | [Proveedores LLM](llm-providers.md) | `boctulus/simplerest-llm-providers` | OpenAI, Anthropic, xAI y Ollama; configuración, factory y dispatch contrastados con fuente, sin tests ejecutados ni llamadas externas. |
 | [Shopify Connector](shopify.md) | `boctulus/simplerest-shopify-connector` | Lectura de productos, operaciones de webhooks y conversión hacia WooCommerce; fuente inspeccionada, sin test ni petición al proveedor. |
 | [Geolocalización](geolocation.md) | `boctulus/simplerest-geolocation` | Google Maps remoto y búsqueda local en tablas GeoLite2; no se usaron credenciales, red ni base de datos. |

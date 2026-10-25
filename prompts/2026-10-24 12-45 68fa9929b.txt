@@ -1,0 +1,3 @@
+La libreria Inflector.php esta mal en donde esta porque no es de mi autoria (Pablo Bozzolo alias boctulus). De hecho dice doctrine/inflector
+
+[Respuesta] Restaurar doctrine/inflector como dependencia del core (excepcion aprobada).

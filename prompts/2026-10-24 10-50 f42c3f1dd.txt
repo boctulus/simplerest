@@ -1,0 +1,1 @@
+Sí: actualiza la documentación del microcore y de los 3 paquetes nuevos (docs/packages, la línea del to-do y docs-site).

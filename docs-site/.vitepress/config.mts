@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   base: '/simplerest/',
+  buildConcurrency: 1,
   title: 'SimpleRest | Documentación',
   description: 'Documentación pública curada de SimpleRest.',
   locales: {
@@ -92,11 +93,14 @@ export default defineConfig({
             text: 'Integraciones',
             items: [
               { text: 'Índice', link: '/integrations' },
-              { text: 'API Clients', link: '/integrations/api-clients' },
               { text: 'Proveedores LLM', link: '/integrations/llm-providers' },
-              { text: 'Shopify Connector', link: '/integrations/shopify' }
+              { text: 'Shopify Connector', link: '/integrations/shopify' },
+              { text: 'Geolocalización', link: '/integrations/geolocation' },
+              { text: 'Correo', link: '/integrations/mail' },
+              { text: 'Inspección web', link: '/integrations/web-inspection' }
             ]
           },
+          { text: 'Paquetes', link: '/packages/catalog' },
           {
             text: 'Operación',
             items: [
@@ -162,9 +166,24 @@ export default defineConfig({
             text: 'Integraciones',
             items: [
               { text: 'Índice de integraciones', link: '/integrations' },
-              { text: 'API Clients', link: '/integrations/api-clients' },
               { text: 'Proveedores LLM', link: '/integrations/llm-providers' },
-              { text: 'Shopify Connector', link: '/integrations/shopify' }
+              { text: 'Shopify Connector', link: '/integrations/shopify' },
+              { text: 'Geolocalización', link: '/integrations/geolocation' },
+              { text: 'Correo', link: '/integrations/mail' },
+              { text: 'Inspección web', link: '/integrations/web-inspection' }
+            ]
+          },
+          {
+            text: 'Paquetes opcionales',
+            items: [
+              { text: 'Catálogo de paquetes', link: '/packages/catalog' },
+              { text: 'Generación y transformación HTML', link: '/packages/html-content' },
+              { text: 'Salida de imágenes y PDF', link: '/packages/media-output' },
+              { text: 'Adaptadores PSR-7 y SSE', link: '/packages/http-adapters' },
+              { text: 'Trabajos en segundo plano', link: '/packages/background-jobs' },
+              { text: 'Localización', link: '/packages/localization' },
+              { text: 'Scaffolding', link: '/packages/scaffolding' },
+              { text: 'Helpers heredados', link: '/packages/legacy-helpers' }
             ]
           },
           {

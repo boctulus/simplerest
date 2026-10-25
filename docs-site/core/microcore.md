@@ -23,7 +23,7 @@ La suite `unit-tests/microcore` comprueba estas tres condiciones. Un consumidor 
 
 ## Paquetes extraídos del core
 
-Estos paquetes conservan los nombres de clase originales. Para usar sus clases hay que instalar el paquete; con solo el core, esas clases no existen.
+La mayoría de estos paquetes conserva los nombres de clase originales; Mail usa un namespace propio y algunos paquetes actuales cargan aliases condicionales para FQCN heredados. Para usar sus clases hay que instalar el paquete; con solo el core, esas clases no existen.
 
 | Paquete | Qué contiene | Dependencia | Qué queda en el core |
 | --- | --- | --- | --- |
@@ -31,11 +31,13 @@ Estos paquetes conservan los nombres de clase originales. Para usar sus clases h
 | `boctulus/simplerest-mail` | Todo el correo en `Boctulus\Simplerest\Mail\`: `Mail` (SMTP con PHPMailer), `MailBase`, `MailAuditor`, `MailFromRemoteWP`, `EmailTemplate` e `IMail` | `phpmailer/phpmailer` | Nada de correo |
 | `boctulus/simplerest-jwt-auth` | `Api\AuthController` (login, refresh, registro y tokens) | `firebase/php-jwt`, la librería JWT para PHP | `IAuth` y `Factory::auth()` |
 | `boctulus/simplerest-css` | `CSS`: descarga y extracción de hojas de estilo, formateo y reglas CSS | `sabberworm/php-css-parser` | `HTML` y `XML` |
-| `boctulus/simplerest-html` | `HtmlMinifier`: minificación de HTML y eliminación de CSS y clases de un HTML | Ninguna externa | `HTML` y `Strings` |
+| `boctulus/simplerest-codereducer` | `CodeReducer` para PHP y `HtmlMinifier` para reescribir HTML | Ninguna externa | `HTML` y `Strings` |
 
-Ningún paquete extraído depende de otro; `simplerest-api-clients` sí requiere `simplerest-mail`, porque su cliente SendinBlue es un mailer. `simplerest-html` no necesita `simplerest-css`: quitar `<style>` o atributos `class` de un HTML es reescribir HTML, no parsear CSS.
+En el checkout actual, `simplerest-api-clients` depende de `simplerest-mail` y `simplerest-scaffolding` depende de `simplerest-i18n`. La separación funcional entre CSS y HTML sigue vigente: quitar `<style>` o atributos `class` reescribe HTML y no necesita `simplerest-css`, aunque `HtmlMinifier` ahora se distribuye en `simplerest-codereducer`.
 
-Otros paquetes, como `simplerest-scaffolding`, `simplerest-bootstrap-html`, `simplerest-web-inspection` o `simplerest-api-clients`, siguen el mismo criterio y están en el catálogo de límites de paquetes Composer.
+La carpeta local `simplerest-bootstrap` conserva la identidad Composer `boctulus/simplerest-bootstrap-html` y contiene `Html`/`Tag` junto con sus helpers Bootstrap. `simplerest-phpparser` declara `nikic/php-parser` sin depender del core; `simplerest-postman-gen` contiene `PostmanGenerator`. Consulte el [catálogo de paquetes](/packages/catalog) para el inventario actual.
+
+Otros paquetes, como `simplerest-scaffolding`, `simplerest-bootstrap-html` o `simplerest-web-inspection`, siguen el mismo criterio y están en el catálogo de límites de paquetes Composer.
 
 ## Relaciones pivot y doctrine/inflector
 

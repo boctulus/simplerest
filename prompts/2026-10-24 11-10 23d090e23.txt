@@ -1,0 +1,9 @@
+[Pasted] Revision de la recuperacion de SimpleRest realizada por Claude Opus (aprobacion condicionada).
+Puntos: contrato microcore en docs/contracts/microcore-architecture.md + referencia desde CLAUDE.md;
+P0 regresion SubResourceHandler (alias pivot sin pluralize de doctrine/inflector);
+P1 regla "solo PHP" demasiado rigida (ext-*); P1 MailBase/IMail a simplerest-mail;
+P1 test consumidor solo class_exists; P1 102 fallos PHPUnit sin clasificar;
+P1 CSS.php con dependencia no declarada; DomCrawlerPackageContractTest autoload; --microcore-only no corre en CI.
+
+[Mensaje del usuario durante la ejecucion]
+Ese analisis debes revisarlo y contrastarlo contra la realidad. Me preocupa mucho la regresion sobre SubResourceHandler

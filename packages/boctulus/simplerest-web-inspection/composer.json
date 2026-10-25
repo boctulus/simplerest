@@ -17,8 +17,11 @@
         "test": "phpunit --do-not-cache-result"
     },
     "autoload": {
-        "psr-4": {
-            "Boctulus\\Simplerest\\Integrations\\": "src/"
-        }
+        "classmap": [
+            "src/"
+        ],
+        "files": [
+            "src/legacy_aliases.php"
+        ]
     }
 }

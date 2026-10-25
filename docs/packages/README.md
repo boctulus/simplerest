@@ -12,7 +12,7 @@ El [catálogo de paquetes](catalog.md) recorre cada manifiesto local y sus lími
 
 ## Paquetes extraídos el 2026-10-24
 
-Los paquetes conservan los nombres de clase originales y se cargan por `classmap`, con dos excepciones: `HtmlMinifier` reúne métodos que antes estaban en `Strings` y `CSS`, y `simplerest-mail` usa su propio namespace `Boctulus\Simplerest\Mail\` (PSR-4). No hay aliases ni shims. Un consumidor que necesite alguna de estas clases debe instalar el paquete correspondiente; con solo `boctulus/simplerest` la clase no existe.
+En la extracción inicial, la mayoría de las clases conservaron sus nombres y se cargaron por `classmap`; `simplerest-mail` adoptó el namespace `Boctulus\Simplerest\Mail\` (PSR-4). En la reorganización actual, Bootstrap HTML y Web Inspection cargan aliases condicionales desde `autoload.files` para los FQCN heredados; el core sigue sin incluir aliases. El catálogo refleja los manifiestos y namespaces del checkout actual.
 
 | Paquete | Clases y archivos | Dependencia propia | Se queda en el core |
 | --- | --- | --- | --- |
@@ -22,11 +22,19 @@ Los paquetes conservan los nombres de clase originales y se cargan por `classmap
 | `boctulus/simplerest-css` | `Libs\CSS`: descarga y extracción de hojas de estilo de una página, `beautifier()`, `getCSSRules()` y `getCSSClasses()` | `sabberworm/php-css-parser` `^8.4` (antes no estaba declarada en ningún manifiesto) | `Libs\HTML` y `Libs\XML` |
 | `boctulus/simplerest-html` | `Libs\HtmlMinifier`: `minify()` (antes `Strings::minimifyHTML()`), `removeCSS()` y `removeCSSClasses()` (antes en `CSS`) | Ninguna externa | `Libs\HTML` y el resto de `Libs\Strings` |
 
-Cada paquete requiere además `boctulus/simplerest` `^2.0 || ^3.0`. Ningún paquete extraído depende de otro. `boctulus/simplerest-api-clients` requiere `boctulus/simplerest-mail` `^1.0`, porque `SendinBlue` extiende `MailBase` e implementa `IMail`.
+Los cinco paquetes de la extracción inicial requerían `boctulus/simplerest` `^2.0 || ^3.0`. En el checkout actual hay dependencias entre paquetes: `boctulus/simplerest-api-clients` requiere `boctulus/simplerest-mail` `^1.0`, porque `SendinBlue` extiende `MailBase` e implementa `IMail`; `boctulus/simplerest-scaffolding` requiere `boctulus/simplerest-i18n` `^1.0`. `simplerest-phpparser` declara `nikic/php-parser` y no depende del core.
 
 `MailBase`, `IMail`, `MailAuditor` y `MailFromRemoteWP` se quedaron primero en el core porque no tienen dependencias externas. Se movieron al paquete el 2026-10-24, porque la ausencia de dependencias no basta para que una clase pertenezca al core. `MailAuditor` sigue escribiendo en el mismo directorio que antes (`src/logs/mail` del core).
 
-`simplerest-css` y `simplerest-html` se separaron por dominio: `removeCSS()` y `removeCSSClasses()` no parsean CSS sino que reescriben HTML (quitan bloques `<style>` y atributos `style`/`class`), por eso pertenecen a `HtmlMinifier`. Así `simplerest-html` no necesita `simplerest-css`.
+En la extracción inicial, `simplerest-css` y `simplerest-html` se separaron por dominio: `removeCSS()` y `removeCSSClasses()` reescriben HTML (quitan bloques `<style>` y atributos `style`/`class`) y no necesitan analizar CSS. Esa distinción funcional se mantiene. El checkout actual agrupa `HtmlMinifier` con `CodeReducer` en `boctulus/simplerest-codereducer`; la razón para combinar esas herramientas no está documentada aquí y el catálogo registra la propiedad Composer vigente.
+
+## Reorganización posterior en el checkout
+
+La carpeta local `simplerest-bootstrap` conserva la identidad Composer `boctulus/simplerest-bootstrap-html`. Ahora contiene también `HtmlBuilder\Html` y `HtmlBuilder\Tag`, junto con `Bt5Form`, `AdminLte` y `BootstrapPaginator`; ya no hay una carpeta instalable `simplerest-html-generation` en este checkout.
+
+Las herramientas se separaron de `simplerest-scaffolding`: `boctulus/simplerest-codereducer` contiene `CodeReducer` y `HtmlMinifier`; `boctulus/simplerest-phpparser` contiene `PHPParser` y declara `nikic/php-parser`; `boctulus/simplerest-postman-gen` contiene `PostmanGenerator`. `simplerest-scaffolding` conserva el grupo CLI `make` y declara `simplerest-i18n`. `CustomTags` y `EasyHTMLTable`, presentes en la guía del paquete HTML anterior, no aparecen en el código actual bajo `src/` ni `packages/boctulus/`.
+
+Los paquetes `simplerest-machine-id` y `simplerest-string-obfuscation` tampoco tienen manifiestos locales en el checkout actual. `legacy-helpers.md` conserva sus descripciones como referencia histórica, no como catálogo instalable.
 
 ## Excepción aprobada: doctrine/inflector
 
@@ -42,9 +50,9 @@ Historia del 2026-10-24:
 
 ## Consumidores en este monorepo
 
-- `composer-dev.json` registra los paquetes extraídos en `classmap` y los helpers PSR-7 en `files`.
+- `composer-dev.json` registra los paquetes locales por `classmap` o PSR-4 y carga los helpers PSR-7/i18n y aliases de Bootstrap HTML/Web Inspection por `files`.
 - `app/Controllers/CssExtractorController.php` usa `CSS` y depende ahora de `boctulus/simplerest-css`.
-- Las dependencias externas de los paquetes (`psr/http-message`, `phpmailer/phpmailer`, `firebase/php-jwt`) no están en `composer-dev.json`, igual que las de los demás paquetes locales. Sin ellas, cargar las clases que las usan falla, y las pruebas de correo y autenticación que las necesitan siguen fallando en el entorno de desarrollo.
+- Las dependencias externas de los paquetes (`psr/http-message`, `phpmailer/phpmailer`, `firebase/php-jwt`, `nikic/php-parser`, Symfony y otras) no están en `composer-dev.json`. Sin instalar esas dependencias, cargar las clases que las usan falla; este archivo de desarrollo no sustituye la instalación Composer de cada paquete.
 - `app/Controllers/MyAuthController.php` y `DumbAuthController.php` extienden `AuthController`; los controladores de `app/`, `config/` y `unit-tests/mail/` que usan `Mail` importan `Boctulus\Simplerest\Mail\Mail` y dependen de `boctulus/simplerest-mail`. GoProp (`app/Libs/Mail/Mailer.php`, `app/Services/MessageEmailService.php` y dos tests) todavía usa los nombres `Core\Libs\Mail` y `Core\Libs\EmailTemplate`, y falta migrarlo.
 
 ## Pendiente

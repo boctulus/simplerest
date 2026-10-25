@@ -1,0 +1,29 @@
+{
+    "name": "boctulus/simplerest-codereducer",
+    "description": "PHP source reduction and HTML minification helpers for SimpleRest applications",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["simplerest", "php", "source-code", "reducer"],
+    "authors": [
+        {
+            "name": "Pablo Gabriel Bozzolo",
+            "email": "boctulus@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1,<8.5",
+        "boctulus/simplerest": "^2.0 || ^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "classmap": [
+            "src/CodeReducer.php",
+            "src/HtmlMinifier.php"
+        ]
+    },
+    "scripts": {
+        "test": "phpunit --do-not-cache-result"
+    }
+}

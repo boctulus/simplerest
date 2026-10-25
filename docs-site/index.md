@@ -43,9 +43,9 @@ La documentación todavía no cubre todas las capacidades del framework. Cada gu
 1. [Primeros pasos](/getting-started) explica el estado de las rutas de instalación disponibles.
 2. [Arquitectura](/architecture) sitúa los componentes de entrada y despacho.
 3. [Ciclo de request](/core/request-lifecycle) recorre la ruta HTTP; [Request y Response](/core/request-response) describe los mensajes y sus helpers; [WebRouter](/core/web-routing) detalla el registro HTTP.
-4. [Microcore y paquetes](/core/microcore) explica qué incluye el core y qué librerías se instalan como paquetes.
+4. [Microcore y paquetes](/core/microcore) explica qué incluye el core; el [catálogo de paquetes](/packages/catalog) enumera los 22 manifiestos opcionales del checkout y sus límites.
 5. Las guías de [Base de datos](/database), [Query Builder](/database/query-builder), [paginación](/database/pagination), [Model/ModelRecord](/database/model), [constructor DDL](/database/schema-builder), [migraciones](/database/migrations), [filesystem](/core/filesystem), [uploads](/core/file-uploads), [ZIP y backups](/core/archives-backups), [HTML/XML e imágenes](/core/content-conversion), [ApiClient](/core/api-client), [HTTP/API](/api), [endpoints automáticos](/api/automatic-endpoints), [autenticación](/security/authentication), [ACL](/security/acl) y [webhooks](/webhooks) detallan los contratos actuales y sus límites.
-6. Revisa [API Clients](/integrations/api-clients), [Shopify Connector](/integrations/shopify) y [proveedores LLM](/integrations/llm-providers) para las integraciones opcionales.
+6. Revisa [Shopify Connector](/integrations/shopify), [proveedores LLM](/integrations/llm-providers), [correo](/integrations/mail), [geolocalización](/integrations/geolocation) e [inspección web](/integrations/web-inspection) para las integraciones externas.
 7. CLI tiene dos guías independientes: el [catálogo de `php com`](/cli/commands) y el [routing CLI con CliRouter](/cli/routing). [Despliegue](/deployment) y [rendimiento](/performance) separan lo automatizado de lo pendiente de reproducir.
 8. La [referencia pública](/reference) reúne claves de configuración, variables de entorno, helpers globales, entradas CLI, contratos y familias de clases, con límites explícitos de carga y uso.
 

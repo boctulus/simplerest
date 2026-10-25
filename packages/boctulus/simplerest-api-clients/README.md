@@ -6,7 +6,7 @@
 - `WooCommerce` and `WooCommerceApiClient` provide WooCommerce REST helpers.
 - `OneSignal` provides notification API helpers.
 - `HuggingFace` calls selected Hugging Face model endpoints.
-- `Pastebin` and `WP` provide legacy Pastebin and WordPress helpers.
+- `Pastebin` provides legacy Pastebin helpers.
 - `SendinBlue` sends transactional email through the legacy SendinBlue SDK.
 
 The package is not registered on Packagist yet. Install it from GitHub for
@@ -19,7 +19,7 @@ composer require boctulus/simplerest-api-clients:dev-main
 Google's SDK remains an optional dependency; Composer does not copy third-party
 source into this package.
 
-`Pastebin`, `WP`, and `SendinBlue` keep their historical
+`Pastebin` and `SendinBlue` keep their historical
 `Boctulus\Simplerest\Core\Libs` class names and are registered by classmap.
 The SendinBlue adapter also expects the host's SimpleRest mail services and
 SendinBlue SDK classes to be available.

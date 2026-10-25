@@ -1,6 +1,6 @@
 {
     "name": "boctulus/simplerest-api-clients",
-    "description": "Optional Google Drive, WooCommerce, OneSignal, Hugging Face, WordPress, Pastebin, and SendinBlue clients for SimpleRest",
+    "description": "Optional Google Drive, WooCommerce, OneSignal, Hugging Face, Pastebin, and SendinBlue clients for SimpleRest",
     "type": "library",
     "license": "MIT",
     "require": {

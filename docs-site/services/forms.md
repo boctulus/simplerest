@@ -8,7 +8,7 @@ status: partial
 
 # HTML y formularios
 
-Los builders de HTML pertenecen a paquetes separados del core. `boctulus/simplerest-html-generation` aporta `HtmlBuilder\Html` y `HtmlBuilder\Tag`; `boctulus/simplerest-bootstrap-html` aporta `Bt5Form`, `AdminLte` y `BootstrapPaginator`. Generan markup: no administran estado, no reciben automáticamente `Request` ni sustituyen la [validación del servidor](/services/validation).
+Los builders de HTML pertenecen a paquetes separados del core. La identidad Composer `boctulus/simplerest-bootstrap-html` (carpeta local `simplerest-bootstrap`) aporta `Boctulus\Simplerest\HtmlBuilder\Html`, `Tag`, `Boctulus\Simplerest\HtmlBuilders\Bt5Form` y `AdminLte`, además de `Boctulus\Simplerest\Integrations\Libs\BootstrapPaginator`. Generan markup: no administran estado, no reciben automáticamente `Request` ni sustituyen la [validación del servidor](/services/validation).
 
 ## Controles Bootstrap
 
@@ -27,12 +27,12 @@ El builder genérico incluye controles como `inputText`, `password`, `email`, `n
 
 `Html::setIdAsName()` copia `name` en `id`; `Html::macro()` registra métodos propios y `__callStatic()` crea tags no declarados. `Tag::registerBuilder($class)` selecciona el builder de nuevos objetos `Tag`. `AdminLte` agrega controles específicos del tema. `BootstrapPaginator::render()` escribe HTML y espera `last_page` y `current_page` dentro de `$data['paginator']`.
 
-Los paquetes no incluyen Bootstrap, AdminLTE ni sus assets frontend: debe suministrarlos la aplicación. Consulta la guía pública sobre [microcore y paquetes Composer](/core/microcore).
+El paquete no incluye Bootstrap, AdminLTE ni sus assets frontend: debe suministrarlos la aplicación. Los antiguos directorios locales `simplerest-html-generation` y `simplerest-bootstrap-html` ya no existen con esos nombres; el manifiesto conserva `boctulus/simplerest-bootstrap-html` y el builder base vive en esa misma carpeta local. Consulta la guía pública sobre [microcore y paquetes Composer](/core/microcore).
 
 ## Escape y compatibilidad
 
 Los builders concatenan texto y atributos sin aplicar `htmlspecialchars()` ni sanitización. Codifica los valores según su contexto; el markup generado no es una frontera de seguridad.
 
-El `composer.json` revisado de `simplerest-bootstrap-html` no declara dependencia directa de `simplerest-html-generation`, aunque `Bt5Form` extiende su `Html`. El core distribuido tampoco contiene ese builder. README y tests mencionan namespaces de compatibilidad anteriores sin una declaración de alias encontrada en el código/autoload consultado. Una instalación consumidora limpia no se ejecutó, así que la disponibilidad de esos nombres sigue sin verificar.
+`Bt5Form` extiende `Boctulus\Simplerest\HtmlBuilder\Html`, incluido en el mismo paquete. El autoload PSR-4 cubre ambas clases; `src/legacy_aliases.php`, cargado mediante `autoload.files`, ofrece los nombres históricos bajo `Core\Libs\HtmlBuilder` y `Core\Libs\BootstrapPaginator` cuando el core no los proporciona. No hay una dependencia entre dos paquetes de builders.
 
-Se inspeccionaron builders, manifiestos, README y tests de paquete; no se ejecutaron. Tampoco se validaron los assets CSS/JavaScript ni la interoperabilidad con `Validator`.
+`HtmlBuildersPackageTest` contiene aserciones de autoload para los namespaces nuevos y los nombres históricos. La configuración está en el manifiesto; no se ejecutó una instalación consumidora ni la suite. Tampoco se validaron los assets CSS/JavaScript ni la interoperabilidad con `Validator`.

@@ -86,5 +86,5 @@ Se inspeccionaron contrato, factory, providers, configuración, manifiesto, READ
 ## Relacionado
 
 - [ApiClient](/core/api-client), usado por los providers.
-- [API Clients](/integrations/api-clients) y [Shopify Connector](/integrations/shopify).
+- [Shopify Connector](/integrations/shopify).
 - [Microcore y paquetes](/core/microcore).

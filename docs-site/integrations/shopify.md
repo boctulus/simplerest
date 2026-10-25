@@ -24,6 +24,6 @@ Crear o eliminar webhooks modifica la tienda externa. No se ejecutó ninguna ope
 
 ## Conversión a WooCommerce
 
-`adaptToWooCommerce()` transforma campos, etiquetas, categorías, variantes y atributos. Los conversores de estado comparan el estado de entrada contra los valores del mapa en vez de sus claves; por eso la conversión de estados conocidos no está demostrada como funcional. Consulta también [API Clients](/integrations/api-clients) para el mapper y el cliente WooCommerce.
+`adaptToWooCommerce()` transforma campos, etiquetas, categorías, variantes y atributos. Los conversores de estado comparan el estado de entrada contra los valores del mapa en vez de sus claves; por eso la conversión de estados conocidos no está demostrada como funcional.
 
 No hay tests de paquete ni conversiones con fixtures ejecutadas en esta revisión. Revisa los [límites de distribución Composer](/core/microcore) antes de asumir que el paquete está disponible como dependencia pública.

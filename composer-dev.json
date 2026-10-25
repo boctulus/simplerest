@@ -17,29 +17,36 @@
         "app/",
         "src/"
       ],
+      "Boctulus\\AzSeeder\\": "packages/boctulus/simplerest-az-seeder/src/",
+      "Boctulus\\BasicACL\\": "packages/boctulus/simplerest-basic-acl/src/",
       "Boctulus\\FineGrainedACL\\": "packages/boctulus/simplerest-fine-grained-acl/src/",
       "Boctulus\\LLMProviders\\": "packages/boctulus/simplerest-llm-providers/src/",
-      "Boctulus\\Simplerest\\Mail\\": "packages/boctulus/simplerest-mail/src/"
+      "Boctulus\\Simplerest\\Mail\\": "packages/boctulus/simplerest-mail/src/",
+      "Boctulus\\ShopifyConnector\\": "packages/boctulus/simplerest-shopify-connector/src/"
     },
     "classmap": [
       "packages/boctulus/simplerest-scaffolding/src/",
       "packages/boctulus/simplerest-api-clients/src/",
       "packages/boctulus/simplerest-i18n/src/",
-      "packages/boctulus/simplerest-html-generation/src/",
+      "packages/boctulus/simplerest-bootstrap/src/",
+      "packages/boctulus/simplerest-codereducer/src/",
+      "packages/boctulus/simplerest-phpparser/src/",
+      "packages/boctulus/simplerest-postman-gen/src/",
       "packages/boctulus/simplerest-jobs/src/",
       "packages/boctulus/simplerest-geolocation/src/",
       "packages/boctulus/simplerest-gd-image/src/",
-      "packages/boctulus/simplerest-string-obfuscation/src/",
-      "packages/boctulus/simplerest-machine-id/src/",
       "packages/boctulus/simplerest-sse/src/",
       "packages/boctulus/simplerest-psr7/src/",
       "packages/boctulus/simplerest-jwt-auth/src/",
       "packages/boctulus/simplerest-css/src/",
-      "packages/boctulus/simplerest-html/src/"
+      "packages/boctulus/simplerest-fpdf/src/",
+      "packages/boctulus/simplerest-web-inspection/src/"
     ],
     "files": [
       "packages/boctulus/simplerest-i18n/src/helpers.php",
-      "packages/boctulus/simplerest-psr7/src/helpers.php"
+      "packages/boctulus/simplerest-psr7/src/helpers.php",
+      "packages/boctulus/simplerest-bootstrap/src/legacy_aliases.php",
+      "packages/boctulus/simplerest-web-inspection/src/legacy_aliases.php"
     ],
     "exclude-from-classmap": [
       "src/framework/Templates/"

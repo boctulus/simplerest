@@ -9,8 +9,8 @@ The current names describe each extension's responsibility. Previously published
 | Composer name | Responsibility | Distribution decision |
 | --- | --- | --- |
 | `boctulus/simplerest` | Runtime framework core, including routing, HTTP, database abstractions, models, schema tools, security primitives, and the CLI contract/registry | Keep the existing root package identity. Its Composer autoload contains only `src/framework/`; Git archive exclusions reduce the installable `dist` artifact. |
-| `boctulus/simplerest-scaffolding` | PHP parser, `make` commands, code generators, and development helpers | Successor identity to Code Tools. Applications opt in to its commands. |
-| `boctulus/simplerest-bootstrap-html` | Bootstrap 5 forms, AdminLTE components, and Bootstrap pagination | Successor identity to HTML Builders; `AdminLte` continues to extend `Bt5Form`. |
+| `boctulus/simplerest-scaffolding` | `make` command group and SimpleRest project file generators | Successor identity to Code Tools. Applications opt in to its commands; PHPParser, CodeReducer, and PostmanGenerator now have separate package manifests. |
+| `boctulus/simplerest-bootstrap-html` | HTML `Html`/`Tag` builders, Bootstrap 5 forms, AdminLTE components, and Bootstrap pagination | Successor identity to HTML Builders; `AdminLte` continues to extend `Bt5Form`. Its local monorepo directory is `simplerest-bootstrap`. |
 | `boctulus/simplerest-fpdf` | `PdfBase` adapter around the FPDF library | Successor identity to the old generic PDF package name. |
 | `boctulus/simplerest-web-inspection` | CMS and technology detection plus HTML selector helpers | Extracted from the former mixed Integrations bundle. |
 | `boctulus/simplerest-api-clients` | Google Drive, WooCommerce, OneSignal, and Hugging Face clients | Extracted from the former mixed Integrations bundle. |
@@ -18,7 +18,9 @@ The current names describe each extension's responsibility. Previously published
 | `boctulus/simplerest-mail` | All mail code under `Boctulus\Simplerest\Mail\`: `Mail` (PHPMailer SMTP sender), `MailBase`, `MailAuditor`, `MailFromRemoteWP`, `EmailTemplate`, and `Interfaces\IMail` | Extracted from the core on 2026-10-24; owns `phpmailer/phpmailer`. The core keeps no mail classes; API Clients requires this package for SendinBlue. |
 | `boctulus/simplerest-jwt-auth` | JWT authentication controller (`Api\AuthController`) | Extracted from the core on 2026-10-24; owns `firebase/php-jwt`. `IAuth` stays in the core. |
 | `boctulus/simplerest-css` | Stylesheet download/extraction and CSS parsing (`CSS`) | Extracted from the core on 2026-10-24; owns `sabberworm/php-css-parser`, which the core never declared. |
-| `boctulus/simplerest-html` | HTML minification for scraped pages (`HtmlMinifier`, formerly `Strings::minimifyHTML()`) | Extracted from the core on 2026-10-24; depends only on the core. |
+| `boctulus/simplerest-codereducer` | PHP source reduction (`CodeReducer`) and HTML minification for scraped pages (`HtmlMinifier`, formerly `Strings::minimifyHTML()`) | Current Composer owner for these tools; depends only on the core. The earlier `simplerest-html` package boundary is historical. |
+| `boctulus/simplerest-phpparser` | PHP source transforms through `PHPParser` and `nikic/php-parser` | Separate tool package; declares `nikic/php-parser ^5.4` and does not require SimpleRest core. |
+| `boctulus/simplerest-postman-gen` | Postman collection generation from SimpleRest API configuration | Separate tool package; depends on the core. |
 | `boctulus/simplerest-llm-providers` | A unified interface for OpenAI, Anthropic, xAI, and Ollama providers | Separate extension candidate; provider-specific model contracts remain explicit. |
 | `boctulus/simplerest-basic-acl` | Proprietary basic ACL extension | Keep as an existing local package. Its proprietary license means this work does not publish it publicly. |
 | `boctulus/simplerest-fine-grained-acl` | Proprietary fine-grained ACL extension | Keep as an existing local package. GoProp retains its application-owned copy until a private distribution is independently authorized and validated. |
@@ -29,7 +31,7 @@ The root SimpleRest checkout remains the development application and source mono
 
 `BaseCommand`, `CommandRegistry`, dispatch, parsing, help, and collision checks remain in the core. GoProp and every host application retain their own `app/Commands/` directory and `com` entry point.
 
-`boctulus/simplerest-scaffolding` contains the reusable `make` group and PHP source tools. The host application must list the package in `config/commands.php` to expose its commands; installation alone does not enable them. Composer-installed commands are loaded through the package classmap, and their classes use the package namespace so they do not collide with host classes that share a short name.
+`boctulus/simplerest-scaffolding` contains the reusable `make` group and file generators. PHPParser, CodeReducer, and PostmanGenerator are distributed by their own packages. The host application must list scaffolding in `config/commands.php` to expose its commands; installation alone does not enable them. Composer-installed commands are loaded through the package classmap, and their classes use the package namespace so they do not collide with host classes that share a short name.
 
 `CommandRegistry` resolves providers in this order: host application, explicitly enabled extensions, configured framework defaults. Cross-tier command or alias collisions choose the higher tier and emit a diagnostic. Same-tier collisions fail unless `overrides` identifies one provider. Overrides can select a lower tier explicitly. Host commands use provider ID `application`.
 
