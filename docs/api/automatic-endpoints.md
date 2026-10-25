@@ -67,4 +67,4 @@ The generated API scaffold sets its soft-delete flag to the literal `true`. The 
 
 ## Related guides
 
-See the [request lifecycle](../core/request-lifecycle.md), [schema descriptors](../database/schemas.md), [schema builder](../database/schema-builder.md), [ACL](../security/acl.md) and [scaffolding](../packages/scaffolding.md). Internal evidence and test-coverage notes are maintained in `docs/audit/`.
+See the [request lifecycle](../core/request-lifecycle.md), [schema descriptors](../database/schemas.md), [schema builder](../database/schema-builder.md), [ACL](../security/acl.md) and [scaffolding](../packages/scaffolding.md).
