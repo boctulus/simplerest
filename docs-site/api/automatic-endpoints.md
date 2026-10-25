@@ -3,7 +3,7 @@ title: Resolución y parámetros de endpoints automáticos
 source:
   - docs/api/automatic-endpoints.md
   - docs/audit/README.md
-source_revision: 41df667118f065fc7b22f6f28f6274a35de5179c
+source_revision: cb0b29cb85fa5c132f01dd63ca7e574c4598c6be
 ---
 
 # Endpoints REST automáticos
