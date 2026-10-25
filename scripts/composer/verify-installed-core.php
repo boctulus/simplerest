@@ -31,7 +31,7 @@ try {
 
     $expected = $provenance['files_sha256'];
     ksort($expected);
-    $actual = [];
+    $files = [];
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($installed, FilesystemIterator::SKIP_DOTS)
     );
@@ -47,18 +47,46 @@ try {
             || $relative === 'com') {
             throw new RuntimeException("PACK implementation leaked into the installed package: $relative");
         }
-        $actual[$relative] = strtolower((string) hash_file('sha256', $entry->getPathname()));
+        $files[$relative] = $entry->getPathname();
     }
-    ksort($actual);
+    ksort($files);
 
-    if (array_keys($actual) !== array_keys($expected)) {
-        $missing = array_values(array_diff(array_keys($expected), array_keys($actual)));
-        $unexpected = array_values(array_diff(array_keys($actual), array_keys($expected)));
+    if (array_keys($files) !== array_keys($expected)) {
+        $missing = array_values(array_diff(array_keys($expected), array_keys($files)));
+        $unexpected = array_values(array_diff(array_keys($files), array_keys($expected)));
         throw new RuntimeException(
             'Installed Composer package file set differs from release provenance. Missing: '
             . implode(', ', $missing) . '; unexpected: ' . implode(', ', $unexpected)
         );
     }
+
+    $actual = [];
+    if (is_dir($installed . DIRECTORY_SEPARATOR . '.git') || is_file($installed . DIRECTORY_SEPARATOR . '.git')) {
+        $head = runGit($installed, ['rev-parse', 'HEAD^{commit}']);
+        if (!hash_equals((string) $provenance['package_commit'], trim($head))) {
+            throw new RuntimeException('Composer source install does not point at the provenance package commit.');
+        }
+
+        $status = runGit($installed, ['status', '--porcelain=v1', '--untracked-files=all']);
+        if (trim($status) !== '') {
+            throw new RuntimeException("Composer source install is dirty:\n" . trim($status));
+        }
+
+        $treePaths = preg_split('/\r?\n/', trim(runGit($installed, ['ls-tree', '-r', '--name-only', 'HEAD']))) ?: [];
+        sort($treePaths, SORT_STRING);
+        if ($treePaths !== array_keys($expected)) {
+            throw new RuntimeException('Composer source Git tree differs from release provenance.');
+        }
+
+        foreach (array_keys($expected) as $path) {
+            $actual[$path] = hash('sha256', runGit($installed, ['show', 'HEAD:' . $path]));
+        }
+    } else {
+        foreach ($files as $path => $absolute) {
+            $actual[$path] = strtolower((string) hash_file('sha256', $absolute));
+        }
+    }
+
     foreach ($expected as $path => $hash) {
         if (!is_string($hash) || !hash_equals(strtolower($hash), $actual[$path])) {
             throw new RuntimeException("Installed Composer package hash differs from release provenance: $path");
@@ -79,4 +107,35 @@ try {
 } catch (Throwable $error) {
     fwrite(STDERR, $error->getMessage() . PHP_EOL);
     exit(1);
+}
+
+/**
+ * Read immutable Git metadata or blob bytes without invoking a command shell.
+ *
+ * @param list<string> $arguments
+ */
+function runGit(string $workingTree, array $arguments): string
+{
+    $command = array_merge(['git', '-C', $workingTree], $arguments);
+    $pipes = [];
+    $process = proc_open($command, [
+        0 => ['pipe', 'r'],
+        1 => ['pipe', 'w'],
+        2 => ['pipe', 'w'],
+    ], $pipes);
+    if (!is_resource($process)) {
+        throw new RuntimeException('Could not start Git while verifying the Composer source install.');
+    }
+
+    fclose($pipes[0]);
+    $stdout = stream_get_contents($pipes[1]);
+    fclose($pipes[1]);
+    $stderr = stream_get_contents($pipes[2]);
+    fclose($pipes[2]);
+    $exitCode = proc_close($process);
+    if ($exitCode !== 0) {
+        throw new RuntimeException('Git verification failed: ' . trim((string) $stderr));
+    }
+
+    return (string) $stdout;
 }

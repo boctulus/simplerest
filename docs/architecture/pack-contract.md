@@ -121,7 +121,7 @@ PACK prints its selected source SHA but stores no implementation metadata inside
 5. creates an isolated package tree and package commit;
 6. writes external `release-provenance.json` containing the canonical repository, canonical source SHA, file hashes, archive hash, package tree, package commit, and intended version.
 
-`scripts/composer/verify-installed-core.php` compares a Composer-installed candidate byte-for-byte with that external record and independently rejects PACK implementation paths.
+`scripts/composer/verify-installed-core.php` compares a dist install's bytes directly with that external record. For a source install it requires a clean checkout at the recorded package commit and compares the immutable Git tree and blob hashes, so platform checkout line-ending conversion cannot create a false mismatch. Both modes independently reject PACK implementation paths.
 
 The snapshot and verification operations create no remote reference. Publication requires a separate explicit decision, a new immutable public tag, and confirmation that Packagist resolves the reviewed package commit. Existing public tags must never be rewritten or force-pushed.
 
