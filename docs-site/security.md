@@ -7,12 +7,11 @@ source:
   - docs/security/acl-implementations.md
   - docs/security/authorization-engine.md
 source_revision: 5192298b785bdcdd8751d38eb6b7be97abb83d4d
-status: partial
 ---
 
 # Seguridad
 
-Esta sección separa autenticación de autorización y distingue el mecanismo del framework de la política elegida por cada aplicación. Las referencias detalladas describen ramas trazadas en el código; sus límites de ejecución permanecen visibles.
+Esta sección separa autenticación de autorización y distingue el mecanismo del framework de la política elegida por cada aplicación. Las guías detalladas explican los contratos de autenticación y autorización y los requisitos de configuración.
 
 ## Dos controles distintos
 
@@ -28,4 +27,4 @@ Las [implementaciones ACL](/security/acl-implementations) distinguen BasicACL y 
 
 - [HTTP/API](/api) y [resolución de endpoints automáticos](/api/automatic-endpoints) explican el despacho de recursos.
 - El [ciclo HTTP](/core/request-lifecycle) queda separado de la autenticación y la autorización a nivel de controlador.
-- Las guías separan el código core, los paquetes opcionales y la configuración de aplicación. No se reprodujo autorización end-to-end con identidad y permisos de base de datos.
+- Las guías separan el código core, los paquetes opcionales y la configuración de aplicación. 
