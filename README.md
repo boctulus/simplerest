@@ -53,7 +53,9 @@ FrontController::resolve();
 
 ## Composer pack workflow
 
-The development checkout is not the public Composer distribution. Build the curated microcore with `php com pack build --profile=core` (or add `--dry-run`); the destination defaults to the sibling `simplerest-pack` directory. Existing dirty or non-curated destinations are rejected without deletion. The release snapshot is built **only from that curated output**, via `scripts/composer/build-core-source-snapshot.ps1 -CuratedDirectory <pack-path> -OutputDirectory <new-path> -SourceCommit <source-sha>`. These commands never publish automatically.
+The development checkout is not automatically the public Composer distribution. Build the curated microcore with `php com pack build --profile=core` (or add `--dry-run`); the destination defaults to the supported sibling `simplerest-pack` Git worktree. A default build rejects uncommitted changes under `composer.json`, `LICENSE`, `README.md`, or `src/framework/`, while an explicit `--source-commit=<sha>` reproduces a deliberate immutable revision. Dirty, linked, overlapping, unversioned, or non-core existing destinations are rejected without deletion.
+
+VERIFY builds a standalone snapshot **only from the curated output** with `scripts/composer/build-core-source-snapshot.ps1 -CuratedDirectory <pack-path> -OutputDirectory <new-path> -SourceCommit <source-sha>`. It emits external provenance, and `scripts/composer/verify-installed-core.php` compares an installed Composer candidate to those hashes. Packagist serves the Git commit registered for a version, not the local PACK directory; therefore PACK, VERIFY, PUBLISH, and application upgrades remain separate operations. See the [canonical PACK contract](docs/architecture/pack-contract.md). None of these commands publishes or updates GoProp automatically.
 
 The historical application bootstrap is not a microcore consumer. Its original classes are explicitly loaded for the development application outside the Composer autoload while that application is migrated. Full legacy CLI/application compatibility has not yet been certified.
 

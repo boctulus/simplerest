@@ -5,9 +5,9 @@
 This section supersedes all historical references below to building Composer releases directly from the development checkout.
 
 - **Canonical development:** D:\laragon\www\simplerest (Git master). All fixes and tests begin here; the HTTP microcore consists only of src/framework/.
-- **Curated distribution:** D:\laragon\www\simplerest-pack is the intended PACK output/worktree. Run `php com pack build --profile=core` from the development checkout. This command deliberately bypasses the obsolete app.php bootstrap and reads only the selected immutable Git source commit (default HEAD). The output consists of composer.json, LICENSE, README.md and PHP files under src/framework/.
-- **Safety:** PACK refuses dirty Git destinations and unexpected files. It never recursively cleans a worktree, deletes unrelated files, or changes Git tags/remotes. For an existing legacy/non-curated destination, first inspect its history and preserve all changes; establish a clean destination through an explicit, reviewed migration.
-- **Composer snapshot:** `scripts/composer/build-core-source-snapshot.ps1` now requires `-CuratedDirectory` and copies ONLY the previously generated curated PACK. It verifies each file's Git blob against `-SourceCommit`, rejects unrelated files, and creates a local validation tag inside a fresh isolated directory. It cannot silently fall back to Git archive of the monorepo.
+- **Curated distribution:** D:\laragon\www\simplerest-pack is the intended PACK output/worktree. Run `php com pack build --profile=core` from the development checkout. This command deliberately bypasses app.php and reads only the selected immutable Git source commit (default HEAD). The output consists of the curated composer.json, LICENSE, README.md and the committed src/framework tree.
+- **Safety:** PACK rejects relevant dirty source state and dirty, ignored, linked, overlapping, unversioned, or non-core existing destinations. It preserves destination `.git`, never recursively cleans a worktree, and never deletes unrelated files. A legacy/non-curated destination requires an explicit reviewed migration.
+- **Composer snapshot:** `scripts/composer/build-core-source-snapshot.ps1` requires `-CuratedDirectory` and copies ONLY the previously generated curated PACK. It requires the approved source commit to be checked out as HEAD, verifies source bytes and the documented Composer-manifest transformation, rejects unrelated files, creates a local validation tag only inside a fresh isolated directory, and writes external `release-provenance.json`. It cannot silently fall back to Git archive of the monorepo.
 - **Publication is a separate action:** Review the resulting snapshot and manifest, run Composer/platform/microcore and consumer tests, and only then authorize a new immutable release tag and Packagist update. Neither PACK nor snapshot uploads to Packagist.
 - **Framework source:** The full framework lives in src/framework (namespace `Boctulus\Simplerest\Core\`). "Microcore" means that libraries which are too specific are extracted into packages under packages/boctulus; it does not mean a separate namespace or minimal rewrites of core classes. Since 2026-10-24 PACK and the snapshot take the whole committed src/framework tree plus composer.json, LICENSE and README.md (the former 14-file allowlist scripts/pack/core-files.txt was removed), the core manifest requires only PHP (plus `doctrine/inflector`, the single approved exception, restored the same day for pivot relation aliases), and libraries with external dependencies were extracted to boctulus/simplerest-psr7, boctulus/simplerest-mail, boctulus/simplerest-jwt-auth, boctulus/simplerest-css and boctulus/simplerest-html. `unit-tests/microcore` enforces that every core class loads without vendor/ or packages and that the core has no external library references, with no exceptions.
 - **Consumer compatibility:** The core 3.0 release is incompatible with GoProp's current Composer pin until the application and required extensions are migrated and tested. Existing v2.0.2 tags are immutable.
@@ -21,7 +21,7 @@ php com pack build --profile=core --source-commit=<source-sha> --dest=D:\laragon
 .\scripts\composer\build-core-source-snapshot.ps1 -CuratedDirectory D:\laragon\www\simplerest-pack -SourceCommit <source-sha> -OutputDirectory <fresh-disposable-directory> -Version 3.0.0
 ```
 
-These are validation commands, not authorization to mutate a pre-existing dirty pack worktree or publish a release.
+These are local PACK and VERIFY commands, not authorization to mutate a pre-existing dirty pack worktree or publish a release. The authoritative safety and separation rules are in the [PACK contract](pack-contract.md).
 
 > The current scope and evidence are recorded in **Current scope and status**. The implementation record farther below is historical; its package inventory, FriendlyPOS status, and GoProp conclusions predate the 2026-10-23 scope reset.
 
@@ -90,11 +90,11 @@ Before publishing SimpleRest 3.0, the remaining work is:
 
 LLM Providers can wait without blocking the framework. Keep these pending core gates visible in any P0/P1 status decision.
 
-## Source of truth
+## Historical source-of-truth note superseded by the PACK contract
 
-`D:\laragon\www\simplerest` is the canonical development repository. `D:\laragon\www\simplerest-pack` is a legacy generated application tree; it is not the Composer source and is never an automatically cleaned release destination.
+The following two paragraphs record the pre-hardening interpretation and are obsolete for current operations. They are retained to explain why the repository previously contained two conflicting packagers.
 
-The root package name remains `boctulus/simplerest`. Packagist consumes this GitHub repository; `php com pack build` creates a starter application in `simplerest-pack`, not the Composer library. A core release is built from an immutable commit of this repository. `.gitattributes` controls the GitHub archive used for Composer `dist`; it does not change a source checkout.
+Historically, `D:\laragon\www\simplerest-pack` was described as a generated application tree and `php com pack build` as a starter generator. The current contract instead reserves `php com pack build` for Composer core curation and retains `scripts/pack_framework.php` only as the explicit legacy starter workflow. Packagist still consumes the separately published Git snapshot commit; `.gitattributes` filters archives but does not turn the monorepo or local PACK directory into that published source automatically.
 
 The optional Composer packages `boctulus/simplerest-pdf` and `boctulus/simplerest-code-tools` use their existing repositories and are split from their monorepo directories with `git subtree split`. The new local candidate `boctulus/simplerest-integrations` uses the same reproducible split route, but has no independent repository or Packagist entry yet. A split commit is deterministic for a given source commit and path. The maintainer must record both SHAs. The script defaults to a dry run and refuses to force-update branches or reuse a version tag.
 
@@ -124,7 +124,7 @@ On 2026-10-22, `build-core-source-snapshot.ps1` assembled package commit `c15d06
 
 Composer framework and tooling libraries may contain manifests and documentation, but must not bundle frontend distributions. jQuery, Tailwind, Bootstrap, and similar third-party frontend assets remain owned by the host application; they are not installed, copied, or bundled by the SimpleRest core or its Code Tools, PDF, and Integrations packages. Assets under the development app's `app/` and `public/` paths are excluded from the root package archive.
 
-The existing `boctulus/simplerest` package identity is released from a reproducible, lean source snapshot assembled from the root manifest and `src/framework/`. This keeps the package's Composer name and avoids adding a second core entry to any package list. `build-core-source-snapshot.ps1` requires a new verified temporary output directory, creates a local validation tag there, and fails if frontend files are present. It does not change a remote or any published tag. This clean snapshot is required for `--prefer-source`; `.gitattributes export-ignore` alone only filters archives, not Git checkouts.
+The existing `boctulus/simplerest` package identity is released from a reproducible, lean source snapshot assembled from the curated root manifest and `src/framework/`. This keeps the package's Composer name and avoids adding a second core entry to any package list. `build-core-source-snapshot.ps1` requires a new verified temporary output directory, creates a local validation tag there, emits external source/file/tree/commit/version provenance, and fails if uncurated files are present. It does not change a remote or any published tag. `verify-installed-core.php` then compares the installed candidate to that external record. This clean snapshot is required for `--prefer-source`; `.gitattributes export-ignore` alone only filters archives, not Git checkouts.
 
 ## Core versioning
 

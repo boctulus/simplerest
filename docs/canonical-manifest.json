@@ -6,6 +6,7 @@
     "docs/index.md",
     "docs/documentation-governance.md",
     "docs/architecture.md",
+    "docs/architecture/pack-contract.md",
     "docs/getting-started/README.md",
     "docs/core/README.md",
     "docs/core/request-lifecycle.md",

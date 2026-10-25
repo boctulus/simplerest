@@ -1,6 +1,8 @@
-# SimpleRest Framework Packager
+# Legacy SimpleRest starter packager
 
-This script creates a clean distribution copy of the SimpleRest framework from the development environment to a destination directory, preparing it for distribution via GitHub/composer while removing development-specific configurations.
+This page documents the legacy starter-application generator in `scripts/pack_framework.php`. It is not the Composer core PACK implementation. The authoritative Composer workflow is `php com pack build --profile=core` and is specified in `docs/architecture/pack-contract.md`.
+
+The legacy generator remains for the starter verification suite. It accepts only a new disposable destination and never refreshes or cleans `D:\laragon\www\simplerest-pack`.
 
 ## Purpose
 
@@ -12,7 +14,7 @@ The packager script performs the following tasks:
 
 ## Features
 
-- Cleans the destination directory before packaging to remove any previous artifacts
+- Requires the destination not to exist, so existing files are never cleaned
 - Recursively copies the `src/` directory
 - Copies first-level contents of the `app/` directory
 - Copies the `scripts/init` directory with boot and redirection files
@@ -27,27 +29,15 @@ The packager script performs the following tasks:
 
 ### Command Line Interface
 
-Run the script from the command line:
+Invoke the legacy workflow explicitly with source and a new disposable destination:
 
 ```bash
-php scripts/pack_framework.php
-```
-
-By default, the script will:
-- Use `D:\laragon\www\simplerest` as the source directory
-- Use `D:\laragon\www\simplerest-pack` as the destination directory
-
-### Custom Directories
-
-You can specify custom source and destination directories:
-
-```bash
-php scripts/pack_framework.php /path/to/source /path/to/destination
+php scripts/pack_framework.php --legacy-starter /path/to/source /path/to/new-disposable-destination
 ```
 
 Example:
 ```bash
-php scripts/pack_framework.php /home/user/my-project /home/user/my-project-dist
+php scripts/pack_framework.php --legacy-starter /home/user/my-project /tmp/my-project-starter
 ```
 
 ## What Gets Copied
@@ -146,6 +136,6 @@ The script cleans the `composer.json` file by:
 ## Notes
 
 - The destination directory will be created if it doesn't exist
-- Existing files in the destination directory will be overwritten
+- The destination must not already exist; existing files are never overwritten
 - The script preserves the directory structure of the source
 - After packaging, run `composer install` in the destination directory to install dependencies
