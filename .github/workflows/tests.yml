@@ -93,11 +93,30 @@ jobs:
         run: |
           ./scripts/composer/build-core-source-snapshot.ps1 -CuratedDirectory "$env:RUNNER_TEMP/curated-core" -SourceCommit "$env:GITHUB_SHA" -OutputDirectory "$env:RUNNER_TEMP/curated-snapshot" -Version 3.0.0
           if (-not (Test-Path "$env:RUNNER_TEMP/curated-snapshot/repository/composer.json")) { throw 'Composer snapshot is missing' }
+          if (-not (Test-Path "$env:RUNNER_TEMP/curated-snapshot/release-provenance.json")) { throw 'External release provenance is missing' }
           $files = @(Get-ChildItem "$env:RUNNER_TEMP/curated-snapshot/repository" -File -Recurse | Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' })
           $expected = @(git ls-tree -r --name-only $env:GITHUB_SHA -- src/framework).Count + 3
           if ($files.Count -ne $expected) { throw "Snapshot should contain $expected core files; found $($files.Count)" }
           if (Test-Path "$env:RUNNER_TEMP/curated-snapshot/repository/docs") { throw 'Internal documentation leaked into the package' }
           if (Test-Path "$env:RUNNER_TEMP/curated-snapshot/repository/archive") { throw 'Archived code leaked into the package' }
+      - name: Install and verify the exact Composer candidate
+        shell: pwsh
+        run: |
+          $consumer = "$env:RUNNER_TEMP/curated-consumer"
+          New-Item -ItemType Directory -Path $consumer | Out-Null
+          $manifest = [ordered]@{
+            name = 'boctulus/pack-verification-consumer'
+            repositories = @(@{
+              type = 'vcs'
+              url = "$env:RUNNER_TEMP/curated-snapshot/repository"
+            })
+            require = @{
+              'boctulus/simplerest' = '3.0.0'
+            }
+          }
+          $manifest | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath "$consumer/composer.json" -Encoding utf8
+          composer install --working-dir=$consumer --no-dev --prefer-source --no-interaction --no-progress --no-scripts
+          php scripts/composer/verify-installed-core.php --installed="$consumer/vendor/boctulus/simplerest" --provenance="$env:RUNNER_TEMP/curated-snapshot/release-provenance.json"
 
   legacy-cli-smoke:
     runs-on: ubuntu-latest

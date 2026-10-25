@@ -23,16 +23,29 @@ $resolvedCommit = (git rev-parse "$SourceCommit^{commit}").Trim()
 if ($LASTEXITCODE -ne 0 -or $resolvedCommit -notmatch '^[0-9a-f]{40}$') {
     throw "SourceCommit '$SourceCommit' does not resolve to an immutable Git commit."
 }
+$currentHead = (git rev-parse 'HEAD^{commit}').Trim()
+if ($LASTEXITCODE -ne 0 -or $currentHead -notmatch '^[0-9a-f]{40}$') {
+    throw 'Could not resolve the canonical checkout HEAD.'
+}
+if ($resolvedCommit -cne $currentHead) {
+    throw "Release snapshots must use the checked-out approved HEAD $currentHead. Checkout the approved commit before verification; refusing historical source $resolvedCommit."
+}
 
 $manifestJson = git show "${resolvedCommit}:composer.json" | ConvertFrom-Json
 if ($LASTEXITCODE -ne 0 -or $manifestJson.name -ne 'boctulus/simplerest') {
     throw "Commit $resolvedCommit does not contain the existing boctulus/simplerest package manifest."
 }
+$normalizedVersion = $Version.TrimStart('v')
+$versionParts = $normalizedVersion.Split('.')
+$expectedBranchAlias = "$($versionParts[0]).$($versionParts[1]).x-dev"
+if ($manifestJson.extra.'branch-alias'.'dev-master' -cne $expectedBranchAlias) {
+    throw "Intended version $Version does not match source branch alias $($manifestJson.extra.'branch-alias'.'dev-master')."
+}
 
 $outputPath = [System.IO.Path]::GetFullPath($OutputDirectory)
-$legacyPackPath = [System.IO.Path]::GetFullPath((Join-Path (Split-Path -Parent $repositoryRoot) 'simplerest-pack'))
-if ($outputPath.TrimEnd('\') -ieq $legacyPackPath.TrimEnd('\')) {
-    throw 'The legacy simplerest-pack directory cannot be used for Composer source snapshots.'
+$packDestinationPath = [System.IO.Path]::GetFullPath((Join-Path (Split-Path -Parent $repositoryRoot) 'simplerest-pack'))
+if ($outputPath.TrimEnd('\') -ieq $packDestinationPath.TrimEnd('\')) {
+    throw 'The PACK destination cannot also be the isolated snapshot output. Pass simplerest-pack as CuratedDirectory instead.'
 }
 if (Test-Path -LiteralPath $outputPath) {
     throw "OutputDirectory already exists; refusing to overwrite or clean it: $outputPath"
@@ -79,13 +92,27 @@ foreach ($path in $paths) {
     if (-not (Test-Path -LiteralPath $inputFile -PathType Leaf)) {
         throw "Pack output is missing $path. Rerun php com pack build."
     }
-    $sourceBlob = (git rev-parse ($resolvedCommit + ':' + $path)).Trim()
-    if ($LASTEXITCODE -ne 0) {
-        throw "Cannot resolve source blob: $path"
-    }
-    $packBlob = (git hash-object -- $inputFile).Trim()
-    if ($LASTEXITCODE -ne 0 -or $packBlob -cne $sourceBlob) {
-        throw "Pack output differs from source commit at $path. Rebuild the curated pack using --source-commit=$resolvedCommit."
+    if ($path -eq 'composer.json') {
+        $expectedManifest = git show "${resolvedCommit}:composer.json" | ConvertFrom-Json
+        if ($LASTEXITCODE -ne 0) {
+            throw 'Cannot read the source Composer manifest.'
+        }
+        $expectedManifest.PSObject.Properties.Remove('scripts')
+        $actualManifest = Get-Content -LiteralPath $inputFile -Raw | ConvertFrom-Json
+        $expectedJson = $expectedManifest | ConvertTo-Json -Depth 100 -Compress
+        $actualJson = $actualManifest | ConvertTo-Json -Depth 100 -Compress
+        if ($actualJson -cne $expectedJson) {
+            throw 'Pack output Composer manifest differs from the approved source after removing root-only development scripts.'
+        }
+    } else {
+        $sourceBlob = (git rev-parse ($resolvedCommit + ':' + $path)).Trim()
+        if ($LASTEXITCODE -ne 0) {
+            throw "Cannot resolve source blob: $path"
+        }
+        $packBlob = (git hash-object -- $inputFile).Trim()
+        if ($LASTEXITCODE -ne 0 -or $packBlob -cne $sourceBlob) {
+            throw "Pack output differs from source commit at $path. Rebuild the curated pack using --source-commit=$resolvedCommit."
+        }
     }
 }
 foreach ($candidate in @(Get-ChildItem -LiteralPath $curatedPath -File -Force -Recurse)) {
@@ -97,11 +124,12 @@ foreach ($candidate in @(Get-ChildItem -LiteralPath $curatedPath -File -Force -R
 }
 $manifest = Get-Content -LiteralPath (Join-Path $curatedPath 'composer.json') -Raw | ConvertFrom-Json
 if ($manifest.name -ne 'boctulus/simplerest' -or
-    (@($manifest.require.PSObject.Properties.Name) -join ',') -cne 'php' -or
+    (@($manifest.require.PSObject.Properties.Name) -join ',') -cne 'php,doctrine/inflector' -or
     $manifest.PSObject.Properties.Name -contains 'require-dev' -or
     $manifest.PSObject.Properties.Name -contains 'suggest' -or
+    $manifest.PSObject.Properties.Name -contains 'scripts' -or
     $manifest.autoload.PSObject.Properties.Name -contains 'files') {
-    throw 'Curated Composer manifest is not the dependency-free SimpleRest microcore.'
+    throw 'Curated Composer manifest is not the approved SimpleRest microcore.'
 }
 
 $null = New-Item -ItemType Directory -Path $outputPath
@@ -169,6 +197,30 @@ if ($LASTEXITCODE -ne 0) { throw 'Could not set the package repository HEAD.' }
 git -C $packagePath tag $Version $snapshotCommit
 if ($LASTEXITCODE -ne 0) { throw "Could not create local validation tag '$Version'." }
 
+$fileHashes = [ordered]@{}
+foreach ($path in $paths) {
+    $releaseFile = Join-Path $packagePath ($path.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
+    $fileHashes[$path] = (Get-FileHash -LiteralPath $releaseFile -Algorithm SHA256).Hash.ToLowerInvariant()
+}
+$sourceRepository = (git remote get-url origin).Trim()
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($sourceRepository)) {
+    throw 'Could not resolve the canonical source repository URL.'
+}
+$provenance = [ordered]@{
+    schema = 1
+    package = 'boctulus/simplerest'
+    intended_version = $Version
+    canonical_repository = $sourceRepository
+    canonical_source_commit = $resolvedCommit
+    curated_directory = $curatedPath
+    package_tree = $tree
+    package_commit = $snapshotCommit
+    archive_sha256 = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
+    files_sha256 = $fileHashes
+}
+$provenancePath = Join-Path $outputPath 'release-provenance.json'
+$provenance | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $provenancePath -Encoding utf8
+
 Write-Output "Curated pack:  $curatedPath"
 Write-Output "Package:       boctulus/simplerest (existing identity)"
 Write-Output "Source commit: $resolvedCommit"
@@ -176,4 +228,5 @@ Write-Output "Package tree:  $tree"
 Write-Output "Package commit: $snapshotCommit"
 Write-Output "Local tag:     $Version"
 Write-Output "Source repo:   $packagePath"
+Write-Output "Provenance:    $provenancePath"
 Write-Output 'No remote or published tag was changed.'

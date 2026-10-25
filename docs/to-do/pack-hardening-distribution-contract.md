@@ -1,6 +1,6 @@
 ---
 title: PACK Hardening and Distribution Contract
-current_step: 3
+current_step: 5
 next_step: null
 parallelizable_steps: []
 parent: null
