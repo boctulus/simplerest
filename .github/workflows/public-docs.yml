@@ -5,11 +5,19 @@ on:
     branches: [master]
     paths:
       - 'docs-site/**'
+      - 'docs/**'
+      - '.agents/skills/**'
+      - '.agent/skills/**'
+      - 'scripts/documentation-publication-gate.php'
       - '.github/workflows/public-docs.yml'
   push:
     branches: [master]
     paths:
       - 'docs-site/**'
+      - 'docs/**'
+      - '.agents/skills/**'
+      - '.agent/skills/**'
+      - 'scripts/documentation-publication-gate.php'
       - '.github/workflows/public-docs.yml'
   workflow_dispatch:
 
@@ -23,6 +31,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Reject audit-only language in user-facing docs
+        run: php scripts/documentation-publication-gate.php
 
       - name: Set up Node
         uses: actions/setup-node@v4
