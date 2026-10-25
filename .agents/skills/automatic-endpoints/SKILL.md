@@ -118,7 +118,7 @@ GET /api/v1/products?_related=category
 
 ## Customizing Auto-Endpoints
 
-Edit the generated controller under `app/Controllers/Api/`. Its template extends `Core\\Api\\ApiController`. Use actual hooks such as `onPostingBeforeCheck($id, array &$data)` or `onGot($id, ?int $count)`, or override the supported HTTP methods with their existing signatures. The older `beforeIndex()` and `beforeStore()` examples are not hooks provided by `ApiController`.
+Edit the generated controller under `app/Controllers/Api/`. Its template extends `Core\\Api\\ApiController`. Use actual hooks such as `onPostingBeforeCheck($id, array &$data)` or `onGot($id, ?int $count)`, or override the supported HTTP methods with their existing signatures.
 
 ## Disabling Auto-Endpoints
 
