@@ -154,6 +154,8 @@ if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($sourceDate)) {
 
 git -C $packagePath init
 if ($LASTEXITCODE -ne 0) { throw 'Could not initialize the isolated core source repository.' }
+git -C $packagePath config core.autocrlf false
+if ($LASTEXITCODE -ne 0) { throw 'Could not disable line-ending conversion in the isolated core source repository.' }
 git -C $packagePath add --all
 if ($LASTEXITCODE -ne 0) { throw 'Could not stage the isolated core source snapshot.' }
 
