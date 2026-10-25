@@ -9,10 +9,20 @@ final class PackFirstDistributionTest extends TestCase
     public function testPackDryRunDoesNotBootLegacyApp(): void
     {
         $repo = dirname(__DIR__, 2);
-        $output = $this->execute([PHP_BINARY, $repo . '/com', 'pack', 'build', '--dry-run', '--profile=core'], $repo);
+        $dest = sys_get_temp_dir() . '/simplerest-pack-dry-run-' . bin2hex(random_bytes(8));
+        $output = $this->execute([
+            PHP_BINARY,
+            $repo . '/com',
+            'pack',
+            'build',
+            '--dry-run',
+            '--profile=core',
+            '--dest=' . $dest,
+        ], $repo);
         self::assertSame(0, $output['exit'], $output['stderr']);
         self::assertStringContainsString('profile=core', $output['stdout']);
         self::assertStringContainsString('src/framework/FrontController.php', $output['stdout']);
+        self::assertDirectoryDoesNotExist($dest);
     }
 
     public function testPackGeneratesOnlyCuratedMicrocoreFiles(): void

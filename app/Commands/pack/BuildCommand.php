@@ -23,14 +23,13 @@ class BuildCommand extends BaseCommand
     {
         return [
             'required' => [],
-            'optional' => ['source', 'dest', 'source-commit', 'profile', 'package-version'],
+            'optional' => ['source', 'dest', 'source-commit', 'profile'],
             'flags'    => ['dry-run'],
             'options'  => [
                 'source'          => ['describe' => 'Repositorio canónico fuente'],
                 'dest'            => ['describe' => 'Directorio de distribución'],
                 'source-commit'   => ['describe' => 'Commit histórico explícito'],
                 'profile'         => ['describe' => 'Perfil; únicamente core'],
-                'package-version' => ['describe' => 'Versión prevista para la procedencia'],
                 'dry-run'         => ['describe' => 'Validar y mostrar operaciones sin escribir'],
             ],
         ];
@@ -45,7 +44,7 @@ class BuildCommand extends BaseCommand
             '--source=' . $this->opt($parsed, 'source', $this->defaultSource),
             '--dest=' . $this->opt($parsed, 'dest', $this->defaultDest),
         ];
-        foreach (['source_commit' => 'source-commit', 'package_version' => 'package-version'] as $key => $option) {
+        foreach (['source_commit' => 'source-commit'] as $key => $option) {
             $value = $this->opt($parsed, $key, null);
             if ($value !== null && $value !== '') {
                 $arguments[] = '--' . $option . '=' . $value;
