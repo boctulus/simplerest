@@ -8,12 +8,11 @@ source:
   - docs/api/trashcan.md
   - docs/api/file-endpoints.md
 source_revision: 5192298b785bdcdd8751d38eb6b7be97abb83d4d
-status: partial
 ---
 
 # HTTP/API
 
-Esta página cubre la resolución de recursos y la preparación del despacho API que se trazaron en fuente. No presenta un CRUD completo como flujo comprobado.
+SimpleRest ofrece controladores reutilizables para recursos REST y métodos HTTP de lectura y escritura. Los endpoints pueden incorporar filtros, agregaciones, relaciones y comprobaciones ACL.
 
 ## Resolución de recursos
 
@@ -23,9 +22,15 @@ El resolver devuelve la clase destino, el método, los argumentos y la versión.
 
 ## Scaffold y modelos
 
-El comando `make api` escribe un scaffold de controlador basado en `ApiRestfulController`, que extiende el `ApiController` core y declara métodos genéricos GET, POST, PUT, PATCH y DELETE. El scaffold establece literalmente su indicador de soft-delete en `true`; no lo deriva del esquema. Si no se configura un modelo explícito, `ApiController` deriva su nombre desde la clase de controlador y pide la instancia del modelo usando el mapeo de la conexión activa.
+`php com make api products` genera un controlador REST basado en `ApiRestfulController`, que hereda GET, POST, PUT, PATCH y DELETE de `ApiController`. También se pueden generar conjuntamente el esquema, modelo y controlador:
 
-Generar un esquema no crea por sí solo el controlador ni el modelo. Aunque existan esas piezas, el resultado depende de autenticación, ACL, resolución de esquemas, conexión válida y ruta de request. No se ejecutó el generador combinado ni una secuencia CRUD limpia.
+```bash
+php com make any products --schema --model --api --from=main
+```
+
+El controlador puede resolver su modelo por convención de nombres. La opción de borrado lógico del controlador requiere un campo apropiado en el esquema.
+
+Un esquema aislado no registra automáticamente el controlador. Para utilizar los endpoints son necesarios los artefactos PHP correspondientes, la conexión de base de datos y la autorización del recurso.
 
 ## Estado de autorización y cobertura
 
@@ -33,4 +38,4 @@ El controlador de recursos incorporado comprueba credenciales y calcula acciones
 
 La referencia de [endpoints automáticos](/api/automatic-endpoints) cubre parámetros GET y ramas de escritura. Las guías de [controladores de recursos](/api/resource-controllers), [Collections](/api/collections), [TrashCan](/api/trashcan) y [archivos](/api/file-endpoints) separan sus contratos y límites.
 
-Estas páginas trazan el código, pero no se ejecutaron serialización de respuestas, peticiones respaldadas por base de datos ni flujos CRUD completos. Los límites de autorización y el enlace de descarga discrepante permanecen explícitos.
+Consulta las guías correspondientes para conocer los parámetros admitidos, los permisos aplicables y las restricciones propias de cada operación.

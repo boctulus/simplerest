@@ -1,20 +1,20 @@
 {
   "version": 1,
-  "generated_on": "2026-10-24",
-  "stage": "Package documentation and link graph refresh",
-  "scope": "Refreshed package documentation references and classified every current Markdown document under docs/ after the package reorganization.",
+  "generated_on": "2026-10-25",
+  "stage": "Remote documentation merge and link graph refresh",
+  "scope": "Refreshed changed canonical documentation references and classified every current Markdown document under docs/ after the remote documentation merge.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
-  "inline_markdown_links_seen": 1384,
+  "inline_markdown_links_seen": 1385,
   "counts": {
-    "markdown_scanned": 266,
+    "markdown_scanned": 267,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
-    "local_markdown_links": 736,
+    "local_markdown_links": 738,
     "broken_local_markdown_links": 0,
     "classifications": {
       "legacy": 99,
       "canonical": 76,
-      "internal/audit": 81,
+      "internal/audit": 82,
       "needs-review": 10
     }
   },
@@ -2770,34 +2770,39 @@
       ],
       "outgoing_markdown_refs": [
         {
-          "target": "docs/database/pagination.md",
+          "target": "docs/packages/scaffolding.md",
           "exists": true,
-          "line": 36
+          "line": 13
         },
         {
-          "target": "docs/audit/README.md",
+          "target": "docs/database/pagination.md",
           "exists": true,
-          "line": 69
+          "line": 40
         },
         {
           "target": "docs/core/request-lifecycle.md",
           "exists": true,
-          "line": 69
+          "line": 70
         },
         {
           "target": "docs/database/schemas.md",
           "exists": true,
-          "line": 69
+          "line": 70
         },
         {
           "target": "docs/database/schema-builder.md",
           "exists": true,
-          "line": 69
+          "line": 70
         },
         {
-          "target": "docs/audit/pending/framework/AutomaticEndpoints-Summary.md",
+          "target": "docs/security/acl.md",
           "exists": true,
-          "line": 69
+          "line": 70
+        },
+        {
+          "target": "docs/packages/scaffolding.md",
+          "exists": true,
+          "line": 70
         }
       ]
     },
@@ -3745,10 +3750,6 @@
       "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
       "incoming_markdown_refs": [
         {
-          "source": "docs/api/automatic-endpoints.md",
-          "line": 69
-        },
-        {
           "source": "docs/audit/authentication-acl.md",
           "line": 58
         },
@@ -4453,6 +4454,13 @@
       ]
     },
     {
+      "path": "docs/audit/public-documentation-contamination-audit.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
+    },
+    {
       "path": "docs/audit/public-map-exclusion-review-2026-10-05.md",
       "classification": "internal/audit",
       "basis": "Semantic review of out-of-map documents, classification decisions, and candidate public-source material.",
@@ -4496,10 +4504,6 @@
         {
           "source": "docs/_internal/legacy/framework/SubResources.md",
           "line": 6
-        },
-        {
-          "source": "docs/api/automatic-endpoints.md",
-          "line": 69
         },
         {
           "source": "docs/api/README.md",
@@ -5173,7 +5177,7 @@
         },
         {
           "source": "docs/api/automatic-endpoints.md",
-          "line": 69
+          "line": 70
         },
         {
           "source": "docs/architecture.md",
@@ -5726,7 +5730,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/api/automatic-endpoints.md",
-          "line": 69
+          "line": 70
         },
         {
           "source": "docs/audit/README.md",
@@ -5835,7 +5839,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/api/automatic-endpoints.md",
-          "line": 69
+          "line": 70
         },
         {
           "source": "docs/audit/pending/framework/Schemas.md",
@@ -5937,15 +5941,19 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/index.md",
-          "line": 9
+          "line": 5
         },
         {
           "source": "docs/index.md",
-          "line": 33
+          "line": 9
         },
         {
           "source": "docs/README.md",
           "line": 3
+        },
+        {
+          "source": "docs/index.md",
+          "line": 31
         }
       ],
       "outgoing_markdown_refs": []
@@ -6304,6 +6312,11 @@
         {
           "target": "docs/documentation-governance.md",
           "exists": true,
+          "line": 5
+        },
+        {
+          "target": "docs/documentation-governance.md",
+          "exists": true,
           "line": 9
         },
         {
@@ -6649,7 +6662,7 @@
         {
           "target": "docs/documentation-governance.md",
           "exists": true,
-          "line": 33
+          "line": 31
         }
       ]
     },
@@ -7271,6 +7284,10 @@
         {
           "source": "docs/security/authorization-engine.md",
           "line": 17
+        },
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 70
         }
       ],
       "outgoing_markdown_refs": [
@@ -8076,7 +8093,7 @@
       "incoming_markdown_refs": [
         {
           "source": "docs/api/automatic-endpoints.md",
-          "line": 36
+          "line": 40
         },
         {
           "source": "docs/core/request-response.md",
@@ -8822,6 +8839,14 @@
         {
           "source": "docs/packages/catalog.md",
           "line": 45
+        },
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 13
+        },
+        {
+          "source": "docs/api/automatic-endpoints.md",
+          "line": 70
         }
       ],
       "outgoing_markdown_refs": [

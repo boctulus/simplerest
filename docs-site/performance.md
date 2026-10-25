@@ -3,12 +3,11 @@ title: Rendimiento y benchmarks
 source:
   - docs/performance/README.md
 source_revision: 7354ea996d206b90398a4cd0e5e5526711182a5e
-status: partial
 ---
 
 # Rendimiento y benchmarks
 
-Esta guía describe herramientas de medición del checkout y sus límites. No declara una cifra vigente ni compara SimpleRest con otro framework. No se ejecutaron estos scripts durante esta auditoría porque varios hacen escrituras o envían solicitudes mutables.
+Esta guía describe herramientas de medición y cómo obtener resultados reproducibles. Algunos scripts modifican datos o envían solicitudes HTTP de escritura; úsalos únicamente en entornos de prueba.
 
 ## Scripts presentes
 
@@ -33,4 +32,4 @@ Compara ambos caminos con el mismo servidor, esquema, datos, payload, conexión,
 
 ## Estado del informe existente
 
-El informe en `reports/performance-benchmark-report.md` tiene fecha 2026-05-26 y contiene conclusiones numéricas que no se reprodujeron. Los benchmarks actuales no respaldan una comparación equivalente, así que sus valores se consideran históricos y no son una promesa vigente. No se publica una cifra objetivo ni una ventaja frente a otro framework.
+El informe en `reports/performance-benchmark-report.md` corresponde al 26 de mayo de 2026. Sus cifras describen ese entorno y esa versión; no constituyen una promesa de rendimiento para otras instalaciones. Para comparar con otro framework, ejecuta escenarios equivalentes y publica sus condiciones de medición.

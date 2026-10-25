@@ -74,6 +74,12 @@ Incluso en esos casos debe preservarse el material anterior cuando contenga info
 
 Una IA puede proponer o crear documentación nueva. Una vez que el maintainer la acepta como parte de la fuente canónica, queda protegida por esta misma política.
 
+## Documentación pública orientada al usuario
+
+Las guías públicas y los SKILLs deben explicar cómo instalar, configurar y utilizar SimpleRest, incluyendo ejemplos válidos y restricciones funcionales concretas. No deben presentar frases propias de un informe de auditoría («no se ejecutó ninguna prueba», «la fuente no demuestra que funcione», etc.) como si fueran instrucciones o limitaciones del framework. Esas evidencias pertenecen a `docs/audit/` u otros registros internos.
+
+Esto no autoriza a ocultar errores, riesgos o limitaciones reales: deben expresarse claramente como advertencias o requisitos verificables, evitando convertir la falta de una prueba de auditoría en una afirmación de que una funcionalidad no funciona.
+
 ## Documentación derivada
 
 Las versiones públicas y las traducciones pueden aplicar transformaciones editoriales más agresivas:

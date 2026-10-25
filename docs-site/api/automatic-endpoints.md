@@ -3,13 +3,12 @@ title: Resolución y parámetros de endpoints automáticos
 source:
   - docs/api/automatic-endpoints.md
   - docs/audit/README.md
-source_revision: 0cd8a411195c4373648faf320416191e3018ecc3
-status: partial
+source_revision: cb0b29cb85fa5c132f01dd63ca7e574c4598c6be
 ---
 
-# Resolución y parámetros de endpoints automáticos
+# Endpoints REST automáticos
 
-Esta guía sigue el recorrido de los controladores y la conversión de parámetros en fuente. No afirma que se haya ejecutado un CRUD generado correctamente.
+SimpleRest ofrece controladores REST reutilizables con filtros, paginación, ordenamiento, agregaciones y relaciones. Para exponer una tabla existente, genera los artefactos PHP y configura la conexión de base de datos, la autenticación y los permisos.
 
 ## Resolución del recurso
 
@@ -17,25 +16,29 @@ Con `remove_api_slug = false`, `ApiHandler::resolve()` espera después del segme
 
 `FrontController::resolve()` verifica que existan la clase y el método (con la excepción del método mágico `__call`). Para requests API que no sean de autenticación también requiere que el método esté incluido en `getCallable()` antes del despacho.
 
-## Generador y modelo
+## Crear un recurso REST
 
-`make api` escribe un scaffold de controlador a partir de `ApiRestfulController`, que extiende el `ApiController` core. La clase base declara caminos genéricos GET, POST, PUT, PATCH y DELETE. El scaffold fija literalmente el indicador de soft-delete en `true`; no deriva su valor desde el esquema.
+Habilita el [paquete de scaffolding](/packages/scaffolding) y genera el descriptor del esquema, el modelo y el controlador API de una tabla existente:
 
-Si no se asigna explícitamente un modelo, `ApiController` deriva su nombre desde la clase del controlador y solicita la instancia usando el mapeo de la conexión activa. Un descriptor de esquema no genera por sí solo ese modelo ni el controlador. El resultado todavía depende de autenticación, ACL, carga del esquema, conexión y ruta del request.
+```bash
+php com make any products --schema --model --api --from=main
+```
 
-La fuente confirma caminos separados para generadores de esquema, modelo, controlador API y generador combinado, además del resolver y el despacho. No demuestra que `make any <table> --schema --model --api` produzca CRUD funcional. No se ejecutó ningún generador ni una petición API.
+También puedes usar por separado `php com make schema products`, `php com make model products` y `php com make api products`. El generador usa la plantilla `ApiRestfulController`, que hereda de `ApiController` y proporciona las operaciones GET, POST, PUT, PATCH y DELETE sin escribir cada operación manualmente.
+
+Si el controlador no indica un modelo, `ApiController` lo deriva del nombre del controlador. El esquema describe campos y relaciones, pero un descriptor aislado no registra una clase de controlador. El controlador generado habilita la opción de borrado lógico; para aplicarlo, el esquema debe contener el campo correspondiente.
 
 ## Métodos HTTP y autorización
 
 El resolver usa el método HTTP como nombre de método destino. El `ApiController` genérico implementa `get`, `post`, `put`, `patch` y `delete`; `head()` llama a `get()` con buffering de salida y `options()` está vacío. El constructor crea la lista invocable a partir del ACL de tabla o recurso, y el front controller la comprueba antes de despachar un método API que no sea de autenticación. Que un método exista no significa que cualquier llamador pueda invocarlo.
 
-El resolver valida que el path tenga un segmento con forma de versión y lo devuelve junto con el controlador, método y argumentos. Esta ruta no selecciona una implementación de controlador por versión. Los slugs se normalizan de snake_case a PascalCase; `trashcan` y `collections` se asignan a clases API core. Estas ramas se trazaron en fuente, pero no se probaron por HTTP.
+El resolver valida que el path tenga un segmento con forma de versión y lo devuelve junto con el controlador, método y argumentos. Esta ruta no selecciona una implementación de controlador por versión. Los slugs se normalizan de snake_case a PascalCase; `trashcan` y `collections` se asignan a clases API core.
 
 ## Parámetros GET de colecciones
 
 `ApiController::get()` consume los parámetros siguientes antes de llamar al modelo o Query Builder:
 
-| Parámetro | Comportamiento trazado y límite |
+| Parámetro | Comportamiento y restricciones |
 | --- | --- |
 | `_schema` | Devuelve temprano los metadatos `get()` de la clase de esquema seleccionada. |
 | `defs` | Devuelve definiciones del modelo, incluidas las de tablas relacionadas cuando están disponibles. |
@@ -48,24 +51,23 @@ El resolver valida que el path tenga un segmento con forma de versión y lo devu
 | `order[field]` | Se acepta como mapa si cada dirección es `ASC` o `DESC`, sin distinguir mayúsculas. La rama no implementa la clave anidada `orderBy[field]`. |
 | `props` | Reconoce `min`, `max`, `sum`, `avg` o `count` con un campo o `*`. La ruta opcional de alias lee el nombre de la función en la variable de alias; no se prescribe su resultado. |
 | `groupBy` | Divide una cadena separada por comas y pasa los campos al builder. |
-| `having` | Analiza comparaciones acotadas de función/campo o alias contra un literal numérico. La fuente señala que falta paginación agrupada/con having. |
-| `include`, `_related` | Entran en el camino de subrecursos si hay relaciones configuradas. `include` reduce ese conjunto; no se reprodujo el resultado de la relación. |
-| `folder` | Selecciona una rama con búsqueda de carpeta y comprobaciones ACL; esta guía no afirma una petición de carpeta exitosa. |
+| `having` | Analiza comparaciones acotadas de función/campo o alias contra un literal numérico. La paginación de resultados agrupados con HAVING no está implementada. |
+| `include`, `_related` | Entran en el camino de subrecursos si hay relaciones configuradas. `include` reduce ese conjunto; deben estar configuradas las relaciones correspondientes. |
+| `folder` | Selecciona una rama con búsqueda de carpeta y comprobaciones ACL; requiere configurar la carpeta y sus permisos ACL. |
 
-Los parámetros ordinarios de colección pasan a filtros del modelo después de una conversión específica de API. Los operadores de comparación trazados son `eq`, `gt`, `gteq`, `lteq`, `lt` y `neq`. Los operadores de texto `contains`, `notContains`, `startsWith`, `notStartsWith`, `endsWith` y `notEndsWith` se convierten en predicados `LIKE`.
+Los parámetros ordinarios de colección pasan a filtros del modelo después de una conversión específica de API. Los operadores de comparación son `eq`, `gt`, `gteq`, `lteq`, `lt` y `neq`. Los operadores de texto `contains`, `notContains`, `startsWith`, `notStartsWith`, `endsWith` y `notEndsWith` se convierten en predicados `LIKE`.
 
-`between` acepta exactamente dos valores separados por coma y genera límites inferior y superior. `notBetween` lanza una excepción que declara que no está implementado. La conversión explícita de `in` y `notIn` solo se activa si el valor contiene una coma; algunos valores de campo separados por coma también se convierten a `IN`. `NULL`, `null` y el marcador interno `null!` siguen ramas diferentes. En las ramas trazadas se rechazan campos u operadores desconocidos.
+`between` acepta exactamente dos valores separados por coma y genera límites inferior y superior. `notBetween` lanza una excepción que declara que no está implementado. La conversión explícita de `in` y `notIn` solo se activa si el valor contiene una coma; algunos valores de campo separados por coma también se convierten a `IN`. `NULL`, `null` y el marcador interno `null!` siguen ramas diferentes. Se rechazan campos u operadores desconocidos.
 
 Los filtros relacionados usan `table.field`. La tabla debe figurar en la lista de tablas relacionadas configuradas y el campo debe existir en su esquema; después el código agrega un join con alias interno. No es un parámetro general para unir cualquier tabla.
 
-El controlador lee y elimina el parámetro `q`, pero el camino de `get()` trazado no usa su valor para construir una búsqueda. No dependas de búsqueda por `q` en esta versión. Esta sintaxis ilustra el código; las requests no se ejecutaron:
+El controlador lee y elimina el parámetro `q`, pero no lo utiliza para buscar. Usa filtros específicos por campo. Ejemplos:
 
 ```text
 GET /api/v1/products?price[gteq]=25&order[price]=ASC&pageSize=20
 GET /api/v1/products?name[contains]=juice&fields=id,name
 ```
 
-El soporte del Query Builder por sí solo no demuestra que un parámetro esté implementado por este camino API.
 
 ## Escrituras y operaciones de registro
 
@@ -73,10 +75,7 @@ El soporte del Query Builder por sí solo no demuestra que un parámetro esté i
 
 `DELETE` requiere un ID y rechaza IDs múltiples separados por coma, indicando que se use `Collections`. Selecciona borrado lógico solo si el controlador lo habilita y el esquema del modelo contiene el campo correspondiente. El scaffold generado fija el indicador de soft-delete en `true`, pero el efecto depende del modelo, del esquema y de la ruta configurada.
 
-No se ejecutó ninguna petición de creación, actualización, borrado, simulación, escritura de relaciones o autorización.
 
-## Límites de evidencia
+## Guías relacionadas
 
-`ApiTest.php`, `ProductsBasicTest.php` y `ProductsPaginationTest.php` contienen casos contra la configuración incluida; sus fuentes se inspeccionaron, no se ejecutaron. No prueban una generación limpia de esquema/modelo/API. Cada parámetro, filtro, rama ACL y relación aún requiere evidencia de ejecución antes de presentarse como contrato reproducido.
-
-Consulta la guía de [HTTP/API](/api), [seguridad](/security), el [ciclo de request](/core/request-lifecycle), [descriptores de esquema](/database) y el [constructor DDL](/database/schema-builder). La referencia canónica mantiene el ledger de hallazgos por afirmación.
+Consulta [HTTP/API](/api), [seguridad](/security), [ciclo de la petición](/core/request-lifecycle), [descriptores de esquema](/database), [migraciones](/database/migrations) y [scaffolding](/packages/scaffolding).

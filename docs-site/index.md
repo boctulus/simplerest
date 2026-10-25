@@ -4,49 +4,43 @@ title: Documentación en español
 titleTemplate: SimpleRest
 hero:
   name: SimpleRest
-  text: Documentación pública
-  tagline: Un recorrido curado por las capacidades documentadas del framework.
+  text: Framework PHP para APIs REST basadas en datos
+  tagline: Recursos REST, consultas dinámicas, esquemas, autorización y servicios backend reutilizables.
   actions:
     - theme: brand
       text: Empezar
       link: /getting-started
     - theme: alt
-      text: Ver arquitectura
-      link: /architecture
+      text: Explorar la API
+      link: /api/automatic-endpoints
 features:
-  - title: Empieza con contexto
-    details: Consulta qué partes de instalación y arranque están comprobadas antes de seguir instrucciones.
-    link: /getting-started
-  - title: Sigue el recorrido de una petición
-    details: Revisa la entrada HTTP, el traspaso al FrontController y sus ramas condicionales.
-    link: /core/request-lifecycle
-  - title: Explora las guías actuales
-    details: Datos, HTTP/API, seguridad, servicios, integraciones y operación, con límites visibles donde falta una reproducción completa.
+  - title: API REST basada en datos
+    details: Generación de esquemas, modelos y controladores de recursos, con filtros, ordenamiento y agregaciones.
+    link: /api/automatic-endpoints
+  - title: Datos y consultas
+    details: Query Builder, relaciones, migraciones, transacciones y conexiones configurables.
     link: /database
+  - title: Autenticación y permisos
+    details: Arquitectura ACL, autorización de operaciones y autenticación mediante componentes configurables.
+    link: /security
 source:
   - docs/index.md
   - docs/documentation-governance.md
-source_revision: efa2bc11c53b3f2d9d940b45326ffb0df117dce1
-status: partial
+source_revision: 5e6771296ae27de7352f776bbc822786ac919835
 ---
 
-## Sobre esta documentación
+## Guías para desarrolladores
 
-La documentación pública ofrece una selección española curada de la fuente editorial canónica. Reordena el material para lectura y navegación; no sustituye `docs/` ni crea una fuente editorial independiente.
+Comienza por [instalar SimpleRest](/getting-started) y publicar un primer endpoint. Después puedes explorar [consultas REST](/api/automatic-endpoints), [Query Builder](/database/query-builder), [migraciones](/database/migrations), [ACL](/security/acl) y [ApiClient](/core/api-client).
 
-::: warning Cobertura en desarrollo
-La documentación todavía no cubre todas las capacidades del framework. Cada guía distingue lo verificado de lo pendiente; las secciones marcadas como parciales no deben tratarse como procedimientos validados para producción.
-:::
+SimpleRest permite extender el backend mediante módulos y paquetes Composer. Consulta [microcore y paquetes](/core/microcore) para conocer la organización y las dependencias disponibles.
 
-## Recorrido recomendado
+## Sigue explorando
 
-1. [Primeros pasos](/getting-started) explica el estado de las rutas de instalación disponibles.
-2. [Arquitectura](/architecture) sitúa los componentes de entrada y despacho.
-3. [Ciclo de request](/core/request-lifecycle) recorre la ruta HTTP; [Request y Response](/core/request-response) describe los mensajes y sus helpers; [WebRouter](/core/web-routing) detalla el registro HTTP.
-4. [Microcore y paquetes](/core/microcore) explica qué incluye el core; el [catálogo de paquetes](/packages/catalog) enumera los 22 manifiestos opcionales del checkout y sus límites.
-5. Las guías de [Base de datos](/database), [Query Builder](/database/query-builder), [paginación](/database/pagination), [Model/ModelRecord](/database/model), [constructor DDL](/database/schema-builder), [migraciones](/database/migrations), [filesystem](/core/filesystem), [uploads](/core/file-uploads), [ZIP y backups](/core/archives-backups), [HTML/XML e imágenes](/core/content-conversion), [ApiClient](/core/api-client), [HTTP/API](/api), [endpoints automáticos](/api/automatic-endpoints), [autenticación](/security/authentication), [ACL](/security/acl) y [webhooks](/webhooks) detallan los contratos actuales y sus límites.
-6. Revisa [Shopify Connector](/integrations/shopify), [proveedores LLM](/integrations/llm-providers), [correo](/integrations/mail), [geolocalización](/integrations/geolocation) e [inspección web](/integrations/web-inspection) para las integraciones externas.
-7. CLI tiene dos guías independientes: el [catálogo de `php com`](/cli/commands) y el [routing CLI con CliRouter](/cli/routing). [Despliegue](/deployment) y [rendimiento](/performance) separan lo automatizado de lo pendiente de reproducir.
-8. La [referencia pública](/reference) reúne claves de configuración, variables de entorno, helpers globales, entradas CLI, contratos y familias de clases, con límites explícitos de carga y uso.
+Para entender el recorrido HTTP, consulta [Arquitectura](/architecture), [Ciclo de request](/core/request-lifecycle), [Request y Response](/core/request-response) y [WebRouter](/core/web-routing). [Microcore y paquetes](/core/microcore) explica qué incluye el core y el [catálogo de paquetes](/packages/catalog) enumera las extensiones disponibles.
 
-El español ocupa `/`. Los directorios `/en/`, `/it/` y `/pt/` quedan reservados para traducciones futuras; esta edición no las genera ni publica enlaces a ellas.
+Las guías de [Base de datos](/database), [Query Builder](/database/query-builder), [paginación](/database/pagination), [Model/ModelRecord](/database/model), [constructor DDL](/database/schema-builder) y [migraciones](/database/migrations) cubren el acceso y la estructura de datos. Para HTTP y servicios, consulta [endpoints REST automáticos](/api/automatic-endpoints), [ApiClient](/core/api-client), [webhooks](/webhooks), [autenticación](/security/authentication) y [ACL](/security/acl).
+
+También hay guías de [Shopify Connector](/integrations/shopify), [proveedores LLM](/integrations/llm-providers), [correo](/integrations/mail), [geolocalización](/integrations/geolocation) e [inspección web](/integrations/web-inspection). El [catálogo CLI](/cli/commands), [routing CLI](/cli/routing), [despliegue](/deployment), [rendimiento](/performance) y la [referencia pública](/reference) reúnen otras tareas de desarrollo y operación.
+
+El español es el locale raíz (`/`). Se añadirán otros locales cuando existan traducciones revisadas.
