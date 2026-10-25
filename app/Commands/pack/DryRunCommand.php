@@ -10,10 +10,10 @@ class DryRunCommand extends BaseCommand
     public function __construct()
     {
         $this->command     = 'dry-run';
-        $this->description = 'Muestra qué haría pack build sin ejecutar nada';
+        $this->description = 'Valida PACK core y muestra las operaciones sin escribir';
         $this->examples    = [
             'php com pack dry-run',
-            'php com pack dry-run --source=D:\\custom\\src --dest=D:\\custom\\dist',
+            'php com pack dry-run --source-commit=<sha> --dest=D:\\custom\\dist',
         ];
     }
 
@@ -21,23 +21,37 @@ class DryRunCommand extends BaseCommand
     {
         return [
             'required' => [],
-            'optional' => ['source', 'dest'],
+            'optional' => ['source', 'dest', 'source-commit', 'profile', 'package-version'],
             'flags'    => [],
             'options'  => [
-                'source' => ['describe' => 'Directorio fuente'],
-                'dest'   => ['describe' => 'Directorio destino'],
+                'source'          => ['describe' => 'Repositorio canónico fuente'],
+                'dest'            => ['describe' => 'Directorio de distribución'],
+                'source-commit'   => ['describe' => 'Commit histórico explícito'],
+                'profile'         => ['describe' => 'Perfil; únicamente core'],
+                'package-version' => ['describe' => 'Versión prevista para la procedencia'],
             ],
         ];
     }
 
     public function execute(array $parsed): void
     {
-        $source = $this->opt($parsed, 'source', $this->defaultSource);
-        $dest   = $this->opt($parsed, 'dest',   $this->defaultDest);
+        require_once __DIR__ . '/../../../scripts/pack/build-core.php';
 
-        require_once __DIR__ . '/../../../scripts/pack_framework.php';
+        $arguments = [
+            '--dry-run',
+            '--profile=' . $this->opt($parsed, 'profile', 'core'),
+            '--source=' . $this->opt($parsed, 'source', $this->defaultSource),
+            '--dest=' . $this->opt($parsed, 'dest', $this->defaultDest),
+        ];
+        foreach (['source_commit' => 'source-commit', 'package_version' => 'package-version'] as $key => $option) {
+            $value = $this->opt($parsed, $key, null);
+            if ($value !== null && $value !== '') {
+                $arguments[] = '--' . $option . '=' . $value;
+            }
+        }
 
-        $packager = new SimpleRestPackager($source, $dest);
-        $packager->dryRun();
+        if (SimpleRestCorePackBuilder::main($arguments) !== 0) {
+            throw new RuntimeException('PACK core dry-run failed.');
+        }
     }
 }

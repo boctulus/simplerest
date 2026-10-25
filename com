@@ -2,9 +2,16 @@
 <?php
 
 // The Composer microcore packer must not boot the legacy application.
-if (($argv[1] ?? '') === 'pack' && in_array(($argv[2] ?? ''), ['build', 'run', 'package'], true)) {
-    require_once __DIR__ . '/scripts/pack/build-core.php';
-    exit(SimpleRestCorePackBuilder::main(array_slice($argv, 3)));
+if (($argv[1] ?? '') === 'pack') {
+    $packAction = $argv[2] ?? '';
+    if (in_array($packAction, ['build', 'run', 'package', 'dry-run'], true)) {
+        require_once __DIR__ . '/scripts/pack/build-core.php';
+        $packArguments = array_slice($argv, 3);
+        if ($packAction === 'dry-run' && !in_array('--dry-run', $packArguments, true)) {
+            array_unshift($packArguments, '--dry-run');
+        }
+        exit(SimpleRestCorePackBuilder::main($packArguments));
+    }
 }
 
 require_once __DIR__ . '/app.php';

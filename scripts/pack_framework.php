@@ -87,14 +87,20 @@ class SimpleRestPackager
     public function run(bool $skipVerification = false, bool $skipComposerInstall = false): bool
     {
         try {
-            echo "Starting SimpleRest framework packaging...\n";
-
-            // Clean destination directory first
-            $this->cleanDestination();
+            echo "Starting legacy SimpleRest starter packaging...\n";
 
             // Validate source directory
             if (!$this->validateSource()) {
                 throw new Exception("Source directory validation failed");
+            }
+
+            // The legacy starter generator is intentionally limited to a new,
+            // disposable directory. It never refreshes or cleans an existing
+            // destination; Composer core distributions use scripts/pack/build-core.php.
+            if (file_exists($this->destDir) || is_link($this->destDir)) {
+                throw new Exception(
+                    "Legacy starter destination must not exist. Use a new disposable directory: {$this->destDir}"
+                );
             }
 
             // Create destination directory structure
@@ -148,12 +154,12 @@ class SimpleRestPackager
      */
     public function dryRun(): void
     {
-        echo "[DRY RUN] Fuente:  {$this->sourceDir}\n";
-        echo "[DRY RUN] Destino: {$this->destDir}\n\n";
+        echo "[LEGACY STARTER DRY RUN] Fuente:  {$this->sourceDir}\n";
+        echo "[LEGACY STARTER DRY RUN] Destino: {$this->destDir}\n\n";
 
         echo "Pasos que se ejecutarían:\n";
-        echo "  1. Limpiar directorio destino (preservando .git)\n";
-        echo "  2. Validar directorio fuente\n";
+        echo "  1. Validar directorio fuente\n";
+        echo "  2. Exigir un directorio destino nuevo y desechable\n";
         echo "  3. Crear estructura de directorios en destino\n";
         echo "  4. Copiar contenido raíz (respetando .packignore)\n";
         echo "  5. Copiar templates FreshCopy\n";
@@ -1295,20 +1301,22 @@ class SimpleRestPackager
 
 }
 
-// Main execution (only when invoked directly, NOT via require_once)
+// Explicit legacy starter entrypoint (only when invoked directly, NOT via require_once).
+// Composer core PACK is exclusively `php com pack build --profile=core`.
 if (php_sapi_name() === 'cli' && realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === realpath(__FILE__)) {
-    $sourceDir = ROOT_PATH;
-    $destDir   = Files::getAbsolutePath(ROOT_PATH . '../simplerest-pack');
-
-    // Allow command-line arguments to override defaults
-    if (isset($argv[1]) && isset($argv[2])) {
-        $sourceDir = $argv[1];
-        $destDir = $argv[2];
+    if (($argv[1] ?? '') !== '--legacy-starter' || !isset($argv[2], $argv[3])) {
+        fwrite(
+            STDERR,
+            "Usage: php scripts/pack_framework.php --legacy-starter <source> <new-disposable-destination> [--dry-run] [--skip-composer-install]\n"
+        );
+        exit(2);
     }
 
-    parse_str(implode('&', $_SERVER['argv']), $_GET);
-    $skipComposerInstall = isset($_GET['--skip-composer-install']) && $_GET['--skip-composer-install'] != 'false';
-    $dryRun              = isset($_GET['--dry-run']) || isset($_GET['dry-run']);
+    $sourceDir = $argv[2];
+    $destDir = $argv[3];
+
+    $skipComposerInstall = in_array('--skip-composer-install', $argv, true);
+    $dryRun = in_array('--dry-run', $argv, true);
 
     $packager = new SimpleRestPackager($sourceDir, $destDir);
 

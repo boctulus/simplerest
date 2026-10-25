@@ -13,6 +13,11 @@ final class SimpleRestCorePackBuilder
 {
     public static function main(array $argv): int
     {
+        if (in_array('--help', $argv, true) || in_array('-h', $argv, true)) {
+            self::printHelp();
+            return 0;
+        }
+
         try {
             self::build($argv);
             return 0;
@@ -20,6 +25,29 @@ final class SimpleRestCorePackBuilder
             fwrite(STDERR, "[pack] " . $error->getMessage() . PHP_EOL);
             return 1;
         }
+    }
+
+    private static function printHelp(): void
+    {
+        echo <<<'HELP'
+Usage:
+  php com pack build [--profile=core] [--source=<path>] [--dest=<path>] [--dry-run]
+  php com pack dry-run [--profile=core] [--source=<path>] [--dest=<path>]
+  php com pack build --source-commit=<sha> [--package-version=<version>] [--dest=<path>]
+
+PACK creates the curated Composer microcore locally. It never verifies a release,
+publishes a tag or package, or updates a consuming application.
+
+Options:
+  --profile=core              Build the sole supported Composer core profile.
+  --source=<path>             Canonical SimpleRest Git repository.
+  --dest=<path>               Curated distribution destination.
+  --source-commit=<sha>       Deliberately build an immutable historical commit.
+  --package-version=<version> Record the intended package version in provenance.
+  --dry-run                   Run full preflight and show operations without writes.
+  --help, -h                  Show this help without starting a build.
+
+HELP;
     }
 
     private static function build(array $argv): void

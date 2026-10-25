@@ -10,13 +10,12 @@ class BuildCommand extends BaseCommand
     public function __construct()
     {
         $this->command     = 'build';
-        $this->description = 'Empaqueta el framework SimpleRest en un directorio de distribución';
+        $this->description = 'Genera el microcore Composer desde un commit inmutable';
         $this->aliases     = ['run', 'package'];
         $this->examples    = [
-            'php com pack build',
-            'php com pack build --dry-run',
-            'php com pack build --skip-verification',
-            'php com pack build --source=D:\\custom\\src --dest=D:\\custom\\dist',
+            'php com pack build --profile=core',
+            'php com pack build --profile=core --dry-run',
+            'php com pack build --profile=core --source-commit=<sha> --dest=D:\\custom\\dist',
         ];
     }
 
@@ -24,46 +23,40 @@ class BuildCommand extends BaseCommand
     {
         return [
             'required' => [],
-            'optional' => ['source', 'dest'],
-            'flags'    => ['skip-verification', 'skip-composer-install', 'dry-run'],
+            'optional' => ['source', 'dest', 'source-commit', 'profile', 'package-version'],
+            'flags'    => ['dry-run'],
             'options'  => [
-                'source'                => ['describe' => 'Directorio fuente'],
-                'dest'                  => ['describe' => 'Directorio destino'],
-                'skip-verification'     => ['describe' => 'Omitir la verificación en destino'],
-                'skip-composer-install' => ['describe' => 'Omitir composer install en destino'],
-                'dry-run'               => ['describe' => 'Mostrar qué se haría sin ejecutar nada'],
+                'source'          => ['describe' => 'Repositorio canónico fuente'],
+                'dest'            => ['describe' => 'Directorio de distribución'],
+                'source-commit'   => ['describe' => 'Commit histórico explícito'],
+                'profile'         => ['describe' => 'Perfil; únicamente core'],
+                'package-version' => ['describe' => 'Versión prevista para la procedencia'],
+                'dry-run'         => ['describe' => 'Validar y mostrar operaciones sin escribir'],
             ],
         ];
     }
 
     public function execute(array $parsed): void
     {
-        $source              = $this->opt($parsed, 'source', $this->defaultSource);
-        $dest                = $this->opt($parsed, 'dest',   $this->defaultDest);
-        $skipVerification    = $this->opt($parsed, 'skip_verification', false);
-        $skipComposerInstall = $this->opt($parsed, 'skip_composer_install', false);
-        $dryRun              = $this->opt($parsed, 'dry_run', false);
+        require_once __DIR__ . '/../../../scripts/pack/build-core.php';
 
-        require_once __DIR__ . '/../../../scripts/pack_framework.php';
-
-        $packager = new SimpleRestPackager($source, $dest);
-
-        if ($dryRun) {
-            $packager->dryRun();
-            return;
+        $arguments = [
+            '--profile=' . $this->opt($parsed, 'profile', 'core'),
+            '--source=' . $this->opt($parsed, 'source', $this->defaultSource),
+            '--dest=' . $this->opt($parsed, 'dest', $this->defaultDest),
+        ];
+        foreach (['source_commit' => 'source-commit', 'package_version' => 'package-version'] as $key => $option) {
+            $value = $this->opt($parsed, $key, null);
+            if ($value !== null && $value !== '') {
+                $arguments[] = '--' . $option . '=' . $value;
+            }
+        }
+        if ($this->opt($parsed, 'dry_run', false)) {
+            $arguments[] = '--dry-run';
         }
 
-        echo "Empaquetando SimpleRest framework...\n";
-        echo "Fuente:  {$source}\n";
-        echo "Destino: {$dest}\n";
-
-        if ($skipVerification)    echo "  (sin verificación)\n";
-        if ($skipComposerInstall) echo "  (sin composer install)\n";
-
-        if ($packager->run($skipVerification, $skipComposerInstall)) {
-            echo "\n✓ Framework empaquetado exitosamente.\n";
-        } else {
-            echo "\n✗ Error durante el empaquetado.\n";
+        if (SimpleRestCorePackBuilder::main($arguments) !== 0) {
+            throw new RuntimeException('PACK core build failed.');
         }
     }
 }

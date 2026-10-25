@@ -1,6 +1,6 @@
 ---
 title: PACK Hardening and Distribution Contract
-current_step: 1
+current_step: 3
 next_step: null
 parallelizable_steps: []
 parent: null
@@ -19,4 +19,3 @@ tags: [pack, composer, distribution, safety]
 6. **Focused regression suite** — Cover the requested safety, dry-run, CLI, output-boundary, and installed-artifact scenarios using disposable directories.
 7. **Canonical documentation alignment** — Create the canonical PACK contract, refresh the documentation inventory, and align README, CLAUDE.md, CLI help, and release documentation.
 8. **Strict verification and scoped commits** — Run focused/full applicable tests, Composer artifact verification, documentation governance, diff/encoding checks, then commit only owned files on `master`.
-
