@@ -78,4 +78,4 @@ GET /api/v1/products?name[contains]=juice&fields=id,name
 
 ## Guías relacionadas
 
-Consulta [HTTP/API](/api), [seguridad](/security), [ciclo de la petición](/core/request-lifecycle), [descriptores de esquema](/database), [migraciones](/database/migrations) y [scaffolding](/packages/scaffolding). Las evidencias de auditoría y de cobertura de pruebas se conservan en la documentación interna del repositorio.
+Consulta [HTTP/API](/api), [seguridad](/security), [ciclo de la petición](/core/request-lifecycle), [descriptores de esquema](/database), [migraciones](/database/migrations) y [scaffolding](/packages/scaffolding).
