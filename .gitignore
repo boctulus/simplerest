@@ -10,6 +10,7 @@ logs/
 tmp/
 storage/security/
 .env
+.dev-env
 app/Controllers/DumbController.php
 .codegpt/
 .claude/

@@ -1,12 +1,12 @@
 {
   "version": 1,
   "generated_on": "2026-10-25",
-  "stage": "Remote documentation merge and link graph refresh",
-  "scope": "Refreshed changed canonical documentation references and classified every current Markdown document under docs/ after the remote documentation merge.",
+  "stage": "Layered environment resolution decision and task closure",
+  "scope": "Refreshed the inventory after closing the layered environment task card and updated the shifted audit-link reference in the canonical environment guide.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
   "inline_markdown_links_seen": 1385,
   "counts": {
-    "markdown_scanned": 267,
+    "markdown_scanned": 268,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
     "local_markdown_links": 738,
@@ -14,7 +14,7 @@
     "classifications": {
       "legacy": 99,
       "canonical": 76,
-      "internal/audit": 82,
+      "internal/audit": 83,
       "needs-review": 10
     }
   },
@@ -2995,7 +2995,7 @@
         {
           "target": "docs/audit/README.md",
           "exists": true,
-          "line": 25
+          "line": 33
         }
       ]
     },
@@ -7712,6 +7712,13 @@
           "line": 21
         }
       ]
+    },
+    {
+      "path": "docs/to-do/done/layered-env-configuration.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
     },
     {
       "path": "docs/to-do/done/webhooks-callback-security.md",

@@ -12,14 +12,24 @@ This page separates the framework's in-memory `Config` API from the environment-
 
 ## Environment loading
 
-When `app.php` finds the optional `Dotenv\Dotenv` class, it loads `.env` with `createImmutable(__DIR__)`. The framework's custom `Env` class is separate: its data is loaded lazily when `Env::get()` or `Env::getBool()` first runs. `config/config.php` calls those methods while building the configuration array.
+### Architectural decision: layered environment resolution
 
-The custom `Env::setup()` selects a non-empty `.dev-env` before `.env`. If `.env` is absent, it looks for a file named `env.example` and copies it to `.env`; the tracked template is named `.env.example`, so this fallback does not match that template name. It then parses the selected file into static data. Do not treat calling `Env::get()` as a read-only operation on a checkout that has no `.env`.
+`Env` is the framework's configuration resolver. It parses the configured files and keeps their merged values in memory; loading an overlay never copies values into or overwrites `.env` or `.dev-env`.
 
-The global `env($key, $default)` helper first checks `getenv($key)`. If the process value is present, including an empty string, it returns that value; otherwise it delegates to `Env::get()`. A direct `Env::get()` reads only the custom loader's static file data and does not perform that process lookup.
+The precedence, from lowest to highest, is:
+
+1. `.env` provides the base values.
+2. `.dev-env` overlays matching keys and adds new keys only when the effective `APP_ENV` is `local` or `development`. The effective value comes from `getenv('APP_ENV')` when present, including when it is empty; otherwise it comes from `.env`. A missing or empty `APP_ENV`, `production`, and other environment names do not enable `.dev-env`.
+3. Process environment values returned by `getenv()` override both file layers during keyed reads. A present empty process value also wins.
+
+The `.dev-env` file is for local overrides and is ignored by Git. Its presence cannot select development mode by itself. In production, or when `APP_ENV` is not `local` or `development`, the file is ignored. The current `.env.example` uses `APP_ENV=local`.
+
+`Env::setup()` uses `.env` as its base and applies the eligible `.dev-env` overlay. To replace the file layers explicitly, call `Env::setup(file: '.env.testing', inherit: false)`. This loads only the named file at the file layer; process environment values still have the highest precedence. An optional `required` list is validated after file resolution, and a required key that is absent or empty raises an exception. The framework does not assume a global list of required keys because applications have different requirements.
+
+An empty value is present: it overrides lower layers and `Env::get('KEY', 'fallback')` returns `''`. `Env::getBool()` interprets an empty value as `false`; a missing key uses the supplied default. Every `Env::setup()` call replaces the prior in-memory file data so values from earlier initializations do not carry over.
+
+If `app.php` finds the optional `Dotenv\Dotenv` class, it still loads `.env` into `$_ENV` and `$_SERVER` for interoperability. `Env` reads the files directly and does not treat those superglobal copies as process values. The global `env($key, $default)` helper and keyed calls to `Env::get()` both check `getenv()` first. Calling `Env::get()` without a key returns the in-memory file layers, without copying every ambient process variable into that map.
+
+The no-argument `Env::setup()` retains a legacy fallback: if `.env` is missing, it looks for `env.example` and copies that file to `.env`. The tracked template is `.env.example`, so the fallback name does not match it. This fallback is separate from layered resolution; overlays never write configuration files. The [core runtime findings](../audit/README.md#core-runtime-and-http-audit-2026-10-24) record the earlier loader behavior and this filename limitation.
 
 `Env::parse()` handles full-line `#` and `;` comments, optional `export `, BOM and common line endings, bare keys, empty values, and quoted values. For unquoted values it treats `#` or `;` as an inline comment only when preceded by whitespace. Double quotes recognize `\"` and `\\`; other backslash sequences are preserved. Section headers are ignored.
-
-## Evidence and limits
-
-`EnvParserTest.php` and `EnvHelperPrecedenceTest.php` contain focused assertions for parsing and process-over-file precedence; they were inspected, not run. Bootstrap, environment-file loading, and process-level precedence were not reproduced in this audit. See the [core runtime findings](../audit/README.md#core-runtime-and-http-audit-2026-10-24) for the root-key signature and fallback filename limits.

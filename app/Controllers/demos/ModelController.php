@@ -17,6 +17,7 @@ use Boctulus\Simplerest\Models\az\AutomovilesModel;
 use Boctulus\Simplerest\Models\az\BarModel;
 use Boctulus\Simplerest\Models\az\ProductsModel;
 use Boctulus\Simplerest\Core\Libs\DBRels;
+use Boctulus\Simplerest\Core\Libs\Env;
 
 class ModelController extends Controller
 {
@@ -3419,8 +3420,8 @@ class ModelController extends Controller
 
     function get_env()
     {
-        dd($_ENV['APP_NAME']);
-        dd($_ENV['APP_URL']);
+        dd(Env::get('APP_NAME'));
+        dd(Env::get('APP_URL'));
     }
 
 

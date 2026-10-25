@@ -8,8 +8,21 @@ class Env
 {
     static $data;
 
-    static function setup(){
-        if (!file_exists(ROOT_PATH . '.env')){
+    /**
+     * Loads environment files into memory and optionally validates required keys.
+     *
+     * @param string|null $file Relative to ROOT_PATH or an absolute path; null uses .env.
+     * @param bool $inherit Whether to apply an eligible .dev-env overlay.
+     * @param array $required Keys that must resolve to non-empty values.
+     */
+    static function setup(?string $file = null, bool $inherit = true, array $required = []): void {
+        static::$data = [];
+
+        $useDefaultFile = $file === null;
+        $file ??= '.env';
+        $envPath = static::resolvePath($file);
+
+        if ($useDefaultFile && !file_exists($envPath)){
             if (!file_exists(ROOT_PATH . '/.env')){
                 if (!file_exists(ROOT_PATH . '/env.example')){
                     throw new \Exception("Neither .env nor env.example found");
@@ -18,15 +31,69 @@ class Env
                 copy(ROOT_PATH . 'env.example', ROOT_PATH . '.env');
             }
         }
-        
-        if (!empty($_ENV)){
-            static::$data = $_ENV;  
+
+        $data = static::parseFile($envPath);
+
+        if ($inherit && static::isDevelopmentEnvironment(static::processValue('APP_ENV') ?? ($data['APP_ENV'] ?? null))){
+            $devEnvPath = dirname($envPath) . DIRECTORY_SEPARATOR . '.dev-env';
+
+            if (is_file($devEnvPath)){
+                $data = array_replace($data, static::parseFile($devEnvPath));
+            }
         }
 
-        // Doy prioridad a '.dev-env' sobre '.env'
-        $env_file     = file_exists(ROOT_PATH . '.dev-env') && trim(file_get_contents(ROOT_PATH . '.dev-env')) !='' ? '.dev-env' : '.env';
+        static::validateRequired($data, $required);
+        static::$data = $data;
+    }
 
-        static::$data = static::parseFile(ROOT_PATH . $env_file);
+    private static function resolvePath(string $file): string {
+        $isAbsolute = str_starts_with($file, '/')
+            || str_starts_with($file, '\\')
+            || preg_match('/^[A-Za-z]:[\\\\\/]/', $file) === 1;
+
+        if ($isAbsolute){
+            return $file;
+        }
+
+        return rtrim(ROOT_PATH, '/\\') . DIRECTORY_SEPARATOR . ltrim($file, '/\\');
+    }
+
+    private static function processValue(string $key): ?string {
+        $value = getenv($key);
+
+        return $value === false ? null : $value;
+    }
+
+    private static function isDevelopmentEnvironment(?string $environment): bool {
+        if (!is_string($environment)){
+            return false;
+        }
+
+        return in_array(strtolower(trim($environment)), ['local', 'development'], true);
+    }
+
+    private static function validateRequired(array $data, array $required): void {
+        $missing = [];
+
+        foreach ($required as $key){
+            if (!is_string($key) || $key === ''){
+                throw new \InvalidArgumentException('Required environment variable names must be non-empty strings');
+            }
+
+            $value = static::processValue($key);
+
+            if ($value === null){
+                $value = array_key_exists($key, $data) ? $data[$key] : null;
+            }
+
+            if ($value === null || $value === ''){
+                $missing[] = $key;
+            }
+        }
+
+        if ($missing){
+            throw new \RuntimeException('Required environment variables are missing or empty: ' . implode(', ', $missing));
+        }
     }
 
     /**
@@ -188,6 +255,12 @@ class Env
             return static::$data;
         } 
 
+        $processValue = static::processValue($key);
+
+        if ($processValue !== null){
+            return $processValue;
+        }
+
         return static::$data[$key] ?? $default_value;
     }
 
@@ -203,7 +276,11 @@ class Env
             static::setup();
         }
 
-        $value = static::$data[$key] ?? $default_value;
+        $value = static::get($key, $default_value);
+
+        if ($value === ''){
+            return false;
+        }
 
         // Use Strings::parseOption to convert to boolean
         return Strings::parseOption($value, $default_value);
