@@ -1,23 +1,25 @@
 ---
 name: automatic-endpoints
-description: Guide for SimpleRest's zero-config REST endpoint system — auto-generated CRUD from schemas with filtering, pagination, sorting, and ACL.
+description: Generate and use schema-driven REST controllers with filtering, pagination, sorting, aggregation, relationships and ACL.
 ---
 
 # Automatic Endpoints Skill
 
-SimpleRest auto-generates RESTful endpoints from schema files. No controller code needed for standard CRUD.
+SimpleRest provides reusable CRUD methods through `ApiController`; you do not need to implement each REST action by hand. Generate the schema descriptor, model and API controller for an existing database table using the optional scaffolding package.
 
 ## How It Works
 
-```
-Schema file exists → Auto-endpoint at /api/v1/{resource}
+```bash
+php com make any products --schema --model --api --from=main
 ```
 
-The FrontController acts as catch-all for unmatched routes, resolves the controller via naming convention (`products` → `ProductsController` → `ProductsModel` → `products` table).
+The `make` command group comes from `boctulus/simplerest-scaffolding`, which must be enabled in `config/commands.php`. This generates PHP artifacts; it does not create the SQL table. `ApiHandler` resolves a controller by resource name, and `FrontController` requires that class to exist and checks its callable HTTP methods. The generated controller inherits the generic CRUD implementation.
+
+Alternatively, run `php com make schema products`, `php com make model products` and `php com make api products` separately.
 
 ## Auto-Generated Endpoints
 
-Given a schema for `products`, these endpoints work immediately:
+With a generated schema, model and API controller for `products`, these routes are available subject to the application's authentication and ACL:
 
 | Method | Route | Description |
 |--------|-------|-------------|
@@ -116,29 +118,17 @@ GET /api/v1/products?_related=category
 
 ## Customizing Auto-Endpoints
 
-Override methods in `app/Controllers/Api/{Resource}Controller.php`:
-
-```php
-class ProductsController extends MyApiController
-{
-    // Override before standard CRUD
-    protected function beforeIndex() { ... }
-    protected function beforeStore() { ... }
-
-    // Add custom logic
-    public function customMethod() { ... }
-}
-```
+Edit the generated controller under `app/Controllers/Api/`. Its template extends `Core\\Api\\ApiController`. Use actual hooks such as `onPostingBeforeCheck($id, array &$data)` or `onGot($id, ?int $count)`, or override the supported HTTP methods with their existing signatures. The older `beforeIndex()` and `beforeStore()` examples are not hooks provided by `ApiController`.
 
 ## Disabling Auto-Endpoints
 
-Remove or rename the schema file, or set up a manual route that takes precedence.
+Remove or unregister the generated API controller to stop that resource route resolving, or restrict its actions through ACL. Removing the schema descriptor alone does not unregister an existing controller.
 
 ## See Also
 
-- [`docs/AutomaticEndpoints-Summary.md`](../docs/AutomaticEndpoints-Summary.md) — summary
-- [`docs/SimpleRest-API-Rest.md`](../docs/SimpleRest-API-Rest.md) — REST query syntax
-- [`docs/Schemas.md`](../docs/Schemas.md) — schema definition
+- [Automatic API endpoints](../../../docs/api/automatic-endpoints.md) — controller resolution and query parameters
+- [Schema descriptors](../../../docs/database/schemas.md) — schema generation
+- [Scaffolding](../../../docs/packages/scaffolding.md) — installing and enabling `make` commands
 - `create-api-endpoint-guide` skill — creating custom endpoints
 - `schemas` skill — schema file creation
 - `subresources` skill — nested CRUD
