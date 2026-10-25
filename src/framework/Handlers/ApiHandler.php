@@ -38,7 +38,7 @@ class ApiHandler
         $controller = implode('', array_map('ucfirst', explode('_', (string) $controller_raw)));
 
         /*
-            Controllers de framework (viven en \Core\Api\ en vez de \Controllers\api\).
+            Controllers de framework (viven en \Core\Api\ en vez de \Controllers\Api\).
             Detección robusta: normaliza el slug original a minúsculas y sin guiones bajos,
             así 'trashcan', 'trash_can', 'TrashCan' y 'trashCan' resuelven todos a TrashCan
             (antes solo matcheaba el slug ya transformado, p. ej. 'trashcan' daba 404).
@@ -54,7 +54,7 @@ class ApiHandler
             $namespace  = namespace_url() . '\\Core\\Api\\';
             $controller = $framework_controllers[$norm];
         } else {
-            $namespace = namespace_url() . '\\Controllers\\api\\';
+            $namespace = namespace_url() . '\\Controllers\\Api\\';
         }
 
         $class_name = $namespace . ucfirst($controller);

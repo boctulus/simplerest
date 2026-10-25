@@ -35,7 +35,7 @@ class TrashCan extends ApiController
 
         // Use get_model_name() helper to properly handle tenant/connection
         $this->model    = get_model_name($this->table_name, $this->tenantid);
-        $api_ctrl = namespace_url() . '\\Controllers\\api\\' . ucfirst($entity);
+        $api_ctrl = namespace_url() . '\\Controllers\\Api\\' . ucfirst($entity);
         
         if (!class_exists($api_ctrl)){
             error("Entity $entity not found", 404);
