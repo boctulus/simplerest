@@ -96,7 +96,7 @@ class System
             return $location;
         }
 
-        // Keep this file-configured so the runtime PHP_BINARY process value does not shadow it.
+        // A process PHP_BINARY value takes precedence; the configured file value is the fallback.
         $location = Env::get('PHP_BINARY');
 
         if (!empty($location)){

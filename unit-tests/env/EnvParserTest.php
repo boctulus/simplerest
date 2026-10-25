@@ -178,10 +178,10 @@ class EnvParserTest extends TestCase
     {
         $data = Env::parseFile(dirname(__DIR__, 2) . '/.env.example');
 
-        $this->assertSame('SimpelRest', $data['APP_NAME']);
+        $this->assertSame('SimpleRest', $data['APP_NAME']);
         $this->assertSame('local', $data['APP_ENV']);
-        $this->assertSame('true', $data['APP_DEBUG']);
-        $this->assertSame('4reasoning', $data['DB_PASSWORD']); // viene con comillas simples
+        $this->assertSame('false', $data['APP_DEBUG']);
+        $this->assertSame('', $data['DB_PASSWORD']);
         $this->assertSame('', $data['MAIL_DEFAULT_FROM_ADDR']);
         $this->assertArrayNotHasKey('#', $data);
     }

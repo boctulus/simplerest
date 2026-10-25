@@ -72,6 +72,8 @@ spl_autoload_register(function ($class) {
     }
 });
 
+// Compatibility for integrations reading $_ENV/$_SERVER directly. Layered
+// configuration reads should use Env or env(); these arrays reflect .env only.
 if (class_exists('Dotenv\\Dotenv')){
     $class  = Dotenv\Dotenv::class;
     $dotenv = $class::createImmutable(__DIR__);

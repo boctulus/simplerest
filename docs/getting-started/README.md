@@ -56,7 +56,7 @@ An earlier clean archive of the tracked files at `1c1444526` installed dependenc
 
 Running the registered `post-root-package-install` script explicitly with `composer run-script post-root-package-install` created `.env` from the tracked `.env.example` and cleared secret-like values. In revision `1c1444526`, the next `GET /system/health` stopped during `WebRouter::compile()` with `Controller class Boctulus\Simplerest\Controllers\DumbController not found`; the built-in server logged the fatal error. That revision had active `DumbController` routes in `config/routes.php`. Those examples were commented out by `0c7ef58`. The later `f6d74e69` clone completed the post-helper startup and the minimal HTTP smoke above.
 
-There is a second environment-file mismatch: `Env::setup()` looks for `env.example`, while the tracked template is `.env.example`. In the `index.php` entry path, `app.php` calls `Dotenv::load()` before `Env::setup()`, so that fallback does not create the file needed by the bootstrap.
+That revision also had an environment-file mismatch: `Env::setup()` looked for `env.example`, while the tracked template was `.env.example`. The current `Env::setup()` does not create files during reads. The root Composer `post-root-package-install` script creates a sanitized `.env` from `.env.example` during `create-project`; from an existing checkout, run `composer run-script post-root-package-install` explicitly when `.env` is absent. In the historical `index.php` path, `app.php` called `Dotenv::load()` before `Env::setup()`, so the old fallback could not create the file required by bootstrap.
 
 ## Verified metadata and bootstrap paths
 

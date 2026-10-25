@@ -29,6 +29,8 @@ class EnvSetupTest extends TestCase
             putenv('APP_ENV=' . $this->originalAppEnv);
         }
 
+        $resetPath = $this->writeFile('reset.env', '');
+        Env::setup(file: $resetPath, inherit: false);
         Env::$data = $this->originalEnvData;
 
         foreach (new \DirectoryIterator($this->tempDir) as $entry) {
@@ -66,6 +68,33 @@ class EnvSetupTest extends TestCase
         $this->assertSame('production', Env::get('APP_ENV'));
         $this->assertSame('base', Env::get('BASE_ONLY'));
         $this->assertNull(Env::get('DEV_ONLY'));
+    }
+
+    public function test_dev_env_cannot_override_app_env(): void
+    {
+        $basePath = $this->writeFile('.env', "APP_ENV=local\nDB_HOST=localhost\n");
+        $this->writeFile('.dev-env', "APP_ENV=production\nDB_HOST=production-server\n");
+        Env::$data = ['STALE_VALUE' => 'previous'];
+
+        try {
+            Env::setup(file: $basePath);
+            $this->fail('Expected .dev-env to reject APP_ENV.');
+        } catch (\InvalidArgumentException $exception) {
+            $this->assertStringContainsString('.dev-env must not define APP_ENV', $exception->getMessage());
+            $this->assertNull(Env::$data);
+        }
+
+        try {
+            Env::get('DB_HOST', 'fallback');
+            $this->fail('Expected reads after failed setup to rethrow the setup error.');
+        } catch (\InvalidArgumentException $exception) {
+            $this->assertStringContainsString('.dev-env must not define APP_ENV', $exception->getMessage());
+        }
+
+        Env::setup(file: $basePath, inherit: false);
+        $this->assertSame('local', Env::get('APP_ENV'));
+        $this->assertSame('localhost', Env::get('DB_HOST'));
+        $this->assertNull(Env::get('STALE_VALUE'));
     }
 
     public function test_dev_env_is_ignored_when_app_env_is_missing(): void
@@ -171,6 +200,7 @@ class EnvSetupTest extends TestCase
     public function test_required_keys_are_validated_after_file_resolution(): void
     {
         $basePath = $this->writeFile('.env', "APP_ENV=production\nREQUIRED_VALUE=\n");
+        Env::$data = ['STALE_VALUE' => 'previous'];
 
         try {
             Env::setup(file: $basePath, inherit: false, required: ['REQUIRED_VALUE', 'MISSING_VALUE']);
@@ -178,8 +208,46 @@ class EnvSetupTest extends TestCase
         } catch (\RuntimeException $exception) {
             $this->assertStringContainsString('REQUIRED_VALUE', $exception->getMessage());
             $this->assertStringContainsString('MISSING_VALUE', $exception->getMessage());
-            $this->assertSame([], Env::$data);
+            $this->assertNull(Env::$data);
         }
+
+        try {
+            Env::get('STALE_VALUE', 'fallback');
+            $this->fail('Expected reads after failed setup to rethrow the setup error.');
+        } catch (\RuntimeException $exception) {
+            $this->assertStringContainsString('Required environment variables are missing or empty', $exception->getMessage());
+        }
+
+        $recoveryPath = $this->writeFile('.env.recovered', "RECOVERED=yes\n");
+        Env::setup(file: $recoveryPath, inherit: false);
+        $this->assertSame('yes', Env::get('RECOVERED'));
+        $this->assertNull(Env::get('STALE_VALUE'));
+    }
+
+    public function test_parse_failure_remains_failed_until_setup_is_retried(): void
+    {
+        Env::$data = ['STALE_VALUE' => 'previous'];
+        $missingPath = $this->tempDir . DIRECTORY_SEPARATOR . 'missing.env';
+
+        try {
+            Env::setup(file: $missingPath, inherit: false);
+            $this->fail('Expected a missing environment file to fail setup.');
+        } catch (\Exception $exception) {
+            $this->assertStringContainsString('Cannot read env file', $exception->getMessage());
+            $this->assertNull(Env::$data);
+        }
+
+        try {
+            Env::get('STALE_VALUE', 'fallback');
+            $this->fail('Expected reads after failed setup to rethrow the setup error.');
+        } catch (\Exception $exception) {
+            $this->assertStringContainsString('Cannot read env file', $exception->getMessage());
+        }
+
+        $recoveryPath = $this->writeFile('.env.after-parse-error', "RECOVERED=yes\n");
+        Env::setup(file: $recoveryPath, inherit: false);
+        $this->assertSame('yes', Env::get('RECOVERED'));
+        $this->assertNull(Env::get('STALE_VALUE'));
     }
 
     private function writeFile(string $name, string $contents): string

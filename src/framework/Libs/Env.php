@@ -7,6 +7,7 @@ use Boctulus\Simplerest\Core\Libs\Strings;
 class Env
 {
     static $data;
+    private static ?\Throwable $setupError = null;
 
     /**
      * Loads environment files into memory and optionally validates required keys.
@@ -16,34 +17,47 @@ class Env
      * @param array $required Keys that must resolve to non-empty values.
      */
     static function setup(?string $file = null, bool $inherit = true, array $required = []): void {
-        static::$data = [];
+        static::$data = null;
+        static::$setupError = null;
 
-        $useDefaultFile = $file === null;
-        $file ??= '.env';
-        $envPath = static::resolvePath($file);
+        try {
+            $file ??= '.env';
+            $envPath = static::resolvePath($file);
+            $data = static::parseFile($envPath);
 
-        if ($useDefaultFile && !file_exists($envPath)){
-            if (!file_exists(ROOT_PATH . '/.env')){
-                if (!file_exists(ROOT_PATH . '/env.example')){
-                    throw new \Exception("Neither .env nor env.example found");
+            if ($inherit && static::isDevelopmentEnvironment(static::processValue('APP_ENV') ?? ($data['APP_ENV'] ?? null))){
+                $devEnvPath = dirname($envPath) . DIRECTORY_SEPARATOR . '.dev-env';
+
+                if (is_file($devEnvPath)){
+                    $devData = static::parseFile($devEnvPath);
+
+                    if (array_key_exists('APP_ENV', $devData)){
+                        throw new \InvalidArgumentException('.dev-env must not define APP_ENV; set it in .env or the process environment.');
+                    }
+
+                    $data = array_replace($data, $devData);
                 }
-
-                copy(ROOT_PATH . 'env.example', ROOT_PATH . '.env');
             }
+
+            static::validateRequired($data, $required);
+            static::$data = $data;
+        } catch (\Throwable $error) {
+            static::$data = null;
+            static::$setupError = $error;
+            throw $error;
+        }
+    }
+
+    private static function ensureSetup(): void {
+        if (static::$data !== null){
+            return;
         }
 
-        $data = static::parseFile($envPath);
-
-        if ($inherit && static::isDevelopmentEnvironment(static::processValue('APP_ENV') ?? ($data['APP_ENV'] ?? null))){
-            $devEnvPath = dirname($envPath) . DIRECTORY_SEPARATOR . '.dev-env';
-
-            if (is_file($devEnvPath)){
-                $data = array_replace($data, static::parseFile($devEnvPath));
-            }
+        if (static::$setupError !== null){
+            throw static::$setupError;
         }
 
-        static::validateRequired($data, $required);
-        static::$data = $data;
+        static::setup();
     }
 
     private static function resolvePath(string $file): string {
@@ -239,17 +253,13 @@ class Env
     }
 
     static function set(string $key = null, $value){
-        if (static::$data === null){
-            static::setup();
-        }
+        static::ensureSetup();
         
         static::$data[$key] = $value;
     }
 
     static function get(?string $key = null, $default_value = null){
-        if (static::$data === null){
-            static::setup();
-        }
+        static::ensureSetup();
 
         if (empty($key)){
             return static::$data;
@@ -272,9 +282,7 @@ class Env
      * @return bool Parsed boolean value.
      */
     static function getBool(string $key, bool $default_value = false): bool {
-        if (static::$data === null) {
-            static::setup();
-        }
+        static::ensureSetup();
 
         $value = static::get($key, $default_value);
 
