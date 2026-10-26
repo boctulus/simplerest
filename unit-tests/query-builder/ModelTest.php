@@ -1017,6 +1017,39 @@ class ModelTest extends TestCase
     $this->assertSQLEquals(DB::getLog(), "SELECT * FROM `users` WHERE firstname!=lastname");
   }
 
+  function test_where_column_preserves_multiple_conditions()
+  {
+    DB::table(get_users_table())
+      ->whereColumn('firstname', 'lastname', '=')
+      ->whereColumn('id', 'id', '=')
+      ->unhideAll()
+      ->deleted()
+      ->dontExec()->get();
+    $this->assertSQLEquals(DB::getLog(), "SELECT * FROM `users` WHERE firstname=lastname AND id=id");
+  }
+
+  function test_where_column_accepts_qualified_identifiers()
+  {
+    DB::table(get_users_table())
+      ->whereColumn('users.organization_id', 'org_users.organization_id', '=')
+      ->whereColumn('org_users.organization_id', 'organizations.id', '=')
+      ->unhideAll()
+      ->deleted()
+      ->dontExec()->get();
+    $this->assertSQLEquals(
+      DB::getLog(),
+      "SELECT * FROM `users` WHERE users.organization_id=org_users.organization_id AND org_users.organization_id=organizations.id"
+    );
+  }
+
+  function test_where_column_rejects_sql_fragments()
+  {
+    $this->expectException(\InvalidArgumentException::class);
+
+    DB::table(get_users_table())
+      ->whereColumn('users.id OR 1=1', 'org_users.user_id');
+  }
+
 
   function test_groups()
   {

@@ -2591,21 +2591,9 @@ trait QueryBuilderTrait
 
 	function whereColumn(string $field1, string $field2, string $op = '=')
 	{
-		$validation = Factory::validador()->validate(
-			[
-				'col1' => $field1,
-				'col2' => $field2
-			],
-			[
-				'col1' => ['type' => 'alpha_num_dash'],
-				'col2' => ['type' => 'alpha_num_dash']
-			]
-		);
-
-		if (!$validation) {
-			throw new InvalidValidationException(json_encode(
-				$this->validator->getErrors()
-			));
+		$identifierPattern = '/\A[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*\z/';
+		if (preg_match($identifierPattern, $field1) !== 1 || preg_match($identifierPattern, $field2) !== 1) {
+			throw new \InvalidArgumentException('Column names must be valid identifiers, optionally qualified by table.');
 		}
 
 		if (!in_array($op, ['=', '>', '<', '<=', '>=', '!='])) {
@@ -2615,7 +2603,9 @@ trait QueryBuilderTrait
 		$field1 = $this->getFullyQualifiedField($field1);
 		$field2 = $this->getFullyQualifiedField($field2);
 
-		$this->where_raw_q = "{$field1}{$op}{$field2}";
+		// Keep column comparisons in the normal WHERE list so consecutive calls accumulate.
+		$this->where_group_op[] = 'AND';
+		$this->where[] = " {$field1}{$op}{$field2}";
 		return $this;
 	}
 
