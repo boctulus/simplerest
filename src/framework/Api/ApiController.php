@@ -2,32 +2,24 @@
 
 namespace Boctulus\Simplerest\Core\Api;
 
-use PDO;
-use Boctulus\Simplerest\Core\Security\Acl;  
-use Boctulus\Simplerest\Core\Model;
-use Boctulus\Simplerest\Libs\Debug;
-use Boctulus\Simplerest\Core\Libs\DB;
-use Boctulus\Simplerest\Core\Libs\Url;
-use Boctulus\Simplerest\Core\Request;
-use Boctulus\Simplerest\Core\Libs\Time;
-use Boctulus\Simplerest\Core\Libs\Files;
+use Boctulus\Simplerest\Core\Api\ResourceController;
+use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
+use Boctulus\Simplerest\Core\Exceptions\SqlException;
+use Boctulus\Simplerest\Core\FoldersAclExtension;
+use Boctulus\Simplerest\Core\Interfaces\IApi;
+use Boctulus\Simplerest\Core\Interfaces\ISubResources;
 use Boctulus\Simplerest\Core\Libs\Arrays;  
-use Boctulus\Simplerest\Core\Libs\Factory;
+use Boctulus\Simplerest\Core\Libs\DB;
+use Boctulus\Simplerest\Core\Libs\DBRels;
 use Boctulus\Simplerest\Core\Libs\Impersonation\ImpersonationManager;
 use Boctulus\Simplerest\Core\Libs\Impersonation\ImpersonationRequestContext;
 use Boctulus\Simplerest\Core\Libs\Strings;
+use Boctulus\Simplerest\Core\Libs\Validator;
 use Boctulus\Simplerest\Core\Libs\WebhookEvent;
 use Boctulus\Simplerest\Core\Libs\WebhookPublisher;
-use Boctulus\Simplerest\Core\Libs\Validator;
-use Boctulus\Simplerest\Core\Interfaces\IApi;
-use Boctulus\Simplerest\Core\Interfaces\IAuth;
-use Boctulus\Simplerest\Core\FoldersAclExtension;
-use Boctulus\Simplerest\Core\Exceptions\SqlException;
-use Boctulus\Simplerest\Core\Interfaces\ISubResources;
-
-use Boctulus\Simplerest\Core\Api\ResourceController;
+use Boctulus\Simplerest\Core\Model;
+use Boctulus\Simplerest\Core\Request;
 use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
-use Boctulus\Simplerest\Core\Exceptions\InvalidValidationException;
 
 abstract class ApiController extends ResourceController implements IApi, ISubResources
 {
@@ -939,7 +931,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 //dd($_get);
 
                 // GROUP BY
-                if ($group_by != NULL){
+                if ($group_by != null){
                     $group_by = explode(',', $group_by);
                     $this->instance->groupBy($group_by);                   
                 }                    
@@ -962,15 +954,15 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }
 
                 // ORDER BY
-                if ($order !=  NULL)
+                if ($order != null)
                     $this->instance->orderBy($order);
                 
                 // LIMIT
-                if ($limit != NULL)
+                if ($limit != null)
                     $this->instance->limit($limit);
 
                 // OFFSET
-                if ($offset != NULL)
+                if ($offset != null)
                     $this->instance->offset($offset);
 
                 /*
@@ -1767,13 +1759,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     switch ($rel_type){
                         case '1:1':
                         case 'n:1':
-                            $fks = get_fks($this->table_name, $tb);
+                            $fks = DBRels::getFKs($this->table_name, $tb);
 
                             //d($dati, 'dati');   
                             if (is_array($dati)){
                                 $keys = array_keys($dati);
 
-                                $fks = get_fks($this->table_name, $tb);                                
+                                $fks = DBRels::getFKs($this->table_name, $tb);                                
 
                                 /*
                                     Asumo una sola FK de momento entre dos tablas --- es falso !
@@ -1842,7 +1834,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         break;
 
                         case '1:n':
-                            $fks = get_fks($tb, $this->table_name);
+                            $fks = DBRels::getFKs($tb, $this->table_name);
 
                             //d($dati, 'dati (case 1:n)');
                             // d($fks, 'FKs');
