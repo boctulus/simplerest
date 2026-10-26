@@ -32,8 +32,19 @@ The protected hooks let an application subclass add work around the generic reso
 
 The write hooks receive data by reference where their signatures declare `&$data`; a subclass can therefore change fields before or after validation. Exact order differs by branch, so inspect the method being extended instead of assuming every hook runs for every request. CRUD event publication is separate and documented in [webhooks](webhooks.md).
 
+## Nested writes
+
+When a controller declares connected resources through `static::$connect_to`, a request can include those resources under their relation names in a `POST`, `PUT`, or `PATCH` payload. Permission to write the parent does not grant permission to mutate each connected resource. `ApiController::authorizeNestedWrite()` is the application policy hook for those writes:
+
+- The base implementation returns `null`, which rejects the nested mutation. Override it to authorize a specific operation and relation.
+- Return a list of related-resource fields that may be written. Return `[]` to authorize relation or link changes without allowing related-resource field updates. The framework controls parent foreign keys and audit fields; related IDs and the N:M target-side pivot key are selectors, not writable related-resource fields.
+- The override must enforce application rules for selected IDs, tenant or ownership scope, and link replacement or removal. The generic controller checks related-row existence and 1:N child ownership where applicable; those checks do not replace consumer-specific authorization.
+- Nested array writes currently support 1:N and N:M relations. Nested 1:1 and N:1 array payloads are rejected as unsupported; direct parent foreign-key fields keep their existing behavior.
+
+For `POST`, the parent is validated, `onPostingAfterCheck()` runs, the changed parent is validated again, and the nested policy runs before the transaction writes the parent, children, and pivots. For `PUT` and `PATCH`, parent validation and the `onPutting*AfterCheck()` hooks run before nested authorization; the parent is revalidated after the hooks. The transaction covers the controller's parent, child, and pivot writes and the post-write `onPost*`/`onPut*` hooks. Webhooks publish after commit. Pre-write hooks run before the transaction, so keep them focused on validation or data changes rather than database writes when the request includes nested resources.
+
 ## Evidence and limits
 
-This is a source trace. The API controller, output formatter, and their tests were inspected, but no API request, response serialization, or database-backed CRUD operation was executed. It does not establish that every generated controller is loadable or that a subclass hook is safe for a particular write.
+This reference describes the generic source contract. Nested-write cases are exercised through an isolated SQLite fixture, but that does not exercise an authenticated HTTP route or a consumer's ACL and domain policy. Each consumer's `authorizeNestedWrite()` override and hooks determine those rules.
 
 Relevant sources: [`ResourceController`](../../src/framework/Api/ResourceController.php), [`ApiController`](../../src/framework/Api/ApiController.php), [`OutputHandler`](../../src/framework/Handlers/OutputHandler.php), and [`FrontController`](../../src/framework/FrontController.php).

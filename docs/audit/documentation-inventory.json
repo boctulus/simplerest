@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "generated_on": "2026-10-25",
-  "stage": "PACK hardening and distribution contract",
-  "scope": "Refreshed after adding the canonical PACK contract, its task record, and links from the CLI, documentation index, and Composer release process.",
+  "generated_on": "2026-10-26",
+  "stage": "P0 nested subresource write authorization",
+  "scope": "Refreshed after moving the nested subresource authorization task card into in-progress; no local Markdown links were added.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
   "inline_markdown_links_seen": 1388,
   "counts": {
-    "markdown_scanned": 270,
+    "markdown_scanned": 271,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
     "local_markdown_links": 741,
@@ -14,7 +14,7 @@
     "classifications": {
       "legacy": 99,
       "canonical": 77,
-      "internal/audit": 84,
+      "internal/audit": 85,
       "needs-review": 10
     }
   },
@@ -7845,6 +7845,13 @@
           "line": 14
         }
       ]
+    },
+    {
+      "path": "docs/to-do/in-progress/p0-nested-subresource-write-authorization.md",
+      "classification": "internal/audit",
+      "basis": "Audit, issue, task, or internal-history path; excluded from the public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
     },
     {
       "path": "docs/to-do/webhooks-async-delivery-reliability.md",

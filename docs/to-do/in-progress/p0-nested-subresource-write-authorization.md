@@ -1,7 +1,7 @@
 ---
 title: "P0: Secure nested subresource writes in ApiController"
-current_step: 0
-next_step: 1
+current_step: 6
+next_step: 6
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -12,7 +12,7 @@ tags: [security, p0, api, subresources, acl, transactions, microcore]
 
 # P0 — Secure nested subresource writes
 
-**Status:** PENDING — task specification only; no implementation or verification performed by this task.
+**Progress:** Step 1 (reproduction and inventory) is complete from the committed GoProp reproduction report and current SimpleRest source trace. The framework implementation and isolated regression suite now cover the initial authorization, validation, rollback, and error-redaction paths. Consumer compatibility, broader API/PACK checks, and GoProp regression proof remain open; the GoProp HTTP harness is not rerun because its database isolation is unverified.
 
 ## Problem and evidence
 
@@ -34,6 +34,37 @@ Related consumer investigation:
 4. No implicit trust: merely declaring a relation with `$connect_to` must **not** authorize nested mutation. Default-deny unsafe/undeclared write paths; preserve compatible, explicitly authorized paths.
 5. Do not auto-invoke an unrelated controller's hooks as a shortcut without studying side effects and lifecycle compatibility.
 6. No publishing, tagging, PACK distribution, deployments, or GoProp edits as part of this task without separate authorization.
+
+## Pre-fix source baseline (2026-10-26)
+
+### Nested-write paths
+
+- The canonical `ApiController` dispatches `POST`, `PUT`, and `PATCH` using the parent table's ACL permissions. Its nested-write branches do not perform a separate child-resource ACL or field-policy check.
+- `POST` validates the parent payload and runs `onPostingAfterCheck()` before entering the `$connect_to` write block. It starts a transaction only when `$connect_to` is non-empty, then writes child and pivot rows. The child records are not independently validated by the child model's rules.
+- `PUT` and `PATCH` share `modify()`. That method writes related rows and pivots before validating the flattened parent payload and before `onPuttingAfterCheck()`, and it does not wrap the complete operation in a transaction. The current source uses `DBRels::getFKs()` in these paths; the older `get_fks()` report is stale.
+- Payload parsing differs by method: `POST` treats top-level array-valued keys as relation payloads and rejects unconnected keys, while its inner non-array branch for a single related object is unreachable after the outer array check. `PUT`/`PATCH` select declared relation keys but leave undeclared arrays to be flattened into parent fields; 1:N child IDs with extra fields are updated without checking that the child already belongs to the parent, and N:M updates can alter related rows and replace or append pivot rows using `_append`.
+- The write error paths can expose internal details: `POST` includes the PDO exception message in the response, and `modify()` calls `dd()` with the query log before returning an exception message.
+- GET subresource loading is a separate read path and remains outside this write fix.
+
+## Framework implementation status (2026-10-26)
+
+- `authorizeNestedWrite()` is an overridable application policy. Its base implementation returns `null`, so nested mutations fail closed. An override returns the related-resource fields allowed for that operation and must enforce application-specific rules for selected IDs and link replacement/removal.
+- The framework currently supports nested write payloads for 1:N children and N:M relations. Nested 1:1 and N:1 payloads fail as unsupported because their existing write branches do not provide the same selector and child-validation guarantees. Direct parent foreign-key fields are not changed by this nested-payload guard.
+- POST validates the parent before and after `onPostingAfterCheck()`, then authorizes and validates the nested payload before creating the parent. PUT/PATCH validate the parent, run `onPuttingFolderAfterCheck()` and `onPuttingAfterCheck()`, revalidate the possibly changed parent payload, then authorize nested writes using that final parent payload. Child writes validate against the related schema; 1:N updates also verify parent ownership and constrain the update query by both child ID and parent FK.
+- Parent, child, and pivot rows written by the controller use one transaction for a nested operation. POST `onPost*` and PUT/PATCH `onPut*` hooks run before commit; webhook publication runs after commit. The pre-persistence `on*AfterCheck()` hooks run before this transaction, so consumer hooks that write to the database need a separate audit. Isolated rollback assertions cover invalid child data and injected child and pivot SQL failures for POST, plus invalid nested data and SQL failures for PUT.
+- N:M selectors are checked for existence, while consumer-specific role, tenant, identity, and ownership rules remain the responsibility of the override. The parent-side pivot FK is generated by the framework; the target-side pivot key comes from the selected related ID. Arbitrary pivot fields and audit metadata are not accepted through the nested payload.
+- Focused evidence: `vendor\\bin\\phpunit unit-tests\\api\\NestedSubresourceWriteAuthorizationTest.php` passed on PHP 8.3.36 with 31 tests and 200 assertions. The fixture uses a subprocess with SQLite `:memory:` only.
+- Still unverified: authenticated GoProp consumer regression, especially `Properties -> property_co_owners`; existing consumer migrations for default-deny and the unsupported nested 1:1/N:1 shapes; database side effects from consumer pre-persistence hooks; the broader API suite; microcore/PACK gates; and a scoped commit. Keep this card open until those gates are resolved or explicitly classified.
+
+### Microcore boundary discrepancy
+
+The repository's current package contract includes the complete `src/framework/` tree (`docs/architecture/pack-contract.md` and `scripts/pack/build-core.php`), and Composer maps the `Core` namespace there. `ApiController` in that tree imports and calls the internal DB, relation, model, and ACL facilities, while the root README says the microcore has no database or ACL implementation. This is a pre-existing source/documentation boundary discrepancy, not a reason to relocate or rewrite framework code during this task.
+
+Task-scoped correction: keep the P0 fix in the existing controller, add no ACL/DB imports or Composer dependencies, and expose application policy through a generic overridable contract that defaults to deny. Reconcile whether persistence controllers belong in the public microcore through a separately reviewed architecture/package decision; changing the current whole-tree PACK boundary is outside this task.
+
+### Consumer evidence classification
+
+The local GoProp report and commit `7cfb9ceb` record the `POST /users` `user_roles` escalation as reproduced and mitigated. Its authenticated harness targets `goprop.lan` and writes fixtures, so it is not rerun unless its database is proven isolated. The `Properties -> property_co_owners` bypass remains code-supported and unproven over authenticated HTTP.
 
 ## Implementation plan
 

@@ -38,6 +38,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
     protected $id;
     protected $folder;
+    protected bool $nestedWriteTransactionActive = false;
 
     /*
         Filtrar por belongs_to = auth()->uid() al usuario sin 'read_all' / 'show_all' / 'list_all'.
@@ -290,6 +291,225 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
     static function getConnectedSubResources(){
         return static::$connect_to;
+    }
+
+    /**
+     * Return the related-resource fields this request may write, or null to deny it.
+     * Implementations must also enforce application-specific rules for selected IDs.
+     */
+    protected function authorizeNestedWrite(string $operation, string $relation, array $payload, array $parentPayload, $parentId = null): ?array
+    {
+        return null;
+    }
+
+    /**
+     * Preflight nested payloads before any parent, child, or pivot row is written.
+     */
+    protected function authorizeNestedPayloads(array $data, string $operation, $parentId = null, ?array $parentPayload = null): array
+    {
+        $operation = strtoupper($operation);
+        if ($parentPayload === null) {
+            $parentPayload = $data;
+            foreach (static::$connect_to as $relatedTable) {
+                unset($parentPayload[$relatedTable]);
+            }
+        }
+
+        foreach ($data as $field => $payload) {
+            if (in_array($field, static::$connect_to, true)) {
+                if (!is_array($payload)) {
+                    error('Invalid nested payload', 400);
+                }
+
+                $relationType = get_rel_type($this->table_name, $field);
+                if ($relationType === false) {
+                    error('Unsupported nested relation', 400);
+                }
+                if (!in_array($relationType, ['1:n', 'n:m'], true)) {
+                    error('Unsupported nested relation', 400);
+                }
+                if (!array_is_list($payload) && in_array($relationType, ['1:n', 'n:m'], true)) {
+                    error('Invalid nested payload', 400);
+                }
+
+                $allowedFields = $this->authorizeNestedWrite($operation, $field, $payload, $parentPayload, $parentId);
+                if (!is_array($allowedFields) || !array_is_list($allowedFields)) {
+                    error('Forbidden', 403);
+                }
+
+                $schema = get_schema($field);
+                $primaryKeys = $schema['primary'] ?? [$schema['id_name'] ?? 'id'];
+                if (count($primaryKeys) !== 1) {
+                    error('Unsupported nested relation', 400);
+                }
+                $managedFields = $primaryKeys;
+                $selectorFields = $primaryKeys;
+                $relatedPivotField = null;
+                $parentForeignKeys = [];
+
+                if ($relationType === '1:n') {
+                    $parentForeignKeys = DBRels::getFKs($field, $this->table_name);
+                    if (count($parentForeignKeys) !== 1) {
+                        error('Unsupported nested relation', 400);
+                    }
+                    $managedFields = array_merge($managedFields, $parentForeignKeys);
+                } elseif ($relationType === 'n:m') {
+                    $pivot = get_pivot([$this->table_name, $field]);
+                    if (!is_array($pivot) || !isset($pivot['fks'][$this->table_name], $pivot['fks'][$field]) || count($pivot['fks']) !== 2) {
+                        error('Unsupported nested relation', 400);
+                    }
+                    $parentPivotField = $pivot['fks'][$this->table_name] ?? null;
+                    $relatedPivotField = $pivot['fks'][$field] ?? null;
+                    $managedFields = array_merge($managedFields, [$parentPivotField]);
+                    if (is_string($relatedPivotField) && in_array($operation, ['PUT', 'PATCH'], true)) {
+                        $selectorFields[] = $relatedPivotField;
+                    }
+                }
+
+                $relatedFields = array_keys($schema['attr_types'] ?? []);
+                foreach ($allowedFields as $allowedField) {
+                    if (
+                        !is_string($allowedField)
+                        || !in_array($allowedField, $relatedFields, true)
+                        || in_array($allowedField, $managedFields, true)
+                    ) {
+                        error('Forbidden', 403);
+                    }
+                }
+
+                $rows = array_is_list($payload) ? $payload : [$payload];
+                $selectedIds = [];
+                foreach ($rows as $row) {
+                    if (!is_array($row)) {
+                        $isSelector = is_scalar($row) && (
+                            $relationType === 'n:m'
+                            || ($relationType === '1:n' && in_array($operation, ['PUT', 'PATCH'], true))
+                        );
+
+                        if (!$isSelector) {
+                            error('Invalid nested payload', 400);
+                        }
+                        $selectedIds[] = $row;
+                        continue;
+                    }
+
+                    $rowSelectorFields = [];
+                    foreach ($row as $rowField => $value) {
+                        if (is_int($rowField)) {
+                            error('Invalid nested payload', 400);
+                        }
+
+                        if (in_array($rowField, $selectorFields, true)) {
+                            if ($operation === 'POST' && $relationType === '1:n') {
+                                error('Forbidden', 403);
+                            }
+                            if (!is_scalar($value)) {
+                                error('Invalid nested payload', 400);
+                            }
+                            $selectedIds[] = $value;
+                            $rowSelectorFields[] = $rowField;
+                            continue;
+                        }
+
+                        if (
+                            !is_string($rowField)
+                            || in_array($rowField, $managedFields, true)
+                            || !in_array($rowField, $allowedFields, true)
+                        ) {
+                            error('Forbidden', 403);
+                        }
+                    }
+
+                    if ($relationType === 'n:m' && count($rowSelectorFields) > 1) {
+                        error('Invalid nested payload', 400);
+                    }
+                    if (
+                        $relationType === 'n:m'
+                        && $operation === 'POST'
+                        && in_array($primaryKeys[0], $rowSelectorFields, true)
+                        && count($row) > 1
+                    ) {
+                        error('Invalid nested payload', 400);
+                    }
+                }
+
+                if ($relationType === '1:n' && in_array($operation, ['PUT', 'PATCH'], true) && !empty($selectedIds)) {
+                    $parentForeignKey = $parentForeignKeys[0];
+                    $primaryKey = $primaryKeys[0] ?? 'id';
+                    foreach (array_unique($selectedIds, SORT_REGULAR) as $selectedId) {
+                        $child = DB::table($field)->where([$primaryKey => $selectedId])->first();
+                        if (!is_array($child)) {
+                            error('Nested resource not found', 404);
+                        }
+                        if ((string) ($child[$parentForeignKey] ?? '') !== (string) $parentId) {
+                            error('Forbidden', 403);
+                        }
+                    }
+                } elseif ($relationType === 'n:m' && !empty($selectedIds)) {
+                    $primaryKey = $primaryKeys[0] ?? 'id';
+                    foreach (array_unique($selectedIds, SORT_REGULAR) as $selectedId) {
+                        if (!DB::table($field)->where([$primaryKey => $selectedId])->exists()) {
+                            error('Nested resource not found', 404);
+                        }
+                    }
+                }
+
+                continue;
+            }
+
+            if (is_array($payload)) {
+                $parentSchema = $this->instance->getSchema();
+                $parentFieldType = strtoupper((string) ($parentSchema['attr_types'][$field] ?? ''));
+                if (!in_array($parentFieldType, ['JSON', 'ARRAY'], true)) {
+                    error('Unsupported nested relation', 400);
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    protected function beginNestedWriteTransaction(): void
+    {
+        DB::beginTransaction();
+        $this->nestedWriteTransactionActive = true;
+    }
+
+    protected function commitNestedWriteTransaction(): void
+    {
+        if (!$this->nestedWriteTransactionActive) {
+            return;
+        }
+
+        DB::commit();
+        $this->nestedWriteTransactionActive = false;
+    }
+
+    protected function rollbackNestedWriteTransaction(): void
+    {
+        if (!$this->nestedWriteTransactionActive) {
+            return;
+        }
+
+        DB::rollback();
+        $this->nestedWriteTransactionActive = false;
+    }
+
+    protected function failNestedWrite(string $message, int $status = 400, $detail = null): void
+    {
+        $this->rollbackNestedWriteTransaction();
+        error($message, $status, $detail);
+    }
+
+    protected function validateNestedRecord(string $relation, array $data, bool $isCreate): void
+    {
+        $schema = get_schema($relation);
+        $validator = new Validator();
+        $ok = $validator->setRequired($isCreate)->validate($data, $schema['rules'] ?? []);
+
+        if ($ok !== true) {
+            $this->failNestedWrite('Nested resource validation failed', 400, $validator->getErrors());
+        }
     }
 
     /**
@@ -1252,6 +1472,14 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             // event hook             
             $this->onPostingAfterCheck($id, $data);
 
+            $validator = new Validator();
+            $ok = $validator->validate($data, $this->instance->getRules());
+            if ($ok !== true) {
+                error(trans('Data validation error'), 400, $validator->getErrors());
+            }
+
+            $data = $this->authorizeNestedPayloads($data, 'POST');
+
             try {
                 /*
                     SUBRECURSOS
@@ -1259,7 +1487,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 */
 
                 if (!empty(static::$connect_to)){
-                    DB::beginTransaction(); ///
+                    $this->beginNestedWriteTransaction(); ///
 
                     $dependents = [];
                     $pivot_tables = [];
@@ -1275,7 +1503,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             $unset[] = $related_table;
 
                             if (!in_array($related_table, static::$connect_to)){
-                                response()->error("Table $related_table is not connected to ". $this->table_name, 400);
+                                $this->failNestedWrite('Unsupported nested relation', 400);
                             }
 
                             /*
@@ -1366,11 +1594,11 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                                 }
                 
                                                 if ($cnt_rel == 0){
-                                                    response()->error("Row not found in $related_table", 400);
+                                                    $this->failNestedWrite('Nested resource not found', 404);
                                                 }
                                                 
                                                 if ($cnt_rel > 1){
-                                                    response()->error("There are more than one rows in $related_table matching with sent data", 400);
+                                                    $this->failNestedWrite('Nested resource selector is ambiguous', 400);
                                                 }
 
                                                 $rel_tb_id = $rel_ids[0];                                                
@@ -1389,7 +1617,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                                         }
     
                                                         if (!$related_table_exists[$related_table]){
-                                                            response()->error("Not found", 404, "`$related_table`.`$key` = $rel_tb_val doesn't exist");
+                                                            $this->failNestedWrite('Nested resource not found', 404);
                                                         }
                                                     }
                                                 }
@@ -1451,7 +1679,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                             $rr = $rs[$this->table_name] ?? null;
 
                                             if (is_null($rr)){
-                                                response()->error("Something is wrong trying to link to {$related_table}");
+                                                $this->failNestedWrite('Nested resource link failed', 400);
                                             }
 
                                             list($_, $fk) = explode('.', $rr[0][1]);
@@ -1463,7 +1691,20 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                             $dependents[$related_table] = $dato;
                                             
                                         }
-                                       
+                                    } elseif (get_rel_type($this->table_name, $related_table) === 'n:m') {
+                                        $pivot = get_pivot([$this->table_name, $related_table]);
+                                        if (
+                                            !is_array($pivot)
+                                            || !isset($pivot['bridge'], $pivot['fks'][$this->table_name], $pivot['fks'][$related_table])
+                                        ) {
+                                            $this->failNestedWrite('Unsupported nested relation', 400);
+                                        }
+
+                                        $dependents[$related_table][] = [
+                                            $pivot['fks'][$this->table_name] => '$id_main',
+                                            $pivot['fks'][$related_table] => $d,
+                                        ];
+                                        $pivot_tables[$related_table] = $pivot['bridge'];
                                     }
                                 }
                             }                        
@@ -1487,6 +1728,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $last_inserted_id = DB::table($this->table_name)
                 ->setExecutionMode($executionMode)
                 ->create($data);
+
+                if ($last_inserted_id === false) {
+                    $this->failNestedWrite('Resource creation failed', 500);
+                }
 
                 // Tablas dependientes
 
@@ -1545,6 +1790,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                         #exit; //////
 
                         if (!isset($pivot_tables[$related_table])){
+                            foreach ($data as $nestedRecord) {
+                                $this->validateNestedRecord($related_table, $nestedRecord, true);
+                            }
+
                             $rel_id = DB::table($related_table)
                             ->insert($data);
                         } else {
@@ -1568,21 +1817,17 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                     }
                 }
                     
-                DB::commit();             
             } catch (\PDOException $e){
-                DB::rollback();
-
-                // solo debug:
-                $db = DB::getCurrentDB();
-                $tb = DB::getTableName();
-                error("Error: creation on `{$db}`.`{$tb}` of resource fails: ". $e->getMessage(), 500, 
-                        $this->instance->getLog());
+                $this->rollbackNestedWriteTransaction();
+                error_log('ApiController nested POST failed: ' . $e);
+                error('Nested resource write failed', 500);
             }
 
             if ($last_inserted_id !==false){
                 // event hooks
                 $this->onPostFolder($last_inserted_id, $data, $this->folder);                
                 $this->onPost($last_inserted_id, $data);
+                $this->commitNestedWriteTransaction();
                 $this->webhook('create', $data, $last_inserted_id);
 
                 response()->send([
@@ -1594,9 +1839,14 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 error("Error: creation of resource fails!");
 
         } catch (InvalidValidationException $e) { 
+            $this->rollbackNestedWriteTransaction();
             error('Validation Error', 400, json_decode($e->getMessage()));
         } catch (\Exception $e) {
-            error($e->getMessage());
+            $this->rollbackNestedWriteTransaction();
+            error_log('ApiController POST failed: ' . $e);
+            error('Resource creation failed', 500);
+        } finally {
+            $this->rollbackNestedWriteTransaction();
         }	
 
     } // 
@@ -1725,6 +1975,52 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }   
             }           
 
+            $parentData = $data;
+            foreach (static::$connect_to as $relatedTable) {
+                unset($parentData[$relatedTable]);
+            }
+
+            foreach ($parentData as $field => $value) {
+                if (
+                    is_string($value)
+                    && strtoupper($value) === 'NULL'
+                    && $this->instance->isNullable($field)
+                ) {
+                    $parentData[$field] = null;
+                }
+            }
+
+            $validator = new Validator();
+            $ok = $validator->setRequired($put_mode)->validate($parentData, $this->instance->getRules());
+            if ($ok !== true) {
+                error(trans('Data validation error'), 400, $validator->getErrors());
+            }
+
+            if (!empty($this->folder)) {
+                $this->onPuttingFolderAfterCheck($id, $parentData, $this->folder);
+            }
+
+            $this->onPuttingAfterCheck($id, $parentData);
+
+            $validator = new Validator();
+            $ok = $validator->setRequired($put_mode)->validate($parentData, $this->instance->getRules());
+            if ($ok !== true) {
+                error(trans('Data validation error'), 400, $validator->getErrors());
+            }
+
+            $data = $this->authorizeNestedPayloads($data, $put_mode ? 'PUT' : 'PATCH', $id, $parentData);
+
+            $hasNestedWrite = false;
+            foreach ($data as $field => $value) {
+                if (in_array($field, static::$connect_to, true) && is_array($value)) {
+                    $hasNestedWrite = true;
+                    break;
+                }
+            }
+            if ($hasNestedWrite) {
+                $this->beginNestedWriteTransaction();
+            }
+
             /* 
                 SUBRECURSOS 
             */
@@ -1841,13 +2137,13 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                            
                             // Limitación a remover
                             if (count($fks)>1){
-                                response()->error("At this moment it's possible to update tables with only one relationship. Detail: $tb -> {$this->table_name}");
+                                $this->failNestedWrite('Unsupported nested relation', 400);
                             }
 
                             // IDs de sub-recursos a ignorar en el delete
                             $idr = [];
 
-                            if (is_array($dati[0])){
+                            if (isset($dati[0]) && is_array($dati[0])){
                                 $pri_rel = get_primary_key($tb);
                                 //d($pri_rel);
 
@@ -1859,33 +2155,36 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                     $fk   = $fks[0]; 
 
                                     if (in_array($pri_rel, $keys, true)){
+                                        $id_tb_rel = $dato[$pri_rel];
+                                        $child = DB::table($tb)
+                                            ->where([$pri_rel => $id_tb_rel])
+                                            ->first();
+                                        if (!is_array($child)) {
+                                            $this->failNestedWrite('Nested resource not found', 404);
+                                        }
+                                        if ((string) ($child[$fk] ?? '') !== (string) $id) {
+                                            $this->failNestedWrite('Forbidden', 403);
+                                        }
+
                                         if (count($keys) === 1){
                                             // caso A  --ok (listo)
-                                            //d("caso A (1:n)");
+                                            $idr[] = $id_tb_rel;
+                                            unset($dati[$ix]);
                                         } else {
                                             // caso C -- ok (listo)
                                             //d("caso C (1:n)");
 
                                             //d($dato);
-                                            $id_tb_rel = $dato[$pri_rel];
-                                            
-                                            $ms = DB::table($tb);
-
-                                            $is = $ms
-                                            ->find($id_tb_rel)
-                                            ->exists();
-
-                                            if (!$is){
-                                                response()->error("Subresource for '$tb' with id={$id_tb_rel} does not exist", 404);
-                                            }
-
                                             $_dato = $dato;
+                                            unset($_dato[$pri_rel]);
                                             $_dato[$fk] = $id;
 
                                             //d($_dato, '_DATO');
 
-                                            $ok = $ms
-                                            ->update($_dato);
+                                            $this->validateNestedRecord($tb, $_dato, false);
+                                            $ok = DB::table($tb)
+                                                ->where([$pri_rel => $id_tb_rel, $fk => $id])
+                                                ->update($_dato);
 
                                             $idr[] = $id_tb_rel;                                            
                                             unset($dati[$ix]);
@@ -1907,6 +2206,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                         // Si no existen subrecursos asociados
                                         if (empty($_idr)){
                                             //... creo uno y lo asocio
+                                            $this->validateNestedRecord($tb, $_dato, true);
                                             $_idr = DB::table($tb)
                                             ->create($_dato);
 
@@ -1941,7 +2241,8 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                             foreach ($dati as $dato){
                                 $m  = DB::table($tb);
-                                $ok = $m->find($dato)
+                                $ok = $m
+                                ->where([$pri_rel => $dato, $fk => $id])
                                 //->dontExec()
                                 ->update([$fk => $id]);
                                 
@@ -1988,7 +2289,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                             // Limitación a remover
                             if (count($fks_bridge)>2){
-                                response()->error("At this moment it's possible to update bridge tables with only one relationship to each side. Detail: $tb -> {$this->table_name}");
+                                $this->failNestedWrite('Unsupported nested relation', 400);
                             }
                                                 
                             // IDs de sub-recursos a ignorar en el delete
@@ -1996,6 +2297,15 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                             $pri_table = $fks_bridge[$this->table_name];
                             $fk_tb = $fks_bridge[$tb];
+
+                            if (isset($dati[0]) && is_array($dati[0])) {
+                                foreach ($dati as &$relatedRow) {
+                                    if (isset($relatedRow[$pri_rel]) && !isset($relatedRow[$fk_tb])) {
+                                        $relatedRow[$fk_tb] = $relatedRow[$pri_rel];
+                                    }
+                                }
+                                unset($relatedRow);
+                            }
 
                             // Elimino la FK hacia la tabla "principal" de las FKs del puente
                             unset($fks_bridge[$this->table_name]);
@@ -2017,7 +2327,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                             $fields_rel = array_keys($sc_rel['attr_types']); 
 
                             foreach ($fks as $_fk){     
-                                if (is_array($dati[0])){
+                                if (isset($dati[0]) && is_array($dati[0])){
                                     $keys = [];
 
                                     foreach ($dati as $ix => $dato){
@@ -2050,7 +2360,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                                                 $_dato = [];
                                                 foreach ($dato as $f => $v){
-                                                    if (in_array($f, $fields_rel)){
+                                                    if ($f !== get_primary_key($tb) && in_array($f, $fields_rel)){
                                                         $_dato[$f] = $dato[$f];
                                                     }
                                                 }
@@ -2061,10 +2371,10 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                                                     ->exists();
 
                                                     if (!$exists){
-                                                        response()
-                                                        ->error("Subresource for '$tb' with id={$id_rel} does not exist", 404);
+                                                        $this->failNestedWrite('Nested resource not found', 404);
                                                     }                                
 
+                                                    $this->validateNestedRecord($tb, $_dato, false);
                                                     $affected = DB::table($tb)
                                                     ->find($id_rel)
                                                     ->update($_dato);
@@ -2090,6 +2400,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
                                             if (empty($id_sub)){
                                                 // lo creo
+                                                $this->validateNestedRecord($tb, $dato, true);
                                                 $id_sub = DB::table($tb)
                                                 ->create($dato);
                                             }
@@ -2224,51 +2535,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 }
             }
 
-            /*
-                 Si hubiera un array de arrays.... acomodo:   
+            $data = $parentData;
 
-                 "users": [
-                    {
-                        "created_by": 173,
-                        "belongs_to": 142
-                    }
-                ],
-            */            
-            foreach ($data as $k => $v){                
-                if (is_array($v)){
-                    foreach ($v as $h => $vi){
-                        $data[$h] = $vi;
-                    }
-
-                    unset($data[$k]);
-                } 
-            }   
-
-            // This is not 100% right but....
-            foreach ($data as $k => $v){
-                if (strtoupper($v) == 'NULL' && $this->instance->isNullable($k)){
-                    $data[$k] = NULL;
-                } 
-            }   
-
-            $validator = new Validator();
-
-            $ok  = $validator->setRequired($put_mode)->validate($data, $this->instance->getRules());
-            
-            if ($ok !== true){
-                error(trans('Data validation error'), 400, $validator->getErrors());
-            }
-
-  
             $this->instance->fill([$this->instance->updatedBy()]);
-
-            if (!empty($this->folder)) {
-                // event hook 
-                $this->onPuttingFolderAfterCheck($id, $data, $this->folder);
-            }
-
-            // event hook
-            $this->onPuttingAfterCheck($id, $data);
 
             if (!$owned && $this->show_deleted && !$acl->hasSpecialPermission('write_all_trashcan')){
                 if ($this->instance->inSchema([$this->instance->belongsTo()])){
@@ -2300,32 +2569,37 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
             try {
                 $affected = $this->instance->where([$id_name => $id])->update($data);
-                //var_dump($this->instance->getLog());
-            } catch (\Exception $e){
-
-                dd($this->instance->getLog(), "SQL ERROR"); // ---------- *
-                response()->error($e->getMessage());
+            } catch (\Throwable $e){
+                $this->rollbackNestedWriteTransaction();
+                error_log('ApiController PUT/PATCH failed: ' . $e);
+                error('Resource update failed', 500);
             }
 
             if ($affected !== false) {
-
                 // even hooks        	    
                 $this->onPutFolder($id, $data, $affected, $this->folder);                
                 $this->onPut($id, $data, $affected);
+                $this->commitNestedWriteTransaction();
                 $this->webhook('update', $data, $id);
                 
                 response()->send($data);
             } else {
-                error("Error in PATCH",404);
+                $this->failNestedWrite('Resource not found', 404);
             }	
 
         } catch (InvalidValidationException $e) { 
+            $this->rollbackNestedWriteTransaction();
             error('Validation Error', 400, json_decode($e->getMessage()));
         } catch (\PDOException $e){
-            // solo para debug !
-            error("Error: creation of resource fails: ". $e->getMessage(), 500);
+            $this->rollbackNestedWriteTransaction();
+            error_log('ApiController PUT/PATCH failed: ' . $e);
+            error('Resource update failed', 500);
         } catch (\Exception $e) {
-            error("Error during PATCH for id=$id with message: {$e->getMessage()}");
+            $this->rollbackNestedWriteTransaction();
+            error_log('ApiController PUT/PATCH failed: ' . $e);
+            error('Resource update failed', 500);
+        } finally {
+            $this->rollbackNestedWriteTransaction();
         }
     } //
 
