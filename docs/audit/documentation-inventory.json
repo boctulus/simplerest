@@ -2,11 +2,11 @@
   "version": 1,
   "generated_on": "2026-10-26",
   "stage": "P0 nested subresource write authorization",
-  "scope": "Refreshed after moving the nested subresource authorization task card into in-progress; no local Markdown links were added.",
+  "scope": "Refreshed after moving the nested subresource authorization task card into in-progress and adding the internal SimpleRest-GoProp core diff report; no local Markdown links were added.",
   "link_method": "Inline Markdown links to local Markdown targets and existing Markdown directories only. Reference-style links, HTML links, external URLs, and fragment anchors are not validated. Windows path lookup is case-insensitive.",
   "inline_markdown_links_seen": 1388,
   "counts": {
-    "markdown_scanned": 271,
+    "markdown_scanned": 272,
     "deferred_webhook_markdown": 0,
     "webhook_markdown_in_final_batch": 5,
     "local_markdown_links": 741,
@@ -14,7 +14,7 @@
     "classifications": {
       "legacy": 99,
       "canonical": 77,
-      "internal/audit": 85,
+      "internal/audit": 86,
       "needs-review": 10
     }
   },
@@ -6926,6 +6926,13 @@
           "line": 21
         }
       ]
+    },
+    {
+      "path": "docs/simplerest-goprop-core-differences.md",
+      "classification": "internal/audit",
+      "basis": "Maintainer-requested cross-repository core diff report; not public documentation.",
+      "incoming_markdown_refs": [],
+      "outgoing_markdown_refs": []
     },
     {
       "path": "docs/performance/README.md",
