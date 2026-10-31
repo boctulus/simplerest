@@ -331,6 +331,9 @@ namespace {
     if (!empty($input['fail_role_insert'])) {
         $pdo->exec("CREATE TRIGGER fail_user_roles_insert BEFORE INSERT ON user_roles BEGIN SELECT RAISE(ABORT, 'injected SQL detail'); END;");
     }
+    if (!empty($input['fail_user_delete'])) {
+        $pdo->exec("CREATE TRIGGER fail_users_delete BEFORE DELETE ON users BEGIN SELECT RAISE(ABORT, 'injected delete SQL detail'); END;");
+    }
     if (!empty($input['fail_pivot_insert'])) {
         $pdo->exec("CREATE TRIGGER fail_users_tags_insert BEFORE INSERT ON users_tags BEGIN SELECT RAISE(ABORT, 'injected pivot SQL detail'); END;");
     }
@@ -342,6 +345,8 @@ namespace {
             $controller->put((int) ($input['target_id'] ?? 1));
         } elseif ($method === 'patch') {
             $controller->patch((int) ($input['target_id'] ?? 1));
+        } elseif ($method === 'delete') {
+            $controller->delete((int) ($input['target_id'] ?? 1));
         } else {
             $controller->post();
         }

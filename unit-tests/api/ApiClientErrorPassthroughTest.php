@@ -120,6 +120,30 @@ class ApiClientErrorPassthroughTest extends TestCase
         $this->assertFalse($out['transaction_open']);
     }
 
+    public function test_delete_sql_error_is_logged_not_sent_to_the_client(): void
+    {
+        $out = $this->probe([
+            'method' => 'DELETE',
+            'seed_user' => true,
+            'fail_user_delete' => true,
+        ]);
+
+        $this->assertNull($out['escaped']);
+        $this->assertSame(500, $out['response']['status']);
+        $this->assertSame('Error during DELETE for id=1 with message: database error', $out['response']['error']['message']);
+        $this->assertStringNotContainsString('injected', json_encode($out['response']));
+        $this->assertSame('existing-user', $out['state']['users'][0]['username']);
+    }
+
+    public function test_read_and_collection_catches_never_send_driver_messages(): void
+    {
+        $api = file_get_contents(__DIR__ . '/../../src/framework/Api/ApiController.php');
+        $collections = file_get_contents(__DIR__ . '/../../src/framework/Api/Collections.php');
+
+        $this->assertStringNotContainsString("'SQL Exception', 500, \$e->getMessage()", $api, 'get() must not echo SQL errors');
+        $this->assertSame(3, substr_count($collections, '$this->clientSafeMessage($e,'), 'every Collections write catch must filter driver messages');
+    }
+
     public function test_collections_write_catches_pass_through_client_errors(): void
     {
         $source = file_get_contents(__DIR__ . '/../../src/framework/Api/Collections.php');

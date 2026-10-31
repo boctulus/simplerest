@@ -85,7 +85,7 @@ class Collections extends ApiController
 
         } catch (\Exception $e) {
             $this->rethrowClientError($e);
-            error($e->getMessage());
+            error($this->clientSafeMessage($e, 'Collection creation failed'));
         }
 
     } // 
@@ -177,7 +177,7 @@ class Collections extends ApiController
 
         } catch (\Exception $e) {
             $this->rethrowClientError($e);
-            error("Error during update for colection $id with message: {$e->getMessage()}");
+            error("Error during update for colection $id with message: " . $this->clientSafeMessage($e, 'database error'));
         }
     }        
 
@@ -252,7 +252,7 @@ class Collections extends ApiController
 
         } catch (\Exception $e) {
             $this->rethrowClientError($e);
-            error("Error during DELETE for collection $id with message: {$e->getMessage()}");
+            error("Error during DELETE for collection $id with message: " . $this->clientSafeMessage($e, 'database error'));
         }
 
     } // 

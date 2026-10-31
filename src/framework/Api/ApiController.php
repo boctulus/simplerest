@@ -1327,9 +1327,9 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         } catch (InvalidValidationException $e) { 
             response()->error('Validation Error', 400, json_decode($e->getMessage()));
         } catch (SqlException $e) { 
-            response()->error('SQL Exception', 500, $e->getMessage(), __METHOD__); 
+            response()->error($this->clientSafeMessage($e, 'Resource read failed'), 500); 
         } catch (\PDOException $e) {    
-            response()->error('SQL Exception', 500, $e->getMessage(), __METHOD__); 
+            response()->error($this->clientSafeMessage($e, 'Resource read failed'), 500); 
         } catch (\Exception $e) {
             response()->error($e->getMessage());
         }	    
@@ -2759,7 +2759,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
 
         } catch (\Exception $e) {
             $this->rethrowClientError($e);
-            error("Error during DELETE for $id_name=$id with message: {$e->getMessage()}");
+            error("Error during DELETE for $id_name=$id with message: " . $this->clientSafeMessage($e, 'database error'));
         }
 
     } // 
@@ -2777,6 +2777,20 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         if (is_int($code) && $code >= 400 && $code < 500) {
             throw $e;
         }
+    }
+
+    /*
+        Driver and SQL errors carry the statement, table and column names: log them
+        with context and send the client only $generic. Other messages pass through.
+    */
+    protected function clientSafeMessage(\Throwable $e, string $generic): string
+    {
+        if ($e instanceof \PDOException || $e instanceof SqlException) {
+            error_log(static::class . " database error: " . $e);
+            return $generic;
+        }
+
+        return $e->getMessage();
     }
 
 
