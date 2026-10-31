@@ -84,6 +84,7 @@ class Collections extends ApiController
                 error("Error: creation of collection fails!");
 
         } catch (\Exception $e) {
+            $this->rethrowClientError($e);
             error($e->getMessage());
         }
 
@@ -175,6 +176,7 @@ class Collections extends ApiController
             }
 
         } catch (\Exception $e) {
+            $this->rethrowClientError($e);
             error("Error during update for colection $id with message: {$e->getMessage()}");
         }
     }        
@@ -249,6 +251,7 @@ class Collections extends ApiController
             response()->send(['affected_rows' => $affected]);  
 
         } catch (\Exception $e) {
+            $this->rethrowClientError($e);
             error("Error during DELETE for collection $id with message: {$e->getMessage()}");
         }
 

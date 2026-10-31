@@ -1843,6 +1843,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             error('Validation Error', 400, json_decode($e->getMessage()));
         } catch (\Exception $e) {
             $this->rollbackNestedWriteTransaction();
+            $this->rethrowClientError($e);
             error_log('ApiController POST failed: ' . $e);
             error('Resource creation failed', 500);
         } finally {
@@ -2571,6 +2572,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 $affected = $this->instance->where([$id_name => $id])->update($data);
             } catch (\Throwable $e){
                 $this->rollbackNestedWriteTransaction();
+                $this->rethrowClientError($e);
                 error_log('ApiController PUT/PATCH failed: ' . $e);
                 error('Resource update failed', 500);
             }
@@ -2596,6 +2598,7 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
             error('Resource update failed', 500);
         } catch (\Exception $e) {
             $this->rollbackNestedWriteTransaction();
+            $this->rethrowClientError($e);
             error_log('ApiController PUT/PATCH failed: ' . $e);
             error('Resource update failed', 500);
         } finally {
@@ -2755,10 +2758,26 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
                 error("Record not found", 404);
 
         } catch (\Exception $e) {
+            $this->rethrowClientError($e);
             error("Error during DELETE for $id_name=$id with message: {$e->getMessage()}");
         }
 
     } // 
+
+    /*
+        An exception whose code is an HTTP 4xx is a client-facing refusal (a model
+        invariant, a boundary, a capacity limit). Re-throw it so the configured front
+        error handler answers with that status, instead of flattening it into a
+        generic 500 here. Driver errors keep their own path: PDO codes are strings.
+    */
+    protected function rethrowClientError(\Throwable $e): void
+    {
+        $code = $e->getCode();
+
+        if (is_int($code) && $code >= 400 && $code < 500) {
+            throw $e;
+        }
+    }
 
 
     // It does Not check if 'deleted_at' is in attr_types.

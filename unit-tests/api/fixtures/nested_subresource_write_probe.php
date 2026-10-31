@@ -49,6 +49,8 @@ namespace {
         public static array $nestedPolicy = [];
         public static array $policyCalls = [];
         public static bool $failParentHook = false;
+        public static int $parentHookFailureCode = 0;
+        public static int $modelUpdateFailureCode = 0;
         public static array $deniedRoleIds = [];
         public static ?string $parentUsernameAfterHook = null;
         public static ?string $parentUsernameAfterPostHook = null;
@@ -155,6 +157,9 @@ namespace {
 
         protected function onPostingAfterCheck($id, array &$data)
         {
+            if (NestedSubresourceProbeHarness::$failParentHook) {
+                throw new \RuntimeException('probe parent hook failure', NestedSubresourceProbeHarness::$parentHookFailureCode);
+            }
             if (NestedSubresourceProbeHarness::$parentUsernameAfterPostHook !== null) {
                 $data['username'] = NestedSubresourceProbeHarness::$parentUsernameAfterPostHook;
             }
@@ -163,7 +168,7 @@ namespace {
         protected function onPuttingAfterCheck($id, array &$data)
         {
             if (NestedSubresourceProbeHarness::$failParentHook) {
-                throw new \RuntimeException('probe parent hook failure');
+                throw new \RuntimeException('probe parent hook failure', NestedSubresourceProbeHarness::$parentHookFailureCode);
             }
             if (NestedSubresourceProbeHarness::$parentUsernameAfterHook !== null) {
                 $data['username'] = NestedSubresourceProbeHarness::$parentUsernameAfterHook;
@@ -243,6 +248,15 @@ namespace Boctulus\Simplerest\Models\nested_test {
     class UsersModel extends \Boctulus\Simplerest\Core\Model
     {
         public function __construct(bool $connect = false) { parent::__construct($connect, \Boctulus\Simplerest\Schemas\nested_test\UsersSchema::class); }
+
+        // A model invariant refusing the write, as an application model would.
+        public function update(array $data, $set_updated_at = true)
+        {
+            if (\NestedSubresourceProbeHarness::$modelUpdateFailureCode !== 0) {
+                throw new \DomainException('probe model refusal', \NestedSubresourceProbeHarness::$modelUpdateFailureCode);
+            }
+            return parent::update($data, $set_updated_at);
+        }
     }
 
     class UserRolesModel extends \Boctulus\Simplerest\Core\Model
@@ -286,6 +300,8 @@ namespace {
     \NestedSubresourceProbeHarness::$response = new \NestedSubresourceProbeResponse();
     \NestedSubresourceProbeHarness::$nestedPolicy = $input['nested_policy'] ?? [];
     \NestedSubresourceProbeHarness::$failParentHook = !empty($input['fail_parent_hook']);
+    \NestedSubresourceProbeHarness::$parentHookFailureCode = (int) ($input['parent_hook_failure_code'] ?? 0);
+    \NestedSubresourceProbeHarness::$modelUpdateFailureCode = (int) ($input['model_update_failure_code'] ?? 0);
     \NestedSubresourceProbeHarness::$deniedRoleIds = $input['denied_role_ids'] ?? [];
     \NestedSubresourceProbeHarness::$parentUsernameAfterHook = $input['parent_username_after_hook'] ?? null;
     \NestedSubresourceProbeHarness::$parentUsernameAfterPostHook = $input['parent_username_after_post_hook'] ?? null;
@@ -331,8 +347,14 @@ namespace {
         }
     } catch (\NestedSubresourceProbeHalt $halt) {
     } catch (\Throwable $error) {
-        fwrite(STDERR, get_class($error) . ': ' . $error->getMessage() . PHP_EOL . $error->getTraceAsString() . PHP_EOL);
-        exit(2);
+        // A client error (4xx code) must escape the controller towards the front error handler.
+        $code = $error->getCode();
+        if (is_int($code) && $code >= 400 && $code < 500) {
+            $escaped = ['class' => get_class($error), 'code' => $code, 'message' => $error->getMessage()];
+        } else {
+            fwrite(STDERR, get_class($error) . ': ' . $error->getMessage() . PHP_EOL . $error->getTraceAsString() . PHP_EOL);
+            exit(2);
+        }
     }
 
     $state = [
@@ -351,5 +373,6 @@ namespace {
         ],
         'state' => $state,
         'transaction_open' => $pdo->inTransaction(),
+        'escaped' => $escaped ?? null,
     ], JSON_THROW_ON_ERROR);
 }
