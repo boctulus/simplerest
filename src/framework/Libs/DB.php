@@ -22,15 +22,15 @@ class DB
 	protected static $transactionLevels = [];
 	protected static $default_primary_key_name = 'id';
 
-	const INFOMIX    = 'infomix';
-	const MYSQL      = 'mysql';
-	const SQLITE     = 'sqlite';
-	const SQLSRV     = 'mssql';
-	const PGSQL      = 'pgsql';
-	const DB2        = 'db2';
-	const ORACLE     = 'oracle';
-	const SYBASE     = 'sybase';
-	const FIREBIRD   = 'firebird';
+	const string INFOMIX    = 'infomix';
+	const string MYSQL      = 'mysql';
+	const string SQLITE     = 'sqlite';
+	const string SQLSRV     = 'mssql';
+	const string PGSQL      = 'pgsql';
+	const string DB2        = 'db2';
+	const string ORACLE     = 'oracle';
+	const string SYBASE     = 'sybase';
+	const string FIREBIRD   = 'firebird';
 
 	/*
 		Ej:

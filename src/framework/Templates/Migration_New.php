@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 use Boctulus\Simplerest\Core\Libs\Migration;
 use Boctulus\Simplerest\Core\Libs\Factory;
 use Boctulus\Simplerest\Core\Libs\Schema;

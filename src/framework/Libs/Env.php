@@ -252,7 +252,7 @@ class Env
         return null;
     }
 
-    static function set(string $key = null, $value){
+    static function set(?string $key, $value){
         static::ensureSetup();
         
         static::$data[$key] = $value;

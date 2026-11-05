@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core\Interfaces;
 
 use Boctulus\Simplerest\Core\Security\Snapshot\AclSnapshot;
@@ -26,7 +27,7 @@ interface IAclPolicy
 
     public function getEveryPossibleSpPermissions(): array;
 
-    public function getRolePermissions(string $role_name = null);
+    public function getRolePermissions(?string $role_name = null);
 
     public function getResourcePermissions(string $role, string $resource, $op_type = null): array;
 

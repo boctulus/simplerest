@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core\Security\Engine;
 
 use Boctulus\Simplerest\Core\Security\Contracts\AclEngineInterface;

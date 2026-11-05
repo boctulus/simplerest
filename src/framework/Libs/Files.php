@@ -759,7 +759,7 @@ class Files
 	/*
 		Returns absolute path relative to root path
 	*/
-	static function getAbsolutePath(string $path, string $relative_to =  null){
+	static function getAbsolutePath(string $path, ?string $relative_to =  null){
 		// sin chequear si tiene uso actualmente.
 		if ($relative_to !== null){
 			return static::removeTrailingSlash($relative_to) . DIRECTORY_SEPARATOR . ltrim(ltrim($path, '/'), '\\');

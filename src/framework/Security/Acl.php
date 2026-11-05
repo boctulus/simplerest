@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core\Security;
 
 use Boctulus\Simplerest\Core\Libs\DB;
@@ -561,7 +562,7 @@ abstract class Acl implements IAcl
         return [];
     }    
 
-    public function getRolePermissions(string $role_name = null){
+    public function getRolePermissions(?string $role_name = null){
         if (!is_null($role_name)){
             return $this->role_perms[$role_name];
         } else {
@@ -627,7 +628,7 @@ abstract class Acl implements IAcl
     /*
         Permissions can not be "fresh" if it comes from an Web Token
     */
-    public function getTbPermissions(string $table = null, bool $unpacked = true){
+    public function getTbPermissions(?string $table = null, bool $unpacked = true){
         $current_user_permissions = auth()->getPermissions();
 
         if (empty($current_user_permissions)){
@@ -648,7 +649,7 @@ abstract class Acl implements IAcl
     /*
         Permissions can not be "fresh" if it comes from an Web Token
     */
-    public function getSpPermissions(string $table = null){
+    public function getSpPermissions(?string $table = null){
         $current_user_permissions = auth()->getPermissions();
 
         if (empty($current_user_permissions)){

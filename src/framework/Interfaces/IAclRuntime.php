@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core\Interfaces;
 
 /**
@@ -27,7 +28,7 @@ interface IAclRuntime
 
     public function hasPermission(string $perm, string $resource, $uid = null, $row_id = null): bool;
 
-    public function getTbPermissions(string $table = null, bool $unpacked = true);
+    public function getTbPermissions(?string $table = null, bool $unpacked = true);
 
-    public function getSpPermissions(string $table = null);
+    public function getSpPermissions(?string $table = null);
 }

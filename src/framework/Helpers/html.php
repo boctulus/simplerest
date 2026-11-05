@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 function pre(?string $str = null, ?string $id = null){
     if ($id !== null){
         return "<pre id=\"$id\">$str</str>";

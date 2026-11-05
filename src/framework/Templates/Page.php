@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace NAMESPACE__;
 
 use Boctulus\Simplerest\pages\Page;

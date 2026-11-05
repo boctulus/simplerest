@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 use Boctulus\Simplerest\Core\Libs\ApiClient;
 use Boctulus\Simplerest\Core\Libs\Config;
 use Boctulus\Simplerest\Core\Libs\DB;

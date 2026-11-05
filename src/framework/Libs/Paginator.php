@@ -18,8 +18,8 @@ class Paginator
     protected $query = '';
     protected $binding = [];
 
-    const TOP    = 'TOP';
-    const BOTTOM = 'BOTTOM';
+    const string TOP    = 'TOP';
+    const string BOTTOM = 'BOTTOM';
 
     /*
         Calcula el offset dados el size la page y la page actual
@@ -67,7 +67,7 @@ class Paginator
      * @param int $offset
      * @param int $limit
     */
-    function __construct($attributes = null, array $order = null, int $offset = 0, int $limit = null) {
+    function __construct($attributes = null, ?array $order = null, int $offset = 0, ?int $limit = null) {
         $this->order = $order;
         $this->offset = $offset;
         $this->limit = $limit;

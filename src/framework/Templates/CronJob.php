@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 use Boctulus\Simplerest\Core\Libs\CronJob;
 
 class NAME__ extends CronJob

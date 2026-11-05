@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Url;
@@ -315,7 +316,7 @@ class ApiClient
     /*
         Ejecuta un callback cuano $cond es verdadero
     */
-    function when($cond, callable $fn_success,  callable $fn_fail = null, ...$args){
+    function when($cond, callable $fn_success,  ?callable $fn_fail = null, ...$args){
         if ($cond){
             $fn_success($this, ...$args);
         } elseif ($fn_fail != null){
@@ -1101,7 +1102,7 @@ class ApiClient
     */
 
     // BASIC
-    function setBasicAuth($username = null, $password = null){
+    function setBasicAuth($username = null, #[\SensitiveParameter] $password = null){
         $username = $username ?? $this->username;
         $password = $password ?? $this->password;
         $this->addHeader('Authorization', 'Basic '. base64_encode("$username:$password"));
@@ -1110,7 +1111,7 @@ class ApiClient
     }
 
     // JWT
-    function setJWTAuth($token_jwt){
+    function setJWTAuth(#[\SensitiveParameter] $token_jwt){
         $this->setHeaders([
             "Authorization: Bearer $token_jwt"
         ]);
@@ -1187,7 +1188,7 @@ class ApiClient
 
     */
 
-    public function simpleFtpGet($url, $file_path, $username = '', $password = '')
+    public function simpleFtpGet($url, $file_path, $username = '', #[\SensitiveParameter] $password = '')
 	{
 		// If there is no ftp:// or any protocol entered, add ftp://
 		if ( ! preg_match('!^(ftp|sftp)://! i', $url))
@@ -1229,7 +1230,7 @@ class ApiClient
 		return $this;
 	}
 
-	public function httpLogin($username = '', $password = '', $type = 'any')
+	public function httpLogin($username = '', #[\SensitiveParameter] $password = '', $type = 'any')
 	{
 		$this->option(CURLOPT_HTTPAUTH, constant('CURLAUTH_' . strtoupper($type)));
 		$this->option(CURLOPT_USERPWD, $username . ':' . $password);
@@ -1243,7 +1244,7 @@ class ApiClient
 		return $this;
 	}
 
-	public function proxyLogin($username = '', $password = '')
+	public function proxyLogin($username = '', #[\SensitiveParameter] $password = '')
 	{
 		$this->option(CURLOPT_PROXYUSERPWD, $username . ':' . $password);
 		return $this;

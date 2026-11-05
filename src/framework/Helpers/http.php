@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 use Boctulus\Simplerest\Core\Libs\CorsHandler;
 use Boctulus\Simplerest\Core\Libs\Url;
 use Boctulus\Simplerest\Core\Response;

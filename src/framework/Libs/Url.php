@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Strings;
@@ -502,7 +503,7 @@ class Url
     /*
         @return string|array
     */
-    static function getQueryParam(string $url = null, $param = null, $autodecode = true) {
+    static function getQueryParam(?string $url = null, $param = null, $autodecode = true) {
         if (empty($url)){
             $url = static::currentUrl();
         }

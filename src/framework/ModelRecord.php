@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core;
 
 /** A single persisted row; SQL operations are delegated to the existing Model Query Builder. */

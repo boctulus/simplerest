@@ -70,7 +70,7 @@ class DBRels
      * Implementa get_rels() de Helpers/db.php
      * @entryPoint
      */
-    static function getRels(string $t1, string $t2, string $type, ?string $tenant_id = null, string $relation_str = null)
+    static function getRels(string $t1, string $t2, string $type, ?string $tenant_id = null, ?string $relation_str = null)
     {
         $type = strtolower($type);
 

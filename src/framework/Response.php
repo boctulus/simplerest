@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core;
 
 use Boctulus\Simplerest\Core\Libs\Config;
@@ -60,16 +61,19 @@ class Response implements \ArrayAccess
         static::$instance = $instance;
     }
 
+    #[\Override]
     public function offsetExists(mixed $offset): bool
     {
         return isset($this->data[$offset]);
     }
 
+    #[\Override]
     public function offsetGet(mixed $offset): mixed
     {
         return $this->data[$offset] ?? null;
     }
 
+    #[\Override]
     public function offsetSet(mixed $offset, mixed $value): void
     {
         if ($offset === null) {
@@ -79,6 +83,7 @@ class Response implements \ArrayAccess
         }
     }
 
+    #[\Override]
     public function offsetUnset(mixed $offset): void
     {
         unset($this->data[$offset]);
@@ -184,7 +189,7 @@ class Response implements \ArrayAccess
     {
         $this->header('Content-type:application/json;charset=utf-8');
 
-        $options = $this->pretty ? $this->options | JSON_PRETTY_PRINT : $this->pretty;
+        $options = $this->pretty ? $this->options | JSON_PRETTY_PRINT : 0;
 
         return json_encode($data, $options);
     }

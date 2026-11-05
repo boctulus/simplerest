@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core;
 
 use Boctulus\Simplerest\Core\Exceptions\SchemaException;
@@ -13,10 +14,10 @@ use Boctulus\Simplerest\Core\Traits\SubResourceHandler;
 
 class Model 
 {
-	public const EXECUTION_MODE_NORMAL   = 0;
-	public const EXECUTION_MODE_SIMULATE = 1;
-	public const EXECUTION_MODE_PREVIEW  = 2;
-	public const DECIMAL_AS_STRING = false;
+	public const int EXECUTION_MODE_NORMAL   = 0;
+	public const int EXECUTION_MODE_SIMULATE = 1;
+	public const int EXECUTION_MODE_PREVIEW  = 2;
+	public const bool DECIMAL_AS_STRING = false;
 
 	use ExceptionHandler;
 	use QueryBuilderTrait;

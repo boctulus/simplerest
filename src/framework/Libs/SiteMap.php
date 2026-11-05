@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core\Libs;
 
 use \ReflectionClass;
@@ -50,7 +51,6 @@ class SiteMap
     {
         $routerReflection = new ReflectionClass(WebRouter::class);
         $prop = $routerReflection->getProperty('routes');
-        $prop->setAccessible(true);
         // Recupera il valore della proprietà statica "routes"
         $this->routes = $prop->getValue();
 

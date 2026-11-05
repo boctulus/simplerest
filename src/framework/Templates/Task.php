@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Background\Tasks;
 
 use Boctulus\Simplerest\Core\Libs\Task;

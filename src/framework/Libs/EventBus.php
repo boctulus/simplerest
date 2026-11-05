@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core\Libs;
 
 use Boctulus\Simplerest\Core\Interfaces\ISubject;

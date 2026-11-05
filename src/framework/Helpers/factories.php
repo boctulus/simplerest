@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 use Boctulus\Simplerest\Core\Interfaces\IAcl;
 use Boctulus\Simplerest\Core\Interfaces\IAuth;
 use Boctulus\Simplerest\Core\Libs\Factory;

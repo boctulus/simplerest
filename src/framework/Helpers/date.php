@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 use Boctulus\Simplerest\Core\Libs\Date;
 
 function datetime(string $format = 'Y-m-d H:i:s', $timezone = null){

@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Interfaces\ICommand;
 use Boctulus\Simplerest\Core\Traits\CommandTrait;

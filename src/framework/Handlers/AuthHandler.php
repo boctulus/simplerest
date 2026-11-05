@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 namespace Boctulus\Simplerest\Core\Handlers;
 
 use Boctulus\Simplerest\Core\Libs\Config;
