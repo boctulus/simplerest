@@ -26,7 +26,7 @@ interface IAclPolicy
 
     public function getEveryPossibleSpPermissions(): array;
 
-    public function getRolePermissions(string $role_name = null);
+    public function getRolePermissions(?string $role_name = null);
 
     public function getResourcePermissions(string $role, string $resource, $op_type = null): array;
 

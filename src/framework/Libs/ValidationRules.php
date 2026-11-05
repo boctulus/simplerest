@@ -17,7 +17,7 @@ class ValidationRules
 	}
 
 	// podría recibir una constante
-	public function type(string $type, string $error_msg = null){
+	public function type(string $type, ?string $error_msg = null){
 		$this->rules[$this->current_field]['type'] = $type;
 
 		if ($error_msg != NULL){
@@ -27,7 +27,7 @@ class ValidationRules
 		return $this;
 	}
 
-	public function required(bool $status = true, string $error_msg = null){
+	public function required(bool $status = true, ?string $error_msg = null){
 		$this->rules[$this->current_field]['required'] = $status;
 
 		if ($error_msg != NULL){
@@ -37,7 +37,7 @@ class ValidationRules
 		return $this;
 	}
 
-	public function max($val, string $error_msg = null){
+	public function max($val, ?string $error_msg = null){
 		$this->rules[$this->current_field]['max'] = $val;
 
 		if ($error_msg != NULL){
@@ -47,7 +47,7 @@ class ValidationRules
 		return $this;
 	}
 
-	public function min($val, string $error_msg = null){
+	public function min($val, ?string $error_msg = null){
 		$this->rules[$this->current_field]['min'] = $val;
 
 		if ($error_msg != NULL){
@@ -57,7 +57,7 @@ class ValidationRules
 		return $this;
 	}
 
-	public function between(Array $arr, string $error_msg = null){
+	public function between(Array $arr, ?string $error_msg = null){
 		$this->rules[$this->current_field]['between'] = $arr;
 
 		if ($error_msg != NULL){
@@ -67,7 +67,7 @@ class ValidationRules
 		return $this;
 	}
 
-	public function notBetween(Array $arr, string $error_msg = null){
+	public function notBetween(Array $arr, ?string $error_msg = null){
 		$this->rules[$this->current_field]['not_between'] = $arr;
 
 		if ($error_msg != NULL){
@@ -77,7 +77,7 @@ class ValidationRules
 		return $this;
 	}
 
-	public function in(Array $arr, string $error_msg = null){
+	public function in(Array $arr, ?string $error_msg = null){
 		$this->rules[$this->current_field]['in'] = $arr;
 
 		if ($error_msg != NULL){
@@ -87,7 +87,7 @@ class ValidationRules
 		return $this;
 	}
 
-	public function notIn(Array $arr, string $error_msg = null){
+	public function notIn(Array $arr, ?string $error_msg = null){
 		$this->rules[$this->current_field]['not_in'] = $arr;
 
 		if ($error_msg != NULL){

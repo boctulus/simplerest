@@ -3,7 +3,7 @@
 namespace Boctulus\Simplerest\Core\Exceptions;
 
 class NotFileButDirectoryException extends \Exception {
-    public function __construct($message = null, $code = 0, \Throwable $previous = null) {
+    public function __construct($message = null, $code = 0, ?\Throwable $previous = null) {
         if ($message === null) {
            $message = 'Expected file. Given directory';
         }

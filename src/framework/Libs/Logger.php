@@ -93,10 +93,6 @@ class Logger
 		$custom_path = true;
 		$append      = $append ?? true;
 
-		if ($path != null){
-			Files::writableOrFail($path);
-		}		
-		
 		if ($path === null){
 			$path = LOGS_PATH . static::getLogFilename();
 		} else {
@@ -104,6 +100,8 @@ class Logger
 				$path = LOGS_PATH . $path;
 			}
 		}
+
+		Files::writableOrFail($path);
 
 		if (is_array($data) || is_object($data)){
 			$data = json_encode($data, JSON_UNESCAPED_SLASHES);

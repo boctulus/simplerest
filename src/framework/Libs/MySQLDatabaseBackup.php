@@ -9,9 +9,9 @@ class MySQLDatabaseBackup
 
         Ej:
 
-        MySQLDatabaseBackup::export('localhost', 'dydcolombiacom', 'LFmkvV-,~#oS', 'dydpage', Constants::ETC_PATH . 'backup.sql');
+        MySQLDatabaseBackup::export('db-host', 'db-user', 'db-password', 'db-name', Constants::ETC_PATH . 'backup.sql');
     */    
-    public static function export(string $host, string $username, string $password, string $databaseName, string $outputFile)
+    public static function export(string $host, string $username, #[\SensitiveParameter] string $password, string $databaseName, string $outputFile)
     {
         // Construir el comando mysqldump
         $command = sprintf(

@@ -326,12 +326,12 @@ trait QueryBuilderTrait
 
 	/*
 		Ej:
-		
+
 		$contact = DB::table('contacts')                    
         ->where('id', $id)
         ->asObject()   // devuelve objeto
         ->first();
-        
+
         $newStatus = !$contact->favorite;
 	*/
 	function asObject()
@@ -1014,7 +1014,7 @@ trait QueryBuilderTrait
 
 		https://laravel.com/docs/9.x/queries#where-exists-clauses
 	*/
-	function whereExists(string $q, array $vals = null)
+	function whereExists(string $q, ?array $vals = null)
 	{
 		$this->whereRaw("EXISTS $q", $vals);
 		return $this;
@@ -1113,7 +1113,7 @@ trait QueryBuilderTrait
 		}
 	}
 
-	function distinct(array $fields = null)
+	function distinct(?array $fields = null)
 	{
 		if ($fields !=  null)
 			$this->fields = $fields;
@@ -1138,7 +1138,7 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function toSql(array $fields = null, array $order = null, int $limit = NULL, int $offset = null, bool $existance = false, $aggregate_func = null, $aggregate_field = null, $aggregate_field_alias = NULL)
+	function toSql(?array $fields = null, ?array $order = null, ?int $limit = NULL, ?int $offset = null, bool $existance = false, $aggregate_func = null, $aggregate_field = null, $aggregate_field_alias = NULL)
 	{
 		$this->aggregate_field_alias = $aggregate_field_alias;
 
@@ -1618,7 +1618,7 @@ trait QueryBuilderTrait
 
 			Se supone que cualquier SQL generado y ejecutado sera bindeado
 			asi que debe de pasar por este lugar 
-			
+
 			(excepto claro que se use la clase DB directamente)
 		*/
 
@@ -1874,7 +1874,7 @@ trait QueryBuilderTrait
 		return $alias;
 	}
 
-	function get(array $fields = null, array $order = null, int $limit = NULL, int $offset = null, $pristine = false)
+	function get(?array $fields = null, ?array $order = null, ?int $limit = NULL, ?int $offset = null, $pristine = false)
 	{
 		$this->onReading();
 
@@ -1925,7 +1925,7 @@ trait QueryBuilderTrait
 		return $ret;
 	}
 
-	function first(array $fields = null, $pristine = false)
+	function first(?array $fields = null, $pristine = false)
 	{
 		$this->onReading();
 
@@ -1965,7 +1965,7 @@ trait QueryBuilderTrait
 		return $ret;
 	}
 
-	function firstOrFail(array $fields = null, $pristine = false)
+	function firstOrFail(?array $fields = null, $pristine = false)
 	{
 		$ret = $this->first($fields, $pristine);
 
@@ -1977,12 +1977,12 @@ trait QueryBuilderTrait
 		return $ret;
 	}
 
-	function getOne(array $fields = null, $pristine = false)
+	function getOne(?array $fields = null, $pristine = false)
 	{
 		return $this->first($fields, $pristine);
 	}
 
-	function top(array $fields = null, $pristine = false)
+	function top(?array $fields = null, $pristine = false)
 	{
 		return $this->first($fields, $pristine);
 	}
@@ -2425,7 +2425,7 @@ trait QueryBuilderTrait
 						['id', 50, '<']
 					]
 				],
-				
+
 				[
 					'OR' => [
 						['is_active', 1],
@@ -2437,7 +2437,7 @@ trait QueryBuilderTrait
 						]
 					]
 				],
-				
+
 				['belongs_to', 150, '>']		
 			]	
 		]
@@ -2455,7 +2455,7 @@ trait QueryBuilderTrait
         dd($code);
 
         DB::getConnection("az");
-        
+
         dd(
             eval($code)
         );
@@ -2702,7 +2702,7 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function orWhereRaw(string $q, array $vals = null)
+	function orWhereRaw(string $q, ?array $vals = null)
 	{
 		$this->or(function ($x) use ($q, $vals) {
 			$x->whereRaw($q, $vals);
@@ -2714,7 +2714,7 @@ trait QueryBuilderTrait
 	/*
 		Es un error usar or() ya que depende de group() que afecta solo a los WHERE
 	*/
-	function orHavingRaw(string $q, array $vals = null)
+	function orHavingRaw(string $q, ?array $vals = null)
 	{
 		// $this->or(function($x) use ($q, $vals){
 		// 	$x->HavingRaw($q, $vals);
@@ -2740,7 +2740,7 @@ trait QueryBuilderTrait
 
 	/*
 		In Laravel,	works with Relationships
-		
+
 		The method also works with HasMany, HasManyThrough, BelongsToMany, MorphMany, and MorphToMany relations seamlessly.
 
 		$user->posts()->findOr(1, fn () => '...');
@@ -2845,7 +2845,7 @@ trait QueryBuilderTrait
 		return $this;
 	}
 
-	function _having(array $conditions = null, $group_op = 'AND', $conjunction = null)
+	function _having(?array $conditions = null, $group_op = 'AND', $conjunction = null)
 	{
 		if (Arrays::isAssoc($conditions)) {
 			$conditions = Arrays::nonAssoc($conditions);
@@ -2908,7 +2908,7 @@ trait QueryBuilderTrait
 		// Generaría algo como:
 		// ... HAVING (COUNT(id) > ?) OR (SUM(amount) > ?)
 	*/
-	function havingRaw(string $q, array $vals = null, $conjunction = 'AND')
+	function havingRaw(string $q, ?array $vals = null, $conjunction = 'AND')
 	{
 		if (substr_count($q, '?') != count($vals))
 			throw new \InvalidArgumentException("Number of ? are not consistent with the number of passed values");
@@ -4925,6 +4925,6 @@ trait QueryBuilderTrait
 	// Métodos de inserción con SubRecursos
 	//
 	/////////////////////////////////////////////////////////////
-	
+
 	// ...
 }

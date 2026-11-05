@@ -119,7 +119,7 @@ class Schema
      *
      * @return array  Un arreglo que contiene los nombres de las columnas que representan claves foráneas.
      */
-	static function getFKs(string $table = null, bool $not_table = false, ?string $db = null)
+	static function getFKs(?string $table = null, bool $not_table = false, ?string $db = null)
 	{
 		DB::getConnection();
 
@@ -144,7 +144,7 @@ class Schema
 	}
 
 	// Válido para MySQL, en un solo sentido
-	static function getRelations(string $table = null, bool $not_table = false, string $db = null)
+	static function getRelations(?string $table = null, bool $not_table = false, ?string $db = null)
 	{
 		DB::getConnection();
 
@@ -369,7 +369,7 @@ class Schema
 		return MIGRATIONS_PATH . $filename;
 	}
 
-	static function getDatabases(string $conn_id = null){
+	static function getDatabases(?string $conn_id = null){
 		if ($conn_id != null){
 			DB::getConnection($conn_id);
 		}
@@ -386,7 +386,7 @@ class Schema
 		return $total != 0;
 	}
 
-	static function getTables(string $conn_id = null) {	
+	static function getTables(?string $conn_id = null) {	
 		$config = Config::get();
 		
 		if ($conn_id != null){
@@ -407,7 +407,7 @@ class Schema
 	/*
 		https://arjunphp.com/how-to-get-mysql-table-comments/
 	*/
-	static function getTableComment( string $table, string $conn_id = null) {	
+	static function getTableComment( string $table, ?string $conn_id = null) {	
 		$config = Config::get();
 		
 		if ($conn_id != null){
@@ -427,7 +427,7 @@ class Schema
 	}
 
 	// -- ok
-	static function getColumnComment(string $table, string $field, string $conn_id = null) {	
+	static function getColumnComment(string $table, string $field, ?string $conn_id = null) {	
 		$config = Config::get();
 		
 		if ($conn_id != null){
@@ -471,7 +471,7 @@ class Schema
 		return self::FKcheck(0);
 	}
 
-	static function hasTable(string $tb_name, string $db_name = null)
+	static function hasTable(string $tb_name, ?string $db_name = null)
 	{	
 		$tb_name = tb_prefix() . $tb_name;
 
@@ -629,7 +629,7 @@ class Schema
 		return $this;
 	}
 	
-	function serial(string $name, int $len = NULL){		
+	function serial(string $name, ?int $len = NULL){		
 		$this->current_field = $name;
 		//$this->bigint($name, $len)->unsigned()->auto()->unique();
 		$this->fields[$this->current_field]['type'] = 'SERIAL';
@@ -736,7 +736,7 @@ class Schema
 		return $this->varchar($name, $len);
 	}
 	
-	function text(string $name, int $len = NULL){
+	function text(string $name, ?int $len = NULL){
 		if ($len > 65535)
 			throw new \InvalidArgumentException("Max length is 65535");
 		
@@ -1190,7 +1190,7 @@ class Schema
 
 		if (!in_array($type, ['PRIMARY', 'UNIQUE', 'INDEX', 'FULLTEXT', 'SPATIAL']))
 			throw new \InvalidArgumentException("Invalid index $type");
-		
+
 		$this->indices[$this->current_field] = $type;
 		//dd($this->indices);
 	}
@@ -1715,7 +1715,7 @@ class Schema
 				$default	= NULL;
 				$auto 		= NULL;
 				$check 		= NULL;
-				
+
 				$field      = Strings::slice($str, '/`([a-z_]+)`/i');
 				$type       = Strings::slice($str, '/([a-z_]+)/i');
 
@@ -1733,7 +1733,7 @@ class Schema
 
 				$charset    = Strings::slice($str, '/CHARACTER SET ([a-z0-9_]+)/');
 				$collation  = Strings::slice($str, '/COLLATE ([a-z0-9_]+)/');
-				
+
 				$default    = Strings::slice($str, '/DEFAULT ([a-zA-Z0-9_\(\)]+)/');
 				//dd($default, "DEFAULT($field)");
 
@@ -1748,7 +1748,7 @@ class Schema
 				$unsigned = Strings::slice($str, '/(unsigned)/i', $to_lo) == 'unsigned';
 				$zerofill = Strings::slice($str, '/(zerofill)/i', $to_lo) == 'zerofill';
 				$binary   = Strings::slice($str, '/(binary)/i'  , $to_lo) == 'binary';
-	
+
 				$attr = [];
 
 				if ($unsigned != null){
@@ -1763,10 +1763,10 @@ class Schema
 					$attr[] = 'binary';
 				}
 
-					
+
 				//if (strlen($str)>1)
 				//	throw new \Exception("Parsing error!");				
-				
+
 				/*
 				dd($field, 'FIELD ***');
 				dd($lines[$i], 'LINES');
@@ -1781,7 +1781,7 @@ class Schema
 				dd($check, 'CHECK');
 				echo "-----------\n";
 				*/
-								
+
 
 				$this->prev_schema['fields'][$field]['type'] = strtoupper($type);
 				$this->prev_schema['fields'][$field]['auto'] = $auto; 
@@ -1798,7 +1798,7 @@ class Schema
 			}else{
 				// Son índices de algún tipo
 				//dd($str, 'STR');
-				
+
 				$constraint = Strings::slice($str, '/CONSTRAINT `([a-zA-Z0-9_]+)` /', function($s){
 					return ($s != null) ? $s : 'DEFAULT';
 				});
@@ -1814,28 +1814,28 @@ class Schema
 					PRI KEY Con nombre: 
 						CONSTRAINT `pk_id` PRIMARY KEY (`id`,`co`) USING BTREE
 
-					
+
 					https://stackoverflow.com/a/3303836/980631
 
 				*/
 				$primary = Strings::slice($str, '/PRIMARY KEY \(`([a-zA-Z0-9_]+)`\)/');	// revisar
 
 				/*
-			
+
 					Compuesto:
 						UNIQUE KEY `correo` (`correo`,`hora`) USING BTREE,
 
 				*/
 				$unique  = Strings::sliceAll($str, '/UNIQUE KEY `([a-zA-Z0-9_]+)` \(`([a-zA-Z0-9_]+)`\)/');  // revisar				
-				
+
 				/*
 					Indices
 				*/
-		
+
 				$spatial  = Strings::sliceAll($str, '/SPATIAL KEY `([a-zA-Z0-9_]+)` \(([a-zA-Z0-9_`,]+)\)/');
 
 				$fulltext = Strings::sliceAll($str, '/FULLTEXT KEY `([a-zA-Z0-9_]+)` \(([a-zA-Z0-9_`,]+)\)/');
-		
+
 				/*
 					IDEM
 
@@ -1846,8 +1846,8 @@ class Schema
 				$ix_type 			= Strings::slice($str, '/USING (BTREE|HASH)/');
 				$algorithm_option	= Strings::slice($str, '/ALGORITHM[ ]?[=]?[ ]?(DEFAULT|INPLACE|COPY)/');
 				$lock_option		= Strings::slice($str, '/LOCK[ ]?[=]?[ ]?(DEFAULT|NONE|SHARED|EXCLUSIVE)/');
-				
-				
+
+
 				/*
 					CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 
@@ -1889,7 +1889,7 @@ class Schema
 
 				// [CONSTRAINT [symbol]] CHECK (expr) [[NOT] ENFORCED]	
 			$check   = Strings::sliceAll($str, '/CHECK \((.*)\) (ENFORCED|NOT ENFORCED)/');
-			
+
 			/*
 					Sin probar (req. MySQL 8.0+)
 
@@ -1915,7 +1915,7 @@ class Schema
 					$prev_schema['checks'] [$constraint] [] = $check;   
 				} else {	
 					$check   = Strings::slice($str, '/CHECK \((.*)\)/');
-				
+
 					if ($check != null){
 						$prev_schema['checks'] [$constraint] [] = [$check]; 
 					}	
@@ -1931,11 +1931,11 @@ class Schema
 					return ($val != null);
 				});
 				*/
-				
+
 
 				//dd($str, "RESIDUO DE STR for {$lines[$i]}");					
 
-				
+
 				if ($primary != NULL){
 					$this->prev_schema['indices'][$primary] = 'PRIMARY';
 				} elseif ($unique != NULL){
@@ -1949,7 +1949,7 @@ class Schema
 				}
 
 				// Probar en lugar del bloque anterior:
-				
+
 				// if ($primary != NULL){	
 				// 	$tmp = explode(',',$primary);
 				// 	$this->prev_schema['indices']['PRIMARY'] [$constraint ] = [

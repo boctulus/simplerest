@@ -1132,7 +1132,7 @@ class Strings
 		return [];
 	}
 
-	static function ifMatch(string $str, $pattern, callable $fn_success, callable $fn_fail = NULL){
+	static function ifMatch(string $str, $pattern, callable $fn_success, ?callable $fn_fail = NULL){
 		if (preg_match($pattern, $str, $matches)){
 			return call_user_func($fn_success, $matches);
 		} else if (is_callable($fn_fail)){
@@ -1152,7 +1152,7 @@ class Strings
 		En caso de entregarse un callback, se aplica sobre la salida.
 	*/
 	
-    static function slice(string &$str, string $pattern, callable $output_fn = NULL) {
+    static function slice(string &$str, string $pattern, ?callable $output_fn = NULL) {
 		if (!preg_match('|\((.*)\)|', $pattern)){
 			throw new \Exception("Invalid regex expression '$pattern'. It should contains a (group)");
 		}
@@ -2380,8 +2380,8 @@ class Strings
     {
         $previous = $str;
         for ($i = 0; $i < $iterations; $i++) {
-            $decoded = utf8_decode($previous);
-			
+            $decoded = mb_convert_encoding($previous, 'ISO-8859-1', 'UTF-8');
+
             if ($decoded === $previous) {
                 break;
             }

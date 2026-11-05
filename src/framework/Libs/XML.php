@@ -120,7 +120,7 @@ class XML
             [1] => <div class="content">Content 2</div>
         )
     */
-    static function extractNodes(string $html, string $selector, string $attribute = null): array {
+    static function extractNodes(string $html, string $selector, ?string $attribute = null): array {
         $dom = static::getDocument($html);
         $xpath = new \DOMXPath($dom);
         $nodes = $xpath->query($selector);

@@ -90,7 +90,7 @@ class Request  implements \ArrayAccess, Arrayable
                 if (isset($_SERVER['QUERY_STRING'])){
                     static::$query_arr = url::queryString();
                 }
-                
+
                 /*
                     Accept encoding
 
@@ -107,7 +107,7 @@ class Request  implements \ArrayAccess, Arrayable
                 $headers = static::getHeaders();
 
                 $accept_encoding_header = $headers['accept-encoding'] ?? null;
-                
+
                 if (!empty($accept_encoding_header)){
                     static::$accept_encoding = $accept_encoding_header;
                 } else {
@@ -115,7 +115,7 @@ class Request  implements \ArrayAccess, Arrayable
                         static::$accept_encoding = Arrays::shift(static::$accept_encoding, 'accept_encoding');
                     }
                 }                
-                
+
                 /*
                     Content-Type
 
@@ -127,7 +127,7 @@ class Request  implements \ArrayAccess, Arrayable
 
                 if (!empty($content_type_header)){
                     static::$content_type = $content_type_header;
-                    
+
                 } else {
                     if (!empty(static::$query_arr["content_type"])){
                         static::$content_type = Arrays::shift(static::$accept_encoding, 'content_type');
@@ -149,11 +149,11 @@ class Request  implements \ArrayAccess, Arrayable
                     : static::$raw;
 
                 static::$headers = $headers;
-                
+
             }
             static::$instance = new static();
         }
-        
+
         return self::$instance; // cambio de static a self 11-mar-2025
     }
 
@@ -345,7 +345,7 @@ class Request  implements \ArrayAccess, Arrayable
         return in_array('deflate', explode(',', static::acceptEncoding() ?? ''));
     }
 
-    function getQuery(string $key = null)
+    function getQuery(?string $key = null)
     {
         $query = $this->immutable_query ?? static::$query_arr ?? [];
         if ($key == null)
@@ -418,7 +418,7 @@ class Request  implements \ArrayAccess, Arrayable
     }
 
     // getter destructivo sobre $query_arr
-    function shiftQuery($key, $default_value = NULL, callable $fn = null)
+    function shiftQuery($key, $default_value = NULL, ?callable $fn = null)
     {
         if ($this->immutable_query !== null) {
             $out = $this->immutable_query[$key] ?? $default_value;
