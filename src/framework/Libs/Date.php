@@ -273,6 +273,8 @@ class Date
             $diff = $weekday - $w1;
             return $d1->modify("+$diff days")->format($format);
         }
+
+        throw new \LogicException('Unreachable weekday branch');
     }
 
     // https://stackoverflow.com/a/14505065
