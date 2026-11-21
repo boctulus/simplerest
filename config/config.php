@@ -206,6 +206,7 @@ return [
 	'pre_activated' => true,
 
 	'email' => [
+		'ca_bundle' => Env::get('MAIL_CA_BUNDLE'),
 		'from'		=> [
 			'address' 		=> Env::get('MAIL_DEFAULT_FROM_ADDR'), 
 			'name' 			=> Env::get('MAIL_DEFAULT_FROM_NAME')
@@ -232,9 +233,31 @@ return [
 				// 	]
 				// ]
 			],
+
+			'brevo' => [
+				'SMTPOptions' => Env::get('MAIL_CA_BUNDLE') ? ['ssl' => ['cafile' => Env::get('MAIL_CA_BUNDLE')]] : [],
+				'Host'			=> Env::get('MAIL_HOST_BREVO'),
+				'Port'			=> Env::get('MAIL_PORT_BREVO'),
+				'Username' 		=> Env::get('MAIL_USERNAME_BREVO'),
+				'Password' 		=> Env::get('MAIL_PASSWORD_BREVO'),
+				'SMTPSecure'	=> Env::get('MAIL_ENCRYPTION_BREVO'),
+				'SMTPAuth' 		=> Env::get('MAIL_AUTH_BREVO'),
+				'SMTPDebug' 	=> 3,
+				'CharSet' 		=> 'UTF-8',
+				'Debugoutput' 	=> 'html',
+
+				// // Extras
+				// 'SMTPOptions'   => [
+				// 	'ssl' => [
+				// 		'verify_peer' => false,
+				// 		'verify_peer_name' => false,
+				// 		'allow_self_signed' => true
+				// 	]
+				// ]
+			],
 		],
 
-		'mailer_default'       => 'google',
+		'mailer_default'       => 'brevo',
 		// 'mailer_class_default' =>  Mail::class
 	],
 
@@ -292,6 +315,7 @@ return [
 	'google_console_api_key' => Env::get('GOOGLE_CONSOLE_API_KEY'),
 	'google_maps_api_key'    => Env::get('GOOGLE_MAPS_API_KEY'),
 	
+	'brevo_api_key' => Env::get('BREVO_API_KEY') ?: Env::get('SENDINBLUE_API_KEY'),
 	'sendinblue_api_key' => Env::get('SENDINBLUE_API_KEY'),
 
 	'google_auth'  => [

@@ -7,6 +7,9 @@
     "php": ">=8.1,<8.5",
     "ext-curl": "*",
     "doctrine/inflector": "^2.0",
+    "getbrevo/brevo-php": "^5.0",
+    "guzzlehttp/guzzle": "^7.9",
+    "phpmailer/phpmailer": "^6.9 || ^7.1",
     "symfony/css-selector": "^6.4",
     "symfony/dom-crawler": "^6.4"
   },
@@ -30,6 +33,7 @@
     "classmap": [
       "packages/boctulus/simplerest-scaffolding/src/",
       "packages/boctulus/simplerest-api-clients/src/",
+      "packages/boctulus/simplerest-brevo/src/",
       "packages/boctulus/simplerest-i18n/src/",
       "packages/boctulus/simplerest-bootstrap/src/",
       "packages/boctulus/simplerest-codereducer/src/",

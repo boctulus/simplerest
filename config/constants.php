@@ -78,7 +78,7 @@ if (!defined('MODULES_PATH')){
 }
 
 if (!defined('PACKAGES_PATH')){
-    define('PACKAGES_PATH', APP_PATH . 'Packages' . DIRECTORY_SEPARATOR);
+    define('PACKAGES_PATH', ROOT_PATH . 'packages' . DIRECTORY_SEPARATOR);
 }
 
 if (!defined('CRONOS_PATH')){

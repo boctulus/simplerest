@@ -3155,8 +3155,8 @@ abstract class BaseMakeCommand extends BaseCommand
             return;
         }
 
-        $basePath = $destination ?: PACKAGES_PATH;
-        $packagePath = $basePath . "{$authorSlug}/{$packageSlug}/";
+        $basePath = rtrim($destination ?: PACKAGES_PATH, '/\\') . DIRECTORY_SEPARATOR;
+        $packagePath = $basePath . "{$authorSlug}" . DIRECTORY_SEPARATOR . "{$packageSlug}" . DIRECTORY_SEPARATOR;
 
         if (file_exists($packagePath)) {
             StdOut::print("Package already exists at: $packagePath");

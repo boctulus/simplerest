@@ -1,0 +1,17 @@
+{
+    "name": "boctulus/simplerest-brevo",
+    "description": "BREVO for SimpleRest",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["simplerest", "mail", "smtp", "brevo"],
+    "require": {
+        "php": ">=8.1,<8.5",
+        "getbrevo/brevo-php": "^5.0",
+        "guzzlehttp/guzzle": "^7.9",
+        "boctulus/simplerest-mail": "^2.0 || ^3.0",
+        "boctulus/simplerest": "^2.0 || ^3.0"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}

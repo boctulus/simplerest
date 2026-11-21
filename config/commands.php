@@ -43,5 +43,6 @@ return [
      */
     'cross_aliases' => [
         'make acl' => 'acl make',
+        'make package' => 'packages make',
     ],
 ];
