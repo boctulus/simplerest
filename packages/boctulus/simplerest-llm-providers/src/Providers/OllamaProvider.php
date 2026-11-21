@@ -18,16 +18,19 @@ public $client;
 
 const DEFAULT_PORT = 11434;
 
-public function __construct()
-{
-    $this->client = ApiClient::instance()
-        ->setBaseUrl('http://localhost:' . self::DEFAULT_PORT)
-        ->setHeaders([
-            'Content-Type' => 'application/json'
-        ])
-        ->enablePostRequestCache()
-        ->decode();
-}
+    public function __construct()
+    {
+        $this->client = ApiClient::instance()
+            ->setBaseUrl('http://localhost:' . self::DEFAULT_PORT)
+            ->setHeaders([
+                'Content-Type' => 'application/json'
+            ])
+            ->enablePostRequestCache()
+            ->decode();
+
+        $this->client->setTimeOut((int) (getenv('OLLAMA_TIMEOUT') ?: 300));
+        $this->client->setConnectionTimeOut(10);
+    }
 
 public function getClient()
 {
@@ -94,27 +97,54 @@ public function exec(?string $model = null): array
         $prompt .= $msg['content'] . "\n";
     }
 
+    $params = $this->params;
+    if (isset($params['max_tokens'])) {
+        $params['num_predict'] = $params['max_tokens'];
+        unset($params['max_tokens']);
+    }
+
+    $options = array_merge([
+        'num_ctx' => (int) (getenv('OLLAMA_NUM_CTX') ?: 4096),
+        'num_predict' => (int) (getenv('OLLAMA_NUM_PREDICT') ?: 256),
+    ], $params['options'] ?? []);
+
+    foreach (['num_ctx', 'num_predict', 'temperature', 'top_p', 'top_k', 'repeat_penalty'] as $key) {
+        if (array_key_exists($key, $params)) {
+            $options[$key] = $params[$key];
+            unset($params[$key]);
+        }
+    }
+    unset($params['options']);
+
     $data = array_merge([
         'model' => $modelToUse,
         'prompt' => $prompt,
-        'stream' => false,  // Deshabilitar streaming para obtener respuesta completa
-    ], $this->params);
+        'stream' => false,
+        'keep_alive' => getenv('OLLAMA_KEEP_ALIVE') ?: '10m',
+        'options' => $options,
+    ], $params);
 
     try {
         $this->client->setBody($data)->post('/api/generate');
 
+        $response = $this->client->getResponse();
+        $status = $this->client->getStatus();
+
         $this->response = [
-            'status' => $this->client->getStatus(),
+            'status' => $status,
             'error' => $this->client->getError(),
-            'data' => $this->client->getResponse()
+            'data' => $response
         ];
 
-        if (is_string($this->response['data'])) {
-            $this->response['data'] = json_decode($this->response['data'], true);
+        $body = is_array($response) && isset($response['data']) ? $response['data'] : $response;
+        if (is_string($body)) {
+            $body = json_decode($body, true);
         }
 
-        if (isset($this->response['data']['error'])) {
-            $this->error_msg = $this->response['data']['error'];
+        if (is_array($body) && isset($body['error'])) {
+            $this->error_msg = $body['error'];
+        } elseif ($status >= 400) {
+            $this->error_msg = $this->response['error'] ?: "HTTP {$status}";
         }
 
     } catch (\Exception $e) {

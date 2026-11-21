@@ -28,7 +28,7 @@
       "src/framework/Templates/"
     ]
   },
-  "version": "3.0.4",
+  "version": "3.0.5",
   "extra": {
     "branch-alias": {
       "dev-master": "3.0.x-dev"

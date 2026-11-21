@@ -229,11 +229,13 @@ class ApiClient
     }
 
     function setTimeOut(int $value){
-        $this->option(CURLOPT_TIMEOUT, $value); 
+        $this->option(CURLOPT_TIMEOUT, $value);
+        return $this;
     }
 
     function setConnectionTimeOut(int $value){
-        $this->option(CURLOPT_CONNECTTIMEOUT, $value); 
+        $this->option(CURLOPT_CONNECTTIMEOUT, $value);
+        return $this;
     }
     
     function setUrl($url){
@@ -620,8 +622,8 @@ class ApiClient
         curl_setopt($this->curl, CURLOPT_URL, $url);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_ENCODING, '' );
-        curl_setopt($this->curl, CURLOPT_TIMEOUT, 0); // Sin límite de tiempo para la solicitud
-        curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, 0); // Sin límite de tiempo para la conexión
+        curl_setopt($this->curl, CURLOPT_TIMEOUT, $options[CURLOPT_TIMEOUT] ?? 300);
+        curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $options[CURLOPT_CONNECTTIMEOUT] ?? 10);
 
         curl_setopt($this->curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $http_verb);
