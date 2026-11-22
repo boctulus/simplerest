@@ -7,7 +7,10 @@ param(
         'boctulus/simplerest-bootstrap-html',
         'boctulus/simplerest-web-inspection',
         'boctulus/simplerest-api-clients',
-        'boctulus/simplerest-llm-providers'
+        'boctulus/simplerest-llm-providers',
+        'boctulus/simplerest-cli',
+        'boctulus/simplerest-i18n',
+        'boctulus/simplerest-jwt-auth'
     )]
     [string]$Package,
 
@@ -51,6 +54,21 @@ $packageDefinitions = @{
         Path = 'packages/boctulus/simplerest-api-clients'
         Repository = 'boctulus/simplerest-api-clients'
         Remote = 'git@github.com:boctulus/simplerest-api-clients.git'
+    }
+    'boctulus/simplerest-cli' = @{
+        Path = 'packages/boctulus/simplerest-cli'
+        Repository = 'boctulus/simplerest-cli'
+        Remote = 'git@github.com:boctulus/simplerest-cli.git'
+    }
+    'boctulus/simplerest-i18n' = @{
+        Path = 'packages/boctulus/simplerest-i18n'
+        Repository = 'boctulus/simplerest-i18n'
+        Remote = 'git@github.com:boctulus/simplerest-i18n.git'
+    }
+    'boctulus/simplerest-jwt-auth' = @{
+        Path = 'packages/boctulus/simplerest-jwt-auth'
+        Repository = 'boctulus/simplerest-jwt-auth'
+        Remote = 'git@github.com:boctulus/simplerest-jwt-auth.git'
     }
     'boctulus/simplerest-llm-providers' = @{
         Path = 'packages/boctulus/simplerest-llm-providers'
