@@ -59,7 +59,7 @@ class SetRoleCommand extends BaseUsersCommand
             if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
         }
 
-        $userId  = $user[$this->idField];
+        $userId  = $user[$this->idField()];
         $roleRow = DB::table('roles')->where(['name' => $role])->first();
         if (!$roleRow) { echo "✗ Rol '{$role}' no existe.\n"; return; }
 

@@ -53,7 +53,7 @@ class DisableUserCommand extends BaseUsersCommand
             if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
         }
 
-        $this->updateUser($user[$this->idField], [$this->isActiveField => 0]);
+        $this->updateUser($user[$this->idField()], [$this->isActiveField => 0]);
         echo "✓ Usuario {$label} deshabilitado.\n";
     }
 }

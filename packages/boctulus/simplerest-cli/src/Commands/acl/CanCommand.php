@@ -49,7 +49,7 @@ class CanCommand extends BaseAclCommand
             return;
         }
 
-        $uid = $user[$this->idField];
+        $uid = $user[$this->idField()];
         $ctx = $this->buildUserAclContext($uid);
 
         /** @var \Boctulus\FineGrainedACL\Acl $acl */

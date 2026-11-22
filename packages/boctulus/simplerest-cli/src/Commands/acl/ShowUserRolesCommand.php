@@ -35,7 +35,7 @@ class ShowUserRolesCommand extends BaseAclCommand
         $user = $this->requireUser($parsed);
         if (!$user) return;
 
-        $uid   = $user[$this->idField];
+        $uid   = $user[$this->idField()];
         $roles = $this->getUserRoles($uid);
 
         echo "Roles de {$user[$this->emailField]}:\n";

@@ -5,23 +5,35 @@ use Boctulus\Simplerest\Core\Libs\DB;
 
 abstract class BaseUsersCommand extends BaseCommand
 {
-    protected string $usersTable;
-    protected string $idField;
+    private ?string $usersTableName = null;
+    private ?string $idFieldName = null;
     protected string $emailField      = 'email';
     protected string $usernameField   = 'username';
     protected string $passwordField   = 'password';
     protected string $confirmedField  = 'confirmed_email';
     protected string $isActiveField   = 'is_active';
 
+    // Subclasses call parent::__construct(); BaseCommand declares no constructor.
     public function __construct()
     {
-        $this->usersTable = get_users_table();
-        $this->idField    = get_id_name($this->usersTable);
+    }
+
+    /**
+     * Resolved on first use: listing or describing commands must not need a database or schemas.
+     */
+    protected function usersTable(): string
+    {
+        return $this->usersTableName ??= get_users_table();
+    }
+
+    protected function idField(): string
+    {
+        return $this->idFieldName ??= get_id_name($this->usersTable());
     }
 
     protected function getUserByEmail(string $email): ?array
     {
-        return DB::table($this->usersTable)
+        return DB::table($this->usersTable())
             ->unhide(['password'])
             ->where([$this->emailField => $email])
             ->first() ?: null;
@@ -29,15 +41,15 @@ abstract class BaseUsersCommand extends BaseCommand
 
     protected function getUserById(int $id): ?array
     {
-        return DB::table($this->usersTable)
+        return DB::table($this->usersTable())
             ->unhide(['password'])
-            ->where([$this->idField => $id])
+            ->where([$this->idField() => $id])
             ->first() ?: null;
     }
 
     protected function getUserByUsername(string $username): ?array
     {
-        return DB::table($this->usersTable)
+        return DB::table($this->usersTable())
             ->unhide(['password'])
             ->where([$this->usernameField => $username])
             ->first() ?: null;
@@ -53,7 +65,7 @@ abstract class BaseUsersCommand extends BaseCommand
         }
         $vals[] = $id;
         DB::statement(
-            "UPDATE `{$this->usersTable}` SET " . implode(', ', $parts) . " WHERE `{$this->idField}` = ?",
+            "UPDATE `{$this->usersTable()}` SET " . implode(', ', $parts) . " WHERE `{$this->idField()}` = ?",
             $vals
         );
     }

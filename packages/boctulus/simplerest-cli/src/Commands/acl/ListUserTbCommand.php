@@ -35,7 +35,7 @@ class ListUserTbCommand extends BaseAclCommand
         $user = $this->requireUser($parsed);
         if (!$user) return;
 
-        $uid  = $user[$this->idField];
+        $uid  = $user[$this->idField()];
         $rows = $this->getUserTbPerms($uid);
 
         echo "Resource permissions (user_tb_permissions) de {$user[$this->emailField]}:\n";

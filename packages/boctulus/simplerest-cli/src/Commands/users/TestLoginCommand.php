@@ -54,7 +54,7 @@ class TestLoginCommand extends BaseUsersCommand
             $label = "'{$email}'";
             if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
         } else {
-            $user  = DB::table($this->usersTable)
+            $user  = DB::table($this->usersTable())
                 ->unhide(['password'])
                 ->where($this->usernameField, $username)
                 ->first();
@@ -66,8 +66,8 @@ class TestLoginCommand extends BaseUsersCommand
 
         if (password_verify($pass, $hash)) {
             echo "✓ Login exitoso para {$label}\n";
-            echo "  ID:     {$user[$this->idField]}\n";
-            echo "  Rol:    " . ($this->getUserRole($user[$this->idField]) ?? 'N/A') . "\n";
+            echo "  ID:     {$user[$this->idField()]}\n";
+            echo "  Rol:    " . ($this->getUserRole($user[$this->idField()]) ?? 'N/A') . "\n";
             echo "  Activo: " . (($user[$this->isActiveField] ?? 1) ? '✓' : '✗') . "\n";
         } else {
             echo "✗ Credenciales inválidas para {$label}.\n";

@@ -54,7 +54,7 @@ class RemoveRoleCommand extends BaseAclCommand
             return;
         }
 
-        $uid    = $user[$this->idField];
+        $uid    = $user[$this->idField()];
         $roleId = $role['id'];
 
         $exists = $this->withDb(fn() =>

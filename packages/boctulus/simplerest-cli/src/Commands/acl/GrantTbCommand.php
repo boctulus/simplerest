@@ -68,7 +68,7 @@ class GrantTbCommand extends BaseAclCommand
             return;
         }
 
-        $uid = $user[$this->idField];
+        $uid = $user[$this->idField()];
 
         if ($dryRun) {
             $fields = array_map(fn($a) => self::ACTION_FIELDS[$a] . '=1', $actions);

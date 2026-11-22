@@ -53,7 +53,7 @@ class VerifyEmailCommand extends BaseUsersCommand
             if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
         }
 
-        $this->updateUser($user[$this->idField], [$this->confirmedField => 1]);
+        $this->updateUser($user[$this->idField()], [$this->confirmedField => 1]);
         echo "✓ Email {$label} marcado como verificado.\n";
     }
 }

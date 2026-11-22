@@ -73,7 +73,7 @@ class ReplaceTbCommand extends BaseAclCommand
             return;
         }
 
-        $uid = $user[$this->idField];
+        $uid = $user[$this->idField()];
 
         // Build full replacement set (all fields NULL except requested)
         $data = array_fill_keys(array_values(self::ACTION_FIELDS), null);

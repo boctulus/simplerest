@@ -70,11 +70,11 @@ class ListUsersCommand extends BaseUsersCommand
         $roleFilter   = $this->opt($parsed, 'role');
         $disabledOnly = $this->opt($parsed, 'disabled_only', false);
 
-        $query = DB::table($this->usersTable)
+        $query = DB::table($this->usersTable())
             ->select([
-                $this->usersTable . '.' . $this->idField,
-                $this->usersTable . '.' . $this->emailField,
-                $this->usersTable . '.name',
+                $this->usersTable() . '.' . $this->idField(),
+                $this->usersTable() . '.' . $this->emailField,
+                $this->usersTable() . '.name',
                 $this->isActiveField,
                 $this->confirmedField,
             ]);
@@ -85,7 +85,7 @@ class ListUsersCommand extends BaseUsersCommand
 
         if ($roleFilter) {
             $query = $query
-                ->join('user_roles', $this->usersTable . '.' . $this->idField, '=', 'user_roles.user_id')
+                ->join('user_roles', $this->usersTable() . '.' . $this->idField(), '=', 'user_roles.user_id')
                 ->join('roles', 'user_roles.role_id', '=', 'roles.id')
                 ->where('roles.name', $roleFilter);
         }
@@ -105,7 +105,7 @@ class ListUsersCommand extends BaseUsersCommand
 
             $rows[] = [
                 ($active ? "\033[32m✓\033[0m" : "\033[31m✗\033[0m"),
-                "\033[36m" . $u[$this->idField] . "\033[0m",
+                "\033[36m" . $u[$this->idField()] . "\033[0m",
                 $email ? "\033[33m{$email}\033[0m" : "\033[90m-\033[0m",
                 ($u['name'] ?? '') ? "\033[1m{$u['name']}\033[0m" : "\033[90m-\033[0m",
                 ($verified ? "\033[32m✓\033[0m" : "\033[31m✗\033[0m"),

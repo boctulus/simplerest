@@ -1,7 +1,7 @@
 ---
 title: CLI, skeleton y publicación de docs/skills para proyectos consumidores (estilo Laravel)
-current_step: "Paso 1 completado; siguiente: vendor/bin/simplerest init"
-next_step: "Paso 2: vendor/bin/simplerest init (bootstrap mínimo en proyectos existentes)"
+current_step: Pasos 1, 2 y 2b completados; correcciones del core aplicadas
+next_step: "Paso 3: grupo publish (docs/skills) y sync-resources"
 parallelizable_steps: []
 parent: null
 global_complexity: high
@@ -48,7 +48,8 @@ Decisión del maintainer (2026-11-22): seguir el modelo de Laravel.
 ## Pasos planificados
 
 1. ✅ **Paquete `simplerest-cli` con los comandos** (2026-11-22: 10 grupos movidos con `git mv`; `php com` y la ayuda de cada grupo son idénticos a la línea base; `unit-tests/command` 11/11; tests del paquete 2/2. Se corrigió además `migrations make`, que hacía `require_once` de `../make/MigrationCommand.php`, un archivo inexistente; ahora usa la clase de scaffolding o falla con un mensaje claro): mover los grupos aprobados y habilitar el paquete en el monorepo. Prueba: `php com` lista los mismos grupos antes y después, y corren los tests existentes de los comandos.
-2. **`vendor/bin/simplerest init`**: stubs de bootstrap a partir de los archivos actuales del monorepo (`com`, `app.php`, `config/`, `scripts/init/boot`), sin datos sensibles ni configuración local. Prueba: en un consumidor limpio con `composer require`, `init` y luego `php com` y `php com migrations help` funcionan, y correr `init` dos veces no pisa nada.
+2. ✅ **`vendor/bin/simplerest init`** (2026-11-22: `stubs/project/` + `Installer` + `bin/simplerest`. En un consumidor limpio, `php com` lista 12 grupos y `GET /system/health` devuelve 200, y un segundo `init` no escribe nada; tests del paquete 7/7. Ajustes: el CLI requiere `simplerest-i18n`; `acl`/`users` resuelven la tabla de usuarios recién cuando se ejecutan, no al listarse; `config/acl.php` y `scripts/init/boot` no se generan; el defecto de `trans()` del core queda en `docs/issues/core-calls-i18n-trans-without-dependency.md`. Pendiente para el paso 4: `HomeController`/vista para `GET /`): stubs de bootstrap a partir de los archivos actuales del monorepo (`com`, `app.php`, `config/`, `scripts/init/boot`), sin datos sensibles ni configuración local. Prueba: en un consumidor limpio con `composer require`, `init` y luego `php com` y `php com migrations help` funcionan, y correr `init` dos veces no pisa nada.
+2b. ✅ **Piezas base de aplicación en `init`** (2026-11-22: completado y verificado; ver la sección de aceptación del incidente. Pendiente: un ACL público, que es decisión del maintainer) (agregado tras el incidente [`consumer-composer-require-bootstrap-2026-11-22`](../issues/consumer-composer-require-bootstrap-2026-11-22.md)): `.htaccess`, `MyModel`, `MyAuthController`, `UsersModel`, `HomeController` con su vista, y las migraciones base (`migrations`, `users`, `roles`, `user_roles`, permisos, `api_keys`, …). Prueba: `php com migrations migrate` crea las tablas base en una base vacía.
 3. **Grupo `publish` (docs/skills) y `sync-resources`**: allowlist, manifiesto con hashes, `--force` y test de sincronización.
 4. **`simplerest-skeleton`**: `composer create-project` desde un repositorio VCS local; luego `php com`, `docs/framework/` y `.agents/skills/` presentes y `GET /` responde.
 5. **Docs**: `docs/packages/`, `docs/cli/README.md`, `docs/getting-started` y la sección de releases de `composer-release-process.md`.

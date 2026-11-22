@@ -34,7 +34,7 @@ class UpdateEmailCommand extends BaseUsersCommand
         $uid      = $this->opt($parsed, 'uid');
         $newEmail = $this->opt($parsed, 'email');
 
-        $user = DB::table($this->usersTable)->where([$this->idField => $uid])->first();
+        $user = DB::table($this->usersTable())->where([$this->idField() => $uid])->first();
         if (!$user) { echo "✗ Usuario con ID '{$uid}' no encontrado.\n"; return; }
 
         if ($this->getUserByEmail($newEmail)) {

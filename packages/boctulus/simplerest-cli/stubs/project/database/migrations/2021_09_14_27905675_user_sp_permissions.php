@@ -1,0 +1,56 @@
+<?php
+
+use Boctulus\Simplerest\Core\Interfaces\IMigration;
+use Boctulus\Simplerest\Core\Libs\Config;
+use Boctulus\Simplerest\Core\Libs\Schema;
+
+use Boctulus\Simplerest\Core\Libs\DBRels;
+
+/*
+    User capabilities (sp_permissions) table migration
+
+    Define 'business permissions' para un usuario dado su id.
+
+    Responde a:
+
+    ¿Qué acciones de negocio puede ejecutar el usuario?
+*/
+class UserSpPermissionsCreation implements IMigration
+{
+    /**
+	* Run migration.
+    *
+    * @return void
+    */
+    public function up()
+    {
+        get_default_connection();
+
+        $sc = (new Schema('user_sp_permissions'))
+
+        ->setEngine('InnoDB')
+        ->setCharset('utf8')
+        ->setCollation('utf8_general_ci')
+
+        ->integer('id')->auto()->pri()
+        ->integer('sp_permission_id')->index()
+        ->integer('user_id')->index()
+        ->integer ('created_by')->nullable()->index()
+        ->datetime('created_at')
+        ->integer('updated_by')->nullable()->index()
+        ->datetime('updated_at')->nullable();
+
+        /*
+            Esta debe depender del nombre de la tabla users y del id de dicha tabla 
+        */
+
+        $users_table = Config::get()['users_table'];
+        $users_pri   = get_id_name($users_table);
+
+        $sc->foreign('user_id')->references($users_pri)->on($users_table)->onDelete('cascade');
+        $sc->foreign('sp_permission_id')->references('id')->on('sp_permissions')->onDelete('cascade');
+
+        $res = $sc->create();
+    }
+}
+

@@ -65,7 +65,7 @@ class DeleteUserCommand extends BaseUsersCommand
             return;
         }
 
-        $this->updateUser($user[$this->idField], [$this->isActiveField => 0]);
+        $this->updateUser($user[$this->idField()], [$this->isActiveField => 0]);
         echo "✓ Usuario {$label} deshabilitado.\n";
     }
 }

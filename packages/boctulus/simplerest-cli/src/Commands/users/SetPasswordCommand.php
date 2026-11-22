@@ -57,7 +57,7 @@ class SetPasswordCommand extends BaseUsersCommand
             $label = "'{$email}'";
         }
 
-        $this->updateUser($user[$this->idField], [
+        $this->updateUser($user[$this->idField()], [
             $this->passwordField => password_hash($newPass, PASSWORD_DEFAULT),
         ]);
         echo "✓ Contraseña actualizada para {$label}.\n";

@@ -53,7 +53,7 @@ class EnableUserCommand extends BaseUsersCommand
             if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
         }
 
-        $this->updateUser($user[$this->idField], [$this->isActiveField => 1]);
+        $this->updateUser($user[$this->idField()], [$this->isActiveField => 1]);
         echo "✓ Usuario {$label} habilitado.\n";
     }
 }

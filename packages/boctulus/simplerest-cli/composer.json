@@ -1,16 +1,23 @@
 {
     "name": "boctulus/simplerest-cli",
-    "description": "General-purpose `php com` command groups (migrations, SQL, ACL, users, roles, routing, files, system) for SimpleRest applications",
+    "description": "General-purpose php com command groups and the `simplerest init` application bootstrap for SimpleRest projects",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=8.1,<8.5",
-        "boctulus/simplerest": "^3.0"
+        "boctulus/simplerest": "^3.0",
+        "boctulus/simplerest-i18n": "^1.0"
     },
     "suggest": {
-        "boctulus/simplerest-scaffolding": "Required by `migrations make` and `migrations migrate --make` to generate migration, schema and model files"
+        "boctulus/simplerest-scaffolding": "Required by `migrations make` and `migrations migrate --make` to generate migration, schema and model files",
+        "boctulus/simplerest-jwt-auth": "Provides AuthController, which the generated app/Controllers/MyAuthController extends; required for API requests"
     },
     "autoload": {
-        "classmap": ["src/"]
-    }
+        "classmap": [
+            "src/"
+        ]
+    },
+    "bin": [
+        "bin/simplerest"
+    ]
 }

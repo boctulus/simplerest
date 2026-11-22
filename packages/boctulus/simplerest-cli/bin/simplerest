@@ -1,0 +1,53 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+// Composer >= 2.2 exposes the project autoloader to vendor binaries.
+$autoload = $GLOBALS['_composer_autoload_path'] ?? null;
+foreach ([$autoload, __DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $candidate) {
+    if (is_string($candidate) && is_file($candidate)) {
+        require_once $candidate;
+        break;
+    }
+}
+
+if (!class_exists(\Boctulus\Simplerest\Cli\Installer::class)) {
+    fwrite(STDERR, "Composer autoloader not found. Run `composer install` first." . PHP_EOL);
+    exit(1);
+}
+
+$args = array_slice($argv, 1);
+$command = $args[0] ?? 'help';
+$dryRun = in_array('--dry-run', $args, true);
+
+if ($command !== 'init') {
+    echo <<<TXT
+Usage: vendor/bin/simplerest init [--dry-run]
+
+  init       Create the application bootstrap (com, app.php, index.php, config/, .env)
+             in the current Composer project. Existing files are never overwritten.
+  --dry-run  Show what would be created without writing anything.
+
+TXT;
+    exit($command === 'help' || $command === '--help' ? 0 : 1);
+}
+
+try {
+    $report = (new \Boctulus\Simplerest\Cli\Installer())->init(getcwd(), $dryRun);
+} catch (\Throwable $e) {
+    fwrite(STDERR, $e->getMessage() . PHP_EOL);
+    exit(1);
+}
+
+foreach ($report as $entry) {
+    printf("%-6s %s\n", $entry['action'], $entry['path']);
+}
+
+$skipped = count(array_filter($report, static fn (array $entry): bool => $entry['action'] === 'SKIP'));
+echo PHP_EOL . ($dryRun ? 'Dry run: nothing was written.' : 'Done.')
+    . ($skipped > 0 ? " {$skipped} existing file(s) were kept unchanged." : '') . PHP_EOL;
+
+if (!$dryRun) {
+    echo 'Next: edit .env, then run `php com`.' . PHP_EOL;
+}

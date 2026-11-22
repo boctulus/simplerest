@@ -35,7 +35,7 @@ class ListUserSpCommand extends BaseAclCommand
         $user = $this->requireUser($parsed);
         if (!$user) return;
 
-        $uid   = $user[$this->idField];
+        $uid   = $user[$this->idField()];
         $perms = $this->getUserSpPerms($uid);
 
         echo "Special permissions de {$user[$this->emailField]}:\n";

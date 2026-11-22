@@ -9,14 +9,26 @@ use Boctulus\Simplerest\Core\Security\Domain\CapabilityTypeResolver;
 
 abstract class BaseAclCommand extends BaseCommand
 {
-    protected string $usersTable;
-    protected string $idField;
+    private ?string $usersTableName = null;
+    private ?string $idFieldName = null;
     protected string $emailField = 'email';
 
+    // Subclasses call parent::__construct(); BaseCommand declares no constructor.
     public function __construct()
     {
-        $this->usersTable = get_users_table();
-        $this->idField    = get_id_name($this->usersTable);
+    }
+
+    /**
+     * Resolved on first use: listing or describing commands must not need a database or schemas.
+     */
+    protected function usersTable(): string
+    {
+        return $this->usersTableName ??= get_users_table();
+    }
+
+    protected function idField(): string
+    {
+        return $this->idFieldName ??= get_id_name($this->usersTable());
     }
 
     // --- User resolution ---
@@ -24,7 +36,7 @@ abstract class BaseAclCommand extends BaseCommand
     protected function getUserByEmail(string $email): ?array
     {
         return withDefaultConnection(fn() =>
-            DB::table($this->usersTable)
+            DB::table($this->usersTable())
                 ->where([$this->emailField => $email])
                 ->first() ?: null
         );

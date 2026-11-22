@@ -56,7 +56,7 @@ class AddDenyCommand extends BaseAclCommand
             return;
         }
 
-        $uid = $user[$this->idField];
+        $uid = $user[$this->idField()];
 
         $exists = $this->withDb(fn() =>
             DB::table('user_deny_permissions')

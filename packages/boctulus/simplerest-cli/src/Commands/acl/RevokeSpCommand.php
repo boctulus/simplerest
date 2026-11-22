@@ -54,7 +54,7 @@ class RevokeSpCommand extends BaseAclCommand
             return;
         }
 
-        $uid  = $user[$this->idField];
+        $uid  = $user[$this->idField()];
         $spId = $sp['id'];
 
         $exists = $this->withDb(fn() =>

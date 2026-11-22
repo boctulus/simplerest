@@ -35,7 +35,7 @@ class ListDenyCommand extends BaseAclCommand
         $user = $this->requireUser($parsed);
         if (!$user) return;
 
-        $uid  = $user[$this->idField];
+        $uid  = $user[$this->idField()];
         $rows = $this->getUserDenyPerms($uid);
 
         echo "Deny rules de {$user[$this->emailField]}:\n";

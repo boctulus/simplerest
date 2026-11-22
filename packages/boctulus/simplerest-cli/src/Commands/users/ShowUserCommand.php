@@ -54,7 +54,7 @@ class ShowUserCommand extends BaseUsersCommand
             if (!$user) { echo "✗ Usuario '{$email}' no encontrado.\n"; return; }
         }
 
-        $id       = $user[$this->idField];
+        $id       = $user[$this->idField()];
         $active   = ($user[$this->isActiveField]  ?? 1) ? '✓' : '✗';
         $verified = ($user[$this->confirmedField]  ?? 0) ? '✓' : '✗';
         $role     = $this->getUserRole($id);

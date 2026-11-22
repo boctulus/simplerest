@@ -66,7 +66,7 @@ class RevokeTbCommand extends BaseAclCommand
             return;
         }
 
-        $uid = $user[$this->idField];
+        $uid = $user[$this->idField()];
 
         $existing = $this->withDb(fn() =>
             DB::table('user_tb_permissions')

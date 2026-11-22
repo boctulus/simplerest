@@ -51,7 +51,7 @@ class ResolveCommand extends BaseAclCommand
         $only   = $this->opt($parsed, 'only');
         $format = $this->opt($parsed, 'format', 'text');
 
-        $uid = $user[$this->idField];
+        $uid = $user[$this->idField()];
         $ctx = $this->buildUserAclContext($uid);
 
         $acl          = $ctx['acl'];

@@ -61,7 +61,7 @@ class CreateUserCommand extends BaseUsersCommand
             'created_at'          => date('Y-m-d H:i:s'),
         ];
 
-        $id = DB::table($this->usersTable)->create($data);
+        $id = DB::table($this->usersTable())->create($data);
 
         if ($id) {
             echo "✓ Usuario creado exitosamente\n";

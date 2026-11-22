@@ -41,12 +41,12 @@ class ListUserRolesCommand extends BaseAclCommand
         $roleFilter = $parsed['role'] ?? null;
 
         $rows = $this->withDb(function () use ($roleFilter) {
-            $q = DB::table($this->usersTable)
-                ->leftJoin('user_roles', "{$this->usersTable}.{$this->idField}", '=', 'user_roles.user_id')
+            $q = DB::table($this->usersTable())
+                ->leftJoin('user_roles', "{$this->usersTable()}.{$this->idField()}", '=', 'user_roles.user_id')
                 ->leftJoin('roles', 'user_roles.role_id', '=', 'roles.id')
                 ->select([
-                    "{$this->usersTable}.{$this->idField} as user_id",
-                    "{$this->usersTable}.{$this->emailField} as email",
+                    "{$this->usersTable()}.{$this->idField()} as user_id",
+                    "{$this->usersTable()}.{$this->emailField} as email",
                     'user_roles.role_id',
                     'roles.name as role',
                 ]);
