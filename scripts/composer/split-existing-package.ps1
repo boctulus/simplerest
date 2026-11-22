@@ -10,7 +10,9 @@ param(
         'boctulus/simplerest-llm-providers',
         'boctulus/simplerest-cli',
         'boctulus/simplerest-i18n',
-        'boctulus/simplerest-jwt-auth'
+        'boctulus/simplerest-jwt-auth',
+        'boctulus/simplerest-basic-acl',
+        'boctulus/simplerest-fine-grained-acl'
     )]
     [string]$Package,
 
@@ -69,6 +71,16 @@ $packageDefinitions = @{
         Path = 'packages/boctulus/simplerest-jwt-auth'
         Repository = 'boctulus/simplerest-jwt-auth'
         Remote = 'git@github.com:boctulus/simplerest-jwt-auth.git'
+    }
+    'boctulus/simplerest-basic-acl' = @{
+        Path = 'packages/boctulus/simplerest-basic-acl'
+        Repository = 'boctulus/simplerest-basic-acl'
+        Remote = 'git@github.com:boctulus/simplerest-basic-acl.git'
+    }
+    'boctulus/simplerest-fine-grained-acl' = @{
+        Path = 'packages/boctulus/simplerest-fine-grained-acl'
+        Repository = 'boctulus/simplerest-fine-grained-acl'
+        Remote = 'git@github.com:boctulus/simplerest-fine-grained-acl.git'
     }
     'boctulus/simplerest-llm-providers' = @{
         Path = 'packages/boctulus/simplerest-llm-providers'
