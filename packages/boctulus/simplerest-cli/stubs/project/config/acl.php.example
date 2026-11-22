@@ -24,11 +24,9 @@ if (!$acl_cache || is_file($acl_file) !== true) {
     $acl = new Acl();
 
     $acl
-    ->addRole('guest', 1) 
-    ->addSpecialPermissions([
-        'read_all',
-        'write_all',
-    ])
+    // Anonymous requests: no permissions by default. Grant only what must be public,
+    // e.g. ->addResourcePermissions('products', ['read'])
+    ->addRole('guest', 1)
     ->setAsGuest('guest')
 
     ->addRole('registered', 2)

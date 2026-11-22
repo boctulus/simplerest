@@ -16,7 +16,7 @@ composer require boctulus/simplerest-basic-acl
    ],
    ```
 
-2. Create `config/acl.php` that returns the ACL instance (`Factory::acl()` includes it):
+2. Create `config/acl.php` that returns the ACL instance (`Factory::acl()` includes it). The roles come from the `roles` table, so do not add them again with `addRole()`; assign permissions to the existing roles with the `$to_role` argument:
 
    ```php
    <?php
@@ -25,17 +25,16 @@ composer require boctulus/simplerest-basic-acl
 
    $acl = new Acl();
 
-   $acl->addRole('guest', 1)
-       ->setAsGuest('guest')
-       ->addRole('registered', 2)
-       ->addRole('admin', 1000)
-       ->addInherit('registered')
-       ->addSpecialPermissions(['read_all', 'write_all']);
+   $acl->setAsGuest('guest')
+       ->addResourcePermissions('products', ['read'], 'registered')
+       ->addSpecialPermissions(['read_all', 'write_all'], 'admin');
 
    return $acl;
    ```
 
-3. The `roles` table must exist. The base migrations from `vendor/bin/simplerest init` (`boctulus/simplerest-cli`) create it.
+   A role without permissions, such as `guest` above, gets HTTP 401 from the generated API.
+
+3. The `roles` table must exist and contain the roles you reference. The base migrations from `vendor/bin/simplerest init` (`boctulus/simplerest-cli`) create and seed it.
 
 ## Requirements
 
