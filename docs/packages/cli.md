@@ -66,7 +66,7 @@ Creado el 2026-11-22 al mover los grupos desde `app/Commands/` con `git mv`; en 
 
 `make any all` no sobrescribe el `UsersModel` generado por `init`.
 
-Para que la API responda hace falta un ACL concreto: `Core\Security\Acl` es abstracto. Hay que instalar un paquete ACL, copiar `config/acl.php.example` a `config/acl.php` y registrar el provider del paquete en `config/config.php`. Los paquetes ACL existentes figuran como privados; véase el punto 10 del [incidente](../issues/consumer-composer-require-bootstrap-2026-11-22.md).
+Para que la API responda hace falta un ACL concreto: `Core\Security\Acl` es abstracto. Hay que instalar un paquete ACL, copiar `config/acl.php.example` a `config/acl.php` y registrar el provider del paquete en `config/config.php`. `config/acl.php.example` está escrito para `boctulus/simplerest-fine-grained-acl`; para `boctulus/simplerest-basic-acl` sigue el ejemplo de su README. Los dos son públicos en Packagist desde el 2026-11-23. Desde `simplerest-cli` `v1.0.1`, el rol `guest` del ejemplo no tiene permisos. En `v1.0.0` tenía `read_all` y `write_all`, o sea escritura anónima en todas las tablas; un proyecto creado con `v1.0.0` debe revisar su `config/acl.php`.
 
 Si falta una ruta de `config/autoload.php` o el directorio de helpers del core, `app.php` termina con un mensaje que nombra esa ruta, no con una excepción de `DirectoryIterator`.
 
@@ -84,4 +84,10 @@ php vendor/bin/simplerest init
 php com
 ```
 
-La API generada requiere además un paquete ACL; ninguno es público todavía. El plan de distribución (entry point `vendor/bin/simplerest init`, publicación de docs y skills, skeleton) está en [`docs/to-do/consumer-cli-skeleton-laravel-style.md`](../to-do/consumer-cli-skeleton-laravel-style.md).
+La API generada requiere además un paquete ACL (`composer require boctulus/simplerest-fine-grained-acl`, más `config/acl.php` y el provider). Hay un detalle: fine-grained sincroniza los roles de `config/acl.php` con la tabla `roles` la primera vez que se carga el ACL, así que `php com acl assign-role --role=admin` falla con "Rol no existe" hasta que se haga un primer pedido a la API.
+
+Recorrido verificado el 2026-11-23 con todo instalado solo desde Packagist, en una base vacía:
+- migraciones, generador y `users create-user`/`enable`/`verify-email`;
+- `POST /api/v1/auth/login` con `username`, que devolvió 200 con un token JWT;
+- como admin, `GET /api/v1/roles` 200 (con `orderBy` y `fields`) y `POST` 201;
+- como guest, 401. El plan de distribución (entry point `vendor/bin/simplerest init`, publicación de docs y skills, skeleton) está en [`docs/to-do/consumer-cli-skeleton-laravel-style.md`](../to-do/consumer-cli-skeleton-laravel-style.md).

@@ -120,6 +120,22 @@ Publication of the first extension packages, `v1.0.0` (2026-11-22, authorized by
 
 `scripts/composer/packagist-register.php` reads `PACKAGIST_USERNAME` and `PACKAGIST_API_TOKEN` from `.env`. Creating a package needs the main token; the update action also accepts the safe token. The script sends the token only in the `Authorization` header, never prints it, and runs as a dry run unless `--confirm` is given. On a Windows machine whose HTTPS traffic is re-signed by a local certificate, it verifies TLS against the operating system's CA store (`CURLSSLOPT_NATIVE_CA`) instead of disabling verification.
 
+Publication of the ACL packages and `simplerest-cli` `v1.0.1` (2026-11-23, authorized by the maintainer). Before release, `simplerest-basic-acl` and `simplerest-fine-grained-acl` were changed from `proprietary` to MIT (the maintainer's choice) and received a LICENSE and a README. Source commit `6c731adef3c272fd5b8b84f4c2738657fc5ce89d`; split, check and push followed the same procedure as above.
+
+| Package | Repository | Tag | Commit |
+| --- | --- | --- | --- |
+| `boctulus/simplerest-basic-acl` | new, public | `v1.0.0` | `a126597945d53830e8a36d1f75b60800a1262010` |
+| `boctulus/simplerest-fine-grained-acl` | new, public | `v1.0.0` | `09c60d44547d02d13fa1acbeb1906b9514e92b2f` |
+| `boctulus/simplerest-cli` | `main` fast-forwarded from `v1.0.0` | `v1.0.1` | `5f3ffd8128d303a8c219d75f6da41d920e653ef3` |
+
+- **Changes in this release:** `basic-acl` now registers the permission state of the roles it loads from `roles`, and the CLI ACL example no longer grants `read_all`/`write_all` to `guest`.
+- **Packagist:** both ACL packages were registered with the `create` action, and the CLI was refreshed with the `update` action. Packagist resolved all three to the commits above.
+- **Final Packagist-only consumer:** a new project on a new disposable schema, `sr_accept_test_20261123`, with core `3.0.6`, cli `1.0.1`, i18n, jwt-auth, scaffolding and fine-grained-acl.
+  - `init`, the 15 migrations and `make any all` ran.
+  - A test user was created, enabled, verified and given the admin role.
+  - Guest got 401 on `GET`/`POST /api/v1/roles`. `POST /api/v1/auth/login` returned 200 with a JWT; with it, `GET /api/v1/roles` (`orderBy`, `fields`) returned 200 and `POST` returned 201. `GET /` returned 200.
+- **basic-acl:** verified the same way before its push (guest 401, admin 200/201).
+
 > The current scope and evidence are recorded in **Current scope and status**. The implementation record farther below is historical; its package inventory, FriendlyPOS status, and GoProp conclusions predate the 2026-10-23 scope reset.
 
 ## Current scope and status (2026-10-23)
@@ -137,7 +153,7 @@ commits were not changed, and no package was published or tagged by this rename.
 | Public extension catalog | The six successor repositories are public on GitHub with validated package trees on `main`. No successor version tags or Packagist entries have been created. |
 | Package boundaries | Bootstrap HTML owns `Bt5Form`, `AdminLte`, and `BootstrapPaginator`; Web Inspection owns `DomCrawler` and CMS detection; API Clients owns Google Drive, WooCommerce, OneSignal, and Hugging Face. PHP class namespaces and core compatibility names remain intact. |
 | Core release gate | Core `3.0.0` remains untagged. GoProp's full migration test is still pending; GoProp was not modified. Its consumer fixture now includes Bootstrap HTML and Web Inspection. |
-| Private or test scope | Keep Basic ACL and Fine-Grained ACL private; keep Shopify Connector and Exchange Rate private; retain DummyAPI and Web Test as test packages. A full AdminLTE dashboard or app shell remains outside the public Bootstrap HTML package. |
+| Private or test scope | (Superseded for the ACL packages on 2026-11-23: the maintainer published them under MIT; see the publication record above.) Keep Basic ACL and Fine-Grained ACL private; keep Shopify Connector and Exchange Rate private; retain DummyAPI and Web Test as test packages. A full AdminLTE dashboard or app shell remains outside the public Bootstrap HTML package. |
 | Removed from SimpleRest | FriendlyPOS, OpenFactura SDK, Zippy, and the unused CLI Test package. FriendlyPOS and OpenFactura are maintained with Haulmer in `sr-haulmer`; their old application tests are outside this release gate. No vendored code was restored. |
 
 The six successor repositories were split from source commit `7cb44199e717e2485f0b1bee357ccaa402016412`. Each GitHub `main` points to the listed split commit, and each split tree hash matches its package directory at that source commit. The repositories were empty before publication; no tags were pushed.
