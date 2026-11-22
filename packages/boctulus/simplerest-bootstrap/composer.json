@@ -17,7 +17,8 @@
             "Boctulus\\Simplerest\\Integrations\\Libs\\": "src/"
         },
         "files": [
-            "src/legacy_aliases.php"
+            "src/legacy_aliases.php",
+            "src/helpers.php"
         ]
     },
     "scripts": {

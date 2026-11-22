@@ -31,7 +31,15 @@ class Factory {
 		static $instance;
 
 		if ($instance == null){
-			$instance = include CONFIG_PATH . 'acl.php';
+			$file = CONFIG_PATH . 'acl.php';
+			if (!is_file($file)) {
+				throw new \RuntimeException(
+					"ACL configuration not found: {$file}. Install an ACL package that extends "
+					. Acl::class . " and create config/acl.php that returns its instance (see config/acl.php.example)."
+				);
+			}
+
+			$instance = include $file;
 		}
 
         return $instance;

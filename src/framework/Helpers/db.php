@@ -148,22 +148,6 @@ function get_model_instance_by_table(string $table_name, $fetch_mode = 'ASSOC', 
     );
 }
 
-function get_api_name($resource_name, $api_ver = null){
-    global $api_version;
-
-    if ($api_ver !== null){
-        $api_version = 'v'.$api_ver;
-    }
-
-    if (!Strings::startsWith('\\'. Config::get('namespace') . '\\',$resource_name)){
-        $api = get_api_namespace($resource_name);
-    } else {
-        $api = $resource_name;
-    }
-
-    return $api;
-}
-
 /*
     Miscelaneous helpers
 */

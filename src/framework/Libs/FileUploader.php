@@ -4,7 +4,6 @@ namespace Boctulus\Simplerest\Core\Libs;
 
 use Boctulus\Simplerest\Core\Libs\Files;
 use Boctulus\Simplerest\Core\Libs\Arrays;
-use Boctulus\Simplerest\Core\Libs\Numbers;
 use Boctulus\Simplerest\Core\Libs\Config;
 
 /*

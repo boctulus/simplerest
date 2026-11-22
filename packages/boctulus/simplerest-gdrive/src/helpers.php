@@ -2,7 +2,7 @@
 
 use Boctulus\Simplerest\Core\Libs\Url;
 use Boctulus\Simplerest\Core\Libs\Strings;
-use Boctulus\Simplerest\Core\Libs\GoogleDrive;
+use Boctulus\Simplerest\Integrations\Libs\GoogleDrive;
 
 /*
     Terminar Cache 

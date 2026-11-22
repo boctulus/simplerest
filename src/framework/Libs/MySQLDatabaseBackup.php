@@ -9,7 +9,7 @@ class MySQLDatabaseBackup
 
         Ej:
 
-        MySQLDatabaseBackup::export('localhost', 'dydcolombiacom', 'LFmkvV-,~#oS', 'dydpage', Constants::ETC_PATH . 'backup.sql');
+        MySQLDatabaseBackup::export('localhost', 'db_user', 'db_password', 'db_name', Constants::ETC_PATH . 'backup.sql');
     */    
     public static function export(string $host, string $username, string $password, string $databaseName, string $outputFile)
     {

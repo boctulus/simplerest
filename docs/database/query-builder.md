@@ -39,6 +39,10 @@ Scalar conditions supplied through `where()` add placeholders and values for the
 
 `getBindings()` exposes the builder's collected values. `toSql()` compiles the query without executing it. The static `query($raw_sql, ...)` method is a separate raw SQL path; it should not be confused with the fluent query compiler.
 
+## Identifier quoting
+
+Since 2026-11-22 the builder quotes plain column names, optionally table-qualified, with the driver's identifier delimiters (`DB::quote()`). This applies to `WHERE` (including `IN`), the `SELECT` and `GROUP BY` lists, `ORDER BY` from the paginator, `INSERT` column lists and `UPDATE ... SET`. Reserved words such as `key` therefore work as column names. Anything that is not a plain identifier is emitted unchanged: functions (`LOWER(name)`, `COUNT(*)`), aliases (`name as nombre`), names that are already quoted, and the raw forms (`whereRaw()`, `selectRaw()`, `orderByRaw()`). The bare names are still kept in the where-variable list, because validation and type detection look them up. Regression tests: `unit-tests/query-builder/QueryBuilderWhereIdentifierQuotingTest.php`. The SQL normalizer that the tests use (`UnitTestCaseSQLTrait::normalizeSQL()`) now strips quotes before it sorts `SELECT` fields.
+
 ## Selection, joins, ordering, and grouping
 
 `select()` accepts a field list, an array, or comma-separated string; `addSelect()` appends one field and `selectRaw()` adds a raw projection. `distinct()` can add distinct fields. `join()`, `leftJoin()`, `rightJoin()`, `crossJoin()`, `naturalJoin()`, and `joinRaw()` cover the declared join forms. `joinTo()` and `connectTo()` use relationship metadata and the sub-resource path; inferred relationship behavior remains partial and depends on schema configuration.

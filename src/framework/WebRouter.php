@@ -96,7 +96,36 @@ class WebRouter
         return static::getInstance();
     }
 
+    /**
+     * Dispatches the current request. An exception from a route or controller
+     * is logged and answered with HTTP 500 (with its message and location when
+     * 'debug' is on) instead of ending as an empty HTTP 200.
+     */
     public static function resolve()
+    {
+        try {
+            static::resolveRoute();
+        } catch (\Throwable $e) {
+            static::respondWithException($e);
+        }
+    }
+
+    protected static function respondWithException(\Throwable $e): void
+    {
+        error_log('SimpleRest WebRouter: ' . get_class($e) . ': ' . $e->getMessage()
+            . ' in ' . $e->getFile() . ':' . $e->getLine() . PHP_EOL . $e->getTraceAsString());
+
+        $debug = (bool) (Config::get()['debug'] ?? false);
+
+        Response::getInstance()->error(
+            $debug ? $e->getMessage() : 'Internal server error',
+            500,
+            $debug ? get_class($e) . ' in ' . $e->getFile() . ':' . $e->getLine() : null,
+            $debug ? $e->getFile() . ':' . $e->getLine() : null
+        );
+    }
+
+    protected static function resolveRoute()
     {
         if (is_cli()){
             return;
@@ -127,7 +156,10 @@ class WebRouter
             if (is_callable($ck)){
                 // Se la rotta es una closure, la ejecuto directamente.
                 $data = $ck(...$args);
-                $res->set($data);
+                // null keeps what the route already set with response()->send()
+                if ($data !== null) {
+                    $res->set($data);
+                }
             } else {
                 // Rotta che richiama un controller.
                 [$class_name, $method] = static::$ctrls[$req_method][$uri];
@@ -153,12 +185,15 @@ class WebRouter
                 $controller_obj = new $class_name();
                 $data = call_user_func_array([$controller_obj, $method], $args);
 
-                $res->set($data);
+                // null keeps what the controller already set with response()->send()
+                if ($data !== null) {
+                    $res->set($data);
+                }
             }
 
-            // if (!headers_sent()){
-            //     $res->flush();
-            // }
+            if (!headers_sent()){
+                $res->flush();
+            }
             exit;
 
         } else {
@@ -245,7 +280,10 @@ class WebRouter
 
                 if (is_callable($ck)){
                     $data = $ck(...$args);
-                    $res->set($data);
+                    // null keeps what the route already set with response()->send()
+                    if ($data !== null) {
+                        $res->set($data);
+                    }
                 } else {
                     [ $class_name, $method ] = static::$ctrls[$req_method][$uri];
 

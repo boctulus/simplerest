@@ -1,0 +1,5 @@
+Como creo una app entonces? / Tengo ya un create-project?
+---
+Hubieron muchisimos problemas al hacer el composer require de boctulus/simplerest que quiero documentes. (php com fatal DirectoryIterator ../src/framework/Helpers; faltaba com, documentacion basica, configuracion, paquetes basicos; carpeta monorepo mal ubicada; feedback del agente: faltaban .htaccess, MyModel, MyAuthController, UsersModel, migraciones base; ApiController usa clases de impersonacion inexistentes; WebRouter se traga excepciones; key sin escapar en WHERE; default() sin comillas; __TB_ sin resolver; namespace del generador en minuscula; send() vs sendJson())
+---
+Autorizo que hagas las correcciones de una vez. El informe tambien se ha volcado en D:\laragon\www\quality\docs\framework\SimpleRest-Composer-Integration-Findings.md

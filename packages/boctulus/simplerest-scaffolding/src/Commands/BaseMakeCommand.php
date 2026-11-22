@@ -645,7 +645,8 @@ abstract class BaseMakeCommand extends BaseCommand
 
     function controller($name, ...$opt)
     {
-        $namespace = $this->namespace . '\\controllers';
+        // Namespaces match the PSR-4 directory case (app/Controllers): Linux autoload is case-sensitive.
+        $namespace = $this->namespace . '\\Controllers';
         $dest_path = CONTROLLERS_PATH;
         $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
@@ -656,7 +657,7 @@ abstract class BaseMakeCommand extends BaseCommand
 
     function console($name, ...$opt)
     {
-        $namespace = $this->namespace . '\\controllers';
+        $namespace = $this->namespace . '\\Controllers';
         $dest_path = CONTROLLERS_PATH;
         $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
@@ -667,7 +668,7 @@ abstract class BaseMakeCommand extends BaseCommand
 
     function middleware($name, ...$opt)
     {
-        $namespace = $this->namespace . '\\middlewares';
+        $namespace = $this->namespace . '\\Middlewares';
         $dest_path = MIDDLEWARES_PATH;
         $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
@@ -689,7 +690,7 @@ abstract class BaseMakeCommand extends BaseCommand
 
     function task($name, ...$opt)
     {
-        $namespace = $this->namespace . '\\jobs\\tasks';
+        $namespace = $this->namespace . '\\Background\\Tasks';
         $dest_path = TASKS_PATH;
         $template_path = self::TEMPLATES . ucfirst(__FUNCTION__) . '.php';
         $prefix = '';
@@ -2075,7 +2076,8 @@ abstract class BaseMakeCommand extends BaseCommand
             */
             if (preg_match('/^--(class_name|class)[=|:]([a-z0-9A-ZñÑ_-]+)$/', $o, $matches)) {
                 $class_name = Strings::snakeToCamel($matches[2]);
-                $file = str_replace('NAME__', $class_name, $file);
+                // Keep __TB_NAME__ for the table-name replacement below.
+                $file = preg_replace('/(?<!__TB_)NAME__/', $class_name, $file);
             }
 
             if (Strings::startsWith('--dir=', $o) || Strings::startsWith('--dir:', $o) || Strings::startsWith('--folder=', $o) || Strings::startsWith('--folder:', $o)) {
@@ -2329,8 +2331,10 @@ abstract class BaseMakeCommand extends BaseCommand
             $file = trim($file) . ';';
         }
 
-        $file = str_replace('NAME__', $this->camel_case, $file);
+        // __TB_NAME__ first: it contains 'NAME__', so the class-name replacement
+        // would otherwise turn it into an unresolved '__TB_<ClassName>'.
         $file = str_replace('__TB_NAME__', $tb_name, $file);
+        $file = str_replace('NAME__', $this->camel_case, $file);
 
         if (!empty($dir)) {
             $path .= "$dir/";

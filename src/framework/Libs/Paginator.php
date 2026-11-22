@@ -91,7 +91,8 @@ class Paginator
                 }
 
                 if ($order == 'ASC' || $order == 'DESC'){
-                    $query .= "$field $order, ";
+                    // Quoted so reserved words (e.g. `key`) are valid sort columns.
+                    $query .= DB::quote($field) . " $order, ";
                 }else
                     throw new \InvalidArgumentException("Order direction '$_order' is invalid. Order should be ASC or DESC!");   
 

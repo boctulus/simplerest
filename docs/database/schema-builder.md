@@ -33,6 +33,8 @@ El builder selecciona una columna y encadena modificadores. La fuente declara es
 
 Los modificadores de columna incluyen `auto()`, `nullable()`/`notNullable()`, `default()`, `currentTimestamp()`, `unsigned()`, `zeroFill()`, `binaryAttr()`, `charset()`, `collation()`/`collate()`, `comment()`/`commentField()`, `after()` y `first()`. `dropNullable()` también elimina el default; `dropAuto()` consulta la columna autoincremental actual. `setEngine()`, `setCharset()` y `setCollation()` guardan configuración de tabla; `createTable()` incorpora engine y charset en el SQL, pero no emite la collation de tabla almacenada.
 
+Desde el 2026-11-22, `default()` entrecomilla los strings literales: `default('texto')` emite `DEFAULT 'texto'`, y escapa las comillas internas. Sin cambios quedan los números, los valores ya entrecomillados (`default("'texto'")`), `NULL`, palabras clave como `CURRENT_TIMESTAMP` y llamadas a función como `NOW()` o `current_timestamp()`. Para guardar como texto la palabra `NULL` o `CURRENT_TIMESTAMP`, entrecomíllala explícitamente. La regla está en `Schema::defaultLiteral()`.
+
 `onUpdateCurrent()` está declarado, pero en esta versión pasa `current_timestamp()` a un setter que solo permite `UNSIGNED`, `UNSIGNED ZEROFILL` o `BINARY`; esa llamada lanza una excepción en fuente. `dropCommentField()` tiene el cuerpo vacío. No dependas de estos dos métodos como operaciones completas.
 
 ## Primary keys, índices y foreign keys

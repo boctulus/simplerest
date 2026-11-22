@@ -1031,10 +1031,42 @@ class Schema
 			$val = 'NULL';
 		} elseif ($val === false) {
 			$val = NULL;
+		} elseif (is_string($val)) {
+			$val = static::defaultLiteral($val);
 		}
 
 		$this->fields[$this->current_field]['default'] =  $val;
 		return $this;
+	}
+
+	/**
+	 * Renders a string DEFAULT value as SQL. Numbers, already quoted literals,
+	 * NULL, SQL keywords (CURRENT_TIMESTAMP, ...) and function calls (NOW(),
+	 * UUID(), ...) are kept as written; any other string becomes a quoted literal,
+	 * so default('texto') emits DEFAULT 'texto'.
+	 */
+	static function defaultLiteral(string $val): string {
+		$trimmed = trim($val);
+
+		if (is_numeric($trimmed)) {
+			return $trimmed;
+		}
+
+		if (preg_match('/\A(\'.*\'|".*")\z/s', $trimmed) === 1) {
+			return $trimmed;
+		}
+
+		$keywords = ['NULL', 'TRUE', 'FALSE', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME', 'LOCALTIME', 'LOCALTIMESTAMP'];
+		if (in_array(strtoupper($trimmed), $keywords, true)) {
+			return $trimmed;
+		}
+
+		// Function call or expression, e.g. current_timestamp(), NOW(), (UUID())
+		if (preg_match('/\A\(?[A-Za-z_][A-Za-z0-9_]*\s*\(.*\)\)?\z/s', $trimmed) === 1) {
+			return $trimmed;
+		}
+
+		return "'" . str_replace("'", "''", $val) . "'";
 	}
 	
 	function dropDefault(){

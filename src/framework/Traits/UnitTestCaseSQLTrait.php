@@ -9,7 +9,11 @@ trait UnitTestCaseSQLTrait
     function normalizeSQL($sql, $default_datetime = '2000-01-01 12:00:00') {
         // Eliminar punto y coma final
         $sql = rtrim($sql, ';');
-        
+
+        // Eliminar backticks y comillas dobles antes de ordenar: un identificador
+        // entrecomillado no debe cambiar el orden de los campos del SELECT.
+        $sql = str_replace(['`', '"'], '', $sql);
+
         // Ordenar campos en SELECT
         if (preg_match('/^SELECT\s+(.+?)\s+FROM/i', $sql, $matches)) {
             $select_part = $matches[1];

@@ -42,7 +42,14 @@ En la rama estática, `resolve()` compara los segmentos definidos con el prefijo
 
 ## Respuesta y límites de ejecución
 
-Una ruta HTTP coincidente termina el branch de WebRouter. El handler produce datos para `Response`; `flush()` emite y termina el proceso cuando se alcanza la rama normal. En la rama de controller se cargan los middlewares de la aplicación antes de emitir. Un miss retorna al caller para que el siguiente resolver activo pueda continuar; el orden global se describe en [Arquitectura](../architecture.md).
+Una ruta HTTP coincidente termina el branch de WebRouter. El handler produce datos para `Response`; `flush()` emite y termina el proceso cuando se alcanza la rama normal. En la rama de controller se cargan los middlewares de la aplicación antes de emitir.
+
+Cambios del 2026-11-22:
+- Si un handler o un controlador devuelve `null`, se conserva lo que ya fijó con `response()->send()`; antes se sobrescribía y la respuesta salía vacía.
+- La rama de alias exacto también llama a `flush()`.
+- `resolve()` envuelve el despacho en un `try/catch`. Una excepción se registra con `error_log()` (clase, mensaje, archivo, línea y traza) y se responde con HTTP 500 en lugar de un 200 vacío. Con `debug` activo, la respuesta incluye el mensaje y la ubicación; sin `debug`, el mensaje es "Internal server error".
+
+Se verificó por HTTP con `php -S` en un proyecto consumidor (incidente [`consumer-composer-require-bootstrap-2026-11-22`](../issues/consumer-composer-require-bootstrap-2026-11-22.md)); `WebRouterFunctionalTest` sigue con las mismas 19 fallas que antes del cambio. Un miss retorna al caller para que el siguiente resolver activo pueda continuar; el orden global se describe en [Arquitectura](../architecture.md).
 
 `WebRouterTest.php` inspecciona verbos, grupos, parámetros, `where()`, `fromArray()`, nombres, patrones y orden. `WebRouterFunctionalTest.php` contiene peticiones a un servidor configurado; ni ese test ni el unitario se ejecutaron en esta auditoría. No se afirma que las rutas del ejemplo ni el servidor local actual respondan.
 

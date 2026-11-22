@@ -24,8 +24,10 @@ class Validator implements IValidator
 
     function __construct()
     {
-        // i18n
-        Translate::bind('validator');
+        // i18n is optional (boctulus/simplerest-i18n)
+        if (class_exists(Translate::class)) {
+            Translate::bind('validator');
+        }
     }
 
     function getErrors(): array

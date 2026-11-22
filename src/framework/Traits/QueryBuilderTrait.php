@@ -1232,9 +1232,10 @@ trait QueryBuilderTrait
 			}
 		}
 
+		// SELECT and GROUP BY lists: plain names are quoted, expressions are kept.
 		$imp = function (array $fields) {
 			if (!$this->enable_qualification) {
-				return implode(',', $fields);
+				return $this->quoteIdentifierList($fields, ',');
 			}
 
 			$ta = $this->getTableAlias();
@@ -1243,7 +1244,7 @@ trait QueryBuilderTrait
 				return "$ta.$f";
 			}, $fields);
 
-			return implode(',', $arr);
+			return $this->quoteIdentifierList($arr, ',');
 		};
 
 		if (!$existance) {
@@ -2547,7 +2548,7 @@ trait QueryBuilderTrait
 						$in_val = implode(', ', $cond[1]);
 
 						$op = isset($cond[2]) ? $cond[2] : 'IN';
-						$_where[] = "$field $op ($in_val) ";
+						$_where[] = $this->quoteIdentifier($field) . " $op ($in_val) ";
 					} else {
 						$vars[] = $field;
 						$this->w_vals[] = $cond[1];
@@ -2569,8 +2570,9 @@ trait QueryBuilderTrait
 			}
 		}
 
+		// $vars keeps the bare names: validation and type detection look them up.
 		foreach ($vars as $ix => $var) {
-			$_where[] = "$var $ops[$ix] ?";
+			$_where[] = $this->quoteIdentifier($var) . " $ops[$ix] ?";
 		}
 
 		$this->w_vars = array_merge($this->w_vars, $vars); //
@@ -3093,7 +3095,7 @@ trait QueryBuilderTrait
 
 		$set = '';
 		foreach ($vars as $ix => $var) {
-			$set .= " $var = ?, ";
+			$set .= ' ' . $this->quoteIdentifier($var) . ' = ?, ';
 		}
 		$set = trim(substr($set, 0, strlen($set) - 2));
 
@@ -3106,7 +3108,7 @@ trait QueryBuilderTrait
 
 			$at = $d->format('Y-m-d G:i:s');
 
-			$set .= ", {$this->updatedAt} = '$at'";
+			$set .= ', ' . $this->quoteIdentifier($this->updatedAt) . " = '$at'";
 		}
 
 		if (!empty($this->where)) {
@@ -3608,13 +3610,7 @@ trait QueryBuilderTrait
 			}
 		}
 
-		if (DB::driver() == DB::MYSQL || DB::isMariaDB()) {
-			$str_vars = implode(', ', array_map(function ($var) {
-				return "`$var`";
-			}, $vars));
-		} else {
-			$str_vars = implode(', ', $vars);
-		}
+		$str_vars = $this->quoteIdentifierList($vars, ', ');
 
 		$str_vals     = implode(', ', $symbols);
 
@@ -3973,7 +3969,7 @@ trait QueryBuilderTrait
 				}
 
 				// Build query for preview
-				$fields_str = implode(',', $fields);
+				$fields_str = $this->quoteIdentifierList($fields, ',');
 				$values_str = implode(',', $placeholders);
 
 				$q = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES $values_str";
@@ -4021,7 +4017,7 @@ trait QueryBuilderTrait
 			}
 
 			// Build and execute query
-			$fields_str = implode(',', $fields);
+			$fields_str = $this->quoteIdentifierList($fields, ',');
 			$values_str = implode(',', $placeholders);
 
 			$q = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES $values_str";
@@ -4075,7 +4071,7 @@ trait QueryBuilderTrait
 		$vars = array_keys($data);
 		$placeholders = array_fill(0, count($vars), '?');
 
-		$fields_str = implode(',', $vars);
+		$fields_str = $this->quoteIdentifierList($vars, ',');
 		$values_str = implode(',', $placeholders);
 
 		$q = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES ($values_str)";
@@ -4338,7 +4334,7 @@ trait QueryBuilderTrait
 		$fields = array_keys($data);
 		$placeholders = array_fill(0, count($fields), '?');
 
-		$fields_str = implode(', ', $fields);
+		$fields_str = $this->quoteIdentifierList($fields, ', ');
 		$placeholders_str = implode(', ', $placeholders);
 
 		$sql = "INSERT INTO " . DB::quote($this->from()) . " ($fields_str) VALUES ($placeholders_str)";
@@ -4353,14 +4349,14 @@ trait QueryBuilderTrait
 	{
 		$updateFields = [];
 		foreach ($data as $field => $value) {
-			$updateFields[] = "$field = ?";
+			$updateFields[] = $this->quoteIdentifier($field) . ' = ?';
 		}
 
 		$updateStr = implode(', ', $updateFields);
 
 		$whereStr = [];
 		foreach ($conditions as $condition) {
-			$whereStr[] = "{$condition[0]} = ?";
+			$whereStr[] = $this->quoteIdentifier($condition[0]) . ' = ?';
 		}
 
 		$whereClause = implode(' AND ', $whereStr);
@@ -4494,6 +4490,26 @@ trait QueryBuilderTrait
 	{
 		$this->wrap_fields = $flag;
 		return $this;
+	}
+
+	/**
+	 * Quotes a plain column name (optionally table-qualified) in WHERE, INSERT and UPDATE so
+	 * reserved words such as `key` work. Expressions, functions and names that
+	 * are already quoted are returned unchanged.
+	 */
+	protected function quoteIdentifier(string $field): string
+	{
+		if (preg_match('/\A[A-Za-z_][A-Za-z0-9_-]*(?:\.[A-Za-z_][A-Za-z0-9_-]*)?\z/', $field) !== 1) {
+			return $field;
+		}
+
+		return DB::quote($field);
+	}
+
+	/** Quotes each plain column name of an INSERT/UPDATE column list. */
+	protected function quoteIdentifierList(array $fields, string $glue): string
+	{
+		return implode($glue, array_map(fn ($field) => $this->quoteIdentifier((string) $field), $fields));
 	}
 
 	protected function getWrapFieldName($field)

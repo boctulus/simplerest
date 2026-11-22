@@ -3,12 +3,7 @@
 use Boctulus\Simplerest\Core\Interfaces\IAcl;
 use Boctulus\Simplerest\Core\Interfaces\IAuth;
 use Boctulus\Simplerest\Core\Libs\Factory;
-use Boctulus\Simplerest\Core\Libs\HtmlBuilder\Tag;
 use Boctulus\Simplerest\Core\Request;
-
-function tag(string $name) : Tag {
-    return new Tag($name);
-}
 
 function acl() /* : IAcl */ {
     return Factory::acl();

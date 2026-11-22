@@ -11,8 +11,6 @@ use Boctulus\Simplerest\Core\Interfaces\ISubResources;
 use Boctulus\Simplerest\Core\Libs\Arrays;  
 use Boctulus\Simplerest\Core\Libs\DB;
 use Boctulus\Simplerest\Core\Libs\DBRels;
-use Boctulus\Simplerest\Core\Libs\Impersonation\ImpersonationManager;
-use Boctulus\Simplerest\Core\Libs\Impersonation\ImpersonationRequestContext;
 use Boctulus\Simplerest\Core\Libs\Strings;
 use Boctulus\Simplerest\Core\Libs\Validator;
 use Boctulus\Simplerest\Core\Libs\WebhookEvent;
@@ -204,20 +202,6 @@ abstract class ApiController extends ResourceController implements IApi, ISubRes
         } 
         
         $this->impersonated_by = $this->auth['impersonated_by'] ?? null;
-
-        /*
-            Read-only impersonation is enforced HERE, not in the Svelte UI.
-            Hiding buttons is usability; this is the security boundary that a
-            direct `curl -X PUT /api/v1/properties/1` hits.
-        */
-        $imp_ctx = ImpersonationRequestContext::hydrateFromToken($this->auth ?? []);
-
-        ImpersonationManager::getInstance()->enforceReadOnly(
-            $imp_ctx,
-            $method,
-            parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '',
-            $this->table_name
-        );
 
 
         // dd(auth()->uid(), 'uid');

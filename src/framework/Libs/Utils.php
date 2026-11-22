@@ -2,7 +2,6 @@
 
 namespace Boctulus\Simplerest\Core\Libs;
 
-use Boctulus\Simplerest\Core\Strings;
 
 class Utils
 {

@@ -76,10 +76,18 @@ function parseOptions(array $arguments): array
 
 function runCommand(array $command, string $workingDirectory): array
 {
+    // stderr goes to a temporary file: reading stdout to EOF while the child
+    // fills an unread stderr pipe (e.g. many Git CRLF warnings) deadlocks,
+    // and stream_select() is not reliable for process pipes on Windows.
+    $stderrFile = tempnam(sys_get_temp_dir(), 'docguard-');
+    if ($stderrFile === false) {
+        throw new RuntimeException('Could not create a temporary file for command stderr.');
+    }
+
     $pipes = [];
     $process = proc_open(
         $command,
-        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['file', $stderrFile, 'w']],
         $pipes,
         $workingDirectory,
         null,
@@ -87,15 +95,16 @@ function runCommand(array $command, string $workingDirectory): array
     );
 
     if (!is_resource($process)) {
+        @unlink($stderrFile);
         throw new RuntimeException('Could not start command: ' . implode(' ', $command));
     }
 
     fclose($pipes[0]);
     $stdout = stream_get_contents($pipes[1]);
     fclose($pipes[1]);
-    $stderr = stream_get_contents($pipes[2]);
-    fclose($pipes[2]);
     $exitCode = proc_close($process);
+    $stderr = file_get_contents($stderrFile);
+    @unlink($stderrFile);
 
     return [$exitCode, $stdout === false ? '' : $stdout, $stderr === false ? '' : $stderr];
 }
