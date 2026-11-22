@@ -9,8 +9,8 @@ final class AclMakeCommandSafetyTest extends TestCase
     public function testForceRegenerationUsesTransactionalNonDestructiveRoleReconciliation(): void
     {
         $root = dirname(__DIR__, 2);
-        $command = file_get_contents($root . '/app/Commands/acl/AclMakeCommand.php');
-        $legacy = file_get_contents($root . '/packages/boctulus/simplerest-scaffolding/src/Commands/make/BaseMakeCommand.php');
+        $command = file_get_contents($root . '/packages/boctulus/simplerest-cli/src/Commands/acl/AclMakeCommand.php');
+        $legacy = file_get_contents($root . '/packages/boctulus/simplerest-scaffolding/src/Commands/BaseMakeCommand.php');
         $acl = file_get_contents($root . '/packages/boctulus/simplerest-fine-grained-acl/src/Acl.php');
 
         $this->assertStringNotContainsString("DB::table('roles')", $command);
@@ -35,6 +35,6 @@ final class AclMakeCommandSafetyTest extends TestCase
 
     private function readBaseAclCommand(string $root): string
     {
-        return file_get_contents($root . '/app/Commands/acl/BaseAclCommand.php');
+        return file_get_contents($root . '/packages/boctulus/simplerest-cli/src/Commands/acl/BaseAclCommand.php');
     }
 }

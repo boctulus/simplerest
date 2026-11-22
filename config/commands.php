@@ -25,6 +25,7 @@ return [
     'paths'    => [],
 
     'packages' => [
+        'boctulus/simplerest-cli',
         'boctulus/simplerest-scaffolding',
     ],
 

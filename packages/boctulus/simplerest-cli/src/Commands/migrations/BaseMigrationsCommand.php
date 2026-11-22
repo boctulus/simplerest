@@ -1,5 +1,6 @@
 <?php
 
+use Boctulus\Simplerest\CodeTools\Commands\make\MakeMigrationFileCommand;
 use Boctulus\Simplerest\Core\Commands\BaseCommand;
 use Boctulus\Simplerest\Core\Interfaces\IMigration;
 use Boctulus\Simplerest\Core\Libs\Config;
@@ -33,10 +34,24 @@ abstract class BaseMigrationsCommand extends BaseCommand
         return $opt;
     }
 
+    /**
+     * File generation belongs to boctulus/simplerest-scaffolding (`make` group).
+     */
+    protected function makeMigrationFileCommand(): MakeMigrationFileCommand
+    {
+        if (!class_exists(MakeMigrationFileCommand::class)) {
+            throw new \RuntimeException(
+                "Generating migration, schema or model files requires boctulus/simplerest-scaffolding. "
+                . "Install it with `composer require boctulus/simplerest-scaffolding` and enable it in config/commands.php."
+            );
+        }
+
+        return new MakeMigrationFileCommand();
+    }
+
     protected function doMake(...$opt)
     {
-        require_once __DIR__ . '/../make/MigrationCommand.php';
-        return (new MakeMigrationFileCommand())->migration(...$opt);
+        return $this->makeMigrationFileCommand()->migration(...$opt);
     }
 
     protected function doMigrate(...$opt)
@@ -330,9 +345,8 @@ abstract class BaseMigrationsCommand extends BaseCommand
         DB::enableForeignKeyConstraints();
 
         if (!empty($make)) {
-            require_once __DIR__ . '/../make/MigrationCommand.php';
             $actions = explode(',', $make);
-            $cmd = new MakeMigrationFileCommand();
+            $cmd = $this->makeMigrationFileCommand();
             foreach ($actions as $action) {
                 if ($action == 'schema') $cmd->schema('all');
                 if ($action == 'model')  $cmd->model('all');

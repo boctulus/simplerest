@@ -23,6 +23,75 @@ php com pack build --profile=core --source-commit=<source-sha> --dest=D:\laragon
 
 These are local PACK and VERIFY commands, not authorization to mutate a pre-existing dirty pack worktree or publish a release. The authoritative safety and separation rules are in the [PACK contract](pack-contract.md).
 
+### Step-by-step build and Packagist publication runbook (2026-11-22)
+
+This runbook adds the concrete commands for the PACK → VERIFY → PUBLISH sequence. It does not relax any gate above; the PUBLISH steps still require explicit maintainer authorization for each release.
+
+**How Packagist receives a release.** Packagist does not read `D:\laragon\www\simplerest-pack` or the monorepo `master`. It reads the tags of `https://github.com/boctulus/simplerest.git`. A release is a *standalone snapshot commit* (one root commit that contains only the curated core) plus an immutable tag pointing at it, pushed to that repository. `v2.0.2` follows this model: tag `v2.0.2` → package commit `c15d0627…`, assembled from canonical source `b7a48ac6…`. Pushing only the tag is enough; the snapshot commit does not need a branch.
+
+**Version number.** The root `composer.json` contains a `version` field (for example `3.0.5` at source `abf52c218`). Packagist skips a tag whose name disagrees with that field, so the tag must be `v<version from composer.json at the source commit>`, and `extra.branch-alias.dev-master` must belong to the same `MAJOR.MINOR.x-dev` series (the snapshot script enforces this). Recent commits titled "Automatic update" increment this field; check its value at the approved HEAD instead of assuming it.
+
+**The `simplerest-pack` worktree.** PACK refuses a dirty or non-curated destination (see the PACK contract). As of 2026-11-22, `D:\laragon\www\simplerest-pack` holds a legacy application tree with uncommitted changes and no remote, so it is not a valid destination and is not the publication source. Do not clean it. Pass a new, non-existent `--dest` instead; PACK creates it.
+
+1. **Select the source.** On `master`, commit the release changes. `git status` must show no changes under `composer.json`, `LICENSE`, `README.md` or `src/framework/`. Record `git rev-parse HEAD` and the `version` value:
+
+   ```powershell
+   cd D:\laragon\www\simplerest
+   git rev-parse HEAD
+   php -r "echo json_decode(file_get_contents('composer.json'))->version, PHP_EOL;"
+   ```
+
+2. **PACK** into a fresh directory (or into `simplerest-pack` only when it is a clean, curated Git worktree):
+
+   ```powershell
+   php com pack build --profile=core --dry-run
+   php com pack build --profile=core --dest=<fresh-pack-dir>
+   ```
+
+3. **Snapshot** (VERIFY). `-SourceCommit` must equal the checked-out HEAD. `-OutputDirectory` must not exist, but its parent must:
+
+   ```powershell
+   .\scripts\composer\build-core-source-snapshot.ps1 -CuratedDirectory <fresh-pack-dir> -SourceCommit HEAD -OutputDirectory <fresh-snap-dir> -Version v<version>
+   ```
+
+   It prints the package tree, package commit and local tag, and writes `<fresh-snap-dir>\release-provenance.json`. The repository is `<fresh-snap-dir>\repository`.
+
+4. **Consumer gate** (VERIFY). Install the snapshot into an empty project through a VCS repository and compare it with the provenance:
+
+   ```powershell
+   cd <fresh-snap-dir>\repository; composer validate --strict --no-check-publish
+   # empty consumer composer.json:
+   # {"repositories":[{"type":"vcs","url":"<fresh-snap-dir>/repository"}],"require":{"boctulus/simplerest":"<version>"}}
+   composer install --no-dev --prefer-dist --optimize-autoloader
+   composer check-platform-reqs
+   php D:\laragon\www\simplerest\scripts\composer\verify-installed-core.php --installed=<consumer>\vendor\boctulus\simplerest --provenance=<fresh-snap-dir>\release-provenance.json
+   cd D:\laragon\www\simplerest; vendor\bin\phpunit unit-tests\microcore
+   ```
+
+   `composer validate` warns that the `version` field is present; this warning does not block the release. Also review the consumer and compatibility gates listed under **Current scope and status** before you continue.
+
+5. **PUBLISH** (only with explicit authorization). First confirm that the tag does not already exist, then push only that tag from the snapshot repository:
+
+   ```powershell
+   git ls-remote --tags https://github.com/boctulus/simplerest.git v<version>   # must print nothing
+   cd <fresh-snap-dir>\repository
+   git push https://github.com/boctulus/simplerest.git refs/tags/v<version>
+   ```
+
+   Never push `master` from the snapshot repository, never use `--force`, and never move or reuse an existing tag. If the push fails, treat it as a release blocker.
+
+6. **Refresh Packagist.** If the GitHub → Packagist hook is active, the new tag appears within minutes. Otherwise, the maintainer uses **Update** on https://packagist.org/packages/boctulus/simplerest or calls the update API with the account's API token (never stored in the repository):
+
+   ```powershell
+   curl.exe -X POST -H "Content-Type: application/json" "https://packagist.org/api/update-package?username=<user>&apiToken=<token>" -d '{"repository":{"url":"https://github.com/boctulus/simplerest"}}'
+   ```
+
+7. **Confirm the published artifact.** `https://packagist.org/packages/boctulus/simplerest.json` must list the version with `source.reference` equal to the package commit from step 3. Because the manifest contains a `version` field, Packagist lists the release as `<version>` (for example `3.0.5`), not under the tag name `v<version>`; search for both spellings. The CDN endpoint `repo.packagist.org/p2/...` can lag behind the package page. Repeat the consumer gate from step 4 without the `vcs` repository (Packagist only), and record the source SHA, package commit, tag, PHP and Composer versions in this document.
+
+Evidence for steps 1–4 (2026-11-22): source `abf52c218b9cda42304bed21a809b9eb959a8937`, package tree `1a09e4180485839808a92419d410b9bc90cf4c16`, package commit `0d2dd76c40675c0a84d1fcf0a28dc01462f38e29`, candidate `v3.0.5`. Composer 2.8.5 and PHP 8.3.36 VCS consumer install, `check-platform-reqs`, `verify-installed-core.php` (218 files), and `unit-tests/microcore` (7 tests, 220 assertions) passed.
+
+Publication of `v3.0.5` (2026-11-22, authorized by the maintainer): before the push, `git ls-remote` showed that the tag did not exist. Then only `refs/tags/v3.0.5` → `0d2dd76c40675c0a84d1fcf0a28dc01462f38e29` was pushed to `https://github.com/boctulus/simplerest.git`; `master` was not touched. The package is auto-updated by Packagist, so no manual Update or API token was needed. Packagist lists `3.0.5` with source reference `0d2dd76c…`. A Packagist-only consumer (`"boctulus/simplerest": "^3.0"`, no VCS repository, Composer cache cleared, `--no-dev --prefer-dist --optimize-autoloader`) locked `boctulus/simplerest 3.0.5` at source `0d2dd76c40675c0a84d1fcf0a28dc01462f38e29` with dist `https://api.github.com/repos/boctulus/simplerest/zipball/0d2dd76c40675c0a84d1fcf0a28dc01462f38e29`, plus `doctrine/inflector 2.1.1`. `check-platform-reqs` passed on PHP 8.3.36, and `verify-installed-core.php` passed against the release provenance (218 files). The GoProp migration gate under **Current scope and status** remains open; consumers on `^2.0` are not affected.
+
 > The current scope and evidence are recorded in **Current scope and status**. The implementation record farther below is historical; its package inventory, FriendlyPOS status, and GoProp conclusions predate the 2026-10-23 scope reset.
 
 ## Current scope and status (2026-10-23)

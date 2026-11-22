@@ -1,0 +1,7 @@
+Necesito subas la ultima version a https://packagist.org/packages/boctulus/simplerest
+---
+Documenta la forma correcta de hacer el build y subir a https://packagist.org/ sino estuviera bien documentado. Por que incompatible la 3.x?
+---
+PS D:\laragon\www\quality> php com -> Could not open input file: com. Ademas de minima habria que lograr en docs/framework/ a nivel de root al instalar se copie la documentacion relevante del framework. En .agents/skills/ a nivel de root al instalar deberian copiarse los skills del framework
+---
+Estilo Laravel / Si, empezar / Commit y seguir
