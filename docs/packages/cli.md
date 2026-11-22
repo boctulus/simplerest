@@ -76,4 +76,12 @@ Recorrido completo verificado el mismo día (detalle en el [incidente](../issues
 3. `make any all --schema --model --api`.
 4. CRUD generado con filtros, `fields` y `orderBy` por HTTP.
 
-Todavía no tiene repositorio GitHub ni versión en Packagist, y tampoco `simplerest-i18n` ni `simplerest-scaffolding`. El plan de distribución (entry point `vendor/bin/simplerest init`, publicación de docs y skills, skeleton) está en [`docs/to-do/consumer-cli-skeleton-laravel-style.md`](../to-do/consumer-cli-skeleton-laravel-style.md).
+Publicado el 2026-11-22: `boctulus/simplerest-cli` `v1.0.0`, junto con `simplerest-i18n`, `simplerest-jwt-auth` y `simplerest-scaffolding` `v1.0.0` y el core `3.0.6`. La evidencia está en el [proceso de releases](../architecture/composer-release-process.md). Para un proyecto nuevo:
+
+```powershell
+composer require boctulus/simplerest boctulus/simplerest-cli boctulus/simplerest-scaffolding boctulus/simplerest-jwt-auth
+php vendor/bin/simplerest init
+php com
+```
+
+La API generada requiere además un paquete ACL; ninguno es público todavía. El plan de distribución (entry point `vendor/bin/simplerest init`, publicación de docs y skills, skeleton) está en [`docs/to-do/consumer-cli-skeleton-laravel-style.md`](../to-do/consumer-cli-skeleton-laravel-style.md).

@@ -34,6 +34,10 @@ Todas las versiones locales declaran PHP `>=8.1,<8.5`. Salvo las excepciones ind
 | HTTP | `boctulus/simplerest-sse` | `SSE` para emitir Server-Sent Events. | No declara dependencia Composer del core ni de terceros. | La aplicación y el servidor deben permitir respuestas de streaming largas. Véase [adaptadores PSR-7 y SSE](http-adapters.md). |
 | Inspección | `boctulus/simplerest-web-inspection` | Escáner de CMS/tecnologías y selectores HTML Symfony. | `ext-curl`, `symfony/css-selector ^6.4`, `symfony/dom-crawler ^6.4`. | Puede pedir una URL remota; el llamador debe restringir destinos. Véase [inspección web](../integrations/web-inspection.md). |
 
+## Publicados en Packagist
+
+Publicados en Packagist al 2026-11-22: el core `boctulus/simplerest` `3.0.6`, y `boctulus/simplerest-cli`, `-i18n`, `-jwt-auth` y `-scaffolding` en `v1.0.0`. Los demás paquetes de esta tabla siguen siendo locales o no tienen versión en Packagist. La evidencia está en el [proceso de releases](../architecture/composer-release-process.md).
+
 ## Bundle histórico
 
 `packages/boctulus/simplerest-integrations/` no tiene `composer.json` ni implementación PHP. Es un aviso de migración al separar clientes en paquetes Composer independientes. No se debe instalar ni tratar como un alias del catálogo actual.

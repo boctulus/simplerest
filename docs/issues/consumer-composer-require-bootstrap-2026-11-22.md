@@ -1,6 +1,6 @@
 # A new project installed with `composer require boctulus/simplerest` does not start
 
-**Status:** ABIERTO. Items 2–8 are fixed in canonical `master` (commits `68caccfc2`, `c5c63b012`). The core fixes are released as `v3.0.6` (package commit `60286c9a8c82c52ee6089162f07b899fce4445f3`, on Packagist since 2026-11-22). The CLI-side fixes are in `simplerest-cli`, which is not published yet. Item 1 is mitigated by `simplerest-cli` (unpublished); item 9 and the ACL gap (item 10) remain open.
+**Status:** ABIERTO. Items 2–8 are fixed in canonical `master` (commits `68caccfc2`, `c5c63b012`). The core fixes are released as `v3.0.6` (package commit `60286c9a8c82c52ee6089162f07b899fce4445f3`, on Packagist since 2026-11-22). The CLI-side fixes are published in `simplerest-cli` `v1.0.0` and `simplerest-scaffolding` `v1.0.0` on Packagist (2026-11-22). Item 1 is mitigated by `simplerest-cli` (unpublished); item 9 and the ACL gap (item 10) remain open.
 
 **Confidence:** items 1–6 and 8 are confirmed in source at canonical commit `cf5af51c5`. Item 7 was confirmed only in part. The incident timeline comes from the maintainer's report and the consuming project's notes; it was not reproduced step by step.
 

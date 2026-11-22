@@ -100,6 +100,26 @@ Publication of `v3.0.6` (2026-11-22, authorized by the maintainer):
 - **Push:** `git ls-remote` showed the tag did not exist; then only `refs/tags/v3.0.6` was pushed.
 - **Packagist:** listed `3.0.6` → `60286c9…` on the first poll. A Packagist-only consumer (`^3.0.6`, cache cleared, Composer 2.8.5, PHP 8.3.36) locked `boctulus/simplerest 3.0.6` at `60286c9…`, and `verify-installed-core.php` passed.
 
+Publication of the first extension packages, `v1.0.0` (2026-11-22, authorized by the maintainer). Source commit `b168d09cb535378939b4d50c6a7fa2f9af288c8c`. Each split was made with `scripts/composer/split-existing-package.ps1` (FilterRepo, `-PersistSplit`), and in each case the split tree equals the package directory tree.
+
+| Package | Repository | `main` = tag `v1.0.0` |
+| --- | --- | --- |
+| `boctulus/simplerest-i18n` | new, public | `9e6ba68b2f3b10a8344bc1b9cfe798beecf43f81` |
+| `boctulus/simplerest-jwt-auth` | new, public | `b99f9ee750dc0fd0df5a918e242615523ceb84c5` |
+| `boctulus/simplerest-cli` | new, public | `84046404edaea02dc5d79282d54562322be87fb8` |
+| `boctulus/simplerest-scaffolding` | existing; `main` fast-forwarded from `e4a347660b87` | `76ceec124d72e76b93f4cee9b3a1dd6ece763ef7` |
+
+- **Before the push:** the exact split commits were installed from local bare repositories, on top of core `3.0.6` from Packagist. `simplerest init` ran and `php com` listed 12 groups.
+- **Push:** for each repository, a check that `v1.0.0` did not exist, then the push of `main` (no force) and the tag.
+- **Packagist:** the four packages were registered with `scripts/composer/packagist-register.php create … --confirm`, which returned HTTP 202 for each. Packagist resolved every `v1.0.0` to the commits above on the first poll.
+- **Packagist-only consumer:** cache cleared, Composer 2.8.5, PHP 8.3.36, requiring core `^3.0.6`, cli, scaffolding and jwt-auth.
+  - The lock matched the table, and `check-platform-reqs` passed.
+  - `simplerest init` ran and `php com` listed 12 groups.
+  - On a new disposable MySQL schema, `sr_accept_test_20261122b`, the 15 base migrations passed and `make any all --schema --model --api` produced no errors (10 tables).
+  - `GET /` and `GET /system/health` returned 200. `GET /api/v1/users` returned the explicit "ACL configuration not found" error, because no public ACL package exists yet.
+
+`scripts/composer/packagist-register.php` reads `PACKAGIST_USERNAME` and `PACKAGIST_API_TOKEN` from `.env`. Creating a package needs the main token; the update action also accepts the safe token. The script sends the token only in the `Authorization` header, never prints it, and runs as a dry run unless `--confirm` is given. On a Windows machine whose HTTPS traffic is re-signed by a local certificate, it verifies TLS against the operating system's CA store (`CURLSSLOPT_NATIVE_CA`) instead of disabling verification.
+
 > The current scope and evidence are recorded in **Current scope and status**. The implementation record farther below is historical; its package inventory, FriendlyPOS status, and GoProp conclusions predate the 2026-10-23 scope reset.
 
 ## Current scope and status (2026-10-23)
