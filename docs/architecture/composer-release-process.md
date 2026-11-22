@@ -92,6 +92,14 @@ Evidence for steps 1–4 (2026-11-22): source `abf52c218b9cda42304bed21a809b9eb9
 
 Publication of `v3.0.5` (2026-11-22, authorized by the maintainer): before the push, `git ls-remote` showed that the tag did not exist. Then only `refs/tags/v3.0.5` → `0d2dd76c40675c0a84d1fcf0a28dc01462f38e29` was pushed to `https://github.com/boctulus/simplerest.git`; `master` was not touched. The package is auto-updated by Packagist, so no manual Update or API token was needed. Packagist lists `3.0.5` with source reference `0d2dd76c…`. A Packagist-only consumer (`"boctulus/simplerest": "^3.0"`, no VCS repository, Composer cache cleared, `--no-dev --prefer-dist --optimize-autoloader`) locked `boctulus/simplerest 3.0.5` at source `0d2dd76c40675c0a84d1fcf0a28dc01462f38e29` with dist `https://api.github.com/repos/boctulus/simplerest/zipball/0d2dd76c40675c0a84d1fcf0a28dc01462f38e29`, plus `doctrine/inflector 2.1.1`. `check-platform-reqs` passed on PHP 8.3.36, and `verify-installed-core.php` passed against the release provenance (218 files). The GoProp migration gate under **Current scope and status** remains open; consumers on `^2.0` are not affected.
 
+Publication of `v3.0.6` (2026-11-22, authorized by the maintainer):
+- **Contents:** the core fixes recorded in [`consumer-composer-require-bootstrap-2026-11-22`](../issues/consumer-composer-require-bootstrap-2026-11-22.md).
+- **Version:** the manifest `version` was set to `3.0.6` in source commit `3892712f96f9c9dbc628371568fe39ef57393813`. The "Automatic update" bump had not run for these commits, so the tag would otherwise not have matched.
+- **Build:** a PACK into a fresh directory, then the snapshot: package tree `28c76771488543651132c2cfc341ec2ecdaf0adb`, package commit `60286c9a8c82c52ee6089162f07b899fce4445f3`.
+- **Checks before the push:** VCS consumer install, `check-platform-reqs` and `verify-installed-core.php` (218 files) passed, and `unit-tests/microcore` passed 9/9.
+- **Push:** `git ls-remote` showed the tag did not exist; then only `refs/tags/v3.0.6` was pushed.
+- **Packagist:** listed `3.0.6` → `60286c9…` on the first poll. A Packagist-only consumer (`^3.0.6`, cache cleared, Composer 2.8.5, PHP 8.3.36) locked `boctulus/simplerest 3.0.6` at `60286c9…`, and `verify-installed-core.php` passed.
+
 > The current scope and evidence are recorded in **Current scope and status**. The implementation record farther below is historical; its package inventory, FriendlyPOS status, and GoProp conclusions predate the 2026-10-23 scope reset.
 
 ## Current scope and status (2026-10-23)
