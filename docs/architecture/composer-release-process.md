@@ -142,7 +142,7 @@ Publication of `v3.0.7` (2026-11-25, authorized by the maintainer):
 - **Build:** a PACK into a fresh directory, then the snapshot: package tree `85e418730fbce3fee69510c866e7c1a6f87de657`, package commit `8ad3898653ee8352beee9f9a3840e0052bda0e88`.
 - **Checks before the push:** `composer validate`, a VCS consumer install, `check-platform-reqs` (PHP 8.3.36, Composer 2.8.5) and `verify-installed-core.php` (218 files) passed; `unit-tests/microcore` passed 9/9 and `DBConnectionErrorRedactionTest` 7/7.
 - **Push:** `git ls-remote` showed the tag did not exist; then only `refs/tags/v3.0.7` was pushed.
-- **Packagist (pending):** the version was not listed after the push, and two calls to the update API returned HTTP 504. The Packagist-only consumer check has not run.
+- **Packagist:** the version was not listed right after the push and two calls to the update API returned HTTP 504; it appeared later without further action as `3.0.7` → `8ad3898…`. A Packagist-only consumer (`^3.0.7`, cache cleared, Composer 2.8.5, PHP 8.3.36) locked it at that commit, and `check-platform-reqs` and `verify-installed-core.php` (218 files) passed.
 
 > The current scope and evidence are recorded in **Current scope and status**. The implementation record farther below is historical; its package inventory, FriendlyPOS status, and GoProp conclusions predate the 2026-10-23 scope reset.
 
