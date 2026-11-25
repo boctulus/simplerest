@@ -136,6 +136,14 @@ Publication of the ACL packages and `simplerest-cli` `v1.0.1` (2026-11-23, autho
   - Guest got 401 on `GET`/`POST /api/v1/roles`. `POST /api/v1/auth/login` returned 200 with a JWT; with it, `GET /api/v1/roles` (`orderBy`, `fields`) returned 200 and `POST` returned 201. `GET /` returned 200.
 - **basic-acl:** verified the same way before its push (guest 401, admin 200/201).
 
+Publication of `v3.0.7` (2026-11-25, authorized by the maintainer):
+- **Contents:** one core change over `3.0.6`: connection errors no longer carry credentials (`DB.php`, source `54c82d2f785ca978ae8ecdcfe6c437c6fecd85c0`).
+- **Version:** the manifest `version` was set to `3.0.7` in source commit `3f3fbe8bb10f462d6a29ddf575570943958c8bee`.
+- **Build:** a PACK into a fresh directory, then the snapshot: package tree `85e418730fbce3fee69510c866e7c1a6f87de657`, package commit `8ad3898653ee8352beee9f9a3840e0052bda0e88`.
+- **Checks before the push:** `composer validate`, a VCS consumer install, `check-platform-reqs` (PHP 8.3.36, Composer 2.8.5) and `verify-installed-core.php` (218 files) passed; `unit-tests/microcore` passed 9/9 and `DBConnectionErrorRedactionTest` 7/7.
+- **Push:** `git ls-remote` showed the tag did not exist; then only `refs/tags/v3.0.7` was pushed.
+- **Packagist (pending):** the version was not listed after the push, and two calls to the update API returned HTTP 504. The Packagist-only consumer check has not run.
+
 > The current scope and evidence are recorded in **Current scope and status**. The implementation record farther below is historical; its package inventory, FriendlyPOS status, and GoProp conclusions predate the 2026-10-23 scope reset.
 
 ## Current scope and status (2026-10-23)
