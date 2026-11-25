@@ -268,19 +268,36 @@ class DB
 			//dd("CONNECTION MADE TO $db_name"); //
 
 		} catch (\PDOException $e) {
-			$msg = 'PDO Exception: '. $e->getMessage();
+			$msg = 'PDO Exception: '. static::redactConnectionError($e->getMessage());
 
 			if (Config::get()['debug']){
-				$conn_arr = $config['db_connections'][static::$current_id_conn];
-				$msg .= ". Connection = ". var_export($conn_arr, true);
+				// Lista blanca: el resto de la configuración puede ser secreto.
+				$details = ['id' => static::$current_id_conn] + array_intersect_key(
+					$config['db_connections'][static::$current_id_conn],
+					array_flip(['driver', 'host', 'port', 'db_name'])
+				);
+
+				$msg .= ". Connection = ". var_export($details, true);
 			}
-			
+
 			throw new \PDOException($msg);	
 		} catch (\Exception $e) {
 			throw new \Exception($e->getMessage());
 		}	
 		
 		return self::$connections[static::$current_id_conn];
+	}
+
+	/**
+	 * Quita el nombre de usuario que MySQL y PostgreSQL incluyen en sus errores de conexión.
+	 */
+	public static function redactConnectionError(string $message): string
+	{
+		return preg_replace(
+			'/\b(user|role) (["\'])(?:(?!\2).)*\2(?:@(["\'])(?:(?!\3).)*\3)?/i',
+			'$1 [redacted]',
+			$message
+		) ?? 'connection error (message withheld)';
 	}
 
 	static function getDefaultConnectionId(){
