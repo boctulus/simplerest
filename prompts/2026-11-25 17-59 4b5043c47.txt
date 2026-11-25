@@ -1,0 +1,1 @@
+Si, commit y push del lado de SimpleRest y vuelta a publicar en https://packagist.org/ y entonces haces el composer update aqui pero no lo hagas en este chat.
