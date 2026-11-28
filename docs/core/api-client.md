@@ -24,7 +24,7 @@ $response = $client->getResponse();
 
 `setOption()`/`option()` agregan una opción cURL; `setOptions()` reemplaza o combina el conjunto existente según los valores de entrada. `followLocations()` y `redirect()` configuran redirecciones. `when()` aplica uno de dos callbacks de configuración según una condición. `mock()` guarda una respuesta de prueba y hace que `request()` retorne el cliente sin llamar al transporte.
 
-**Los setters de timeout no limitan la petición normal en el código actual.** `setTimeOut()` y `setConnectionTimeOut()` agregan opciones, pero `consumeAPI()` fija `CURLOPT_TIMEOUT` y `CURLOPT_CONNECTTIMEOUT` a cero después de aplicar las opciones. El ledger registra esta diferencia como anomalía de implementación; no se probó en la red.
+`setTimeOut()` y `setConnectionTimeOut()` ahora retornan el cliente y sus valores gobiernan la petición normal: `consumeAPI()` aplica el array de opciones y solo usa `CURLOPT_TIMEOUT=300` y `CURLOPT_CONNECTTIMEOUT=10` como valores por defecto cuando no se configuraron explícitamente. `download()` sigue siendo un camino separado no cubierto por este cambio; la corrección se verificó con lint y tests enfocados, no con requests de red.
 
 ## Respuesta y errores
 

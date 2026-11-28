@@ -40,7 +40,7 @@ Endurecer los callbacks configurables por usuarios o integraciones para que el m
 - `ApiClient::setUrl()` llama a `Url::normalize()`. Esa normalización solo comprueba que el texto empiece por `http`, no exige exactamente `http`/`https` ni aplica política DNS/IP; reconstruye la URL con esquema, host, puerto, path y query. No hay resolución previa, comprobación de rangos ni pinning de direcciones.
 - `consume_api()` llama a `withoutStrictSSL()`, que establece `CURLOPT_SSL_VERIFYHOST = 0` y `CURLOPT_SSL_VERIFYPEER = 0`. Este es el riesgo de TLS observado en la auditoría anterior.
 - La ruta del webhook no pasa opciones a `consume_api()`, no llama a `followLocations()` y no establece `CURLOPT_FOLLOWLOCATION`; el seguimiento de redirects no se activa con la configuración actual. El helper genérico sí ofrece `followLocations()`, pero no se usa aquí.
-- La ejecución de `ApiClient` configura timeout y connect-timeout en `0` (sin límite) y devuelve el cuerpo completo de cURL en memoria; no se configura un límite de respuesta para esta ruta.
+- Hallazgo original: la ejecución de `ApiClient` configuraba timeout y connect-timeout en `0` (sin límite) y devuelve el cuerpo completo de cURL en memoria; no se configuraba un límite de respuesta para esta ruta. Corregido el 2026-11-21: `consumeAPI()` respeta los setters y usa `300 s` / `10 s` por defecto; el límite de respuesta sigue sin configurarse en `ApiClient`.
 - No hay firma HMAC ni secreto en el envelope. `WebhookDeliveryDispatcher` envía el payload sin headers de firma; el resultado del transporte se ignora. El logging de request/response de `ApiClient` es opt-in y `consume_api()` no lo activa.
 - La auditoría fue estática: no se registraron subscriptions de prueba ni se hicieron requests a callbacks.
 
